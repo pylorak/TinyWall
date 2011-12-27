@@ -1,0 +1,47 @@
+END-USER LICENSE AGREEMENT ("EULA")
+
+Definition of SOFTWARE: This installer and all components of TinyWall, 
+including but not limited to executables, media, documentation and 
+databases installed by this installer.
+
+Definition of AUTHOR: Károly Pados and copyright holders
+
+IMPORTANT-READ CAREFULLY: This End-User License Agreement ("EULA") is a 
+legal agreement between you (either an individual or a single entity) and 
+AUTHOR. By installing, copying, or otherwise using the SOFTWARE, you 
+agree to be bound by the terms of this EULA. If you do not agree to the 
+terms of this EULA, do not install or use the SOFTWARE.
+
+ 1. Freeware
+ You may use the SOFTWARE without charge.
+
+ 2. Distribution of SOFTWARE.
+You may make copies of the SOFTWARE as you wish; give exact copies of the 
+original SOFTWARE to anyone; and distribute the SOFTWARE in its 
+unmodified form via electronic means. You may not charge any fees for the 
+copy or use of the SOFTWARE itself. You must not represent in any way 
+that you are selling the SOFTWARE itself. Your distribution of the 
+SOFTWARE will not entitle you to any compensation from AUTHOR.  You must 
+distribute a copy of this EULA with any copy of the SOFTWARE and anyone 
+to whom you distribute the SOFTWARE is subject to this EULA.
+
+ 3. RESTRICTIONS
+3.1 You may not reverse engineer, de-compile, or disassemble the SOFTWARE.
+3.2 You may not rent, lease, or lend the SOFTWARE.
+3.3 You may permanently transfer all of your rights under this EULA, 
+provided the recipient agrees to the terms of this EULA. 
+3.4 You may not use the SOFTWARE to perform any unauthorized transfer of 
+information or for any illegal purpose.
+3.5 You may not repackage the software or provide alternate installers 
+whose main purpose is to install the SOFTWARE.
+
+ 4. NO WARRANTIES
+AUTHOR expressly disclaims any warranty for the SOFTWARE. THE SOFTWARE IS 
+PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, 
+INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OR MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE, OR NONINFRINGEMENT. THE ENTIRE RISK 
+ARISING OUT OF USE OR PERFORMANCE OF THE SOFTWARE REMAINS WITH YOU. IN NO 
+EVENT SHALL THE AUTHOR OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE 
+USE OR OTHER DEALINGS IN THE SOFTWARE.

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="RealPlayer" AppSpecific="true">
+  <Rules>
+    <RuleDef Name="RealPlayer TCP">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>554,4040,7070,8080,1755</RemotePorts>
+    </RuleDef>
+    <RuleDef Name="RealPlayer UDP">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>6970-32000,1755</RemotePorts>
+    </RuleDef>
+  </Rules>
+</Profile>

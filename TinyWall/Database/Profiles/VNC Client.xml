@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="VNC Client">
+  <Rules>
+    <RuleDef Name="VNC Client">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>5900-5902,5800-5802</RemotePorts>
+    </RuleDef>
+  </Rules>
+</Profile>

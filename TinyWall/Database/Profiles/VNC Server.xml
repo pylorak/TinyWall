@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="VNC Server">
+  <Rules>
+    <RuleDef Name="VNC Server">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>In</Direction>
+      <LocalPorts>5900-5902,5800-5802</LocalPorts>
+    </RuleDef>
+  </Rules>
+</Profile>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="Brosix" AppSpecific="true">
+  <Rules>
+    <RuleDef Name="Brosix TCP">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>7150,5009</RemotePorts>
+    </RuleDef>
+    <RuleDef Name="Brosix UDP">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>443,5009</RemotePorts>
+    </RuleDef>
+  </Rules>
+</Profile>

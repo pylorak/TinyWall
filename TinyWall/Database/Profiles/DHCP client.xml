@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="DHCP client">
+  <Rules>
+    <RuleDef Name="DHCP IPv4 client">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>InOut</Direction>
+      <LocalPorts>68</LocalPorts>
+      <RemotePorts>67</RemotePorts>
+      <RemoteAddresses>LocalSubnet</RemoteAddresses>
+    </RuleDef>
+    <RuleDef Name="DHCP IPv6 client">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>InOut</Direction>
+      <LocalPorts>546</LocalPorts>
+      <RemotePorts>547</RemotePorts>
+      <RemoteAddresses>LocalSubnet</RemoteAddresses>
+    </RuleDef>
+  </Rules>
+</Profile>

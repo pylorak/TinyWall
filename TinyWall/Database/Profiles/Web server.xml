@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="Web server">
+  <Rules>
+    <RuleDef Name="Web server">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>In</Direction>
+      <RemotePorts>80,443</RemotePorts>
+    </RuleDef>
+  </Rules>
+</Profile>

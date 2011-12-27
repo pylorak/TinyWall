@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="SOCKS client">
+  <Rules>
+    <RuleDef Name="SOCKS client">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>1080</RemotePorts>
+    </RuleDef>
+  </Rules>
+</Profile>

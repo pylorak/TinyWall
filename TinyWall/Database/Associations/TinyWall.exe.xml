@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfProfileAssoc>
+<ProfileAssoc Executable="{TWPath}\TinyWall.exe" Recommended="true" Special="true">
+  <Description>TinyWall</Description>
+  <Profiles>
+    <string>HTTP(S) client</string>
+  </Profiles>
+</ProfileAssoc>
+</ArrayOfProfileAssoc>

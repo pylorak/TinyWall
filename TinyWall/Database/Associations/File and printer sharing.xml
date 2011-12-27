@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfProfileAssoc>
+<ProfileAssoc Executable="System" Recommended="false" Special="true">
+  <Description>File and printer sharing</Description>
+  <Profiles>
+    <string>File and printer sharing</string>
+  </Profiles>
+</ProfileAssoc>
+</ArrayOfProfileAssoc>

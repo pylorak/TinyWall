@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="FTP client">
+  <Rules>
+    <RuleDef Name="FTP client (control)">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>21,990</RemotePorts>
+    </RuleDef>
+    <RuleDef Name="FTP client (data,active)">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>20,989</RemotePorts>
+    </RuleDef>
+    <RuleDef Name="FTP client (data,passive)">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>InOut</Direction>
+      <LocalPorts>EPHEMERAL</LocalPorts>
+      <RemotePorts>EPHEMERAL</RemotePorts>
+    </RuleDef>
+  </Rules>
+</Profile>

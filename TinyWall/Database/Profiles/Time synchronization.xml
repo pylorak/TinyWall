@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="Time synchronization">
+  <Rules>
+    <RuleDef Name="Time synchronization">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>InOut</Direction>
+      <RemotePorts>123</RemotePorts>
+    </RuleDef>
+  </Rules>
+</Profile>

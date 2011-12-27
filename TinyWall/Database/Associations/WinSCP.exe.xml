@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfProfileAssoc>
+<ProfileAssoc Executable="WinSCP.exe">
+  <Profiles>
+    <string>FTP client</string>
+    <string>SSH client</string>
+  </Profiles>
+  <HashesSHA1>
+    <string>6ee7daf8f0fed8b652a5b2d1ee5d05ff05e84535</string>
+  </HashesSHA1>
+</ProfileAssoc>
+</ArrayOfProfileAssoc>

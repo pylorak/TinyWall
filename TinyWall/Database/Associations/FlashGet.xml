@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfProfileAssoc>
+<ProfileAssoc Executable="flashget.exe">
+  <Profiles>
+    <string>Blind trust</string>
+  </Profiles>
+  <HashesSHA1>
+    <string>DA710C2DCC10061B9BBE43739229F8D0A7579A92</string>
+  </HashesSHA1>
+</ProfileAssoc>
+</ArrayOfProfileAssoc>

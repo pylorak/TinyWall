@@ -1,0 +1,769 @@
+﻿using System;
+using System.Diagnostics;
+using System.ComponentModel;
+using System.Globalization;
+using System.IO;
+using System.IO.Pipes;
+using System.Reflection;
+using System.Threading;
+using System.ServiceProcess;
+using System.Windows.Forms;
+
+namespace PKSoft
+{
+    internal partial class MainForm : Form
+    {
+        private System.Threading.Timer UpdateTimer;
+        private MouseInterceptor MouseInterceptor;
+        private SettingsForm ShownSettings;
+        private FirewallMode FwMode;
+
+        private EventHandler<AnyEventArgs> BalloonClickedCallback;
+        private object BalloonClickedCallbackArgument;
+
+        private Hotkey HotKeyWhitelistExecutable;
+        private Hotkey HotKeyWhitelistProcess;
+        private Hotkey HotKeyWhitelistWindow;
+
+        private CmdLineArgs StartupOpts;
+
+        private bool m_Locked;
+        private bool Locked
+        {
+            get { return m_Locked; }
+            set
+            {
+                m_Locked = value;
+                if (m_Locked)
+                {
+                    mnuLock.Text = "Unlock";
+                }
+                else
+                {
+                    mnuLock.Text = "Lock";
+                }
+            }
+        }
+
+        internal MainForm(CmdLineArgs opts)
+        {
+            this.StartupOpts = opts;
+
+            InitializeComponent();
+            this.Icon = Icons.firewall;
+            this.Tray.Icon = Icons.firewall;
+        }
+
+        private void ApplyControllerSettings()
+        {
+            if ((SettingsManager.ControllerConfig.AutoUpdateCheck) && (UpdateTimer == null))
+            {
+                UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(1), TimeSpan.FromHours(4));
+            }
+            if ((!SettingsManager.ControllerConfig.AutoUpdateCheck) && (UpdateTimer != null))
+            {
+                if (UpdateTimer != null)
+                {
+                    using (WaitHandle wh = new AutoResetEvent(false))
+                    {
+                        UpdateTimer.Dispose(wh);
+                        wh.WaitOne();
+                    }
+                    UpdateTimer = null;
+                }
+            }
+        }
+
+        private void UpdateTimerTick(object state)
+        {
+            // We only check for update if we didn't check already in the past week.
+            if (DateTime.Now - SettingsManager.ControllerConfig.LastUpdateCheck < TimeSpan.FromDays(7))
+                return;
+
+            Version UpdateVersion = new Version();
+            try
+            {
+                TinyWallUpdater updater = new TinyWallUpdater();
+                UpdateVersion = updater.CheckForNewVersion();
+            }
+            catch
+            {
+                // This is an automatic update check in the background.
+                // If we fail (for whatever reason, no internet, server down etc.),
+                // we fail silently.
+            }
+            finally
+            {
+                SettingsManager.ControllerConfig.LastUpdateCheck = DateTime.Now;
+                SettingsManager.ControllerConfig.Save();
+            }
+
+            if (UpdateVersion > new Version(Application.ProductVersion))
+            {
+                Utils.Invoke(this, (MethodInvoker)delegate()
+                {
+                    string prompt = "A newer version " + UpdateVersion.ToString() + " of TinyWall is available. Click this bubble to start the update process.";
+                    ShowBalloonTip(prompt, ToolTipIcon.Info, 5000, StartUpdate);
+                });
+            }
+        }
+
+        private void StartUpdate(object sender, AnyEventArgs e)
+        {
+            UpdateForm.StartUpdate(this);
+        }
+
+        void HotKeyWhitelistProcess_Pressed(object sender, HandledEventArgs e)
+        {
+            mnuWhitelistByProcess_Click(null, null);
+        }
+
+        void HotKeyWhitelistExecutable_Pressed(object sender, HandledEventArgs e)
+        {
+            mnuWhitelistByExecutable_Click(null, null);
+        }
+
+        void HotKeyWhitelistWindow_Pressed(object sender, HandledEventArgs e)
+        {
+            mnuWhitelistByWindow_Click(null, null);
+        }
+
+        private void mnuQuit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void UpdateDisplay()
+        {
+            Message resp;
+
+            // Update string showing current network profile
+            mnuCurrentPolicy.Text = "You are in: " + SettingsManager.CurrentZone.ZoneName + " zone";
+
+            // Find out current firewall mode
+            resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.GET_MODE);
+            FwMode = (resp.Command == TinyWallCommands.RESPONSE_OK) ? (FirewallMode)resp.Arguments[0] : FirewallMode.Unknown;
+
+            // Update UI based on current firewall mode
+            switch (FwMode)
+            {
+                case FirewallMode.Normal:
+                    Tray.Icon = PKSoft.Icons.firewall;
+                    mnuMode.Image = mnuModeNormal.Image;
+                    break;
+
+                case FirewallMode.AllowOutgoing:
+                    Tray.Icon = PKSoft.Icons.shield_red_small;
+                    mnuMode.Image = mnuModeAllowOutgoing.Image;
+                    break;
+
+                case FirewallMode.BlockAll:
+                    Tray.Icon = PKSoft.Icons.shield_yellow_small;
+                    mnuMode.Image = mnuModeBlockAll.Image;
+                    break;
+
+                case FirewallMode.Disabled:
+                    Tray.Icon = PKSoft.Icons.shield_grey_small;
+                    mnuMode.Image = mnuModeDisabled.Image;
+                    break;
+                case FirewallMode.Unknown:
+                    Tray.Icon = PKSoft.Icons.shield_grey_small;
+                    mnuMode.Image = PKSoft.Icons.shield_grey_small.ToBitmap();
+                    break;
+            }
+            Tray.Text = "TinyWall" + Environment.NewLine +
+                SettingsManager.CurrentZone.ZoneName + " zone" + Environment.NewLine +
+                FwMode.ToString() + " mode";
+
+            // Find out if we are locked and if we have a password
+            resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.GET_LOCK_STATE);
+            //cmdret = SendMsgToService(TinyWallCommands.GET_LOCK_STATE, null, out retargs);
+            if (resp.Command == TinyWallCommands.RESPONSE_OK)
+            {
+                // Are we locked?
+                this.Locked = (int)resp.Arguments[1] == 1;
+
+                // Do we have a passord at all?
+                mnuLock.Visible = (int)resp.Arguments[0] == 1;
+            }
+
+            mnuAllowLocalSubnet.Checked = SettingsManager.CurrentZone.AllowLocalSubnet;
+        }
+
+        private void SetMode(FirewallMode mode)
+        {
+            TinyWallCommands opret = TinyWallCommands.RESPONSE_ERROR;
+            Message req = new Message(TinyWallCommands.MODE_SWITCH, mode);
+            Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
+
+            string usermsg = string.Empty;
+            switch (mode)
+            {
+                case FirewallMode.Normal:
+                    usermsg = "The firewall is now operating in the recommended mode.";
+                    break;
+
+                case FirewallMode.AllowOutgoing:
+                    usermsg = "The firewall is now set to allow all outgoing connections.";
+                    break;
+
+                case FirewallMode.BlockAll:
+                    usermsg = "The firewall is now blocking all inbound and outbound traffic.";
+                    break;
+
+                case FirewallMode.Disabled:
+                    usermsg = "The firewall is now disabled.";
+                    break;
+            }
+
+            switch (resp.Command)
+            {
+                case TinyWallCommands.RESPONSE_OK:
+                    ShowBalloonTip(usermsg, ToolTipIcon.Info);
+                    break;
+                default:
+                    DefaultPopups(opret);
+                    break;
+            } 
+        }
+
+        private void mnuModeDisabled_Click(object sender, EventArgs e)
+        {
+            SetMode(FirewallMode.Disabled);
+            UpdateDisplay();
+        }
+
+        private void mnuModeNormal_Click(object sender, EventArgs e)
+        {
+            SetMode(FirewallMode.Normal);
+            UpdateDisplay();
+        }
+
+        private void mnuModeBlockAll_Click(object sender, EventArgs e)
+        {
+            SetMode(FirewallMode.BlockAll);
+            UpdateDisplay();
+        }
+
+        private void mnuAllowOutgoing_Click(object sender, EventArgs e)
+        {
+            SetMode(FirewallMode.AllowOutgoing);
+            UpdateDisplay();
+        }
+
+        // Returns true if the local copy of the settings have been updated.
+        private bool LoadSettingsFromServer()
+        {
+            // Detect of server settings have changed in comparison to ours and download
+            // settings only if we need them. Settings are "version numbered" using the "changeset"
+            // property. We send our changeset number to the service and if it differs from his,
+            // the service will send back the settings.
+
+            bool SettingsUpdated = false;
+
+            Message req = new Message(TinyWallCommands.GET_SETTINGS, SettingsManager.Changeset);
+            Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
+            if (resp.Command == TinyWallCommands.RESPONSE_OK)
+            {
+                int ServerChangeSet = (int)resp.Arguments[0];
+                if (ServerChangeSet != SettingsManager.Changeset)
+                {
+                    SettingsManager.Changeset = ServerChangeSet;
+                    SettingsManager.GlobalConfig = (MachineSettings)resp.Arguments[1];
+                    SettingsManager.CurrentZone = (ZoneSettings)resp.Arguments[2];
+                    SettingsUpdated = true;
+                }
+                else
+                    SettingsUpdated = false;
+            }
+            else
+            {
+                SettingsManager.GlobalConfig = new MachineSettings();
+                SettingsManager.CurrentZone = new ZoneSettings();
+                SettingsUpdated = true;
+            }
+
+            if (SettingsUpdated)
+                UpdateDisplay();
+
+            return SettingsUpdated;
+        }
+
+        private void mnuSettings_Click(object sender, EventArgs e)
+        {
+            if (Locked)
+            {
+                DefaultPopups(TinyWallCommands.RESPONSE_LOCKED);
+                return;
+            }
+
+            // If the settings form is already visible, do not load it but bring it to the foreground
+            if (this.ShownSettings != null)
+            {
+                this.ShownSettings.Activate();
+                this.ShownSettings.BringToFront();
+                return;
+            }
+
+            try
+            {
+                LoadSettingsFromServer();
+
+                using (this.ShownSettings = new SettingsForm(
+                    SettingsManager.ControllerConfig.Clone() as ControllerSettings,
+                    SettingsManager.GlobalConfig.Clone() as MachineSettings,
+                    SettingsManager.CurrentZone.Clone() as ZoneSettings))
+                {
+                    SettingsForm sf = this.ShownSettings;
+
+                    if (sf.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                    {
+                        // Handle password change request
+                        string passwd = sf.NewPassword;
+                        if (passwd != null)
+                        {
+                            // Set the password. If the operation is successfull, do not report anything as we will be setting 
+                            // the other settings too and we want to avoid multiple popups.
+                            Message req = new Message(TinyWallCommands.SET_PASSPHRASE, Utils.GetHash(passwd));
+                            Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
+                            if (resp.Command != TinyWallCommands.RESPONSE_OK)  // Only display a popup for setting the password if it did not succeed
+                            {
+                                DefaultPopups(resp.Command);
+                                return;
+                            }
+                        }
+
+                        // Save settings
+                        SettingsManager.ControllerConfig = sf.TmpControllerConfig;
+                        SettingsManager.ControllerConfig.Save();
+                        ApplyFirewallSettings(sf.TmpMachineConfig, sf.TmpZoneConfig);
+                        ApplyControllerSettings();
+                    }
+                }
+            }
+            finally
+            {
+                this.ShownSettings = null;
+            }
+        }
+
+        private void TrayMenu_Opening(object sender, CancelEventArgs e)
+        {
+            LoadSettingsFromServer();
+
+            if (FwMode == FirewallMode.Unknown)
+            {
+                try
+                {
+                    // Check if the service is running
+                    using (ServiceController scm = new ServiceController(TinyWallService.SERVICE_NAME))
+                    {
+                        if (scm.Status == ServiceControllerStatus.Stopped)
+                        {
+                            ShowBalloonTip("TinyWall Service is stopped. Please ensure that both TinyWall Service and the Windows Firewall service are started, then retry.", ToolTipIcon.Error, 10000);
+                            e.Cancel = true;
+                        }
+                    }
+                }
+                catch   // If thrown, it means the TinyWall service did not even exist
+                {
+                    ShowBalloonTip("TinyWall Service is not installed. Please re-run the TinyWall installer.", ToolTipIcon.Error, 10000);
+                    e.Cancel = true;
+                }
+            }
+        }
+
+        private void mnuWhitelistByExecutable_Click(object sender, EventArgs e)
+        {
+            if (ofd.ShowDialog(this) != System.Windows.Forms.DialogResult.OK)
+                return;
+
+            AppExceptionSettings ex = new AppExceptionSettings(ofd.FileName);
+            ex.ServiceName = string.Empty;
+
+            ex.TryRecognizeApp(true);
+            if (SettingsManager.ControllerConfig.AskForExceptionDetails)
+            {
+                using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
+                {
+                    if (f.ShowDialog(this) == DialogResult.Cancel)
+                        return;
+
+                    ex = f.ExceptionSettings;
+                }
+            }
+
+            AddNewException(ex); 
+        }
+
+        private void mnuWhitelistByProcess_Click(object sender, EventArgs e)
+        {
+            AppExceptionSettings ex = ProcessesForm.ChooseProcess(this);
+            if (ex == null) return;
+
+            ex.TryRecognizeApp(true);
+            if (SettingsManager.ControllerConfig.AskForExceptionDetails)
+            {
+                using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
+                {
+                    if (f.ShowDialog(this) == DialogResult.Cancel)
+                        return;
+
+                    ex = f.ExceptionSettings;
+                }
+            }
+
+            AddNewException(ex); 
+        }
+
+        private TinyWallCommands ApplyFirewallSettings(MachineSettings machine, ZoneSettings zone)
+        {
+            Message resp;
+            if (LoadSettingsFromServer())
+            {
+                // From LoadSettingsFromServer we cannot tell if there was a communication error or if no settings were reloaded.
+                // We ping to determine if there was a communication error.
+                resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.PING);
+                if (resp.Command != TinyWallCommands.RESPONSE_OK)
+                {
+                    DefaultPopups(resp.Command);
+                    return resp.Command;
+                }
+                    
+                // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
+                ShowBalloonTip("The current network profile has changed while you modified the preferences. Please make your changes again.", ToolTipIcon.Warning);
+
+                return TinyWallCommands.RESPONSE_ERROR;
+            }
+
+            Message req = new Message(TinyWallCommands.PUT_SETTINGS, machine, zone);
+            resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
+
+            switch (resp.Command)
+            {
+                case TinyWallCommands.RESPONSE_OK:
+                    ShowBalloonTip("The firewall settings have been successfully updated.", ToolTipIcon.Info);
+                    SettingsManager.GlobalConfig = machine;
+                    SettingsManager.CurrentZone = zone;
+                    break;
+                default:
+                    DefaultPopups(resp.Command);
+                    LoadSettingsFromServer();
+                    break;
+            }
+
+            return resp.Command;
+        }
+
+        private void DefaultPopups(TinyWallCommands op)
+        {
+            switch (op)
+            {
+                case TinyWallCommands.RESPONSE_OK:
+                    ShowBalloonTip("Success.", ToolTipIcon.Info);
+                    break;
+                case TinyWallCommands.RESPONSE_WARNING:
+                    ShowBalloonTip("The operation succeeded, but other settings prevent it from taking full effect.", ToolTipIcon.Warning);
+                    break;
+                case TinyWallCommands.RESPONSE_ERROR:
+                    ShowBalloonTip("Operation failed.", ToolTipIcon.Error);
+                    break;
+                case TinyWallCommands.RESPONSE_LOCKED:
+                    ShowBalloonTip("The requested operation did not succeed, because TinyWall is currently locked.", ToolTipIcon.Warning);
+                    Locked = true;
+                    break;
+                case TinyWallCommands.COM_ERROR:
+                default:
+                    ShowBalloonTip("Communication with TinyWall Service encountered an error.", ToolTipIcon.Error);
+                    break;
+                    //throw new InvalidOperationException("Invalid program flow. Received " + op.ToString() + ". Please contact the application's author.");
+            }
+        }
+
+        private void mnuManage_Click(object sender, EventArgs e)
+        {
+            mnuSettings_Click(sender, e);
+        }
+
+        private void mnuWhitelistByWindow_Click(object sender, EventArgs e)
+        {
+            if (MouseInterceptor == null)
+            {
+                MouseInterceptor = new MouseInterceptor();
+                MouseInterceptor.MouseLButtonDown += new PKSoft.MouseInterceptor.MouseHookLButtonDown(MouseInterceptor_MouseLButtonDown);
+                ShowBalloonTip("Click on the inner area of any open window to select its application for whitelisting.", ToolTipIcon.Info);
+            }
+            else
+            {
+                MouseInterceptor.Dispose();
+                MouseInterceptor = null;
+                ShowBalloonTip("Whitelisting cancelled.", ToolTipIcon.Info);
+            }
+        }
+
+        internal void MouseInterceptor_MouseLButtonDown(int x, int y)
+        {
+            // So, this looks crazy, doesn't it?
+            // Call a method in a parallel thread just so that it can be called
+            // on this same thread again?
+            //
+            // The point is, the body will execute on this same thread *after* this procedure
+            // has terminated. We want this procedure to terminate before
+            // calling MouseInterceptor.Dispose() or else it will lock up our UI thread for a 
+            // couple of seconds. It will lock up because we are currently running in a hook procedure,
+            // and MouseInterceptor.Dispose() unhooks us while we are running.
+            // This apparently brings Windows temporarily to its knees. Anyway, starting
+            // another thread that will invoke the body on our own thread again makes sure that the hook
+            // has terminated by the time we unhook it, resolving all our problems.
+
+            ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
+            {
+                Utils.Invoke(this, (MethodInvoker)delegate()
+                {
+                    MouseInterceptor.Dispose();
+                    MouseInterceptor = null;
+
+                    string AppPath = null;
+                    try
+                    {
+                        AppPath = Utils.GetExecutableUnderCursor(x, y);
+                    }
+                    catch (Win32Exception)
+                    {
+                        ShowBalloonTip("Cannot get executable path, process is probably running with elevated privileges. Elevate TinyWall and try again.", ToolTipIcon.Error);
+                        return;
+                    }
+
+                    AppExceptionSettings ex = new AppExceptionSettings(AppPath);
+                    ex.TryRecognizeApp(true);
+                    if (SettingsManager.ControllerConfig.AskForExceptionDetails)
+                    {
+                        using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
+                        {
+                            if (f.ShowDialog(this) == DialogResult.Cancel)
+                                return;
+
+                            ex = f.ExceptionSettings;
+                        }
+                    }
+
+                    AddNewException(ex);
+                });
+            });
+        }
+
+        private void EditRecentException(object sender, AnyEventArgs e)
+        {
+            AppExceptionSettings ex = e.Arg as AppExceptionSettings;
+            using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
+            {
+                if (f.ShowDialog(this) == DialogResult.Cancel)
+                    return;
+
+                ex = f.ExceptionSettings;
+            }
+
+            AddNewException(ex);
+        }
+
+        private void AddNewException(AppExceptionSettings ex)
+        {
+            Message req = new Message(TinyWallCommands.NEW_EXCEPTION, ex);
+            Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
+            switch (resp.Command)
+            {
+                case TinyWallCommands.RESPONSE_OK:
+                    if (ex.Recognized.HasValue && ex.Recognized.Value)
+                        ShowBalloonTip("Firewall rules for recognized " + ex.ExecutableName + " have been changed. Click this popup to edit the exception.", ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(ex));
+                    else
+                        ShowBalloonTip("Firewall rules for unrecognized " + ex.ExecutableName + " have been changed. Click this popup to edit the exception.", ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(ex));
+
+                    SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, ex);
+                    SettingsManager.CurrentZone.Normalize();
+                    break;
+                default:
+                    DefaultPopups(resp.Command);
+                    LoadSettingsFromServer();
+                    break;
+            }
+        }
+
+        private void mnuLock_Click(object sender, EventArgs e)
+        {
+            if (Locked)
+            {
+                using (PasswordForm pf = new PasswordForm())
+                {
+                    pf.BringToFront();
+                    pf.Activate();
+                    if (pf.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                    {
+                        Message req = new Message(TinyWallCommands.UNLOCK, pf.PassHash);
+                        Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
+                        switch (resp.Command)
+                        {
+                            case TinyWallCommands.RESPONSE_OK:
+                                ShowBalloonTip("TinyWall has been unlocked. You may now issue commands that modify the configuration.", ToolTipIcon.Info);
+                                break;
+                            case TinyWallCommands.RESPONSE_ERROR:
+                                ShowBalloonTip("Unlock failed. Try again with another passphrase.", ToolTipIcon.Error);
+                                break;
+                            default:
+                                DefaultPopups(resp.Command);
+                                break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.LOCK);
+            }
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (MouseInterceptor != null)
+                MouseInterceptor.Dispose();
+        }
+
+        private void mnuAllowLocalSubnet_Click(object sender, EventArgs e)
+        {
+            mnuAllowLocalSubnet.Checked = !mnuAllowLocalSubnet.Checked;
+
+            ZoneSettings zoneCopy = SettingsManager.CurrentZone.Clone() as ZoneSettings;
+            zoneCopy.AllowLocalSubnet = mnuAllowLocalSubnet.Checked; ;
+            ApplyFirewallSettings(SettingsManager.GlobalConfig, zoneCopy);
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            if (FormWindowState.Minimized == WindowState)
+                Hide();
+            else
+                WindowState = FormWindowState.Minimized;
+        }
+
+        private void ShowBalloonTip(string msg, ToolTipIcon icon, int period_ms = 5000, EventHandler<AnyEventArgs> balloonClicked = null, object handlerArg = null)
+        {
+            BalloonClickedCallback = balloonClicked;
+            BalloonClickedCallbackArgument = handlerArg;
+            Tray.ShowBalloonTip(period_ms, SettingsManager.APP_NAME, msg, icon);
+        }
+
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            Hide();
+
+            mnuElevate.Visible = !Utils.RunningAsAdmin();
+
+            mnuModeDisabled.Image = Icons.shield_grey_small.ToBitmap();
+            mnuModeAllowOutgoing.Image = Icons.shield_red_small.ToBitmap();
+            mnuModeBlockAll.Image = Icons.shield_yellow_small.ToBitmap();
+            mnuModeNormal.Image = Icons.shield_green_small.ToBitmap();
+
+            try
+            {
+                GlobalInstances.ProfileMan = ProfileManager.Load(ProfileManager.DBPath);
+            }
+            catch
+            {
+                GlobalInstances.ProfileMan = new ProfileManager();
+                ShowBalloonTip("Application profile definition files are missing or corrupt.", ToolTipIcon.Warning);
+            }
+
+            GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
+
+            SettingsManager.ControllerConfig = ControllerSettings.Load();
+            LoadSettingsFromServer();
+
+            HotKeyWhitelistWindow = new Hotkey(Keys.W, true, true, false, false);
+            HotKeyWhitelistWindow.Pressed += new HandledEventHandler(HotKeyWhitelistWindow_Pressed);
+            HotKeyWhitelistWindow.Register(this);
+
+            HotKeyWhitelistExecutable = new Hotkey(Keys.E, true, true, false, false);
+            HotKeyWhitelistExecutable.Pressed += new HandledEventHandler(HotKeyWhitelistExecutable_Pressed);
+            HotKeyWhitelistExecutable.Register(this);
+
+            HotKeyWhitelistProcess = new Hotkey(Keys.P, true, true, false, false);
+            HotKeyWhitelistProcess.Pressed += new HandledEventHandler(HotKeyWhitelistProcess_Pressed);
+            HotKeyWhitelistProcess.Register(this);
+
+            ApplyControllerSettings();
+
+            if (StartupOpts.detectnow)
+            {
+                using (AppFinderForm aff = new AppFinderForm(SettingsManager.CurrentZone.Clone() as ZoneSettings))
+                {
+                    if (aff.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                    {
+                        SettingsManager.CurrentZone = aff.TmpZoneSettings;
+                        ApplyFirewallSettings(SettingsManager.GlobalConfig, SettingsManager.CurrentZone);
+                    }
+                }
+            }
+
+            if (StartupOpts.updatenow)
+            {
+                StartUpdate(null, null);
+            }
+        }
+
+        private void mnuElevate_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo psi = new ProcessStartInfo(Utils.ExecutablePath, "/desktop");
+            psi.UseShellExecute = true;
+            psi.Verb = "runas";
+
+            try
+            {
+                Process.Start(psi);
+                Application.Exit();
+            }
+            catch (Win32Exception)
+            {
+                ShowBalloonTip("Could not elevate privileges.", ToolTipIcon.Error);
+            }
+        }
+
+        private void mnuConnections_Click(object sender, EventArgs e)
+        {
+            using (ConnectionsForm cf = new ConnectionsForm())
+            {
+                cf.ShowDialog(this);
+            }
+        }
+
+        private void Tray_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            {
+                NativeMethods.DoMouseRightClick();
+            }
+        }
+
+        private void Tray_BalloonTipClicked(object sender, EventArgs e)
+        {
+            if (BalloonClickedCallback != null)
+            {
+                BalloonClickedCallback(Tray, new AnyEventArgs(BalloonClickedCallbackArgument));
+                BalloonClickedCallbackArgument = null;
+            }
+        }
+    }
+
+    internal class AnyEventArgs : EventArgs
+    {
+        private object _arg;
+
+        public AnyEventArgs(object arg = null)
+        {
+            _arg = arg;
+        }
+        public object Arg
+        {
+            get { return _arg; }
+            set { _arg = value; }
+        }
+    }
+}

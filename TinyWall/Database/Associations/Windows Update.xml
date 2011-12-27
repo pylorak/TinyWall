@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfProfileAssoc>
+<ProfileAssoc Executable="{sys32}\svchost.exe" Service="wuauserv" Recommended="true" Special="true">
+  <Description>Windows Update</Description>
+  <Profiles>
+    <string>HTTP(S) client</string>
+  </Profiles>
+</ProfileAssoc>
+</ArrayOfProfileAssoc>

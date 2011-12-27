@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="Web browser">
+  <Rules>
+    <RuleDef Name="HTTP(S) client">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>80,443</RemotePorts>
+    </RuleDef>
+    <RuleDef Name="RTMP client">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>1935</RemotePorts>
+    </RuleDef>
+    <RuleDef Name="RTSP client (control)">
+      <Action>Allow</Action>
+      <Protocol>TcpUdp</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>554</RemotePorts>
+    </RuleDef>
+    <RuleDef Name="RTSP client (data)">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>5004,5005</RemotePorts>
+    </RuleDef>
+    <RuleDef Name="MMS client">
+      <Action>Allow</Action>
+      <Protocol>TcpUdp</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>1755</RemotePorts>
+    </RuleDef>
+  </Rules>
+</Profile>

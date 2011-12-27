@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfProfileAssoc>
+<ProfileAssoc Executable="{sys32}\svchost.exe" Service="Dnscache" Recommended="true" Special="true">
+  <Description>Windows DNS client</Description>
+  <Profiles>
+    <string>DNS client</string>
+  </Profiles>
+</ProfileAssoc>
+</ArrayOfProfileAssoc>

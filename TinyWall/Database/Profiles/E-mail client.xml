@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="E-mail client">
+  <Rules>
+    <RuleDef Name="E-mail client">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>25,110,143,465,993,995,587</RemotePorts>
+    </RuleDef>
+  </Rules>
+</Profile>

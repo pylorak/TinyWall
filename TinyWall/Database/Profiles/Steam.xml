@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="Steam" AppSpecific="true">
+  <Rules>
+    <RuleDef Name="Steam Client TCP Out">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>27014-27050</RemotePorts>
+    </RuleDef>
+    <RuleDef Name="Steam Client UDP Out">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>27000-27030,4380</RemotePorts>
+    </RuleDef>
+    <RuleDef Name="Steam P2P+Voice Out">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>3478,4379,4380</RemotePorts>
+    </RuleDef>
+    <RuleDef Name="Steam Client TCP In">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>In</Direction>
+      <LocalPorts>27014-27050</LocalPorts>
+    </RuleDef>
+    <RuleDef Name="Steam Client UDP In">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>In</Direction>
+      <LocalPorts>27000-27030,4380</LocalPorts>
+    </RuleDef>
+    <RuleDef Name="Steam P2P+Voice In">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>In</Direction>
+      <LocalPorts>3478,4379,4380</LocalPorts>
+    </RuleDef>
+  </Rules>
+</Profile>

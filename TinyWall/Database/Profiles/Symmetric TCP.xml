@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="Symmetric TCP" AppSpecific="false">
+  <Rules>
+    <RuleDef Name="Symmetric TCP">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>InOut</Direction>
+      <LocalPorts>EPHEMERAL</LocalPorts>
+      <RemotePorts>EPHEMERAL</RemotePorts>
+    </RuleDef>
+  </Rules>
+</Profile>

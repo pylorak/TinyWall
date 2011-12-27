@@ -1,0 +1,388 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PKSoft</RootNamespace>
+    <AssemblyName>TinyWall</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>TinyWall.key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>img\firewall.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RelWithDebug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\RelWithDebug\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\TinyWall.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TinyWall.XmlSerializers, Version=1.0.1.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Release\TinyWall.XmlSerializers.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdvancedExceptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AdvancedExceptionForm.Designer.cs">
+      <DependentUpon>AdvancedExceptionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AppFinderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AppFinderForm.Designer.cs">
+      <DependentUpon>AppFinderForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationExceptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ApplicationExceptionForm.Designer.cs">
+      <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CmdLineArgs.cs" />
+    <Compile Include="ConnectionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConnectionsForm.Designer.cs">
+      <DependentUpon>ConnectionsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DevelToolForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DevelToolForm.Designer.cs">
+      <DependentUpon>DevelToolForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DisposableObject.cs" />
+    <Compile Include="FileLocker.cs" />
+    <Compile Include="FirewallMode.cs" />
+    <Compile Include="GlobalInstances.cs" />
+    <Compile Include="Hotkey.cs" />
+    <Compile Include="Icons.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Icons.resx</DependentUpon>
+    </Compile>
+    <Compile Include="MouseInterceptor.cs" />
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="netstat\IPVersion.cs" />
+    <Compile Include="netstat\NetStat.cs" />
+    <Compile Include="netstat\SafeNativeMethods.cs" />
+    <Compile Include="netstat\TcpRow.cs" />
+    <Compile Include="netstat\TcpTable.cs" />
+    <Compile Include="netstat\UdpRow.cs" />
+    <Compile Include="netstat\UdpTable.cs" />
+    <Compile Include="PasswordForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PasswordForm.Designer.cs">
+      <DependentUpon>PasswordForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Profile.cs" />
+    <Compile Include="ProfileAssoc.cs" />
+    <Compile Include="ProfileAssocCollection.cs" />
+    <Compile Include="ProfileCollection.cs" />
+    <Compile Include="ProfileManager.cs" />
+    <Compile Include="RuleDef.cs" />
+    <Compile Include="SerializationHelper.cs" />
+    <Compile Include="MachineFingerprint.cs" />
+    <Compile Include="ServiceControlManager.cs" />
+    <Compile Include="Services.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Services.Designer.cs">
+      <DependentUpon>Services.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TinyWallDoctor.cs" />
+    <Compile Include="UpdateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UpdateForm.Designer.cs">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utils.cs" />
+    <Compile Include="AppExceptionSettings.cs" />
+    <Compile Include="PipeCom.cs" />
+    <Compile Include="Processes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Processes.Designer.cs">
+      <DependentUpon>Processes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequestQueue.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="SettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TinyWallService.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TinyWallCommands.cs" />
+    <Compile Include="TinyWallServiceInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WindowsFirewall\Action.cs" />
+    <Compile Include="WindowsFirewall\LocalPolicyState.cs" />
+    <Compile Include="WindowsFirewall\Policy.cs" />
+    <Compile Include="WindowsFirewall\Product.cs" />
+    <Compile Include="WindowsFirewall\Products.cs" />
+    <Compile Include="WindowsFirewall\ProfileType.cs" />
+    <Compile Include="WindowsFirewall\Protocol.cs" />
+    <Compile Include="WindowsFirewall\Rule.cs" />
+    <Compile Include="WindowsFirewall\RuleCategories.cs" />
+    <Compile Include="WindowsFirewall\RuleDirection.cs" />
+    <Compile Include="WindowsFirewall\Rules.cs" />
+    <Compile Include="WindowsFirewall\ServiceRestriction.cs" />
+    <EmbeddedResource Include="AdvancedExceptionForm.resx">
+      <DependentUpon>AdvancedExceptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AppFinderForm.resx">
+      <DependentUpon>AppFinderForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationExceptionForm.resx">
+      <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConnectionsForm.resx">
+      <DependentUpon>ConnectionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DevelToolForm.resx">
+      <DependentUpon>DevelToolForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Icons.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PasswordForm.resx">
+      <DependentUpon>PasswordForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Services.resx">
+      <DependentUpon>Services.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Processes.resx">
+      <DependentUpon>Processes.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UpdateForm.resx">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="TinyWall.key.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\firewall.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\w7uacshield.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\shield_grey_small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\shield_green_small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\shield_yellow_small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\shield_red_small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\exit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\manage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\process.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\executable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\remove.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\modify.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\accept.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\cancel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\window.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\lock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\lock_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\submit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="NetFwTypeLib">
+      <Guid>{58FBCF7C-E7A9-467C-80B3-FC65E8FCCA08}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\export.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\import.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\uninstall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\update.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\web.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\connections.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\green_banner.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\green_banner.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TransparentLabel\TransparentLabel.csproj">
+      <Project>{1A576158-89FD-47D0-B2F4-A2345D018B95}</Project>
+      <Name>TransparentLabel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\blue_banner.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\shield_disabled_small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\donate.gif" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

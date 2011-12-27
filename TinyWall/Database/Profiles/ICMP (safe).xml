@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="ICMP (safe)">
+  <Rules>
+    <RuleDef Name="ICMP (echo-req)">
+      <Action>Allow</Action>
+      <Protocol>ICMP</Protocol>
+      <Direction>Out</Direction>
+      <IcmpTypesAndCodes>8:0</IcmpTypesAndCodes>
+    </RuleDef>
+    <RuleDef Name="ICMPv4 (safe)">
+      <Action>Allow</Action>
+      <Protocol>ICMPv4</Protocol>
+      <Direction>In</Direction>
+      <IcmpTypesAndCodes>0:0,3:*,11:*</IcmpTypesAndCodes>
+    </RuleDef>
+    <RuleDef Name="ICMPv6 (safe)">
+      <Action>Allow</Action>
+      <Protocol>ICMPv6</Protocol>
+      <Direction>In</Direction>
+      <IcmpTypesAndCodes>0:0,3:*,11:*,2:0</IcmpTypesAndCodes>
+    </RuleDef>
+  </Rules>
+</Profile>
