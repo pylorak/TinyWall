@@ -747,7 +747,6 @@ namespace PKSoft
             if (BalloonClickedCallback != null)
             {
                 BalloonClickedCallback(Tray, new AnyEventArgs(BalloonClickedCallbackArgument));
-                BalloonClickedCallbackArgument = null;
             }
         }
     }
