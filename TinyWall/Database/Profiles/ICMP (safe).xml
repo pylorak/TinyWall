@@ -7,17 +7,25 @@
       <Direction>Out</Direction>
       <IcmpTypesAndCodes>8:0</IcmpTypesAndCodes>
     </RuleDef>
+    <RuleDef Name="ICMP (echo-rep)">
+      <Action>Allow</Action>
+      <Protocol>ICMP</Protocol>
+      <Direction>In</Direction>
+      <IcmpTypesAndCodes>0:0</IcmpTypesAndCodes>
+    </RuleDef>
     <RuleDef Name="ICMPv4 (safe)">
       <Action>Allow</Action>
       <Protocol>ICMPv4</Protocol>
       <Direction>In</Direction>
-      <IcmpTypesAndCodes>0:0,3:*,11:*</IcmpTypesAndCodes>
+      <RemoteAddresses>Defaultgateway</RemoteAddresses>
+      <IcmpTypesAndCodes>3:*,11:*</IcmpTypesAndCodes>
     </RuleDef>
     <RuleDef Name="ICMPv6 (safe)">
       <Action>Allow</Action>
       <Protocol>ICMPv6</Protocol>
       <Direction>In</Direction>
-      <IcmpTypesAndCodes>0:0,3:*,11:*,2:0</IcmpTypesAndCodes>
+      <RemoteAddresses>Defaultgateway</RemoteAddresses>
+      <IcmpTypesAndCodes>3:*,11:*,2:0</IcmpTypesAndCodes>
     </RuleDef>
   </Rules>
 </Profile>
