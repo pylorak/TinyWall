@@ -1,3 +1,6 @@
+Public changelog entries:
+- Firewall rule update without breaking existing connections
+- Fix: Custom ports are not applied to services
 
 Future developent:
 - App profile submission system

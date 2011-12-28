@@ -32,7 +32,10 @@ namespace PKSoft
         
         private WindowsFirewall.Policy Firewall;
         private WindowsFirewall.Rules FwRules;
-        private List<RuleDef> MasterRules;
+
+        private List<RuleDef> ActiveRules;
+        private List<RuleDef> AppExRules;
+        private List<RuleDef> SpecialRules;
 
         private ProfileType Profile;
         private string ProfileDisplayName;
@@ -40,124 +43,178 @@ namespace PKSoft
         private bool UninstallRequested = false;
         private FileLocker FileLocker;
 
-        private void SetModeBlockAll()
+        private void AssembleActiveRules()
         {
-            // Disable standard Windows exceptions unconditionally.
-            // Since the default packet action is blocking (and because
-            // we do not add any exeptions ourself), this will
-            // practically disable all traffic.
-            FwRules.DisableAllRules();
+            ActiveRules.Clear();
+            ActiveRules.AddRange(AppExRules);
+            ActiveRules.AddRange(SpecialRules);
+
+            string ModeId = AppExceptionSettings.GenerateID();
 
             // Do we want to let local traffic through?
             if (SettingsManager.CurrentZone.AllowLocalSubnet)
             {
-                RuleDef def = new RuleDef("Allow local subnet", PacketAction.Allow, RuleDirection.InOut, Protocol.Any);
+                RuleDef def = new RuleDef(ModeId, "Allow local subnet", PacketAction.Allow, RuleDirection.InOut, Protocol.Any);
                 def.RemoteAddresses = "LocalSubnet";
-                List<Rule> ruleset = new List<Rule>();
-                def.ConstructRule(ruleset, "+"+AppExceptionSettings.GenerateID()); //TODO
-                FwRules.EnableRule(ruleset);
+                ActiveRules.Add(def);
             }
-        }
 
-        private void SetModeAllowOut()
-        {
-            if (this.Mode != FirewallMode.Normal)
-                SetModeNormal();
-
-            // Add rule to explicitly allow outgoing connections
-            RuleDef r = new RuleDef("Allow all outbound", PacketAction.Allow, RuleDirection.Out, Protocol.Any);
-            List<Rule> ruleset = new List<Rule>();
-            r.ConstructRule(ruleset, "+"+AppExceptionSettings.GenerateID());//TODO
-            FwRules.EnableRule(ruleset);
-        }
-
-        private void SetModeDisabled()
-        {
-            // Add rule to explicitly allow everything
-            RuleDef r = new RuleDef("Allow everything", PacketAction.Allow, RuleDirection.InOut, Protocol.Any);
-            List<Rule> ruleset = new List<Rule>();
-            r.ConstructRule(ruleset, "+"+AppExceptionSettings.GenerateID());//TODO
-            FwRules.EnableRule(ruleset);
-
-            // Disable blocking rules
-            foreach (Rule rule in FwRules)
+            // Do we want to block known malware ports?
+            if (SettingsManager.CurrentZone.BlockMalwarePorts)
             {
-                if (rule.Action == PacketAction.Block)
-                    rule.Enabled = false;
+                Profile profileMalwarePortBlock = GlobalInstances.ProfileMan.GetProfile("Malware port block");
+                if (profileMalwarePortBlock != null)
+                {
+                    foreach (RuleDef rule in profileMalwarePortBlock.Rules)
+                        rule.ExceptionId = ModeId;
+                    ActiveRules.AddRange(profileMalwarePortBlock.Rules);
+                }
+            }
+
+            // This switch should be executed last, as it might modify exisitng elements in ActiveRules
+            switch (this.Mode)
+            {
+                case FirewallMode.AllowOutgoing:
+                    {
+                        // Add rule to explicitly allow outgoing connections
+                        RuleDef def = new RuleDef(ModeId, "Allow outbound", PacketAction.Allow, RuleDirection.Out, Protocol.Any);
+                        ActiveRules.Add(def);
+                        break;
+                    }
+                case FirewallMode.BlockAll:
+                    {
+                        // Remove all rules
+                        ActiveRules.Clear();
+
+                        // Add a rule to deny all traffic. Denial rules have priority, so this will disable all traffic.
+                        RuleDef def = new RuleDef(ModeId, "Block all traffic", PacketAction.Block, RuleDirection.InOut, Protocol.Any);
+                        ActiveRules.Add(def);
+                        break;
+                    }
+                case FirewallMode.Disabled:
+                    {
+                        // Remove all rules
+                        ActiveRules.Clear();
+
+                        // Add rule to explicitly allow everything
+                        RuleDef def = new RuleDef(ModeId, "Allow everything", PacketAction.Allow, RuleDirection.InOut, Protocol.Any);
+                        ActiveRules.Add(def);
+                        break;
+                    }
+                case FirewallMode.Normal:
+                    {
+                        // Nothing to do here
+                        break;
+                    }
             }
         }
 
-        private void SetModeNormal()
+        private void MergeActiveRulesIntoWinFirewall()
+        {
+            List<Rule> rules = new List<Rule>();
+            for (int i = 0; i < ActiveRules.Count; ++i)
+                ActiveRules[i].ConstructRule(rules);
+
+            // Add new rules
+            for (int i = rules.Count - 1; i >= 0; --i)          // for each TW firewall rule
+            {
+                Rule rule_i = rules[i];
+
+                bool found = false;
+                for (int j = FwRules.Count - 1; j >= 0; --j)    // for each Win firewall rule
+                {
+                    Rule rule_j = FwRules[j];
+
+                    if (rule_i.Name == rule_j.Name)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                // Rule is not yet active, add it to the Windows firewall
+                if (!found)
+                    FwRules.Add(rule_i);
+            }
+
+            // Remove dead rules
+            for (int i = FwRules.Count - 1; i >= 0; --i)    // for each Win firewall rule
+            {
+                Rule rule_i = FwRules[i];
+/*
+                // Skip if this is not a TinyWall rule
+                if (!rule_i.Name.StartsWith("[TW"))
+                    continue;
+
+                // Extract ID of exception
+                string id = rule.Name;
+                int id_end = id.IndexOf(']');
+                id = id.Substring(0, id_end + 1);
+*/
+                // Delete Firewall rule if no corresponding exception is found
+
+                bool found = false;
+                for (int j = rules.Count - 1; j >= 0; --j)          // for each TW firewall rule
+                {
+                    Rule rule_j = rules[j];
+
+                    if (rule_i.Name == rule_j.Name)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                    FwRules.RemoveAt(i);
+            }
+        }
+
+        private void RebuildSpecialRuleDefs()
         {
             // We will collect all our rules into this list
-            List<Rule> exRules = new List<Rule>(128);
+            SpecialRules.Clear();
 
-            #region Add machine exceptions
             for (int i = 0; i < SettingsManager.CurrentZone.SpecialExceptions.Length; ++i)
             {
                 try
                 {   //This try-catch will prevent errors if an exception profile string is invalid
                     ProfileAssoc app = GlobalInstances.ProfileMan.GetApplication(SettingsManager.CurrentZone.SpecialExceptions[i]);
                     AppExceptionSettings ex = app.ToExceptionSetting();
-                    ex.AppID = "+" + ex.AppID; //TODO
-                    GetRulesForException(ex, exRules);
+                    ex.AppID = AppExceptionSettings.GenerateID();
+                    GetRulesForException(ex, SpecialRules);
                 }
                 catch { }
             }
+        }
 
-            #endregion
+        private void RebuildApplicationRuleDefs()
+        {
+            // We will collect all our rules into this list
+            AppExRules.Clear();
 
-            #region Add application exceptions
-            for (int i = 0; i < SettingsManager.CurrentZone.AppExceptions.Length; ++i)  // for each application
+            for (int i = 0; i < SettingsManager.CurrentZone.AppExceptions.Length; ++i)
             {
                 try
                 {   //This try-catch will prevent errors if an exception profile string is invalid
-
                     AppExceptionSettings ex = SettingsManager.CurrentZone.AppExceptions[i];
-                    GetRulesForException(ex, exRules);
+                    GetRulesForException(ex, AppExRules);
                 }
                 catch { }
             }
-            #endregion
-
-            if (SettingsManager.CurrentZone.BlockMalwarePorts)
-            {
-                string appid = "+" + AppExceptionSettings.GenerateID(); //TODO AppExceptionSettings.GenerateID();
-                Profile profileMalwarePortBlock = GlobalInstances.ProfileMan.GetProfile("Malware port block");
-                if (profileMalwarePortBlock != null)
-                {
-                    foreach (RuleDef rule in profileMalwarePortBlock.Rules)
-                        rule.ConstructRule(exRules, appid);
-                }
-            }
-
-            if (SettingsManager.CurrentZone.AllowLocalSubnet)
-            {
-                RuleDef def = new RuleDef("Allow local subnet", PacketAction.Allow, RuleDirection.InOut, Protocol.Any);
-                def.RemoteAddresses = "LocalSubnet";
-                def.ConstructRule(exRules, "+"+AppExceptionSettings.GenerateID()); //TODO
-            }
-
-            //
-            // After all this preparation, let us finally apply the settings to the firewall
-            //
-
-            ResetWindowsFirewall();
-
-            // Allow or not standard Windows firewall rules
-            if (!SettingsManager.CurrentZone.EnableDefaultWindowsRules)
-                FwRules.DisableAllRules();
-
-            // Enable rules
-            FwRules.Add(exRules);
         }
 
-        private void GetRulesForException(AppExceptionSettings ex, List<Rule> ruleset)
+        private void GetRulesForException(AppExceptionSettings ex, List<RuleDef> ruleset)
         {
             if (string.IsNullOrEmpty(ex.AppID))
             {
+// Do not let the service crash if a rule cannot be constructed 
+#if DEBUG
+                throw new InvalidOperationException("Firewall exception specification must have an ID.");
+#else
                 ex.RegenerateID();
                 ++SettingsManager.Changeset;
+#endif
             }
 
             for (int i = 0; i < ex.Profiles.Length; ++i)    // for each profile
@@ -172,13 +229,14 @@ namespace PKSoft
                     try
                     {
                         RuleDef def = p.Rules[j];
+                        def.ExceptionId = ex.AppID;
                         def.Application = ex.ExecutablePath;
                         def.ServiceName = ex.ServiceName;
-                        def.ConstructRule(ruleset, ex.AppID);
+                        ruleset.Add(def);
                     }
                     catch
                     {
-                        // Do not let the service crash if a rule cannot be constructed 
+// Do not let the service crash if a rule cannot be constructed 
 #if DEBUG
                         throw;
 #endif
@@ -191,31 +249,35 @@ namespace PKSoft
                 // Add extra ports
                 if (!string.IsNullOrEmpty(ex.OpenPortListenLocalTCP))
                 {
-                    Rule r = new Rule(ex.AppID + " Extra Tcp Listen Ports", string.Empty, ProfileType.All, RuleDirection.In, PacketAction.Allow, Protocol.TCP);
-                    r.LocalPorts = ex.OpenPortListenLocalTCP;
-                    r.ApplicationName = ex.ExecutablePath;
-                    ruleset.Add(r);
+                    RuleDef def = new RuleDef(ex.AppID, "Extra Tcp Listen Ports", PacketAction.Allow, RuleDirection.In,  Protocol.TCP);
+                    def.LocalPorts = ex.OpenPortListenLocalTCP;
+                    def.Application = ex.ExecutablePath;
+                    def.ServiceName = ex.ServiceName;
+                    ruleset.Add(def);
                 }
                 if (!string.IsNullOrEmpty(ex.OpenPortListenLocalUDP))
                 {
-                    Rule r = new Rule(ex.AppID + " Extra Udp Listen Ports", string.Empty, ProfileType.All, RuleDirection.In, PacketAction.Allow, Protocol.UDP);
-                    r.LocalPorts = ex.OpenPortListenLocalUDP;
-                    r.ApplicationName = ex.ExecutablePath;
-                    ruleset.Add(r);
+                    RuleDef def = new RuleDef(ex.AppID, "Extra Udp Listen Ports", PacketAction.Allow, RuleDirection.In, Protocol.UDP);
+                    def.LocalPorts = ex.OpenPortListenLocalUDP;
+                    def.Application = ex.ExecutablePath;
+                    def.ServiceName = ex.ServiceName;
+                    ruleset.Add(def);
                 }
                 if (!string.IsNullOrEmpty(ex.OpenPortOutboundRemoteTCP))
                 {
-                    Rule r = new Rule(ex.AppID + " Extra Tcp Outbound Ports", string.Empty, ProfileType.All, RuleDirection.Out, PacketAction.Allow, Protocol.TCP);
-                    r.RemotePorts = ex.OpenPortOutboundRemoteTCP;
-                    r.ApplicationName = ex.ExecutablePath;
-                    ruleset.Add(r);
+                    RuleDef def = new RuleDef(ex.AppID, "Extra Tcp Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.TCP);
+                    def.RemotePorts = ex.OpenPortOutboundRemoteTCP;
+                    def.Application = ex.ExecutablePath;
+                    def.ServiceName = ex.ServiceName;
+                    ruleset.Add(def);
                 }
                 if (!string.IsNullOrEmpty(ex.OpenPortOutboundRemoteUDP))
                 {
-                    Rule r = new Rule(ex.AppID + " Extra Udp Outbound Ports", string.Empty, ProfileType.All, RuleDirection.Out, PacketAction.Allow, Protocol.UDP);
-                    r.RemotePorts = ex.OpenPortOutboundRemoteUDP;
-                    r.ApplicationName = ex.ExecutablePath;
-                    ruleset.Add(r);
+                    RuleDef def = new RuleDef(ex.AppID, "Extra Udp Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.UDP);
+                    def.RemotePorts = ex.OpenPortOutboundRemoteUDP;
+                    def.Application = ex.ExecutablePath;
+                    def.ServiceName = ex.ServiceName;
+                    ruleset.Add(def);
                 }
             }
             catch (Exception)
@@ -234,7 +296,7 @@ namespace PKSoft
             Firewall.BlockAllInboundTraffic = false;
             Firewall.NotificationsDisabled = true;
             FwRules = Firewall.GetRules(false);
-            MasterRules = new List<RuleDef>();
+            FwRules.Clear();
         }
 
         // This method completely reinitializes (reloads) the current firewall settings,
@@ -264,21 +326,11 @@ namespace PKSoft
             SettingsManager.GlobalConfig = MachineSettings.Load();
             SettingsManager.CurrentZone = ZoneSettings.Load(ProfileDisplayName);
 
-            switch (this.Mode)
-            {
-                case FirewallMode.Normal:
-                    SetModeNormal();
-                    break;
-                case FirewallMode.AllowOutgoing:
-                    SetModeAllowOut();
-                    break;
-                case FirewallMode.BlockAll:
-                    SetModeBlockAll();
-                    break;
-                case FirewallMode.Disabled:
-                    SetModeDisabled();
-                    break;
-            }
+            ResetWindowsFirewall();
+            RebuildApplicationRuleDefs();
+            RebuildSpecialRuleDefs();
+            AssembleActiveRules();
+            MergeActiveRulesIntoWinFirewall();
 
             string HostsFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"drivers\etc\hosts");
             if (SettingsManager.GlobalConfig.LockHostsFile)
@@ -321,23 +373,8 @@ namespace PKSoft
                 case TinyWallCommands.MODE_SWITCH:
                     {
                         this.Mode = (FirewallMode)req.Arguments[0];
-                        switch (Mode)
-                        {
-                            case FirewallMode.AllowOutgoing:
-                                SetModeAllowOut();
-                                break;
-                            case FirewallMode.BlockAll:
-                                SetModeBlockAll();
-                                break;
-                            case FirewallMode.Disabled:
-                                SetModeDisabled();
-                                break;
-                            case FirewallMode.Normal:
-                                SetModeNormal();
-                                break;
-                            default:
-                                return new Message(TinyWallCommands.RESPONSE_ERROR);
-                        }
+                        AssembleActiveRules();
+                        MergeActiveRulesIntoWinFirewall();
 
                         if (Firewall.LocalPolicyModifyState == LocalPolicyState.GP_OVERRRIDE)
                             return new Message(TinyWallCommands.RESPONSE_WARNING);
@@ -459,43 +496,9 @@ namespace PKSoft
                             SettingsManager.CurrentZone.Normalize();
                             SettingsManager.CurrentZone.Save();
 
-                            // Apply exception
-                            if (this.Mode == FirewallMode.Normal)
-                            {
-                                List<Rule> ruleset = new List<Rule>();
-                                GetRulesForException(ex, ruleset);
-                                FwRules.EnableRule(ruleset);
-                            }
-                        }
-                        
-                        // Remove dead rules
-                        for(int i = FwRules.Count-1; i >= 0; --i)   // for each Windows Firewall rule
-                        {
-                            Rule rule = FwRules[i];
-
-                            // Skip if this is not a TinyWall rule
-                            if (!rule.Name.StartsWith("[TW"))
-                                continue;
-
-                            // Extract ID of exception
-                            string id = rule.Name;
-                            int id_end = id.IndexOf(']');
-                            id = id.Substring(0, id_end + 1);
-
-                            // Delete Firewall rule if no corresponding exception is found
-
-                            bool found = false;
-                            foreach (AppExceptionSettings ex in SettingsManager.CurrentZone.AppExceptions)
-                            {
-                                if (ex.AppID == id)
-                                {
-                                    found = true;
-                                    break;
-                                }
-                            }
-
-                            if (!found)
-                                FwRules.RemoveAt(i);
+                            RebuildApplicationRuleDefs();
+                            AssembleActiveRules();
+                            MergeActiveRulesIntoWinFirewall();
                         }
                         
                         return new Message(TinyWallCommands.RESPONSE_OK);
@@ -551,6 +554,10 @@ namespace PKSoft
         // Only one thread (this one) is allowed to issue them.
         private void FirewallWorkerMethod()
         {
+            AppExRules = new List<RuleDef>();
+            SpecialRules = new List<RuleDef>();
+            ActiveRules = new List<RuleDef>();
+
             EventLogWatcher WFEventWatcher = null;
             try
             {
