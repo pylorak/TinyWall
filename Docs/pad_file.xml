@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XML_DIZ_INFO>
+	<MASTER_PAD_VERSION_INFO>
+		<MASTER_PAD_VERSION>3.11</MASTER_PAD_VERSION>
+		<MASTER_PAD_EDITOR>PADGen 3.1.1.50 http://www.padgen.org</MASTER_PAD_EDITOR>
+		<MASTER_PAD_INFO>Portable Application Description, or PAD for short, is a data set that is used by shareware authors to disseminate information to anyone interested in their software products. To find out more go to http://pad.asp-software.org</MASTER_PAD_INFO>
+	</MASTER_PAD_VERSION_INFO>
+	<Company_Info>
+		<Company_Name>Károly Pados</Company_Name>
+		<Address_1 />
+		<Address_2 />
+		<City_Town />
+		<State_Province />
+		<Zip_Postal_Code />
+		<Country />
+		<Company_WebSite_URL>http://tinywall.pados.hu</Company_WebSite_URL>
+		<Contact_Info>
+			<Author_First_Name>Károly</Author_First_Name>
+			<Author_Last_Name>Pados</Author_Last_Name>
+			<Author_Email>pados@pados.hu</Author_Email>
+			<Contact_First_Name>Károly</Contact_First_Name>
+			<Contact_Last_Name>Pados</Contact_Last_Name>
+			<Contact_Email>tinywall@pados.hu</Contact_Email>
+		</Contact_Info>
+		<Support_Info>
+			<Sales_Email />
+			<Support_Email />
+			<General_Email>tinywall@pados.hu</General_Email>
+			<Sales_Phone />
+			<Support_Phone />
+			<General_Phone />
+			<Fax_Phone />
+		</Support_Info>
+	</Company_Info>
+	<Program_Info>
+		<Program_Name>TinyWall</Program_Name>
+		<Program_Version>1.0.2</Program_Version>
+		<Program_Release_Month>12</Program_Release_Month>
+		<Program_Release_Day>28</Program_Release_Day>
+		<Program_Release_Year>2011</Program_Release_Year>
+		<Program_Cost_Dollars>0</Program_Cost_Dollars>
+		<Program_Cost_Other_Code />
+		<Program_Cost_Other />
+		<Program_Type>Freeware</Program_Type>
+		<Program_Release_Status>New Release</Program_Release_Status>
+		<Program_Install_Support>Install and Uninstall</Program_Install_Support>
+		<Program_OS_Support>Win7 x32,Win7 x64,WinVista,WinVista x64</Program_OS_Support>
+		<Program_Language>English</Program_Language>
+		<Program_Change_Info />
+		<Program_Specific_Category>Utilities</Program_Specific_Category>
+		<Program_Category_Class>Security &amp; Privacy::Other</Program_Category_Class>
+		<Program_System_Requirements>Microsoft .Net Framework 3.5 SP1</Program_System_Requirements>
+		<File_Info>
+			<File_Size_Bytes>803872</File_Size_Bytes>
+			<File_Size_K>785</File_Size_K>
+			<File_Size_MB>0.77</File_Size_MB>
+		</File_Info>
+		<Expire_Info>
+			<Has_Expire_Info>N</Has_Expire_Info>
+			<Expire_Count />
+			<Expire_Based_On>Days</Expire_Based_On>
+			<Expire_Other_Info />
+			<Expire_Month />
+			<Expire_Day />
+			<Expire_Year />
+		</Expire_Info>
+	</Program_Info>
+	<Program_Descriptions>
+		<English>
+			<Keywords>firewall,security,protection,privacy,network</Keywords>
+			<Char_Desc_45>A lightweight, non-intrusive firewall</Char_Desc_45>
+			<Char_Desc_80>Harden and control the firewall built into Windows with ease, without annoyance </Char_Desc_80>
+			<Char_Desc_250>TinyWall hardens and controls the firewall built into Windows, but does not display popups. Instead, TinyWall allows users to whitelist or unblock programs via various other innovative methods. Designed to be simple, secure and non-intrusive.</Char_Desc_250>
+			<Char_Desc_450>TinyWall hardens and controls the firewall built into Windows, but does not display popups. Instead, TinyWall allows users to whitelist or unblock programs via various other innovative methods. Designed to be simple, secure and non-intrusive. Provides firewall tampering protection, supports password lock, firewall modes and abstracts application protocols into profiles so that you don't need to know about ports and rules by heart.</Char_Desc_450>
+			<Char_Desc_2000>Designed to harden and control the advanced firewall built into Windows, TinyWall includes a combination of features that sets it apart from both commercial and freeware firewalls.
+
+TinyWall does not display popups that "urge users to allow". In fact, it will not notify you of any blocked action. Rather than displaying popups, TinyWall allows users to whitelist or unblock programs via various methods. For example, you can just initiate whitelisting by a hotkey, then click on a window that you want to allow. Or, you can select an application from the list of running processes. (Of course, the traditional way of selecting an executable also works.)
+
+This approach avoids popups but still keeps the firewall very easy to use. It will also limit the list of unblocked programs to those that the user really needs, which is optimal from a security standpoint.
+
+TinyWall gives Windows Firewall a sane and secure configuration and presents you with a simple interface where you can easily define what has network access and what not, while preventing other programs from modifing or overwriting your firewall settings.
+
+Key features:
+- TinyWall lets you work while protecting you. There are no annoying popups but configuration is very simple.
+- Using the advanced Windows Firewall built into newer Windows versions, TinyWall's performance impact is neglible.
+- No drivers or kernel-components are installed so it does not influence system stability.
+- Password lock, firewall tampering protection and built-in tight firewall rules help increase TinyWall's and your computer's security even further.
+- Firewall modes and lots of other convenience features make TinyWall extremely easy to use for anybody.
+- All packed into a download that is less than a megabyte.
+
+Requires Microsoft .Net Framework 3.5 SP1.</Char_Desc_2000>
+		</English>
+	</Program_Descriptions>
+	<Web_Info>
+		<Application_URLs>
+			<Application_Info_URL>http://tinywall.pados.hu/</Application_Info_URL>
+			<Application_Order_URL />
+			<Application_Screenshot_URL>http://tinywall.pados.hu/PAD/tinywall_menu.png</Application_Screenshot_URL>
+			<Application_Icon_URL>http://tinywall.pados.hu/PAD/tinywall_icon.png</Application_Icon_URL>
+			<Application_XML_File_URL>http://tinywall.pados.hu/PAD/pad_file.xml</Application_XML_File_URL>
+		</Application_URLs>
+		<Download_URLs>
+			<Primary_Download_URL>http://tinywall.pados.hu/ccount/click.php?id=1</Primary_Download_URL>
+			<Secondary_Download_URL />
+			<Additional_Download_URL_1 />
+			<Additional_Download_URL_2 />
+		</Download_URLs>
+	</Web_Info>
+	<Permissions>
+		<Distribution_Permissions>Distributors must too also abide by the EULA. See EULA for terms on distribution.</Distribution_Permissions>
+		<EULA>END-USER LICENSE AGREEMENT ("EULA")
+
+Definition of SOFTWARE: This installer and all components of TinyWall, 
+including but not limited to executables, media, documentation and 
+databases installed by this installer.
+
+Definition of AUTHOR: Károly Pados and copyright holders
+
+IMPORTANT-READ CAREFULLY: This End-User License Agreement ("EULA") is a 
+legal agreement between you (either an individual or a single entity) and 
+AUTHOR. By installing, copying, or otherwise using the SOFTWARE, you 
+agree to be bound by the terms of this EULA. If you do not agree to the 
+terms of this EULA, do not install or use the SOFTWARE.
+
+ 1. Freeware
+ You may use the SOFTWARE without charge.
+
+ 2. Distribution of SOFTWARE.
+You may make copies of the SOFTWARE as you wish; give exact copies of the 
+original SOFTWARE to anyone; and distribute the SOFTWARE in its 
+unmodified form via electronic means. You may not charge any fees for the 
+copy or use of the SOFTWARE itself. You must not represent in any way 
+that you are selling the SOFTWARE itself. Your distribution of the 
+SOFTWARE will not entitle you to any compensation from AUTHOR.  You must 
+distribute a copy of this EULA with any copy of the SOFTWARE and anyone 
+to whom you distribute the SOFTWARE is subject to this EULA.
+
+ 3. RESTRICTIONS
+3.1 You may not reverse engineer, de-compile, or disassemble the SOFTWARE.
+3.2 You may not rent, lease, or lend the SOFTWARE.
+3.3 You may permanently transfer all of your rights under this EULA, 
+provided the recipient agrees to the terms of this EULA. 
+3.4 You may not use the SOFTWARE to perform any unauthorized transfer of 
+information or for any illegal purpose.
+3.5 You may not repackage the software or provide alternate installers 
+whose main purpose is to install the SOFTWARE.
+
+ 4. NO WARRANTIES
+AUTHOR expressly disclaims any warranty for the SOFTWARE. THE SOFTWARE IS 
+PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, 
+INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OR MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE, OR NONINFRINGEMENT. THE ENTIRE RISK 
+ARISING OUT OF USE OR PERFORMANCE OF THE SOFTWARE REMAINS WITH YOU. IN NO 
+EVENT SHALL THE AUTHOR OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE 
+USE OR OTHER DEALINGS IN THE SOFTWARE.</EULA>
+	</Permissions>
+</XML_DIZ_INFO>
