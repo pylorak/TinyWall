@@ -62,85 +62,12 @@ namespace PKSoft.WindowsFirewall
             this.InsertItem(index, item);
         }
 
-        internal void SetRule(Rule item)
-        {
-            for (int i = 0; i < this.Count; ++i)
-            {
-                if ((this[i].Direction == item.Direction) && (this[i].Name.Equals(item.Name)))
-                {
-                    SetItem(i, item);
-                    return;
-                }
-            }
-
-            this.Add(item);
-        }
-
-        internal void DeleteRule(RuleDirection dir, string name)
-        {
-            for (int i = 0; i < this.Count; ++i)
-            {
-                if ((this[i].Direction == dir) && (this[i].Name.Equals(name)))
-                {
-                    this.RemoveAt(i);
-                    return;
-                }
-            }
-        }
-
-        internal void DeleteRule(Rule rule)
-        {
-            DeleteRule(rule.Direction, rule.Name);
-        }
-
-        internal bool RuleExists(RuleDirection dir, string name)
-        {
-            return this.GetRule(dir, name) != null;
-        }
-
-        internal bool RuleExists(Rule rule)
-        {
-            return RuleExists(rule.Direction, rule.Name);
-        }
-
-        internal Rule GetRule(RuleDirection dir, string name)
-        {
-            for (int i = 0; i < this.Count; ++i)
-            {
-                if ((this[i].Direction == dir) && (this[i].Name.Equals(name)))
-                {
-                    return this[i];
-                }
-            }
-
-            return null;
-        }
-
-        internal void EnableRule(Rule rule)
-        {
-            rule.Enabled = true;
-            this.SetRule(rule);
-        }
-
-        internal void EnableRule(List<Rule> ruleset)
-        {
-            for (int i = 0; i < ruleset.Count; ++i)
-                EnableRule(ruleset[i]);
-        }
-
         internal void Add(List<Rule> ruleset)
         {
             for (int i = 0; i < ruleset.Count; ++i)
                 Add(ruleset[i]);
         }
 
-        internal void DisableRule(Rule rule)
-        {
-            rule.Enabled = false;
-            Rule ExistingRule = GetRule(rule.Direction, rule.Name);
-            if (ExistingRule != null)
-                ExistingRule.Enabled = false;
-        }
         internal void DisableAllRules()
         {
             // Note: This method is very slow, it is a performance bottleneck.

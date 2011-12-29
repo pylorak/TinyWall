@@ -102,14 +102,6 @@ namespace PKSoft
             + identifier("Win32_BIOS", "ReleaseDate")
             + identifier("Win32_BIOS", "Version");
         }
-        //Main physical hard drive ID
-        private static string diskId()
-        {
-            return identifier("Win32_DiskDrive", "Model")
-            + identifier("Win32_DiskDrive", "Manufacturer")
-            + identifier("Win32_DiskDrive", "Signature")
-            + identifier("Win32_DiskDrive", "TotalHeads");
-        }
         //Motherboard ID
         private static string baseId()
         {
@@ -118,6 +110,8 @@ namespace PKSoft
             + identifier("Win32_BaseBoard", "Name")
             + identifier("Win32_BaseBoard", "SerialNumber");
         }
+
+        /*
         //Primary video controller ID
         private static string videoId()
         {
@@ -130,6 +124,15 @@ namespace PKSoft
             return identifier("Win32_NetworkAdapterConfiguration",
                 "MACAddress", "IPEnabled");
         }
+        //Main physical hard drive ID
+        private static string diskId()
+        {
+            return identifier("Win32_DiskDrive", "Model")
+            + identifier("Win32_DiskDrive", "Manufacturer")
+            + identifier("Win32_DiskDrive", "Signature")
+            + identifier("Win32_DiskDrive", "TotalHeads");
+        }
+         */
         #endregion
     }
 }

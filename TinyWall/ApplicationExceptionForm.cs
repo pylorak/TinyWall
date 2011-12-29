@@ -12,13 +12,10 @@ namespace PKSoft
             get { return TmpExceptionSettings; }
         }
 
-        private bool _RecognizedApp;
-        internal bool RecognizedApp
+        private bool RecognizedApp
         {
-            get { return _RecognizedApp; }
-            private set
+            set
             {
-                _RecognizedApp = value;
                 if (value)
                 {
                     // Recognized app

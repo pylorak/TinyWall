@@ -96,14 +96,6 @@ namespace PKSoft
             return this.Response;
         }
 
-        internal bool ResponseReady
-        {
-            get
-            {
-                return _ResponseReady;
-            }
-        }
-
         // When the request has been processed and the response has been completely written,
         // the request consumer needs to call this method.
         internal void SignalResponse()

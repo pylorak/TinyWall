@@ -65,25 +65,6 @@ namespace PKSoft
 			{ this.Unregister(); }
 		}
 
-        internal bool GetCanRegister(Control winControl)
-		{
-			// Handle any exceptions: they mean "no, you can't register" :)
-			try
-			{
-				// Attempt to register
-                if (!this.Register(winControl))
-				{ return false; }
-
-				// Unregister and say we managed it
-				this.Unregister();
-				return true;
-			}
-			catch (Win32Exception)
-			{ return false; }
-			catch (NotSupportedException)
-			{ return false; }
-		}
-
         internal bool Register(Control windowControl)
         {
             // Check that we have not registered

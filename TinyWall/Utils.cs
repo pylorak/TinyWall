@@ -13,14 +13,6 @@ using Microsoft.Win32;
 
 namespace PKSoft
 {
-    internal static class ExtensionUtils
-    {
-        internal static bool Equals(this string str0, string str1, StringComparison opts)
-        {
-            return (string.Compare(str0, str1, opts) == 0);
-        }
-    }
-
     internal class Utils
     {
         private static class NativeMethods
