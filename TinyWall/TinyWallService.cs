@@ -645,7 +645,7 @@ namespace PKSoft
                         break;
                     }
                 case 2010:     // network interface changed profile
-                    {
+                    {   // Event format is different in this case so we handle this separately
                         ++SettingsManager.Changeset;
                         if (!Q.HasRequest(TinyWallCommands.RELOAD))
                         {
@@ -666,6 +666,11 @@ namespace PKSoft
 
             if (propidx != -1)
             {
+                // Do nothing if the firewall is in disabled mode
+                if (this.Mode == FirewallMode.Disabled)
+                    return;
+
+                // See who has modified the firewall, do nothing if it was we
                 string TWpath = Utils.ExecutablePath;
                 string EVpath = (string)e.EventRecord.Properties[propidx].Value;
                 if (!EVpath.Equals(TWpath, StringComparison.InvariantCultureIgnoreCase))
