@@ -192,13 +192,15 @@ namespace PKSoft
         private void btnAppModify_Click(object sender, EventArgs e)
         {
             ListViewItem li = listApplications.SelectedItems[0];
-            AppExceptionSettings ex = (AppExceptionSettings)li.Tag;
-            using (ApplicationExceptionForm f = new ApplicationExceptionForm((AppExceptionSettings)ex.Clone()))
+            AppExceptionSettings oldEx = (AppExceptionSettings)li.Tag;
+            AppExceptionSettings newEx = Utils.DeepClone(oldEx);
+            newEx.RegenerateID();
+            using (ApplicationExceptionForm f = new ApplicationExceptionForm(newEx))
             {
                 if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {
                     // Remove old rule
-                    TmpZoneConfig.AppExceptions = Utils.ArrayRemoveItem(TmpZoneConfig.AppExceptions, ex);
+                    TmpZoneConfig.AppExceptions = Utils.ArrayRemoveItem(TmpZoneConfig.AppExceptions, oldEx);
                     // Add new rule
                     TmpZoneConfig.AppExceptions = Utils.ArrayAddItem(TmpZoneConfig.AppExceptions, f.ExceptionSettings);
                     TmpZoneConfig.Normalize();
