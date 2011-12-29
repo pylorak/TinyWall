@@ -1,3 +1,5 @@
+Public changelog:
+- Tightened ICMP security
 
 Future developent:
 - App profile submission system
