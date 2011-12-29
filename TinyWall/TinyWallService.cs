@@ -390,11 +390,15 @@ namespace PKSoft
 
                         // This roundabout way is to prevent overwriting the wrong zone if the controller is sending us
                         // data from a zone that is not the current one.
-                        ZoneSettings zone = (ZoneSettings)req.Arguments[1];
-                        zone.Save();
-                        SettingsManager.CurrentZone = zone;
+                        ZoneSettings oldZone = SettingsManager.CurrentZone;
+                        ZoneSettings newZone = (ZoneSettings)req.Arguments[1];
+                        newZone.Save();
+                        SettingsManager.CurrentZone = newZone;
 
-                        ReapplySettings();
+                        if (newZone.EnableDefaultWindowsRules != oldZone.EnableDefaultWindowsRules)
+                            InitFirewall();
+                        else
+                            ReapplySettings();
                         return new Message(TinyWallCommands.RESPONSE_OK);
                     }
                 case TinyWallCommands.GET_SETTINGS:
