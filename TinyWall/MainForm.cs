@@ -568,9 +568,11 @@ namespace PKSoft
 
         private void AddNewException(AppExceptionSettings ex)
         {
-            Message req = new Message(TinyWallCommands.NEW_EXCEPTION, ex);
-            Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
-            switch (resp.Command)
+            SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, ex);
+            SettingsManager.CurrentZone.Normalize();
+
+            TinyWallCommands resp = ApplyFirewallSettings(SettingsManager.GlobalConfig, SettingsManager.CurrentZone);
+            switch (resp)
             {
                 case TinyWallCommands.RESPONSE_OK:
                     if (ex.Recognized.HasValue && ex.Recognized.Value)
@@ -578,11 +580,9 @@ namespace PKSoft
                     else
                         ShowBalloonTip("Firewall rules for unrecognized " + ex.ExecutableName + " have been changed. Click this popup to edit the exception.", ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(ex));
 
-                    SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, ex);
-                    SettingsManager.CurrentZone.Normalize();
                     break;
                 default:
-                    DefaultPopups(resp.Command);
+                    DefaultPopups(resp);
                     LoadSettingsFromServer();
                     break;
             }

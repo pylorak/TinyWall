@@ -516,22 +516,6 @@ namespace PKSoft
 
                         return new Message(TinyWallCommands.RESPONSE_OK);
                     }
-                case TinyWallCommands.NEW_EXCEPTION:
-                    {
-                        // Add new exception
-                        {
-                            AppExceptionSettings ex = (AppExceptionSettings)req.Arguments[0];
-                            SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, ex);
-                            SettingsManager.CurrentZone.Normalize();
-                            SettingsManager.CurrentZone.Save();
-
-                            RebuildApplicationRuleDefs();
-                            AssembleActiveRules();
-                            MergeActiveRulesIntoWinFirewall();
-                        }
-                        
-                        return new Message(TinyWallCommands.RESPONSE_OK);
-                    }
                 case TinyWallCommands.CHECK_SCHEDULED_RULES:
                     {
                         bool needsSave = false;

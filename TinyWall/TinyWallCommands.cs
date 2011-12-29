@@ -34,7 +34,6 @@ namespace PKSoft
         LOCK,
         SET_PASSPHRASE,
         STOP_DISABLE,
-        NEW_EXCEPTION,
         CHECK_SCHEDULED_RULES
     }
 
