@@ -1,6 +1,7 @@
 Public changelog entries:
 - Firewall rule update without breaking existing connections
 - Fix: Custom ports are not applied to services
+- Fix: Crash when bubble-editing new exception in GUI multiple times in a row
 
 Future developent:
 - App profile submission system
