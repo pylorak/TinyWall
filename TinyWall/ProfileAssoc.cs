@@ -203,7 +203,7 @@ namespace PKSoft
             // Service name must match
             if (!string.IsNullOrEmpty(this.Service) || !string.IsNullOrEmpty(exe.Service))
             {
-                if (string.Compare(this.Service, exe.Service, StringComparison.InvariantCultureIgnoreCase) != 0)
+                if (string.Compare(this.Service, exe.Service, StringComparison.OrdinalIgnoreCase) != 0)
                     return false;
             }
 

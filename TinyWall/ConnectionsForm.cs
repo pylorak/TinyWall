@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
@@ -89,9 +90,9 @@ namespace PKSoft
             }
 
             li.SubItems.Add(protocol);
-            li.SubItems.Add(localEP.Port.ToString().PadLeft(5));
+            li.SubItems.Add(localEP.Port.ToString(CultureInfo.InvariantCulture).PadLeft(5));
             li.SubItems.Add(localEP.Address.ToString());
-            li.SubItems.Add(remoteEP.Port.ToString().PadLeft(5));
+            li.SubItems.Add(remoteEP.Port.ToString(CultureInfo.InvariantCulture).PadLeft(5));
             li.SubItems.Add(remoteEP.Address.ToString());
             li.SubItems.Add(state);
             return li;
@@ -160,7 +161,7 @@ namespace PKSoft
                             proc.Kill();
                         }
                         if (!proc.WaitForExit(5000))
-                            throw new Exception();
+                            throw new ApplicationException();
                         else
                             UpdateList();
                     }

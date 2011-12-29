@@ -132,7 +132,7 @@ namespace PKSoft
 
                     string id_j = name_j.Substring(0, lenId);
 
-                    if (string.Compare(id_i, id_j) == 0)
+                    if (string.Compare(id_i, id_j, StringComparison.Ordinal) == 0)
                     {
                         found = true;
                         break;
@@ -166,7 +166,7 @@ namespace PKSoft
                     RuleDef rule_j = ActiveRules[j];
                     string id_j = rule_j.ExceptionId.Substring(0, lenId);
 
-                    if (string.Compare(id_i, id_j) == 0)
+                    if (string.Compare(id_i, id_j, StringComparison.Ordinal) == 0)
                     {
                         found = true;
                         break;
@@ -689,7 +689,7 @@ namespace PKSoft
                 string EVpath = (string)e.EventRecord.Properties[propidx].Value;
                 for (int i = 0; i < WhitelistedApps.Length; ++i)
                 {
-                    if (string.Compare(WhitelistedApps[i], EVpath, StringComparison.InvariantCultureIgnoreCase) == 0)
+                    if (string.Compare(WhitelistedApps[i], EVpath, StringComparison.OrdinalIgnoreCase) == 0)
                         return;
                 }
 

@@ -5,31 +5,31 @@ namespace PKSoft
 {
     public class ProfileAssocCollection : Collection<ProfileAssoc>
     {
-        public bool Contains(string desc)
+        public bool Contains(string description)
         {
             foreach (ProfileAssoc app in this)
             {
-                if (app.Description == desc)
+                if (app.Description == description)
                     return true;
             }
             return false;
         }
-        public void Remove(string desc)
+        public void Remove(string description)
         {
             foreach (ProfileAssoc app in this)
             {
-                if (app.Description == desc)
+                if (app.Description == description)
                 {
                     this.Remove(app);
                     return;
                 }
             }
         }
-        public ProfileAssoc Search(string desc)
+        public ProfileAssoc Search(string description)
         {
             foreach (ProfileAssoc app in this)
             {
-                if (app.Description == desc)
+                if (app.Description == description)
                     return app;
             }
             return null;

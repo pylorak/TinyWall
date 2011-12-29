@@ -14,16 +14,16 @@ namespace PKSoft
             get { return Path.Combine(SettingsManager.AppDataPath, "profiles.xml"); }
         }
 
-        public static ProfileManager Load(string fpath)
+        public static ProfileManager Load(string filePath)
         {
-            ProfileManager newInstance = SerializationHelper.LoadFromXMLFile<ProfileManager>(fpath);
+            ProfileManager newInstance = SerializationHelper.LoadFromXMLFile<ProfileManager>(filePath);
             newInstance.FinishLoading();
             return newInstance;
         }
 
-        public void Save(string fpath)
+        public void Save(string filePath)
         {
-            SerializationHelper.SaveToXMLFile(this, fpath);
+            SerializationHelper.SaveToXMLFile(this, filePath);
 
             FinishLoading();
         }
@@ -107,19 +107,19 @@ namespace PKSoft
             get { return m_Associations; }
         }
 
-        public ProfileAssoc GetApplication(string desc)
+        public ProfileAssoc GetApplication(string description)
         {
             for (int i = 0; i < m_Associations.Count; ++i)
             {
-                if (string.Compare(desc, m_Associations[i].Description, System.StringComparison.InvariantCultureIgnoreCase) == 0)
+                if (string.Compare(description, m_Associations[i].Description, System.StringComparison.InvariantCultureIgnoreCase) == 0)
                     return m_Associations[i];
             }
             return null;
         }
 
-        public ProfileAssoc TryGetRecognizedApp(string exepath, string service)
+        public ProfileAssoc TryGetRecognizedApp(string executablePath, string service)
         {
-            ProfileAssoc exe = ProfileAssoc.FromExecutable(exepath, service);
+            ProfileAssoc exe = ProfileAssoc.FromExecutable(executablePath, service);
 
             for (int i = 0; i < m_Associations.Count; ++i)
             {
@@ -127,7 +127,7 @@ namespace PKSoft
                 if (assoc.DoesExecutableSatisfy(exe))
                 {
                     ProfileAssoc ret = assoc.Clone() as ProfileAssoc;
-                    ret.Executable = exepath;
+                    ret.Executable = executablePath;
                     return ret;
                 }
             }

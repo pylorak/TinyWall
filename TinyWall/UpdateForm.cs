@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Threading;
 using System.Drawing;
 using System.IO;
@@ -80,8 +81,8 @@ namespace PKSoft
 
                         label1.Text = "Downloading update...";
                         progressBar1.Style = ProgressBarStyle.Blocks;
-                        Updater.DownloadProgressChanged += new TinyWallUpdater.UpdateDownloadProgressChangedEvent(Updater_DownloadProgressChanged);
-                        Updater.DownloadFinished += new TinyWallUpdater.UpdateDownloadFinishedEvent(Updater_DownloadFinished);
+                        Updater.DownloadProgressChanged += new DownloadProgressChangedEventHandler(Updater_DownloadProgressChanged);
+                        Updater.DownloadFinished += new TinyWallUpdater.DownloadFinishedEventHandler(Updater_DownloadFinished);
                         Updater.StartUpdateDownload();
                     }
                     else
@@ -123,9 +124,9 @@ namespace PKSoft
             });
         }
 
-        void Updater_DownloadProgressChanged(DownloadProgressChangedEventArgs e)
+        void Updater_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            label2.Text = (e.BytesReceived >> 10).ToString() + "kb/" + (e.TotalBytesToReceive >> 10).ToString() + "kb";
+            label2.Text = (e.BytesReceived >> 10).ToString(CultureInfo.InvariantCulture) + "kb/" + (e.TotalBytesToReceive >> 10).ToString(CultureInfo.InvariantCulture) + "kb";
             progressBar1.Maximum = (int)e.TotalBytesToReceive;
             progressBar1.Value = (int)e.BytesReceived;
         }
@@ -148,16 +149,15 @@ namespace PKSoft
         private const string URL_UPDATE_DESCRIPTOR = @"http://tinywall.pados.hu/updates/UpdVer{0}/updesc.txt";
         private string UpdateDownloadURL;
 
-        public delegate void UpdateDownloadProgressChangedEvent(DownloadProgressChangedEventArgs e);
-        public event UpdateDownloadProgressChangedEvent DownloadProgressChanged;
-        public delegate void UpdateDownloadFinishedEvent(string file, AsyncCompletedEventArgs e);
-        public event UpdateDownloadFinishedEvent DownloadFinished;
+        public event DownloadProgressChangedEventHandler DownloadProgressChanged;
+        public delegate void DownloadFinishedEventHandler(string file, AsyncCompletedEventArgs e);
+        public event DownloadFinishedEventHandler DownloadFinished;
 
         private WebClient HTTPClient;
 
         public Version CheckForNewVersion()
         {
-            string url = string.Format(URL_UPDATE_DESCRIPTOR, UPDATER_VERSION);
+            string url = string.Format(CultureInfo.InvariantCulture, URL_UPDATE_DESCRIPTOR, UPDATER_VERSION);
             string tmpFile = Path.GetTempFileName();
             HTTPClient = new WebClient();
             HTTPClient.DownloadFile(url, tmpFile);
@@ -191,7 +191,7 @@ namespace PKSoft
 
         void HTTPClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            this.DownloadProgressChanged(e);
+            this.DownloadProgressChanged(this, e);
         }
 
         void HTTPClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)

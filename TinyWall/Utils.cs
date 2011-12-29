@@ -61,7 +61,7 @@ namespace PKSoft
         {
             // Get process id under cursor
             int ProcId;
-            NativeMethods.GetWindowThreadProcessId(NativeMethods.WindowFromPoint(new NativeMethods.POINT(x, y)), out ProcId);
+            int dummy = NativeMethods.GetWindowThreadProcessId(NativeMethods.WindowFromPoint(new NativeMethods.POINT(x, y)), out ProcId);
 
             // Get executable of process
             Process p = Process.GetProcessById(ProcId);
@@ -251,12 +251,12 @@ namespace PKSoft
             return newImage;
         }
 
-        internal static Bitmap GetIcon(string filePath, int w, int h)
+        internal static Bitmap GetIcon(string filePath, int maxWidth, int maxHeight)
         {
             using (Icon icn = Icon.ExtractAssociatedIcon(filePath))
             using (Bitmap bmp = icn.ToBitmap())
             {
-                return Utils.ResizeImage(bmp, 16, 16);
+                return Utils.ResizeImage(bmp, maxWidth, maxHeight);
             }
         }
 

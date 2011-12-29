@@ -50,14 +50,14 @@ namespace PKSoft
             // Remove args if the begin with "/"
             if (ImagePath.Contains(".exe -"))
             {
-                int argpos = ImagePath.IndexOf(".exe -", StringComparison.InvariantCultureIgnoreCase);
+                int argpos = ImagePath.IndexOf(".exe -", StringComparison.OrdinalIgnoreCase);
                 ImagePath = ImagePath.Substring(0, argpos + 4);
             }
 
             // Remove args if the begin with "-"
             if (ImagePath.Contains(".exe /"))
             {
-                int argpos = ImagePath.IndexOf(".exe /", StringComparison.InvariantCultureIgnoreCase);
+                int argpos = ImagePath.IndexOf(".exe /", StringComparison.OrdinalIgnoreCase);
                 ImagePath = ImagePath.Substring(0, argpos + 4);
             }
 
