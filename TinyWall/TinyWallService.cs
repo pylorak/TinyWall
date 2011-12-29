@@ -298,14 +298,14 @@ namespace PKSoft
             Firewall.NotificationsDisabled = true;
             FwRules = Firewall.GetRules(false);
 
+            LoadProfile();
             if (!SettingsManager.CurrentZone.EnableDefaultWindowsRules)
                 FwRules.Clear();
 
             ReapplySettings();
         }
 
-        // This method reapplies all firewall settings.
-        private void ReapplySettings()
+        private void LoadProfile()
         {
             Profile = Firewall.CurrentProfileTypes;
             if ((int)(Profile & ProfileType.Private) != 0)
@@ -328,6 +328,12 @@ namespace PKSoft
 
             SettingsManager.GlobalConfig = MachineSettings.Load();
             SettingsManager.CurrentZone = ZoneSettings.Load(ProfileDisplayName);
+        }
+
+        // This method reapplies all firewall settings.
+        private void ReapplySettings()
+        {
+            LoadProfile();
 
             RebuildApplicationRuleDefs();
             RebuildSpecialRuleDefs();
