@@ -415,9 +415,14 @@ namespace PKSoft
                             return new Message(TinyWallCommands.RESPONSE_OK, SettingsManager.Changeset);
                         }
                     }
-                case TinyWallCommands.RELOAD:
+                case TinyWallCommands.REINIT:
                     {
                         InitFirewall();
+                        return new Message(TinyWallCommands.RESPONSE_OK);
+                    }
+                case TinyWallCommands.RELOAD:
+                    {
+                        MergeActiveRulesIntoWinFirewall();
                         return new Message(TinyWallCommands.RESPONSE_OK);
                     }
                 case TinyWallCommands.GET_PROFILE:
@@ -612,26 +617,31 @@ namespace PKSoft
         private void WFEventWatcher_EventRecordWritten(object sender, EventRecordWrittenEventArgs e)
         {
             int propidx = -1;
+            TinyWallCommands cmd = TinyWallCommands.REINIT;
             switch (e.EventRecord.Id)
             {
                 case 2003:     // firewall setting changed
                     {
                         propidx = 7;
+                        cmd = TinyWallCommands.REINIT;
                         break;
                     }
                 case 2004:     // rule added
                     {
                         propidx = 22;
+                        cmd = TinyWallCommands.RELOAD;
                         break;
                     }
                 case 2005:     // rule changed
                     {
                         propidx = 22;
+                        cmd = TinyWallCommands.REINIT;
                         break;
                     }
                 case 2006:     // rule deleted
                     {
                         propidx = 3;
+                        cmd = TinyWallCommands.RELOAD;
                         break;
                     }
                 case 2010:     // network interface changed profile
@@ -647,6 +657,7 @@ namespace PKSoft
                 case 2032:     // firewall has been reset
                     {
                         propidx = 1;
+                        cmd = TinyWallCommands.REINIT;
                         break;
                     }
                 default:
@@ -659,10 +670,10 @@ namespace PKSoft
                 string EVpath = (string)e.EventRecord.Properties[propidx].Value;
                 if (!EVpath.Equals(TWpath, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    if (!Q.HasRequest(TinyWallCommands.RELOAD))
+                    if (!Q.HasRequest(cmd))
                     {
                         EventLog.WriteEntry("Reloading firewall configuration because " + EVpath + " has modified it.");
-                        Q.Enqueue(new ReqResp(new Message(TinyWallCommands.RELOAD)));
+                        Q.Enqueue(new ReqResp(new Message(cmd)));
                     }
                 }
             }
@@ -709,7 +720,7 @@ namespace PKSoft
 
                 // Issue load command
                 Q = new RequestQueue();
-                Q.Enqueue(new ReqResp(new Message(TinyWallCommands.RELOAD)));
+                Q.Enqueue(new ReqResp(new Message(TinyWallCommands.REINIT)));
 
                 // Start thread that is going to control Windows Firewall
                 FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod));
