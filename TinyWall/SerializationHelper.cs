@@ -16,65 +16,11 @@ namespace PKSoft
             formatter.Serialize(stream, obj);
         }
 
-        internal static string SerializeToString<T>(T obj)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                Serialize<T>(ms, obj);
-                return Convert.ToBase64String(ms.ToArray());
-            }
-        }
-
         internal static T Deserialize<T>(Stream stream)
         {
             BinaryFormatter formatter = new BinaryFormatter();
             formatter.AssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple;
             return (T)formatter.Deserialize(stream);
-        }
-
-        internal static T DeserializeFromString<T>(string s)
-        {
-            using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(s)))
-            {
-                return Deserialize<T>(ms);
-            }
-        }
-
-        internal static T LoadFromEncryptedFile<T>(string filepath, string key, string iv)
-        {
-            // Construct encryptor
-            using (AesCryptoServiceProvider symmetricKey = new AesCryptoServiceProvider())
-            {
-                symmetricKey.Mode = CipherMode.CBC;
-                symmetricKey.Key = Encoding.ASCII.GetBytes(key);
-                symmetricKey.IV = Encoding.ASCII.GetBytes(iv);
-
-                // Decrypt
-                using (FileStream fs = new FileStream(filepath, FileMode.Open, FileAccess.Read))
-                using (CryptoStream cryptoStream = new CryptoStream(fs, symmetricKey.CreateDecryptor(), CryptoStreamMode.Read))
-                {
-                    return SerializationHelper.Deserialize<T>(cryptoStream);
-                }
-            }
-        }
-
-        internal static void SaveToEncryptedFile<T>(T obj, string filepath, string key, string iv)
-        {
-            // Construct encryptor
-            using (AesCryptoServiceProvider symmetricKey = new AesCryptoServiceProvider())
-            {
-                symmetricKey.Mode = CipherMode.CBC;
-                symmetricKey.Key = Encoding.ASCII.GetBytes(key);
-                symmetricKey.IV = Encoding.ASCII.GetBytes(iv);
-
-                // Encrypt
-                using (FileStream fs = new FileStream(filepath, FileMode.Create, FileAccess.Write))
-                using (CryptoStream cryptoStream = new CryptoStream(fs, symmetricKey.CreateEncryptor(), CryptoStreamMode.Write))
-                {
-                    SerializationHelper.Serialize<T>(cryptoStream, obj);
-                    cryptoStream.FlushFinalBlock();
-                }
-            }
         }
 
         internal static T LoadFromEncryptedXMLFile<T>(string filepath, string key, string iv)

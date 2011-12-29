@@ -23,7 +23,7 @@ namespace PKSoft
 
     internal class Utils
     {
-        private class NativeMethods
+        private static class NativeMethods
         {
             [StructLayout(LayoutKind.Sequential)]
             internal struct POINT

@@ -12,11 +12,6 @@ namespace PKSoft.netstat
             this.tcpRows = tcpRows;
         }
 
-        internal IEnumerable<TcpRow> Rows
-        {
-            get { return this.tcpRows; }
-        }
-
         public IEnumerator<TcpRow> GetEnumerator()
         {
             return this.tcpRows.GetEnumerator();

@@ -12,11 +12,6 @@ namespace PKSoft.netstat
             this.udpRows = udpRows;
         }
 
-        internal IEnumerable<UdpRow> Rows
-        {
-            get { return this.udpRows; }
-        }
-
         public IEnumerator<UdpRow> GetEnumerator()
         {
             return this.udpRows.GetEnumerator();

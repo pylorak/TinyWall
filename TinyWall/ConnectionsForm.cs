@@ -197,7 +197,7 @@ namespace PKSoft
         }
         public int Compare(object x, object y)
         {
-            return String.Compare(((ListViewItem)x).SubItems[col].Text, ((ListViewItem)y).SubItems[col].Text);
+            return String.Compare(((ListViewItem)x).SubItems[col].Text, ((ListViewItem)y).SubItems[col].Text, StringComparison.CurrentCulture);
         }
     }
 

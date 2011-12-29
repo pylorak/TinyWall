@@ -169,13 +169,13 @@ namespace PKSoft
             return ex;
         }
         
-        public static ProfileAssoc FromExecutable(string filepath, string service)
+        public static ProfileAssoc FromExecutable(string filePath, string service)
         {
-            if (!File.Exists(filepath))
+            if (!File.Exists(filePath))
                 throw new FileNotFoundException();
 
             ProfileAssoc exe = new ProfileAssoc();
-            exe.Executable = filepath;
+            exe.Executable = filePath;
             exe.Service = service;
 
             return exe;
@@ -190,13 +190,13 @@ namespace PKSoft
             if (Path.GetFileName(this.Executable) == this.Executable)
             {
                 // File name must match
-                if (string.Compare(Path.GetFileName(this.Executable), Path.GetFileName(exe.Executable), StringComparison.InvariantCultureIgnoreCase) != 0)
+                if (string.Compare(Path.GetFileName(this.Executable), Path.GetFileName(exe.Executable), StringComparison.OrdinalIgnoreCase) != 0)
                     return false;
             }
             else
             {
                 // File path must match
-                if (string.Compare(Utils.ExpandPathVars(this.Executable), Utils.ExpandPathVars(exe.Executable), StringComparison.InvariantCultureIgnoreCase) != 0)
+                if (string.Compare(Utils.ExpandPathVars(this.Executable), Utils.ExpandPathVars(exe.Executable), StringComparison.OrdinalIgnoreCase) != 0)
                     return false;
             }
 

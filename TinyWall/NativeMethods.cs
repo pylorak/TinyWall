@@ -19,11 +19,6 @@ namespace PKSoft
             mouse_event(MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP, X, Y, 0, IntPtr.Zero);
         }
 
-
-        [DllImport("FwRuleDisabler.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool WinFwAPIDisableAllRules();
-
         [DllImport("Wer.dll", CharSet=CharSet.Unicode, PreserveSig=false)]
         internal static extern void WerAddExcludedApplication(
             [MarshalAs(UnmanagedType.LPWStr)]

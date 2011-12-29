@@ -8,7 +8,7 @@ namespace PKSoft
 {
     internal class Hotkey : DisposableObject, IMessageFilter
 	{
-        private class NativeMethods
+        private static class NativeMethods
         {
             internal const uint WM_HOTKEY = 0x312;
             internal const uint MOD_ALT = 0x1;

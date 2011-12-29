@@ -32,10 +32,10 @@ namespace PKSoft
         {
         }
 
-        public RuleDef(string exid, string name, PacketAction action, RuleDirection direction, Protocol protocol)
+        public RuleDef(string exceptionId, string name, PacketAction action, RuleDirection direction, Protocol protocol)
         {
             this.Name = name;
-            this.ExceptionId = exid;
+            this.ExceptionId = exceptionId;
             this.Action = action;
             this.Direction = direction;
             this.Protocol = protocol;

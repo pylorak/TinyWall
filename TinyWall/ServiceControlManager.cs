@@ -97,32 +97,33 @@ namespace ScmWrapper
 
     #region Native Methods
 
-    class NativeMethods
+    internal static class NativeMethods
     {
-        private NativeMethods() { }
-
-        [DllImport("advapi32.dll", SetLastError = true)]
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         internal static extern IntPtr OpenSCManager(
             string machineName,
             string databaseName,
             ServiceControlAccessRights desiredAccess);
 
         [DllImport("advapi32.dll", SetLastError = true)]
-        internal static extern int CloseServiceHandle(IntPtr hSCObject);
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool CloseServiceHandle(IntPtr hSCObject);
 
-        [DllImport("advapi32.dll", SetLastError = true)]
+        [DllImport("advapi32.dll", SetLastError = true, CharSet=CharSet.Unicode)]
         internal static extern IntPtr OpenService(
             IntPtr hSCManager,
             string serviceName,
             ServiceAccessRights desiredAccess);
 
         [DllImport("advapi32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool QueryServiceConfig(
             IntPtr hService,
             IntPtr intPtrQueryConfig,
             UInt32 cbBufSize,
             out UInt32 pcbBytesNeeded);
-        
+
+        /*
         [DllImport("advapi32.dll", SetLastError = true)]
         internal static extern int QueryServiceConfig2(
             IntPtr hService,
@@ -130,8 +131,10 @@ namespace ScmWrapper
             IntPtr lpBuffer,
             int cbBufSize,
             out int pcbBytesNeeded);
+         */
 
-        [DllImport("advapi32.dll", SetLastError = true)]
+        [DllImport("advapi32.dll", SetLastError = true, CharSet=CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool ChangeServiceConfig(
             IntPtr hService,
             UInt32 nServiceType,
@@ -197,6 +200,7 @@ namespace ScmWrapper
                 throw new Win32Exception(Marshal.GetLastWin32Error());
         }
 
+        /*
         /// <summary>
         /// Dertermines whether the nominated service is set to restart on failure.
         /// </summary>
@@ -256,6 +260,7 @@ namespace ScmWrapper
                 }
             }
         }
+        */
 
         /// <summary>
         /// Sets the nominated service to restart on failure.

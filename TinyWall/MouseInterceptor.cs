@@ -6,7 +6,7 @@ namespace PKSoft
 {
     internal class MouseInterceptor : DisposableObject
     {
-        private class NativeMethods
+        private static class NativeMethods
         {
             internal const int WH_MOUSE_LL = 14;
             internal delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -26,12 +26,6 @@ namespace PKSoft
             {
                 internal int x;
                 internal int y;
-
-                internal POINT(int _x, int _y)
-                {
-                    x = _x;
-                    y = _y;
-                }
             }
 
             [StructLayout(LayoutKind.Sequential)]

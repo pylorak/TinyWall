@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace PKSoft.netstat
 {
-    internal class SafeNativeMethods
+    internal static class SafeNativeMethods
     {
         internal const int AfInet = 2;
         internal const int AfInet6 = 23;
@@ -12,10 +12,10 @@ namespace PKSoft.netstat
         private const string DllName = "iphlpapi.dll";
 
         [DllImport(DllName, SetLastError = true)]
-        internal static extern uint GetExtendedTcpTable(IntPtr tcpTable, ref int tcpTableLength, bool sort, int ipVersion, TcpTableType tcpTableType, int reserved);
+        internal static extern uint GetExtendedTcpTable(IntPtr tcpTable, ref int tcpTableLength, [MarshalAs(UnmanagedType.Bool)] bool sort, int ipVersion, TcpTableType tcpTableType, int reserved);
 
         [DllImport(DllName, SetLastError = true)]
-        internal static extern uint GetExtendedUdpTable(IntPtr udpTable, ref int udpTableLength, bool sort, int ipVersion, UdpTableType udpTableType, int reserved);
+        internal static extern uint GetExtendedUdpTable(IntPtr udpTable, ref int udpTableLength, [MarshalAs(UnmanagedType.Bool)] bool sort, int ipVersion, UdpTableType udpTableType, int reserved);
 
         internal enum TcpTableType
         {

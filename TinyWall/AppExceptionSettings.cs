@@ -88,13 +88,13 @@ namespace PKSoft
         public static bool ExecutableNameEquals(AppExceptionSettings app1, AppExceptionSettings app2)
         {
             // File path must match
-            if (!string.Equals(app1.ExecutablePath, app2.ExecutablePath, StringComparison.InvariantCultureIgnoreCase))
+            if (!string.Equals(app1.ExecutablePath, app2.ExecutablePath, StringComparison.OrdinalIgnoreCase))
                 return false;
 
             // Service name must match
             if (app1.IsService || app2.IsService)
             {
-                if (!string.Equals(app1.ServiceName, app2.ServiceName, StringComparison.InvariantCultureIgnoreCase))
+                if (!string.Equals(app1.ServiceName, app2.ServiceName, StringComparison.OrdinalIgnoreCase))
                     return false;
             }
 

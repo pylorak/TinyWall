@@ -64,11 +64,6 @@ namespace PKSoft
             Command = cmd;
             Arguments = new object[] { arg0, arg1, arg2 };
         }
-        internal Message(TinyWallCommands cmd, object arg0, object arg1, object arg2, object arg3)
-        {
-            Command = cmd;
-            Arguments = new object[] { arg0, arg1, arg2, arg3 };
-        }
     }
 
     // Represent a request, and the response to that request

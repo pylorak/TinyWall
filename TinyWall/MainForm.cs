@@ -762,7 +762,6 @@ namespace PKSoft
         public object Arg
         {
             get { return _arg; }
-            set { _arg = value; }
         }
     }
 }
