@@ -1,10 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Profile Name="DNS client">
   <Rules>
-    <RuleDef Name="DNS client">
+    <RuleDef Name="DNS client TCP">
       <Action>Allow</Action>
-      <Protocol>TcpUdp</Protocol>
+      <Protocol>TCP</Protocol>
       <Direction>Out</Direction>
+      <RemotePorts>53</RemotePorts>
+      <RemoteAddresses>DNS</RemoteAddresses>
+    </RuleDef>
+    <RuleDef Name="DNS client UDP">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>InOut</Direction>
       <RemotePorts>53</RemotePorts>
       <RemoteAddresses>DNS</RemoteAddresses>
     </RuleDef>
