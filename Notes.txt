@@ -1,5 +1,6 @@
 Public changelog:
 - Fix: Crash when bubble-editing new exception in GUI multiple times in a row
+- Fix: Fire rules may overwrite each other
 
 Future developent:
 - App profile submission system

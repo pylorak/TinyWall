@@ -92,12 +92,12 @@ namespace PKSoft
             for (int i = 0; i < this.m_GenericProfiles.Count; ++i)
             {
                 if (string.Compare(name, m_GenericProfiles[i].Name, System.StringComparison.InvariantCultureIgnoreCase) == 0)
-                    return m_GenericProfiles[i];
+                    return Utils.DeepClone(m_GenericProfiles[i]);
             }
             for (int i = 0; i < m_Profiles.Count; ++i)
             {
                 if (string.Compare(name, m_Profiles[i].Name, System.StringComparison.InvariantCultureIgnoreCase) == 0)
-                    return m_Profiles[i];
+                    return Utils.DeepClone(m_Profiles[i]);
             }
             return null;
         }
