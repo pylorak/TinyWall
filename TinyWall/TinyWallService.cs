@@ -703,23 +703,23 @@ namespace PKSoft
 
         internal TinyWallService()
         {
-            this.ServiceName = SERVICE_NAME;
-
             this.CanShutdown = true;
 #if DEBUG
             this.CanStop = true;
 #else
             this.CanStop = false;
 #endif
-            if (!EventLog.SourceExists("TinyWallService"))
-                EventLog.CreateEventSource("TinyWallService", null);
-            this.EventLog.Source = "TinyWallService";
         }
 
 
         // Entry point for Windows service.
         protected override void OnStart(string[] args)
         {
+            this.ServiceName = SERVICE_NAME;
+            if (!EventLog.SourceExists("TinyWallService"))
+                EventLog.CreateEventSource("TinyWallService", null);
+            this.EventLog.Source = "TinyWallService";
+
             // Register an unhandled exception handler
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
