@@ -2,6 +2,7 @@ Public changelog:
 - Fix: Crash when bubble-editing new exception in GUI multiple times in a row
 - Fix: Fire rules may overwrite each other
 - Fix: Some DNS responses are blocked, leading to possibly slower DNS resolution
+- Unblock Network Discovery when File and Printer Sharing is unblocked
 
 Future developent:
 - App profile submission system

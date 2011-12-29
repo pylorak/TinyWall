@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="LLMNR-UDP">
+  <Rules>
+    <RuleDef Name="LLMNR-UDP (client)">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>InOut</Direction>
+      <RemotePorts>5355</RemotePorts>
+      <RemoteAddresses>LocalSubnet</RemoteAddresses>
+    </RuleDef>
+    <RuleDef Name="LLMNR-UDP (server)">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>InOut</Direction>
+      <LocalPorts>5355</LocalPorts>
+      <RemoteAddresses>LocalSubnet</RemoteAddresses>
+    </RuleDef>
+  </Rules>
+</Profile>
