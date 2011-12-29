@@ -111,21 +111,28 @@ namespace PKSoft
 
         private void MergeActiveRulesIntoWinFirewall()
         {
+            int lenId = AppExceptionSettings.GenerateID().Length;
             List<Rule> rules = new List<Rule>();
-            for (int i = 0; i < ActiveRules.Count; ++i)
-                ActiveRules[i].ConstructRule(rules);
 
             // Add new rules
-            for (int i = rules.Count - 1; i >= 0; --i)          // for each TW firewall rule
+            for (int i = ActiveRules.Count - 1; i >= 0; --i)          // for each TW firewall rule
             {
-                Rule rule_i = rules[i];
+                RuleDef rule_i = ActiveRules[i];
+                string id_i = rule_i.ExceptionId.Substring(0, lenId);
 
                 bool found = false;
                 for (int j = FwRules.Count - 1; j >= 0; --j)    // for each Win firewall rule
                 {
                     Rule rule_j = FwRules[j];
+                    string name_j = rule_j.Name;
 
-                    if (rule_i.Name == rule_j.Name)
+                    // Skip if this is not a TinyWall rule
+                    if (!name_j.StartsWith("[TW"))
+                        continue;
+
+                    string id_j = name_j.Substring(0, lenId);
+
+                    if (string.Compare(id_i, id_j) == 0)
                     {
                         found = true;
                         break;
@@ -134,31 +141,32 @@ namespace PKSoft
 
                 // Rule is not yet active, add it to the Windows firewall
                 if (!found)
-                    FwRules.Add(rule_i);
+                    rule_i.ConstructRule(rules);
             }
+
+            // We add new rules before removing invalid ones, 
+            // so that we don't break existing connections.
+            FwRules.Add(rules);
 
             // Remove dead rules
             for (int i = FwRules.Count - 1; i >= 0; --i)    // for each Win firewall rule
             {
                 Rule rule_i = FwRules[i];
+                string name_i = rule_i.Name;
 
                 // Skip if this is not a TinyWall rule
-                if (!rule_i.Name.StartsWith("[TW"))
+                if (!name_i.StartsWith("[TW"))
                     continue;
-/*
-                // Extract ID of exception
-                string id = rule.Name;
-                int id_end = id.IndexOf(']');
-                id = id.Substring(0, id_end + 1);
-*/
-                // Delete Firewall rule if no corresponding exception is found
+
+                string id_i = name_i.Substring(0, lenId);
 
                 bool found = false;
-                for (int j = rules.Count - 1; j >= 0; --j)          // for each TW firewall rule
+                for (int j = ActiveRules.Count - 1; j >= 0; --j)          // for each TW firewall rule
                 {
-                    Rule rule_j = rules[j];
+                    RuleDef rule_j = ActiveRules[j];
+                    string id_j = rule_j.ExceptionId.Substring(0, lenId);
 
-                    if (rule_i.Name == rule_j.Name)
+                    if (string.Compare(id_i, id_j) == 0)
                     {
                         found = true;
                         break;
