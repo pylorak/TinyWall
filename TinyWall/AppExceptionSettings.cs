@@ -128,7 +128,7 @@ namespace PKSoft
 
         static internal string GenerateID()
         {
-            return "[TW" + Utils.UniqueString() + "]";
+            return "[TW" + Utils.RandomString(12) + "]";
         }
     };
 
