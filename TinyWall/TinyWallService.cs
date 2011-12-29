@@ -71,7 +71,7 @@ namespace PKSoft
                 }
             }
 
-            // This switch should be executed last, as it might modify exisitng elements in ActiveRules
+            // This switch should be executed last, as it might modify existing elements in ActiveRules
             switch (this.Mode)
             {
                 case FirewallMode.AllowOutgoing:
@@ -369,9 +369,13 @@ namespace PKSoft
 
         public void TimerCallback(Object state)
         {
+            // This timer is called every minute.
+
+            // Check if a timed exception has expired
             if (!Q.HasRequest(TinyWallCommands.CHECK_SCHEDULED_RULES))
                 Q.Enqueue(new ReqResp(new Message(TinyWallCommands.CHECK_SCHEDULED_RULES)));
 
+            // Check for inactivity and lock if necessary
             if (DateTime.Now - LastControllerCommandTime > TimeSpan.FromMinutes(10))
             {
                 Q.Enqueue(new ReqResp(new Message(TinyWallCommands.LOCK)));
@@ -510,22 +514,6 @@ namespace PKSoft
                         // Stop service execution
                         Environment.Exit(0);
 
-                        return new Message(TinyWallCommands.RESPONSE_OK);
-                    }
-                case TinyWallCommands.NEW_EXCEPTION:
-                    {
-                        // Add new exception
-                        {
-                            AppExceptionSettings ex = (AppExceptionSettings)req.Arguments[0];
-                            SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, ex);
-                            SettingsManager.CurrentZone.Normalize();
-                            SettingsManager.CurrentZone.Save();
-
-                            RebuildApplicationRuleDefs();
-                            AssembleActiveRules();
-                            MergeActiveRulesIntoWinFirewall();
-                        }
-                        
                         return new Message(TinyWallCommands.RESPONSE_OK);
                     }
                 case TinyWallCommands.CHECK_SCHEDULED_RULES:
