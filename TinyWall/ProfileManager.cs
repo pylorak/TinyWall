@@ -47,7 +47,7 @@ namespace PKSoft
                     // "Blind trust"
                     p = new Profile();
                     p.Name = "Blind trust";
-                    p.Rules = new RuleDef[] { new RuleDef("Blind trust", WindowsFirewall.PacketAction.Allow, WindowsFirewall.RuleDirection.InOut, WindowsFirewall.Protocol.Any) };
+                    p.Rules = new RuleDef[] { new RuleDef(AppExceptionSettings.GenerateID(), "Blind trust", WindowsFirewall.PacketAction.Allow, WindowsFirewall.RuleDirection.InOut, WindowsFirewall.Protocol.Any) };
                     m_GenericProfiles.Add(p);
                 }
 
@@ -56,7 +56,7 @@ namespace PKSoft
                     // "Outbound"
                     p = new Profile();
                     p.Name = "Outbound";
-                    p.Rules = new RuleDef[] { new RuleDef("Allow outbound", WindowsFirewall.PacketAction.Allow, WindowsFirewall.RuleDirection.Out, WindowsFirewall.Protocol.TcpUdp) };
+                    p.Rules = new RuleDef[] { new RuleDef(AppExceptionSettings.GenerateID(), "Allow outbound", WindowsFirewall.PacketAction.Allow, WindowsFirewall.RuleDirection.Out, WindowsFirewall.Protocol.TcpUdp) };
                     m_GenericProfiles.Add(p);
                 }
 
@@ -65,7 +65,7 @@ namespace PKSoft
                     // "Block"
                     p = new Profile();
                     p.Name = "Block";
-                    p.Rules = new RuleDef[] { new RuleDef("Block", WindowsFirewall.PacketAction.Block, WindowsFirewall.RuleDirection.InOut, WindowsFirewall.Protocol.Any) };
+                    p.Rules = new RuleDef[] { new RuleDef(AppExceptionSettings.GenerateID(), "Block", WindowsFirewall.PacketAction.Block, WindowsFirewall.RuleDirection.InOut, WindowsFirewall.Protocol.Any) };
                     m_GenericProfiles.Add(p);
                 }
             }
@@ -92,12 +92,12 @@ namespace PKSoft
             for (int i = 0; i < this.m_GenericProfiles.Count; ++i)
             {
                 if (string.Compare(name, m_GenericProfiles[i].Name, System.StringComparison.InvariantCultureIgnoreCase) == 0)
-                    return m_GenericProfiles[i];
+                    return Utils.DeepClone(m_GenericProfiles[i]);
             }
             for (int i = 0; i < m_Profiles.Count; ++i)
             {
                 if (string.Compare(name, m_Profiles[i].Name, System.StringComparison.InvariantCultureIgnoreCase) == 0)
-                    return m_Profiles[i];
+                    return Utils.DeepClone(m_Profiles[i]);
             }
             return null;
         }
