@@ -286,9 +286,10 @@ namespace PKSoft
             }
         }
 
-        private void ResetWindowsFirewall()
+        // This method completely reinitializes the firewall.
+        private void InitFirewall()
         {
-            // Set general firewall settings
+            Firewall = new Policy();
             Firewall.ResetFirewall();
             Firewall.Enabled = true;
             Firewall.DefaultInboundAction = PacketAction.Block;
@@ -297,13 +298,13 @@ namespace PKSoft
             Firewall.NotificationsDisabled = true;
             FwRules = Firewall.GetRules(false);
             FwRules.Clear();
+
+            ReapplySettings();
         }
 
-        // This method completely reinitializes (reloads) the current firewall settings,
-        // reapplying them all.
-        private void InitFirewall()
+        // This method reapplies all firewall settings.
+        private void ReapplySettings()
         {
-            Firewall = new Policy();
             Profile = Firewall.CurrentProfileTypes;
             if ((int)(Profile & ProfileType.Private) != 0)
                 ProfileDisplayName = "Private";
@@ -326,7 +327,6 @@ namespace PKSoft
             SettingsManager.GlobalConfig = MachineSettings.Load();
             SettingsManager.CurrentZone = ZoneSettings.Load(ProfileDisplayName);
 
-            ResetWindowsFirewall();
             RebuildApplicationRuleDefs();
             RebuildSpecialRuleDefs();
             AssembleActiveRules();
@@ -392,7 +392,7 @@ namespace PKSoft
                         zone.Save();
                         SettingsManager.CurrentZone = zone;
 
-                        InitFirewall();
+                        ReapplySettings();
                         return new Message(TinyWallCommands.RESPONSE_OK);
                     }
                 case TinyWallCommands.GET_SETTINGS:
