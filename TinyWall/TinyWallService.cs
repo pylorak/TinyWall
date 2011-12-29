@@ -71,7 +71,7 @@ namespace PKSoft
                 }
             }
 
-            // This switch should be executed last, as it might modify exisitng elements in ActiveRules
+            // This switch should be executed last, as it might modify existing elements in ActiveRules
             switch (this.Mode)
             {
                 case FirewallMode.AllowOutgoing:
@@ -369,9 +369,13 @@ namespace PKSoft
 
         public void TimerCallback(Object state)
         {
+            // This timer is called every minute.
+
+            // Check if a timed exception has expired
             if (!Q.HasRequest(TinyWallCommands.CHECK_SCHEDULED_RULES))
                 Q.Enqueue(new ReqResp(new Message(TinyWallCommands.CHECK_SCHEDULED_RULES)));
 
+            // Check for inactivity and lock if necessary
             if (DateTime.Now - LastControllerCommandTime > TimeSpan.FromMinutes(10))
             {
                 Q.Enqueue(new ReqResp(new Message(TinyWallCommands.LOCK)));
