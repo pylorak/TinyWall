@@ -141,11 +141,11 @@ namespace PKSoft
             for (int i = FwRules.Count - 1; i >= 0; --i)    // for each Win firewall rule
             {
                 Rule rule_i = FwRules[i];
-/*
+
                 // Skip if this is not a TinyWall rule
                 if (!rule_i.Name.StartsWith("[TW"))
                     continue;
-
+/*
                 // Extract ID of exception
                 string id = rule.Name;
                 int id_end = id.IndexOf(']');
@@ -297,7 +297,9 @@ namespace PKSoft
             Firewall.BlockAllInboundTraffic = false;
             Firewall.NotificationsDisabled = true;
             FwRules = Firewall.GetRules(false);
-            FwRules.Clear();
+
+            if (!SettingsManager.CurrentZone.EnableDefaultWindowsRules)
+                FwRules.Clear();
 
             ReapplySettings();
         }
@@ -670,16 +672,25 @@ namespace PKSoft
                 if (this.Mode == FirewallMode.Disabled)
                     return;
 
-                // See who has modified the firewall, do nothing if it was we
-                string TWpath = Utils.ExecutablePath;
-                string EVpath = (string)e.EventRecord.Properties[propidx].Value;
-                if (!EVpath.Equals(TWpath, StringComparison.InvariantCultureIgnoreCase))
+                // This is a list of apps that are allowed to change firewall rules
+                string[] WhitelistedApps = new string[]
                 {
-                    if (!Q.HasRequest(cmd))
-                    {
-                        EventLog.WriteEntry("Reloading firewall configuration because " + EVpath + " has modified it.");
-                        Q.Enqueue(new ReqResp(new Message(cmd)));
-                    }
+                    Utils.ExecutablePath,
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "dllhost.exe")
+                };
+
+                // If the rules were changed by an allowed app, do nothing
+                string EVpath = (string)e.EventRecord.Properties[propidx].Value;
+                for (int i = 0; i < WhitelistedApps.Length; ++i)
+                {
+                    if (string.Compare(WhitelistedApps[i], EVpath, StringComparison.InvariantCultureIgnoreCase) == 0)
+                        return;
+                }
+
+                if (!Q.HasRequest(cmd))
+                {
+                    EventLog.WriteEntry("Reloading firewall configuration because " + EVpath + " has modified it.");
+                    Q.Enqueue(new ReqResp(new Message(cmd)));
                 }
             }
         }
