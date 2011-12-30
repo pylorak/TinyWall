@@ -204,7 +204,7 @@ namespace PKSoft
             }
         }
 
-        internal static Process StartProcess(string path, string args, bool asAdmin)
+        internal static Process StartProcess(string path, string args, bool asAdmin, bool hideWindow = false)
         {
             ProcessStartInfo psi = new ProcessStartInfo(path, args);
             psi.WorkingDirectory = Path.GetDirectoryName(path);
@@ -213,6 +213,9 @@ namespace PKSoft
                 psi.Verb = "runas";
                 psi.UseShellExecute = true;
             }
+            if (hideWindow)
+                psi.WindowStyle = ProcessWindowStyle.Hidden;
+
             return Process.Start(psi);
         }
 

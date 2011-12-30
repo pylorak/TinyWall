@@ -104,7 +104,7 @@ namespace PKSoft
             try
             {
                 // Flush DNS cache
-                Utils.StartProcess("ipconfig.exe", "/flushdns", true);
+                Utils.StartProcess("ipconfig.exe", "/flushdns", true, true);
             }
             catch
             {

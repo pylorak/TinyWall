@@ -78,8 +78,7 @@ namespace PKSoft
         {
             try
             {
-                // Find out current firewall mode
-                Message resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.GET_MODE);
+                Message resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.GET_UPDATE_DESCRIPTOR);
                 UpdateDescriptor descriptor = (UpdateDescriptor)resp.Arguments[0];
                 if (descriptor != null)
                 {
