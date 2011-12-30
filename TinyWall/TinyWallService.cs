@@ -396,7 +396,7 @@ namespace PKSoft
             {
                 UpdateModule HostsFileModule = UpdateChecker.GetHostsFileModule(UpdateDescriptor);
 
-                if (HostsFileModule.Version != HostsFileManager.HostsMD5())
+                if (string.Compare(HostsFileModule.Version, HostsFileManager.HostsMD5(), StringComparison.OrdinalIgnoreCase) != 0)
                 {
                     string tmpPath = Path.GetTempFileName();
                     Uri UpdateURL = new Uri(HostsFileModule.UpdateURL);
