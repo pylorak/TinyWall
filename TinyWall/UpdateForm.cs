@@ -51,15 +51,7 @@ namespace PKSoft
                 UpdateModule UpdateModule = null;
                 try
                 {
-                    UpdateDescriptor descriptor = UpdateChecker.GetDescriptor();
-                    for (int i = 0; i < descriptor.Modules.Length; ++i)
-                    {
-                        if (descriptor.Modules[i].Component == "TinyWall")
-                        {
-                            UpdateModule = descriptor.Modules[i];
-                            break;
-                        }
-                    }
+                    UpdateModule = UpdateChecker.GetMainAppModule(UpdateChecker.GetDescriptor());
                 }
                 catch
                 {
@@ -151,45 +143,4 @@ namespace PKSoft
         }
     }
 
-    public class UpdateModule
-    {
-        public string Component;
-        public string Version;
-        public string UpdateURL;
-    }
-
-    public class UpdateDescriptor
-    {
-        public string MagicWord = "TinyWall Update Descriptor";
-        public UpdateModule[] Modules;
-    }
-
-    internal static class UpdateChecker
-    {
-        private const int UPDATER_VERSION = 2;
-        private const string URL_UPDATE_DESCRIPTOR = @"http://tinywall.pados.hu/updates/UpdVer{0}/updesc.xml";
-
-        internal static UpdateDescriptor GetDescriptor()
-        {
-            string url = string.Format(CultureInfo.InvariantCulture, URL_UPDATE_DESCRIPTOR, UPDATER_VERSION);
-            string tmpFile = Path.GetTempFileName();
-
-            try
-            {
-                WebClient HTTPClient = new WebClient();
-                HTTPClient.DownloadFile(url, tmpFile);
-
-                UpdateDescriptor descriptor = SerializationHelper.LoadFromXMLFile<UpdateDescriptor>(tmpFile);
-                if (descriptor.MagicWord != "TinyWall Update Descriptor")
-                    throw new ApplicationException("Bad update descriptor file.");
-
-                return descriptor;
-            }
-            finally
-            {
-                if (File.Exists(tmpFile))
-                    File.Delete(tmpFile);
-            }
-        }
-    }
 }

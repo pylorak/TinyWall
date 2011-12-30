@@ -160,6 +160,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="TinyWallDoctor.cs" />
+    <Compile Include="UpdateChecker.cs" />
     <Compile Include="UpdateForm.cs">
       <SubType>Form</SubType>
     </Compile>

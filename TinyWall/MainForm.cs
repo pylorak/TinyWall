@@ -80,11 +80,13 @@ namespace PKSoft
             if (DateTime.Now - SettingsManager.ControllerConfig.LastUpdateCheck < TimeSpan.FromDays(7))
                 return;
 
-            Version UpdateVersion = new Version();
+            UpdateModule MainAppModule = null;
+            UpdateModule HostsFileModule = null;
             try
             {
-                TinyWallUpdater updater = new TinyWallUpdater();
-                UpdateVersion = updater.CheckForNewVersion();
+                UpdateDescriptor descriptor = UpdateChecker.GetDescriptor();
+                MainAppModule = UpdateChecker.GetMainAppModule(descriptor);
+                HostsFileModule = UpdateChecker.GetHostsFileModule(descriptor);
             }
             catch
             {
@@ -98,14 +100,16 @@ namespace PKSoft
                 SettingsManager.ControllerConfig.Save();
             }
 
-            if (UpdateVersion > new Version(Application.ProductVersion))
+            if (new Version(MainAppModule.Version) > new Version(Application.ProductVersion))
             {
                 Utils.Invoke(this, (MethodInvoker)delegate()
                 {
-                    string prompt = "A newer version " + UpdateVersion.ToString() + " of TinyWall is available. Click this bubble to start the update process.";
-                    ShowBalloonTip(prompt, ToolTipIcon.Info, 5000, StartUpdate);
+                    string prompt = "A newer version " + MainAppModule.Version + " of TinyWall is available. Click this bubble to start the update process.";
+                    ShowBalloonTip(prompt, ToolTipIcon.Info, 5000, StartUpdate, MainAppModule.UpdateURL);
                 });
             }
+
+
         }
 
         private void StartUpdate(object sender, AnyEventArgs e)
