@@ -80,6 +80,8 @@ namespace PKSoft
                 CreateOriginalBackup();
 
             InstallHostsFile(HOSTS_BACKUP);
+
+            FlushDNSCache();
         }
 
         internal static void DisableHostsFile()
@@ -92,6 +94,21 @@ namespace PKSoft
             {
                 FileLocker.UnlockFile(HOSTS_ORIGINAL);
                 File.Delete(HOSTS_ORIGINAL);
+            }
+
+            FlushDNSCache();
+        }
+
+        private static void FlushDNSCache()
+        {
+            try
+            {
+                // Flush DNS cache
+                Utils.StartProcess("ipconfig.exe", "/flushdns", true);
+            }
+            catch
+            {
+                // We just want to block exceptions.
             }
         }
 
