@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.IO.Pipes;
+using System.Net;
 using System.IO;
 using System.Security.Principal;
 using System.ServiceProcess;
@@ -41,6 +42,8 @@ namespace PKSoft
         private string ProfileDisplayName;
         private FirewallMode Mode = FirewallMode.Normal;
         private bool UninstallRequested = false;
+        private UpdateDescriptor UpdateDescriptor = null;
+        private WebClient HostsDownloader = null;
 
         private void AssembleActiveRules()
         {
@@ -364,6 +367,50 @@ namespace PKSoft
             MinuteTimer = new Timer(new TimerCallback(TimerCallback), null, 0, 60000);
         }
 
+        private void CheckForUpdates()
+        {
+         //   if (DateTime.Now - SettingsManager.GlobalConfig.LastUpdateCheck < TimeSpan.FromDays(7))
+           //     return;
+
+            try
+            {
+                UpdateDescriptor = UpdateChecker.GetDescriptor();
+                if (UpdateDescriptor == null)
+                    return;
+            }
+            catch
+            {
+                // This is an automatic update check in the background.
+                // If we fail (for whatever reason, no internet, server down etc.),
+                // we fail silently.
+            }
+            finally
+            {
+                SettingsManager.GlobalConfig.LastUpdateCheck = DateTime.Now;
+                SettingsManager.GlobalConfig.Save();
+            }
+
+            if (SettingsManager.GlobalConfig.HostsBlocklist)
+            {
+                UpdateModule HostsFileModule = UpdateChecker.GetHostsFileModule(UpdateDescriptor);
+
+                if (HostsFileModule.Version != HostsFileManager.HostsMD5())
+                {
+                    string tmpPath = Path.GetTempFileName();
+                    Uri UpdateURL = new Uri(HostsFileModule.UpdateURL);
+                    HostsDownloader = new WebClient();
+                    HostsDownloader.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(HostsDownloader_DownloadFileCompleted);
+                    HostsDownloader.DownloadFileAsync(UpdateURL, tmpPath, tmpPath);
+                }
+            }
+        }
+
+        void HostsDownloader_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        {
+            string tmpHostsPath = (string)e.UserState;
+            HostsFileManager.UpdateHostsFile(tmpHostsPath, SettingsManager.GlobalConfig.HostsBlocklist);
+        }
+
         public void TimerCallback(Object state)
         {
             // This timer is called every minute.
@@ -377,6 +424,10 @@ namespace PKSoft
             {
                 Q.Enqueue(new ReqResp(new Message(TinyWallCommands.LOCK)));
             }
+
+            // Check for updates once every week
+            if (SettingsManager.GlobalConfig.AutoUpdateCheck)
+                CheckForUpdates();
         }
 
         private Message ProcessCmd(Message req)
@@ -461,6 +512,10 @@ namespace PKSoft
                     {
                         SettingsManager.ServiceConfig.Locked = true;
                         return new Message(TinyWallCommands.RESPONSE_OK);
+                    }
+                case TinyWallCommands.GET_UPDATE_DESCRIPTOR:
+                    {
+                        return new Message(TinyWallCommands.RESPONSE_OK, UpdateDescriptor);
                     }
                 case TinyWallCommands.GET_LOCK_STATE:
                     {

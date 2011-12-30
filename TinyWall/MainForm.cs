@@ -56,11 +56,11 @@ namespace PKSoft
 
         private void ApplyControllerSettings()
         {
-            if ((SettingsManager.ControllerConfig.AutoUpdateCheck) && (UpdateTimer == null))
+            if ((SettingsManager.GlobalConfig.AutoUpdateCheck) && (UpdateTimer == null))
             {
-                UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(1), TimeSpan.FromHours(4));
+                UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(1), TimeSpan.FromHours(2));
             }
-            if ((!SettingsManager.ControllerConfig.AutoUpdateCheck) && (UpdateTimer != null))
+            if ((!SettingsManager.GlobalConfig.AutoUpdateCheck) && (UpdateTimer != null))
             {
                 if (UpdateTimer != null)
                 {
@@ -76,17 +76,23 @@ namespace PKSoft
 
         private void UpdateTimerTick(object state)
         {
-            // We only check for update if we didn't check already in the past week.
-            if (DateTime.Now - SettingsManager.ControllerConfig.LastUpdateCheck < TimeSpan.FromDays(7))
-                return;
-
-            UpdateModule MainAppModule = null;
-            UpdateModule HostsFileModule = null;
             try
             {
-                UpdateDescriptor descriptor = UpdateChecker.GetDescriptor();
-                MainAppModule = UpdateChecker.GetMainAppModule(descriptor);
-                HostsFileModule = UpdateChecker.GetHostsFileModule(descriptor);
+                // Find out current firewall mode
+                Message resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.GET_MODE);
+                UpdateDescriptor descriptor = (UpdateDescriptor)resp.Arguments[0];
+                if (descriptor != null)
+                {
+                    UpdateModule MainAppModule = UpdateChecker.GetMainAppModule(descriptor);
+                    if (new Version(MainAppModule.Version) > new Version(Application.ProductVersion))
+                    {
+                        Utils.Invoke(this, (MethodInvoker)delegate()
+                        {
+                            string prompt = "A newer version " + MainAppModule.Version + " of TinyWall is available. Click this bubble to start the update process.";
+                            ShowBalloonTip(prompt, ToolTipIcon.Info, 5000, StartUpdate, MainAppModule.UpdateURL);
+                        });
+                    }
+                }
             }
             catch
             {
@@ -94,22 +100,6 @@ namespace PKSoft
                 // If we fail (for whatever reason, no internet, server down etc.),
                 // we fail silently.
             }
-            finally
-            {
-                SettingsManager.ControllerConfig.LastUpdateCheck = DateTime.Now;
-                SettingsManager.ControllerConfig.Save();
-            }
-
-            if (new Version(MainAppModule.Version) > new Version(Application.ProductVersion))
-            {
-                Utils.Invoke(this, (MethodInvoker)delegate()
-                {
-                    string prompt = "A newer version " + MainAppModule.Version + " of TinyWall is available. Click this bubble to start the update process.";
-                    ShowBalloonTip(prompt, ToolTipIcon.Info, 5000, StartUpdate, MainAppModule.UpdateURL);
-                });
-            }
-
-
         }
 
         private void StartUpdate(object sender, AnyEventArgs e)

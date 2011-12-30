@@ -38,13 +38,14 @@ namespace PKSoft
             try
             {
                 // General page
-                chkAutoUpdateCheck.Checked = TmpControllerConfig.AutoUpdateCheck;
+                chkAutoUpdateCheck.Checked = TmpMachineConfig.AutoUpdateCheck;
                 chkEnableDefaultWindowsRules.Checked = TmpZoneConfig.EnableDefaultWindowsRules;
                 chkAskForExceptionDetails.Checked = TmpControllerConfig.AskForExceptionDetails;
 
                 // Fill Machine Settings tab
                 chkBlockMalwarePorts.Checked = TmpZoneConfig.BlockMalwarePorts;
-                //chkLockHostsFile.Checked = TmpMachineConfig.LockHostsFile;
+                chkLockHostsFile.Checked = TmpMachineConfig.LockHostsFile;
+                chkHostsBlocklist.Checked = TmpMachineConfig.HostsBlocklist;
 
                 // These will be reused multiple times
                 ProfileAssocCollection allApps = GlobalInstances.ProfileMan.KnownApplications;
@@ -140,9 +141,10 @@ namespace PKSoft
             TmpZoneConfig.BlockMalwarePorts = chkBlockMalwarePorts.Checked;
             TmpZoneConfig.EnableDefaultWindowsRules = chkEnableDefaultWindowsRules.Checked;
             TmpControllerConfig.AskForExceptionDetails = chkAskForExceptionDetails.Checked;
-            TmpControllerConfig.AutoUpdateCheck = chkAutoUpdateCheck.Checked;
+            TmpMachineConfig.AutoUpdateCheck = chkAutoUpdateCheck.Checked;
             TmpControllerConfig.ManageTabIndex = tabControl1.SelectedIndex;
-            //TmpMachineConfig.LockHostsFile = chkLockHostsFile.Checked;
+            TmpMachineConfig.LockHostsFile = chkLockHostsFile.Checked;
+            TmpMachineConfig.HostsBlocklist = chkHostsBlocklist.Checked;
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
@@ -414,6 +416,14 @@ namespace PKSoft
                 SerializationHelper.SaveToXMLFile(sc, sfd.FileName);
                 MessageBox.Show(this, "The configuration file has been successfully exported.", "Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private void chkHostsBlocklist_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkHostsBlocklist.Checked)
+                chkLockHostsFile.Checked = true;
+
+            chkLockHostsFile.Enabled = !chkLockHostsFile.Checked;
         }
     }
 }

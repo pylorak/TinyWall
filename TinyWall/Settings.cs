@@ -132,6 +132,8 @@ namespace PKSoft
 
         public bool LockHostsFile = false;
         public bool HostsBlocklist = false;
+        public DateTime LastUpdateCheck;
+        public bool AutoUpdateCheck = true;
 
         internal void Save()
         {
@@ -297,8 +299,6 @@ namespace PKSoft
     [Serializable]
     public class ControllerSettings : SettingsBase
     {
-        public DateTime LastUpdateCheck;
-        public bool AutoUpdateCheck = true;
         public bool AskForExceptionDetails = false;
         public System.Windows.Forms.FormWindowState ConnFormWindowState = System.Windows.Forms.FormWindowState.Normal;
         public System.Drawing.Point ConnFormWindowLoc = new System.Drawing.Point(150, 150);

@@ -52,6 +52,8 @@
             this.listOptionalGlobalProfiles = new System.Windows.Forms.CheckedListBox();
             this.listRecommendedGlobalProfiles = new System.Windows.Forms.CheckedListBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.chkLockHostsFile = new System.Windows.Forms.CheckBox();
+            this.chkHostsBlocklist = new System.Windows.Forms.CheckBox();
             this.chkAutoUpdateCheck = new System.Windows.Forms.CheckBox();
             this.chkBlockMalwarePorts = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -325,6 +327,8 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.chkLockHostsFile);
+            this.tabPage1.Controls.Add(this.chkHostsBlocklist);
             this.tabPage1.Controls.Add(this.chkAutoUpdateCheck);
             this.tabPage1.Controls.Add(this.chkBlockMalwarePorts);
             this.tabPage1.Controls.Add(this.groupBox1);
@@ -337,6 +341,27 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "General";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // chkLockHostsFile
+            // 
+            this.chkLockHostsFile.AutoSize = true;
+            this.chkLockHostsFile.Location = new System.Drawing.Point(376, 48);
+            this.chkLockHostsFile.Name = "chkLockHostsFile";
+            this.chkLockHostsFile.Size = new System.Drawing.Size(183, 17);
+            this.chkLockHostsFile.TabIndex = 10;
+            this.chkLockHostsFile.Text = "Prevent modifications to hosts file";
+            this.chkLockHostsFile.UseVisualStyleBackColor = true;
+            // 
+            // chkHostsBlocklist
+            // 
+            this.chkHostsBlocklist.AutoSize = true;
+            this.chkHostsBlocklist.Location = new System.Drawing.Point(376, 71);
+            this.chkHostsBlocklist.Name = "chkHostsBlocklist";
+            this.chkHostsBlocklist.Size = new System.Drawing.Size(240, 17);
+            this.chkHostsBlocklist.TabIndex = 9;
+            this.chkHostsBlocklist.Text = "Block malware and ad servers using hosts file";
+            this.chkHostsBlocklist.UseVisualStyleBackColor = true;
+            this.chkHostsBlocklist.CheckedChanged += new System.EventHandler(this.chkHostsBlocklist_CheckedChanged);
             // 
             // chkAutoUpdateCheck
             // 
@@ -725,5 +750,7 @@
         private System.Windows.Forms.Button btnImport;
         private System.Windows.Forms.Button btnExport;
         private System.Windows.Forms.OpenFileDialog ofd;
+        private System.Windows.Forms.CheckBox chkLockHostsFile;
+        private System.Windows.Forms.CheckBox chkHostsBlocklist;
     }
 }

@@ -21,6 +21,7 @@ namespace PKSoft
         GET_MODE,
         GET_SETTINGS,
         GET_LOCK_STATE,
+        GET_UPDATE_DESCRIPTOR,
         VERIFY_KEYS,
 
         // Unprivileged write commands (>1023)
