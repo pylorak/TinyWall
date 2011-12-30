@@ -35,7 +35,7 @@ namespace PKSoft
                 FileLocker.LockFile(HOSTS_ORIGINAL, FileAccess.Read, FileShare.Read);
         }
 
-        internal static void CreateOriginalBackup()
+        private static void CreateOriginalBackup()
         {
             FileLocker.UnlockFile(HOSTS_ORIGINAL);
             File.Copy(HOSTS_PATH, HOSTS_ORIGINAL);
@@ -44,11 +44,6 @@ namespace PKSoft
 
         internal static void UpdateHostsFile(string path, bool enable)
         {
-            // If we have no backup of the user's original hosts file,
-            // we make a copy of it.
-            if (!File.Exists(HOSTS_ORIGINAL))
-                CreateOriginalBackup();
-
             // We keep a copy of the hosts file for ourself, so that
             // we can re-install it any time without a net connection.
             FileLocker.UnlockFile(HOSTS_BACKUP);
@@ -79,12 +74,25 @@ namespace PKSoft
 
         internal static void EnableHostsFile()
         {
+            // If we have no backup of the user's original hosts file,
+            // we make a copy of it.
+            if (!File.Exists(HOSTS_ORIGINAL))
+                CreateOriginalBackup();
+
             InstallHostsFile(HOSTS_BACKUP);
         }
 
         internal static void DisableHostsFile()
         {
             InstallHostsFile(HOSTS_ORIGINAL);
+
+            // Delete backup of original so that it can be
+            // recreated next time we install a custom hosts.
+            if (File.Exists(HOSTS_ORIGINAL))
+            {
+                FileLocker.UnlockFile(HOSTS_ORIGINAL);
+                File.Delete(HOSTS_ORIGINAL);
+            }
         }
 
         private static void InstallHostsFile(string sourcePath)
