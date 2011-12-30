@@ -3,6 +3,7 @@ Public changelog:
 - Fix: Fire rules may overwrite each other
 - Fix: Some DNS responses are blocked, leading to possibly slower DNS resolution
 - Fix: Generalize Steam profile for all Steam games
+- Tell user that admin rights are missing instead of disabling Uninstall button
 - Unblock Network Discovery when File and Printer Sharing is unblocked
 - Add support for Hamachi 2
 

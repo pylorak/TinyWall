@@ -262,7 +262,20 @@ namespace PKSoft
 
         private void btnUninstall_Click(object sender, EventArgs e)
         {
-            string msg = "You are about to remove TinyWall from your computer." + Environment.NewLine +
+            string msg = string.Empty;
+
+            if (!Utils.RunningAsAdmin())
+            {
+                msg = "You do not have administrative privileges needed to uninstall TinyWall." + Environment.NewLine +
+                "Select Elevate from the tray menu and try again.";
+
+                MessageBox.Show(this, msg, "Missing privileges", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+                return;
+            }
+
+
+            msg = "You are about to remove TinyWall from your computer." + Environment.NewLine +
             "Do you wish to uninstall TinyWall?";
 
             // Handle uninstall request
@@ -301,7 +314,6 @@ namespace PKSoft
 
             this.Text += " - " + SettingsManager.CurrentZone.ZoneName + " zone";
             this.Icon = Icons.firewall;
-            btnUninstall.Enabled = Utils.RunningAsAdmin();
             lblVersion.Text += " " + FileVersionInfo.GetVersionInfo(Utils.ExecutablePath).ProductVersion.ToString();
             tabControl1.SelectedIndex = TmpControllerConfig.ManageTabIndex;
 
