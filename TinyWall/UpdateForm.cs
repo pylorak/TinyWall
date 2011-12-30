@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Threading;
-using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Net;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace PKSoft
@@ -14,7 +11,7 @@ namespace PKSoft
 
     public partial class UpdateForm : Form
     {
-        TinyWallUpdater Updater = new TinyWallUpdater();
+        WebClient HTTPClient = new WebClient();
 
         public UpdateForm()
         {
@@ -51,10 +48,18 @@ namespace PKSoft
             // We use invoke to be able to update controls from the backgorund thread.
             ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
             {
-                Version UpdateVersion = new Version();
+                UpdateModule UpdateModule = null;
                 try
                 {
-                    UpdateVersion = Updater.CheckForNewVersion();
+                    UpdateDescriptor descriptor = UpdateChecker.GetDescriptor();
+                    for (int i = 0; i < descriptor.Modules.Length; ++i)
+                    {
+                        if (descriptor.Modules[i].Component == "TinyWall")
+                        {
+                            UpdateModule = descriptor.Modules[i];
+                            break;
+                        }
+                    }
                 }
                 catch
                 {
@@ -70,9 +75,9 @@ namespace PKSoft
 
                 Utils.Invoke(this, (MethodInvoker)delegate()
                 {
-                    if (UpdateVersion > new Version(Application.ProductVersion))
+                    if (new Version(UpdateModule.Version) > new Version(Application.ProductVersion))
                     {
-                        string prompt = "A newer version " + UpdateVersion.ToString() + " of TinyWall is available. Do you want to update now?";
+                        string prompt = "A newer version " + UpdateModule.Version + " of TinyWall is available. Do you want to update now?";
                         if (MessageBox.Show(this, prompt, "Update available", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.No)
                         {
                             this.Close();
@@ -81,9 +86,12 @@ namespace PKSoft
 
                         label1.Text = "Downloading update...";
                         progressBar1.Style = ProgressBarStyle.Blocks;
-                        Updater.DownloadProgressChanged += new DownloadProgressChangedEventHandler(Updater_DownloadProgressChanged);
-                        Updater.DownloadFinished += new TinyWallUpdater.DownloadFinishedEventHandler(Updater_DownloadFinished);
-                        Updater.StartUpdateDownload();
+
+                        string tmpFile = Path.GetTempFileName() + ".exe";
+                        Uri UpdateURL = new Uri(UpdateModule.UpdateURL);
+                        HTTPClient.DownloadFileCompleted += new AsyncCompletedEventHandler(Updater_DownloadFinished);
+                        HTTPClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(Updater_DownloadProgressChanged);
+                        HTTPClient.DownloadFileAsync(UpdateURL, tmpFile, tmpFile);
                     }
                     else
                     {
@@ -97,7 +105,7 @@ namespace PKSoft
             );
         }
 
-        void Updater_DownloadFinished(string file, AsyncCompletedEventArgs e)
+        void Updater_DownloadFinished(object sender, AsyncCompletedEventArgs e)
         {
             if (e.Cancelled || (e.Error != null))
             {
@@ -119,7 +127,7 @@ namespace PKSoft
             ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
             {
                 System.Threading.Thread.Sleep(2000);
-                Utils.StartProcess(file, "/SILENT", true);
+                Utils.StartProcess((string)e.UserState, "/SILENT", true);
                 Application.Exit();
             });
         }
@@ -143,60 +151,45 @@ namespace PKSoft
         }
     }
 
-    public class TinyWallUpdater
+    public class UpdateModule
     {
-        private const int UPDATER_VERSION = 1;
-        private const string URL_UPDATE_DESCRIPTOR = @"http://tinywall.pados.hu/updates/UpdVer{0}/updesc.txt";
-        private string UpdateDownloadURL;
+        public string Component;
+        public string Version;
+        public string UpdateURL;
+    }
 
-        public event DownloadProgressChangedEventHandler DownloadProgressChanged;
-        public delegate void DownloadFinishedEventHandler(string file, AsyncCompletedEventArgs e);
-        public event DownloadFinishedEventHandler DownloadFinished;
+    public class UpdateDescriptor
+    {
+        public string MagicWord = "TinyWall Update Descriptor";
+        public UpdateModule[] Modules;
+    }
 
-        private WebClient HTTPClient;
+    internal static class UpdateChecker
+    {
+        private const int UPDATER_VERSION = 2;
+        private const string URL_UPDATE_DESCRIPTOR = @"http://tinywall.pados.hu/updates/UpdVer{0}/updesc.xml";
 
-        public Version CheckForNewVersion()
+        internal static UpdateDescriptor GetDescriptor()
         {
             string url = string.Format(CultureInfo.InvariantCulture, URL_UPDATE_DESCRIPTOR, UPDATER_VERSION);
             string tmpFile = Path.GetTempFileName();
-            HTTPClient = new WebClient();
-            HTTPClient.DownloadFile(url, tmpFile);
 
-            using (StreamReader sr = new StreamReader(tmpFile))
+            try
             {
-                string line = sr.ReadLine();
-                if (line != "TinyWall Update Descriptor")
+                WebClient HTTPClient = new WebClient();
+                HTTPClient.DownloadFile(url, tmpFile);
+
+                UpdateDescriptor descriptor = SerializationHelper.LoadFromXMLFile<UpdateDescriptor>(tmpFile);
+                if (descriptor.MagicWord != "TinyWall Update Descriptor")
                     throw new ApplicationException("Bad update descriptor file.");
 
-                Version ver = new Version(sr.ReadLine());
-                UpdateDownloadURL = sr.ReadLine();
-                return ver;
+                return descriptor;
             }
-        }
-
-        public void StartUpdateDownload()
-        {
-            if (string.IsNullOrEmpty(UpdateDownloadURL))
-                throw new InvalidOperationException("Download path must first be retrieved by calling CheckForNewVersion().");
-
-            string tmpFile = Path.GetTempFileName() + ".exe";
-
-            HTTPClient = new WebClient();
-            HTTPClient.DownloadFileCompleted += new AsyncCompletedEventHandler(HTTPClient_DownloadFileCompleted);
-            HTTPClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(HTTPClient_DownloadProgressChanged);
-
-            Uri UpdateURL = new Uri(UpdateDownloadURL);
-            HTTPClient.DownloadFileAsync(UpdateURL, tmpFile, tmpFile);
-        }
-
-        void HTTPClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-        {
-            this.DownloadProgressChanged(this, e);
-        }
-
-        void HTTPClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            this.DownloadFinished(e.UserState as string, e);
+            finally
+            {
+                if (File.Exists(tmpFile))
+                    File.Delete(tmpFile);
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 Public changelog:
 - Tightened ICMP security
 - Firewall rule update without breaking existing connections
+- New XML-based updater system
 - Fix: Custom ports are not applied to services
 - Fix: Crash when bubble-editing new exception in GUI multiple times in a row
 - Fix: Fire rules may overwrite each other
