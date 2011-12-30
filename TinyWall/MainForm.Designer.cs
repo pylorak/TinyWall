@@ -38,12 +38,14 @@
             this.mnuModeBlockAll = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuModeAllowOutgoing = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuModeDisabled = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuAllowLocalSubnet = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuManage = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuConnections = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuLock = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuElevate = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuAllowLocalSubnet = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuEnableHostsBlocklist = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuWhitelistByExecutable = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuWhitelistByProcess = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuWhitelistByWindow = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,13 +74,16 @@
             this.mnuLock,
             this.mnuElevate,
             this.toolStripMenuItem2,
+            this.mnuAllowLocalSubnet,
+            this.mnuEnableHostsBlocklist,
+            this.toolStripMenuItem3,
             this.mnuWhitelistByExecutable,
             this.mnuWhitelistByProcess,
             this.mnuWhitelistByWindow,
             this.toolStripMenuItem5,
             this.mnuQuit});
             this.TrayMenu.Name = "TrayMenu";
-            this.TrayMenu.Size = new System.Drawing.Size(268, 242);
+            this.TrayMenu.Size = new System.Drawing.Size(268, 314);
             this.TrayMenu.Opening += new System.ComponentModel.CancelEventHandler(this.TrayMenu_Opening);
             // 
             // mnuCurrentPolicy
@@ -99,8 +104,7 @@
             this.mnuModeNormal,
             this.mnuModeBlockAll,
             this.mnuModeAllowOutgoing,
-            this.mnuModeDisabled,
-            this.mnuAllowLocalSubnet});
+            this.mnuModeDisabled});
             this.mnuMode.Name = "mnuMode";
             this.mnuMode.Size = new System.Drawing.Size(267, 22);
             this.mnuMode.Text = "Change mode";
@@ -132,13 +136,6 @@
             this.mnuModeDisabled.Size = new System.Drawing.Size(172, 22);
             this.mnuModeDisabled.Text = "Disable firewall";
             this.mnuModeDisabled.Click += new System.EventHandler(this.mnuModeDisabled_Click);
-            // 
-            // mnuAllowLocalSubnet
-            // 
-            this.mnuAllowLocalSubnet.Name = "mnuAllowLocalSubnet";
-            this.mnuAllowLocalSubnet.Size = new System.Drawing.Size(172, 22);
-            this.mnuAllowLocalSubnet.Text = "Allow LAN traffic";
-            this.mnuAllowLocalSubnet.Click += new System.EventHandler(this.mnuAllowLocalSubnet_Click);
             // 
             // mnuManage
             // 
@@ -176,6 +173,25 @@
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(264, 6);
+            // 
+            // mnuAllowLocalSubnet
+            // 
+            this.mnuAllowLocalSubnet.Name = "mnuAllowLocalSubnet";
+            this.mnuAllowLocalSubnet.Size = new System.Drawing.Size(267, 22);
+            this.mnuAllowLocalSubnet.Text = "Allow LAN traffic";
+            this.mnuAllowLocalSubnet.Click += new System.EventHandler(this.mnuAllowLocalSubnet_Click);
+            // 
+            // mnuEnableHostsBlocklist
+            // 
+            this.mnuEnableHostsBlocklist.Name = "mnuEnableHostsBlocklist";
+            this.mnuEnableHostsBlocklist.Size = new System.Drawing.Size(267, 22);
+            this.mnuEnableHostsBlocklist.Text = "Enable hosts blocklist";
+            this.mnuEnableHostsBlocklist.Click += new System.EventHandler(this.mnuEnableHostsBlocklist_Click);
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(264, 6);
             // 
             // mnuWhitelistByExecutable
             // 
@@ -260,11 +276,13 @@
         private System.Windows.Forms.ToolStripMenuItem mnuWhitelistByProcess;
         private System.Windows.Forms.ToolStripMenuItem mnuWhitelistByWindow;
         private System.Windows.Forms.ToolStripMenuItem mnuLock;
-        private System.Windows.Forms.ToolStripMenuItem mnuAllowLocalSubnet;
         private System.Windows.Forms.ToolStripMenuItem mnuElevate;
         private System.Windows.Forms.ToolStripMenuItem mnuConnections;
         private System.Windows.Forms.ToolStripMenuItem mnuModeAllowOutgoing;
         private System.Windows.Forms.OpenFileDialog ofd;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem mnuAllowLocalSubnet;
+        private System.Windows.Forms.ToolStripMenuItem mnuEnableHostsBlocklist;
     }
 }
 

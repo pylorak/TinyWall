@@ -170,7 +170,6 @@ namespace PKSoft
 
             // Find out if we are locked and if we have a password
             resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.GET_LOCK_STATE);
-            //cmdret = SendMsgToService(TinyWallCommands.GET_LOCK_STATE, null, out retargs);
             if (resp.Command == TinyWallCommands.RESPONSE_OK)
             {
                 // Are we locked?
@@ -181,6 +180,7 @@ namespace PKSoft
             }
 
             mnuAllowLocalSubnet.Checked = SettingsManager.CurrentZone.AllowLocalSubnet;
+            mnuEnableHostsBlocklist.Checked = SettingsManager.GlobalConfig.HostsBlocklist;
         }
 
         private void SetMode(FirewallMode mode)
@@ -624,9 +624,20 @@ namespace PKSoft
         {
             mnuAllowLocalSubnet.Checked = !mnuAllowLocalSubnet.Checked;
 
+            // TODO: Why do I copy here?
             ZoneSettings zoneCopy = SettingsManager.CurrentZone.Clone() as ZoneSettings;
-            zoneCopy.AllowLocalSubnet = mnuAllowLocalSubnet.Checked; ;
+            zoneCopy.AllowLocalSubnet = mnuAllowLocalSubnet.Checked;
             ApplyFirewallSettings(SettingsManager.GlobalConfig, zoneCopy);
+        }
+
+        private void mnuEnableHostsBlocklist_Click(object sender, EventArgs e)
+        {
+            mnuEnableHostsBlocklist.Checked = !mnuEnableHostsBlocklist.Checked;
+            SettingsManager.GlobalConfig.HostsBlocklist = mnuEnableHostsBlocklist.Checked;
+            if (SettingsManager.GlobalConfig.HostsBlocklist)
+                SettingsManager.GlobalConfig.LockHostsFile = true;
+
+            ApplyFirewallSettings(SettingsManager.GlobalConfig, SettingsManager.CurrentZone);
         }
 
         private void MainForm_Resize(object sender, EventArgs e)

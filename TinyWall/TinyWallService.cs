@@ -371,14 +371,12 @@ namespace PKSoft
 
         private void CheckForUpdates()
         {
-            if (DateTime.Now - SettingsManager.GlobalConfig.LastUpdateCheck < TimeSpan.FromDays(7))
-                return;
+        //    if (DateTime.Now - SettingsManager.GlobalConfig.LastUpdateCheck < TimeSpan.FromDays(7))
+          //      return;
 
             try
             {
                 UpdateDescriptor = UpdateChecker.GetDescriptor();
-                if (UpdateDescriptor == null)
-                    return;
             }
             catch
             {
@@ -391,6 +389,9 @@ namespace PKSoft
                 SettingsManager.GlobalConfig.LastUpdateCheck = DateTime.Now;
                 SettingsManager.GlobalConfig.Save();
             }
+
+            if (UpdateDescriptor == null)
+                return;
 
             if (SettingsManager.GlobalConfig.HostsBlocklist)
             {
