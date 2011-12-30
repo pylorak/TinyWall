@@ -83,7 +83,7 @@
             this.toolStripMenuItem5,
             this.mnuQuit});
             this.TrayMenu.Name = "TrayMenu";
-            this.TrayMenu.Size = new System.Drawing.Size(268, 314);
+            this.TrayMenu.Size = new System.Drawing.Size(268, 292);
             this.TrayMenu.Opening += new System.ComponentModel.CancelEventHandler(this.TrayMenu_Opening);
             // 
             // mnuCurrentPolicy
@@ -178,7 +178,7 @@
             // 
             this.mnuAllowLocalSubnet.Name = "mnuAllowLocalSubnet";
             this.mnuAllowLocalSubnet.Size = new System.Drawing.Size(267, 22);
-            this.mnuAllowLocalSubnet.Text = "Allow LAN traffic";
+            this.mnuAllowLocalSubnet.Text = "Unblock LAN traffic";
             this.mnuAllowLocalSubnet.Click += new System.EventHandler(this.mnuAllowLocalSubnet_Click);
             // 
             // mnuEnableHostsBlocklist

@@ -371,8 +371,8 @@ namespace PKSoft
 
         private void CheckForUpdates()
         {
-        //    if (DateTime.Now - SettingsManager.GlobalConfig.LastUpdateCheck < TimeSpan.FromDays(7))
-          //      return;
+            if (DateTime.Now - SettingsManager.GlobalConfig.LastUpdateCheck < TimeSpan.FromDays(7))
+                return;
 
             try
             {
