@@ -131,6 +131,7 @@ namespace PKSoft
         private const string ENC_IV = "X0@!H93!Y=8&/M/T";   // must be 16/24/32 bytes
 
         public bool LockHostsFile = false;
+        public bool HostsBlocklist = false;
 
         internal void Save()
         {

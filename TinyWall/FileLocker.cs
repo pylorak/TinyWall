@@ -5,20 +5,18 @@ using System.Text;
 
 namespace PKSoft
 {
-    internal class FileLocker : DisposableObject
+    internal static class FileLocker
     {
-        private Dictionary<string, FileStream> LockedFiles;
+        private static Dictionary<string, FileStream> LockedFiles = new Dictionary<string, FileStream>();
 
-        internal FileLocker()
+        internal static bool LockFile(string filePath, FileAccess localAccess, FileShare shareMode)
         {
-            LockedFiles = new Dictionary<string, FileStream>();
-        }
+            if (IsLocked(filePath))
+                return false;
 
-        internal bool LockFile(string fn, FileAccess localAccess, FileShare shareMode)
-        {
             try
             {
-                LockedFiles.Add(fn, new FileStream(fn, FileMode.OpenOrCreate, localAccess, shareMode));
+                LockedFiles.Add(filePath, new FileStream(filePath, FileMode.OpenOrCreate, localAccess, shareMode));
                 return true;
             }
             catch
@@ -27,17 +25,25 @@ namespace PKSoft
             }
         }
 
-        internal FileStream GetStream(string fn)
+        internal static FileStream GetStream(string filePath)
         {
-            return LockedFiles[fn];
+            return LockedFiles[filePath];
         }
 
-        internal bool UnlockFile(string fn)
+        internal static bool IsLocked(string filePath)
         {
+            return LockedFiles.ContainsKey(filePath);
+        }
+
+        internal static bool UnlockFile(string filePath)
+        {
+            if (!IsLocked(filePath))
+                return false;
+
             try
             {
-                LockedFiles[fn].Close();
-                LockedFiles.Remove(fn);
+                LockedFiles[filePath].Close();
+                LockedFiles.Remove(filePath);
                 return true;
             }
             catch
@@ -46,22 +52,10 @@ namespace PKSoft
             }
         }
 
-        internal void UnlockAll()
+        internal static void UnlockAll()
         {
-            foreach (string fn in LockedFiles.Keys)
-                UnlockFile(fn);
-        }
-
-        protected override void DisposeManaged()
-        {
-            UnlockAll();
-            base.DisposeManaged();
-        }
-
-        ~FileLocker()
-        {
-            // Finalizer calls Dispose(false)
-            Dispose(false);
+            foreach (string filePath in LockedFiles.Keys)
+                UnlockFile(filePath);
         }
     }
 }

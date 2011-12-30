@@ -117,6 +117,7 @@
     <Compile Include="FileLocker.cs" />
     <Compile Include="FirewallMode.cs" />
     <Compile Include="GlobalInstances.cs" />
+    <Compile Include="HostsFileManager.cs" />
     <Compile Include="Hotkey.cs" />
     <Compile Include="Icons.Designer.cs">
       <AutoGen>True</AutoGen>

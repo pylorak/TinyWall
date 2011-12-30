@@ -41,7 +41,6 @@ namespace PKSoft
         private string ProfileDisplayName;
         private FirewallMode Mode = FirewallMode.Normal;
         private bool UninstallRequested = false;
-        private FileLocker FileLocker;
 
         private void AssembleActiveRules()
         {
@@ -348,11 +347,9 @@ namespace PKSoft
             AssembleActiveRules();
             MergeActiveRulesIntoWinFirewall();
 
-            string HostsFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"drivers\etc\hosts");
-            if (SettingsManager.GlobalConfig.LockHostsFile)
-                FileLocker.LockFile(HostsFilePath, FileAccess.Read, FileShare.Read);
-            else
-                FileLocker.UnlockFile(HostsFilePath);
+            HostsFileManager.EnableProtection(SettingsManager.GlobalConfig.LockHostsFile);
+            if (SettingsManager.GlobalConfig.HostsBlocklist)
+                HostsFileManager.EnableHostsFile();
 
             if (MinuteTimer != null)
             {
@@ -494,7 +491,7 @@ namespace PKSoft
                     {
                         UninstallRequested = true;
 
-                        // Disable automatic start of service
+                        // Disable automatic re-start of service
                         try
                         {
                             using (ScmWrapper.ServiceControlManager scm = new ScmWrapper.ServiceControlManager())
@@ -507,6 +504,9 @@ namespace PKSoft
 
                         // Disable automatic start of controller
                         Utils.RunAtStartup("TinyWall Controller", null);
+
+                        // Put back the user's original hosts file
+                        HostsFileManager.DisableHostsFile();
 
                         // Reset Windows Firewall to its default state
                         Firewall.ResetFirewall();
@@ -727,7 +727,6 @@ namespace PKSoft
             {
                 EventLog.WriteEntry("TinyWall service starting up.");
 
-                FileLocker = new PKSoft.FileLocker();
                 FileLocker.LockFile(ProfileManager.DBPath, FileAccess.Read, FileShare.Read);
                 FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
 
