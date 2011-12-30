@@ -1,5 +1,6 @@
 Public changelog:
 - Tightened ICMP security
+- Support for hosts file management (blocklist, updates & protection)
 - Firewall rule update without breaking existing connections
 - New XML-based updater system
 - Fix: Custom ports are not applied to services
