@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Diagnostics;
 using System.Configuration.Install;
 using System.Reflection;
@@ -99,6 +100,10 @@ namespace PKSoft
                     ManagedInstallerClass.InstallHelper(new string[] { "/u", Utils.ExecutablePath });
                 }
                 catch { }
+
+                // Remove user settings
+                string UserDir = ControllerSettings.UserDataPath;
+                Directory.Delete(UserDir, true);
 
                 return 0;
             }

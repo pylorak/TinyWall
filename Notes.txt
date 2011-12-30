@@ -3,6 +3,7 @@ Public changelog:
 - Support for hosts file management (blocklist, updates & protection)
 - Firewall rule update without breaking existing connections
 - New XML-based updater system
+- Fix: Uninstaller now removes user-specific configuration files too
 - Fix: Custom ports are not applied to services
 - Fix: Crash when bubble-editing new exception in GUI multiple times in a row
 - Fix: Fire rules may overwrite each other
