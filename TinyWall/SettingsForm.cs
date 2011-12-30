@@ -423,7 +423,7 @@ namespace PKSoft
             if (chkHostsBlocklist.Checked)
                 chkLockHostsFile.Checked = true;
 
-            chkLockHostsFile.Enabled = !chkLockHostsFile.Checked;
+            chkLockHostsFile.Enabled = !chkHostsBlocklist.Checked;
         }
     }
 }

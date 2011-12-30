@@ -38,7 +38,7 @@ namespace PKSoft
         private static void CreateOriginalBackup()
         {
             FileLocker.UnlockFile(HOSTS_ORIGINAL);
-            File.Copy(HOSTS_PATH, HOSTS_ORIGINAL);
+            File.Copy(HOSTS_PATH, HOSTS_ORIGINAL, true);
             FileLocker.LockFile(HOSTS_ORIGINAL, FileAccess.Read, FileShare.Read);
         }
 
@@ -47,7 +47,7 @@ namespace PKSoft
             // We keep a copy of the hosts file for ourself, so that
             // we can re-install it any time without a net connection.
             FileLocker.UnlockFile(HOSTS_BACKUP);
-            File.Copy(path, HOSTS_BACKUP);
+            File.Copy(path, HOSTS_BACKUP, true);
             FileLocker.LockFile(HOSTS_BACKUP, FileAccess.Read, FileShare.Read);
 
             if (enable)
@@ -102,7 +102,7 @@ namespace PKSoft
                 if (File.Exists(sourcePath))
                 {
                     FileLocker.UnlockFile(HOSTS_PATH);
-                    File.Copy(sourcePath, HOSTS_PATH);
+                    File.Copy(sourcePath, HOSTS_PATH, true);
                 }
             }
             finally

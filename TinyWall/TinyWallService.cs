@@ -353,6 +353,8 @@ namespace PKSoft
             HostsFileManager.EnableProtection(SettingsManager.GlobalConfig.LockHostsFile);
             if (SettingsManager.GlobalConfig.HostsBlocklist)
                 HostsFileManager.EnableHostsFile();
+            else
+                HostsFileManager.DisableHostsFile();
 
             if (MinuteTimer != null)
             {
@@ -369,8 +371,8 @@ namespace PKSoft
 
         private void CheckForUpdates()
         {
-         //   if (DateTime.Now - SettingsManager.GlobalConfig.LastUpdateCheck < TimeSpan.FromDays(7))
-           //     return;
+            if (DateTime.Now - SettingsManager.GlobalConfig.LastUpdateCheck < TimeSpan.FromDays(7))
+                return;
 
             try
             {
