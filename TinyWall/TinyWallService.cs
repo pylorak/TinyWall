@@ -409,8 +409,20 @@ namespace PKSoft
 
         void HostsDownloader_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
+            // Don't continue if the download didn't finish
+            if (e.Cancelled || (e.Error != null))
+                return;
+
             string tmpHostsPath = (string)e.UserState;
-            HostsFileManager.UpdateHostsFile(tmpHostsPath, SettingsManager.GlobalConfig.HostsBlocklist);
+            try
+            {
+                HostsFileManager.UpdateHostsFile(tmpHostsPath, SettingsManager.GlobalConfig.HostsBlocklist);
+            }
+            finally
+            {
+                if (File.Exists(tmpHostsPath))
+                    File.Delete(tmpHostsPath);
+            }
         }
 
         public void TimerCallback(Object state)
