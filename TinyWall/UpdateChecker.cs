@@ -5,6 +5,7 @@ using System.Net;
 
 namespace PKSoft
 {
+    [Serializable]
     public class UpdateModule
     {
         public string Component;
@@ -12,6 +13,7 @@ namespace PKSoft
         public string UpdateURL;
     }
 
+    [Serializable]
     public class UpdateDescriptor
     {
         public string MagicWord = "TinyWall Update Descriptor";

@@ -366,7 +366,7 @@ namespace PKSoft
                 MinuteTimer = null;
             }
 
-            MinuteTimer = new Timer(new TimerCallback(TimerCallback), null, 0, 60000);
+            MinuteTimer = new Timer(new TimerCallback(TimerCallback), null, 60000, 60000);
         }
 
         private void CheckForUpdates()

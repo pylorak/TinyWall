@@ -58,7 +58,7 @@ namespace PKSoft
         {
             if ((SettingsManager.GlobalConfig.AutoUpdateCheck) && (UpdateTimer == null))
             {
-                UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(1), TimeSpan.FromHours(2));
+                UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(2), TimeSpan.FromHours(2));
             }
             if ((!SettingsManager.GlobalConfig.AutoUpdateCheck) && (UpdateTimer != null))
             {
