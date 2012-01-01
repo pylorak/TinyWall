@@ -58,6 +58,10 @@ namespace PKSoft
 
         void LogWatcher_EventRecordWritten(object sender, EventRecordWrittenEventArgs e)
         {
+            // Safe guard against using up all memory
+            if (NewEntries.Count >= 1000)
+                return;
+
             FirewallLogEntry entry = new FirewallLogEntry();
             entry.Event = (EventLogEvent)e.EventRecord.Id;
 
