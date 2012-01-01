@@ -310,7 +310,10 @@ namespace PKSoft
 
             LoadProfile();
             if (!SettingsManager.CurrentZone.EnableDefaultWindowsRules)
-                FwRules.Clear();
+            {
+                for (int i = 0; i < FwRules.Count; ++i)
+                    FwRules[i].Enabled = false;
+            }
 
             ReapplySettings();
         }
