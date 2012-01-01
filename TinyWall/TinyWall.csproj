@@ -115,6 +115,7 @@
     </Compile>
     <Compile Include="DisposableObject.cs" />
     <Compile Include="FileLocker.cs" />
+    <Compile Include="FirewallLogWatcher.cs" />
     <Compile Include="FirewallMode.cs" />
     <Compile Include="GlobalInstances.cs" />
     <Compile Include="HostsFileManager.cs" />
