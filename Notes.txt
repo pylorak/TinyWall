@@ -1,5 +1,6 @@
 Public changelog:
-- Fix: Crash when bubble-editing new exception in GUI multiple times in a row
+- Fix: Controller crash when bubble-editing new exception in GUI multiple times in a row
+- Fix: Controller crash after exception modification in Manage window, when Modify is clicked again
 - Fix: Unlikely crash when populating list in Connections form
 - Fix: Firewall rules may overwrite each other
 - Fix: Some DNS responses are blocked, leading to possibly slower DNS resolution
