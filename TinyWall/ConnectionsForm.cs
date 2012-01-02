@@ -31,13 +31,13 @@ namespace PKSoft
             foreach (TcpRow tcpRow in tcpTable)
             {
                 if (chkShowListen.Checked || (tcpRow.State != TcpState.Listen))
-                    itemColl.Add(ConstructListItem(tcpRow.ProcessId, "TCP/IPv4", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString()));
+                    ConstructListItem(itemColl, tcpRow.ProcessId, "TCP/IPv4", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString());
             }
             tcpTable = NetStat.GetExtendedTcp6Table(false);
             foreach (TcpRow tcpRow in tcpTable)
             {
                 if (chkShowListen.Checked || (tcpRow.State != TcpState.Listen))
-                    itemColl.Add(ConstructListItem(tcpRow.ProcessId, "TCP/IPv6", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString()));
+                    ConstructListItem(itemColl, tcpRow.ProcessId, "TCP/IPv6", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString());
             }
 
             if (chkShowListen.Checked)
@@ -46,12 +46,12 @@ namespace PKSoft
                 UdpTable udpTable = NetStat.GetExtendedUdp4Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
-                    itemColl.Add(ConstructListItem(udpRow.ProcessId, "UDP/IPv4", udpRow.LocalEndPoint, dummyEP, "Listen"));
+                    ConstructListItem(itemColl, udpRow.ProcessId, "UDP/IPv4", udpRow.LocalEndPoint, dummyEP, "Listen");
                 }
                 udpTable = NetStat.GetExtendedUdp6Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
-                    itemColl.Add(ConstructListItem(udpRow.ProcessId, "UDP/IPv6", udpRow.LocalEndPoint, dummyEP, "Listen"));
+                    ConstructListItem(itemColl, udpRow.ProcessId, "UDP/IPv6", udpRow.LocalEndPoint, dummyEP, "Listen");
                 }
             }
 
@@ -61,10 +61,21 @@ namespace PKSoft
             list.ResumeLayout(false);
         }
 
-        private ListViewItem ConstructListItem(int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state)
+        private void ConstructListItem(List<ListViewItem> itemColl, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state)
         {
             // Get process
-            Process proc = Process.GetProcessById(procId);
+            Process proc = null;
+            try
+            {
+                proc = Process.GetProcessById(procId);
+            }
+            catch (ArgumentException)
+            {
+                // Process ID has become invalid,
+                // do not add item to collection.
+                return;
+            }
+
             ListViewItem li = new ListViewItem(proc.ProcessName + " (" + proc.Id + ")");
             li.Tag = proc.Id;
 
@@ -94,7 +105,7 @@ namespace PKSoft
             li.SubItems.Add(remoteEP.Port.ToString().PadLeft(5));
             li.SubItems.Add(remoteEP.Address.ToString());
             li.SubItems.Add(state);
-            return li;
+            itemColl.Add(li);
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)

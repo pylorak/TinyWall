@@ -1,6 +1,7 @@
 Public changelog:
 - Fix: Crash when bubble-editing new exception in GUI multiple times in a row
-- Fix: Fire rules may overwrite each other
+- Fix: Unlikely crash when populating list in Connections form
+- Fix: Firewall rules may overwrite each other
 - Fix: Some DNS responses are blocked, leading to possibly slower DNS resolution
 - Fix: Generalize Steam profile for all Steam games
 - Tell user that admin rights are missing instead of disabling Uninstall button
