@@ -1,0 +1,41 @@
+TinyWall Changelog
+---------------------
+
+1.0.3 - Maintenance (not yet released)
+- Fix: Controller crash when bubble-editing new exception in GUI multiple times in a row
+- Fix: Controller crash after exception modification in Manage window, when Modify is clicked again
+- Fix: Low chance of controller crash when populating list in Connections form
+- Fix: Firewall rules may overwrite each other
+- Fix: Some DNS responses are blocked, leading to possibly slower DNS resolution
+- Fix: False filtering of ICMPv6 traffic
+- Fix: Generalize Steam profile for all Steam games
+- Tell user that admin rights are missing instead of disabling Uninstall button
+- Enable LLMNR when Printer and File Sharing is enabled
+- Add support for Hamachi 2
+
+---------------------
+
+1.0.2 - Maintenance (27.12.2011.)
+- Fix: False merge of firewalls rule upon new exception, leading to loss of connectivity
+- Fix: Adding a new rule might not show up in the Manage window, even though it is applied correctly
+
+---------------------
+
+1.0.1 - Maintenance (26.12.2011.)
+- Improved startup performance
+- Fix: Active tab should only be restored upon load in Manage window
+- Fix: Timed exceptions get removed too early
+- Fix: Cancelling a process- or service-selection window may cause crash
+- Add context menu to terminate a process in the Connections window
+- When adding a new exception, always tell the user if the app was recognized in the bubble notification
+- Option to click the bubble notification to edit any freshly added exception
+- Slightly reduced binary size
+- Installer fixes
+- Include offline FAQ in the installer
+- Updated application profiles
+
+---------------------
+
+1.0.0 - Initial release (04.12.2011.)
+For changes since beta and RC versions, see
+http://www.wilderssecurity.com/showthread.php?t=309739
