@@ -128,7 +128,7 @@ namespace PKSoft
 
         internal static T LoadFromXMLFile<T>(string filepath)
         {
-            using (TextReader reader = new StreamReader(filepath))
+            using (TextReader reader = new StreamReader(filepath, Encoding.UTF8))
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
                 return (T)serializer.Deserialize(reader);
