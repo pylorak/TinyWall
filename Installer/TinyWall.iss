@@ -99,7 +99,8 @@ CustomForm_Caption=Important notice
 CustomForm_Description=Please read the following carefully to avoid confusion
 CustomForm_Label1_Caption0= \
 1. To uninstall TinyWall, you must use the Uninstall command from the tray %n \
-   application. The Windows Control Panel cannot be used for uninstallation. %n \
+   application (in Manage, Maintenance). The Windows Control Panel cannot %n \
+   be used for uninstallation. %n \
 %n \
 2. After installation finishes, TinyWall prevents network access for most programs.%n \
    This means in general you won't be able to access the internet. To grant specific %n \
@@ -140,5 +141,15 @@ end;
 procedure InitializeWizard;
 begin
   Page := CreateCustomPage( wpLicense, ExpandConstant('{cm:CustomForm_Caption}'), ExpandConstant('{cm:CustomForm_Description}') );
-  { Label1 } Label1 := TLabel.Create(Page); with Label1 do begin Parent := Page.Surface; Caption := ExpandConstant('{cm:CustomForm_Label1_Caption0}'); Left := ScaleX(16); Top := ScaleY(24); Width := ScaleX(400); Height := ScaleY(400); end;
+  { Label1 } Label1 := TLabel.Create(Page);
+   with Label1 do
+   begin 
+    Parent := Page.Surface;
+    Caption := ExpandConstant('{cm:CustomForm_Label1_Caption0}');
+    Left := ScaleX(16);
+    Top := ScaleY(24);
+    Width := ScaleX(400);
+    Height := ScaleY(400);
+    Font.Color := clRed;
+   end;
 end;
