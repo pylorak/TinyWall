@@ -4,14 +4,15 @@ TinyWall Changelog
 1.0.3 - Maintenance (not yet released)
 - Fix: Controller crash when bubble-editing new exception in GUI multiple times in a row
 - Fix: Controller crash after exception modification in Manage window, when Modify is clicked again
-- Fix: Low chance of controller crash when populating list in Connections form
+- Fix: Possible controller crash when populating list in Connections form
 - Fix: Firewall rules may overwrite each other
 - Fix: Some DNS responses are blocked, leading to possibly slower DNS resolution
-- Fix: False filtering of ICMPv6 traffic
+- Fix: Wrong filtering of ICMPv6 traffic
+- Fix: GUI is not updated when timed rules are removed
 - Fix: Generalize Steam profile for all Steam games
 - Tell user that admin rights are missing instead of disabling Uninstall button
-- Enable LLMNR when Printer and File Sharing is enabled
-- Add support for Hamachi 2
+- New and updated application profiles
+- Updated FAQ (please read it)
 
 ---------------------
 

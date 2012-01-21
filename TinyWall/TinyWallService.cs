@@ -536,6 +536,7 @@ namespace PKSoft
                         {
                             SettingsManager.CurrentZone.AppExceptions = exs;
                             SettingsManager.CurrentZone.Save();
+                            ++SettingsManager.Changeset;
                         }
 
                         return new Message(TinyWallCommands.RESPONSE_OK);
