@@ -1,7 +1,7 @@
 TinyWall Changelog
 ---------------------
 
-1.0.3 - Maintenance (not yet released)
+1.0.3 - Maintenance (21.01.2012.)
 - Fix: Controller crash when bubble-editing new exception in GUI multiple times in a row
 - Fix: Controller crash after exception modification in Manage window, when Modify is clicked again
 - Fix: Possible controller crash when populating list in Connections form
