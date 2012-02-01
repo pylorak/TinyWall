@@ -81,38 +81,7 @@ namespace PKSoft
                 for (int i = 0; i < TmpZoneConfig.AppExceptions.Length; ++i)
                 {
                     AppExceptionSettings ex = TmpZoneConfig.AppExceptions[i];
-                    string name = string.IsNullOrEmpty(ex.ServiceName) ? ex.ExecutableName : "Srv: " + ex.ServiceName;
-
-                    ListViewItem li = new ListViewItem(name);
-                    li.SubItems.Add(ex.ExecutablePath);
-                    li.Tag = ex;
-
-                    if (File.Exists(ex.ExecutablePath))
-                    {
-                        if (!IconList.Images.ContainsKey(ex.ExecutablePath))
-                            IconList.Images.Add(ex.ExecutablePath, Utils.GetIcon(ex.ExecutablePath, 16, 16));
-                        li.ImageKey = ex.ExecutablePath;
-                    }
-                    else
-                        li.ImageKey = "deleted";
-
-                    string AppProfiles = string.Empty;
-                    if (ex.Profiles.Length > 0)
-                    {
-                        // Add first profile
-                        if (GlobalInstances.ProfileMan.GetProfile(ex.Profiles[0]) != null)
-                            AppProfiles = ex.Profiles[0];
-
-                        // Add rest of profiles
-                        for (int j = 1; j < ex.Profiles.Length; ++j)
-                        {
-                            if (GlobalInstances.ProfileMan.GetProfile(ex.Profiles[j]) != null)
-                                AppProfiles += ", " + ex.Profiles[j];
-                        }
-                    }
-
-                    li.SubItems.Add(AppProfiles);
-                    listApplications.Items.Add(li);
+                    listApplications.Items.Add(ListItemFromAppException(ex));
                 }
                 listApplications.ResumeLayout(true);
             }
@@ -120,6 +89,42 @@ namespace PKSoft
             {
                 LoadingSettings = false;
             }
+        }
+
+        private ListViewItem ListItemFromAppException(AppExceptionSettings ex)
+        {
+            string name = string.IsNullOrEmpty(ex.ServiceName) ? ex.ExecutableName : "Srv: " + ex.ServiceName;
+
+            ListViewItem li = new ListViewItem(name);
+            li.SubItems.Add(ex.ExecutablePath);
+            li.Tag = ex;
+
+            if (File.Exists(ex.ExecutablePath))
+            {
+                if (!IconList.Images.ContainsKey(ex.ExecutablePath))
+                    IconList.Images.Add(ex.ExecutablePath, Utils.GetIcon(ex.ExecutablePath, 16, 16));
+                li.ImageKey = ex.ExecutablePath;
+            }
+            else
+                li.ImageKey = "deleted";
+
+            string AppProfiles = string.Empty;
+            if (ex.Profiles.Length > 0)
+            {
+                // Add first profile
+                if (GlobalInstances.ProfileMan.GetProfile(ex.Profiles[0]) != null)
+                    AppProfiles = ex.Profiles[0];
+
+                // Add rest of profiles
+                for (int j = 1; j < ex.Profiles.Length; ++j)
+                {
+                    if (GlobalInstances.ProfileMan.GetProfile(ex.Profiles[j]) != null)
+                        AppProfiles += ", " + ex.Profiles[j];
+                }
+            }
+
+            li.SubItems.Add(AppProfiles);
+            return li;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -206,10 +211,15 @@ namespace PKSoft
                     // Add new rule
                     TmpZoneConfig.AppExceptions = Utils.ArrayAddItem(TmpZoneConfig.AppExceptions, f.ExceptionSettings);
                     TmpZoneConfig.Normalize();
-                    // Reload UI
-                    InitSettingsUI();
+
+                    ListViewItem newLi = ListItemFromAppException(f.ExceptionSettings);
+                    listApplications.Items.Insert(li.Index, newLi);
+                    listApplications.Items.Remove(li);
+                    newLi.Selected = true;
                 }
             }
+
+            listApplications.Focus();
         }
 
         private void btnAppAdd_Click(object sender, EventArgs e)
@@ -266,7 +276,20 @@ namespace PKSoft
 
         private void btnUninstall_Click(object sender, EventArgs e)
         {
-            string msg = "You are about to remove TinyWall from your computer." + Environment.NewLine +
+            string msg = string.Empty;
+
+            if (!Utils.RunningAsAdmin())
+            {
+                msg = "You do not have administrative privileges needed to uninstall TinyWall." + Environment.NewLine +
+                "Select Elevate from the tray menu and try again.";
+
+                MessageBox.Show(this, msg, "Missing privileges", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+                return;
+            }
+
+
+            msg = "You are about to remove TinyWall from your computer." + Environment.NewLine +
             "Do you wish to uninstall TinyWall?";
 
             // Handle uninstall request
@@ -305,7 +328,6 @@ namespace PKSoft
 
             this.Text += " - " + SettingsManager.CurrentZone.ZoneName + " zone";
             this.Icon = Icons.firewall;
-            btnUninstall.Enabled = Utils.RunningAsAdmin();
             lblVersion.Text += " " + FileVersionInfo.GetVersionInfo(Utils.ExecutablePath).ProductVersion.ToString();
             tabControl1.SelectedIndex = TmpControllerConfig.ManageTabIndex;
 

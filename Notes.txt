@@ -1,16 +1,10 @@
 Public changelog:
-- Tightened ICMP security
 - Support for hosts file management (blocklist, updates & protection)
 - Firewall rule update without breaking existing connections
 - New XML-based updater system
 - Fix: Uninstaller now removes user-specific configuration files too
 - Fix: Custom ports are not applied to services
-- Fix: Crash when bubble-editing new exception in GUI multiple times in a row
-- Fix: Fire rules may overwrite each other
-- Fix: Some DNS responses are blocked, leading to possibly slower DNS resolution
-- Fix: Generalize Steam profile for all Steam games
-- Unblock Network Discovery when File and Printer Sharing is unblocked
-- Add support for Hamachi 2
+- Better ICMP security
 
 Future developent:
 - App profile submission system

@@ -3,13 +3,13 @@
 
 #define MyAppName "TinyWall"
 #define MyAppNameNoVersion "TinyWall"
-#define MyAppVersion "1.0.2"
+#define MyAppVersion "1.0.3"
 #define MyAppPublisher "Károly Pados"
 
-#define TW_TinyWall_exe_SN "TinyWall, Version=1.0.2.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
+#define TW_TinyWall_exe_SN "TinyWall, Version=1.0.3.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
 #define TW_NetFwTypeLib_dll_SN "Interop.NetFwTypeLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
 #define TW_TransparentLabel_dll_SN "TransparentLabel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0b469a20c1a49c6a"
-#define TW_XmlSerializers_dll_SN "TinyWall.XmlSerializers, Version=1.0.2.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
+#define TW_XmlSerializers_dll_SN "TinyWall.XmlSerializers, Version=1.0.3.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -41,8 +41,9 @@ UninstallDisplayName=TinyWall
 UninstallDisplayIcon={app}\TinyWall.exe
 PrivilegesRequired=admin
 ShowLanguageDialog=no
-AppCopyright=Copyright (c) 2011 {#MyAppPublisher}
+AppCopyright=Copyright (c) 2011-2012 {#MyAppPublisher}
 AppVerName={#MyAppVersion}
+VersionInfoVersion={#MyAppVersion}
 AllowCancelDuringInstall=false
 LicenseFile=Components/License.txt
 
@@ -99,7 +100,8 @@ CustomForm_Caption=Important notice
 CustomForm_Description=Please read the following carefully to avoid confusion
 CustomForm_Label1_Caption0= \
 1. To uninstall TinyWall, you must use the Uninstall command from the tray %n \
-   application. The Windows Control Panel cannot be used for uninstallation. %n \
+   application (in Manage, Maintenance). The Windows Control Panel cannot %n \
+   be used for uninstallation. %n \
 %n \
 2. After installation finishes, TinyWall prevents network access for most programs.%n \
    This means in general you won't be able to access the internet. To grant specific %n \
@@ -140,5 +142,15 @@ end;
 procedure InitializeWizard;
 begin
   Page := CreateCustomPage( wpLicense, ExpandConstant('{cm:CustomForm_Caption}'), ExpandConstant('{cm:CustomForm_Description}') );
-  { Label1 } Label1 := TLabel.Create(Page); with Label1 do begin Parent := Page.Surface; Caption := ExpandConstant('{cm:CustomForm_Label1_Caption0}'); Left := ScaleX(16); Top := ScaleY(24); Width := ScaleX(400); Height := ScaleY(400); end;
+  { Label1 } Label1 := TLabel.Create(Page);
+   with Label1 do
+   begin 
+    Parent := Page.Surface;
+    Caption := ExpandConstant('{cm:CustomForm_Label1_Caption0}');
+    Left := ScaleX(16);
+    Top := ScaleY(24);
+    Width := ScaleX(400);
+    Height := ScaleY(400);
+    Font.Color := clRed;
+   end;
 end;
