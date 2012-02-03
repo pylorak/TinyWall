@@ -11,6 +11,73 @@ namespace PKSoft
 {
     static class Program
     {
+        private static int StartDevelTool()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new DevelToolForm());
+            return 0;
+        }
+        
+        private static int StartService()
+        {
+            bool mutexok;
+            using (Mutex SingleInstanceMutex = new Mutex(true, @"Global\TinyWallService", out mutexok))
+            {
+                if (!mutexok)
+                {
+                    return -1;
+                }
+
+                TinyWallService tw = new TinyWallService();
+
+#if DEBUG
+                tw.Start(null);
+#else
+                ServiceBase.Run(tw);
+#endif
+                return 0;
+            }
+        }
+
+        private static int StartController(CmdLineArgs opts)
+        {
+#if !DEBUG
+            #region See if the service is installed and running, and try to correct it if not
+
+                bool isRunning;
+                try
+                {
+                    using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
+                    {
+                        isRunning = (sc.Status == ServiceControllerStatus.Running) || (sc.Status == ServiceControllerStatus.StartPending);
+                    }
+                }
+                catch
+                {
+                    isRunning = false;
+                }
+
+                if (!isRunning)
+                {
+                    try
+                    {
+                        Process p = Utils.StartProcess(Utils.ExecutablePath, "/install", true);
+                        p.WaitForExit();
+                    }
+                    catch { }
+                }
+
+            #endregion
+#endif
+
+            // Start controller application
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new MainForm(opts));
+            return 0;
+        }
+
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
         /// </summary>
@@ -28,24 +95,21 @@ namespace PKSoft
 
             // Parse comman-line options
             CmdLineArgs opts = new CmdLineArgs();
-            opts.desktop = Utils.ArrayContains(args, "/desktop");
+            if (Utils.ArrayContains(args, "/desktop"))
+                opts.ProgramMode = StartUpMode.Controller;
+            if (Utils.ArrayContains(args, "/service"))
+                opts.ProgramMode = StartUpMode.Service;
+            if (Utils.ArrayContains(args, "/selfhosted"))
+                opts.ProgramMode = StartUpMode.SelfHosted;
+            if (Utils.ArrayContains(args, "/develtool"))
+                opts.ProgramMode = StartUpMode.DevelTool;
             opts.detectnow = Utils.ArrayContains(args, "/detectnow");
             opts.updatenow = Utils.ArrayContains(args, "/updatenow");
-            opts.service = Utils.ArrayContains(args, "/service");
             opts.install = Utils.ArrayContains(args, "/install");
             opts.uninstall = Utils.ArrayContains(args, "/uninstall");
-            opts.develtool = Utils.ArrayContains(args, "/develtool");
 
-            #region /develtool
-            if (opts.develtool)
-            {
-                // Start builtin tool
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new DevelToolForm());
-                return 0;
-            }
-            #endregion
+            if (opts.ProgramMode == StartUpMode.Invalid)
+                opts.ProgramMode = StartUpMode.Controller;
 
             #region /install
             if (opts.install)
@@ -109,82 +173,22 @@ namespace PKSoft
             }
             #endregion
 
-            if ((opts.service == true) && (opts.desktop == true))
+            switch (opts.ProgramMode)
             {
-                Console.WriteLine("Invalid combination of command line options.");
-                return -1;
-            }
+                case StartUpMode.Controller:
+                    return StartController(opts);
+                case StartUpMode.DevelTool:
+                    return StartDevelTool();
+                case StartUpMode.SelfHosted:
+                    StartService();
+                    Thread.Sleep(500);
+                    return StartController(opts);
+                case StartUpMode.Service:
+                    return StartService();
+                default:
+                    return -1;
+            } // switch
 
-            if ((opts.service == false) && (opts.desktop == false))
-            {
-                opts.desktop = true;
-            }
-
-            if (opts.desktop)
-            {
-                #region /desktop
-#if !DEBUG
-                #region See if the service is installed and running, and try to correct if not
-
-                bool isRunning;
-                try
-                {
-                    using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
-                    {
-                        isRunning = (sc.Status == ServiceControllerStatus.Running) || (sc.Status == ServiceControllerStatus.StartPending);
-                    }
-                }
-                catch
-                {
-                    isRunning = false;
-                }
-
-                if (!isRunning)
-                {
-                    try
-                    {
-                        Process p = Utils.StartProcess(Utils.ExecutablePath, "/install", true);
-                        p.WaitForExit();
-                    }
-                    catch { }
-                }
-
-                #endregion
-#endif
-
-                // Start controller application
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new MainForm(opts));
-                return 0;
-                #endregion
-            }
-            else
-            {
-                #region /service
-                // Start service
-
-                bool mutexok;
-                using (Mutex SingleInstanceMutex = new Mutex(true, @"Global\TinyWallService", out mutexok))
-                {
-                    if (!mutexok)
-                    {
-                        return -1;
-                    }
-
-                    TinyWallService tw = new TinyWallService();
-
-#if DEBUG
-                tw.Start(null);
-                for (; ; )
-                    Thread.Sleep(10000000);
-#endif
-
-                    ServiceBase.Run(tw);
-                    return 0;
-                }
-                #endregion
-            } // if
         } // Main
     } // class
 } //namespace

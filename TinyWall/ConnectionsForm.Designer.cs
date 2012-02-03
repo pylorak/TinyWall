@@ -124,14 +124,14 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuCloseProcess});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(147, 26);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // mnuCloseProcess
             // 
             this.mnuCloseProcess.Image = global::PKSoft.Icons.exit;
             this.mnuCloseProcess.Name = "mnuCloseProcess";
-            this.mnuCloseProcess.Size = new System.Drawing.Size(152, 22);
+            this.mnuCloseProcess.Size = new System.Drawing.Size(146, 22);
             this.mnuCloseProcess.Text = "Close process";
             this.mnuCloseProcess.Click += new System.EventHandler(this.mnuCloseProcess_Click);
             // 
