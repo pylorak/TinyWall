@@ -2,11 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyWall", "TinyWall\TinyWall.csproj", "{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}"
-	ProjectSection(ProjectDependencies) = postProject
-		{1A576158-89FD-47D0-B2F4-A2345D018B95} = {1A576158-89FD-47D0-B2F4-A2345D018B95}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransparentLabel", "TransparentLabel\TransparentLabel.csproj", "{1A576158-89FD-47D0-B2F4-A2345D018B95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,12 +16,6 @@ Global
 		{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}.RelWithDebug|Any CPU.ActiveCfg = RelWithDebug|Any CPU
 		{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}.RelWithDebug|Any CPU.Build.0 = RelWithDebug|Any CPU
-		{1A576158-89FD-47D0-B2F4-A2345D018B95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1A576158-89FD-47D0-B2F4-A2345D018B95}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1A576158-89FD-47D0-B2F4-A2345D018B95}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1A576158-89FD-47D0-B2F4-A2345D018B95}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1A576158-89FD-47D0-B2F4-A2345D018B95}.RelWithDebug|Any CPU.ActiveCfg = Release|Any CPU
-		{1A576158-89FD-47D0-B2F4-A2345D018B95}.RelWithDebug|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

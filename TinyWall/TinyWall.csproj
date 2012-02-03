@@ -162,6 +162,18 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="TinyWallDoctor.cs" />
+    <Compile Include="Controls\TransparentLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TransparentLabel.Designer.cs">
+      <DependentUpon>TransparentLabel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TreeViewColumns .cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TreeViewColumns .Designer.cs">
+      <DependentUpon>TreeViewColumns .cs</DependentUpon>
+    </Compile>
     <Compile Include="UpdateChecker.cs" />
     <Compile Include="UpdateForm.cs">
       <SubType>Form</SubType>
@@ -216,6 +228,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ApplicationExceptionForm.resx">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionsForm.resx">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
@@ -255,6 +268,13 @@
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TransparentLabel.resx">
+      <DependentUpon>TransparentLabel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TreeViewColumns .resx">
+      <DependentUpon>TreeViewColumns .cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UpdateForm.resx">
       <DependentUpon>UpdateForm.cs</DependentUpon>
@@ -361,12 +381,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="img\green_banner.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TransparentLabel\TransparentLabel.csproj">
-      <Project>{1A576158-89FD-47D0-B2F4-A2345D018B95}</Project>
-      <Name>TransparentLabel</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="img\blue_banner.png" />

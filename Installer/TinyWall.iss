@@ -8,7 +8,6 @@
 
 #define TW_TinyWall_exe_SN "TinyWall, Version=1.0.3.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
 #define TW_NetFwTypeLib_dll_SN "Interop.NetFwTypeLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
-#define TW_TransparentLabel_dll_SN "TransparentLabel, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0b469a20c1a49c6a"
 #define TW_XmlSerializers_dll_SN "TinyWall.XmlSerializers, Version=1.0.3.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
 
 [Setup]
@@ -61,7 +60,6 @@ Source: "Components\TinyWall.exe.config"; DestDir: "{app}"; Flags:
 Source: "Components\CommonAppData\*"; DestDir: "{commonappdata}"; Flags: recursesubdirs createallsubdirs 
 
 Source: "Components\TinyWall.exe"; DestDir: "{app}"; Flags: replacesameversion gacinstall; StrongAssemblyName: "{#TW_TinyWall_exe_SN}";
-Source: "Components\TransparentLabel.dll"; DestDir: "{app}"; Flags: replacesameversion gacinstall sharedfile uninsnosharedfileprompt; StrongAssemblyName: "{#TW_TransparentLabel_dll_SN}";
 Source: "Components\Interop.NetFwTypeLib.dll"; DestDir: "{app}"; Flags: replacesameversion gacinstall sharedfile uninsnosharedfileprompt; StrongAssemblyName: "{#TW_NetFwTypeLib_dll_SN}";
 Source: "Components\TinyWall.XmlSerializers.dll"; DestDir: "{app}"; Flags: replacesameversion gacinstall sharedfile uninsnosharedfileprompt; StrongAssemblyName: "{#TW_XmlSerializers_dll_SN}";
 
