@@ -69,17 +69,6 @@ namespace PKSoft
                     m_GenericProfiles.Add(p);
                 }
             }
-/*
-            // Sort generic profiles into GenericProfiles
-            for (int i = Profiles.Count - 1; i >= 0; --i)
-            {
-                if (!Profiles[i].AppSpecific)
-                {
-                    GenericProfiles.Add(Profiles[i]);
-                    Profiles.RemoveAt(i);
-                }
-            }
-*/
         }
 
         public ProfileCollection AvailableProfiles
@@ -107,7 +96,7 @@ namespace PKSoft
             get { return m_Associations; }
         }
 
-        public ProfileAssoc GetApplication(string description)
+        public ProfileAssoc GetApplicationByDescription(string description)
         {
             for (int i = 0; i < m_Associations.Count; ++i)
             {

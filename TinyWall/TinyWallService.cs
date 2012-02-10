@@ -191,7 +191,7 @@ namespace PKSoft
             {
                 try
                 {   //This try-catch will prevent errors if an exception profile string is invalid
-                    ProfileAssoc app = GlobalInstances.ProfileMan.GetApplication(SettingsManager.CurrentZone.SpecialExceptions[i]);
+                    ProfileAssoc app = GlobalInstances.ProfileMan.GetApplicationByDescription(SettingsManager.CurrentZone.SpecialExceptions[i]);
                     AppExceptionSettings ex = app.ToExceptionSetting();
                     ex.AppID = AppExceptionSettings.GenerateID();
                     GetRulesForException(ex, SpecialRules);
@@ -402,7 +402,7 @@ namespace PKSoft
             {
                 UpdateModule HostsFileModule = UpdateChecker.GetHostsFileModule(UpdateDescriptor);
 
-                if (string.Compare(HostsFileModule.Version, HostsFileManager.HostsMD5(), StringComparison.OrdinalIgnoreCase) != 0)
+                if (string.Compare(HostsFileModule.Version, HostsFileManager.HostsSHA1(), StringComparison.OrdinalIgnoreCase) != 0)
                 {
                     string tmpPath = Path.GetTempFileName();
                     Uri UpdateURL = new Uri(HostsFileModule.UpdateURL);

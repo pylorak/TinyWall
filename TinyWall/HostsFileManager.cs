@@ -54,14 +54,14 @@ namespace PKSoft
                 EnableHostsFile();
         }
 
-        internal static string HostsMD5()
+        internal static string HostsSHA1()
         {
             byte[] hash;
 
             using (FileStream fs = new FileStream(HOSTS_PATH, FileMode.Open, FileAccess.Read))
             {
-                MD5 md5 = new MD5CryptoServiceProvider();
-                hash = md5.ComputeHash(fs);
+                SHA1 sha1 = new SHA1Managed();
+                hash = sha1.ComputeHash(fs);
                 fs.Close();
             }
 
