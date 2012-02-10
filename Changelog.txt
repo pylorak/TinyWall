@@ -1,6 +1,17 @@
 TinyWall Changelog
 ---------------------
 
+2.0.0 - Major release (xx.xx.xxxx.)
+- Connections window shows blocked applications
+- Domain blocklist support
+- Hosts file protection
+- Firewall rule update without breaking existing connections
+- New XML-based updater system
+- Fix: Uninstaller now removes user-specific configuration files too
+- Fix: Custom ports are not applied to services
+
+---------------------
+
 1.0.3 - Maintenance (21.01.2012.)
 - Fix: Controller crash when bubble-editing new exception in GUI multiple times in a row
 - Fix: Controller crash after exception modification in Manage window, when Modify is clicked again

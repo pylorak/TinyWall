@@ -1,11 +1,3 @@
-Public changelog:
-- Support for hosts file management (blocklist, updates & protection)
-- Firewall rule update without breaking existing connections
-- New XML-based updater system
-- Fix: Uninstaller now removes user-specific configuration files too
-- Fix: Custom ports are not applied to services
-- Better ICMP security
-
 Future developent:
 - App profile submission system
 - MVPS hosts
