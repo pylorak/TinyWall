@@ -13,6 +13,8 @@ namespace PKSoft
 {
     internal partial class ConnectionsForm : Form
     {
+        List<FirewallLogEntry> FwLogEntries = new List<FirewallLogEntry>();
+
         internal ConnectionsForm()
         {
             InitializeComponent();
@@ -28,17 +30,23 @@ namespace PKSoft
         {
             List<ListViewItem> itemColl = new List<ListViewItem>();
 
+            ReqResp fwLogRequest = GlobalInstances.CommunicationMan.QueueMessage(new Message(TinyWallCommands.READ_FW_LOG));
+
+            // Retrieve IP tables while waiting for log entries
+
             TcpTable tcpTable = NetStat.GetExtendedTcp4Table(false);
             foreach (TcpRow tcpRow in tcpTable)
             {
-                if (chkShowListen.Checked || (tcpRow.State != TcpState.Listen))
-                    ConstructListItem(itemColl, tcpRow.ProcessId, "TCP/IPv4", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString());
+                if ( (chkShowListen.Checked && (tcpRow.State == TcpState.Listen))
+                  || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
+                    ConstructListItem(itemColl, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString());
             }
             tcpTable = NetStat.GetExtendedTcp6Table(false);
             foreach (TcpRow tcpRow in tcpTable)
             {
-                if (chkShowListen.Checked || (tcpRow.State != TcpState.Listen))
-                    ConstructListItem(itemColl, tcpRow.ProcessId, "TCP/IPv6", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString());
+                if ((chkShowListen.Checked && (tcpRow.State == TcpState.Listen))
+                 || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
+                    ConstructListItem(itemColl, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString());
             }
 
             if (chkShowListen.Checked)
@@ -47,15 +55,60 @@ namespace PKSoft
                 UdpTable udpTable = NetStat.GetExtendedUdp4Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
-                    ConstructListItem(itemColl, udpRow.ProcessId, "UDP/IPv4", udpRow.LocalEndPoint, dummyEP, "Listen");
+                    ConstructListItem(itemColl, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen");
                 }
                 udpTable = NetStat.GetExtendedUdp6Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
-                    ConstructListItem(itemColl, udpRow.ProcessId, "UDP/IPv6", udpRow.LocalEndPoint, dummyEP, "Listen");
+                    ConstructListItem(itemColl, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen");
                 }
             }
 
+            // Finished reading tables, continues with log processing
+
+            // Remove log entries older than 2 minutes
+            DateTime now = DateTime.Now;
+            TimeSpan refSpan = TimeSpan.FromMinutes(2);
+            for (int i = FwLogEntries.Count - 1; i > 0; --i)
+            {
+                TimeSpan span = now - FwLogEntries[i].Timestamp;
+                if (span > refSpan)
+                    FwLogEntries.RemoveAt(i);
+            }
+
+            // Add new log entries
+            Message resp = fwLogRequest.GetResponse();
+            List<FirewallLogEntry> fwLogEntry = resp.Arguments[0] as List<FirewallLogEntry>;
+            for (int i = 0; i < fwLogEntry.Count; ++i)
+            {
+                bool matchFound = false;
+                FirewallLogEntry newEntry = fwLogEntry[i];
+                for (int j = 0; j < FwLogEntries.Count; ++j)
+                {
+                    FirewallLogEntry oldEntry = FwLogEntries[j];
+                    if (oldEntry.Equals(newEntry, false))
+                    {
+                        matchFound = true;
+                        oldEntry.Timestamp = newEntry.Timestamp;
+                        break;
+                    }
+                }
+
+                if (!matchFound)
+                    FwLogEntries.Add(newEntry);
+            }
+
+            // Show log entries if requested by user
+            if (chkShowBlocked.Checked)
+            {
+                for (int i = 0; i < FwLogEntries.Count; ++i)
+                {
+                    FirewallLogEntry entry = FwLogEntries[i];
+                    ConstructListItem(itemColl, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked");
+                }
+            }
+
+            // Add items to list
             list.SuspendLayout();
             list.Items.Clear();
             list.Items.AddRange(itemColl.ToArray());
@@ -109,14 +162,14 @@ namespace PKSoft
             itemColl.Add(li);
         }
 
-        private void btnRefresh_Click(object sender, EventArgs e)
-        {
-            UpdateList();
-        }
-
         private void list_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             list.ListViewItemSorter = new ListViewItemComparer(e.Column);
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            UpdateList();
         }
 
         private void chkShowListen_CheckedChanged(object sender, EventArgs e)
@@ -124,10 +177,19 @@ namespace PKSoft
             UpdateList();
         }
 
+        private void chkShowBlocked_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateList();
+        }
+
+        private void chkShowActive_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateList();
+        }
+
         private void ConnectionsForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SettingsManager.ControllerConfig.ConnFormWindowState = this.WindowState;
-
             if (this.WindowState == FormWindowState.Normal)
             {
                 SettingsManager.ControllerConfig.ConnFormWindowSize = this.Size;
@@ -139,6 +201,10 @@ namespace PKSoft
                 SettingsManager.ControllerConfig.ConnFormWindowLoc = this.RestoreBounds.Location;
             }
 
+            SettingsManager.ControllerConfig.ConnFormShowConnections = this.chkShowActive.Checked;
+            SettingsManager.ControllerConfig.ConnFormShowOpenPorts = this.chkShowListen.Checked;
+            SettingsManager.ControllerConfig.ConnFormShowBlocked = this.chkShowBlocked.Checked;
+
             SettingsManager.ControllerConfig.Save();
         }
 
@@ -147,6 +213,9 @@ namespace PKSoft
             this.Size = SettingsManager.ControllerConfig.ConnFormWindowSize;
             this.Location = SettingsManager.ControllerConfig.ConnFormWindowLoc;
             this.WindowState = SettingsManager.ControllerConfig.ConnFormWindowState;
+            this.chkShowActive.Checked = SettingsManager.ControllerConfig.ConnFormShowConnections;
+            this.chkShowListen.Checked = SettingsManager.ControllerConfig.ConnFormShowOpenPorts;
+            this.chkShowBlocked.Checked = SettingsManager.ControllerConfig.ConnFormShowBlocked;
             UpdateList();
         }
 

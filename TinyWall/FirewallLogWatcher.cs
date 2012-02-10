@@ -14,8 +14,10 @@ namespace PKSoft
         BLOCKED_LOCAL_BIND = 5159
     }
 
+    [Serializable]
     internal class FirewallLogEntry
     {
+        internal DateTime Timestamp;
         internal EventLogEvent Event;
         internal UInt64 ProcessID;
         internal Protocol Protocol;
@@ -23,6 +25,37 @@ namespace PKSoft
         internal string DestinationIP;
         internal int SourcePort;
         internal int DestinationPort;
+
+        public override bool Equals(object obj)
+        {
+            // If parameter is null return false.
+            if (obj == null)
+                return false;
+
+            return this.Equals(obj as FirewallLogEntry, true);
+        }
+
+        public bool Equals(FirewallLogEntry obj, bool timestampMustMatch)
+        {
+            // If parameter cannot be cast to Point return false.
+            if ((object)obj == null)
+                return false;
+
+            // Return true if the fields match.
+            bool eventMatch =
+                this.DestinationIP.Equals(obj.DestinationIP) &&
+                (this.DestinationPort == obj.DestinationPort) &&
+                (this.Event == obj.Event) &&
+                (this.ProcessID == obj.ProcessID) &&
+                (this.Protocol == obj.Protocol) &&
+                this.SourceIP.Equals(obj.SourceIP) &&
+                (this.SourcePort == obj.SourcePort);
+
+            if (timestampMustMatch)
+                return this.Timestamp.Equals(obj.Timestamp) && eventMatch;
+            else
+                return eventMatch;
+        }
     }
 
     internal class FirewallLogWatcher : DisposableObject
@@ -58,13 +91,12 @@ namespace PKSoft
 
         void LogWatcher_EventRecordWritten(object sender, EventRecordWrittenEventArgs e)
         {
-            // Safe guard against using up all memory
-            if (NewEntries.Count >= 1000)
-                return;
+            // Maximum number of allowed entries
+            const int MAX_ENTRIES = 1000;
 
             FirewallLogEntry entry = new FirewallLogEntry();
+            entry.Timestamp = DateTime.Now;
             entry.Event = (EventLogEvent)e.EventRecord.Id;
-
             switch (entry.Event)
             {
                 case EventLogEvent.BLOCKED_PACKET:
@@ -97,6 +129,14 @@ namespace PKSoft
 
             lock (NewEntries)
             {
+                // Safe guard against using up all memory
+                if (NewEntries.Count >= MAX_ENTRIES)
+                {
+                    // Keep the latest MAX_ENTRIES entries
+                    int overLimit = NewEntries.Count - MAX_ENTRIES;
+                    NewEntries.RemoveRange(0, overLimit);
+                }
+
                 NewEntries.Add(entry);
             }
         }

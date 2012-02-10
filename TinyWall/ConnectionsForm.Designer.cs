@@ -43,6 +43,8 @@
             this.IconList = new System.Windows.Forms.ImageList(this.components);
             this.btnRefresh = new System.Windows.Forms.Button();
             this.chkShowListen = new System.Windows.Forms.CheckBox();
+            this.chkShowActive = new System.Windows.Forms.CheckBox();
+            this.chkShowBlocked = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -156,19 +158,47 @@
             // 
             this.chkShowListen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkShowListen.AutoSize = true;
-            this.chkShowListen.Location = new System.Drawing.Point(12, 312);
+            this.chkShowListen.Location = new System.Drawing.Point(164, 312);
             this.chkShowListen.Name = "chkShowListen";
-            this.chkShowListen.Size = new System.Drawing.Size(120, 17);
+            this.chkShowListen.Size = new System.Drawing.Size(106, 17);
             this.chkShowListen.TabIndex = 4;
-            this.chkShowListen.Text = "Show listening ports";
+            this.chkShowListen.Text = "Show open ports";
             this.chkShowListen.UseVisualStyleBackColor = true;
             this.chkShowListen.CheckedChanged += new System.EventHandler(this.chkShowListen_CheckedChanged);
+            // 
+            // chkShowActive
+            // 
+            this.chkShowActive.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.chkShowActive.AutoSize = true;
+            this.chkShowActive.Checked = true;
+            this.chkShowActive.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkShowActive.Location = new System.Drawing.Point(12, 312);
+            this.chkShowActive.Name = "chkShowActive";
+            this.chkShowActive.Size = new System.Drawing.Size(146, 17);
+            this.chkShowActive.TabIndex = 5;
+            this.chkShowActive.Text = "Show active connections";
+            this.chkShowActive.UseVisualStyleBackColor = true;
+            this.chkShowActive.CheckedChanged += new System.EventHandler(this.chkShowActive_CheckedChanged);
+            // 
+            // chkShowBlocked
+            // 
+            this.chkShowBlocked.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.chkShowBlocked.AutoSize = true;
+            this.chkShowBlocked.Location = new System.Drawing.Point(276, 312);
+            this.chkShowBlocked.Name = "chkShowBlocked";
+            this.chkShowBlocked.Size = new System.Drawing.Size(189, 17);
+            this.chkShowBlocked.TabIndex = 6;
+            this.chkShowBlocked.Text = "Show blocked apps (in last 2 mins)";
+            this.chkShowBlocked.UseVisualStyleBackColor = true;
+            this.chkShowBlocked.CheckedChanged += new System.EventHandler(this.chkShowBlocked_CheckedChanged);
             // 
             // ConnectionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(811, 348);
+            this.Controls.Add(this.chkShowBlocked);
+            this.Controls.Add(this.chkShowActive);
             this.Controls.Add(this.chkShowListen);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.list);
@@ -199,5 +229,7 @@
         private System.Windows.Forms.CheckBox chkShowListen;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem mnuCloseProcess;
+        private System.Windows.Forms.CheckBox chkShowActive;
+        private System.Windows.Forms.CheckBox chkShowBlocked;
     }
 }

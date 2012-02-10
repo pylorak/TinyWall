@@ -299,10 +299,16 @@ namespace PKSoft
     [Serializable]
     public class ControllerSettings : SettingsBase
     {
-        public bool AskForExceptionDetails = false;
+        // Connections window
         public System.Windows.Forms.FormWindowState ConnFormWindowState = System.Windows.Forms.FormWindowState.Normal;
         public System.Drawing.Point ConnFormWindowLoc = new System.Drawing.Point(150, 150);
         public System.Drawing.Size ConnFormWindowSize = new System.Drawing.Size(827, 386);
+        public bool ConnFormShowConnections = true;
+        public bool ConnFormShowOpenPorts = false;
+        public bool ConnFormShowBlocked = false;
+
+        // Manage window
+        public bool AskForExceptionDetails = false;
         public int ManageTabIndex;
 
         public static string UserDataPath

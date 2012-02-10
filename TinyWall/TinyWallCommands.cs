@@ -23,6 +23,7 @@ namespace PKSoft
         GET_LOCK_STATE,
         GET_UPDATE_DESCRIPTOR,
         VERIFY_KEYS,
+        READ_FW_LOG,
 
         // Unprivileged write commands (>1023)
         UNLOCK = 1024,
@@ -35,7 +36,7 @@ namespace PKSoft
         LOCK,
         SET_PASSPHRASE,
         STOP_DISABLE,
-        CHECK_SCHEDULED_RULES
+        MINUTE_TIMER
     }
 
     // Encapsulates a message tye and its parameters

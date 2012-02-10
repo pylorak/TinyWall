@@ -30,6 +30,8 @@ namespace PKSoft
         private Thread FirewallWorkerThread;
         private Timer MinuteTimer;
         private DateTime LastControllerCommandTime = DateTime.Now;
+        private DateTime LastFwLogReadTime = DateTime.Now;
+        private FirewallLogWatcher LogWatcher;
         
         private WindowsFirewall.Policy Firewall;
         private WindowsFirewall.Rules FwRules;
@@ -434,8 +436,8 @@ namespace PKSoft
             // This timer is called every minute.
 
             // Check if a timed exception has expired
-            if (!Q.HasRequest(TinyWallCommands.CHECK_SCHEDULED_RULES))
-                Q.Enqueue(new ReqResp(new Message(TinyWallCommands.CHECK_SCHEDULED_RULES)));
+            if (!Q.HasRequest(TinyWallCommands.MINUTE_TIMER))
+                Q.Enqueue(new ReqResp(new Message(TinyWallCommands.MINUTE_TIMER)));
 
             // Check for inactivity and lock if necessary
             if (DateTime.Now - LastControllerCommandTime > TimeSpan.FromMinutes(10))
@@ -452,6 +454,14 @@ namespace PKSoft
         {
             switch (req.Command)
             {
+                case TinyWallCommands.READ_FW_LOG:
+                    {
+                        if (LogWatcher == null)
+                            LogWatcher = new FirewallLogWatcher();
+
+                        LastFwLogReadTime = DateTime.Now;
+                        return new Message(TinyWallCommands.RESPONSE_OK, LogWatcher.QueryNewEntries());
+                    }
                 case TinyWallCommands.PING:
                     {
                         return new Message(TinyWallCommands.RESPONSE_OK);
@@ -589,8 +599,18 @@ namespace PKSoft
 
                         return new Message(TinyWallCommands.RESPONSE_OK);
                     }
-                case TinyWallCommands.CHECK_SCHEDULED_RULES:
+                case TinyWallCommands.MINUTE_TIMER:
                     {
+                        // Disable firewall logging if its log has not been read recently
+                        if (DateTime.Now - LastFwLogReadTime > TimeSpan.FromMinutes(2))
+                        {
+                            if (LogWatcher != null)
+                            {
+                                LogWatcher.Dispose();
+                                LogWatcher = null;
+                            }
+                        }
+
                         bool needsSave = false;
 
                         // Check all exceptions if any one has expired
@@ -885,6 +905,13 @@ namespace PKSoft
             }
 
             FirewallWorkerThread.Abort();
+
+            if ((LogWatcher != null) && !LogWatcher.IsDisposed)
+            {
+                LogWatcher.Dispose();
+                LogWatcher = null;
+            }
+
             SettingsManager.GlobalConfig.Save();
             SettingsManager.CurrentZone.Save();
             FileLocker.UnlockAll();
