@@ -362,10 +362,14 @@ namespace PKSoft
         {
             get
             {
+#if DEBUG
+                return Path.GetDirectoryName(Utils.ExecutablePath);
+#else
                 string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), SettingsManager.APP_NAME);
                 if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
                 return dir;
+#endif
             }
         }
     }

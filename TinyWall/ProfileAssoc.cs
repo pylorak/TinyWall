@@ -6,6 +6,8 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Xml.Serialization;
+using Microsoft.Win32;
+using PKSoft.Parser;
 
 namespace PKSoft
 {
@@ -48,14 +50,10 @@ namespace PKSoft
         // List of profiles to associate with above executable if all conditions below are met.
         public string[] Profiles;
 
-        /*
-        // List of ports to open in addition to profiles
-        public string OpenPortOutboundRemoteTCP = string.Empty;
-        public string OpenPortListenLocalTCP = string.Empty;
-        public string OpenPortOutboundRemoteUDP = string.Empty;
-        public string OpenPortListenLocalUDP = string.Empty;
-         */
-        
+        // List of locations that specify where to search for this file.
+        // File path or registry location in the format "reg:<RegKey>:<RegValue>"
+        public string[] SearchPaths;
+
         // List of possible public keys.
         // If the array has more than one items, only one needs to apply.
         private string[] m_PublicKeys;
@@ -115,6 +113,39 @@ namespace PKSoft
             set { m_HashesSHA1 = value; }
         }
 
+        // Tries to get the actual file path based on the search crateria
+        // specified by SearchPaths. Returns an empty string if file is not found.
+        public ProfileAssoc SearchForFile()
+        {
+            if (this.SearchPaths == null)
+                return null;
+
+            string filePath = string.Empty;
+            ProfileAssoc foundFile = null;
+
+            for (int i = 0; i < this.SearchPaths.Length; ++i)
+            {
+                string path = SearchPaths[i];
+
+                // Recursively resolve variables
+                filePath = RecursiveParser.ResolveRegistry(path);
+                filePath = Environment.ExpandEnvironmentVariables(filePath);
+                if (File.Exists(filePath))
+                    break;
+            }
+
+            if (File.Exists(filePath))
+            {
+                foundFile = new ProfileAssoc();
+                foundFile.Executable = filePath;
+                foundFile.Service = this.Service;
+                if (this.DoesExecutableSatisfy(foundFile))
+                    return foundFile;
+            }
+
+            return null;
+        }
+
         // If present, the profiles for this file will only apply
         // if the executable's product version field is within this range.
         // Both, either one or none may be omitted.
@@ -157,12 +188,6 @@ namespace PKSoft
             ex.CreationDate = DateTime.Now;
             ex.Timer = AppExceptionTimer.Permanent;
             ex.Profiles = new string[Profiles.Length];
-            /*
-            ex.OpenPortListenLocalTCP = this.OpenPortListenLocalTCP;
-            ex.OpenPortListenLocalUDP = this.OpenPortListenLocalUDP;
-            ex.OpenPortOutboundRemoteTCP = this.OpenPortOutboundRemoteTCP;
-            ex.OpenPortOutboundRemoteUDP = this.OpenPortOutboundRemoteUDP;
-             */
 
             Array.Copy(Profiles, ex.Profiles, Profiles.Length);
 
@@ -289,24 +314,6 @@ namespace PKSoft
         {
             return Recommended;
         }
-        /*
-        public bool ShouldSerializeOpenPortOutboundRemoteTCP()
-        {
-            return !string.IsNullOrEmpty(OpenPortOutboundRemoteTCP);
-        }
-        public bool ShouldSerializeOpenPortListenLocalTCP()
-        {
-            return !string.IsNullOrEmpty(OpenPortListenLocalTCP);
-        }
-        public bool ShouldSerializeOpenPortOutboundRemoteUDP()
-        {
-            return !string.IsNullOrEmpty(OpenPortOutboundRemoteUDP);
-        }
-        public bool ShouldSerializeOpenPortListenLocalUDP()
-        {
-            return !string.IsNullOrEmpty(OpenPortListenLocalUDP);
-        }
-         */
 
         public bool ShouldSerializeSpecial()
         {

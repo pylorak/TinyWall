@@ -7,6 +7,7 @@ TinyWall Changelog
 - Hosts file protection
 - Firewall rule update without breaking existing connections
 - New XML-based updater system
+- Lightning-fast search for recognized applications
 - Fix: Uninstaller now removes user-specific configuration files too
 - Fix: Custom ports are not applied to services
 

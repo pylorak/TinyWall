@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Threading;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace PKSoft
@@ -54,6 +50,26 @@ namespace PKSoft
             {
                 list.Items.Clear();
             });
+
+            #region First, add files that we can find fast
+            Utils.Invoke(list, (MethodInvoker)delegate()
+            {
+                lblStatus.Text = "Performing aided search...";
+            });
+
+            for (int i = 0; i < GlobalInstances.ProfileMan.KnownApplications.Count; ++i)
+            {
+                ProfileAssoc template = GlobalInstances.ProfileMan.KnownApplications[i];
+                ProfileAssoc file = template.SearchForFile();
+                if (file != null)
+                {
+                    Utils.Invoke(list, (MethodInvoker)delegate()
+                    {
+                        AddRecognizedAppToList(file);
+                    });
+                }
+            }
+            #endregion
 
             // List of all possible paths to search
             string[] SearchPaths = new string[]{
@@ -161,6 +177,8 @@ namespace PKSoft
         {
             if (!IconList.Images.ContainsKey(app.Executable))
                 IconList.Images.Add(app.Executable, Utils.GetIcon(app.Executable, 16, 16));
+            else
+                return;
 
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(app.Executable);
             ListViewItem li = new ListViewItem(fvi.ProductName);
