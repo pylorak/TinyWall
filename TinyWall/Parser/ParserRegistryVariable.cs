@@ -14,7 +14,7 @@ namespace PKSoft.Parser
             try
             {
                 // Registry path
-                string[] tokens = str.Split(':', StringSplitOptions.None);
+                string[] tokens = str.Split(':');
                 string keyPath = tokens[0];
                 string keyValue = tokens[1];
                 using (RegistryKey key = Registry.LocalMachine.OpenSubKey(keyPath, false))

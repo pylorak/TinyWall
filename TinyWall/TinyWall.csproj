@@ -136,6 +136,8 @@
     <Compile Include="netstat\TcpTable.cs" />
     <Compile Include="netstat\UdpRow.cs" />
     <Compile Include="netstat\UdpTable.cs" />
+    <Compile Include="Parser\ParserFolderVariable.cs" />
+    <Compile Include="Parser\ParserParentVariable.cs" />
     <Compile Include="Parser\ParserRegistryVariable.cs" />
     <Compile Include="Parser\ParserVariable.cs" />
     <Compile Include="Parser\RecursiveParser.cs" />
