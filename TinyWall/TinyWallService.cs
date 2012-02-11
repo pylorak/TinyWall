@@ -810,7 +810,6 @@ namespace PKSoft
 #endif
         }
 
-
         // Entry point for Windows service.
         protected override void OnStart(string[] args)
         {
@@ -822,33 +821,36 @@ namespace PKSoft
             // Register an unhandled exception handler
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-            try
+            // Continue initialization on a new thread to prevent stalling the SCM
+            ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
             {
-                EventLog.WriteEntry("TinyWall service starting up.");
+                try
+                {
+                    EventLog.WriteEntry("TinyWall service starting up.");
 
-                FileLocker.LockFile(ProfileManager.DBPath, FileAccess.Read, FileShare.Read);
-                FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
+                    FileLocker.LockFile(ProfileManager.DBPath, FileAccess.Read, FileShare.Read);
+                    FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
 
-                // Lock configuration if we have a password
-                SettingsManager.Changeset = 0;
-                SettingsManager.ServiceConfig = new ServiceSettings();
-                if (SettingsManager.ServiceConfig.HasPassword)
-                    SettingsManager.ServiceConfig.Locked = true;
+                    // Lock configuration if we have a password
+                    SettingsManager.Changeset = 0;
+                    SettingsManager.ServiceConfig = new ServiceSettings();
+                    if (SettingsManager.ServiceConfig.HasPassword)
+                        SettingsManager.ServiceConfig.Locked = true;
 
-                // Set normal mode on stratup
-                this.Mode = FirewallMode.Normal;
+                    // Set normal mode on stratup
+                    this.Mode = FirewallMode.Normal;
 
-                // Issue load command
-                Q = new RequestQueue();
-                Q.Enqueue(new ReqResp(new Message(TinyWallCommands.REINIT)));
+                    // Issue load command
+                    Q = new RequestQueue();
+                    Q.Enqueue(new ReqResp(new Message(TinyWallCommands.REINIT)));
 
-                // Start thread that is going to control Windows Firewall
-                FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod));
-                FirewallWorkerThread.IsBackground = true;
-                FirewallWorkerThread.Start();
+                    // Start thread that is going to control Windows Firewall
+                    FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod));
+                    FirewallWorkerThread.IsBackground = true;
+                    FirewallWorkerThread.Start();
 
-                // Fire up pipe
-                GlobalInstances.CommunicationMan = new PipeCom("TinyWallController", new PipeDataReceived(PipeServerDataReceived));
+                    // Fire up pipe
+                    GlobalInstances.CommunicationMan = new PipeCom("TinyWallController", new PipeDataReceived(PipeServerDataReceived));
 
 #if !DEBUG
                 // Messing with the SCM in this method would hang us, so start it parallel
@@ -861,12 +863,13 @@ namespace PKSoft
                     catch { }
                 });
 #endif
-            }
-            catch (Exception e)
-            {
-                CurrentDomain_UnhandledException(null, new UnhandledExceptionEventArgs(e, false));
-                throw;
-            }
+                }
+                catch (Exception e)
+                {
+                    CurrentDomain_UnhandledException(null, new UnhandledExceptionEventArgs(e, false));
+                    throw;
+                }
+            });
         }
 
         void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
