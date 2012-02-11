@@ -34,16 +34,6 @@ namespace PKSoft
         [XmlAttributeAttribute()]
         public string Service;
 
-        // If Recommended is set to true, this profile will be recommended
-        // (and enabled) by default to the user.
-        [XmlAttributeAttribute()]
-        public bool Recommended;
-
-        // Specifies whether this application should show up
-        // in the "special exceptions" list.
-        [XmlAttributeAttribute()]
-        public bool Special;
-
         // Human readable name or description of the executable
         public string Description;
 
@@ -120,27 +110,19 @@ namespace PKSoft
             if (this.SearchPaths == null)
                 return null;
 
-            string filePath = string.Empty;
-            ProfileAssoc foundFile = null;
-
             for (int i = 0; i < this.SearchPaths.Length; ++i)
             {
                 string path = SearchPaths[i];
 
                 // Recursively resolve variables
-                filePath = RecursiveParser.ResolveRegistry(path);
+                string filePath = RecursiveParser.ResolveRegistry(path);
                 filePath = Environment.ExpandEnvironmentVariables(filePath);
                 if (File.Exists(filePath))
-                    break;
-            }
-
-            if (File.Exists(filePath))
-            {
-                foundFile = new ProfileAssoc();
-                foundFile.Executable = filePath;
-                foundFile.Service = this.Service;
-                if (this.DoesExecutableSatisfy(foundFile))
-                    return foundFile;
+                {
+                    ProfileAssoc foundFile = ProfileAssoc.FromExecutable(filePath, this.Service);
+                    if (this.DoesExecutableSatisfy(foundFile))
+                        return foundFile;
+                }
             }
 
             return null;
@@ -208,6 +190,9 @@ namespace PKSoft
 
         public bool DoesExecutableSatisfy(ProfileAssoc exe)
         {
+            if (exe == null)
+                return false;
+
             // We have a current/specific executable's information in the parameter "exe".
             // This method determine if the "exe" satisfies all conditions specified in this
             // instance of profile association.
@@ -308,16 +293,6 @@ namespace PKSoft
         public object Clone()
         {
             return Utils.DeepClone(this);
-        }
-
-        public bool ShouldSerializeRecommended()
-        {
-            return Recommended;
-        }
-
-        public bool ShouldSerializeSpecial()
-        {
-            return Special;
         }
     }
 }

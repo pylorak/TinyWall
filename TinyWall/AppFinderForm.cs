@@ -51,21 +51,24 @@ namespace PKSoft
                 list.Items.Clear();
             });
 
+            ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
+
             #region First, add files that we can find fast
             Utils.Invoke(list, (MethodInvoker)delegate()
             {
                 lblStatus.Text = "Performing aided search...";
             });
 
-            for (int i = 0; i < GlobalInstances.ProfileMan.KnownApplications.Count; ++i)
+            for (int i = 0; i < allApps.Count; ++i)
             {
-                ProfileAssoc template = GlobalInstances.ProfileMan.KnownApplications[i];
-                ProfileAssoc file = template.SearchForFile();
-                if (file != null)
+                Application app = allApps[i];
+
+                // If we've found at least one file, add the app to the list
+                if (app.ResolveFilePaths())
                 {
                     Utils.Invoke(list, (MethodInvoker)delegate()
                     {
-                        AddRecognizedAppToList(file);
+                        AddRecognizedAppToList(app, null);
                     });
                 }
             }
@@ -84,11 +87,14 @@ namespace PKSoft
 
             // Construct a list of all file extensions we are looking for
             HashSet<string> exts = new HashSet<string>();
-            foreach (ProfileAssoc app in GlobalInstances.ProfileMan.KnownApplications)
+            foreach (Application app in allApps)
             {
-                string extFilter = "*" + Path.GetExtension(app.Executable).ToUpperInvariant();
-                if (extFilter != "*")
-                    exts.Add(extFilter);
+                foreach (ProfileAssoc appFile in app.Files)
+                {
+                    string extFilter = "*" + Path.GetExtension(appFile.Executable).ToUpperInvariant();
+                    if (extFilter != "*")
+                        exts.Add(extFilter);
+                }
             }
 
             // Perform search for each path
@@ -144,12 +150,13 @@ namespace PKSoft
                             break;
 
                         // Try to match file
-                        ProfileAssoc app = GlobalInstances.ProfileMan.TryGetRecognizedApp(file, null);
+                        ProfileAssoc appFile;
+                        Application app = GlobalInstances.ProfileMan.TryGetRecognizedApp(file, null, out appFile);
                         if ((app != null) && (!app.Special))
                         {
                             Utils.Invoke(list, (MethodInvoker)delegate()
                             {
-                                AddRecognizedAppToList(app);
+                                AddRecognizedAppToList(app, appFile);
                             });
                         }
                     }
@@ -173,18 +180,37 @@ namespace PKSoft
             catch { }
         }
 
-        private void AddRecognizedAppToList(ProfileAssoc app)
+        private void AddRecognizedAppToList(Application app, ProfileAssoc appFile)
         {
-            if (!IconList.Images.ContainsKey(app.Executable))
-                IconList.Images.Add(app.Executable, Utils.GetIcon(app.Executable, 16, 16));
-            else
-                return;
+            foreach (ProfileAssoc pa in app.Files)
+            {
+                if (pa.DoesExecutableSatisfy(appFile))
+                    pa.Executable = appFile.Executable;
+            }
 
-            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(app.Executable);
-            ListViewItem li = new ListViewItem(fvi.ProductName);
-            li.ImageKey = app.Executable;
-            li.SubItems.Add(Path.GetFileName(app.Executable));
-            li.SubItems.Add(app.Executable);
+            // Check if we've already added this application
+            for (int i = 0; i < list.Items.Count; ++i)
+            {
+                if ((list.Items[i].Tag as Application).Name.Equals(app.Name))
+                    return;
+            }
+
+            if (!IconList.Images.ContainsKey(app.Name))
+            {
+                int iconIndex = 0;
+                for (iconIndex = 0; iconIndex < app.Files.Count; ++iconIndex)
+                {
+                    if (File.Exists(app.Files[iconIndex].Executable))
+                        break;
+                }
+                IconList.Images.Add(app.Name, Utils.GetIcon(app.Files[iconIndex].Executable, 16, 16));
+            }
+
+            ListViewItem li = new ListViewItem(app.Name);
+            li.ImageKey = app.Name;
+// TODO
+//            li.SubItems.Add(Path.GetFileName(app.Executable));
+//            li.SubItems.Add(app.Executable);
             li.Tag = app;
             if (app.Recommended)
                 li.Checked = true;
@@ -210,7 +236,7 @@ namespace PKSoft
         {
             foreach (ListViewItem li in list.Items)
             {
-                ProfileAssoc app = li.Tag as ProfileAssoc;
+                Application app = li.Tag as Application;
                 if (app.Recommended)
                     li.Checked = true;
             }
@@ -241,8 +267,16 @@ namespace PKSoft
             {
                 if (li.Checked)
                 {
-                    ProfileAssoc app = li.Tag as ProfileAssoc;
-                    TmpZoneSettings.AppExceptions = Utils.ArrayAddItem(TmpZoneSettings.AppExceptions, app.ToExceptionSetting());
+                    Application app = li.Tag as Application;
+                    foreach (ProfileAssoc pa in app.Files)
+                    {
+                        try
+                        {
+                            if (Path.IsPathRooted(pa.Executable))
+                                TmpZoneSettings.AppExceptions = Utils.ArrayAddItem(TmpZoneSettings.AppExceptions, pa.ToExceptionSetting());
+                        }
+                        catch (ArgumentException) { }
+                    }
                 }
             }
 

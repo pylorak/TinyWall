@@ -1,11 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ArrayOfProfileAssoc>
-<ProfileAssoc Executable="putty.exe">
-  <Profiles>
-    <string>SSH client</string>
-  </Profiles>
-  <HashesSHA1>
-    <string>b11a526d3d37be5c38e31a56ab762b9471957cca</string>
-  </HashesSHA1>
-</ProfileAssoc>
-</ArrayOfProfileAssoc>
+<Application Name="Putty">
+	<Files>
+	<ProfileAssoc Executable="putty.exe">
+		<Profiles>
+			<string>SSH client</string>
+		</Profiles>
+		<HashesSHA1>
+			<string>b11a526d3d37be5c38e31a56ab762b9471957cca</string>
+		</HashesSHA1>
+	</ProfileAssoc>
+	</Files>
+</Application>

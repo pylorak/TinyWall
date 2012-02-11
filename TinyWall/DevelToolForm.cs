@@ -16,6 +16,12 @@ namespace PKSoft
         public DevelToolForm()
         {
             InitializeComponent();
+
+            ProfileManager pm = new ProfileManager();
+            pm.KnownApplications.Add(new Application());
+            pm.KnownApplications[0].Files.Add(new ProfileAssoc());
+            pm.KnownApplications[0].Files.Add(new ProfileAssoc());
+            pm.Save(Path.Combine(@"d:\", Path.GetFileName(ProfileManager.DBPath)));
         }
 
         private void btnAssocBrowse_Click(object sender, EventArgs e)
@@ -79,9 +85,8 @@ namespace PKSoft
             files = Directory.GetFiles(assocFolder);
             foreach (string fpath in files)
             {
-                ProfileAssocCollection pac = SerializationHelper.LoadFromXMLFile<ProfileAssocCollection>(fpath);
-                foreach (ProfileAssoc pa in pac)
-                    Manager.KnownApplications.Add(pa);
+                Application app = SerializationHelper.LoadFromXMLFile<PKSoft.Application>(fpath);
+                Manager.KnownApplications.Add(app);
             }
 
             Manager.Save(Path.Combine(outputPath, Path.GetFileName(ProfileManager.DBPath)));

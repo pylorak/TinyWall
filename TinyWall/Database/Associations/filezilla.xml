@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ArrayOfProfileAssoc>
-<ProfileAssoc Executable="filezilla.exe">
-  <Profiles>
-    <string>FTP client</string>
-  </Profiles>
-  <HashesSHA1>
-    <string>306b24c433bc91d4251957506290f557adf16144</string>
-    <string>F176956DF45090C636F5729EED1BDA167672C07D</string>
-    <string>45F816D3D881A935BCC9B8E93F56EB021286F491</string>
-  </HashesSHA1>
-</ProfileAssoc>
-</ArrayOfProfileAssoc>
+<Application Name="FileZilla">
+	<Files>
+	<ProfileAssoc Executable="filezilla.exe">
+		<Profiles>
+			<string>FTP client</string>
+		</Profiles>
+		<HashesSHA1>
+			<string>306b24c433bc91d4251957506290f557adf16144</string>
+			<string>F176956DF45090C636F5729EED1BDA167672C07D</string>
+			<string>45F816D3D881A935BCC9B8E93F56EB021286F491</string>
+		</HashesSHA1>
+	</ProfileAssoc>
+	</Files>
+</Application>

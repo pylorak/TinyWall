@@ -103,10 +103,11 @@ namespace PKSoft
 
         internal void TryRecognizeApp(bool allowModify)
         {
-            ProfileAssoc app = null;
+            Application app = null;
+            ProfileAssoc appFile = null;
 
             if (File.Exists(ExecutablePath))
-                app = GlobalInstances.ProfileMan.TryGetRecognizedApp(ExecutablePath, ServiceName);
+                app = GlobalInstances.ProfileMan.TryGetRecognizedApp(ExecutablePath, ServiceName, out appFile);
 
             this.Recognized = (app != null);
 
@@ -114,7 +115,7 @@ namespace PKSoft
             {
                 if (Recognized.Value)
                 {
-                    ProfileCollection profiles = GlobalInstances.ProfileMan.GetProfilesFor(app);
+                    ProfileCollection profiles = GlobalInstances.ProfileMan.GetProfilesFor(appFile);
                     Profiles = new string[profiles.Count];
                     for (int i = 0; i < profiles.Count; ++i)
                         Profiles[i] = profiles[i].Name;

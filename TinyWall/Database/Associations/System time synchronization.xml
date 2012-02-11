@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ArrayOfProfileAssoc>
-<ProfileAssoc Executable="{sys32}\svchost.exe" Service="W32Time" Recommended="true" Special="true">
-  <Description>Windows time synchronization</Description>
-  <Profiles>
-    <string>Time synchronization</string>
-  </Profiles>
-</ProfileAssoc>
-</ArrayOfProfileAssoc>
+<Application Name="Windows Time Sync" Recommended="true" Special="true">
+	<Files>
+	<ProfileAssoc Executable="{sys32}\svchost.exe" Service="W32Time">
+		<Description>Windows time synchronization</Description>
+		<Profiles>
+			<string>Time synchronization</string>
+		</Profiles>
+	</ProfileAssoc>
+	</Files>
+</Application>

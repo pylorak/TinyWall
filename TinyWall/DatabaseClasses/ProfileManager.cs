@@ -7,7 +7,7 @@ namespace PKSoft
     {
         private ProfileCollection m_Profiles;
         private ProfileCollection m_GenericProfiles;
-        private ProfileAssocCollection m_Associations;
+        private ApplicationCollection m_Applications;
 
         public static string DBPath
         {
@@ -32,7 +32,7 @@ namespace PKSoft
         {
             m_Profiles = new ProfileCollection();
             m_GenericProfiles = new ProfileCollection();
-            m_Associations = new ProfileAssocCollection();
+            m_Applications = new ApplicationCollection();
             FinishLoading();
         }
 
@@ -91,36 +91,40 @@ namespace PKSoft
             return null;
         }
 
-        public ProfileAssocCollection KnownApplications
+        public ApplicationCollection KnownApplications
         {
-            get { return m_Associations; }
+            get { return m_Applications; }
         }
 
-        public ProfileAssoc GetApplicationByDescription(string description)
+        public Application GetApplicationByName(string name)
         {
-            for (int i = 0; i < m_Associations.Count; ++i)
+            for (int i = 0; i < m_Applications.Count; ++i)
             {
-                if (string.Compare(description, m_Associations[i].Description, System.StringComparison.InvariantCultureIgnoreCase) == 0)
-                    return m_Associations[i];
+                if (string.Compare(name, m_Applications[i].Name, System.StringComparison.InvariantCultureIgnoreCase) == 0)
+                    return m_Applications[i];
             }
             return null;
         }
 
-        public ProfileAssoc TryGetRecognizedApp(string executablePath, string service)
+        public Application TryGetRecognizedApp(string executablePath, string service, out ProfileAssoc file)
         {
             ProfileAssoc exe = ProfileAssoc.FromExecutable(executablePath, service);
 
-            for (int i = 0; i < m_Associations.Count; ++i)
+            for (int i = 0; i < m_Applications.Count; ++i)
             {
-                ProfileAssoc assoc = m_Associations[i];
-                if (assoc.DoesExecutableSatisfy(exe))
+                for (int j = 0; j < m_Applications[i].Files.Count; ++j)
                 {
-                    ProfileAssoc ret = assoc.Clone() as ProfileAssoc;
-                    ret.Executable = executablePath;
-                    return ret;
+                    ProfileAssoc assoc = m_Applications[i].Files[j];
+                    if (assoc.DoesExecutableSatisfy(exe))
+                    {
+                        file = assoc.Clone() as ProfileAssoc;
+                        file.Executable = executablePath;
+                        return m_Applications[i];
+                    }
                 }
             }
 
+            file = null;
             return null;
         }
 

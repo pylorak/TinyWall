@@ -35,11 +35,11 @@ namespace PKSoft
         internal ZoneSettings()
         {
             // Add recommended profiles as standard
-            ProfileAssocCollection allKnownApps = GlobalInstances.ProfileMan.KnownApplications;
-            foreach (ProfileAssoc app in allKnownApps)
+            ApplicationCollection allKnownApps = GlobalInstances.ProfileMan.KnownApplications;
+            foreach (Application app in allKnownApps)
             {
                 if (app.Recommended && app.Special)
-                    SpecialExceptions = Utils.ArrayAddItem(SpecialExceptions, app.Description);
+                    SpecialExceptions = Utils.ArrayAddItem(SpecialExceptions, app.Name);
             }
         }
 

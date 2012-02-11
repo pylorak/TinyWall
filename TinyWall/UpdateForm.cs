@@ -32,7 +32,7 @@ namespace PKSoft
                 try
                 {
                     Utils.StartProcess(Utils.ExecutablePath, "/updatenow", true);
-                    Application.Exit();
+                    System.Windows.Forms.Application.Exit();
                 }
                 catch
                 {
@@ -67,7 +67,7 @@ namespace PKSoft
 
                 Utils.Invoke(this, (MethodInvoker)delegate()
                 {
-                    if (new Version(UpdateModule.Version) > new Version(Application.ProductVersion))
+                    if (new Version(UpdateModule.Version) > new Version(System.Windows.Forms.Application.ProductVersion))
                     {
                         string prompt = "A newer version " + UpdateModule.Version + " of TinyWall is available. Do you want to update now?";
                         if (MessageBox.Show(this, prompt, "Update available", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.No)
@@ -120,7 +120,7 @@ namespace PKSoft
             {
                 System.Threading.Thread.Sleep(2000);
                 Utils.StartProcess((string)e.UserState, "/SILENT", true);
-                Application.Exit();
+                System.Windows.Forms.Application.Exit();
             });
         }
 

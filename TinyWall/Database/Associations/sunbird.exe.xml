@@ -1,11 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ArrayOfProfileAssoc>
-<ProfileAssoc Executable="sunbird.exe">
-  <Profiles>
-    <string>Outbound</string>
-  </Profiles>
-  <HashesMD5>
-    <string>8B7DBB7BE154F20B2C8AB8ADBDC83E99</string>
-  </HashesMD5>
-</ProfileAssoc>
-</ArrayOfProfileAssoc>
+<Application Name="Sunbird">
+	<Files>
+	<ProfileAssoc Executable="sunbird.exe">
+		<Profiles>
+			<string>Outbound</string>
+		</Profiles>
+		<HashesMD5>
+			<string>8B7DBB7BE154F20B2C8AB8ADBDC83E99</string>
+		</HashesMD5>
+	</ProfileAssoc>
+	</Files>
+</Application>

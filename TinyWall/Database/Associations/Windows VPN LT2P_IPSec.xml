@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ArrayOfProfileAssoc>
-<ProfileAssoc Executable="" Recommended="false" Special="true">
-  <Description>VPN L2TP/IPSec</Description>
-  <Profiles>
-    <string>L2TP/IPSec</string>
-  </Profiles>
-</ProfileAssoc>
-</ArrayOfProfileAssoc>
+<Application Name="VPN L2TP/IPSec" Special="true">
+	<Files>
+	<ProfileAssoc Executable="">
+		<Description>VPN L2TP/IPSec</Description>
+		<Profiles>
+			<string>L2TP/IPSec</string>
+		</Profiles>
+	</ProfileAssoc>
+	</Files>
+</Application>

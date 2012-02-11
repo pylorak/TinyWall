@@ -1,11 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ArrayOfProfileAssoc>
-<ProfileAssoc Executable="sidebar.exe">
-  <Profiles>
-    <string>HTTP(S) client</string>
-  </Profiles>
-  <HashesSHA1>
-    <string>12a602b86fc394b1c88348fb099685eabb876495</string>
-  </HashesSHA1>
-</ProfileAssoc>
-</ArrayOfProfileAssoc>
+<Application Name="Windows Sidebar">
+	<Files>
+	<ProfileAssoc Executable="sidebar.exe">
+		<Profiles>
+			<string>HTTP(S) client</string>
+		</Profiles>
+		<HashesSHA1>
+			<string>12a602b86fc394b1c88348fb099685eabb876495</string>
+		</HashesSHA1>
+	</ProfileAssoc>
+	</Files>
+</Application>

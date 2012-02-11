@@ -48,26 +48,26 @@ namespace PKSoft
                 chkHostsBlocklist.Checked = TmpMachineConfig.HostsBlocklist;
 
                 // These will be reused multiple times
-                ProfileAssocCollection allApps = GlobalInstances.ProfileMan.KnownApplications;
+                ApplicationCollection allApps = GlobalInstances.ProfileMan.KnownApplications;
 
                 // Fill lists of special exceptions
                 listRecommendedGlobalProfiles.SuspendLayout();
                 listOptionalGlobalProfiles.SuspendLayout();
                 listRecommendedGlobalProfiles.Items.Clear();
                 listOptionalGlobalProfiles.Items.Clear();
-                foreach (ProfileAssoc app in allApps)
+                foreach (Application app in allApps)
                 {
                     if (app.Special)
                     {
                         if (app.Recommended)
                         {
-                            int itemIdx = listRecommendedGlobalProfiles.Items.Add(app.Description);
-                            listRecommendedGlobalProfiles.SetItemChecked(itemIdx, TmpZoneConfig.SpecialExceptions.Contains(app.Description));
+                            int itemIdx = listRecommendedGlobalProfiles.Items.Add(app.Name);
+                            listRecommendedGlobalProfiles.SetItemChecked(itemIdx, TmpZoneConfig.SpecialExceptions.Contains(app.Name));
                         }
                         else
                         {
-                            int itemIdx = listOptionalGlobalProfiles.Items.Add(app.Description);
-                            listOptionalGlobalProfiles.SetItemChecked(itemIdx, TmpZoneConfig.SpecialExceptions.Contains(app.Description));
+                            int itemIdx = listOptionalGlobalProfiles.Items.Add(app.Name);
+                            listOptionalGlobalProfiles.SetItemChecked(itemIdx, TmpZoneConfig.SpecialExceptions.Contains(app.Name));
                         }
                     }
                 }
@@ -306,7 +306,7 @@ namespace PKSoft
                 if (File.Exists(uninstaller))
                 {
                     Utils.StartProcess(uninstaller, "/SILENT", true);
-                    Application.Exit();
+                    System.Windows.Forms.Application.Exit();
                 }
                 else
                 {

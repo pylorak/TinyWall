@@ -1,12 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ArrayOfProfileAssoc>
-<ProfileAssoc Executable="fdm.exe">
-  <Profiles>
-    <string>Blind trust</string>
-  </Profiles>
-  <HashesSHA1>
-    <string>CDB540F29FB692782673B312656F5E079A92C983</string>
-    <string>8199702B65CF1F1DA848E86A0C6B97D6EAA861C5</string>
-  </HashesSHA1>
-</ProfileAssoc>
-</ArrayOfProfileAssoc>
+<Application Name="Free Download Manager">
+	<Files>
+	<ProfileAssoc Executable="fdm.exe">
+		<Profiles>
+			<string>Blind trust</string>
+		</Profiles>
+		<HashesSHA1>
+			<string>CDB540F29FB692782673B312656F5E079A92C983</string>
+			<string>8199702B65CF1F1DA848E86A0C6B97D6EAA861C5</string>
+		</HashesSHA1>
+	</ProfileAssoc>
+	</Files>
+</Application>

@@ -55,7 +55,7 @@ namespace PKSoft
 			this.Windows = windows;
 
 			// Register us as a message filter
-			Application.AddMessageFilter(this);
+			System.Windows.Forms.Application.AddMessageFilter(this);
 		}
 
 		~Hotkey()

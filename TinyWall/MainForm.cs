@@ -83,7 +83,7 @@ namespace PKSoft
                 if (descriptor != null)
                 {
                     UpdateModule MainAppModule = UpdateChecker.GetMainAppModule(descriptor);
-                    if (new Version(MainAppModule.Version) > new Version(Application.ProductVersion))
+                    if (new Version(MainAppModule.Version) > new Version(System.Windows.Forms.Application.ProductVersion))
                     {
                         Utils.Invoke(this, (MethodInvoker)delegate()
                         {
@@ -123,7 +123,7 @@ namespace PKSoft
 
         private void mnuQuit_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            System.Windows.Forms.Application.Exit();
         }
 
         private void UpdateDisplay()
@@ -722,7 +722,7 @@ namespace PKSoft
             try
             {
                 Process.Start(psi);
-                Application.Exit();
+                System.Windows.Forms.Application.Exit();
             }
             catch (Win32Exception)
             {

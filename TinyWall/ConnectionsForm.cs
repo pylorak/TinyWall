@@ -69,7 +69,7 @@ namespace PKSoft
             // Remove log entries older than 2 minutes
             DateTime now = DateTime.Now;
             TimeSpan refSpan = TimeSpan.FromMinutes(2);
-            for (int i = FwLogEntries.Count - 1; i > 0; --i)
+            for (int i = FwLogEntries.Count - 1; i >= 0; --i)
             {
                 TimeSpan span = now - FwLogEntries[i].Timestamp;
                 if (span > refSpan)

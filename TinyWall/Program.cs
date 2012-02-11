@@ -13,9 +13,9 @@ namespace PKSoft
     {
         private static int StartDevelTool()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new DevelToolForm());
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+            System.Windows.Forms.Application.Run(new DevelToolForm());
             return 0;
         }
         
@@ -72,9 +72,9 @@ namespace PKSoft
 #endif
 
             // Start controller application
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm(opts));
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+            System.Windows.Forms.Application.Run(new MainForm(opts));
             return 0;
         }
 

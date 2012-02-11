@@ -191,10 +191,15 @@ namespace PKSoft
             {
                 try
                 {   //This try-catch will prevent errors if an exception profile string is invalid
-                    ProfileAssoc app = GlobalInstances.ProfileMan.GetApplicationByDescription(SettingsManager.CurrentZone.SpecialExceptions[i]);
-                    AppExceptionSettings ex = app.ToExceptionSetting();
-                    ex.AppID = AppExceptionSettings.GenerateID();
-                    GetRulesForException(ex, SpecialRules);
+                    Application app = GlobalInstances.ProfileMan.GetApplicationByName(SettingsManager.CurrentZone.SpecialExceptions[i]);
+                    app = Utils.DeepClone(app);
+                    app.ResolveFilePaths();
+                    for (int j = 0; j < app.Files.Count; ++j)
+                    {
+                        AppExceptionSettings ex = app.Files[j].ToExceptionSetting();
+                        ex.AppID = AppExceptionSettings.GenerateID();
+                        GetRulesForException(ex, SpecialRules);
+                    }
                 }
                 catch { }
             }
