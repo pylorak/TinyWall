@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application Name="TinyWall" Recommended="true" Special="true">
 	<Files>
-	<ProfileAssoc Executable="{TWPath}\TinyWall.exe">
+	<ProfileAssoc Executable="{folder:twpath}\TinyWall.exe">
 		<Description>TinyWall</Description>
 		<Profiles>
 			<string>HTTP(S) client</string>

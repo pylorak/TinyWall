@@ -196,9 +196,17 @@ namespace PKSoft
                     app.ResolveFilePaths();
                     for (int j = 0; j < app.Files.Count; ++j)
                     {
-                        AppExceptionSettings ex = app.Files[j].ToExceptionSetting();
+                        ProfileAssoc appFile = app.Files[j];
+                        if (
+                            string.IsNullOrEmpty(appFile.Executable) ||
+                            (string.Compare(appFile.Executable, "System", StringComparison.InvariantCultureIgnoreCase) == 0) ||
+                            File.Exists(PKSoft.Parser.RecursiveParser.ResolveRegistry(appFile.Executable))
+                            )
+                        {
+                        AppExceptionSettings ex = appFile.ToExceptionSetting();
                         ex.AppID = AppExceptionSettings.GenerateID();
                         GetRulesForException(ex, SpecialRules);
+                        }
                     }
                 }
                 catch { }

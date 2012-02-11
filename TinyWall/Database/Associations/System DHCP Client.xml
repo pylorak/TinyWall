@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application Name="Windows DHCP Client" Recommended="true" Special="true">
 	<Files>
-	<ProfileAssoc Executable="{sys32}\svchost.exe" Service="dhcp">
+	<ProfileAssoc Executable="{folder:sys32}\svchost.exe" Service="dhcp">
 		<Description>Windows DHCP client</Description>
 		<Profiles>
 			<string>DHCP client</string>

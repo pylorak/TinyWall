@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Microsoft.Win32;
 
@@ -21,6 +21,10 @@ namespace PKSoft.Parser
                         return Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
                     case "pf32":
                         return Utils.ProgramFilesx86();
+                    case "sys32":
+                        return Environment.GetFolderPath(Environment.SpecialFolder.System);
+                    case "twpath":
+                        return Path.GetDirectoryName(Utils.ExecutablePath);
                     case "LocalAppData":
                         return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                     default:

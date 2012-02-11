@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application Name="Windows DNS Client" Recommended="true" Special="true">
 	<Files>
-	<ProfileAssoc Executable="{sys32}\svchost.exe" Service="Dnscache">
+	<ProfileAssoc Executable="{folder:sys32}\svchost.exe" Service="Dnscache">
 		<Description>Windows DNS client</Description>
 		<Profiles>
 			<string>DNS client</string>

@@ -290,22 +290,6 @@ namespace PKSoft
                 return Environment.GetEnvironmentVariable("ProgramFiles");
         }
 
-        internal static string ExpandPathVars(string pathWithVars)
-        {
-            // Expand variables
-            string _ExecutablePath = pathWithVars.Replace("{sys32}", Environment.GetFolderPath(Environment.SpecialFolder.System));
-            _ExecutablePath = _ExecutablePath.Replace("{TWPath}", Path.GetDirectoryName(Utils.ExecutablePath));
-
-            string pf64 = _ExecutablePath.Replace("{pf}", Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles));
-            string pf32 = _ExecutablePath.Replace("{pf}", Utils.ProgramFilesx86());
-            if (File.Exists(pf32))
-                _ExecutablePath = pf32;
-            else
-                _ExecutablePath = pf64;
-
-            return _ExecutablePath;
-        }
-
         private static string _ExecutablePath = null;
         internal static string ExecutablePath
         {

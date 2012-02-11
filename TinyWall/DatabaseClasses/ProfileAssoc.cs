@@ -206,7 +206,7 @@ namespace PKSoft
             else
             {
                 // File path must match
-                if (string.Compare(Utils.ExpandPathVars(this.Executable), Utils.ExpandPathVars(exe.Executable), StringComparison.OrdinalIgnoreCase) != 0)
+                if (string.Compare(PKSoft.Parser.RecursiveParser.ResolveRegistry(this.Executable), PKSoft.Parser.RecursiveParser.ResolveRegistry(exe.Executable), StringComparison.OrdinalIgnoreCase) != 0)
                     return false;
             }
 
