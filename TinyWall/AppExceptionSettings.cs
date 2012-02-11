@@ -46,7 +46,7 @@ namespace PKSoft
             get { return _ExecutablePath; }
             set
             {
-                _ExecutablePath = PKSoft.Parser.RecursiveParser.ResolveRegistry(value);
+                _ExecutablePath = PKSoft.Parser.RecursiveParser.ResolveString(value);
             }
         }
 

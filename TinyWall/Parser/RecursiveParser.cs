@@ -6,7 +6,7 @@ namespace PKSoft.Parser
 {
     internal static class RecursiveParser
     {
-        internal static string ResolveRegistry(string input)
+        internal static string ResolveString(string input)
         {
             Stack<ParserVariable> stack = new Stack<ParserVariable>();
             ParserVariable var = null;

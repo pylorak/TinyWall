@@ -115,7 +115,7 @@ namespace PKSoft
                 string path = SearchPaths[i];
 
                 // Recursively resolve variables
-                string filePath = RecursiveParser.ResolveRegistry(path);
+                string filePath = RecursiveParser.ResolveString(path);
                 filePath = Path.Combine(Environment.ExpandEnvironmentVariables(filePath), Path.GetFileName(this.Executable));
                 if (File.Exists(filePath))
                 {
@@ -206,7 +206,7 @@ namespace PKSoft
             else
             {
                 // File path must match
-                if (string.Compare(PKSoft.Parser.RecursiveParser.ResolveRegistry(this.Executable), PKSoft.Parser.RecursiveParser.ResolveRegistry(exe.Executable), StringComparison.OrdinalIgnoreCase) != 0)
+                if (string.Compare(PKSoft.Parser.RecursiveParser.ResolveString(this.Executable), PKSoft.Parser.RecursiveParser.ResolveString(exe.Executable), StringComparison.OrdinalIgnoreCase) != 0)
                     return false;
             }
 

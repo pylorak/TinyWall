@@ -200,12 +200,12 @@ namespace PKSoft
                         if (
                             string.IsNullOrEmpty(appFile.Executable) ||
                             (string.Compare(appFile.Executable, "System", StringComparison.InvariantCultureIgnoreCase) == 0) ||
-                            File.Exists(PKSoft.Parser.RecursiveParser.ResolveRegistry(appFile.Executable))
+                            File.Exists(PKSoft.Parser.RecursiveParser.ResolveString(appFile.Executable))
                             )
                         {
-                        AppExceptionSettings ex = appFile.ToExceptionSetting();
-                        ex.AppID = AppExceptionSettings.GenerateID();
-                        GetRulesForException(ex, SpecialRules);
+                            AppExceptionSettings ex = appFile.ToExceptionSetting();
+                            ex.AppID = AppExceptionSettings.GenerateID();
+                            GetRulesForException(ex, SpecialRules);
                         }
                     }
                 }
