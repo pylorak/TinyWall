@@ -1,26 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.Win32;
+using System.IO;
 
 namespace PKSoft.Parser
 {
-    internal class ParserRegistryVariable : ParserVariable
+    internal class ParserParentVariable : ParserVariable
     {
-        internal const string OPENING_TAG = "{reg:";
+        internal const string OPENING_TAG = "{parent:";
 
         internal override string Resolve(string str)
         {
             try
             {
-                // Registry path
-                string[] tokens = str.Split(':', StringSplitOptions.None);
-                string keyPath = tokens[0];
-                string keyValue = tokens[1];
-                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(keyPath, false))
-                {
-                    return (string)key.GetValue(keyValue);
-                }
+                return Path.GetDirectoryName(str);
             }
             catch
             {

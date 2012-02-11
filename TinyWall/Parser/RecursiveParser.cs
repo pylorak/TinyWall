@@ -20,6 +20,20 @@ namespace PKSoft.Parser
                     stack.Push(var);
                     i += var.GetOpeningTagLength() - 1;
                 }
+                if (ParserFolderVariable.IsStartTag(input, i))
+                {
+                    var = new ParserFolderVariable();
+                    var.Start = i;
+                    stack.Push(var);
+                    i += var.GetOpeningTagLength() - 1;
+                }
+                if (ParserParentVariable.IsStartTag(input, i))
+                {
+                    var = new ParserParentVariable();
+                    var.Start = i;
+                    stack.Push(var);
+                    i += var.GetOpeningTagLength() - 1;
+                }
                 else if (input[i] == '}')
                 {
                     var = stack.Pop();

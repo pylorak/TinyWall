@@ -5,21 +5,26 @@ using Microsoft.Win32;
 
 namespace PKSoft.Parser
 {
-    internal class ParserRegistryVariable : ParserVariable
+    internal class ParserFolderVariable : ParserVariable
     {
-        internal const string OPENING_TAG = "{reg:";
+        internal const string OPENING_TAG = "{folder:";
 
         internal override string Resolve(string str)
         {
             try
             {
                 // Registry path
-                string[] tokens = str.Split(':', StringSplitOptions.None);
-                string keyPath = tokens[0];
-                string keyValue = tokens[1];
-                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(keyPath, false))
+                switch (str)
                 {
-                    return (string)key.GetValue(keyValue);
+                    case "pf":
+                    case "pf64":
+                        return Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+                    case "pf32":
+                        return Utils.ProgramFilesx86();
+                    case "LocalAppData":
+                        return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                    default:
+                        return str;
                 }
             }
             catch

@@ -8,6 +8,10 @@
 		<HashesSHA1>
 			<string>af68710ffdb5654f1b46c5f2b920de920d4fbf07</string>
 		</HashesSHA1>
+		<SearchPaths>
+			<string>{reg:SOFTWARE\pidgin:}</string>
+			<string>{reg:SOFTWARE\Wow6432Node\pidgin:}</string>
+		</SearchPaths>
 	</ProfileAssoc>
 	</Files>
 </Application>

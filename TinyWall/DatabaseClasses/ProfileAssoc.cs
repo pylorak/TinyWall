@@ -116,7 +116,7 @@ namespace PKSoft
 
                 // Recursively resolve variables
                 string filePath = RecursiveParser.ResolveRegistry(path);
-                filePath = Environment.ExpandEnvironmentVariables(filePath);
+                filePath = Path.Combine(Environment.ExpandEnvironmentVariables(filePath), Path.GetFileName(this.Executable));
                 if (File.Exists(filePath))
                 {
                     ProfileAssoc foundFile = ProfileAssoc.FromExecutable(filePath, this.Service);
