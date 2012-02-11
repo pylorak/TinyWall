@@ -175,12 +175,6 @@
     <Compile Include="Controls\TransparentLabel.Designer.cs">
       <DependentUpon>TransparentLabel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\TreeViewColumns .cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\TreeViewColumns .Designer.cs">
-      <DependentUpon>TreeViewColumns .cs</DependentUpon>
-    </Compile>
     <Compile Include="UpdateChecker.cs" />
     <Compile Include="UpdateForm.cs">
       <SubType>Form</SubType>
@@ -281,10 +275,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\TransparentLabel.resx">
       <DependentUpon>TransparentLabel.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\TreeViewColumns .resx">
-      <DependentUpon>TreeViewColumns .cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UpdateForm.resx">
