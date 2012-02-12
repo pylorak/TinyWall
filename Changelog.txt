@@ -9,6 +9,7 @@ TinyWall Changelog
 - New XML-based updater system
 - Lightning-fast search for recognized applications
 - Increased service startup performance
+- Better support for Windos Networking, Remote Desktop and Remote Assistance
 - Fix: Uninstaller now removes user-specific configuration files too
 - Fix: Custom ports are not applied to services
 
