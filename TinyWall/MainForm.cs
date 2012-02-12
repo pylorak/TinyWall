@@ -739,7 +739,7 @@ namespace PKSoft
             GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
 
             SettingsManager.ControllerConfig = ControllerSettings.Load();
-            LoadSettingsFromServer();
+            LoadSettingsFromServer(true);
 
             HotKeyWhitelistWindow = new Hotkey(Keys.W, true, true, false, false);
             HotKeyWhitelistWindow.Pressed += new HandledEventHandler(HotKeyWhitelistWindow_Pressed);
@@ -790,8 +790,6 @@ namespace PKSoft
             {
                 StartUpdate(null, null);
             }
-
-            LoadSettingsFromServer(true);
         }
 
         private void mnuElevate_Click(object sender, EventArgs e)
