@@ -148,6 +148,7 @@
             this.txtAssocOutputPath.Name = "txtAssocOutputPath";
             this.txtAssocOutputPath.Size = new System.Drawing.Size(423, 20);
             this.txtAssocOutputPath.TabIndex = 8;
+            this.txtAssocOutputPath.Text = "D:\\Projects\\TinyWall\\TinyWall\\bin\\Debug";
             // 
             // btnAssocOutputBrowse
             // 
@@ -174,6 +175,7 @@
             this.txtDBFolderPath.Name = "txtDBFolderPath";
             this.txtDBFolderPath.Size = new System.Drawing.Size(423, 20);
             this.txtDBFolderPath.TabIndex = 3;
+            this.txtDBFolderPath.Text = "D:\\Projects\\TinyWall\\TinyWall\\Database";
             // 
             // btnCollectionsCreate
             // 
