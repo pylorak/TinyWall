@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application Name="Windows Remote Assistance" Special="true">
+	<Files>
+	<ProfileAssoc Executable="{folder:sys32}\svchost.exe">
+		<Profiles>
+			<string>PNRP</string>
+			<string>SSDP</string>
+		</Profiles>
+	</ProfileAssoc>
+	<ProfileAssoc Executable="{folder:sys32}\raserver.exe">
+		<Profiles>
+			<string>Blind trust</string>
+		</Profiles>
+	</ProfileAssoc>
+	<ProfileAssoc Executable="{folder:sys32}\msra.exe">
+		<Profiles>
+			<string>Blind trust</string>
+		</Profiles>
+	</ProfileAssoc>
+	</Files>
+</Application>

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application Name="Windows Remote Desktop" Special="true">
+	<Files>
+	<ProfileAssoc Executable="System">
+		<Profiles>
+			<string>RDP Server</string>
+		</Profiles>
+	</ProfileAssoc>
+	<ProfileAssoc Executable="{folder:sys32}\svchost.exe">
+		<Profiles>
+			<string>RDP Server</string>
+		</Profiles>
+	</ProfileAssoc>
+	</Files>
+</Application>

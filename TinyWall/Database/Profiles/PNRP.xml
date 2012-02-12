@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="PNRP">
+  <Rules>
+    <RuleDef Name="PNRP Server">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>In</Direction>
+      <LocalPorts>3540</LocalPorts>
+    </RuleDef>
+    <RuleDef Name="PNRP Client">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>3540</RemotePorts>
+    </RuleDef>
+  </Rules>
+</Profile>

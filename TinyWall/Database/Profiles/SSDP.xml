@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="SSDP">
+  <Rules>
+    <RuleDef Name="SSDP TCP Server">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>In</Direction>
+      <LocalPorts>2869</LocalPorts>
+      <RemoteAddresses>LocalSubnet</RemoteAddresses>
+    </RuleDef>
+    <RuleDef Name="SSDP UDP Server">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>In</Direction>
+      <LocalPorts>1900</LocalPorts>
+      <RemoteAddresses>LocalSubnet</RemoteAddresses>
+    </RuleDef>
+    <RuleDef Name="SSDP TCP Client">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>2869</RemotePorts>
+      <RemoteAddresses>LocalSubnet</RemoteAddresses>
+    </RuleDef>
+    <RuleDef Name="SSDP UDP Client">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>1900</RemotePorts>
+      <RemoteAddresses>LocalSubnet</RemoteAddresses>
+    </RuleDef>
+  </Rules>
+</Profile>
