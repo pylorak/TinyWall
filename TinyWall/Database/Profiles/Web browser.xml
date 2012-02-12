@@ -31,5 +31,11 @@
       <Direction>Out</Direction>
       <RemotePorts>1755</RemotePorts>
     </RuleDef>
+    <RuleDef Name="Browser general out">
+      <Action>Allow</Action>
+      <Protocol>Tcp</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>EPHEMERAL</RemotePorts>
+    </RuleDef>
   </Rules>
 </Profile>
