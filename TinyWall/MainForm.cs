@@ -263,7 +263,13 @@ namespace PKSoft
                 default:
                     DefaultPopups(opret);
                     break;
-            } 
+            }
+
+            if (mode != FirewallMode.Disabled)
+            {
+                SettingsManager.GlobalConfig.StartupMode = mode;
+                ApplyFirewallSettings(SettingsManager.GlobalConfig, null, false);
+            }
         }
 
         private void mnuModeDisabled_Click(object sender, EventArgs e)
@@ -291,7 +297,7 @@ namespace PKSoft
         }
 
         // Returns true if the local copy of the settings have been updated.
-        private bool LoadSettingsFromServer()
+        private bool LoadSettingsFromServer(bool force = false)
         {
             // Detect of server settings have changed in comparison to ours and download
             // settings only if we need them. Settings are "version numbered" using the "changeset"
@@ -300,12 +306,12 @@ namespace PKSoft
 
             bool SettingsUpdated = false;
 
-            Message req = new Message(TinyWallCommands.GET_SETTINGS, SettingsManager.Changeset);
+            Message req = new Message(TinyWallCommands.GET_SETTINGS, force ? int.MinValue :  SettingsManager.Changeset );
             Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
             if (resp.Command == TinyWallCommands.RESPONSE_OK)
             {
                 int ServerChangeSet = (int)resp.Arguments[0];
-                if (ServerChangeSet != SettingsManager.Changeset)
+                if (force || (ServerChangeSet != SettingsManager.Changeset))
                 {
                     SettingsManager.Changeset = ServerChangeSet;
                     SettingsManager.GlobalConfig = (MachineSettings)resp.Arguments[1];
@@ -457,7 +463,7 @@ namespace PKSoft
             AddNewException(ex); 
         }
 
-        private TinyWallCommands ApplyFirewallSettings(MachineSettings machine, ZoneSettings zone)
+        private TinyWallCommands ApplyFirewallSettings(MachineSettings machine, ZoneSettings zone, bool showUI = true)
         {
             Message resp;
             if (LoadSettingsFromServer())
@@ -480,17 +486,22 @@ namespace PKSoft
             Message req = new Message(TinyWallCommands.PUT_SETTINGS, machine, zone);
             resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
 
-            switch (resp.Command)
+            if (showUI)
             {
-                case TinyWallCommands.RESPONSE_OK:
-                    ShowBalloonTip("The firewall settings have been successfully updated.", ToolTipIcon.Info);
-                    SettingsManager.GlobalConfig = machine;
-                    SettingsManager.CurrentZone = zone;
-                    break;
-                default:
-                    DefaultPopups(resp.Command);
-                    LoadSettingsFromServer();
-                    break;
+                switch (resp.Command)
+                {
+                    case TinyWallCommands.RESPONSE_OK:
+                        ShowBalloonTip("The firewall settings have been successfully updated.", ToolTipIcon.Info);
+                        if (machine != null) 
+                            SettingsManager.GlobalConfig = machine;
+                        if (zone != null)
+                            SettingsManager.CurrentZone = zone;
+                        break;
+                    default:
+                        DefaultPopups(resp.Command);
+                        LoadSettingsFromServer();
+                        break;
+                }
             }
 
             return resp.Command;
@@ -612,7 +623,7 @@ namespace PKSoft
             SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, ex);
             SettingsManager.CurrentZone.Normalize();
 
-            TinyWallCommands resp = ApplyFirewallSettings(SettingsManager.GlobalConfig, SettingsManager.CurrentZone);
+            TinyWallCommands resp = ApplyFirewallSettings(null, SettingsManager.CurrentZone);
             switch (resp)
             {
                 case TinyWallCommands.RESPONSE_OK:
@@ -675,7 +686,7 @@ namespace PKSoft
             // TODO: Why do I copy here?
             ZoneSettings zoneCopy = SettingsManager.CurrentZone.Clone() as ZoneSettings;
             zoneCopy.AllowLocalSubnet = mnuAllowLocalSubnet.Checked;
-            ApplyFirewallSettings(SettingsManager.GlobalConfig, zoneCopy);
+            ApplyFirewallSettings(null, zoneCopy);
         }
 
         private void mnuEnableHostsBlocklist_Click(object sender, EventArgs e)
@@ -685,7 +696,7 @@ namespace PKSoft
             if (SettingsManager.GlobalConfig.HostsBlocklist)
                 SettingsManager.GlobalConfig.LockHostsFile = true;
 
-            ApplyFirewallSettings(SettingsManager.GlobalConfig, SettingsManager.CurrentZone);
+            ApplyFirewallSettings(SettingsManager.GlobalConfig, null);
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -750,8 +761,7 @@ namespace PKSoft
                 {
                     if (aff.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                     {
-                        SettingsManager.CurrentZone = aff.TmpZoneSettings;
-                        ApplyFirewallSettings(SettingsManager.GlobalConfig, SettingsManager.CurrentZone);
+                        ApplyFirewallSettings(null, aff.TmpZoneSettings);
                     }
                 }
             }
@@ -760,6 +770,8 @@ namespace PKSoft
             {
                 StartUpdate(null, null);
             }
+
+            LoadSettingsFromServer(true);
         }
 
         private void mnuElevate_Click(object sender, EventArgs e)

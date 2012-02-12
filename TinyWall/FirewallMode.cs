@@ -1,7 +1,7 @@
 ﻿
 namespace PKSoft
 {
-    internal enum FirewallMode
+    public enum FirewallMode
     {
         Normal,
         BlockAll,

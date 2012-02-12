@@ -1,21 +1,23 @@
 Future developent:
 - App profile submission system
-- MVPS hosts
 - IP blocklists
 - Custom profiles
-- Network traffic measurement
 - Digital certificate
-- hosts file locking
 - User-selectable zones
 - Spyware/malware recognition
 - SQLite database
-- Show UDP traffic
 - AV scanning using installed external AV-product
 - Action Center integration
 - Updater to detected database format breakage
 - Updated UI
 - Localized versions
 - Better modularization
+
+Done in 2.0.0:
+- MVPS hosts
+- Network traffic measurement
+- hosts file locking
+- Show blocked traffic
 
 Generic profile support:
 - LDAP

@@ -134,6 +134,7 @@ namespace PKSoft
         public bool HostsBlocklist = false;
         public DateTime LastUpdateCheck;
         public bool AutoUpdateCheck = true;
+        public FirewallMode StartupMode = FirewallMode.Normal;
 
         internal void Save()
         {
@@ -356,7 +357,7 @@ namespace PKSoft
         internal static MachineSettings GlobalConfig;
         internal static ServiceSettings ServiceConfig;
         internal static ControllerSettings ControllerConfig;
-        internal static int Changeset = -1;
+        internal static int Changeset;
 
         internal static string AppDataPath
         {

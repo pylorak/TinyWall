@@ -356,6 +356,7 @@ namespace PKSoft
 
             SettingsManager.GlobalConfig = MachineSettings.Load();
             SettingsManager.CurrentZone = ZoneSettings.Load(ProfileDisplayName);
+            this.Mode = SettingsManager.GlobalConfig.StartupMode;
         }
 
         // This method reapplies all firewall settings.
@@ -492,15 +493,22 @@ namespace PKSoft
                     }
                 case TinyWallCommands.PUT_SETTINGS:
                     {
-                        SettingsManager.GlobalConfig = (MachineSettings)req.Arguments[0];
-                        SettingsManager.GlobalConfig.Save();
+                        if (req.Arguments[0] != null)
+                        {
+                            SettingsManager.GlobalConfig = (MachineSettings)req.Arguments[0];
+                            SettingsManager.GlobalConfig.Save();
+                        }
 
-                        // This roundabout way is to prevent overwriting the wrong zone if the controller is sending us
-                        // data from a zone that is not the current one.
                         ZoneSettings oldZone = SettingsManager.CurrentZone;
-                        ZoneSettings newZone = (ZoneSettings)req.Arguments[1];
-                        newZone.Save();
-                        SettingsManager.CurrentZone = newZone;
+                        ZoneSettings newZone = SettingsManager.CurrentZone;
+                        if (req.Arguments[1] != null)
+                        {
+                            // This roundabout way is to prevent overwriting the wrong zone if the controller is sending us
+                            // data from a zone that is not the current one.
+                            newZone = (ZoneSettings)req.Arguments[1];
+                            newZone.Save();
+                            SettingsManager.CurrentZone = newZone;
+                        }
 
                         if (newZone.EnableDefaultWindowsRules != oldZone.EnableDefaultWindowsRules)
                             InitFirewall();
@@ -659,7 +667,7 @@ namespace PKSoft
                         {
                             SettingsManager.CurrentZone.AppExceptions = exs;
                             SettingsManager.CurrentZone.Save();
-                            ++SettingsManager.Changeset;
+                            SettingsManager.Changeset = Utils.GetRandomNumber();
                         }
 
                         return new Message(TinyWallCommands.RESPONSE_OK);
@@ -762,7 +770,7 @@ namespace PKSoft
                     }
                 case 2010:     // network interface changed profile
                     {   // Event format is different in this case so we handle this separately
-                        ++SettingsManager.Changeset;
+                        SettingsManager.Changeset = Utils.GetRandomNumber();
                         if (!Q.HasRequest(TinyWallCommands.REINIT))
                         {
                             EventLog.WriteEntry("Reloading firewall configuration because a network interface changed profile.");
@@ -841,13 +849,10 @@ namespace PKSoft
                     FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
 
                     // Lock configuration if we have a password
-                    SettingsManager.Changeset = 0;
+                    SettingsManager.Changeset = Utils.GetRandomNumber();
                     SettingsManager.ServiceConfig = new ServiceSettings();
                     if (SettingsManager.ServiceConfig.HasPassword)
                         SettingsManager.ServiceConfig.Locked = true;
-
-                    // Set normal mode on stratup
-                    this.Mode = FirewallMode.Normal;
 
                     // Issue load command
                     Q = new RequestQueue();

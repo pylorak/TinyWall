@@ -303,6 +303,14 @@ namespace PKSoft
             }
         }
 
+        private static Random RndGenerator = null;
+        internal static int GetRandomNumber()
+        {
+            if (RndGenerator == null)
+                RndGenerator = new Random();
+            return RndGenerator.Next(int.MaxValue);
+        }
+
         private static object logLocker = new object();
         internal static void LogCrash(Exception e)
         {

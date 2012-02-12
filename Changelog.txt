@@ -11,6 +11,7 @@ TinyWall Changelog
 - Lightning-fast search for some recognized applications
 - Increased service startup performance
 - Better support for Windos Networking, Remote Desktop and Remote Assistance
+- Remember last used firewall mode (except disabled mode)
 - Fix: Uninstaller now removes user-specific configuration files too
 - Fix: Custom ports are not applied to services
 
