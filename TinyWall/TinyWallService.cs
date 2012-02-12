@@ -535,6 +535,7 @@ namespace PKSoft
                     }
                 case TinyWallCommands.RELOAD:
                     {
+                        FwRules = Firewall.GetRules(false);
                         MergeActiveRulesIntoWinFirewall();
                         return new Message(TinyWallCommands.RESPONSE_OK);
                     }
@@ -744,7 +745,7 @@ namespace PKSoft
                 case 2004:     // rule added
                     {
                         propidx = 22;
-                        cmd = TinyWallCommands.RELOAD;
+                        cmd = TinyWallCommands.REINIT;
                         break;
                     }
                 case 2005:     // rule changed
@@ -756,16 +757,16 @@ namespace PKSoft
                 case 2006:     // rule deleted
                     {
                         propidx = 3;
-                        cmd = TinyWallCommands.RELOAD;
+                        cmd = TinyWallCommands.REINIT;
                         break;
                     }
                 case 2010:     // network interface changed profile
                     {   // Event format is different in this case so we handle this separately
                         ++SettingsManager.Changeset;
-                        if (!Q.HasRequest(TinyWallCommands.RELOAD))
+                        if (!Q.HasRequest(TinyWallCommands.REINIT))
                         {
                             EventLog.WriteEntry("Reloading firewall configuration because a network interface changed profile.");
-                            Q.Enqueue(new ReqResp(new Message(TinyWallCommands.RELOAD)));
+                            Q.Enqueue(new ReqResp(new Message(TinyWallCommands.REINIT)));
                         }
                         break;
                     }
