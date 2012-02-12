@@ -72,10 +72,10 @@ Source: "Components\TinyWall.XmlSerializers.dll"; DestDir: "{app}"; Flags: repla
 Filename: "{dotnet20}\ngen.exe"; Parameters: "install ""{#TW_TinyWall_exe_SN}"""; StatusMsg: "Optimizing performance..."; Flags: runascurrentuser runhidden;
 Filename: "{app}\TinyWall.exe"; Parameters: "/install"; StatusMsg: "Installing service..."; Flags: runascurrentuser;
 Filename: "{app}\TinyWall.exe"; Parameters: "/desktop"; StatusMsg: "Starting firewall..."; Flags: runasoriginaluser nowait; Tasks: not detectnow;
-Filename: "{app}\TinyWall.exe"; Parameters: "/desktop /detectnow"; StatusMsg: "Starting firewall..."; Flags: runasoriginaluser nowait; Tasks: detectnow;
+Filename: "{app}\TinyWall.exe"; Parameters: "/desktop /autowhitelist"; StatusMsg: "Starting firewall..."; Flags: runasoriginaluser nowait; Tasks: detectnow;
 
 [Tasks]
-Name: detectnow; Description: "Detect installed applications after setup to ease whitelisting"; Flags: checkedonce;
+Name: detectnow; Description: "After setup, automatically unblock some applications (recommended)"; Flags: checkedonce;
 
 [UninstallRun]
 Filename: "{app}\TinyWall.exe"; Parameters: "/uninstall"; StatusMsg: "Uninstalling service..."; Flags: runascurrentuser;

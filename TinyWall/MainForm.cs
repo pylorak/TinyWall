@@ -623,7 +623,7 @@ namespace PKSoft
             SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, ex);
             SettingsManager.CurrentZone.Normalize();
 
-            TinyWallCommands resp = ApplyFirewallSettings(null, SettingsManager.CurrentZone);
+            TinyWallCommands resp = ApplyFirewallSettings(null, SettingsManager.CurrentZone, false);
             switch (resp)
             {
                 case TinyWallCommands.RESPONSE_OK:
@@ -755,6 +755,26 @@ namespace PKSoft
 
             ApplyControllerSettings();
 
+            if (StartupOpts.autowhitelist)
+            {
+                ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
+                for (int i = 0; i < allApps.Count; ++i)
+                {
+                    Application app = allApps[i];
+
+                    // If we've found at least one file, add the app to the list
+                    if (app.ResolveFilePaths())
+                    {
+                        foreach (ProfileAssoc appFile in app.Files)
+                        {
+                            if (File.Exists(appFile.Executable) && Path.IsPathRooted(appFile.Executable))
+                                SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, appFile.ToExceptionSetting());
+                        }
+                    }
+                }
+                SettingsManager.CurrentZone.Normalize();
+                ApplyFirewallSettings(null, SettingsManager.CurrentZone);
+            }
             if (StartupOpts.detectnow)
             {
                 using (AppFinderForm aff = new AppFinderForm(SettingsManager.CurrentZone.Clone() as ZoneSettings))
