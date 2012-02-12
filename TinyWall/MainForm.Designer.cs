@@ -52,6 +52,7 @@
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuQuit = new System.Windows.Forms.ToolStripMenuItem();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
+            this.mnuTrafficRate = new System.Windows.Forms.ToolStripMenuItem();
             this.TrayMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -67,6 +68,7 @@
             // 
             this.TrayMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuCurrentPolicy,
+            this.mnuTrafficRate,
             this.toolStripMenuItem1,
             this.mnuMode,
             this.mnuManage,
@@ -83,7 +85,7 @@
             this.toolStripMenuItem5,
             this.mnuQuit});
             this.TrayMenu.Name = "TrayMenu";
-            this.TrayMenu.Size = new System.Drawing.Size(268, 292);
+            this.TrayMenu.Size = new System.Drawing.Size(268, 336);
             this.TrayMenu.Opening += new System.ComponentModel.CancelEventHandler(this.TrayMenu_Opening);
             // 
             // mnuCurrentPolicy
@@ -237,6 +239,12 @@
             // 
             this.ofd.Filter = "All files|*.*";
             // 
+            // mnuTrafficRate
+            // 
+            this.mnuTrafficRate.Name = "mnuTrafficRate";
+            this.mnuTrafficRate.Size = new System.Drawing.Size(267, 22);
+            this.mnuTrafficRate.Text = "<Traffic rate>";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -283,6 +291,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem mnuAllowLocalSubnet;
         private System.Windows.Forms.ToolStripMenuItem mnuEnableHostsBlocklist;
+        private System.Windows.Forms.ToolStripMenuItem mnuTrafficRate;
     }
 }
 

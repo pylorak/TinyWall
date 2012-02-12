@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Threading;
 using System.ServiceProcess;
 using System.Windows.Forms;
+using System.Management;
 
 namespace PKSoft
 {
@@ -17,6 +18,15 @@ namespace PKSoft
         private MouseInterceptor MouseInterceptor;
         private SettingsForm ShownSettings;
         private FirewallMode FwMode;
+
+        // Traffic rate monitoring
+        private System.Threading.Timer TrafficTimer = null;
+        private ManagementObjectSearcher searcher = null;
+        private const int TRAFFIC_TIMER_INTERVAL = 3;
+        private ulong bytesRxTotal = 0;
+        private ulong bytesTxTotal = 0;
+        private string rxDisplay = string.Empty;
+        private string txDisplay = string.Empty;
 
         private EventHandler<AnyEventArgs> BalloonClickedCallback;
         private object BalloonClickedCallbackArgument;
@@ -101,6 +111,42 @@ namespace PKSoft
             }
         }
 
+        private void TrafficTimerTick(object state)
+        {
+            // Use WMI technology to retrieve the interface details
+            if (searcher == null)
+                searcher = new ManagementObjectSearcher("select BytesReceivedPersec, BytesSentPersec from Win32_PerfRawData_Tcpip_NetworkInterface");
+
+            ulong bytesRxNewTotal = 0;
+            ulong bytesTxNewTotal = 0;
+            ManagementObjectCollection moc = searcher.Get();
+            foreach (ManagementObject adapterObject in moc)
+            {
+                bytesRxNewTotal += (ulong)adapterObject["BytesReceivedPersec"];
+                bytesTxNewTotal += (ulong)adapterObject["BytesSentPersec"];
+            }
+
+            float RxDiff = (bytesRxNewTotal - bytesRxTotal) / (float)TRAFFIC_TIMER_INTERVAL;
+            float TxDiff = (bytesTxNewTotal - bytesTxTotal) / (float)TRAFFIC_TIMER_INTERVAL;
+            bytesRxTotal = bytesRxNewTotal;
+            bytesTxTotal = bytesTxNewTotal;
+
+            float KBytesRxPerSec = RxDiff / 1024;
+            float KBytesTxPerSec = TxDiff / 1024;
+            float MBytesRxPerSec = KBytesRxPerSec / 1024;
+            float MBytesTxPerSec = KBytesTxPerSec / 1024;
+
+            if (MBytesRxPerSec > 1)
+                rxDisplay = string.Format("{0:f}MB/s", MBytesRxPerSec);
+            else
+                rxDisplay = string.Format("{0:f}KB/s", KBytesRxPerSec);
+
+            if (MBytesTxPerSec > 1)
+                txDisplay = string.Format("{0:f}MB/s", MBytesTxPerSec);
+            else
+                txDisplay = string.Format("{0:f}KB/s", KBytesTxPerSec);
+        }
+        
         private void StartUpdate(object sender, AnyEventArgs e)
         {
             UpdateForm.StartUpdate(this);
@@ -364,6 +410,8 @@ namespace PKSoft
                     e.Cancel = true;
                 }
             }
+
+           mnuTrafficRate.Text = "Down: " + rxDisplay + "   " + "Up: " + txDisplay;
         }
 
         private void mnuWhitelistByExecutable_Click(object sender, EventArgs e)
@@ -658,6 +706,7 @@ namespace PKSoft
         private void MainForm_Shown(object sender, EventArgs e)
         {
             Hide();
+            TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
 
             mnuElevate.Visible = !Utils.RunningAsAdmin();
 

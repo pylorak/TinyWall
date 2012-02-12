@@ -7,6 +7,7 @@ TinyWall Changelog
 - Hosts file protection
 - Firewall rule update without breaking existing connections
 - New XML-based updater system
+- Traffic rate monitor
 - Lightning-fast search for recognized applications
 - Increased service startup performance
 - Better support for Windos Networking, Remote Desktop and Remote Assistance
