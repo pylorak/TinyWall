@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ServiceProcess;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.ServiceProcess;
 using System.Windows.Forms;
 
 namespace PKSoft

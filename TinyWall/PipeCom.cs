@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Threading;
-using System.Security.Principal;
-using System.Globalization;
 using System.IO.Pipes;
-using System.IO;
-using System.Text;
+using System.Security.Principal;
+using System.Threading;
 
 namespace PKSoft
 {

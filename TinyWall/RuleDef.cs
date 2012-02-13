@@ -1,9 +1,8 @@
 ﻿using System;
-using System.IO;
-using System.ServiceProcess;
 using System.Collections.Generic;
-using PKSoft.WindowsFirewall;
+using System.ServiceProcess;
 using System.Xml.Serialization;
+using PKSoft.WindowsFirewall;
 
 namespace PKSoft
 {

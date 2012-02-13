@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using PKSoft.WindowsFirewall;
 using System.Diagnostics.Eventing.Reader;
+using System.IO;
+using PKSoft.WindowsFirewall;
 
 namespace PKSoft
 {

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
-using System.Diagnostics;
 using System.Configuration.Install;
-using System.Reflection;
+using System.IO;
 using System.ServiceProcess;
 using System.Threading;
 using System.Windows.Forms;

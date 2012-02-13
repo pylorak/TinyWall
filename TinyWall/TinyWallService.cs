@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
-using System.IO.Pipes;
-using System.Net;
 using System.IO;
-using System.Security.Principal;
+using System.Net;
 using System.ServiceProcess;
 using System.Threading;
-using Microsoft.Win32;
 using PKSoft.WindowsFirewall;
 
 namespace PKSoft

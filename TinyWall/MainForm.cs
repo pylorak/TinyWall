@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
 using System.ComponentModel;
-using System.Globalization;
-using System.IO;
-using System.IO.Pipes;
-using System.Reflection;
-using System.Threading;
-using System.ServiceProcess;
-using System.Windows.Forms;
+using System.Diagnostics;
 using System.Management;
+using System.ServiceProcess;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace PKSoft
 {

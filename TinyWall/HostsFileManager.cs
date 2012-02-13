@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Security.Cryptography;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace PKSoft
 {

@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Net;
 using System.Net.NetworkInformation;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using PKSoft.netstat;
 
