@@ -147,7 +147,7 @@ namespace PKSoft
                 {
                     if (System.Windows.Forms.MessageBox.Show(
                         parent,
-                        string.Format("The file you are about to unblock is part of the application \"{0}\". This application requires additional files unblocked to function properly. \r\n\r\n Do you want TinyWall to automatically whitelist these files for you?", app.Name),
+                        string.Format("A file you are about to unblock is part of the application \"{0}\". This application requires additional files unblocked to function properly. \r\n\r\n Do you want TinyWall to automatically whitelist these files for you?", app.Name),
                         "Application dependency",
                         System.Windows.Forms.MessageBoxButtons.YesNo,
                         System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)

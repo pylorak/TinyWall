@@ -460,7 +460,7 @@ namespace PKSoft
             AddNewException(ex); 
         }
         
-        private TinyWallCommands ApplyFirewallSettings(MachineSettings machine, ZoneSettings zone, bool showUI = true)
+        internal TinyWallCommands ApplyFirewallSettings(MachineSettings machine, ZoneSettings zone, bool showUI = true)
         {
             Message resp;
             if (LoadSettingsFromServer())
@@ -809,7 +809,7 @@ namespace PKSoft
 
         private void mnuConnections_Click(object sender, EventArgs e)
         {
-            using (ConnectionsForm cf = new ConnectionsForm())
+            using (ConnectionsForm cf = new ConnectionsForm(this))
             {
                 cf.ShowDialog(this);
             }

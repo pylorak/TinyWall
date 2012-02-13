@@ -12,12 +12,14 @@ namespace PKSoft
 {
     internal partial class ConnectionsForm : Form
     {
-        List<FirewallLogEntry> FwLogEntries = new List<FirewallLogEntry>();
+        private List<FirewallLogEntry> FwLogEntries = new List<FirewallLogEntry>();
+        private MainForm MainForm = null;
 
-        internal ConnectionsForm()
+        internal ConnectionsForm(MainForm form)
         {
             InitializeComponent();
             this.Icon = Icons.firewall;
+            this.MainForm = form;
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -150,6 +152,10 @@ namespace PKSoft
                 // If anything goes wrong above, well, we won't have an icon.
                 // Who cares...
                 // Notably, proc.MainModule.FileName throws often for some system processes
+                if (proc.ProcessName.Equals("System", StringComparison.OrdinalIgnoreCase))
+                    li.ToolTipText = "System";
+                else
+                    li.ToolTipText = string.Empty;
             }
 
             li.SubItems.Add(protocol);
@@ -226,39 +232,76 @@ namespace PKSoft
 
         private void mnuCloseProcess_Click(object sender, EventArgs e)
         {
-            ListViewItem li = list.SelectedItems[0];
-            int pid = (int)li.Tag;
-
-            try
+            foreach (ListViewItem li in list.SelectedItems)
             {
-                using (Process proc = Process.GetProcessById(pid))
+                int pid = (int)li.Tag;
+
+                try
                 {
-                    try
+                    using (Process proc = Process.GetProcessById(pid))
                     {
-                        if (!proc.CloseMainWindow())
+                        try
                         {
-                            proc.Kill();
+                            if (!proc.CloseMainWindow())
+                            {
+                                proc.Kill();
+                            }
+                            if (!proc.WaitForExit(5000))
+                                throw new ApplicationException();
+                            else
+                                UpdateList();
                         }
-                        if (!proc.WaitForExit(5000))
-                            throw new ApplicationException();
-                        else
-                            UpdateList();
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        // The process has already exited. Fine, that's just what we want :)
-                    }
-                    catch
-                    {
-                        // The process has already exited. Fine, that's just what we want :)
-                        MessageBox.Show(this, "Could not close selected process. Elevate TinyWall and try again.", "Cannot close", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        catch (InvalidOperationException)
+                        {
+                            // The process has already exited. Fine, that's just what we want :)
+                        }
+                        catch
+                        {
+                            // The process has already exited. Fine, that's just what we want :)
+                            MessageBox.Show(this, string.Format("Could not close process {0}. Elevate TinyWall and try again.", proc.ProcessName), "Cannot close", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        }
                     }
                 }
+                catch
+                {
+                    // The app has probably already quit. Leave it at that.
+                }
             }
-            catch
+        }
+
+        private void mnuUnblock_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem li in list.SelectedItems)
             {
-                // The app has probably already quit. Leave it at that.
+                string path = li.ToolTipText;
+                if (string.IsNullOrEmpty(path))
+                    continue;
+
+                try
+                {
+                    AppExceptionSettings ex = new AppExceptionSettings(path);
+                    ex.ServiceName = string.Empty;
+                    ex.TryRecognizeApp(true);
+
+                    if (ex.Recognized.Value)
+                    {
+                        List<AppExceptionSettings> exceptions = AppExceptionSettings.CheckForAppDependencies(this, ex);
+                        for (int i = 0; i < exceptions.Count; ++i)
+                            SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, exceptions[i]);
+                    }
+                    else
+                    {
+                        SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, ex);
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show(this, string.Format("Could not whitelist process of {0}.", path), "Cannot close", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
             }
+
+            SettingsManager.CurrentZone.Normalize();
+            MainForm.ApplyFirewallSettings(null, SettingsManager.CurrentZone, true);
         }
     }
 

@@ -39,6 +39,7 @@
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnuUnblock = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCloseProcess = new System.Windows.Forms.ToolStripMenuItem();
             this.IconList = new System.Windows.Forms.ImageList(this.components);
             this.btnRefresh = new System.Windows.Forms.Button();
@@ -124,16 +125,25 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuUnblock,
             this.mnuCloseProcess});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(147, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 70);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+            // 
+            // mnuUnblock
+            // 
+            this.mnuUnblock.Image = global::PKSoft.Icons.executable;
+            this.mnuUnblock.Name = "mnuUnblock";
+            this.mnuUnblock.Size = new System.Drawing.Size(152, 22);
+            this.mnuUnblock.Text = "Unblock";
+            this.mnuUnblock.Click += new System.EventHandler(this.mnuUnblock_Click);
             // 
             // mnuCloseProcess
             // 
             this.mnuCloseProcess.Image = global::PKSoft.Icons.exit;
             this.mnuCloseProcess.Name = "mnuCloseProcess";
-            this.mnuCloseProcess.Size = new System.Drawing.Size(146, 22);
+            this.mnuCloseProcess.Size = new System.Drawing.Size(152, 22);
             this.mnuCloseProcess.Text = "Close process";
             this.mnuCloseProcess.Click += new System.EventHandler(this.mnuCloseProcess_Click);
             // 
@@ -231,5 +241,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuCloseProcess;
         private System.Windows.Forms.CheckBox chkShowActive;
         private System.Windows.Forms.CheckBox chkShowBlocked;
+        private System.Windows.Forms.ToolStripMenuItem mnuUnblock;
     }
 }
