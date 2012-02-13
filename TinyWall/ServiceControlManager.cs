@@ -307,6 +307,8 @@ namespace ScmWrapper
                     failureActions.dwResetPeriod = 0;
                     failureActions.cActions = (uint)actionCount;
                     failureActions.lpsaActions = actionPtr;
+                    failureActions.lpRebootMsg = null;
+                    failureActions.lpCommand = null;
                 }
                 else
                 {

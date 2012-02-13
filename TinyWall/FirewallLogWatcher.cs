@@ -35,6 +35,14 @@ namespace PKSoft
             return this.Equals(obj as FirewallLogEntry, true);
         }
 
+        public override int GetHashCode()
+        {
+            return Timestamp.GetHashCode() ^ Event.GetHashCode() ^ 
+                ProcessID.GetHashCode() ^ Protocol.GetHashCode() ^ 
+                SourceIP.GetHashCode() ^ DestinationIP.GetHashCode() ^ 
+                SourcePort.GetHashCode() ^ DestinationPort.GetHashCode();
+        }
+
         public bool Equals(FirewallLogEntry obj, bool timestampMustMatch)
         {
             // If parameter cannot be cast to Point return false.
