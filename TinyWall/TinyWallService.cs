@@ -827,7 +827,7 @@ namespace PKSoft
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
             // Continue initialization on a new thread to prevent stalling the SCM
-            ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
+            ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object dummy)
             {
                 try
                 {

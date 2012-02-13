@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration.Install;
+using System.Diagnostics;
 using System.IO;
 using System.ServiceProcess;
 using System.Threading;
