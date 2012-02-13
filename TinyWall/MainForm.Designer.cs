@@ -43,6 +43,7 @@
             this.Tray = new System.Windows.Forms.NotifyIcon(this.components);
             this.TrayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuCurrentPolicy = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuTrafficRate = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuMode = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuModeNormal = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,7 +64,6 @@
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuQuit = new System.Windows.Forms.ToolStripMenuItem();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
-            this.mnuTrafficRate = new System.Windows.Forms.ToolStripMenuItem();
             this.TrayMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -105,6 +105,12 @@
             this.mnuCurrentPolicy.Name = "mnuCurrentPolicy";
             this.mnuCurrentPolicy.Size = new System.Drawing.Size(267, 22);
             this.mnuCurrentPolicy.Text = "Public Network";
+            // 
+            // mnuTrafficRate
+            // 
+            this.mnuTrafficRate.Name = "mnuTrafficRate";
+            this.mnuTrafficRate.Size = new System.Drawing.Size(267, 22);
+            this.mnuTrafficRate.Text = "<Traffic rate>";
             // 
             // toolStripMenuItem1
             // 
@@ -250,12 +256,6 @@
             // 
             this.ofd.Filter = "All files|*.*";
             // 
-            // mnuTrafficRate
-            // 
-            this.mnuTrafficRate.Name = "mnuTrafficRate";
-            this.mnuTrafficRate.Size = new System.Drawing.Size(267, 22);
-            this.mnuTrafficRate.Text = "<Traffic rate>";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -268,6 +268,7 @@
             this.Name = "MainForm";
             this.ShowInTaskbar = false;
             this.Text = "TinyWall Controller";
+            this.TopMost = true;
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Shown += new System.EventHandler(this.MainForm_Shown);

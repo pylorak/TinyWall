@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Management;
@@ -458,7 +459,7 @@ namespace PKSoft
 
             AddNewException(ex); 
         }
-
+        
         private TinyWallCommands ApplyFirewallSettings(MachineSettings machine, ZoneSettings zone, bool showUI = true)
         {
             Message resp;
@@ -616,7 +617,9 @@ namespace PKSoft
 
         private void AddNewException(AppExceptionSettings ex)
         {
-            SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, ex);
+            List<AppExceptionSettings> exceptions = AppExceptionSettings.CheckForAppDependencies(this, ex);
+            for (int i = 0; i < exceptions.Count; ++i)
+                SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, exceptions[i]);
             SettingsManager.CurrentZone.Normalize();
 
             TinyWallCommands resp = ApplyFirewallSettings(null, SettingsManager.CurrentZone, false);

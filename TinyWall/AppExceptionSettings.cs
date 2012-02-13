@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -130,6 +131,36 @@ namespace PKSoft
         static internal string GenerateID()
         {
             return "[TW" + Utils.RandomString(12) + "]";
+        }
+
+        internal static List<AppExceptionSettings> CheckForAppDependencies(System.Windows.Forms.IWin32Window parent, AppExceptionSettings ex)
+        {
+            List<AppExceptionSettings> exceptions = new List<AppExceptionSettings>();
+            exceptions.Add(ex);
+
+            ProfileAssoc appFile = null;
+            ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
+            Application app = allApps.TryGetRecognizedApp(ex.ExecutablePath, ex.ServiceName, out appFile);
+            if ((app != null) && app.ResolveFilePaths())
+            {
+                if (app.FileRealizations.Count > 1)
+                {
+                    if (System.Windows.Forms.MessageBox.Show(
+                        parent,
+                        string.Format("The file you are about to unblock is part of the application \"{0}\". This application requires additional files unblocked to function properly. \r\n\r\n Do you want TinyWall to automatically whitelist these files for you?", app.Name),
+                        "Application dependency",
+                        System.Windows.Forms.MessageBoxButtons.YesNo,
+                        System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        foreach (ProfileAssoc pa in app.FileRealizations)
+                        {
+                            exceptions.Add(pa.ToExceptionSetting());
+                        }
+                    }
+                }
+            }
+
+            return exceptions;
         }
     };
 

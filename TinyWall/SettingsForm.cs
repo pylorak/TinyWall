@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -228,7 +229,9 @@ namespace PKSoft
             {
                 if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {
-                    TmpZoneConfig.AppExceptions = Utils.ArrayAddItem(TmpZoneConfig.AppExceptions, f.ExceptionSettings);
+                    List<AppExceptionSettings> exceptions = AppExceptionSettings.CheckForAppDependencies(this, f.ExceptionSettings);
+                    for (int i = 0; i < exceptions.Count; ++i)
+                        TmpZoneConfig.AppExceptions = Utils.ArrayAddItem(TmpZoneConfig.AppExceptions, exceptions[i]);
                     TmpZoneConfig.Normalize();
                     InitSettingsUI();
                 }
