@@ -60,9 +60,10 @@ namespace PKSoft
 
             using (FileStream fs = new FileStream(HOSTS_PATH, FileMode.Open, FileAccess.Read))
             {
-                SHA1 sha1 = new SHA1Managed();
-                hash = sha1.ComputeHash(fs);
-                fs.Close();
+                using (SHA1 sha1 = new SHA1Managed())
+                {
+                    hash = sha1.ComputeHash(fs);
+                }
             }
 
             StringBuilder sb = new StringBuilder();

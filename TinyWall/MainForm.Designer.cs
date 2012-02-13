@@ -16,6 +16,17 @@
             if (disposing && (components != null))
             {
                 components.Dispose();
+
+                // Manually added
+                HotKeyWhitelistExecutable.Dispose();
+                HotKeyWhitelistProcess.Dispose();
+                HotKeyWhitelistWindow.Dispose();
+                if (MouseInterceptor != null)
+                    MouseInterceptor.Dispose();
+
+                TrafficTimer.Dispose();
+                if (UpdateTimer != null)
+                    UpdateTimer.Dispose();
             }
             base.Dispose(disposing);
         }

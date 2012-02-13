@@ -32,8 +32,10 @@ namespace PKSoft
 
             try
             {
-                WebClient HTTPClient = new WebClient();
-                HTTPClient.DownloadFile(url, tmpFile);
+                using (WebClient HTTPClient = new WebClient())
+                {
+                    HTTPClient.DownloadFile(url, tmpFile);
+                }
 
                 UpdateDescriptor descriptor = SerializationHelper.LoadFromXMLFile<UpdateDescriptor>(tmpFile);
                 if (descriptor.MagicWord != "TinyWall Update Descriptor")
