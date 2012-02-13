@@ -9,6 +9,7 @@ namespace PKSoft.WindowsFirewall
     /// </summary>
     internal class Rule
     {
+        private static readonly Type tNetFwRule = Type.GetTypeFromProgID("HNetCfg.FwRule");
         private INetFwRule fwRule;
 
         internal INetFwRule Handle
@@ -27,7 +28,6 @@ namespace PKSoft.WindowsFirewall
 
         internal Rule()
         {
-            Type tNetFwRule = Type.GetTypeFromProgID("HNetCfg.FwRule");
             fwRule = (INetFwRule)Activator.CreateInstance(tNetFwRule);
         }
 

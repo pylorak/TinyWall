@@ -730,6 +730,12 @@ namespace PKSoft
             }
         }
 
+        // This is a list of apps that are allowed to change firewall rules
+        private string[] WhitelistedApps = new string[]
+                {
+                    Utils.ExecutablePath,
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "dllhost.exe")
+                };
         private void WFEventWatcher_EventRecordWritten(object sender, EventRecordWrittenEventArgs e)
         {
             int propidx = -1;
@@ -785,13 +791,6 @@ namespace PKSoft
                 // Do nothing if the firewall is in disabled mode
                 if (this.Mode == FirewallMode.Disabled)
                     return;
-
-                // This is a list of apps that are allowed to change firewall rules
-                string[] WhitelistedApps = new string[]
-                {
-                    Utils.ExecutablePath,
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "dllhost.exe")
-                };
 
                 // If the rules were changed by an allowed app, do nothing
                 string EVpath = (string)e.EventRecord.Properties[propidx].Value;

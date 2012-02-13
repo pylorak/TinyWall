@@ -34,6 +34,24 @@ namespace PKSoft
         {
         }
 
+        public RuleDef DeepCopy()
+        {
+            RuleDef copy = new RuleDef();
+            copy.Name = this.Name;
+            copy.ExceptionId = this.ExceptionId;
+            copy.Action = this.Action;
+            copy.Application = this.Application;
+            copy.ServiceName = this.ServiceName;
+            copy.LocalPorts = this.LocalPorts;
+            copy.RemotePorts = this.RemotePorts;
+            copy.LocalAddresses = this.LocalAddresses;
+            copy.RemoteAddresses = this.RemoteAddresses;
+            copy.IcmpTypesAndCodes = this.IcmpTypesAndCodes;
+            copy.Protocol = this.Protocol;
+            copy.Direction = this.Direction;
+            return copy;
+        }
+
         public RuleDef(string exceptionId, string name, PacketAction action, RuleDirection direction, Protocol protocol)
         {
             this.Name = name;
@@ -57,13 +75,13 @@ namespace PKSoft
                 RuleDef pProt;
 
                 // For TCP
-                pProt = Utils.DeepClone(this);
+                pProt = this.DeepCopy();
                 pProt.ExceptionId += "[TCP]";
                 pProt.Protocol = WindowsFirewall.Protocol.TCP;
                 pProt.ConstructRule(ruleset);
 
                 // For UDP
-                pProt = Utils.DeepClone(this);
+                pProt = this.DeepCopy();
                 pProt.ExceptionId += "[UDP]";
                 pProt.Protocol = WindowsFirewall.Protocol.UDP;
                 pProt.ConstructRule(ruleset);
@@ -73,13 +91,13 @@ namespace PKSoft
                 RuleDef pProt;
 
                 // For ICMPv4
-                pProt = Utils.DeepClone(this);
+                pProt = this.DeepCopy();
                 pProt.ExceptionId += "[ICMPv4]";
                 pProt.Protocol = WindowsFirewall.Protocol.ICMPv4;
                 pProt.ConstructRule(ruleset);
 
                 // For ICMPv6
-                pProt = Utils.DeepClone(this);
+                pProt = this.DeepCopy();
                 pProt.ExceptionId += "[ICMPv6]";
                 pProt.Protocol = WindowsFirewall.Protocol.ICMPv6;
                 pProt.ConstructRule(ruleset);
@@ -89,13 +107,13 @@ namespace PKSoft
                 RuleDef pDir;
 
                 // For IN
-                pDir = Utils.DeepClone(this);
+                pDir = this.DeepCopy();
                 pDir.ExceptionId += "[in]";
                 pDir.Direction = WindowsFirewall.RuleDirection.In;
                 pDir.ConstructRule(ruleset);
 
                 // For OUT
-                pDir = Utils.DeepClone(this);
+                pDir = this.DeepCopy();
                 pDir.ExceptionId += "[out]";
                 pDir.Direction = WindowsFirewall.RuleDirection.Out;
                 pDir.ConstructRule(ruleset);
