@@ -16,12 +16,6 @@ namespace PKSoft
         public DevelToolForm()
         {
             InitializeComponent();
-
-            ProfileManager pm = new ProfileManager();
-            pm.KnownApplications.Add(new Application());
-            pm.KnownApplications[0].Files.Add(new ProfileAssoc());
-            pm.KnownApplications[0].Files.Add(new ProfileAssoc());
-            pm.Save(Path.Combine(@"d:\", Path.GetFileName(ProfileManager.DBPath)));
         }
 
         private void btnAssocBrowse_Click(object sender, EventArgs e)

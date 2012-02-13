@@ -86,9 +86,10 @@ namespace PKSoft
 
             ProfileCollection profiles = new ProfileCollection();
             ProfileAssoc appFile = null;
-            Application app = null;
             if (System.IO.File.Exists(txtAppPath.Text))
-                app = GlobalInstances.ProfileMan.TryGetRecognizedApp(TmpExceptionSettings.ExecutablePath, TmpExceptionSettings.ServiceName, out appFile);
+            {
+                Application app = GlobalInstances.ProfileMan.KnownApplications.TryGetRecognizedApp(TmpExceptionSettings.ExecutablePath, TmpExceptionSettings.ServiceName, out appFile);
+            }
 
             if (appFile != null)
                 profiles = GlobalInstances.ProfileMan.GetProfilesFor(appFile);

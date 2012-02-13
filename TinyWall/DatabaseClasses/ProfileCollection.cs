@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace PKSoft
 {
+    [Serializable]
     public class ProfileCollection : Collection<Profile>
     {
         public bool Contains(string profileName)

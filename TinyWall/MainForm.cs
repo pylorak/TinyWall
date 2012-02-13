@@ -763,12 +763,11 @@ namespace PKSoft
                     Application app = allApps[i];
 
                     // If we've found at least one file, add the app to the list
-                    if (app.ResolveFilePaths())
+                    if (!app.Special && app.ResolveFilePaths())
                     {
-                        foreach (ProfileAssoc appFile in app.Files)
+                        foreach (ProfileAssoc appFile in app.FileRealizations)
                         {
-                            if (File.Exists(appFile.Executable) && Path.IsPathRooted(appFile.Executable))
-                                SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, appFile.ToExceptionSetting());
+                            SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, appFile.ToExceptionSetting());
                         }
                     }
                 }

@@ -187,26 +187,18 @@ namespace PKSoft
             // We will collect all our rules into this list
             SpecialRules.Clear();
 
+            ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
             for (int i = 0; i < SettingsManager.CurrentZone.SpecialExceptions.Length; ++i)
             {
                 try
                 {   //This try-catch will prevent errors if an exception profile string is invalid
-                    Application app = GlobalInstances.ProfileMan.GetApplicationByName(SettingsManager.CurrentZone.SpecialExceptions[i]);
-                    app = Utils.DeepClone(app);
+                    Application app = allApps.GetApplicationByName(SettingsManager.CurrentZone.SpecialExceptions[i]);
                     app.ResolveFilePaths();
-                    for (int j = 0; j < app.Files.Count; ++j)
+                    for (int j = 0; j < app.FileRealizations.Count; ++j)
                     {
-                        ProfileAssoc appFile = app.Files[j];
-                        if (
-                            string.IsNullOrEmpty(appFile.Executable) ||
-                            (string.Compare(appFile.Executable, "System", StringComparison.InvariantCultureIgnoreCase) == 0) ||
-                            File.Exists(PKSoft.Parser.RecursiveParser.ResolveString(appFile.Executable))
-                            )
-                        {
-                            AppExceptionSettings ex = appFile.ToExceptionSetting();
-                            ex.AppID = AppExceptionSettings.GenerateID();
-                            GetRulesForException(ex, SpecialRules);
-                        }
+                        AppExceptionSettings ex = app.FileRealizations[j].ToExceptionSetting();
+                        ex.AppID = AppExceptionSettings.GenerateID();
+                        GetRulesForException(ex, SpecialRules);
                     }
                 }
                 catch { }

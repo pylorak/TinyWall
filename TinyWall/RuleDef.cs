@@ -3,6 +3,7 @@ using System.IO;
 using System.ServiceProcess;
 using System.Collections.Generic;
 using PKSoft.WindowsFirewall;
+using System.Xml.Serialization;
 
 namespace PKSoft
 {
@@ -12,8 +13,9 @@ namespace PKSoft
         private const string EPHEMERAL_PORT_RANGE = "1025-65535";
         private const string EPHEMERAL_TOKEN = "EPHEMERAL";
 
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttributeAttribute]
         public string Name;
+        [XmlIgnore]
         public string ExceptionId;
         public PacketAction Action;
 

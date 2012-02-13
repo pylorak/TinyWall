@@ -104,28 +104,58 @@ namespace PKSoft
         }
 
         // Tries to get the actual file path based on the search crateria
-        // specified by SearchPaths. Returns an empty string if file is not found.
-        public ProfileAssoc SearchForFile()
+        // specified by SearchPaths. Returns a collection of all files found.
+        public ProfileAssocCollection SearchForFile()
         {
-            if (this.SearchPaths == null)
-                return null;
+            ProfileAssocCollection foundFiles = new ProfileAssocCollection();
 
-            for (int i = 0; i < this.SearchPaths.Length; ++i)
+            string exec = PKSoft.Parser.RecursiveParser.ResolveString(this.Executable);
+            if (IsValidExecutablePath(exec))
             {
-                string path = SearchPaths[i];
-
-                // Recursively resolve variables
-                string filePath = RecursiveParser.ResolveString(path);
-                filePath = Path.Combine(Environment.ExpandEnvironmentVariables(filePath), Path.GetFileName(this.Executable));
-                if (File.Exists(filePath))
+                ProfileAssoc foundFile = ProfileAssoc.FromExecutable(exec, this.Service);
+                if (this.DoesExecutableSatisfy(foundFile))
                 {
-                    ProfileAssoc foundFile = ProfileAssoc.FromExecutable(filePath, this.Service);
-                    if (this.DoesExecutableSatisfy(foundFile))
-                        return foundFile;
+                    foundFile = Utils.DeepClone(this);
+                    foundFile.Executable = exec;
+                    foundFiles.Add(foundFile);
+                }
+            }
+            else
+            {
+                if (this.SearchPaths == null)
+                    return foundFiles;
+
+                for (int i = 0; i < this.SearchPaths.Length; ++i)
+                {
+                    string path = SearchPaths[i];
+
+                    // Recursively resolve variables
+                    string filePath = Environment.ExpandEnvironmentVariables(RecursiveParser.ResolveString(path));
+                    filePath = Path.Combine(filePath, exec);
+
+                    if (IsValidExecutablePath(filePath))
+                    {
+                        ProfileAssoc foundFile = ProfileAssoc.FromExecutable(filePath, this.Service);
+                        if (this.DoesExecutableSatisfy(foundFile))
+                        {
+                            string resolvedPath = foundFile.Executable;
+                            foundFile = Utils.DeepClone(this);
+                            foundFile.Executable = resolvedPath;
+                            foundFiles.Add(foundFile);
+                        }
+                    }
                 }
             }
 
-            return null;
+            return foundFiles;
+        }
+
+        public static bool IsValidExecutablePath(string path)
+        {
+            return
+                string.IsNullOrEmpty(path)  // All files
+                || path.Equals("System", StringComparison.OrdinalIgnoreCase)    // System-process
+                || (File.Exists(path) && Path.IsPathRooted(path));  // File path on filesystem
         }
 
         // If present, the profiles for this file will only apply
@@ -178,7 +208,7 @@ namespace PKSoft
         
         public static ProfileAssoc FromExecutable(string filePath, string service)
         {
-            if (!File.Exists(filePath))
+            if (!IsValidExecutablePath(filePath))
                 throw new FileNotFoundException();
 
             ProfileAssoc exe = new ProfileAssoc();

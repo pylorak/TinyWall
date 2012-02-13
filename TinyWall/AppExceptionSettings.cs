@@ -107,7 +107,7 @@ namespace PKSoft
             ProfileAssoc appFile = null;
 
             if (File.Exists(ExecutablePath))
-                app = GlobalInstances.ProfileMan.TryGetRecognizedApp(ExecutablePath, ServiceName, out appFile);
+                app = GlobalInstances.ProfileMan.KnownApplications.TryGetRecognizedApp(ExecutablePath, ServiceName, out appFile);
 
             this.Recognized = (app != null);
 

@@ -23,7 +23,12 @@ namespace PKSoft
         public bool Special;
 
         // Executables that belong to this application
-        public ProfileAssocCollection Files = new ProfileAssocCollection();
+        [XmlArray("Files")]
+        public ProfileAssocCollection FileTemplates = new ProfileAssocCollection();
+
+        // Executables that belong to this application
+        [XmlIgnore]
+        public ProfileAssocCollection FileRealizations = new ProfileAssocCollection();
 
         public bool ShouldSerializeRecommended()
         {
@@ -47,17 +52,19 @@ namespace PKSoft
 
         internal bool ResolveFilePaths()
         {
-            bool found = false;
-            for (int i = Files.Count - 1; i >= 0; --i)
+            ProfileAssocCollection foundFiles = new ProfileAssocCollection();
+            for (int i = 0; i < FileTemplates.Count; ++i)
             {
-                ProfileAssoc pa = Files[i].SearchForFile();
-                if (pa != null)
-                {
-                    found = true;
-                    Files[i].Executable = pa.Executable;
-                }
+                ProfileAssocCollection pac = FileTemplates[i].SearchForFile();
+                foreach (ProfileAssoc pa in pac)
+                    foundFiles.Add(pa);
             }
-            return found;
+
+            FileRealizations.Clear();
+            foreach (ProfileAssoc file in foundFiles)
+                FileRealizations.Add(file);
+
+            return foundFiles.Count > 0;
         }
     }
 }

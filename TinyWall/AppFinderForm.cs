@@ -53,27 +53,6 @@ namespace PKSoft
 
             ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
 
-            #region First, add files that we can find fast
-            Utils.Invoke(list, (MethodInvoker)delegate()
-            {
-                lblStatus.Text = "Performing aided search...";
-            });
-
-            for (int i = 0; i < allApps.Count; ++i)
-            {
-                Application app = allApps[i];
-
-                // If we've found at least one file, add the app to the list
-                if (app.ResolveFilePaths())
-                {
-                    Utils.Invoke(list, (MethodInvoker)delegate()
-                    {
-                        AddRecognizedAppToList(app, null);
-                    });
-                }
-            }
-            #endregion
-
             // List of all possible paths to search
             string[] SearchPaths = new string[]{
                 Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
@@ -89,7 +68,7 @@ namespace PKSoft
             HashSet<string> exts = new HashSet<string>();
             foreach (Application app in allApps)
             {
-                foreach (ProfileAssoc appFile in app.Files)
+                foreach (ProfileAssoc appFile in app.FileTemplates)
                 {
                     string extFilter = "*" + Path.GetExtension(appFile.Executable).ToUpperInvariant();
                     if (extFilter != "*")
@@ -103,7 +82,7 @@ namespace PKSoft
                 if (!RunSearch)
                     break;
 
-                DoSearchPath(path, exts);
+                DoSearchPath(path, exts, allApps);
             }
 
             try
@@ -123,7 +102,7 @@ namespace PKSoft
         }
 
         DateTime LastEnterDoSearchPath = DateTime.Now;
-        private void DoSearchPath(string path, HashSet<string> exts)
+        private void DoSearchPath(string path, HashSet<string> exts, ApplicationCollection allApps)
         {
             #region Update user feedback periodically
             DateTime now = DateTime.Now;
@@ -151,12 +130,16 @@ namespace PKSoft
 
                         // Try to match file
                         ProfileAssoc appFile;
-                        Application app = GlobalInstances.ProfileMan.TryGetRecognizedApp(file, null, out appFile);
+                        Application app = allApps.TryGetRecognizedApp(file, null, out appFile);
                         if ((app != null) && (!app.Special))
                         {
+                            if (!app.FileRealizations.ContainsFileRealization(file))
+                            {
+                                app.FileRealizations.Add(appFile);
+                            }
                             Utils.Invoke(list, (MethodInvoker)delegate()
                             {
-                                AddRecognizedAppToList(app, appFile);
+                                AddRecognizedAppToList(app);
                             });
                         }
                     }
@@ -174,20 +157,14 @@ namespace PKSoft
                     if (!RunSearch)
                         break;
 
-                    DoSearchPath(dir, exts);
+                    DoSearchPath(dir, exts, allApps);
                 }
             }
             catch { }
         }
 
-        private void AddRecognizedAppToList(Application app, ProfileAssoc appFile)
+        private void AddRecognizedAppToList(Application app)
         {
-            foreach (ProfileAssoc pa in app.Files)
-            {
-                if (pa.DoesExecutableSatisfy(appFile))
-                    pa.Executable = appFile.Executable;
-            }
-
             // Check if we've already added this application
             for (int i = 0; i < list.Items.Count; ++i)
             {
@@ -197,13 +174,11 @@ namespace PKSoft
 
             if (!IconList.Images.ContainsKey(app.Name))
             {
-                int iconIndex = 0;
-                for (iconIndex = 0; iconIndex < app.Files.Count; ++iconIndex)
-                {
-                    if (File.Exists(app.Files[iconIndex].Executable))
-                        break;
-                }
-                IconList.Images.Add(app.Name, Utils.GetIcon(app.Files[iconIndex].Executable, 16, 16));
+                string iconPath = app.FileRealizations[0].Executable;
+                if (!File.Exists(iconPath))
+                    IconList.Images.Add(app.Name, Icons.window);
+                else
+                    IconList.Images.Add(app.Name, Utils.GetIcon(iconPath, 16, 16));
             }
 
             ListViewItem li = new ListViewItem(app.Name);
@@ -268,11 +243,11 @@ namespace PKSoft
                 if (li.Checked)
                 {
                     Application app = li.Tag as Application;
-                    foreach (ProfileAssoc pa in app.Files)
+                    foreach (ProfileAssoc pa in app.FileRealizations)
                     {
                         try
                         {
-                            if (Path.IsPathRooted(pa.Executable))
+                            if (ProfileAssoc.IsValidExecutablePath(pa.Executable))
                                 TmpZoneSettings.AppExceptions = Utils.ArrayAddItem(TmpZoneSettings.AppExceptions, pa.ToExceptionSetting());
                         }
                         catch (ArgumentException) { }

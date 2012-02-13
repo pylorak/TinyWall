@@ -96,38 +96,6 @@ namespace PKSoft
             get { return m_Applications; }
         }
 
-        public Application GetApplicationByName(string name)
-        {
-            for (int i = 0; i < m_Applications.Count; ++i)
-            {
-                if (string.Compare(name, m_Applications[i].Name, System.StringComparison.InvariantCultureIgnoreCase) == 0)
-                    return m_Applications[i];
-            }
-            return null;
-        }
-
-        public Application TryGetRecognizedApp(string executablePath, string service, out ProfileAssoc file)
-        {
-            ProfileAssoc exe = ProfileAssoc.FromExecutable(executablePath, service);
-
-            for (int i = 0; i < m_Applications.Count; ++i)
-            {
-                for (int j = 0; j < m_Applications[i].Files.Count; ++j)
-                {
-                    ProfileAssoc assoc = m_Applications[i].Files[j];
-                    if (assoc.DoesExecutableSatisfy(exe))
-                    {
-                        file = assoc.Clone() as ProfileAssoc;
-                        file.Executable = executablePath;
-                        return m_Applications[i];
-                    }
-                }
-            }
-
-            file = null;
-            return null;
-        }
-
         public ProfileCollection GetProfilesFor(ProfileAssoc app)
         {
             ProfileCollection ret = new ProfileCollection();
