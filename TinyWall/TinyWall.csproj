@@ -116,6 +116,7 @@
     <Compile Include="FirewallLogWatcher.cs" />
     <Compile Include="FirewallMode.cs" />
     <Compile Include="GlobalInstances.cs" />
+    <Compile Include="Hasher.cs" />
     <Compile Include="HostsFileManager.cs" />
     <Compile Include="Hotkey.cs" />
     <Compile Include="Icons.Designer.cs">

@@ -50,7 +50,7 @@ namespace PKSoft
 
             // Construct key
             string key = ENC_SALT + MachineFingerprint.Fingerprint();
-            key = Utils.GetHash(key).Substring(0, 16);
+            key = Hasher.HashString(key).Substring(0, 16);
 
             SerializationHelper.SaveToEncryptedXMLFile<ZoneSettings>(this, SettingsFile, key, ENC_IV);
         }
@@ -64,7 +64,7 @@ namespace PKSoft
 
                 // Construct key
                 string key = ENC_SALT + MachineFingerprint.Fingerprint();
-                key = Utils.GetHash(key).Substring(0, 16);
+                key = Hasher.HashString(key).Substring(0, 16);
 
                 return SerializationHelper.LoadFromEncryptedXMLFile<ZoneSettings>(SettingsFile, key, ENC_IV);
             }
@@ -143,7 +143,7 @@ namespace PKSoft
 
             // Construct key
             string key = ENC_SALT + MachineFingerprint.Fingerprint();
-            key = Utils.GetHash(key).Substring(0, 16);
+            key = Hasher.HashString(key).Substring(0, 16);
 
             SerializationHelper.SaveToEncryptedXMLFile<MachineSettings>(this, SettingsFile, key, ENC_IV);
         }
@@ -157,7 +157,7 @@ namespace PKSoft
 
                 // Construct key
                 string key = ENC_SALT + MachineFingerprint.Fingerprint();
-                key = Utils.GetHash(key).Substring(0, 16);
+                key = Hasher.HashString(key).Substring(0, 16);
 
                 return SerializationHelper.LoadFromEncryptedXMLFile<MachineSettings>(SettingsFile, key, ENC_IV);
             }
@@ -217,7 +217,7 @@ namespace PKSoft
 
                 // Construct key
                 string key = ENC_SALT + passHash;
-                key = Utils.GetHash(key).Substring(0, 16);
+                key = Hasher.HashString(key).Substring(0, 16);
                 string hash = SerializationHelper.LoadFromEncryptedXMLFile<string>(SettingsFile, key, ENC_IV);
                 if (hash == passHash)
                     _Locked = false;
@@ -247,14 +247,14 @@ namespace PKSoft
             // Construct file path
             string SettingsFile = PasswordFilePath;
 
-            if (passHash == Utils.GetHash(string.Empty))
+            if (passHash == Hasher.HashString(string.Empty))
                 // If we have no password, delete password explicitly
                 File.Delete(SettingsFile);
             else
             {
                 // Construct key
                 string key = ENC_SALT + passHash;
-                key = Utils.GetHash(key).Substring(0, 16);
+                key = Hasher.HashString(key).Substring(0, 16);
 
                 SerializationHelper.SaveToEncryptedXMLFile<string>(passHash, SettingsFile, key, ENC_IV);
             }
@@ -267,7 +267,7 @@ namespace PKSoft
 
             // Construct key
             string key = ENC_SALT + MachineFingerprint.Fingerprint();
-            key = Utils.GetHash(key).Substring(0, 16);
+            key = Hasher.HashString(key).Substring(0, 16);
 
             SerializationHelper.SaveToEncryptedXMLFile<ServiceSettings>(this, SettingsFile, key, ENC_IV);
         }
@@ -281,7 +281,7 @@ namespace PKSoft
 
                 // Construct key
                 string key = ENC_SALT + MachineFingerprint.Fingerprint();
-                key = Utils.GetHash(key).Substring(0, 16);
+                key = Hasher.HashString(key).Substring(0, 16);
 
                 return SerializationHelper.LoadFromEncryptedXMLFile<ServiceSettings>(SettingsFile, key, ENC_IV);
             }

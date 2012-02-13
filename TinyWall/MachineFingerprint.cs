@@ -10,7 +10,7 @@ namespace PKSoft
         {
             if (string.IsNullOrEmpty(fingerPrint))
             {
-                fingerPrint = Utils.GetHash(
+                fingerPrint = Hasher.HashString(
                     identifier("SerialNumber", "Win32_OperatingSystem") +
                     identifier("Product", "Win32_BaseBoard")
                     );

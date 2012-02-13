@@ -19,7 +19,7 @@ namespace PKSoft
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            m_PassHash = Utils.GetHash(txtPassphrase.Text);
+            m_PassHash = Hasher.HashString(txtPassphrase.Text);
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 

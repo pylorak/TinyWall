@@ -408,7 +408,7 @@ namespace PKSoft
             {
                 UpdateModule HostsFileModule = UpdateChecker.GetHostsFileModule(UpdateDescriptor);
 
-                if (string.Compare(HostsFileModule.Version, HostsFileManager.HostsSHA1(), StringComparison.OrdinalIgnoreCase) != 0)
+                if (string.Compare(HostsFileModule.Version, HostsFileManager.GetHostsHash(), StringComparison.OrdinalIgnoreCase) != 0)
                 {
                     string tmpPath = Path.GetTempFileName();
                     Uri UpdateURL = new Uri(HostsFileModule.UpdateURL);

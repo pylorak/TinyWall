@@ -78,24 +78,7 @@ namespace PKSoft
             {
                 if ((m_HashesSHA1 == null) && File.Exists(Executable))
                 {
-                    // Calculate hash, .Net will return it in binary form
-                    byte[] hashBytes;
-                    using (FileStream fs = new FileStream(Executable, FileMode.Open, FileAccess.Read))
-                    using (SHA1Cng sha1 = new SHA1Cng())
-                    {
-                        hashBytes = sha1.ComputeHash(fs);
-                    }
-
-                    // Convert the byte array to a hexadecimal string
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < hashBytes.Length; i++)
-                    {
-                        sb.Append(hashBytes[i].ToString("X2", CultureInfo.InvariantCulture));
-                        // To force the hex string to lower-case letters instead of
-                        // upper-case, use he following line instead:
-                        // sb.Append(hashBytes[i].ToString("x2")); 
-                    }
-                    m_HashesSHA1 = new string[] { sb.ToString() };
+                    m_HashesSHA1 = new string[] { Utils.HexEncode(Hasher.HashFile(Executable)) };
                 }
 
                 return m_HashesSHA1;

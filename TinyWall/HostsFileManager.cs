@@ -54,23 +54,9 @@ namespace PKSoft
                 EnableHostsFile();
         }
 
-        internal static string HostsSHA1()
+        internal static string GetHostsHash()
         {
-            byte[] hash;
-
-            using (FileStream fs = new FileStream(HOSTS_PATH, FileMode.Open, FileAccess.Read))
-            {
-                using (SHA1 sha1 = new SHA1Managed())
-                {
-                    hash = sha1.ComputeHash(fs);
-                }
-            }
-
-            StringBuilder sb = new StringBuilder();
-            foreach (byte hex in hash)
-                sb.Append(hex.ToString("x2"));
-
-            return sb.ToString().ToUpperInvariant();
+            return Utils.HexEncode(Hasher.HashFile(HOSTS_PATH));
         }
 
         internal static void EnableHostsFile()

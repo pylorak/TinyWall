@@ -369,7 +369,7 @@ namespace PKSoft
                         {
                             // Set the password. If the operation is successfull, do not report anything as we will be setting 
                             // the other settings too and we want to avoid multiple popups.
-                            Message req = new Message(TinyWallCommands.SET_PASSPHRASE, Utils.GetHash(passwd));
+                            Message req = new Message(TinyWallCommands.SET_PASSPHRASE, Hasher.HashString(passwd));
                             Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
                             if (resp.Command != TinyWallCommands.RESPONSE_OK)  // Only display a popup for setting the password if it did not succeed
                             {

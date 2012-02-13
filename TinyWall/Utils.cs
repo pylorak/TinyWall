@@ -69,15 +69,6 @@ namespace PKSoft
             return p.MainModule.FileName;
         }
 
-        internal static string GetHash(string s)
-        {
-            using (SHA256Cng hash = new SHA256Cng())
-            {
-                byte[] bt = Encoding.UTF8.GetBytes(s);
-                return Convert.ToBase64String(hash.ComputeHash(bt));
-            }
-        }
-
         internal static string RandomString(int length)
         {
             const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -87,6 +78,15 @@ namespace PKSoft
                 buffer[i] = chars[_rng.Next(chars.Length)];
             }
             return new string(buffer);
+        }
+
+        internal static string HexEncode(byte[] binstr)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (byte oct in binstr)
+                sb.Append(oct.ToString("X2"));
+
+            return sb.ToString();
         }
 
         /*
