@@ -90,11 +90,11 @@ namespace PKSoft
                 if (descriptor != null)
                 {
                     UpdateModule MainAppModule = UpdateChecker.GetMainAppModule(descriptor);
-                    if (new Version(MainAppModule.Version) > new Version(System.Windows.Forms.Application.ProductVersion))
+                    if (new Version(MainAppModule.ComponentVersion) > new Version(System.Windows.Forms.Application.ProductVersion))
                     {
                         Utils.Invoke(this, (MethodInvoker)delegate()
                         {
-                            string prompt = "A newer version " + MainAppModule.Version + " of TinyWall is available. Click this bubble to start the update process.";
+                            string prompt = "A newer version " + MainAppModule.ComponentVersion + " of TinyWall is available. Click this bubble to start the update process.";
                             ShowBalloonTip(prompt, ToolTipIcon.Info, 5000, StartUpdate, MainAppModule.UpdateURL);
                         });
                     }

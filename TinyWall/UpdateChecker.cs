@@ -9,7 +9,9 @@ namespace PKSoft
     public class UpdateModule
     {
         public string Component;
-        public string Version;
+        public string ComponentVersion;
+        public string DownloadHash;
+        public string FormatVersion;
         public string UpdateURL;
     }
 
@@ -54,7 +56,7 @@ namespace PKSoft
         {
             for (int i = 0; i < descriptor.Modules.Length; ++i)
             {
-                if (descriptor.Modules[i].Component == "TinyWall")
+                if (descriptor.Modules[i].Component.Equals("TinyWall"))
                     return descriptor.Modules[i];
             }
 
@@ -64,7 +66,17 @@ namespace PKSoft
         {
             for (int i = 0; i < descriptor.Modules.Length; ++i)
             {
-                if (descriptor.Modules[i].Component == "HostsFile")
+                if (descriptor.Modules[i].Component.Equals("HostsFile"))
+                    return descriptor.Modules[i];
+            }
+
+            return null;
+        }
+        internal static UpdateModule GetDatabaseFileModule(UpdateDescriptor descriptor)
+        {
+            for (int i = 0; i < descriptor.Modules.Length; ++i)
+            {
+                if (descriptor.Modules[i].Component.Equals("Database"))
                     return descriptor.Modules[i];
             }
 

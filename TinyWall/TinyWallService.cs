@@ -42,7 +42,6 @@ namespace PKSoft
         private FirewallMode Mode = FirewallMode.Normal;
         private bool UninstallRequested = false;
         private UpdateDescriptor UpdateDescriptor = null;
-        private WebClient HostsDownloader = null;
 
         private void AssembleActiveRules()
         {
@@ -312,6 +311,7 @@ namespace PKSoft
             Firewall.NotificationsDisabled = true;
             FwRules = Firewall.GetRules(false);
 
+            LoadDatabase();
             LoadProfile();
             if (!SettingsManager.CurrentZone.EnableDefaultWindowsRules)
             {
@@ -333,15 +333,6 @@ namespace PKSoft
                 ProfileDisplayName = "Public";
             else
                 throw new InvalidOperationException("Unexpected network profile value.");
-
-            try
-            {
-                GlobalInstances.ProfileMan = ProfileManager.Load(ProfileManager.DBPath);
-            }
-            catch
-            {
-                GlobalInstances.ProfileMan = new ProfileManager();
-            }
 
             SettingsManager.GlobalConfig = MachineSettings.Load();
             SettingsManager.CurrentZone = ZoneSettings.Load(ProfileDisplayName);
@@ -377,11 +368,20 @@ namespace PKSoft
             MinuteTimer = new Timer(new TimerCallback(TimerCallback), null, 60000, 60000);
         }
 
-        private void CheckForUpdates()
+        private void LoadDatabase()
         {
-            if (DateTime.Now - SettingsManager.GlobalConfig.LastUpdateCheck < TimeSpan.FromDays(7))
-                return;
+            try
+            {
+                GlobalInstances.ProfileMan = ProfileManager.Load(ProfileManager.DBPath);
+            }
+            catch
+            {
+                GlobalInstances.ProfileMan = new ProfileManager();
+            }
+        }
 
+        private void UpdaterMethod(object state)
+        {
             try
             {
                 UpdateDescriptor = UpdateChecker.GetDescriptor();
@@ -401,37 +401,59 @@ namespace PKSoft
             if (UpdateDescriptor == null)
                 return;
 
+            UpdateModule module = UpdateChecker.GetDatabaseFileModule(UpdateDescriptor);
+            if (!module.DownloadHash.Equals(Utils.HexEncode(Hasher.HashFile(ProfileManager.DBPath)), StringComparison.OrdinalIgnoreCase))
+            {
+                GetCompressedUpdate(module, DatabaseUpdateInstall);
+            }
             if (SettingsManager.GlobalConfig.HostsBlocklist)
             {
-                UpdateModule HostsFileModule = UpdateChecker.GetHostsFileModule(UpdateDescriptor);
+                module = UpdateChecker.GetHostsFileModule(UpdateDescriptor);
 
-                if (string.Compare(HostsFileModule.Version, HostsFileManager.GetHostsHash(), StringComparison.OrdinalIgnoreCase) != 0)
+                if (!module.DownloadHash.Equals(HostsFileManager.GetHostsHash(), StringComparison.OrdinalIgnoreCase))
                 {
-                    string tmpPath = Path.GetTempFileName();
-                    Uri UpdateURL = new Uri(HostsFileModule.UpdateURL);
-                    HostsDownloader = new WebClient();
-                    HostsDownloader.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(HostsDownloader_DownloadFileCompleted);
-                    HostsDownloader.DownloadFileAsync(UpdateURL, tmpPath, tmpPath);
+                    GetCompressedUpdate(module, HostsUpdateInstall);
                 }
             }
         }
 
-        void HostsDownloader_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        private void GetCompressedUpdate(UpdateModule module, WaitCallback installMethod)
         {
-            // Don't continue if the download didn't finish
-            if (e.Cancelled || (e.Error != null))
-                return;
-
-            string tmpHostsPath = (string)e.UserState;
+            string tmpCompressedPath = Path.GetTempFileName();
+            string tmpFile = Path.GetTempFileName();
             try
             {
-                HostsFileManager.UpdateHostsFile(tmpHostsPath, SettingsManager.GlobalConfig.HostsBlocklist);
+                using (WebClient downloader = new WebClient())
+                {
+                    downloader.DownloadFile(module.UpdateURL, tmpCompressedPath);
+                }
+                Utils.DecompressDeflate(tmpCompressedPath, tmpFile);
+
+                if (Utils.HexEncode(Hasher.HashFile(tmpFile)).Equals(module.DownloadHash))
+                    installMethod(tmpFile);
             }
             finally
             {
-                if (File.Exists(tmpHostsPath))
-                    File.Delete(tmpHostsPath);
+                if (File.Exists(tmpCompressedPath))
+                    File.Delete(tmpCompressedPath);
+                if (File.Exists(tmpFile))
+                    File.Delete(tmpFile);
             }
+        }
+
+        private void HostsUpdateInstall(object file)
+        {
+            string tmpHostsPath = (string)file;
+            HostsFileManager.UpdateHostsFile(tmpHostsPath, SettingsManager.GlobalConfig.HostsBlocklist);
+        }
+        private void DatabaseUpdateInstall(object file)
+        {
+            string tmpFilePath = (string)file;
+
+            FileLocker.UnlockFile(ProfileManager.DBPath);
+            File.Move(tmpFilePath, ProfileManager.DBPath);
+            FileLocker.LockFile(ProfileManager.DBPath, FileAccess.Read, FileShare.Read);
+            Q.Enqueue(new ReqResp(new Message(TinyWallCommands.REINIT)));
         }
 
         public void TimerCallback(Object state)
@@ -450,7 +472,12 @@ namespace PKSoft
 
             // Check for updates once every week
             if (SettingsManager.GlobalConfig.AutoUpdateCheck)
-                CheckForUpdates();
+            {
+                if (DateTime.Now - SettingsManager.GlobalConfig.LastUpdateCheck < TimeSpan.FromDays(2))
+                    return;
+
+                ThreadPool.QueueUserWorkItem(UpdaterMethod);
+            }
         }
 
         private Message ProcessCmd(Message req)

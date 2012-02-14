@@ -67,9 +67,9 @@ namespace PKSoft
 
                 Utils.Invoke(this, (MethodInvoker)delegate()
                 {
-                    if (new Version(UpdateModule.Version) > new Version(System.Windows.Forms.Application.ProductVersion))
+                    if (new Version(UpdateModule.ComponentVersion) > new Version(System.Windows.Forms.Application.ProductVersion))
                     {
-                        string prompt = "A newer version " + UpdateModule.Version + " of TinyWall is available. Do you want to update now?";
+                        string prompt = "A newer version " + UpdateModule.ComponentVersion + " of TinyWall is available. Do you want to update now?";
                         if (MessageBox.Show(this, prompt, "Update available", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.No)
                         {
                             this.Close();

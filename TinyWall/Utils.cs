@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Principal;
@@ -56,6 +57,52 @@ namespace PKSoft
         }
         */
 
+        internal static void CompressDeflate(string inputFile, string outputFile)
+        {
+            // Get the stream of the source file.
+            using (FileStream inFile = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
+            {
+                // Create the compressed file.
+                using (FileStream outFile = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
+                {
+                    using (DeflateStream Compress = new DeflateStream(outFile, CompressionMode.Compress))
+                    {
+                        // Copy the source file into 
+                        // the compression stream.
+                        byte[] buffer = new byte[4096];
+                        int numRead;
+                        while ((numRead = inFile.Read(buffer, 0, buffer.Length)) != 0)
+                        {
+                            Compress.Write(buffer, 0, numRead);
+                        }
+                    }
+                }
+            }
+        }
+
+        internal static void DecompressDeflate(string inputFile, string outputFile)
+        {
+            // Get the stream of the source file.
+            using (FileStream inFile = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
+            {
+                // Create the compressed file.
+                using (FileStream outFile = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
+                {
+                    using (DeflateStream Compress = new DeflateStream(outFile, CompressionMode.Decompress))
+                    {
+                        // Copy the source file into 
+                        // the compression stream.
+                        byte[] buffer = new byte[4096];
+                        int numRead;
+                        while ((numRead = inFile.Read(buffer, 0, buffer.Length)) != 0)
+                        {
+                            Compress.Write(buffer, 0, numRead);
+                        }
+                    }
+                }
+            }
+        }
+        
         internal static string GetExecutableUnderCursor(int x, int y)
         {
             // Get process id under cursor
