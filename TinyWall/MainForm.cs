@@ -123,6 +123,13 @@ namespace PKSoft
                 bytesTxNewTotal += (ulong)adapterObject["BytesSentPersec"];
             }
 
+            // If this is the first time we are running.
+            if ((bytesRxTotal == 0) && (bytesTxTotal == 0))
+            {
+                bytesRxTotal = bytesRxNewTotal;
+                bytesTxTotal = bytesTxNewTotal;
+            }
+
             float RxDiff = (bytesRxNewTotal - bytesRxTotal) / (float)TRAFFIC_TIMER_INTERVAL;
             float TxDiff = (bytesTxNewTotal - bytesTxTotal) / (float)TRAFFIC_TIMER_INTERVAL;
             bytesRxTotal = bytesRxNewTotal;
