@@ -78,7 +78,11 @@ namespace PKSoft
             {
                 if ((m_HashesSHA1 == null) && File.Exists(Executable))
                 {
-                    m_HashesSHA1 = new string[] { Utils.HexEncode(Hasher.HashFile(Executable)) };
+                    using (FileStream fs = new FileStream(Executable, FileMode.Open, FileAccess.Read))
+                    using (SHA1Cng hasher = new SHA1Cng())
+                    {
+                        m_HashesSHA1 = new string[] { Utils.HexEncode(hasher.ComputeHash(fs)) };
+                    }
                 }
 
                 return m_HashesSHA1;
