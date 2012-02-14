@@ -88,15 +88,14 @@ namespace PKSoft
                 // Create the compressed file.
                 using (FileStream outFile = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
                 {
-                    using (DeflateStream Compress = new DeflateStream(outFile, CompressionMode.Decompress))
+                    using (DeflateStream Decompress = new DeflateStream(inFile, CompressionMode.Decompress))
                     {
-                        // Copy the source file into 
-                        // the compression stream.
+                        //Copy the decompression stream into the output file.
                         byte[] buffer = new byte[4096];
                         int numRead;
-                        while ((numRead = inFile.Read(buffer, 0, buffer.Length)) != 0)
+                        while ((numRead = Decompress.Read(buffer, 0, buffer.Length)) != 0)
                         {
-                            Compress.Write(buffer, 0, numRead);
+                            outFile.Write(buffer, 0, numRead);
                         }
                     }
                 }

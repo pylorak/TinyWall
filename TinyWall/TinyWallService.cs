@@ -451,7 +451,7 @@ namespace PKSoft
             string tmpFilePath = (string)file;
 
             FileLocker.UnlockFile(ProfileManager.DBPath);
-            File.Move(tmpFilePath, ProfileManager.DBPath);
+            File.Copy(tmpFilePath, ProfileManager.DBPath, true);
             FileLocker.LockFile(ProfileManager.DBPath, FileAccess.Read, FileShare.Read);
             Q.Enqueue(new ReqResp(new Message(TinyWallCommands.REINIT)));
         }
