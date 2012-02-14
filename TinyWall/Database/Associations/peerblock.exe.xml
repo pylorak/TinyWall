@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Name="Peerblock" Recommended="true">
+<Application Name="PeerBlock" Recommended="true">
 	<Files>
 	<ProfileAssoc Executable="peerblock.exe">
 		<Profiles>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Application Name="WinVNC4">
+<Application Name="RealVNC">
 	<Files>
 	<ProfileAssoc Executable="winvnc4.exe">
 		<Profiles>

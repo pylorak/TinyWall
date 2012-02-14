@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Name="Avast Antivirus" Recommended="true" Special="true">
+<Application Name="avast! Antivirus" Recommended="true" Special="true">
 	<Files>
 	<ProfileAssoc Executable="avast.setup">
-		<Description>Avast Antivirus</Description>
+		<Description>Avast Antivirus Updater</Description>
 		<Profiles>
 			<string>HTTP(S) client</string>
 		</Profiles>

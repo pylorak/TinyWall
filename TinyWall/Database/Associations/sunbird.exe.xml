@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Name="Sunbird">
+<Application Name="Mozilla Sunbird">
 	<Files>
 	<ProfileAssoc Executable="sunbird.exe">
 		<Profiles>

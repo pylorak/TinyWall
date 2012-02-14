@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Name="AdMunch.exe" Recommended="true" Special="true">
+<Application Name="AdMuncher" Recommended="true" Special="true">
 	<Files>
 	<ProfileAssoc Executable="AdMunch.exe">
 		<Profiles>
