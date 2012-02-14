@@ -302,6 +302,20 @@ namespace PKSoft
         // This method completely reinitializes the firewall.
         private void InitFirewall()
         {
+            ThreadBarrier barrier = new ThreadBarrier(2);
+            ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
+            {
+                try
+                {
+                    LoadDatabase();
+                    LoadProfile();
+                }
+                finally
+                {
+                    barrier.Wait();
+                }
+            });
+
             Firewall = new Policy();
             Firewall.ResetFirewall();
             Firewall.Enabled = true;
@@ -311,8 +325,9 @@ namespace PKSoft
             Firewall.NotificationsDisabled = true;
             FwRules = Firewall.GetRules(false);
 
-            LoadDatabase();
-            LoadProfile();
+            barrier.Wait();
+            // --- THREAD BARRIER ---
+
             if (!SettingsManager.CurrentZone.EnableDefaultWindowsRules)
             {
                 for (int i = 0; i < FwRules.Count; ++i)
@@ -342,8 +357,6 @@ namespace PKSoft
         // This method reapplies all firewall settings.
         private void ReapplySettings()
         {
-            LoadProfile();
-
             RebuildApplicationRuleDefs();
             RebuildSpecialRuleDefs();
             AssembleActiveRules();

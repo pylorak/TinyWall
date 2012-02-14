@@ -102,7 +102,6 @@ namespace PKSoft
                 opts.ProgramMode = StartUpMode.SelfHosted;
             if (Utils.ArrayContains(args, "/develtool"))
                 opts.ProgramMode = StartUpMode.DevelTool;
-            opts.detectnow = Utils.ArrayContains(args, "/detectnow");
             opts.autowhitelist = Utils.ArrayContains(args, "/autowhitelist");
             opts.updatenow = Utils.ArrayContains(args, "/updatenow");
             opts.install = Utils.ArrayContains(args, "/install");

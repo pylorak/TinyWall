@@ -12,7 +12,6 @@ namespace PKSoft
 
     internal class CmdLineArgs
     {
-        internal bool detectnow = false;
         internal bool autowhitelist = false;
         internal bool updatenow = false;
 

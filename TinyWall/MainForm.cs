@@ -716,29 +716,36 @@ namespace PKSoft
         private void MainForm_Shown(object sender, EventArgs e)
         {
             Hide();
-            TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
 
+            // We will load our database parallel to other things to improve startup performance
+            ThreadBarrier barrier = new ThreadBarrier(2);
+            ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
+            {
+                try
+                {
+                    GlobalInstances.ProfileMan = ProfileManager.Load(ProfileManager.DBPath);
+                }
+                catch
+                {
+                    GlobalInstances.ProfileMan = new ProfileManager();
+                    Utils.Invoke(this, (MethodInvoker)delegate()
+                    {
+                        ShowBalloonTip("Database is missing or corrupt.", ToolTipIcon.Warning);
+                    });
+                }
+                finally
+                {
+                    barrier.Wait();
+                }
+            });
+            
+            // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
+            // BEGIN
             mnuElevate.Visible = !Utils.RunningAsAdmin();
-
             mnuModeDisabled.Image = Icons.shield_grey_small.ToBitmap();
             mnuModeAllowOutgoing.Image = Icons.shield_red_small.ToBitmap();
             mnuModeBlockAll.Image = Icons.shield_yellow_small.ToBitmap();
             mnuModeNormal.Image = Icons.shield_green_small.ToBitmap();
-
-            try
-            {
-                GlobalInstances.ProfileMan = ProfileManager.Load(ProfileManager.DBPath);
-            }
-            catch
-            {
-                GlobalInstances.ProfileMan = new ProfileManager();
-                ShowBalloonTip("Application profile definition files are missing or corrupt.", ToolTipIcon.Warning);
-            }
-
-            GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
-
-            SettingsManager.ControllerConfig = ControllerSettings.Load();
-            LoadSettingsFromServer(true);
 
             HotKeyWhitelistWindow = new Hotkey(Keys.W, true, true, false, false);
             HotKeyWhitelistWindow.Pressed += new HandledEventHandler(HotKeyWhitelistWindow_Pressed);
@@ -752,7 +759,18 @@ namespace PKSoft
             HotKeyWhitelistProcess.Pressed += new HandledEventHandler(HotKeyWhitelistProcess_Pressed);
             HotKeyWhitelistProcess.Register(this);
 
+            TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
+            SettingsManager.ControllerConfig = ControllerSettings.Load();
             ApplyControllerSettings();
+
+            GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
+            LoadSettingsFromServer(true);
+
+            barrier.Wait();
+            // END
+            // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
+
+            // --- THREAD BARRIER ---
 
             if (StartupOpts.autowhitelist)
             {
@@ -772,16 +790,6 @@ namespace PKSoft
                 }
                 SettingsManager.CurrentZone.Normalize();
                 ApplyFirewallSettings(null, SettingsManager.CurrentZone);
-            }
-            if (StartupOpts.detectnow)
-            {
-                using (AppFinderForm aff = new AppFinderForm(SettingsManager.CurrentZone.Clone() as ZoneSettings))
-                {
-                    if (aff.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
-                    {
-                        ApplyFirewallSettings(null, aff.TmpZoneSettings);
-                    }
-                }
             }
 
             if (StartupOpts.updatenow)
