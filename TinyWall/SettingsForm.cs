@@ -57,7 +57,7 @@ namespace PKSoft
                 listOptionalGlobalProfiles.Items.Clear();
                 foreach (Application app in allApps)
                 {
-                    if (app.Special)
+                    if (app.Special && app.ResolveFilePaths())
                     {
                         if (app.Recommended)
                         {
