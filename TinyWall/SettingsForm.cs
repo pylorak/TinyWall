@@ -196,6 +196,15 @@ namespace PKSoft
             listApplications.Items.Remove(li);
         }
 
+        private void btnAppRemoveAll_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show(this, "Are you sure you want to remove all firewall exceptions?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.No)
+                return;
+
+            TmpZoneConfig.AppExceptions = new AppExceptionSettings[0];
+            listApplications.Items.Clear();
+        }
+        
         private void btnAppModify_Click(object sender, EventArgs e)
         {
             ListViewItem li = listApplications.SelectedItems[0];
@@ -449,5 +458,6 @@ namespace PKSoft
 
             chkLockHostsFile.Enabled = !chkHostsBlocklist.Checked;
         }
+
     }
 }

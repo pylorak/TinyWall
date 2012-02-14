@@ -33,6 +33,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btnAppRemoveAll = new System.Windows.Forms.Button();
             this.btnAppAutoDetect = new System.Windows.Forms.Button();
             this.btnSubmitAssoc = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
@@ -121,6 +122,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.btnAppRemoveAll);
             this.tabPage3.Controls.Add(this.btnAppAutoDetect);
             this.tabPage3.Controls.Add(this.btnSubmitAssoc);
             this.tabPage3.Controls.Add(this.label3);
@@ -135,6 +137,19 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Application Exceptions";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // btnAppRemoveAll
+            // 
+            this.btnAppRemoveAll.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAppRemoveAll.Image = global::PKSoft.Icons.remove;
+            this.btnAppRemoveAll.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnAppRemoveAll.Location = new System.Drawing.Point(566, 223);
+            this.btnAppRemoveAll.Name = "btnAppRemoveAll";
+            this.btnAppRemoveAll.Size = new System.Drawing.Size(127, 36);
+            this.btnAppRemoveAll.TabIndex = 19;
+            this.btnAppRemoveAll.Text = "Remove all";
+            this.btnAppRemoveAll.UseVisualStyleBackColor = true;
+            this.btnAppRemoveAll.Click += new System.EventHandler(this.btnAppRemoveAll_Click);
             // 
             // btnAppAutoDetect
             // 
@@ -752,5 +767,6 @@
         private System.Windows.Forms.OpenFileDialog ofd;
         private System.Windows.Forms.CheckBox chkLockHostsFile;
         private System.Windows.Forms.CheckBox chkHostsBlocklist;
+        private System.Windows.Forms.Button btnAppRemoveAll;
     }
 }
