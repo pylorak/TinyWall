@@ -613,7 +613,7 @@ namespace PKSoft
                 case TinyWallCommands.MINUTE_TIMER:
                     {
                         // Disable firewall logging if its log has not been read recently
-                        if (DateTime.Now - LastFwLogReadTime > TimeSpan.FromMinutes(2))
+                        if (DateTime.Now - LastFwLogReadTime > TimeSpan.FromMinutes(5))
                         {
                             if (LogWatcher != null)
                             {
