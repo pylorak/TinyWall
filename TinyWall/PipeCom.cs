@@ -11,6 +11,7 @@ namespace PKSoft
     {
         private const string CLIENT_PUBLIC_KEY = "A036E6F1E41F224B33F498535F7DF9B9382BA82AB3E028ABEDC4A6C13D701B73";
         private const string SERVER_PUBLIC_KEY = "9B046814B7CF7EF8CA7D9142C09E9F4943F458F67C1598CEE6A9BB473828DA2A";
+        private readonly string PipeName;
 
         private bool m_RunThreads = true;
         private PipeStream m_Pipe;
@@ -24,8 +25,10 @@ namespace PKSoft
             {
                 // Release managed resources
 
-                m_ReqQueue.Dispose();
-                m_Pipe.Dispose();
+                if (m_ReqQueue != null)
+                    m_ReqQueue.Dispose();
+                if (m_Pipe != null)
+                    m_Pipe.Dispose();
             }
 
             // Release unmanaged resources.
@@ -41,6 +44,8 @@ namespace PKSoft
 
         internal PipeCom(string pipeName, PipeDataReceived recvCallback)
         {
+            PipeName = pipeName;
+
             // Allow authenticated users access to the pipe
             SecurityIdentifier AuthenticatedSID = new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null);
             PipeAccessRule par = new PipeAccessRule(AuthenticatedSID, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
@@ -59,9 +64,7 @@ namespace PKSoft
 
         internal PipeCom(string pipeName)
         {
-            // Create pipe client
-            m_Pipe = new NamedPipeClientStream(pipeName);
-
+            PipeName = pipeName;
             m_ReqQueue = new RequestQueue();
 
             // Start thread that is going to do the actual communication
@@ -98,9 +101,16 @@ namespace PKSoft
 
         private Message SenderProcessor(Message msg)
         {
-            NamedPipeClientStream PipeClient = m_Pipe as NamedPipeClientStream;
             try
             {
+                if (m_Pipe == null)
+                {
+                    // Create pipe client
+                    m_Pipe = new NamedPipeClientStream(PipeName);
+                }
+
+                NamedPipeClientStream PipeClient = m_Pipe as NamedPipeClientStream;
+
                 if (!PipeClient.IsConnected)
                 {
                     PipeClient.Connect(50);
@@ -118,6 +128,11 @@ namespace PKSoft
             }
             catch
             {
+                if (m_Pipe != null)
+                {
+                    m_Pipe.Dispose();
+                    m_Pipe = null;
+                }
                 return new Message(TinyWallCommands.COM_ERROR);
             }
         }
