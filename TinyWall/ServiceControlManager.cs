@@ -1,8 +1,10 @@
 using System;
 using System.ComponentModel;
+using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.ServiceProcess;
+using Microsoft.Win32.SafeHandles;
 
 namespace ScmWrapper
 {
@@ -100,7 +102,7 @@ namespace ScmWrapper
     internal static class NativeMethods
     {
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        internal static extern IntPtr OpenSCManager(
+        internal static extern SafeServiceHandle OpenSCManager(
             string machineName,
             string databaseName,
             ServiceControlAccessRights desiredAccess);
@@ -111,7 +113,7 @@ namespace ScmWrapper
 
         [DllImport("advapi32.dll", SetLastError = true, CharSet=CharSet.Unicode)]
         internal static extern IntPtr OpenService(
-            IntPtr hSCManager,
+            SafeServiceHandle hSCManager,
             string serviceName,
             ServiceAccessRights desiredAccess);
 
@@ -157,11 +159,39 @@ namespace ScmWrapper
 
     #endregion
 
+    [SecurityPermission(SecurityAction.InheritanceDemand, UnmanagedCode = true)]
+    [SecurityPermission(SecurityAction.Demand, UnmanagedCode = true)]
+    internal class SafeServiceHandle : SafeHandleZeroOrMinusOneIsInvalid
+    {
+        // Create a SafeHandle, informing the base class
+        // that this SafeHandle instance "owns" the handle,
+        // and therefore SafeHandle should call
+        // our ReleaseHandle method when the SafeHandle
+        // is no longer in use.
+        private SafeServiceHandle()
+            : base(true)
+        {
+        }
+
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+        override protected bool ReleaseHandle()
+        {
+            // Here, we must obey all rules for constrained execution regions.
+            return NativeMethods.CloseServiceHandle(handle);
+            // If ReleaseHandle failed, it can be reported via the
+            // "releaseHandleFailed" managed debugging assistant (MDA).  This
+            // MDA is disabled by default, but can be enabled in a debugger
+            // or during testing to diagnose handle corruption problems.
+            // We do not throw an exception because most code could not recover
+            // from the problem.
+        }
+    }
+    
     internal class ServiceControlManager : PKSoft.DisposableObject
     {
         private const uint SERVICE_NO_CHANGE = 0xFFFFFFFF;
 
-        private IntPtr SCManager;
+        private SafeServiceHandle SCManager;
 
         /// <summary>
         /// Calls the Win32 OpenService function and performs error checking.
@@ -196,7 +226,7 @@ namespace ScmWrapper
                 ServiceControlAccessRights.SC_MANAGER_CONNECT);
 
             // Verify if the SC is opened
-            if (SCManager == IntPtr.Zero)
+            if (!SCManager.IsInvalid)
                 throw new Win32Exception(Marshal.GetLastWin32Error());
         }
 
@@ -447,17 +477,15 @@ namespace ScmWrapper
             if (disposing)
             {
                 // Release managed resources
+
+                SCManager.Dispose();
             }
 
             // Release unmanaged resources.
             // Set large fields to null.
             // Call Dispose on your base class.
 
-            if (SCManager != IntPtr.Zero)
-            {
-                NativeMethods.CloseServiceHandle(SCManager);
-                SCManager = IntPtr.Zero;
-            }
+            SCManager = null;
             base.Dispose(disposing);
         }
 

@@ -64,17 +64,15 @@ namespace PKSoft
             {
                 // Create the compressed file.
                 using (FileStream outFile = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
+                using (DeflateStream Compress = new DeflateStream(outFile, CompressionMode.Compress, true))
                 {
-                    using (DeflateStream Compress = new DeflateStream(outFile, CompressionMode.Compress))
+                    // Copy the source file into 
+                    // the compression stream.
+                    byte[] buffer = new byte[4096];
+                    int numRead;
+                    while ((numRead = inFile.Read(buffer, 0, buffer.Length)) != 0)
                     {
-                        // Copy the source file into 
-                        // the compression stream.
-                        byte[] buffer = new byte[4096];
-                        int numRead;
-                        while ((numRead = inFile.Read(buffer, 0, buffer.Length)) != 0)
-                        {
-                            Compress.Write(buffer, 0, numRead);
-                        }
+                        Compress.Write(buffer, 0, numRead);
                     }
                 }
             }
@@ -82,21 +80,19 @@ namespace PKSoft
 
         internal static void DecompressDeflate(string inputFile, string outputFile)
         {
-            // Get the stream of the source file.
-            using (FileStream inFile = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
+            // Create the decompressed file.
+            using (FileStream outFile = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
             {
-                // Create the compressed file.
-                using (FileStream outFile = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
+                // Get the stream of the source file.
+                using (FileStream inFile = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
+                using (DeflateStream Decompress = new DeflateStream(inFile, CompressionMode.Decompress, true))
                 {
-                    using (DeflateStream Decompress = new DeflateStream(inFile, CompressionMode.Decompress))
+                    //Copy the decompression stream into the output file.
+                    byte[] buffer = new byte[4096];
+                    int numRead;
+                    while ((numRead = Decompress.Read(buffer, 0, buffer.Length)) != 0)
                     {
-                        //Copy the decompression stream into the output file.
-                        byte[] buffer = new byte[4096];
-                        int numRead;
-                        while ((numRead = Decompress.Read(buffer, 0, buffer.Length)) != 0)
-                        {
-                            outFile.Write(buffer, 0, numRead);
-                        }
+                        outFile.Write(buffer, 0, numRead);
                     }
                 }
             }
@@ -289,14 +285,21 @@ namespace PKSoft
             }
 
             Bitmap newImage = new Bitmap(originalImage, newWidth, newHeight);
-
-            using (Graphics g = Graphics.FromImage(newImage))
+            try
             {
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                g.DrawImage(originalImage, 0, 0, newImage.Width, newImage.Height);
-            }
+                using (Graphics g = Graphics.FromImage(newImage))
+                {
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(originalImage, 0, 0, newImage.Width, newImage.Height);
+                }
 
-            return newImage;
+                return newImage;
+            }
+            catch
+            {
+                newImage.Dispose();
+                throw;
+            }
         }
 
         internal static Bitmap GetIcon(string filePath, int maxWidth, int maxHeight)

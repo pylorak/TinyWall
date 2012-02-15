@@ -62,10 +62,7 @@ namespace PKSoft
                     ns.Add("", "");
 
                     XmlSerializer serializer = new XmlSerializer(typeof(T));
-                    //using (StreamWriter sw = new StreamWriter(cryptoStream))
-                    {
-                        serializer.Serialize(cryptoStream, obj, ns);
-                    }
+                    serializer.Serialize(cryptoStream, obj, ns);
                 }
             }
 
