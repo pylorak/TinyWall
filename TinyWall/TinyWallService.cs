@@ -225,7 +225,7 @@ namespace PKSoft
                 throw new InvalidOperationException("Firewall exception specification must have an ID.");
 #else
                 ex.RegenerateID();
-                ++SettingsManager.Changeset;
+                VisibleState.SettingsChangeset = Utils.GetRandomNumber();
 #endif
             }
 
