@@ -727,7 +727,6 @@ namespace PKSoft
                 }
                 catch
                 {
-                    WFEventWatcher = null;
                     EventLog.WriteEntry("Unable to listen for firewall events. Windows Firewall monitoring will be turned off.");
                 }
 

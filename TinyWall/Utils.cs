@@ -17,21 +17,8 @@ namespace PKSoft
     {
         private static class NativeMethods
         {
-            [StructLayout(LayoutKind.Sequential)]
-            internal struct POINT
-            {
-                internal int x;
-                internal int y;
-
-                internal POINT(int _x, int _y)
-                {
-                    x = _x;
-                    y = _y;
-                }
-            }
-            
             [DllImport("user32.dll")]
-            internal static extern IntPtr WindowFromPoint(POINT Point);
+            internal static extern IntPtr WindowFromPoint(int x, int y);
 
             [DllImport("user32.dll", SetLastError = true)]
             internal static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
@@ -102,7 +89,7 @@ namespace PKSoft
         {
             // Get process id under cursor
             int ProcId;
-            int dummy = NativeMethods.GetWindowThreadProcessId(NativeMethods.WindowFromPoint(new NativeMethods.POINT(x, y)), out ProcId);
+            int dummy = NativeMethods.GetWindowThreadProcessId(NativeMethods.WindowFromPoint(x, y), out ProcId);
 
             // Get executable of process
             Process p = Process.GetProcessById(ProcId);

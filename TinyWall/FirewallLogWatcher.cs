@@ -105,6 +105,7 @@ namespace PKSoft
         {
             // Maximum number of allowed entries
             const int MAX_ENTRIES = 1000;
+            bool ok = true;
 
             FirewallLogEntry entry = new FirewallLogEntry();
             entry.Timestamp = DateTime.Now;
@@ -115,9 +116,9 @@ namespace PKSoft
                     {
                         entry.ProcessID = (UInt64)e.EventRecord.Properties[0].Value;
                         entry.SourceIP = (string)e.EventRecord.Properties[3].Value;
-                        int.TryParse((string)e.EventRecord.Properties[4].Value, out entry.SourcePort);
+                        ok &= int.TryParse((string)e.EventRecord.Properties[4].Value, out entry.SourcePort);
                         entry.DestinationIP = (string)e.EventRecord.Properties[5].Value;
-                        int.TryParse((string)e.EventRecord.Properties[6].Value, out entry.DestinationPort);
+                        ok &= int.TryParse((string)e.EventRecord.Properties[6].Value, out entry.DestinationPort);
                         entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[7].Value;
                         break;
                     }
@@ -125,9 +126,9 @@ namespace PKSoft
                     {
                         entry.ProcessID = (UInt64)e.EventRecord.Properties[0].Value;
                         entry.SourceIP = (string)e.EventRecord.Properties[3].Value;
-                        int.TryParse((string)e.EventRecord.Properties[4].Value, out entry.SourcePort);
+                        ok &= int.TryParse((string)e.EventRecord.Properties[4].Value, out entry.SourcePort);
                         entry.DestinationIP = (string)e.EventRecord.Properties[5].Value;
-                        int.TryParse((string)e.EventRecord.Properties[6].Value, out entry.DestinationPort);
+                        ok &= int.TryParse((string)e.EventRecord.Properties[6].Value, out entry.DestinationPort);
                         entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[7].Value;
                         break;
                     }
@@ -138,6 +139,9 @@ namespace PKSoft
                     }
 
             }
+
+            if (!ok)
+                return;
 
             lock (NewEntries)
             {
