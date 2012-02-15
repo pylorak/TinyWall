@@ -22,6 +22,7 @@ namespace PKSoft
         GET_SETTINGS,
         GET_LOCK_STATE,
         GET_UPDATE_DESCRIPTOR,
+        GET_PROCESS_PATH,
         VERIFY_KEYS,
         READ_FW_LOG,
 

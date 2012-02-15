@@ -64,7 +64,9 @@ namespace PKSoft
                 Process p = procs[i];
                 try
                 {
-                    string ProcPath = p.MainModule.FileName;
+                    string ProcPath = Utils.GetProcessMainModulePath(p);
+                    if (string.IsNullOrEmpty(ProcPath))
+                        continue;
 
                     // Scan list of already added items to prevent duplicates
                     bool skip = false;
@@ -83,12 +85,12 @@ namespace PKSoft
 
                     // Add icon
                     if (!IconList.Images.ContainsKey(ProcPath))
-                        IconList.Images.Add(ProcPath, Utils.GetIcon(p.MainModule.FileName, 16, 16));
+                        IconList.Images.Add(ProcPath, Utils.GetIcon(ProcPath, 16, 16));
 
                     // Add list item
                     ListViewItem li = new ListViewItem(p.ProcessName);
                     li.ImageKey = ProcPath;
-                    li.SubItems.Add(p.MainModule.FileName);
+                    li.SubItems.Add(ProcPath);
                     li.Tag = ProcPath;
                     itemColl.Add(li);
                 }

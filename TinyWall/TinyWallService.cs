@@ -600,6 +600,21 @@ namespace PKSoft
                     {
                         return new Message(TinyWallCommands.RESPONSE_OK, SettingsManager.ServiceConfig.HasPassword ? 1 : 0, SettingsManager.ServiceConfig.Locked ? 1 : 0);
                     }
+                case TinyWallCommands.GET_PROCESS_PATH:
+                    {
+                        try
+                        {
+                            int pid = (int)req.Arguments[0];
+                            using (Process p = Process.GetProcessById(pid))
+                            {
+                                return new Message(TinyWallCommands.RESPONSE_OK, p.MainModule.FileName);
+                            }
+                        }
+                        catch
+                        {
+                            return new Message(TinyWallCommands.RESPONSE_ERROR);
+                        }
+                    }
                 case TinyWallCommands.SET_PASSPHRASE:
                     {
                         FileLocker.UnlockFile(ServiceSettings.PasswordFilePath);

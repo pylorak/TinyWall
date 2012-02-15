@@ -84,6 +84,22 @@ namespace PKSoft
                 }
             }
         }
+
+        internal static string GetProcessMainModulePath(Process p)
+        {
+            try
+            {
+                return p.MainModule.FileName;
+            }
+            catch
+            {
+                Message resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.GET_PROCESS_PATH);
+                if (resp.Command == TinyWallCommands.RESPONSE_OK)
+                    return resp.Arguments[0] as string;
+                else
+                    return null;
+            }
+        }
         
         internal static string GetExecutableUnderCursor(int x, int y)
         {
@@ -92,8 +108,7 @@ namespace PKSoft
             int dummy = NativeMethods.GetWindowThreadProcessId(NativeMethods.WindowFromPoint(x, y), out ProcId);
 
             // Get executable of process
-            Process p = Process.GetProcessById(ProcId);
-            return p.MainModule.FileName;
+            return Utils.GetProcessMainModulePath(Process.GetProcessById(ProcId));
         }
 
         internal static string RandomString(int length)
