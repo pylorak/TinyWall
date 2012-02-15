@@ -10,7 +10,7 @@ TinyWall Changelog
 - Traffic rate monitor
 - Lightning-fast search for some recognized applications
 - Increased service startup performance
-- Better support for Windos Networking, Remote Desktop and Remote Assistance
+- Better support for Windows Networking, Remote Desktop and Remote Assistance
 - Remember last used firewall mode (except disabled mode)
 - Offer user to whitelist additional files that belong to the same application
 - Signed by digital certificate
