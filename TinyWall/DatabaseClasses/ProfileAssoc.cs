@@ -25,8 +25,6 @@ namespace PKSoft
                 m_Executable = value;
                 PublicKeys = null;
                 HashesSHA1 = null;
-                MinVersion = null;
-                MaxVersion = null;
             }
         }
 
@@ -145,41 +143,6 @@ namespace PKSoft
                 || (File.Exists(path) && Path.IsPathRooted(path));  // File path on filesystem
         }
 
-        // If present, the profiles for this file will only apply
-        // if the executable's product version field is within this range.
-        // Both, either one or none may be omitted.
-        private string m_MinVersion;
-        [XmlAttributeAttribute()]
-        public string MinVersion
-        {
-            get
-            {
-                if ((m_MinVersion == null) && File.Exists(Executable))
-                {
-                    FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(Executable);
-                    m_MinVersion = fvi.ProductVersion;
-                }
-                return m_MinVersion;
-            }
-            set { m_MinVersion = value; }
-        }
-
-        private string m_MaxVersion;
-        [XmlAttributeAttribute()]
-        public string MaxVersion
-        {
-            get
-            {
-                if ((m_MaxVersion == null) && File.Exists(Executable))
-                {
-                    FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(Executable);
-                    m_MaxVersion = fvi.ProductVersion;
-                }
-                return m_MaxVersion;
-            }
-            set { m_MaxVersion = value; }
-        }
-
         public AppExceptionSettings ToExceptionSetting()
         {
             AppExceptionSettings ex = new AppExceptionSettings(Executable);
@@ -231,28 +194,6 @@ namespace PKSoft
             if (!string.IsNullOrEmpty(this.Service) || !string.IsNullOrEmpty(exe.Service))
             {
                 if (string.Compare(this.Service, exe.Service, StringComparison.OrdinalIgnoreCase) != 0)
-                    return false;
-            }
-
-            // File version must be in specified range
-            if (!string.IsNullOrEmpty(this.MinVersion))
-            {
-                if (string.IsNullOrEmpty(exe.MinVersion))
-                    return false;
-
-                Version verThis = new Version(this.MinVersion);
-                Version verExe = new Version(exe.MinVersion);
-                if (verExe < verThis)
-                    return false;
-            }
-            if (!string.IsNullOrEmpty(this.MaxVersion))
-            {
-                if (string.IsNullOrEmpty(exe.MaxVersion))
-                    return false;
-
-                Version verThis = new Version(this.MaxVersion);
-                Version verExe = new Version(exe.MaxVersion);
-                if (verExe > verThis)
                     return false;
             }
 

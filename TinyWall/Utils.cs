@@ -126,7 +126,7 @@ namespace PKSoft
         {
             StringBuilder sb = new StringBuilder();
             foreach (byte oct in binstr)
-                sb.Append(oct.ToString(@"X2"));
+                sb.Append(oct.ToString(@"X2", CultureInfo.InvariantCulture));
 
             return sb.ToString();
         }

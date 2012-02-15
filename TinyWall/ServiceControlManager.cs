@@ -159,8 +159,6 @@ namespace ScmWrapper
 
     #endregion
 
-    [SecurityPermission(SecurityAction.InheritanceDemand, UnmanagedCode = true)]
-    [SecurityPermission(SecurityAction.Demand, UnmanagedCode = true)]
     internal class SafeServiceHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
         // Create a SafeHandle, informing the base class

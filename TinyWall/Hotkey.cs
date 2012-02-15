@@ -65,7 +65,7 @@ namespace PKSoft
 			{ this.Unregister(); }
 		}
 
-        internal bool Register(Control windowControl)
+        internal bool Register(Control control)
         {
             // Check that we have not registered
 			if (this.registered)
@@ -84,7 +84,7 @@ namespace PKSoft
                             (this.Shift ? NativeMethods.MOD_SHIFT : 0) | (this.Windows ? NativeMethods.MOD_WIN : 0);
 
 			// Register the hotkey
-            if (NativeMethods.RegisterHotKey(windowControl.Handle, this.id, modifiers, keyCode) == 0)
+            if (NativeMethods.RegisterHotKey(control.Handle, this.id, modifiers, keyCode) == 0)
 			{ 
 				// Is the error that the hotkey is registered?
                 if (Marshal.GetLastWin32Error() == NativeMethods.ERROR_HOTKEY_ALREADY_REGISTERED)
@@ -95,7 +95,7 @@ namespace PKSoft
 
 			// Save the control reference and register state
 			this.registered = true;
-			this.windowControl = windowControl;
+			this.windowControl = control;
 
 			// We successfully registered
 			return true;
@@ -127,11 +127,11 @@ namespace PKSoft
 			{ return; }
 
 			// Save control reference
-			Control windowControl = this.windowControl;
+			Control control = this.windowControl;
 
 			// Unregister and then reregister again
 			this.Unregister();
-			this.Register(windowControl);
+			this.Register(control);
 		}
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]

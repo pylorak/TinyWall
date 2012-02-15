@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -147,7 +148,7 @@ namespace PKSoft
                 {
                     if (System.Windows.Forms.MessageBox.Show(
                         parent,
-                        string.Format(PKSoft.Resources.Messages.UnblockPartOfApplication, app.Name),
+                        string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.UnblockPartOfApplication, app.Name),
                         PKSoft.Resources.Messages.TinyWall,
                         System.Windows.Forms.MessageBoxButtons.YesNo,
                         System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)

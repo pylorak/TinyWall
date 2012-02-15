@@ -67,7 +67,7 @@ namespace PKSoft
 
     internal class FirewallLogWatcher : DisposableObject
     {
-        private readonly string FIREWALLLOG_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"LogFiles\Firewall\pfirewall.log");
+        //private readonly string FIREWALLLOG_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"LogFiles\Firewall\pfirewall.log");
         EventLogWatcher LogWatcher = null;
         List<FirewallLogEntry> NewEntries = new List<FirewallLogEntry>();
 
