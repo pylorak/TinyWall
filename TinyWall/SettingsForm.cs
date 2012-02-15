@@ -21,6 +21,7 @@ namespace PKSoft
         internal SettingsForm(ControllerSettings controller, MachineSettings machine, ZoneSettings zone)
         {
             InitializeComponent();
+            this.Icon = Resources.Icons.firewall;
 
             TmpZoneConfig = zone;
             TmpMachineConfig = machine;
@@ -323,9 +324,7 @@ namespace PKSoft
         {
             IconList.Images.Add("deleted", Resources.Icons.delete);
 
-            this.Icon = Resources.Icons.firewall;
             lblVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0} {1}", lblVersion.Text, FileVersionInfo.GetVersionInfo(Utils.ExecutablePath).ProductVersion.ToString());
-            tabControl1.SelectedIndex = TmpControllerConfig.ManageTabIndex;
 
             InitSettingsUI();
 
@@ -442,6 +441,11 @@ namespace PKSoft
                 chkLockHostsFile.Checked = true;
 
             chkLockHostsFile.Enabled = !chkHostsBlocklist.Checked;
+        }
+
+        private void SettingsForm_Load(object sender, EventArgs e)
+        {
+            tabControl1.SelectedIndex = TmpControllerConfig.ManageTabIndex;
         }
 
     }
