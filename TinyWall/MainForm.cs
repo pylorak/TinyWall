@@ -62,26 +62,6 @@ namespace PKSoft
             this.Tray.Icon = Resources.Icons.firewall;
         }
 
-        private void ApplyControllerSettings()
-        {
-            if ((SettingsManager.GlobalConfig.AutoUpdateCheck) && (UpdateTimer == null))
-            {
-                UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(2), TimeSpan.FromHours(2));
-            }
-            if ((!SettingsManager.GlobalConfig.AutoUpdateCheck) && (UpdateTimer != null))
-            {
-                if (UpdateTimer != null)
-                {
-                    using (WaitHandle wh = new AutoResetEvent(false))
-                    {
-                        UpdateTimer.Dispose(wh);
-                        wh.WaitOne();
-                    }
-                    UpdateTimer = null;
-                }
-            }
-        }
-
         private void UpdateTimerTick(object state)
         {
             try
@@ -387,7 +367,6 @@ namespace PKSoft
                         SettingsManager.ControllerConfig = sf.TmpControllerConfig;
                         SettingsManager.ControllerConfig.Save();
                         ApplyFirewallSettings(sf.TmpMachineConfig, sf.TmpZoneConfig);
-                        ApplyControllerSettings();
                     }
                 }
             }
@@ -767,17 +746,17 @@ namespace PKSoft
             HotKeyWhitelistProcess.Register(this);
 
             TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
-            SettingsManager.ControllerConfig = ControllerSettings.Load();
-            ApplyControllerSettings();
-
+            UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(2), TimeSpan.FromHours(2));
             GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
-            LoadSettingsFromServer(true);
+            SettingsManager.ControllerConfig = ControllerSettings.Load();
 
             barrier.Wait();
             // END
             // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
 
             // --- THREAD BARRIER ---
+
+            LoadSettingsFromServer(true);
 
             if (StartupOpts.autowhitelist)
             {

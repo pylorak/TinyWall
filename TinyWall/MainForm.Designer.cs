@@ -1,4 +1,6 @@
-﻿namespace PKSoft
+﻿using System.Threading;
+
+namespace PKSoft
 {
     partial class MainForm
     {
@@ -24,9 +26,17 @@
                 if (MouseInterceptor != null)
                     MouseInterceptor.Dispose();
 
-                TrafficTimer.Dispose();
-                if (UpdateTimer != null)
-                    UpdateTimer.Dispose();
+                using (WaitHandle wh = new AutoResetEvent(false))
+                {
+                    TrafficTimer.Dispose(wh);
+                    wh.WaitOne();
+                }
+
+                using (WaitHandle wh = new AutoResetEvent(false))
+                {
+                    UpdateTimer.Dispose(wh);
+                    wh.WaitOne();
+                }
             }
             base.Dispose(disposing);
         }
