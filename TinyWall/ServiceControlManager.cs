@@ -226,7 +226,7 @@ namespace ScmWrapper
                 ServiceControlAccessRights.SC_MANAGER_CONNECT);
 
             // Verify if the SC is opened
-            if (!SCManager.IsInvalid)
+            if (SCManager.IsInvalid)
                 throw new Win32Exception(Marshal.GetLastWin32Error());
         }
 

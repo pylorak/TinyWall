@@ -558,12 +558,8 @@ namespace PKSoft
                     MouseInterceptor.Dispose();
                     MouseInterceptor = null;
 
-                    string AppPath = null;
-                    try
-                    {
-                        AppPath = Utils.GetExecutableUnderCursor(x, y);
-                    }
-                    catch (Win32Exception)
+                    string AppPath = Utils.GetExecutableUnderCursor(x, y);
+                    if (string.IsNullOrEmpty(AppPath))
                     {
                         ShowBalloonTip(PKSoft.Resources.Messages.CannotGetExecutablePathWhitelisting, ToolTipIcon.Error);
                         return;
