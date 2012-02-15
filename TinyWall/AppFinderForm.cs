@@ -182,9 +182,6 @@ namespace PKSoft
 
             ListViewItem li = new ListViewItem(app.Name);
             li.ImageKey = app.Name;
-// TODO
-//            li.SubItems.Add(Path.GetFileName(app.Executable));
-//            li.SubItems.Add(app.Executable);
             li.Tag = app;
             if (app.Recommended)
                 li.Checked = true;

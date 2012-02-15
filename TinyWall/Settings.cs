@@ -187,15 +187,6 @@ namespace PKSoft
             get { return Path.Combine(SettingsManager.AppDataPath, "pwd"); }
 
         }
-
-        internal static string FilePath
-        {
-            get
-            {
-                const string fn = "SrvConfig";
-                return Path.Combine(SettingsManager.AppDataPath, fn);
-            }
-        }
             
         private bool _Locked;
 
@@ -264,6 +255,7 @@ namespace PKSoft
             }
         }
 
+        /* Keep this around in case we need it in the future
         internal void Save()
         {
             // Construct file path
@@ -295,6 +287,16 @@ namespace PKSoft
                 return new ServiceSettings();
             }
         }
+
+        internal static string FilePath
+        {
+            get
+            {
+                const string fn = "SrvConfig";
+                return Path.Combine(SettingsManager.AppDataPath, fn);
+            }
+        }
+        */
     }
 
     // Operational settings for the controller

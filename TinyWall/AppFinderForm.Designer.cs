@@ -37,8 +37,6 @@
             this.btnStartDetection = new System.Windows.Forms.Button();
             this.list = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.IconList = new System.Windows.Forms.ImageList(this.components);
             this.lblStatus = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -53,7 +51,7 @@
             // 
             this.label1.Location = new System.Drawing.Point(12, 19);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(651, 49);
+            this.label1.Size = new System.Drawing.Size(499, 49);
             this.label1.TabIndex = 0;
             this.label1.Text = resources.GetString("label1.Text");
             // 
@@ -73,12 +71,10 @@
             // 
             this.list.CheckBoxes = true;
             this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3});
+            this.columnHeader1});
             this.list.Location = new System.Drawing.Point(15, 141);
             this.list.Name = "list";
-            this.list.Size = new System.Drawing.Size(648, 285);
+            this.list.Size = new System.Drawing.Size(496, 285);
             this.list.SmallImageList = this.IconList;
             this.list.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.list.TabIndex = 4;
@@ -88,17 +84,7 @@
             // columnHeader1
             // 
             this.columnHeader1.Text = "Name";
-            this.columnHeader1.Width = 217;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Executable";
-            this.columnHeader2.Width = 115;
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "Path";
-            this.columnHeader3.Width = 307;
+            this.columnHeader1.Width = 430;
             // 
             // IconList
             // 
@@ -121,7 +107,7 @@
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Image = global::PKSoft.Icons.cancel;
             this.btnCancel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnCancel.Location = new System.Drawing.Point(588, 432);
+            this.btnCancel.Location = new System.Drawing.Point(437, 432);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 33);
             this.btnCancel.TabIndex = 10;
@@ -134,7 +120,7 @@
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Image = global::PKSoft.Icons.accept;
             this.btnOK.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnOK.Location = new System.Drawing.Point(507, 432);
+            this.btnOK.Location = new System.Drawing.Point(356, 432);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 33);
             this.btnOK.TabIndex = 9;
@@ -188,7 +174,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(675, 477);
+            this.ClientSize = new System.Drawing.Size(524, 477);
             this.ControlBox = false;
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btnDeselectAll);
@@ -216,7 +202,6 @@
         private System.Windows.Forms.Button btnStartDetection;
         private System.Windows.Forms.ListView list;
         private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.ImageList IconList;
         private System.Windows.Forms.Button btnCancel;
@@ -225,6 +210,5 @@
         private System.Windows.Forms.Button btnSelectAll;
         private System.Windows.Forms.Button btnDeselectAll;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ColumnHeader columnHeader3;
     }
 }

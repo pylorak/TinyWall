@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="label1.Text" xml:space="preserve">
-    <value>TinyWall can try to automatically detect and unblock some installed applications on your computer. This saves you from having to unblock these applications one by one. You will have a chance to review the results before committing any changes.</value>
+    <value>TinyWall can try to automatically detect and unblock some software on your computer. This saves you from having to unblock these applications one by one. You will have a chance to review the results before committing any changes.</value>
   </data>
   <metadata name="IconList.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>

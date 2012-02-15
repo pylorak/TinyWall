@@ -128,7 +128,7 @@ namespace PKSoft
                     }
                 case EventLogEvent.BLOCKED_LOCAL_BIND:
                     {
-                        //TODO
+                        // TODO: Figure out when and if at all this case can happen
                         break;
                     }
 

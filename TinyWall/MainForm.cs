@@ -689,7 +689,7 @@ namespace PKSoft
         {
             mnuAllowLocalSubnet.Checked = !mnuAllowLocalSubnet.Checked;
 
-            // TODO: Why do I copy here?
+            // Copy, so that settings are not changed if they cannot be saved
             ZoneSettings zoneCopy = SettingsManager.CurrentZone.Clone() as ZoneSettings;
             zoneCopy.AllowLocalSubnet = mnuAllowLocalSubnet.Checked;
             ApplyFirewallSettings(null, zoneCopy);
