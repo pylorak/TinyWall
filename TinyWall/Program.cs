@@ -181,7 +181,9 @@ namespace PKSoft
                     Thread.Sleep(500);
                     return StartController(opts);
                 case StartUpMode.Service:
-                    return StartService();
+                    StartService();
+                    while (true)
+                        Thread.Sleep(500);
                 default:
                     return -1;
             } // switch
