@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApplicationExceptionForm));
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -58,215 +59,145 @@
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Image = global::PKSoft.Icons.cancel;
-            this.btnCancel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnCancel.Location = new System.Drawing.Point(431, 469);
+            resources.ApplyResources(this.btnCancel, "btnCancel");
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 33);
-            this.btnCancel.TabIndex = 10;
-            this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnOK
             // 
             this.btnOK.Image = global::PKSoft.Icons.accept;
-            this.btnOK.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnOK.Location = new System.Drawing.Point(350, 469);
+            resources.ApplyResources(this.btnOK, "btnOK");
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 33);
-            this.btnOK.TabIndex = 9;
-            this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
+            resources.ApplyResources(this.label1, "label1");
             this.label1.BackColor = System.Drawing.SystemColors.Window;
-            this.label1.Location = new System.Drawing.Point(33, 60);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(87, 13);
-            this.label1.TabIndex = 14;
-            this.label1.Text = "Executable path:";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
+            resources.ApplyResources(this.label2, "label2");
             this.label2.BackColor = System.Drawing.SystemColors.Window;
-            this.label2.Location = new System.Drawing.Point(45, 87);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(75, 13);
-            this.label2.TabIndex = 15;
-            this.label2.Text = "Service name:";
             // 
             // txtSrvName
             // 
             this.txtSrvName.BackColor = System.Drawing.SystemColors.Window;
-            this.txtSrvName.Location = new System.Drawing.Point(126, 84);
+            resources.ApplyResources(this.txtSrvName, "txtSrvName");
             this.txtSrvName.Name = "txtSrvName";
             this.txtSrvName.ReadOnly = true;
-            this.txtSrvName.Size = new System.Drawing.Size(214, 20);
-            this.txtSrvName.TabIndex = 16;
             this.txtSrvName.TextChanged += new System.EventHandler(this.txtSrvName_TextChanged);
             // 
             // txtAppPath
             // 
             this.txtAppPath.BackColor = System.Drawing.SystemColors.Window;
-            this.txtAppPath.Location = new System.Drawing.Point(126, 57);
+            resources.ApplyResources(this.txtAppPath, "txtAppPath");
             this.txtAppPath.Name = "txtAppPath";
             this.txtAppPath.ReadOnly = true;
-            this.txtAppPath.Size = new System.Drawing.Size(214, 20);
-            this.txtAppPath.TabIndex = 17;
             this.txtAppPath.TextChanged += new System.EventHandler(this.txtAppPath_TextChanged);
             // 
             // btnBrowse
             // 
             this.btnBrowse.BackColor = System.Drawing.Color.AliceBlue;
-            this.btnBrowse.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnBrowse.Location = new System.Drawing.Point(364, 55);
+            resources.ApplyResources(this.btnBrowse, "btnBrowse");
             this.btnBrowse.Name = "btnBrowse";
-            this.btnBrowse.Size = new System.Drawing.Size(142, 23);
-            this.btnBrowse.TabIndex = 18;
-            this.btnBrowse.Text = "Browse for a file...";
             this.btnBrowse.UseVisualStyleBackColor = false;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
             // 
             // btnProcess
             // 
             this.btnProcess.BackColor = System.Drawing.Color.AliceBlue;
-            this.btnProcess.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnProcess.Location = new System.Drawing.Point(364, 28);
+            resources.ApplyResources(this.btnProcess, "btnProcess");
             this.btnProcess.Name = "btnProcess";
-            this.btnProcess.Size = new System.Drawing.Size(142, 23);
-            this.btnProcess.TabIndex = 19;
-            this.btnProcess.Text = "Select a process...";
             this.btnProcess.UseVisualStyleBackColor = false;
             this.btnProcess.Click += new System.EventHandler(this.btnProcess_Click);
             // 
             // btnChooseService
             // 
             this.btnChooseService.BackColor = System.Drawing.Color.AliceBlue;
-            this.btnChooseService.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnChooseService.Location = new System.Drawing.Point(364, 82);
+            resources.ApplyResources(this.btnChooseService, "btnChooseService");
             this.btnChooseService.Name = "btnChooseService";
-            this.btnChooseService.Size = new System.Drawing.Size(142, 23);
-            this.btnChooseService.TabIndex = 20;
-            this.btnChooseService.Text = "Choose a service...";
             this.btnChooseService.UseVisualStyleBackColor = false;
             this.btnChooseService.Click += new System.EventHandler(this.btnChooseService_Click);
             // 
             // listEnabledProfiles
             // 
             this.listEnabledProfiles.FormattingEnabled = true;
-            this.listEnabledProfiles.Location = new System.Drawing.Point(31, 211);
+            resources.ApplyResources(this.listEnabledProfiles, "listEnabledProfiles");
             this.listEnabledProfiles.Name = "listEnabledProfiles";
-            this.listEnabledProfiles.Size = new System.Drawing.Size(197, 238);
             this.listEnabledProfiles.Sorted = true;
-            this.listEnabledProfiles.TabIndex = 21;
             this.listEnabledProfiles.SelectedIndexChanged += new System.EventHandler(this.listEnabledProfiles_SelectedIndexChanged);
             this.listEnabledProfiles.DoubleClick += new System.EventHandler(this.listEnabledProfiles_DoubleClick);
             // 
             // listAllProfiles
             // 
             this.listAllProfiles.FormattingEnabled = true;
-            this.listAllProfiles.Location = new System.Drawing.Point(309, 211);
+            resources.ApplyResources(this.listAllProfiles, "listAllProfiles");
             this.listAllProfiles.Name = "listAllProfiles";
-            this.listAllProfiles.Size = new System.Drawing.Size(197, 238);
             this.listAllProfiles.Sorted = true;
-            this.listAllProfiles.TabIndex = 22;
             this.listAllProfiles.SelectedIndexChanged += new System.EventHandler(this.listAllProfiles_SelectedIndexChanged);
             this.listAllProfiles.DoubleClick += new System.EventHandler(this.listAllProfiles_DoubleClick);
             // 
             // btnAddProfile
             // 
-            this.btnAddProfile.Enabled = false;
-            this.btnAddProfile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAddProfile.Location = new System.Drawing.Point(234, 240);
+            resources.ApplyResources(this.btnAddProfile, "btnAddProfile");
             this.btnAddProfile.Name = "btnAddProfile";
-            this.btnAddProfile.Size = new System.Drawing.Size(69, 31);
-            this.btnAddProfile.TabIndex = 23;
-            this.btnAddProfile.Text = "<<";
             this.btnAddProfile.UseVisualStyleBackColor = true;
             this.btnAddProfile.Click += new System.EventHandler(this.btnAddProfile_Click);
             // 
             // btnRemoveProfile
             // 
-            this.btnRemoveProfile.Enabled = false;
-            this.btnRemoveProfile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRemoveProfile.Location = new System.Drawing.Point(234, 277);
+            resources.ApplyResources(this.btnRemoveProfile, "btnRemoveProfile");
             this.btnRemoveProfile.Name = "btnRemoveProfile";
-            this.btnRemoveProfile.Size = new System.Drawing.Size(69, 31);
-            this.btnRemoveProfile.TabIndex = 24;
-            this.btnRemoveProfile.Text = ">>";
             this.btnRemoveProfile.UseVisualStyleBackColor = true;
             this.btnRemoveProfile.Click += new System.EventHandler(this.btnRemoveProfile_Click);
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(28, 195);
+            resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(82, 13);
-            this.label3.TabIndex = 25;
-            this.label3.Text = "Enabled profiles";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(306, 195);
+            resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(86, 13);
-            this.label4.TabIndex = 26;
-            this.label4.Text = "Available profiles";
             // 
             // ofd
             // 
-            this.ofd.Filter = "*.exe|*.exe|*.*|*.*";
-            this.ofd.Title = "Select application executable";
+            resources.ApplyResources(this.ofd, "ofd");
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
+            resources.ApplyResources(this.label6, "label6");
             this.label6.BackColor = System.Drawing.SystemColors.Window;
-            this.label6.Location = new System.Drawing.Point(28, 33);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(92, 13);
-            this.label6.TabIndex = 28;
-            this.label6.Text = "Exception lifetime:";
             // 
             // cmbTimer
             // 
             this.cmbTimer.BackColor = System.Drawing.SystemColors.Window;
             this.cmbTimer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbTimer.FormattingEnabled = true;
-            this.cmbTimer.Location = new System.Drawing.Point(126, 30);
+            resources.ApplyResources(this.cmbTimer, "cmbTimer");
             this.cmbTimer.Name = "cmbTimer";
-            this.cmbTimer.Size = new System.Drawing.Size(144, 21);
-            this.cmbTimer.TabIndex = 29;
             this.cmbTimer.SelectedIndexChanged += new System.EventHandler(this.cmbTimer_SelectedIndexChanged);
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.panel1, "panel1");
             this.panel1.BackgroundImage = global::PKSoft.Icons.green_banner;
             this.panel1.Controls.Add(this.transparentLabel1);
-            this.panel1.Location = new System.Drawing.Point(0, -1);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(535, 48);
-            this.panel1.TabIndex = 30;
             // 
             // transparentLabel1
             // 
-            this.transparentLabel1.AutoSize = true;
+            resources.ApplyResources(this.transparentLabel1, "transparentLabel1");
             this.transparentLabel1.BackColor = System.Drawing.Color.Transparent;
-            this.transparentLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.transparentLabel1.ForeColor = System.Drawing.Color.White;
-            this.transparentLabel1.Location = new System.Drawing.Point(162, 12);
             this.transparentLabel1.Name = "transparentLabel1";
-            this.transparentLabel1.Size = new System.Drawing.Size(207, 24);
-            this.transparentLabel1.TabIndex = 0;
-            this.transparentLabel1.Text = "Recognized application";
             // 
             // panel2
             // 
@@ -280,31 +211,24 @@
             this.panel2.Controls.Add(this.btnBrowse);
             this.panel2.Controls.Add(this.btnProcess);
             this.panel2.Controls.Add(this.btnChooseService);
-            this.panel2.Location = new System.Drawing.Point(0, 47);
+            resources.ApplyResources(this.panel2, "panel2");
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(535, 133);
-            this.panel2.TabIndex = 31;
             // 
             // btnAdvSettings
             // 
             this.btnAdvSettings.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnAdvSettings.Image = global::PKSoft.Icons.manage;
-            this.btnAdvSettings.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnAdvSettings.Location = new System.Drawing.Point(31, 469);
+            resources.ApplyResources(this.btnAdvSettings, "btnAdvSettings");
             this.btnAdvSettings.Name = "btnAdvSettings";
-            this.btnAdvSettings.Size = new System.Drawing.Size(105, 33);
-            this.btnAdvSettings.TabIndex = 32;
-            this.btnAdvSettings.Text = "Advanced";
             this.btnAdvSettings.UseVisualStyleBackColor = true;
             this.btnAdvSettings.Click += new System.EventHandler(this.btnAdvSettings_Click);
             // 
             // ApplicationExceptionForm
             // 
             this.AcceptButton = this.btnOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(534, 517);
             this.ControlBox = false;
             this.Controls.Add(this.btnAdvSettings);
             this.Controls.Add(this.label4);
@@ -321,7 +245,6 @@
             this.Name = "ApplicationExceptionForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.Text = "Add/Modify Firewall Exception - TinyWall";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.ApplicationExceptionForm_Load);
             this.panel1.ResumeLayout(false);

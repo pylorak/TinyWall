@@ -40,6 +40,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.Tray = new System.Windows.Forms.NotifyIcon(this.components);
             this.TrayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuCurrentPolicy = new System.Windows.Forms.ToolStripMenuItem();
@@ -70,8 +71,7 @@
             // Tray
             // 
             this.Tray.ContextMenuStrip = this.TrayMenu;
-            this.Tray.Text = "TinyWall";
-            this.Tray.Visible = true;
+            resources.ApplyResources(this.Tray, "Tray");
             this.Tray.BalloonTipClicked += new System.EventHandler(this.Tray_BalloonTipClicked);
             this.Tray.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Tray_MouseClick);
             // 
@@ -96,26 +96,24 @@
             this.toolStripMenuItem5,
             this.mnuQuit});
             this.TrayMenu.Name = "TrayMenu";
-            this.TrayMenu.Size = new System.Drawing.Size(268, 336);
+            resources.ApplyResources(this.TrayMenu, "TrayMenu");
             this.TrayMenu.Opening += new System.ComponentModel.CancelEventHandler(this.TrayMenu_Opening);
             // 
             // mnuCurrentPolicy
             // 
             this.mnuCurrentPolicy.Image = global::PKSoft.Icons.info;
             this.mnuCurrentPolicy.Name = "mnuCurrentPolicy";
-            this.mnuCurrentPolicy.Size = new System.Drawing.Size(267, 22);
-            this.mnuCurrentPolicy.Text = "Public Network";
+            resources.ApplyResources(this.mnuCurrentPolicy, "mnuCurrentPolicy");
             // 
             // mnuTrafficRate
             // 
             this.mnuTrafficRate.Name = "mnuTrafficRate";
-            this.mnuTrafficRate.Size = new System.Drawing.Size(267, 22);
-            this.mnuTrafficRate.Text = "<Traffic rate>";
+            resources.ApplyResources(this.mnuTrafficRate, "mnuTrafficRate");
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(264, 6);
+            resources.ApplyResources(this.toolStripMenuItem1, "toolStripMenuItem1");
             // 
             // mnuMode
             // 
@@ -125,149 +123,129 @@
             this.mnuModeAllowOutgoing,
             this.mnuModeDisabled});
             this.mnuMode.Name = "mnuMode";
-            this.mnuMode.Size = new System.Drawing.Size(267, 22);
-            this.mnuMode.Text = "Change mode";
+            resources.ApplyResources(this.mnuMode, "mnuMode");
             // 
             // mnuModeNormal
             // 
             this.mnuModeNormal.Name = "mnuModeNormal";
-            this.mnuModeNormal.Size = new System.Drawing.Size(172, 22);
-            this.mnuModeNormal.Text = "Normal protection";
+            resources.ApplyResources(this.mnuModeNormal, "mnuModeNormal");
             this.mnuModeNormal.Click += new System.EventHandler(this.mnuModeNormal_Click);
             // 
             // mnuModeBlockAll
             // 
             this.mnuModeBlockAll.Name = "mnuModeBlockAll";
-            this.mnuModeBlockAll.Size = new System.Drawing.Size(172, 22);
-            this.mnuModeBlockAll.Text = "Block all";
+            resources.ApplyResources(this.mnuModeBlockAll, "mnuModeBlockAll");
             this.mnuModeBlockAll.Click += new System.EventHandler(this.mnuModeBlockAll_Click);
             // 
             // mnuModeAllowOutgoing
             // 
             this.mnuModeAllowOutgoing.Name = "mnuModeAllowOutgoing";
-            this.mnuModeAllowOutgoing.Size = new System.Drawing.Size(172, 22);
-            this.mnuModeAllowOutgoing.Text = "Allow outgoing";
+            resources.ApplyResources(this.mnuModeAllowOutgoing, "mnuModeAllowOutgoing");
             this.mnuModeAllowOutgoing.Click += new System.EventHandler(this.mnuAllowOutgoing_Click);
             // 
             // mnuModeDisabled
             // 
             this.mnuModeDisabled.Name = "mnuModeDisabled";
-            this.mnuModeDisabled.Size = new System.Drawing.Size(172, 22);
-            this.mnuModeDisabled.Text = "Disable firewall";
+            resources.ApplyResources(this.mnuModeDisabled, "mnuModeDisabled");
             this.mnuModeDisabled.Click += new System.EventHandler(this.mnuModeDisabled_Click);
             // 
             // mnuManage
             // 
             this.mnuManage.Image = global::PKSoft.Icons.manage;
             this.mnuManage.Name = "mnuManage";
-            this.mnuManage.Size = new System.Drawing.Size(267, 22);
-            this.mnuManage.Text = "Manage";
+            resources.ApplyResources(this.mnuManage, "mnuManage");
             this.mnuManage.Click += new System.EventHandler(this.mnuManage_Click);
             // 
             // mnuConnections
             // 
             this.mnuConnections.Image = global::PKSoft.Icons.connections;
             this.mnuConnections.Name = "mnuConnections";
-            this.mnuConnections.Size = new System.Drawing.Size(267, 22);
-            this.mnuConnections.Text = "Show connections";
+            resources.ApplyResources(this.mnuConnections, "mnuConnections");
             this.mnuConnections.Click += new System.EventHandler(this.mnuConnections_Click);
             // 
             // mnuLock
             // 
             this.mnuLock.Image = global::PKSoft.Icons.lock_small;
             this.mnuLock.Name = "mnuLock";
-            this.mnuLock.Size = new System.Drawing.Size(267, 22);
-            this.mnuLock.Text = "Lock";
+            resources.ApplyResources(this.mnuLock, "mnuLock");
             this.mnuLock.Click += new System.EventHandler(this.mnuLock_Click);
             // 
             // mnuElevate
             // 
             this.mnuElevate.Image = global::PKSoft.Icons.w7uacshield;
             this.mnuElevate.Name = "mnuElevate";
-            this.mnuElevate.Size = new System.Drawing.Size(267, 22);
-            this.mnuElevate.Text = "Elevate";
+            resources.ApplyResources(this.mnuElevate, "mnuElevate");
             this.mnuElevate.Click += new System.EventHandler(this.mnuElevate_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(264, 6);
+            resources.ApplyResources(this.toolStripMenuItem2, "toolStripMenuItem2");
             // 
             // mnuAllowLocalSubnet
             // 
             this.mnuAllowLocalSubnet.Name = "mnuAllowLocalSubnet";
-            this.mnuAllowLocalSubnet.Size = new System.Drawing.Size(267, 22);
-            this.mnuAllowLocalSubnet.Text = "Unblock LAN traffic";
+            resources.ApplyResources(this.mnuAllowLocalSubnet, "mnuAllowLocalSubnet");
             this.mnuAllowLocalSubnet.Click += new System.EventHandler(this.mnuAllowLocalSubnet_Click);
             // 
             // mnuEnableHostsBlocklist
             // 
             this.mnuEnableHostsBlocklist.Name = "mnuEnableHostsBlocklist";
-            this.mnuEnableHostsBlocklist.Size = new System.Drawing.Size(267, 22);
-            this.mnuEnableHostsBlocklist.Text = "Enable hosts blocklist";
+            resources.ApplyResources(this.mnuEnableHostsBlocklist, "mnuEnableHostsBlocklist");
             this.mnuEnableHostsBlocklist.Click += new System.EventHandler(this.mnuEnableHostsBlocklist_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(264, 6);
+            resources.ApplyResources(this.toolStripMenuItem3, "toolStripMenuItem3");
             // 
             // mnuWhitelistByExecutable
             // 
             this.mnuWhitelistByExecutable.Image = global::PKSoft.Icons.executable;
             this.mnuWhitelistByExecutable.Name = "mnuWhitelistByExecutable";
-            this.mnuWhitelistByExecutable.ShortcutKeyDisplayString = "Ctrl+Shift+E";
-            this.mnuWhitelistByExecutable.Size = new System.Drawing.Size(267, 22);
-            this.mnuWhitelistByExecutable.Text = "Whitelist by executable";
+            resources.ApplyResources(this.mnuWhitelistByExecutable, "mnuWhitelistByExecutable");
             this.mnuWhitelistByExecutable.Click += new System.EventHandler(this.mnuWhitelistByExecutable_Click);
             // 
             // mnuWhitelistByProcess
             // 
             this.mnuWhitelistByProcess.Image = global::PKSoft.Icons.process;
             this.mnuWhitelistByProcess.Name = "mnuWhitelistByProcess";
-            this.mnuWhitelistByProcess.ShortcutKeyDisplayString = "Ctrl+Shift+P";
-            this.mnuWhitelistByProcess.Size = new System.Drawing.Size(267, 22);
-            this.mnuWhitelistByProcess.Text = "Whitelist by process";
+            resources.ApplyResources(this.mnuWhitelistByProcess, "mnuWhitelistByProcess");
             this.mnuWhitelistByProcess.Click += new System.EventHandler(this.mnuWhitelistByProcess_Click);
             // 
             // mnuWhitelistByWindow
             // 
             this.mnuWhitelistByWindow.Image = global::PKSoft.Icons.window;
             this.mnuWhitelistByWindow.Name = "mnuWhitelistByWindow";
-            this.mnuWhitelistByWindow.ShortcutKeyDisplayString = "Ctrl+Shift+W";
-            this.mnuWhitelistByWindow.Size = new System.Drawing.Size(267, 22);
-            this.mnuWhitelistByWindow.Text = "Whitelist by window";
+            resources.ApplyResources(this.mnuWhitelistByWindow, "mnuWhitelistByWindow");
             this.mnuWhitelistByWindow.Click += new System.EventHandler(this.mnuWhitelistByWindow_Click);
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(264, 6);
+            resources.ApplyResources(this.toolStripMenuItem5, "toolStripMenuItem5");
             // 
             // mnuQuit
             // 
             this.mnuQuit.Image = global::PKSoft.Icons.exit;
             this.mnuQuit.Name = "mnuQuit";
-            this.mnuQuit.Size = new System.Drawing.Size(267, 22);
-            this.mnuQuit.Text = "Quit";
+            resources.ApplyResources(this.mnuQuit, "mnuQuit");
             this.mnuQuit.Click += new System.EventHandler(this.mnuQuit_Click);
             // 
             // ofd
             // 
-            this.ofd.Filter = "All files|*.*";
+            resources.ApplyResources(this.ofd, "ofd");
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(224, 25);
             this.ControlBox = false;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "MainForm";
             this.ShowInTaskbar = false;
-            this.Text = "TinyWall Controller";
             this.TopMost = true;
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);

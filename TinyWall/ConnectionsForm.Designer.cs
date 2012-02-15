@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConnectionsForm));
             this.btnClose = new System.Windows.Forms.Button();
             this.list = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -51,20 +52,14 @@
             // 
             // btnClose
             // 
-            this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClose.Location = new System.Drawing.Point(724, 303);
+            resources.ApplyResources(this.btnClose, "btnClose");
             this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(75, 33);
-            this.btnClose.TabIndex = 0;
-            this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // list
             // 
-            this.list.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.list, "list");
             this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
@@ -76,51 +71,41 @@
             this.list.ContextMenuStrip = this.contextMenuStrip1;
             this.list.FullRowSelect = true;
             this.list.GridLines = true;
-            this.list.Location = new System.Drawing.Point(12, 12);
             this.list.Name = "list";
             this.list.ShowItemToolTips = true;
-            this.list.Size = new System.Drawing.Size(787, 285);
             this.list.SmallImageList = this.IconList;
             this.list.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.list.TabIndex = 2;
             this.list.UseCompatibleStateImageBehavior = false;
             this.list.View = System.Windows.Forms.View.Details;
             this.list.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.list_ColumnClick);
             // 
             // columnHeader1
             // 
-            this.columnHeader1.Text = "Process (id)";
-            this.columnHeader1.Width = 123;
+            resources.ApplyResources(this.columnHeader1, "columnHeader1");
             // 
             // columnHeader2
             // 
-            this.columnHeader2.Text = "Protocol";
-            this.columnHeader2.Width = 75;
+            resources.ApplyResources(this.columnHeader2, "columnHeader2");
             // 
             // columnHeader3
             // 
-            this.columnHeader3.Text = "Local port";
-            this.columnHeader3.Width = 68;
+            resources.ApplyResources(this.columnHeader3, "columnHeader3");
             // 
             // columnHeader4
             // 
-            this.columnHeader4.Text = "Local address";
-            this.columnHeader4.Width = 160;
+            resources.ApplyResources(this.columnHeader4, "columnHeader4");
             // 
             // columnHeader5
             // 
-            this.columnHeader5.Text = "Remote port";
-            this.columnHeader5.Width = 74;
+            resources.ApplyResources(this.columnHeader5, "columnHeader5");
             // 
             // columnHeader6
             // 
-            this.columnHeader6.Text = "Remote address";
-            this.columnHeader6.Width = 160;
+            resources.ApplyResources(this.columnHeader6, "columnHeader6");
             // 
             // columnHeader7
             // 
-            this.columnHeader7.Text = "State";
-            this.columnHeader7.Width = 89;
+            resources.ApplyResources(this.columnHeader7, "columnHeader7");
             // 
             // contextMenuStrip1
             // 
@@ -128,85 +113,63 @@
             this.mnuUnblock,
             this.mnuCloseProcess});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 70);
+            resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // mnuUnblock
             // 
             this.mnuUnblock.Image = global::PKSoft.Icons.executable;
             this.mnuUnblock.Name = "mnuUnblock";
-            this.mnuUnblock.Size = new System.Drawing.Size(152, 22);
-            this.mnuUnblock.Text = "Unblock";
+            resources.ApplyResources(this.mnuUnblock, "mnuUnblock");
             this.mnuUnblock.Click += new System.EventHandler(this.mnuUnblock_Click);
             // 
             // mnuCloseProcess
             // 
             this.mnuCloseProcess.Image = global::PKSoft.Icons.exit;
             this.mnuCloseProcess.Name = "mnuCloseProcess";
-            this.mnuCloseProcess.Size = new System.Drawing.Size(152, 22);
-            this.mnuCloseProcess.Text = "Close process";
+            resources.ApplyResources(this.mnuCloseProcess, "mnuCloseProcess");
             this.mnuCloseProcess.Click += new System.EventHandler(this.mnuCloseProcess_Click);
             // 
             // IconList
             // 
             this.IconList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-            this.IconList.ImageSize = new System.Drawing.Size(16, 16);
+            resources.ApplyResources(this.IconList, "IconList");
             this.IconList.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefresh.Location = new System.Drawing.Point(643, 303);
+            resources.ApplyResources(this.btnRefresh, "btnRefresh");
             this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(75, 33);
-            this.btnRefresh.TabIndex = 3;
-            this.btnRefresh.Text = "Refresh";
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // chkShowListen
             // 
-            this.chkShowListen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.chkShowListen.AutoSize = true;
-            this.chkShowListen.Location = new System.Drawing.Point(164, 312);
+            resources.ApplyResources(this.chkShowListen, "chkShowListen");
             this.chkShowListen.Name = "chkShowListen";
-            this.chkShowListen.Size = new System.Drawing.Size(106, 17);
-            this.chkShowListen.TabIndex = 4;
-            this.chkShowListen.Text = "Show open ports";
             this.chkShowListen.UseVisualStyleBackColor = true;
             this.chkShowListen.CheckedChanged += new System.EventHandler(this.chkShowListen_CheckedChanged);
             // 
             // chkShowActive
             // 
-            this.chkShowActive.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.chkShowActive.AutoSize = true;
+            resources.ApplyResources(this.chkShowActive, "chkShowActive");
             this.chkShowActive.Checked = true;
             this.chkShowActive.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkShowActive.Location = new System.Drawing.Point(12, 312);
             this.chkShowActive.Name = "chkShowActive";
-            this.chkShowActive.Size = new System.Drawing.Size(146, 17);
-            this.chkShowActive.TabIndex = 5;
-            this.chkShowActive.Text = "Show active connections";
             this.chkShowActive.UseVisualStyleBackColor = true;
             this.chkShowActive.CheckedChanged += new System.EventHandler(this.chkShowActive_CheckedChanged);
             // 
             // chkShowBlocked
             // 
-            this.chkShowBlocked.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.chkShowBlocked.AutoSize = true;
-            this.chkShowBlocked.Location = new System.Drawing.Point(276, 312);
+            resources.ApplyResources(this.chkShowBlocked, "chkShowBlocked");
             this.chkShowBlocked.Name = "chkShowBlocked";
-            this.chkShowBlocked.Size = new System.Drawing.Size(189, 17);
-            this.chkShowBlocked.TabIndex = 6;
-            this.chkShowBlocked.Text = "Show blocked apps (in last 2 mins)";
             this.chkShowBlocked.UseVisualStyleBackColor = true;
             this.chkShowBlocked.CheckedChanged += new System.EventHandler(this.chkShowBlocked_CheckedChanged);
             // 
             // ConnectionsForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(811, 348);
             this.Controls.Add(this.chkShowBlocked);
             this.Controls.Add(this.chkShowActive);
             this.Controls.Add(this.chkShowListen);
@@ -214,7 +177,6 @@
             this.Controls.Add(this.list);
             this.Controls.Add(this.btnClose);
             this.Name = "ConnectionsForm";
-            this.Text = "Connections - TinyWall";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConnectionsForm_FormClosing);
             this.Load += new System.EventHandler(this.ConnectionsForm_Load);
             this.contextMenuStrip1.ResumeLayout(false);

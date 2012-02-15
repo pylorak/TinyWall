@@ -49,21 +49,14 @@
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(12, 19);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(499, 49);
-            this.label1.TabIndex = 0;
-            this.label1.Text = resources.GetString("label1.Text");
             // 
             // btnStartDetection
             // 
             this.btnStartDetection.Image = global::PKSoft.Icons.accept;
-            this.btnStartDetection.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnStartDetection.Location = new System.Drawing.Point(290, 71);
+            resources.ApplyResources(this.btnStartDetection, "btnStartDetection");
             this.btnStartDetection.Name = "btnStartDetection";
-            this.btnStartDetection.Size = new System.Drawing.Size(95, 44);
-            this.btnStartDetection.TabIndex = 3;
-            this.btnStartDetection.Text = "Start";
             this.btnStartDetection.UseVisualStyleBackColor = true;
             this.btnStartDetection.Click += new System.EventHandler(this.btnStartDetection_Click);
             // 
@@ -72,109 +65,75 @@
             this.list.CheckBoxes = true;
             this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
-            this.list.Location = new System.Drawing.Point(15, 141);
+            resources.ApplyResources(this.list, "list");
             this.list.Name = "list";
-            this.list.Size = new System.Drawing.Size(496, 285);
             this.list.SmallImageList = this.IconList;
             this.list.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.list.TabIndex = 4;
             this.list.UseCompatibleStateImageBehavior = false;
             this.list.View = System.Windows.Forms.View.Details;
             // 
             // columnHeader1
             // 
-            this.columnHeader1.Text = "Name";
-            this.columnHeader1.Width = 430;
+            resources.ApplyResources(this.columnHeader1, "columnHeader1");
             // 
             // IconList
             // 
             this.IconList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-            this.IconList.ImageSize = new System.Drawing.Size(16, 16);
+            resources.ApplyResources(this.IconList, "IconList");
             this.IconList.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // lblStatus
             // 
-            this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(12, 125);
+            resources.ApplyResources(this.lblStatus, "lblStatus");
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(58, 13);
-            this.lblStatus.TabIndex = 5;
-            this.lblStatus.Text = "Searching:";
             // 
             // btnCancel
             // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.btnCancel, "btnCancel");
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Image = global::PKSoft.Icons.cancel;
-            this.btnCancel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnCancel.Location = new System.Drawing.Point(437, 432);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 33);
-            this.btnCancel.TabIndex = 10;
-            this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnOK
             // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.btnOK, "btnOK");
             this.btnOK.Image = global::PKSoft.Icons.accept;
-            this.btnOK.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnOK.Location = new System.Drawing.Point(356, 432);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 33);
-            this.btnOK.TabIndex = 9;
-            this.btnOK.Text = "Apply";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
             // btnSelectImportant
             // 
-            this.btnSelectImportant.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSelectImportant.Location = new System.Drawing.Point(15, 432);
+            resources.ApplyResources(this.btnSelectImportant, "btnSelectImportant");
             this.btnSelectImportant.Name = "btnSelectImportant";
-            this.btnSelectImportant.Size = new System.Drawing.Size(94, 33);
-            this.btnSelectImportant.TabIndex = 13;
-            this.btnSelectImportant.Text = "Select important";
             this.btnSelectImportant.UseVisualStyleBackColor = true;
             this.btnSelectImportant.Click += new System.EventHandler(this.btnSelectImportant_Click);
             // 
             // btnSelectAll
             // 
-            this.btnSelectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSelectAll.Location = new System.Drawing.Point(115, 432);
+            resources.ApplyResources(this.btnSelectAll, "btnSelectAll");
             this.btnSelectAll.Name = "btnSelectAll";
-            this.btnSelectAll.Size = new System.Drawing.Size(94, 33);
-            this.btnSelectAll.TabIndex = 14;
-            this.btnSelectAll.Text = "Select all";
             this.btnSelectAll.UseVisualStyleBackColor = true;
             this.btnSelectAll.Click += new System.EventHandler(this.btnSelectAll_Click);
             // 
             // btnDeselectAll
             // 
-            this.btnDeselectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDeselectAll.Location = new System.Drawing.Point(215, 432);
+            resources.ApplyResources(this.btnDeselectAll, "btnDeselectAll");
             this.btnDeselectAll.Name = "btnDeselectAll";
-            this.btnDeselectAll.Size = new System.Drawing.Size(94, 33);
-            this.btnDeselectAll.TabIndex = 15;
-            this.btnDeselectAll.Text = "Deselect all";
             this.btnDeselectAll.UseVisualStyleBackColor = true;
             this.btnDeselectAll.Click += new System.EventHandler(this.btnDeselectAll_Click);
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(12, 71);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(235, 44);
-            this.label2.TabIndex = 16;
-            this.label2.Text = "To unblock an application in the search results, select it by ticking its checkbo" +
-    "x.\r\n";
             // 
             // AppFinderForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(524, 477);
             this.ControlBox = false;
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btnDeselectAll);
@@ -188,7 +147,6 @@
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "AppFinderForm";
-            this.Text = "Application Finder - TinyWall";
             this.TopMost = true;
             this.Shown += new System.EventHandler(this.AppFinderForm_Shown);
             this.ResumeLayout(false);
