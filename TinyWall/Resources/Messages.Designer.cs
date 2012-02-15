@@ -377,7 +377,7 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The firewall is now allows outgoing connections but blocks incoming..
+        ///   Looks up a localized string similar to The firewall is now allowing outgoing connections but blocks incoming..
         /// </summary>
         internal static string TheFirewallIsNowAllowsOutgoingConnections {
             get {

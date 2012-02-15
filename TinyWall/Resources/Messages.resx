@@ -230,7 +230,7 @@ Do you wish to uninstall TinyWall?</value>
     <value>The firewall is now operating in the recommended mode.</value>
   </data>
   <data name="TheFirewallIsNowAllowsOutgoingConnections" xml:space="preserve">
-    <value>The firewall is now allows outgoing connections but blocks incoming.</value>
+    <value>The firewall is now allowing outgoing connections but blocks incoming.</value>
   </data>
   <data name="TheFirewallIsNowBlockingAllInAndOut" xml:space="preserve">
     <value>The firewall is now blocking all inbound and outbound traffic.</value>

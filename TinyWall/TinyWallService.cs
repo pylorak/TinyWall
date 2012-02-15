@@ -861,6 +861,11 @@ namespace PKSoft
 
         internal TinyWallService()
         {
+            this.ServiceName = SERVICE_NAME;
+            if (!EventLog.SourceExists("TinyWallService"))
+                EventLog.CreateEventSource("TinyWallService", null);
+            this.EventLog.Source = "TinyWallService";
+
             this.CanShutdown = true;
 #if DEBUG
             this.CanStop = true;
@@ -872,14 +877,9 @@ namespace PKSoft
         // Entry point for Windows service.
         protected override void OnStart(string[] args)
         {
-            this.ServiceName = SERVICE_NAME;
-            if (!EventLog.SourceExists("TinyWallService"))
-                EventLog.CreateEventSource("TinyWallService", null);
-            this.EventLog.Source = "TinyWallService";
-
             // Register an unhandled exception handler
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-
+            
             // Continue initialization on a new thread to prevent stalling the SCM
             ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object dummy)
             {
@@ -909,15 +909,15 @@ namespace PKSoft
                     GlobalInstances.CommunicationMan = new PipeCom("TinyWallController", new PipeDataReceived(PipeServerDataReceived));
 
 #if !DEBUG
-                // Messing with the SCM in this method would hang us, so start it parallel
-                ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
-                {
-                    try
+                    // Messing with the SCM in this method would hang us, so start it parallel
+                    ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
                     {
-                        TinyWallDoctor.EnsureHealth();
-                    }
-                    catch { }
-                });
+                        try
+                        {
+                            TinyWallDoctor.EnsureHealth();
+                        }
+                        catch { }
+                    });
 #endif
                 }
                 catch (Exception e)
