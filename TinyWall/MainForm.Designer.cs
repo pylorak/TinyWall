@@ -101,7 +101,7 @@
             // 
             // mnuCurrentPolicy
             // 
-            this.mnuCurrentPolicy.Image = global::PKSoft.Icons.info;
+            this.mnuCurrentPolicy.Image = global::PKSoft.Resources.Icons.info;
             this.mnuCurrentPolicy.Name = "mnuCurrentPolicy";
             resources.ApplyResources(this.mnuCurrentPolicy, "mnuCurrentPolicy");
             // 
@@ -151,28 +151,28 @@
             // 
             // mnuManage
             // 
-            this.mnuManage.Image = global::PKSoft.Icons.manage;
+            this.mnuManage.Image = global::PKSoft.Resources.Icons.manage;
             this.mnuManage.Name = "mnuManage";
             resources.ApplyResources(this.mnuManage, "mnuManage");
             this.mnuManage.Click += new System.EventHandler(this.mnuManage_Click);
             // 
             // mnuConnections
             // 
-            this.mnuConnections.Image = global::PKSoft.Icons.connections;
+            this.mnuConnections.Image = global::PKSoft.Resources.Icons.connections;
             this.mnuConnections.Name = "mnuConnections";
             resources.ApplyResources(this.mnuConnections, "mnuConnections");
             this.mnuConnections.Click += new System.EventHandler(this.mnuConnections_Click);
             // 
             // mnuLock
             // 
-            this.mnuLock.Image = global::PKSoft.Icons.lock_small;
+            this.mnuLock.Image = global::PKSoft.Resources.Icons.lock_small;
             this.mnuLock.Name = "mnuLock";
             resources.ApplyResources(this.mnuLock, "mnuLock");
             this.mnuLock.Click += new System.EventHandler(this.mnuLock_Click);
             // 
             // mnuElevate
             // 
-            this.mnuElevate.Image = global::PKSoft.Icons.w7uacshield;
+            this.mnuElevate.Image = global::PKSoft.Resources.Icons.w7uacshield;
             this.mnuElevate.Name = "mnuElevate";
             resources.ApplyResources(this.mnuElevate, "mnuElevate");
             this.mnuElevate.Click += new System.EventHandler(this.mnuElevate_Click);
@@ -201,21 +201,21 @@
             // 
             // mnuWhitelistByExecutable
             // 
-            this.mnuWhitelistByExecutable.Image = global::PKSoft.Icons.executable;
+            this.mnuWhitelistByExecutable.Image = global::PKSoft.Resources.Icons.executable;
             this.mnuWhitelistByExecutable.Name = "mnuWhitelistByExecutable";
             resources.ApplyResources(this.mnuWhitelistByExecutable, "mnuWhitelistByExecutable");
             this.mnuWhitelistByExecutable.Click += new System.EventHandler(this.mnuWhitelistByExecutable_Click);
             // 
             // mnuWhitelistByProcess
             // 
-            this.mnuWhitelistByProcess.Image = global::PKSoft.Icons.process;
+            this.mnuWhitelistByProcess.Image = global::PKSoft.Resources.Icons.process;
             this.mnuWhitelistByProcess.Name = "mnuWhitelistByProcess";
             resources.ApplyResources(this.mnuWhitelistByProcess, "mnuWhitelistByProcess");
             this.mnuWhitelistByProcess.Click += new System.EventHandler(this.mnuWhitelistByProcess_Click);
             // 
             // mnuWhitelistByWindow
             // 
-            this.mnuWhitelistByWindow.Image = global::PKSoft.Icons.window;
+            this.mnuWhitelistByWindow.Image = global::PKSoft.Resources.Icons.window;
             this.mnuWhitelistByWindow.Name = "mnuWhitelistByWindow";
             resources.ApplyResources(this.mnuWhitelistByWindow, "mnuWhitelistByWindow");
             this.mnuWhitelistByWindow.Click += new System.EventHandler(this.mnuWhitelistByWindow_Click);
@@ -227,7 +227,7 @@
             // 
             // mnuQuit
             // 
-            this.mnuQuit.Image = global::PKSoft.Icons.exit;
+            this.mnuQuit.Image = global::PKSoft.Resources.Icons.exit;
             this.mnuQuit.Name = "mnuQuit";
             resources.ApplyResources(this.mnuQuit, "mnuQuit");
             this.mnuQuit.Click += new System.EventHandler(this.mnuQuit_Click);

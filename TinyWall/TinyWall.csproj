@@ -47,7 +47,7 @@
     <AssemblyOriginatorKeyFile>TinyWall.key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>img\firewall.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\img\firewall.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RelWithDebug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -119,7 +119,7 @@
     <Compile Include="Hasher.cs" />
     <Compile Include="HostsFileManager.cs" />
     <Compile Include="Hotkey.cs" />
-    <Compile Include="Icons.Designer.cs">
+    <Compile Include="Resources\Icons.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Icons.resx</DependentUpon>
@@ -238,7 +238,7 @@
       <DependentUpon>DevelToolForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Icons.resx">
+    <EmbeddedResource Include="Resources\Icons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Icons.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
@@ -257,16 +257,6 @@
       <DependentUpon>Processes.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -287,64 +277,64 @@
     <None Include="TinyWall.key.snk" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\firewall.ico" />
+    <None Include="Resources\img\firewall.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\w7uacshield.png" />
+    <None Include="Resources\img\w7uacshield.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\shield_grey_small.ico" />
+    <None Include="Resources\img\shield_grey_small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\shield_green_small.ico" />
+    <None Include="Resources\img\shield_green_small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\shield_yellow_small.ico" />
+    <None Include="Resources\img\shield_yellow_small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\shield_red_small.ico" />
+    <None Include="Resources\img\shield_red_small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\info.png" />
+    <None Include="Resources\img\info.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\exit.png" />
+    <None Include="Resources\img\exit.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\manage.png" />
+    <None Include="Resources\img\manage.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\process.png" />
+    <None Include="Resources\img\process.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\executable.png" />
+    <None Include="Resources\img\executable.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\add.png" />
+    <None Include="Resources\img\add.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\remove.png" />
+    <None Include="Resources\img\remove.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\modify.png" />
+    <None Include="Resources\img\modify.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\accept.png" />
+    <None Include="Resources\img\accept.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\cancel.png" />
+    <None Include="Resources\img\cancel.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\window.png" />
+    <None Include="Resources\img\window.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\lock.png" />
+    <None Include="Resources\img\lock.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\lock_small.png" />
+    <None Include="Resources\img\lock_small.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\submit.png" />
+    <None Include="Resources\img\submit.png" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="NetFwTypeLib">
@@ -358,41 +348,42 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\export.png" />
+    <None Include="Resources\img\export.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\import.png" />
+    <None Include="Resources\img\import.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\uninstall.png" />
+    <None Include="Resources\img\uninstall.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\update.png" />
+    <None Include="Resources\img\update.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\web.png" />
+    <None Include="Resources\img\web.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\connections.png" />
+    <None Include="Resources\img\connections.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\green_banner.jpg" />
+    <None Include="Resources\img\green_banner.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\green_banner.png" />
+    <None Include="Resources\img\green_banner.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\blue_banner.png" />
+    <None Include="Resources\img\blue_banner.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\shield_disabled_small.ico" />
+    <None Include="Resources\img\shield_disabled_small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\delete.png" />
+    <None Include="Resources\img\delete.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="img\donate.gif" />
+    <None Include="Resources\img\donate.gif" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

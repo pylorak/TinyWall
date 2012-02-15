@@ -18,7 +18,7 @@ namespace PKSoft
         internal ConnectionsForm(MainForm form)
         {
             InitializeComponent();
-            this.Icon = Icons.firewall;
+            this.Icon = Resources.Icons.firewall;
             this.MainForm = form;
         }
 

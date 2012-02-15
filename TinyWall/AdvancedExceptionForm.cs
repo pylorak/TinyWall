@@ -11,7 +11,7 @@ namespace PKSoft
         public AdvancedExceptionForm(AppExceptionSettings app)
         {
             InitializeComponent();
-            this.Icon = Icons.firewall;
+            this.Icon = Resources.Icons.firewall;
             TmpAppException = app;
         }
 

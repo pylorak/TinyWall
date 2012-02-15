@@ -118,14 +118,14 @@
             // 
             // mnuUnblock
             // 
-            this.mnuUnblock.Image = global::PKSoft.Icons.executable;
+            this.mnuUnblock.Image = global::PKSoft.Resources.Icons.executable;
             this.mnuUnblock.Name = "mnuUnblock";
             resources.ApplyResources(this.mnuUnblock, "mnuUnblock");
             this.mnuUnblock.Click += new System.EventHandler(this.mnuUnblock_Click);
             // 
             // mnuCloseProcess
             // 
-            this.mnuCloseProcess.Image = global::PKSoft.Icons.exit;
+            this.mnuCloseProcess.Image = global::PKSoft.Resources.Icons.exit;
             this.mnuCloseProcess.Name = "mnuCloseProcess";
             resources.ApplyResources(this.mnuCloseProcess, "mnuCloseProcess");
             this.mnuCloseProcess.Click += new System.EventHandler(this.mnuCloseProcess_Click);

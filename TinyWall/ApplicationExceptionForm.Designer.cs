@@ -58,7 +58,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Image = global::PKSoft.Icons.cancel;
+            this.btnCancel.Image = global::PKSoft.Resources.Icons.cancel;
             resources.ApplyResources(this.btnCancel, "btnCancel");
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -66,7 +66,7 @@
             // 
             // btnOK
             // 
-            this.btnOK.Image = global::PKSoft.Icons.accept;
+            this.btnOK.Image = global::PKSoft.Resources.Icons.accept;
             resources.ApplyResources(this.btnOK, "btnOK");
             this.btnOK.Name = "btnOK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -188,7 +188,7 @@
             // panel1
             // 
             resources.ApplyResources(this.panel1, "panel1");
-            this.panel1.BackgroundImage = global::PKSoft.Icons.green_banner;
+            this.panel1.BackgroundImage = global::PKSoft.Resources.Icons.green_banner;
             this.panel1.Controls.Add(this.transparentLabel1);
             this.panel1.Name = "panel1";
             // 
@@ -217,7 +217,7 @@
             // btnAdvSettings
             // 
             this.btnAdvSettings.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnAdvSettings.Image = global::PKSoft.Icons.manage;
+            this.btnAdvSettings.Image = global::PKSoft.Resources.Icons.manage;
             resources.ApplyResources(this.btnAdvSettings, "btnAdvSettings");
             this.btnAdvSettings.Name = "btnAdvSettings";
             this.btnAdvSettings.UseVisualStyleBackColor = true;

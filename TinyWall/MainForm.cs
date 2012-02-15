@@ -57,8 +57,8 @@ namespace PKSoft
             this.StartupOpts = opts;
 
             InitializeComponent();
-            this.Icon = Icons.firewall;
-            this.Tray.Icon = Icons.firewall;
+            this.Icon = Resources.Icons.firewall;
+            this.Tray.Icon = Resources.Icons.firewall;
         }
 
         private void ApplyControllerSettings()
@@ -191,27 +191,27 @@ namespace PKSoft
             switch (FwMode)
             {
                 case FirewallMode.Normal:
-                    Tray.Icon = PKSoft.Icons.firewall;
+                    Tray.Icon = PKSoft.Resources.Icons.firewall;
                     mnuMode.Image = mnuModeNormal.Image;
                     break;
 
                 case FirewallMode.AllowOutgoing:
-                    Tray.Icon = PKSoft.Icons.shield_red_small;
+                    Tray.Icon = PKSoft.Resources.Icons.shield_red_small;
                     mnuMode.Image = mnuModeAllowOutgoing.Image;
                     break;
 
                 case FirewallMode.BlockAll:
-                    Tray.Icon = PKSoft.Icons.shield_yellow_small;
+                    Tray.Icon = PKSoft.Resources.Icons.shield_yellow_small;
                     mnuMode.Image = mnuModeBlockAll.Image;
                     break;
 
                 case FirewallMode.Disabled:
-                    Tray.Icon = PKSoft.Icons.shield_grey_small;
+                    Tray.Icon = PKSoft.Resources.Icons.shield_grey_small;
                     mnuMode.Image = mnuModeDisabled.Image;
                     break;
                 case FirewallMode.Unknown:
-                    Tray.Icon = PKSoft.Icons.shield_grey_small;
-                    mnuMode.Image = PKSoft.Icons.shield_grey_small.ToBitmap();
+                    Tray.Icon = PKSoft.Resources.Icons.shield_grey_small;
+                    mnuMode.Image = PKSoft.Resources.Icons.shield_grey_small.ToBitmap();
                     break;
             }
             Tray.Text = "TinyWall" + Environment.NewLine +
@@ -749,10 +749,10 @@ namespace PKSoft
             // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
             // BEGIN
             mnuElevate.Visible = !Utils.RunningAsAdmin();
-            mnuModeDisabled.Image = Icons.shield_grey_small.ToBitmap();
-            mnuModeAllowOutgoing.Image = Icons.shield_red_small.ToBitmap();
-            mnuModeBlockAll.Image = Icons.shield_yellow_small.ToBitmap();
-            mnuModeNormal.Image = Icons.shield_green_small.ToBitmap();
+            mnuModeDisabled.Image = Resources.Icons.shield_grey_small.ToBitmap();
+            mnuModeAllowOutgoing.Image = Resources.Icons.shield_red_small.ToBitmap();
+            mnuModeBlockAll.Image = Resources.Icons.shield_yellow_small.ToBitmap();
+            mnuModeNormal.Image = Resources.Icons.shield_green_small.ToBitmap();
 
             HotKeyWhitelistWindow = new Hotkey(Keys.W, true, true, false, false);
             HotKeyWhitelistWindow.Pressed += new HandledEventHandler(HotKeyWhitelistWindow_Pressed);

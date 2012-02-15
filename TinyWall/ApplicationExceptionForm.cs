@@ -19,13 +19,13 @@ namespace PKSoft
                 if (value)
                 {
                     // Recognized app
-                    panel1.BackgroundImage = Icons.green_banner;
+                    panel1.BackgroundImage = Resources.Icons.green_banner;
                     transparentLabel1.Text = "Recognized application";
                 }
                 else
                 {
                     // Unknown app
-                    panel1.BackgroundImage = Icons.blue_banner;
+                    panel1.BackgroundImage = Resources.Icons.blue_banner;
                     transparentLabel1.Text = "Unknown application";
                 }
                 Utils.CenterControlInParent(transparentLabel1);
@@ -35,7 +35,7 @@ namespace PKSoft
         internal ApplicationExceptionForm(AppExceptionSettings AppEx)
         {
             InitializeComponent();
-            this.Icon = Icons.firewall;
+            this.Icon = Resources.Icons.firewall;
 
             this.TmpExceptionSettings = AppEx;
 

@@ -27,7 +27,7 @@ namespace PKSoft
         internal ServicesForm()
         {
             InitializeComponent();
-            this.Icon = Icons.firewall;
+            this.Icon = Resources.Icons.firewall;
         }
 
         private static string GetServiceExecutable(string serviceName)
@@ -91,7 +91,7 @@ namespace PKSoft
 
         private void ServicesForm_Load(object sender, EventArgs e)
         {
-            this.Icon = Icons.firewall;
+            this.Icon = Resources.Icons.firewall;
 
             List<ListViewItem> itemColl = new List<ListViewItem>();
 

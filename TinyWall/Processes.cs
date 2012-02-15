@@ -25,7 +25,7 @@ namespace PKSoft
         internal ProcessesForm()
         {
             InitializeComponent();
-            this.Icon = Icons.firewall;
+            this.Icon = Resources.Icons.firewall;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -54,7 +54,7 @@ namespace PKSoft
 
         private void ProcessesForm_Load(object sender, EventArgs e)
         {
-            this.Icon = Icons.firewall;
+            this.Icon = Resources.Icons.firewall;
 
             List<ListViewItem> itemColl = new List<ListViewItem>();
 

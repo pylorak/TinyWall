@@ -335,10 +335,10 @@ namespace PKSoft
 
         private void SettingsForm_Shown(object sender, EventArgs e)
         {
-            IconList.Images.Add("deleted", Icons.delete);
+            IconList.Images.Add("deleted", Resources.Icons.delete);
 
             this.Text += " - " + SettingsManager.CurrentZone.ZoneName + " zone";
-            this.Icon = Icons.firewall;
+            this.Icon = Resources.Icons.firewall;
             lblVersion.Text += " " + FileVersionInfo.GetVersionInfo(Utils.ExecutablePath).ProductVersion.ToString();
             tabControl1.SelectedIndex = TmpControllerConfig.ManageTabIndex;
 

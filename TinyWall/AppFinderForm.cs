@@ -18,7 +18,7 @@ namespace PKSoft
         internal AppFinderForm(ZoneSettings zoneSettings)
         {
             InitializeComponent();
-            this.Icon = Icons.firewall;
+            this.Icon = Resources.Icons.firewall;
             TmpZoneSettings = zoneSettings;
         }
 
@@ -32,13 +32,13 @@ namespace PKSoft
                 SearcherThread = new Thread(SearcherWorkerMethod);
                 SearcherThread.IsBackground = true;
                 SearcherThread.Start();
-                btnStartDetection.Image = Icons.cancel;
+                btnStartDetection.Image = Resources.Icons.cancel;
             }
             else
             {
                 btnStartDetection.Text = "Start";
                 RunSearch = false;
-                btnStartDetection.Image = Icons.accept;
+                btnStartDetection.Image = Resources.Icons.accept;
             }
         }
 
@@ -93,7 +93,7 @@ namespace PKSoft
                 {
                     lblStatus.Text = "Search results:";
                     btnStartDetection.Text = "Start";
-                    btnStartDetection.Image = Icons.accept;
+                    btnStartDetection.Image = Resources.Icons.accept;
                 });
             }
             catch (ThreadInterruptedException)
@@ -175,7 +175,7 @@ namespace PKSoft
             {
                 string iconPath = app.FileRealizations[0].Executable;
                 if (!File.Exists(iconPath))
-                    IconList.Images.Add(app.Name, Icons.window);
+                    IconList.Images.Add(app.Name, Resources.Icons.window);
                 else
                     IconList.Images.Add(app.Name, Utils.GetIcon(iconPath, 16, 16));
             }
