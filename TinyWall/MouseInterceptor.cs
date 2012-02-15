@@ -86,14 +86,23 @@ namespace PKSoft
             Dispose(false);
         }
 
-        protected override void DisposeNative()
+        protected override void Dispose(bool disposing)
         {
+            if (disposing)
+            {
+                // Release managed resources
+            }
+
+            // Release unmanaged resources.
+            // Set large fields to null.
+            // Call Dispose on your base class.
+
             if (_hookID != IntPtr.Zero)
             {
                 NativeMethods.UnhookWindowsHookEx(_hookID);
                 _hookID = IntPtr.Zero;
-            }
-            base.DisposeNative();
+            } 
+            base.Dispose(disposing);
         }
     }
 }

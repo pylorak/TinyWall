@@ -71,18 +71,23 @@ namespace PKSoft
         EventLogWatcher LogWatcher = null;
         List<FirewallLogEntry> NewEntries = new List<FirewallLogEntry>();
 
-        protected override void DisposeNative()
+        protected override void Dispose(bool disposing)
         {
+            if (disposing)
+            {
+                // Release managed resources
+
+                LogWatcher.Dispose();
+            }
+
+            // Release unmanaged resources.
+            // Set large fields to null.
+            // Call Dispose on your base class.
+
             DisableLogging();
-
-            base.DisposeNative();
-        }
-
-        protected override void DisposeManaged()
-        {
-            LogWatcher.Dispose();
-
-            base.DisposeManaged();
+            LogWatcher = null;
+            NewEntries = null;
+            base.Dispose(disposing);
         }
 
         internal FirewallLogWatcher()

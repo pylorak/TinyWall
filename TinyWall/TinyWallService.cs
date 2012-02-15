@@ -956,15 +956,15 @@ namespace PKSoft
 
             FirewallWorkerThread.Abort();
 
-            if ((LogWatcher != null) && !LogWatcher.IsDisposed)
+            SettingsManager.GlobalConfig.Save();
+            SettingsManager.CurrentZone.Save();
+            FileLocker.UnlockAll();
+
+            if (LogWatcher != null)
             {
                 LogWatcher.Dispose();
                 LogWatcher = null;
             }
-
-            SettingsManager.GlobalConfig.Save();
-            SettingsManager.CurrentZone.Save();
-            FileLocker.UnlockAll();
 
             if (!UninstallRequested)
             {

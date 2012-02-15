@@ -4,14 +4,6 @@ namespace PKSoft
 {
     public abstract class DisposableObject : IDisposable
     {
-        private bool m_IsDisposed = false;
-
-        [System.Xml.Serialization.XmlIgnore]
-        public bool IsDisposed
-        {
-            get { return m_IsDisposed; }
-        }
-
         ~DisposableObject()
         {
             Dispose(false);
@@ -19,34 +11,20 @@ namespace PKSoft
 
         public void Dispose()
         {
-            if (!m_IsDisposed)
-            {
-                this.Dispose(true);
-                GC.SuppressFinalize(this);
-            }
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        protected void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
-            if (m_IsDisposed)
-                return;
-
-            try
+            if (disposing)
             {
-                if (disposing)
-                {
-                    DisposeManaged();
-                }
+                // Release managed resources
+            }
 
-                DisposeNative();
-            }
-            finally
-            {
-                m_IsDisposed = true;
-            }
+            // Release unmanaged resources.
+            // Set large fields to null.
+            // Call Dispose on your base class.
         }
-
-        protected virtual void DisposeManaged() { }
-        protected virtual void DisposeNative() { }
     }
 }

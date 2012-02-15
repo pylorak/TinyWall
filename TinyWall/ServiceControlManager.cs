@@ -442,14 +442,23 @@ namespace ScmWrapper
             }
         }
 
-        protected override void DisposeNative()
+        protected override void Dispose(bool disposing)
         {
+            if (disposing)
+            {
+                // Release managed resources
+            }
+
+            // Release unmanaged resources.
+            // Set large fields to null.
+            // Call Dispose on your base class.
+
             if (SCManager != IntPtr.Zero)
             {
                 NativeMethods.CloseServiceHandle(SCManager);
                 SCManager = IntPtr.Zero;
             }
-            base.DisposeNative();
+            base.Dispose(disposing);
         }
 
         ~ServiceControlManager()

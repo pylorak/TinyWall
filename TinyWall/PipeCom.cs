@@ -18,12 +18,25 @@ namespace PKSoft
         private RequestQueue m_ReqQueue;
         private PipeDataReceived m_RcvCallback;
 
-        protected override void DisposeManaged()
+        protected override void Dispose(bool disposing)
         {
-            m_RunThreads = false;
-            m_ReqQueue.Dispose();
-            m_Pipe.Dispose();
-            base.DisposeManaged();
+            if (disposing)
+            {
+                // Release managed resources
+
+                m_ReqQueue.Dispose();
+                m_Pipe.Dispose();
+            }
+
+            // Release unmanaged resources.
+            // Set large fields to null.
+            // Call Dispose on your base class.
+
+            m_Pipe = null;
+            m_PipeWorkerThread = null;
+            m_ReqQueue = null;
+            m_RcvCallback = null;
+            base.Dispose(disposing);
         }
 
         internal PipeCom(string pipeName, PipeDataReceived recvCallback)

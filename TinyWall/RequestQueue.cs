@@ -8,10 +8,22 @@ namespace PKSoft
         private List<ReqResp> FwReqQueue = new List<ReqResp>();
         private Semaphore FwReqSem = new Semaphore(0, 64);
 
-        protected override void DisposeManaged()
+        protected override void Dispose(bool disposing)
         {
-            FwReqSem.Close();
-            base.DisposeManaged();
+            if (disposing)
+            {
+                // Release managed resources
+
+                FwReqSem.Close();
+            }
+
+            // Release unmanaged resources.
+            // Set large fields to null.
+            // Call Dispose on your base class.
+
+            FwReqQueue = null;
+            FwReqSem = null;
+            base.Dispose(disposing);
         }
 
         internal void Enqueue(ReqResp req)
