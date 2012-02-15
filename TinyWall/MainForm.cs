@@ -12,10 +12,10 @@ namespace PKSoft
 {
     internal partial class MainForm : Form
     {
-        private System.Threading.Timer UpdateTimer;
         private MouseInterceptor MouseInterceptor;
         private SettingsForm ShownSettings;
-        private FirewallMode FwMode;
+        private ServiceState FirewallState;
+        private DateTime LastUpdateNotification;
 
         // Traffic rate monitoring
         private System.Threading.Timer TrafficTimer = null;
@@ -62,12 +62,11 @@ namespace PKSoft
             this.Tray.Icon = Resources.Icons.firewall;
         }
 
-        private void UpdateTimerTick(object state)
+        private void VerifyUpdates()
         {
             try
             {
-                Message resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.GET_UPDATE_DESCRIPTOR);
-                UpdateDescriptor descriptor = (UpdateDescriptor)resp.Arguments[0];
+                UpdateDescriptor descriptor = FirewallState.Update;
                 if (descriptor != null)
                 {
                     UpdateModule MainAppModule = UpdateChecker.GetMainAppModule(descriptor);
@@ -159,56 +158,52 @@ namespace PKSoft
 
         private void UpdateDisplay()
         {
-            Message resp;
-
             // Update string showing current network profile
             mnuCurrentPolicy.Text = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CurrentZone, SettingsManager.CurrentZone.ZoneName);
 
-            // Find out current firewall mode
-            resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.GET_MODE);
-            FwMode = (resp.Command == TinyWallCommands.RESPONSE_OK) ? (FirewallMode)resp.Arguments[0] : FirewallMode.Unknown;
-
             // Update UI based on current firewall mode
-            switch (FwMode)
+            string FirewallModeName = PKSoft.Resources.Messages.FirewallModeUnknown;
+            switch (FirewallState.Mode)
             {
                 case FirewallMode.Normal:
                     Tray.Icon = PKSoft.Resources.Icons.firewall;
                     mnuMode.Image = mnuModeNormal.Image;
+                    FirewallModeName = PKSoft.Resources.Messages.FirewallModeNormal;
                     break;
 
                 case FirewallMode.AllowOutgoing:
                     Tray.Icon = PKSoft.Resources.Icons.shield_red_small;
                     mnuMode.Image = mnuModeAllowOutgoing.Image;
+                    FirewallModeName = PKSoft.Resources.Messages.FirewallModeAllowOut;
                     break;
 
                 case FirewallMode.BlockAll:
                     Tray.Icon = PKSoft.Resources.Icons.shield_yellow_small;
                     mnuMode.Image = mnuModeBlockAll.Image;
+                    FirewallModeName = PKSoft.Resources.Messages.FirewallModeBlockAll;
                     break;
 
                 case FirewallMode.Disabled:
                     Tray.Icon = PKSoft.Resources.Icons.shield_grey_small;
                     mnuMode.Image = mnuModeDisabled.Image;
+                    FirewallModeName = PKSoft.Resources.Messages.FirewallModeDisabled;
                     break;
                 case FirewallMode.Unknown:
                     Tray.Icon = PKSoft.Resources.Icons.shield_grey_small;
                     mnuMode.Image = PKSoft.Resources.Icons.shield_grey_small.ToBitmap();
+                    FirewallModeName = PKSoft.Resources.Messages.FirewallModeUnknown;
                     break;
             }
+
             Tray.Text = string.Format(CultureInfo.CurrentCulture, "TinyWall\r\n{0}: {1}\r\n{2}: {3}",
                 PKSoft.Resources.Messages.Zone, SettingsManager.CurrentZone.ZoneName,
-                PKSoft.Resources.Messages.Mode, FwMode.ToString());
+                PKSoft.Resources.Messages.Mode, FirewallModeName);
 
             // Find out if we are locked and if we have a password
-            resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.GET_LOCK_STATE);
-            if (resp.Command == TinyWallCommands.RESPONSE_OK)
-            {
-                // Are we locked?
-                this.Locked = (int)resp.Arguments[1] == 1;
+            this.Locked = FirewallState.Locked;
 
-                // Do we have a passord at all?
-                mnuLock.Visible = (int)resp.Arguments[0] == 1;
-            }
+            // Do we have a passord at all?
+            mnuLock.Visible = FirewallState.HasPassword;
 
             mnuAllowLocalSubnet.Checked = SettingsManager.CurrentZone.AllowLocalSubnet;
             mnuEnableHostsBlocklist.Checked = SettingsManager.GlobalConfig.HostsBlocklist;
@@ -290,17 +285,19 @@ namespace PKSoft
             // the service will send back the settings.
 
             bool SettingsUpdated = false;
+            if (FirewallState == null)
+                FirewallState = new ServiceState();
 
-            Message req = new Message(TinyWallCommands.GET_SETTINGS, force ? int.MinValue :  SettingsManager.Changeset );
+            Message req = new Message(TinyWallCommands.GET_SETTINGS, force ? int.MinValue : FirewallState.SettingsChangeset );
             Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
             if (resp.Command == TinyWallCommands.RESPONSE_OK)
             {
                 int ServerChangeSet = (int)resp.Arguments[0];
-                if (force || (ServerChangeSet != SettingsManager.Changeset))
+                if (force || (ServerChangeSet != FirewallState.SettingsChangeset))
                 {
-                    SettingsManager.Changeset = ServerChangeSet;
                     SettingsManager.GlobalConfig = (MachineSettings)resp.Arguments[1];
                     SettingsManager.CurrentZone = (ZoneSettings)resp.Arguments[2];
+                    FirewallState = (ServiceState)resp.Arguments[3];
                     SettingsUpdated = true;
                 }
                 else
@@ -310,77 +307,31 @@ namespace PKSoft
             {
                 SettingsManager.GlobalConfig = new MachineSettings();
                 SettingsManager.CurrentZone = new ZoneSettings();
+                FirewallState = new ServiceState();
                 SettingsUpdated = true;
             }
 
             if (SettingsUpdated)
+            {
                 UpdateDisplay();
-
-            return SettingsUpdated;
-        }
-
-        private void mnuSettings_Click(object sender, EventArgs e)
-        {
-            if (Locked)
-            {
-                DefaultPopups(TinyWallCommands.RESPONSE_LOCKED);
-                return;
-            }
-
-            // If the settings form is already visible, do not load it but bring it to the foreground
-            if (this.ShownSettings != null)
-            {
-                this.ShownSettings.Activate();
-                this.ShownSettings.BringToFront();
-                return;
-            }
-
-            try
-            {
-                LoadSettingsFromServer();
-
-                using (this.ShownSettings = new SettingsForm(
-                    SettingsManager.ControllerConfig.Clone() as ControllerSettings,
-                    SettingsManager.GlobalConfig.Clone() as MachineSettings,
-                    SettingsManager.CurrentZone.Clone() as ZoneSettings))
+                if (DateTime.Now - LastUpdateNotification > TimeSpan.FromHours(4))
                 {
-                    SettingsForm sf = this.ShownSettings;
-
-                    if (sf.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                    ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
                     {
-                        // Handle password change request
-                        string passwd = sf.NewPassword;
-                        if (passwd != null)
-                        {
-                            // Set the password. If the operation is successfull, do not report anything as we will be setting 
-                            // the other settings too and we want to avoid multiple popups.
-                            Message req = new Message(TinyWallCommands.SET_PASSPHRASE, Hasher.HashString(passwd));
-                            Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
-                            if (resp.Command != TinyWallCommands.RESPONSE_OK)  // Only display a popup for setting the password if it did not succeed
-                            {
-                                DefaultPopups(resp.Command);
-                                return;
-                            }
-                        }
-
-                        // Save settings
-                        SettingsManager.ControllerConfig = sf.TmpControllerConfig;
-                        SettingsManager.ControllerConfig.Save();
-                        ApplyFirewallSettings(sf.TmpMachineConfig, sf.TmpZoneConfig);
-                    }
+                        VerifyUpdates();
+                    });
+                    LastUpdateNotification = DateTime.Now;
                 }
             }
-            finally
-            {
-                this.ShownSettings = null;
-            }
+
+            return SettingsUpdated;
         }
 
         private void TrayMenu_Opening(object sender, CancelEventArgs e)
         {
             LoadSettingsFromServer();
 
-            if (FwMode == FirewallMode.Unknown)
+            if (FirewallState.Mode == FirewallMode.Unknown)
             {
                 try
                 {
@@ -462,7 +413,7 @@ namespace PKSoft
                 }
                     
                 // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
-                ShowBalloonTip(PKSoft.Resources.Messages.NetworkProfileHasChangedRetry, ToolTipIcon.Warning);
+                ShowBalloonTip(PKSoft.Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
 
                 return TinyWallCommands.RESPONSE_ERROR;
             }
@@ -517,7 +468,64 @@ namespace PKSoft
 
         private void mnuManage_Click(object sender, EventArgs e)
         {
-            mnuSettings_Click(sender, e);
+            if (Locked)
+            {
+                DefaultPopups(TinyWallCommands.RESPONSE_LOCKED);
+                return;
+            }
+
+            // If the settings form is already visible, do not load it but bring it to the foreground
+            if (this.ShownSettings != null)
+            {
+                this.ShownSettings.Activate();
+                this.ShownSettings.BringToFront();
+                return;
+            }
+
+            try
+            {
+                LoadSettingsFromServer();
+
+                using (this.ShownSettings = new SettingsForm(
+                    SettingsManager.ControllerConfig.Clone() as ControllerSettings,
+                    SettingsManager.GlobalConfig.Clone() as MachineSettings,
+                    SettingsManager.CurrentZone.Clone() as ZoneSettings))
+                {
+                    SettingsForm sf = this.ShownSettings;
+
+                    if (sf.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                    {
+                        // Handle password change request
+                        string passwd = sf.NewPassword;
+                        if (passwd != null)
+                        {
+                            // Set the password. If the operation is successfull, do not report anything as we will be setting 
+                            // the other settings too and we want to avoid multiple popups.
+                            Message req = new Message(TinyWallCommands.SET_PASSPHRASE, Hasher.HashString(passwd));
+                            Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
+                            if (resp.Command != TinyWallCommands.RESPONSE_OK)  // Only display a popup for setting the password if it did not succeed
+                            {
+                                DefaultPopups(resp.Command);
+                                return;
+                            }
+                            else
+                            {
+                                FirewallState.HasPassword = !string.IsNullOrEmpty(passwd);
+                                UpdateDisplay();
+                            }
+                        }
+
+                        // Save settings
+                        SettingsManager.ControllerConfig = sf.TmpControllerConfig;
+                        SettingsManager.ControllerConfig.Save();
+                        ApplyFirewallSettings(sf.TmpMachineConfig, sf.TmpZoneConfig);
+                    }
+                }
+            }
+            finally
+            {
+                this.ShownSettings = null;
+            }
         }
 
         private void mnuWhitelistByWindow_Click(object sender, EventArgs e)
@@ -636,6 +644,8 @@ namespace PKSoft
                         switch (resp.Command)
                         {
                             case TinyWallCommands.RESPONSE_OK:
+                                this.Locked = false;
+                                FirewallState.Locked = false;
                                 ShowBalloonTip(PKSoft.Resources.Messages.TinyWallHasBeenUnlocked, ToolTipIcon.Info);
                                 break;
                             case TinyWallCommands.RESPONSE_ERROR:
@@ -650,8 +660,14 @@ namespace PKSoft
             }
             else
             {
-                GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.LOCK);
+                if (GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.LOCK).Command == TinyWallCommands.RESPONSE_OK)
+                {
+                    this.Locked = true;
+                    FirewallState.Locked = true;
+                }
             }
+
+            UpdateDisplay();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -743,7 +759,6 @@ namespace PKSoft
 
             TrafficTimerTick(null); // Initialize traffic rate counter state by executing the measure once
             TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
-            UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(2), TimeSpan.FromHours(2));
             GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
             SettingsManager.ControllerConfig = ControllerSettings.Load();
 

@@ -31,12 +31,6 @@ namespace PKSoft
                     TrafficTimer.Dispose(wh);
                     wh.WaitOne();
                 }
-
-                using (WaitHandle wh = new AutoResetEvent(false))
-                {
-                    UpdateTimer.Dispose(wh);
-                    wh.WaitOne();
-                }
             }
             base.Dispose(disposing);
         }

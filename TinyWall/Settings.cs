@@ -363,7 +363,6 @@ namespace PKSoft
         internal static MachineSettings GlobalConfig;
         internal static ServiceSettings ServiceConfig;
         internal static ControllerSettings ControllerConfig;
-        internal static int Changeset;
 
         internal static string AppDataPath
         {

@@ -215,6 +215,51 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow outgoing.
+        /// </summary>
+        internal static string FirewallModeAllowOut {
+            get {
+                return ResourceManager.GetString("FirewallModeAllowOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block all.
+        /// </summary>
+        internal static string FirewallModeBlockAll {
+            get {
+                return ResourceManager.GetString("FirewallModeBlockAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disabled.
+        /// </summary>
+        internal static string FirewallModeDisabled {
+            get {
+                return ResourceManager.GetString("FirewallModeDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Normal.
+        /// </summary>
+        internal static string FirewallModeNormal {
+            get {
+                return ResourceManager.GetString("FirewallModeNormal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        internal static string FirewallModeUnknown {
+            get {
+                return ResourceManager.GetString("FirewallModeUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Firewall rules for recognized {0} have been changed. Click this popup to edit the exception..
         /// </summary>
         internal static string FirewallRulesForRecognizedChanged {
@@ -247,15 +292,6 @@ namespace PKSoft.Resources {
         internal static string Mode {
             get {
                 return ResourceManager.GetString("Mode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The current network profile has changed while you modified the preferences. Please make your changes again..
-        /// </summary>
-        internal static string NetworkProfileHasChangedRetry {
-            get {
-                return ResourceManager.GetString("NetworkProfileHasChangedRetry", resourceCulture);
             }
         }
         
@@ -337,6 +373,15 @@ namespace PKSoft.Resources {
         internal static string SearchResults {
             get {
                 return ResourceManager.GetString("SearchResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The current network profile has changed while you modified the preferences. To prevent losing settings, please make your changes again..
+        /// </summary>
+        internal static string SettingHaveChangedRetry {
+            get {
+                return ResourceManager.GetString("SettingHaveChangedRetry", resourceCulture);
             }
         }
         

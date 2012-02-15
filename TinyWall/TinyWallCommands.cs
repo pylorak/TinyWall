@@ -17,11 +17,7 @@ namespace PKSoft
         COM_ERROR,
 
         // Read commands (>31)
-        GET_PROFILE = 32,
-        GET_MODE,
-        GET_SETTINGS,
-        GET_LOCK_STATE,
-        GET_UPDATE_DESCRIPTOR,
+        GET_SETTINGS = 32,
         GET_PROCESS_PATH,
         VERIFY_KEYS,
         READ_FW_LOG,
@@ -66,6 +62,11 @@ namespace PKSoft
         {
             Command = cmd;
             Arguments = new object[] { arg0, arg1, arg2 };
+        }
+        internal Message(TinyWallCommands cmd, object arg0, object arg1, object arg2, object arg3)
+        {
+            Command = cmd;
+            Arguments = new object[] { arg0, arg1, arg2, arg3 };
         }
     }
 

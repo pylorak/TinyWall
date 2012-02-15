@@ -252,8 +252,8 @@ Do you wish to uninstall TinyWall?</value>
     <value>Out</value>
     <comment>Tray menu text</comment>
   </data>
-  <data name="NetworkProfileHasChangedRetry" xml:space="preserve">
-    <value>The current network profile has changed while you modified the preferences. Please make your changes again.</value>
+  <data name="SettingHaveChangedRetry" xml:space="preserve">
+    <value>The current network profile has changed while you modified the preferences. To prevent losing settings, please make your changes again.</value>
   </data>
   <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
     <value>The firewall settings have been successfully updated.</value>
@@ -338,5 +338,20 @@ Do you wish to uninstall TinyWall?</value>
   <data name="XHours" xml:space="preserve">
     <value>{0} hours</value>
     <comment>Param0 is &gt; 1</comment>
+  </data>
+  <data name="FirewallModeAllowOut" xml:space="preserve">
+    <value>Allow outgoing</value>
+  </data>
+  <data name="FirewallModeBlockAll" xml:space="preserve">
+    <value>Block all</value>
+  </data>
+  <data name="FirewallModeDisabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="FirewallModeNormal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="FirewallModeUnknown" xml:space="preserve">
+    <value>Unknown</value>
   </data>
 </root>

@@ -38,10 +38,9 @@ namespace PKSoft
         private List<RuleDef> SpecialRules;
 
         private ProfileType Profile;
-        private string ProfileDisplayName;
-        private FirewallMode Mode = FirewallMode.Normal;
         private bool UninstallRequested = false;
-        private UpdateDescriptor UpdateDescriptor = null;
+
+        private ServiceState VisibleState = null;
 
         private void AssembleActiveRules()
         {
@@ -72,7 +71,7 @@ namespace PKSoft
             }
 
             // This switch should be executed last, as it might modify existing elements in ActiveRules
-            switch (this.Mode)
+            switch (VisibleState.Mode)
             {
                 case FirewallMode.AllowOutgoing:
                     {
@@ -340,6 +339,7 @@ namespace PKSoft
         private void LoadProfile()
         {
             Profile = Firewall.CurrentProfileTypes;
+            string ProfileDisplayName;
             if ((int)(Profile & ProfileType.Private) != 0)
                 ProfileDisplayName = "Private";
             else if ((int)(Profile & ProfileType.Domain) != 0)
@@ -351,7 +351,7 @@ namespace PKSoft
 
             SettingsManager.GlobalConfig = MachineSettings.Load();
             SettingsManager.CurrentZone = ZoneSettings.Load(ProfileDisplayName);
-            this.Mode = SettingsManager.GlobalConfig.StartupMode;
+            VisibleState.Mode = SettingsManager.GlobalConfig.StartupMode;
         }
 
         // This method reapplies all firewall settings.
@@ -397,7 +397,7 @@ namespace PKSoft
         {
             try
             {
-                UpdateDescriptor = UpdateChecker.GetDescriptor();
+                VisibleState.Update = UpdateChecker.GetDescriptor();
             }
             catch
             {
@@ -411,17 +411,17 @@ namespace PKSoft
                 SettingsManager.GlobalConfig.Save();
             }
 
-            if (UpdateDescriptor == null)
+            if (VisibleState.Update == null)
                 return;
 
-            UpdateModule module = UpdateChecker.GetDatabaseFileModule(UpdateDescriptor);
+            UpdateModule module = UpdateChecker.GetDatabaseFileModule(VisibleState.Update);
             if (!module.DownloadHash.Equals(Utils.HexEncode(Hasher.HashFile(ProfileManager.DBPath)), StringComparison.OrdinalIgnoreCase))
             {
                 GetCompressedUpdate(module, DatabaseUpdateInstall);
             }
             if (SettingsManager.GlobalConfig.HostsBlocklist)
             {
-                module = UpdateChecker.GetHostsFileModule(UpdateDescriptor);
+                module = UpdateChecker.GetHostsFileModule(VisibleState.Update);
 
                 if (!module.DownloadHash.Equals(HostsFileManager.GetHostsHash(), StringComparison.OrdinalIgnoreCase))
                 {
@@ -511,7 +511,7 @@ namespace PKSoft
                     }
                 case TinyWallCommands.MODE_SWITCH:
                     {
-                        this.Mode = (FirewallMode)req.Arguments[0];
+                        VisibleState.Mode = (FirewallMode)req.Arguments[0];
                         AssembleActiveRules();
                         MergeActiveRulesIntoWinFirewall();
 
@@ -551,18 +551,22 @@ namespace PKSoft
                         int changeset = (int)req.Arguments[0];
 
                         // If our changeset is different, send new settings to client
-                        if (changeset != SettingsManager.Changeset)
+                        if (changeset != VisibleState.SettingsChangeset)
                         {
+                            VisibleState.HasPassword = SettingsManager.ServiceConfig.HasPassword;
+                            VisibleState.Locked = SettingsManager.ServiceConfig.Locked;
+
                             return new Message(TinyWallCommands.RESPONSE_OK,
-                                SettingsManager.Changeset,
+                                VisibleState.SettingsChangeset,
                                 SettingsManager.GlobalConfig,
-                                SettingsManager.CurrentZone
+                                SettingsManager.CurrentZone,
+                                VisibleState
                                 );
                         }
                         else
                         {
                             // Our changeset is the same, so do not send settings again
-                            return new Message(TinyWallCommands.RESPONSE_OK, SettingsManager.Changeset);
+                            return new Message(TinyWallCommands.RESPONSE_OK, VisibleState.SettingsChangeset);
                         }
                     }
                 case TinyWallCommands.REINIT:
@@ -576,10 +580,6 @@ namespace PKSoft
                         MergeActiveRulesIntoWinFirewall();
                         return new Message(TinyWallCommands.RESPONSE_OK);
                     }
-                case TinyWallCommands.GET_PROFILE:
-                    {
-                        return new Message(TinyWallCommands.RESPONSE_OK, SettingsManager.CurrentZone.ZoneName);
-                    }
                 case TinyWallCommands.UNLOCK:
                     {
                         if (SettingsManager.ServiceConfig.Unlock((string)req.Arguments[0]))
@@ -591,14 +591,6 @@ namespace PKSoft
                     {
                         SettingsManager.ServiceConfig.Locked = true;
                         return new Message(TinyWallCommands.RESPONSE_OK);
-                    }
-                case TinyWallCommands.GET_UPDATE_DESCRIPTOR:
-                    {
-                        return new Message(TinyWallCommands.RESPONSE_OK, UpdateDescriptor);
-                    }
-                case TinyWallCommands.GET_LOCK_STATE:
-                    {
-                        return new Message(TinyWallCommands.RESPONSE_OK, SettingsManager.ServiceConfig.HasPassword ? 1 : 0, SettingsManager.ServiceConfig.Locked ? 1 : 0);
                     }
                 case TinyWallCommands.GET_PROCESS_PATH:
                     {
@@ -631,10 +623,6 @@ namespace PKSoft
                         {
                             FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
                         }
-                    }
-                case TinyWallCommands.GET_MODE:
-                    {
-                        return new Message(TinyWallCommands.RESPONSE_OK, this.Mode);
                     }
                 case TinyWallCommands.STOP_DISABLE:
                     {
@@ -711,7 +699,7 @@ namespace PKSoft
                         {
                             SettingsManager.CurrentZone.AppExceptions = exs;
                             SettingsManager.CurrentZone.Save();
-                            SettingsManager.Changeset = Utils.GetRandomNumber();
+                            VisibleState.SettingsChangeset = Utils.GetRandomNumber();
                         }
 
                         return new Message(TinyWallCommands.RESPONSE_OK);
@@ -789,6 +777,10 @@ namespace PKSoft
                 };
         private void WFEventWatcher_EventRecordWritten(object sender, EventRecordWrittenEventArgs e)
         {
+            // Do nothing if the firewall is in disabled mode
+            if (VisibleState.Mode == FirewallMode.Disabled)
+                return;
+
             int propidx = -1;
             TinyWallCommands cmd = TinyWallCommands.REINIT;
             switch (e.EventRecord.Id)
@@ -819,7 +811,7 @@ namespace PKSoft
                     }
                 case 2010:     // network interface changed profile
                     {   // Event format is different in this case so we handle this separately
-                        SettingsManager.Changeset = Utils.GetRandomNumber();
+                        VisibleState.SettingsChangeset = Utils.GetRandomNumber();
                         if (!Q.HasRequest(TinyWallCommands.REINIT))
                         {
                             EventLog.WriteEntry("Reloading firewall configuration because a network interface changed profile.");
@@ -839,10 +831,6 @@ namespace PKSoft
 
             if (propidx != -1)
             {
-                // Do nothing if the firewall is in disabled mode
-                if (this.Mode == FirewallMode.Disabled)
-                    return;
-
                 // If the rules were changed by an allowed app, do nothing
                 string EVpath = (string)e.EventRecord.Properties[propidx].Value;
                 for (int i = 0; i < WhitelistedApps.Length; ++i)
@@ -886,12 +874,13 @@ namespace PKSoft
                 try
                 {
                     EventLog.WriteEntry("TinyWall service starting up.");
+                    VisibleState = new ServiceState();
 
                     FileLocker.LockFile(ProfileManager.DBPath, FileAccess.Read, FileShare.Read);
                     FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
 
                     // Lock configuration if we have a password
-                    SettingsManager.Changeset = Utils.GetRandomNumber();
+                    VisibleState.SettingsChangeset = Utils.GetRandomNumber();
                     SettingsManager.ServiceConfig = new ServiceSettings();
                     if (SettingsManager.ServiceConfig.HasPassword)
                         SettingsManager.ServiceConfig.Locked = true;
