@@ -17,7 +17,7 @@ TinyWall Changelog
 - Ability to whitelist apps with higher privileges
 - Fix: Uninstaller now removes user-specific configuration files too
 - Fix: Custom ports are not applied to services
-- ?Fix: Don't lose settings in a virtual machine
+- Fix: Don't lose settings in a virtual machine
 
 ---------------------
 

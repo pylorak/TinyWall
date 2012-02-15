@@ -745,6 +745,7 @@ namespace PKSoft
             HotKeyWhitelistProcess.Pressed += new HandledEventHandler(HotKeyWhitelistProcess_Pressed);
             HotKeyWhitelistProcess.Register(this);
 
+            TrafficTimerTick(null); // Initialize traffic rate counter state by executing the measure once
             TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
             UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(2), TimeSpan.FromHours(2));
             GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
