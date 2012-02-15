@@ -131,7 +131,7 @@ namespace PKSoft
                 return;
             }
 
-            ListViewItem li = new ListViewItem(proc.ProcessName + " (" + proc.Id + ")");
+            ListViewItem li = new ListViewItem(string.Format(CultureInfo.CurrentCulture, "{0}({1})", proc.ProcessName, proc.Id));
             li.Tag = proc.Id;
 
             try
@@ -257,8 +257,7 @@ namespace PKSoft
                         }
                         catch
                         {
-                            // The process has already exited. Fine, that's just what we want :)
-                            MessageBox.Show(this, string.Format("Could not close process {0}. Elevate TinyWall and try again.", proc.ProcessName), "Cannot close", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            MessageBox.Show(this, string.Format(PKSoft.Resources.Messages.CouldNotCloseProcess, proc.ProcessName, pid), PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         }
                     }
                 }
@@ -296,7 +295,7 @@ namespace PKSoft
                 }
                 catch
                 {
-                    MessageBox.Show(this, string.Format("Could not whitelist process of {0}.", path), "Cannot close", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show(this, string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CouldNotWhitelistProcess, path), PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
 

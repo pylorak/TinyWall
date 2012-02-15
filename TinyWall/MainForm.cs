@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Diagnostics;
 using System.Management;
 using System.ServiceProcess;
@@ -43,11 +44,11 @@ namespace PKSoft
                 m_Locked = value;
                 if (m_Locked)
                 {
-                    mnuLock.Text = "Unlock";
+                    mnuLock.Text = PKSoft.Resources.Messages.Unlock;
                 }
                 else
                 {
-                    mnuLock.Text = "Lock";
+                    mnuLock.Text = PKSoft.Resources.Messages.Lock;
                 }
             }
         }
@@ -94,7 +95,7 @@ namespace PKSoft
                     {
                         Utils.Invoke(this, (MethodInvoker)delegate()
                         {
-                            string prompt = "A newer version " + MainAppModule.ComponentVersion + " of TinyWall is available. Click this bubble to start the update process.";
+                            string prompt = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.UpdateAvailableBubble, MainAppModule.ComponentVersion);
                             ShowBalloonTip(prompt, ToolTipIcon.Info, 5000, StartUpdate, MainAppModule.UpdateURL);
                         });
                     }
@@ -112,7 +113,7 @@ namespace PKSoft
         {
             // Use WMI technology to retrieve the interface details
             if (searcher == null)
-                searcher = new ManagementObjectSearcher("select BytesReceivedPersec, BytesSentPersec from Win32_PerfRawData_Tcpip_NetworkInterface");
+                searcher = new ManagementObjectSearcher(@"select BytesReceivedPersec, BytesSentPersec from Win32_PerfRawData_Tcpip_NetworkInterface");
 
             ulong bytesRxNewTotal = 0;
             ulong bytesTxNewTotal = 0;
@@ -141,14 +142,14 @@ namespace PKSoft
             float MBytesTxPerSec = KBytesTxPerSec / 1024;
 
             if (MBytesRxPerSec > 1)
-                rxDisplay = string.Format("{0:f}MB/s", MBytesRxPerSec);
+                rxDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}MiB/s", MBytesRxPerSec);
             else
-                rxDisplay = string.Format("{0:f}KB/s", KBytesRxPerSec);
+                rxDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}KiB/s", KBytesRxPerSec);
 
             if (MBytesTxPerSec > 1)
-                txDisplay = string.Format("{0:f}MB/s", MBytesTxPerSec);
+                txDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}MiB/s", MBytesTxPerSec);
             else
-                txDisplay = string.Format("{0:f}KB/s", KBytesTxPerSec);
+                txDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}KiB/s", KBytesTxPerSec);
         }
         
         private void StartUpdate(object sender, AnyEventArgs e)
@@ -181,7 +182,7 @@ namespace PKSoft
             Message resp;
 
             // Update string showing current network profile
-            mnuCurrentPolicy.Text = "You are in: " + SettingsManager.CurrentZone.ZoneName + " zone";
+            mnuCurrentPolicy.Text = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CurrentZone, SettingsManager.CurrentZone.ZoneName);
 
             // Find out current firewall mode
             resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.GET_MODE);
@@ -214,9 +215,9 @@ namespace PKSoft
                     mnuMode.Image = PKSoft.Resources.Icons.shield_grey_small.ToBitmap();
                     break;
             }
-            Tray.Text = "TinyWall" + Environment.NewLine +
-                SettingsManager.CurrentZone.ZoneName + " zone" + Environment.NewLine +
-                FwMode.ToString() + " mode";
+            Tray.Text = string.Format(CultureInfo.CurrentCulture, "TinyWall\r\n{0}: {1}\r\n{2}: {3}",
+                PKSoft.Resources.Messages.Zone, SettingsManager.CurrentZone.ZoneName,
+                PKSoft.Resources.Messages.Mode, FwMode.ToString());
 
             // Find out if we are locked and if we have a password
             resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.GET_LOCK_STATE);
@@ -243,19 +244,19 @@ namespace PKSoft
             switch (mode)
             {
                 case FirewallMode.Normal:
-                    usermsg = "The firewall is now operating in the recommended mode.";
+                    usermsg = PKSoft.Resources.Messages.TheFirewallIsNowOperatingAsRecommended;
                     break;
 
                 case FirewallMode.AllowOutgoing:
-                    usermsg = "The firewall is now set to allow all outgoing connections.";
+                    usermsg = PKSoft.Resources.Messages.TheFirewallIsNowAllowsOutgoingConnections;
                     break;
 
                 case FirewallMode.BlockAll:
-                    usermsg = "The firewall is now blocking all inbound and outbound traffic.";
+                    usermsg = PKSoft.Resources.Messages.TheFirewallIsNowBlockingAllInAndOut;
                     break;
 
                 case FirewallMode.Disabled:
-                    usermsg = "The firewall is now disabled.";
+                    usermsg = PKSoft.Resources.Messages.TheFirewallIsNowDisabled;
                     break;
             }
 
@@ -409,19 +410,19 @@ namespace PKSoft
                     {
                         if (scm.Status == ServiceControllerStatus.Stopped)
                         {
-                            ShowBalloonTip("TinyWall Service is stopped. Please ensure that both TinyWall Service and the Windows Firewall service are started, then retry.", ToolTipIcon.Error, 10000);
+                            ShowBalloonTip(PKSoft.Resources.Messages.TheTinyWallServiceIsStopped, ToolTipIcon.Error, 10000);
                             e.Cancel = true;
                         }
                     }
                 }
                 catch   // If thrown, it means the TinyWall service did not even exist
                 {
-                    ShowBalloonTip("TinyWall Service is not installed. Please re-run the TinyWall installer.", ToolTipIcon.Error, 10000);
+                    ShowBalloonTip(PKSoft.Resources.Messages.TinyWallServiceIsNotInstalled, ToolTipIcon.Error, 10000);
                     e.Cancel = true;
                 }
             }
 
-           mnuTrafficRate.Text = "Down: " + rxDisplay + "   " + "Up: " + txDisplay;
+           mnuTrafficRate.Text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", PKSoft.Resources.Messages.TrafficIn, rxDisplay, PKSoft.Resources.Messages.TrafficOut, txDisplay);
         }
 
         private void mnuWhitelistByExecutable_Click(object sender, EventArgs e)
@@ -482,7 +483,7 @@ namespace PKSoft
                 }
                     
                 // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
-                ShowBalloonTip("The current network profile has changed while you modified the preferences. Please make your changes again.", ToolTipIcon.Warning);
+                ShowBalloonTip(PKSoft.Resources.Messages.NetworkProfileHasChangedRetry, ToolTipIcon.Warning);
 
                 return TinyWallCommands.RESPONSE_ERROR;
             }
@@ -495,7 +496,7 @@ namespace PKSoft
                 switch (resp.Command)
                 {
                     case TinyWallCommands.RESPONSE_OK:
-                        ShowBalloonTip("The firewall settings have been successfully updated.", ToolTipIcon.Info);
+                        ShowBalloonTip(PKSoft.Resources.Messages.TheFirewallSettingsHaveBeenUpdated, ToolTipIcon.Info);
                         if (machine != null) 
                             SettingsManager.GlobalConfig = machine;
                         if (zone != null)
@@ -516,23 +517,22 @@ namespace PKSoft
             switch (op)
             {
                 case TinyWallCommands.RESPONSE_OK:
-                    ShowBalloonTip("Success.", ToolTipIcon.Info);
+                    ShowBalloonTip(PKSoft.Resources.Messages.Success, ToolTipIcon.Info);
                     break;
                 case TinyWallCommands.RESPONSE_WARNING:
-                    ShowBalloonTip("The operation succeeded, but other settings prevent it from taking full effect.", ToolTipIcon.Warning);
+                    ShowBalloonTip(PKSoft.Resources.Messages.OtherSettingsPreventEffect, ToolTipIcon.Warning);
                     break;
                 case TinyWallCommands.RESPONSE_ERROR:
-                    ShowBalloonTip("Operation failed.", ToolTipIcon.Error);
+                    ShowBalloonTip(PKSoft.Resources.Messages.OperationFailed, ToolTipIcon.Error);
                     break;
                 case TinyWallCommands.RESPONSE_LOCKED:
-                    ShowBalloonTip("The requested operation did not succeed, because TinyWall is currently locked.", ToolTipIcon.Warning);
+                    ShowBalloonTip(PKSoft.Resources.Messages.TinyWallIsCurrentlyLocked, ToolTipIcon.Warning);
                     Locked = true;
                     break;
                 case TinyWallCommands.COM_ERROR:
                 default:
-                    ShowBalloonTip("Communication with TinyWall Service encountered an error.", ToolTipIcon.Error);
+                    ShowBalloonTip(PKSoft.Resources.Messages.CommunicationWithTheServiceError, ToolTipIcon.Error);
                     break;
-                    //throw new InvalidOperationException("Invalid program flow. Received " + op.ToString() + ". Please contact the application's author.");
             }
         }
 
@@ -547,13 +547,13 @@ namespace PKSoft
             {
                 MouseInterceptor = new MouseInterceptor();
                 MouseInterceptor.MouseLButtonDown += new PKSoft.MouseInterceptor.MouseHookLButtonDown(MouseInterceptor_MouseLButtonDown);
-                ShowBalloonTip("Click on the inner area of any open window to select its application for whitelisting.", ToolTipIcon.Info);
+                ShowBalloonTip(PKSoft.Resources.Messages.ClickOnAWindowWhitelisting, ToolTipIcon.Info);
             }
             else
             {
                 MouseInterceptor.Dispose();
                 MouseInterceptor = null;
-                ShowBalloonTip("Whitelisting cancelled.", ToolTipIcon.Info);
+                ShowBalloonTip(PKSoft.Resources.Messages.WhitelistingCancelled, ToolTipIcon.Info);
             }
         }
 
@@ -586,7 +586,7 @@ namespace PKSoft
                     }
                     catch (Win32Exception)
                     {
-                        ShowBalloonTip("Cannot get executable path, process is probably running with elevated privileges. Elevate TinyWall and try again.", ToolTipIcon.Error);
+                        ShowBalloonTip(PKSoft.Resources.Messages.CannotGetExecutablePathWhitelisting, ToolTipIcon.Error);
                         return;
                     }
 
@@ -634,9 +634,9 @@ namespace PKSoft
             {
                 case TinyWallCommands.RESPONSE_OK:
                     if (ex.Recognized.HasValue && ex.Recognized.Value)
-                        ShowBalloonTip("Firewall rules for recognized " + ex.ExecutableName + " have been changed. Click this popup to edit the exception.", ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(ex));
+                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForRecognizedChanged, ex.ExecutableName), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(ex));
                     else
-                        ShowBalloonTip("Firewall rules for unrecognized " + ex.ExecutableName + " have been changed. Click this popup to edit the exception.", ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(ex));
+                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForUnrecognizedChanged, ex.ExecutableName), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(ex));
 
                     break;
                 default:
@@ -661,10 +661,10 @@ namespace PKSoft
                         switch (resp.Command)
                         {
                             case TinyWallCommands.RESPONSE_OK:
-                                ShowBalloonTip("TinyWall has been unlocked. You may now issue commands that modify the configuration.", ToolTipIcon.Info);
+                                ShowBalloonTip(PKSoft.Resources.Messages.TinyWallHasBeenUnlocked, ToolTipIcon.Info);
                                 break;
                             case TinyWallCommands.RESPONSE_ERROR:
-                                ShowBalloonTip("Unlock failed. Try again with another passphrase.", ToolTipIcon.Error);
+                                ShowBalloonTip(PKSoft.Resources.Messages.UnlockFailed, ToolTipIcon.Error);
                                 break;
                             default:
                                 DefaultPopups(resp.Command);
@@ -737,7 +737,7 @@ namespace PKSoft
                     GlobalInstances.ProfileMan = new ProfileManager();
                     Utils.Invoke(this, (MethodInvoker)delegate()
                     {
-                        ShowBalloonTip("Database is missing or corrupt.", ToolTipIcon.Warning);
+                        ShowBalloonTip(PKSoft.Resources.Messages.DatabaseIsMissingOrCorrupt, ToolTipIcon.Warning);
                     });
                 }
                 finally
@@ -807,18 +807,14 @@ namespace PKSoft
 
         private void mnuElevate_Click(object sender, EventArgs e)
         {
-            ProcessStartInfo psi = new ProcessStartInfo(Utils.ExecutablePath, "/desktop");
-            psi.UseShellExecute = true;
-            psi.Verb = "runas";
-
             try
             {
-                Process.Start(psi);
+                Utils.StartProcess(Utils.ExecutablePath, "/desktop", true);
                 System.Windows.Forms.Application.Exit();
             }
             catch (Win32Exception)
             {
-                ShowBalloonTip("Could not elevate privileges.", ToolTipIcon.Error);
+                ShowBalloonTip(PKSoft.Resources.Messages.CouldNotElevatePrivileges, ToolTipIcon.Error);
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Management;
 
 namespace PKSoft
@@ -21,7 +22,7 @@ namespace PKSoft
         private static string identifier(string wmiProperty, string wmiClass)
         {
             string result = "";
-            using (ManagementObjectSearcher mc = new ManagementObjectSearcher(string.Format(@"select {0} from {1}", wmiProperty, wmiClass)))
+            using (ManagementObjectSearcher mc = new ManagementObjectSearcher(string.Format(CultureInfo.InvariantCulture, @"select {0} from {1}", wmiProperty, wmiClass)))
             {
                 ManagementObjectCollection moc = mc.Get();
                 foreach (ManagementObject mo in moc)

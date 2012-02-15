@@ -98,7 +98,7 @@ namespace PKSoft
 
         internal static string RandomString(int length)
         {
-            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const string chars = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             char[] buffer = new char[length];
             for (int i = 0; i < length; i++)
             {
@@ -111,7 +111,7 @@ namespace PKSoft
         {
             StringBuilder sb = new StringBuilder();
             foreach (byte oct in binstr)
-                sb.Append(oct.ToString("X2"));
+                sb.Append(oct.ToString(@"X2"));
 
             return sb.ToString();
         }

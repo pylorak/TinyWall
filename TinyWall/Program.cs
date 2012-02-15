@@ -141,9 +141,7 @@ namespace PKSoft
                 }
                 catch 
                 {
-                    string msg = "The TinyWall Service could not be started. Please ensure that the Windows Firewall service and TinyWall Service are not in the disabled state and that both can be started. "+
-                    "If you cannot start Windows Firewall, another software may be preventing its use. In that case make sure that no other firewall products are installed and that your system is clean from viruses.";
-                    MessageBox.Show(msg, "TinyWall startup error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(PKSoft.Resources.Messages.TheTinyWallServiceCouldNotBeStarted, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return -1;
                 }
 

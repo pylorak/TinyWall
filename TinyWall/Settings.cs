@@ -60,7 +60,7 @@ namespace PKSoft
             try
             {
                 // Construct file path
-                string SettingsFile = Path.Combine(SettingsManager.AppDataPath, "Zone" + zoneName);
+                string SettingsFile = Path.Combine(SettingsManager.AppDataPath, "Zone"+zoneName);
 
                 // Construct key
                 string key = ENC_SALT + MachineFingerprint.Fingerprint();
@@ -127,8 +127,8 @@ namespace PKSoft
     [Serializable]
     public class MachineSettings : SettingsBase
     {
-        private const string ENC_SALT = "O?2E/)YFq~e:w@a,";
-        private const string ENC_IV = "X0@!H93!Y=8&/M/T";   // must be 16/24/32 bytes
+        private const string ENC_SALT = @"O?2E/)YFq~e:w@a,";
+        private const string ENC_IV = @"X0@!H93!Y=8&/M/T";   // must be 16/24/32 bytes
         private readonly object locker = new object();
 
         public bool LockHostsFile = false;

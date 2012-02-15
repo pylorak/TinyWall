@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.ServiceProcess;
@@ -134,7 +135,7 @@ namespace PKSoft
             {
                 if (txtPassword.Text != txtPasswordAgain.Text)
                 {
-                    MessageBox.Show(this, "Password fields do not match. Please verify your input.", "Input validation", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show(this, PKSoft.Resources.Messages.PasswordFieldsDoNotMatch, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
             }
@@ -198,7 +199,7 @@ namespace PKSoft
 
         private void btnAppRemoveAll_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show(this, "Are you sure you want to remove all firewall exceptions?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.No)
+            if (MessageBox.Show(this, PKSoft.Resources.Messages.AreYouSureYouWantToRemoveAllExceptions, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.No)
                 return;
 
             TmpZoneConfig.AppExceptions = new AppExceptionSettings[0];
@@ -273,38 +274,23 @@ namespace PKSoft
             Process.Start(psi);
         }
 
-        private void btnExport_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show(this, "Not yet implemented");
-            return;
-        }
-
-        private void btnImport_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show(this, "Not yet implemented");
-            return;
-        }
-
         private void btnUninstall_Click(object sender, EventArgs e)
         {
             string msg = string.Empty;
 
             if (!Utils.RunningAsAdmin())
             {
-                msg = "You do not have administrative privileges needed to uninstall TinyWall." + Environment.NewLine +
-                "Select Elevate from the tray menu and try again.";
-
-                MessageBox.Show(this, msg, "Missing privileges", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                msg = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.YouDoNotHaveAdministrativePrivilegesNeeded);
+                MessageBox.Show(this, msg, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
                 return;
             }
 
 
-            msg = "You are about to remove TinyWall from your computer." + Environment.NewLine +
-            "Do you wish to uninstall TinyWall?";
+             msg = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.YouAreAboutToRemoveTinyWall);
 
             // Handle uninstall request
-            bool UninstallFlag = MessageBox.Show(this, msg, "Uninstall Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.Yes;
+            bool UninstallFlag = MessageBox.Show(this, msg, PKSoft.Resources.Messages.UninstallTinyWall, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.Yes;
             if (UninstallFlag)
             {
                 // Stop service
@@ -321,7 +307,7 @@ namespace PKSoft
                 }
                 else
                 {
-                    MessageBox.Show(this, "Could not find the uninstaller application. Removal aborted.", "Uninstall aborted", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(this, PKSoft.Resources.Messages.CouldNotFindTheUninstaller, PKSoft.Resources.Messages.UninstallTinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                     // Start service back up
                     using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
@@ -337,9 +323,8 @@ namespace PKSoft
         {
             IconList.Images.Add("deleted", Resources.Icons.delete);
 
-            this.Text += " - " + SettingsManager.CurrentZone.ZoneName + " zone";
             this.Icon = Resources.Icons.firewall;
-            lblVersion.Text += " " + FileVersionInfo.GetVersionInfo(Utils.ExecutablePath).ProductVersion.ToString();
+            lblVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0} {1}", lblVersion.Text, FileVersionInfo.GetVersionInfo(Utils.ExecutablePath).ProductVersion.ToString());
             tabControl1.SelectedIndex = TmpControllerConfig.ManageTabIndex;
 
             InitSettingsUI();
@@ -422,9 +407,9 @@ namespace PKSoft
             btnDonate.BorderStyle = BorderStyle.None;
         }
 
-        private void btnImport_Click_1(object sender, EventArgs e)
+        private void btnImport_Click(object sender, EventArgs e)
         {
-            ofd.Filter = "TinyWall Settings (*.tws)|*.tws|All files (*.*)|*.*";
+            ofd.Filter = string.Format(CultureInfo.CurrentCulture, "{0} (*.tws)|*.tws|{1} (*.*)|*.*", PKSoft.Resources.Messages.TinyWallSettingsFileFilter, PKSoft.Resources.Messages.AllFilesFileFilter);
             if (ofd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
                 SettingsContainer sc = SerializationHelper.LoadFromXMLFile<SettingsContainer>(ofd.FileName);
@@ -432,13 +417,13 @@ namespace PKSoft
                 TmpZoneConfig = sc.CurrentZone;
                 TmpMachineConfig = sc.GlobalConfig;
                 InitSettingsUI();
-                MessageBox.Show(this, "The configuration file has been successfully imported. Press Apply in the Manage window to make the new settings permanent.", "Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(this, PKSoft.Resources.Messages.ConfigurationHasBeenImported, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
-        private void btnExport_Click_1(object sender, EventArgs e)
+        private void btnExport_Click(object sender, EventArgs e)
         {
-            sfd.Filter = "TinyWall Settings (*.tws)|*.tws|All files (*.*)|*.*";
+            ofd.Filter = string.Format(CultureInfo.CurrentCulture, "{0} (*.tws)|*.tws|{1} (*.*)|*.*", PKSoft.Resources.Messages.TinyWallSettingsFileFilter, PKSoft.Resources.Messages.AllFilesFileFilter);
             sfd.DefaultExt = "tws";
             if (sfd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
@@ -447,7 +432,7 @@ namespace PKSoft
                 sc.CurrentZone = TmpZoneConfig;
                 sc.GlobalConfig = TmpMachineConfig;
                 SerializationHelper.SaveToXMLFile(sc, sfd.FileName);
-                MessageBox.Show(this, "The configuration file has been successfully exported.", "Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(this, PKSoft.Resources.Messages.ConfigurationHasBeenExported, PKSoft.Resources.Messages.TinyWallSettingsFileFilter, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 

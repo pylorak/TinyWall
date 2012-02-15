@@ -1,0 +1,342 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
+    <value>Could not elevate privileges necessary for update.</value>
+  </data>
+  <data name="TinyWallUpdate" xml:space="preserve">
+    <value>TinyWall Update</value>
+  </data>
+  <data name="ErrorCheckingForUpdates" xml:space="preserve">
+    <value>There was an error while checking for updates.
+Please make sure that TinyWall has been granted internet access, then try again.</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>A newer version {0} of TinyWall is available. Do you want to update now?</value>
+  </data>
+  <data name="DownloadingUpdate" xml:space="preserve">
+    <value>Downloading update...</value>
+  </data>
+  <data name="NoUpdateAvailable" xml:space="preserve">
+    <value>You have the newest version of TinyWall. No update necessary.</value>
+  </data>
+  <data name="DownloadInterrupted" xml:space="preserve">
+    <value>Download interrupted.</value>
+  </data>
+  <data name="StartingUpdate" xml:space="preserve">
+    <value>Starting update...</value>
+  </data>
+  <data name="TinyWallIsCurrentlyLocked" xml:space="preserve">
+    <value>TinyWall is current locked. Unlock and retry.</value>
+  </data>
+  <data name="PleaseWaitWhileTinyWallChecksForUpdates" xml:space="preserve">
+    <value>Please wait while TinyWall checks for available updates.</value>
+  </data>
+  <data name="CouldNotWhitelistProcess" xml:space="preserve">
+    <value>Could not whitelist process of {0}.</value>
+    <comment>Param0 is a file path.</comment>
+  </data>
+  <data name="TinyWall" xml:space="preserve">
+    <value>TinyWall</value>
+  </data>
+  <data name="CouldNotCloseProcess" xml:space="preserve">
+    <value>Could not close process {0}({1}).</value>
+    <comment>Param0 is name, param1 is pid of process.</comment>
+  </data>
+  <data name="UnblockPartOfApplication" xml:space="preserve">
+    <value>A file you are about to unblock is part of {0}. This application requires additional files whitelisted to function properly. 
+
+Do you want TinyWall to automatically whitelist these files for you?</value>
+    <comment>Param0 is name of application.</comment>
+  </data>
+  <data name="PasswordFieldsDoNotMatch" xml:space="preserve">
+    <value>Password fields do not match. Please verify your input.</value>
+  </data>
+  <data name="AreYouSureYouWantToRemoveAllExceptions" xml:space="preserve">
+    <value>Are you sure you want to remove all firewall exceptions?</value>
+  </data>
+  <data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
+    <value>You do not have administrative privileges needed to uninstall TinyWall.
+Select Elevate from the tray menu and try again.</value>
+  </data>
+  <data name="YouAreAboutToRemoveTinyWall" xml:space="preserve">
+    <value>You are about to remove TinyWall from your computer.
+Do you wish to uninstall TinyWall?</value>
+  </data>
+  <data name="UninstallTinyWall" xml:space="preserve">
+    <value>Uninstall TinyWall</value>
+  </data>
+  <data name="CouldNotFindTheUninstaller" xml:space="preserve">
+    <value>Could not find the uninstaller application. Removal aborted.</value>
+  </data>
+  <data name="TinyWallSettingsFileFilter" xml:space="preserve">
+    <value>TinyWall Settings</value>
+    <comment>File filter description</comment>
+  </data>
+  <data name="AllFilesFileFilter" xml:space="preserve">
+    <value>All files</value>
+    <comment>File filter description</comment>
+  </data>
+  <data name="ConfigurationHasBeenImported" xml:space="preserve">
+    <value>The configuration file has been successfully imported. Press Apply in the Manage window to make the new settings permanent.</value>
+  </data>
+  <data name="ConfigurationHasBeenExported" xml:space="preserve">
+    <value>The configuration file has been successfully exported.</value>
+  </data>
+  <data name="TheTinyWallServiceCouldNotBeStarted" xml:space="preserve">
+    <value>The TinyWall Service could not be started. Please ensure that all service dependencies of the TinyWall Service can be started.</value>
+  </data>
+  <data name="CurrentZone" xml:space="preserve">
+    <value>Current zone: {0}</value>
+    <comment>Param0 is name of zone</comment>
+  </data>
+  <data name="Zone" xml:space="preserve">
+    <value>Zone</value>
+    <comment>Tray text</comment>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Mode</value>
+    <comment>Tray text</comment>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>Unlock</value>
+    <comment>Tray menu text</comment>
+  </data>
+  <data name="Lock" xml:space="preserve">
+    <value>Lock</value>
+    <comment>Tray menu text</comment>
+  </data>
+  <data name="UpdateAvailableBubble" xml:space="preserve">
+    <value>A newer version {0} of TinyWall is available. Click this bubble to start the update process.</value>
+    <comment>Param0 is version number of new version</comment>
+  </data>
+  <data name="TheFirewallIsNowOperatingAsRecommended" xml:space="preserve">
+    <value>The firewall is now operating in the recommended mode.</value>
+  </data>
+  <data name="TheFirewallIsNowAllowsOutgoingConnections" xml:space="preserve">
+    <value>The firewall is now allows outgoing connections but blocks incoming.</value>
+  </data>
+  <data name="TheFirewallIsNowBlockingAllInAndOut" xml:space="preserve">
+    <value>The firewall is now blocking all inbound and outbound traffic.</value>
+  </data>
+  <data name="TheFirewallIsNowDisabled" xml:space="preserve">
+    <value>The firewall is now disabled.</value>
+  </data>
+  <data name="TinyWallServiceIsNotInstalled" xml:space="preserve">
+    <value>TinyWall Service is not installed. Please re-run the TinyWall installer.</value>
+  </data>
+  <data name="TheTinyWallServiceIsStopped" xml:space="preserve">
+    <value>The TinyWall service is stopped. Make sure it is started and then retry.</value>
+  </data>
+  <data name="TrafficIn" xml:space="preserve">
+    <value>In</value>
+    <comment>Tray menu text</comment>
+  </data>
+  <data name="TrafficOut" xml:space="preserve">
+    <value>Out</value>
+    <comment>Tray menu text</comment>
+  </data>
+  <data name="NetworkProfileHasChangedRetry" xml:space="preserve">
+    <value>The current network profile has changed while you modified the preferences. Please make your changes again.</value>
+  </data>
+  <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
+    <value>The firewall settings have been successfully updated.</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Success.</value>
+  </data>
+  <data name="OtherSettingsPreventEffect" xml:space="preserve">
+    <value>The operation succeeded, but other settings prevent it from taking full effect.</value>
+  </data>
+  <data name="OperationFailed" xml:space="preserve">
+    <value>Operation failed.</value>
+  </data>
+  <data name="CommunicationWithTheServiceError" xml:space="preserve">
+    <value>Communication with the TinyWall service encountered an error.</value>
+  </data>
+  <data name="ClickOnAWindowWhitelisting" xml:space="preserve">
+    <value>Click on the inner area of any open window to select its application for whitelisting.</value>
+  </data>
+  <data name="WhitelistingCancelled" xml:space="preserve">
+    <value>Whitelisting cancelled.</value>
+  </data>
+  <data name="CannotGetExecutablePathWhitelisting" xml:space="preserve">
+    <value>Cannot get executable path. Whitelisting failed.</value>
+  </data>
+  <data name="FirewallRulesForRecognizedChanged" xml:space="preserve">
+    <value>Firewall rules for recognized {0} have been changed. Click this popup to edit the exception.</value>
+  </data>
+  <data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
+    <value>Firewall rules for unrecognized {0} have been changed. Click this popup to edit the exception.</value>
+  </data>
+  <data name="TinyWallHasBeenUnlocked" xml:space="preserve">
+    <value>TinyWall has been unlocked. You may now issue commands that modify the configuration.</value>
+  </data>
+  <data name="UnlockFailed" xml:space="preserve">
+    <value>Unlock failed. Try again with another passphrase.</value>
+  </data>
+  <data name="CouldNotElevatePrivileges" xml:space="preserve">
+    <value>Could not elevate privileges.</value>
+  </data>
+  <data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
+    <value>Database is missing or corrupt.</value>
+  </data>
+  <data name="TheFormatOfThePortListIsInvalid" xml:space="preserve">
+    <value>The format of the port list is invalid.</value>
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="SearchingPath" xml:space="preserve">
+    <value>Searching: {0}</value>
+    <comment>Param0 is a path which is being searched</comment>
+  </data>
+  <data name="SearchResults" xml:space="preserve">
+    <value>Search results:</value>
+  </data>
+  <data name="RecognizedApplication" xml:space="preserve">
+    <value>Recognized application</value>
+    <comment>Exception details window banner text</comment>
+  </data>
+  <data name="UnknownApplication" xml:space="preserve">
+    <value>Unknown application</value>
+    <comment>Exception details window banner text</comment>
+  </data>
+  <data name="Permanent" xml:space="preserve">
+    <value>Permanent</value>
+  </data>
+  <data name="UntilReboot" xml:space="preserve">
+    <value>Until reboot</value>
+  </data>
+  <data name="XMinutes" xml:space="preserve">
+    <value>{0} minutes</value>
+    <comment>Param0 is &gt; 1</comment>
+  </data>
+  <data name="XHour" xml:space="preserve">
+    <value>{0} hour</value>
+    <comment>Param0 is &lt;=1</comment>
+  </data>
+  <data name="XHours" xml:space="preserve">
+    <value>{0} hours</value>
+    <comment>Param0 is &gt; 1</comment>
+  </data>
+</root>

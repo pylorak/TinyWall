@@ -10,7 +10,7 @@ namespace PKSoft
         {
             for (int i = 0; i < this.Count; ++i)
             {
-                if (string.Compare(name, this[i].Name, System.StringComparison.InvariantCultureIgnoreCase) == 0)
+                if (string.Compare(name, this[i].Name, System.StringComparison.OrdinalIgnoreCase) == 0)
                     return this[i];
             }
             return null;

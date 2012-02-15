@@ -149,6 +149,11 @@
     <Compile Include="DatabaseClasses\ProfileAssocCollection.cs" />
     <Compile Include="DatabaseClasses\ProfileCollection.cs" />
     <Compile Include="DatabaseClasses\ProfileManager.cs" />
+    <Compile Include="Resources\Messages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Messages.resx</DependentUpon>
+    </Compile>
     <Compile Include="RuleDef.cs" />
     <Compile Include="SerializationHelper.cs" />
     <Compile Include="MachineFingerprint.cs" />
@@ -245,6 +250,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PasswordForm.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Messages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Services.resx">
       <DependentUpon>Services.cs</DependentUpon>

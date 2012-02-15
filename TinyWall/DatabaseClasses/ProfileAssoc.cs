@@ -266,7 +266,7 @@ namespace PKSoft
                 bool sha1match = false;
                 for (int i = 0; i < this.HashesSHA1.Length; ++i)
                 {
-                    if (string.Compare(HashesSHA1[i], exe.HashesSHA1[0], StringComparison.InvariantCultureIgnoreCase) == 0)
+                    if (string.Compare(HashesSHA1[i], exe.HashesSHA1[0], StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         sha1match = true;
                         break;
@@ -287,7 +287,7 @@ namespace PKSoft
                 bool keymatch = false;
                 for (int i = 0; i < this.PublicKeys.Length; ++i)
                 {
-                    if (string.Compare(PublicKeys[i], exe.PublicKeys[0], StringComparison.InvariantCultureIgnoreCase) == 0)
+                    if (string.Compare(PublicKeys[i], exe.PublicKeys[0], StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         keymatch = true;
                         break;

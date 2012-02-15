@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -27,7 +28,7 @@ namespace PKSoft
             if (!RunSearch)
             {
                 ThreadEndedEvent.Reset();
-                btnStartDetection.Text = "Stop";
+                btnStartDetection.Text = PKSoft.Resources.Messages.Stop;
                 RunSearch = true;
                 SearcherThread = new Thread(SearcherWorkerMethod);
                 SearcherThread.IsBackground = true;
@@ -36,7 +37,7 @@ namespace PKSoft
             }
             else
             {
-                btnStartDetection.Text = "Start";
+                btnStartDetection.Text = PKSoft.Resources.Messages.Start;
                 RunSearch = false;
                 btnStartDetection.Image = Resources.Icons.accept;
             }
@@ -91,8 +92,8 @@ namespace PKSoft
                 RunSearch = false;
                 Utils.Invoke(list, (MethodInvoker)delegate()
                 {
-                    lblStatus.Text = "Search results:";
-                    btnStartDetection.Text = "Start";
+                    lblStatus.Text = PKSoft.Resources.Messages.SearchResults;
+                    btnStartDetection.Text = PKSoft.Resources.Messages.Start;
                     btnStartDetection.Image = Resources.Icons.accept;
                 });
             }
@@ -110,7 +111,7 @@ namespace PKSoft
                 LastEnterDoSearchPath = now;
                 Utils.Invoke(list, (MethodInvoker)delegate()
                 {
-                    lblStatus.Text = "Searching: " + path;
+                    lblStatus.Text = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.SearchingPath, path);
                 });
             }
             #endregion

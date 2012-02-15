@@ -40,7 +40,7 @@ namespace PKSoft
             }
             catch
             {
-                MessageBox.Show(this, "Format of port list is invalid.", "Invalid input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, PKSoft.Resources.Messages.TheFormatOfThePortListIsInvalid, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

@@ -127,7 +127,7 @@ namespace PKSoft
                     string name_j = rule_j.Name;
 
                     // Skip if this is not a TinyWall rule
-                    if (!name_j.StartsWith("[TW"))
+                    if (!name_j.StartsWith("[TW", StringComparison.Ordinal))
                         continue;
 
                     string id_j = name_j.Substring(0, lenId);
@@ -155,7 +155,7 @@ namespace PKSoft
                 string name_i = rule_i.Name;
 
                 // Skip if this is not a TinyWall rule
-                if (!name_i.StartsWith("[TW"))
+                if (!name_i.StartsWith("[TW", StringComparison.Ordinal))
                     continue;
 
                 string id_i = name_i.Substring(0, lenId);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace PKSoft
@@ -20,13 +21,13 @@ namespace PKSoft
                 {
                     // Recognized app
                     panel1.BackgroundImage = Resources.Icons.green_banner;
-                    transparentLabel1.Text = "Recognized application";
+                    transparentLabel1.Text = PKSoft.Resources.Messages.RecognizedApplication;
                 }
                 else
                 {
                     // Unknown app
                     panel1.BackgroundImage = Resources.Icons.blue_banner;
-                    transparentLabel1.Text = "Unknown application";
+                    transparentLabel1.Text = PKSoft.Resources.Messages.UnknownApplication;
                 }
                 Utils.CenterControlInParent(transparentLabel1);
             }
@@ -45,10 +46,36 @@ namespace PKSoft
             panel2.Width = this.Width;
 
             cmbTimer.SuspendLayout();
+            Dictionary<AppExceptionTimer, KeyValuePair<string, AppExceptionTimer>> timerTexts = new Dictionary<AppExceptionTimer, KeyValuePair<string, AppExceptionTimer>>();
+            timerTexts.Add(AppExceptionTimer.Permanent,
+                new KeyValuePair<string, AppExceptionTimer>(PKSoft.Resources.Messages.Permanent, AppExceptionTimer.Permanent)
+                );
+            timerTexts.Add(AppExceptionTimer.Until_Reboot,
+                new KeyValuePair<string, AppExceptionTimer>(PKSoft.Resources.Messages.UntilReboot, AppExceptionTimer.Until_Reboot)
+                );
+            timerTexts.Add(AppExceptionTimer.For_5_Minutes,
+                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.XMinutes, 5), AppExceptionTimer.For_5_Minutes)
+                );
+            timerTexts.Add(AppExceptionTimer.For_30_Minutes,
+                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.XMinutes, 30), AppExceptionTimer.For_30_Minutes)
+                );
+            timerTexts.Add(AppExceptionTimer.For_1_Hour, 
+                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.XHour, 1), AppExceptionTimer.For_1_Hour)
+                );
+            timerTexts.Add(AppExceptionTimer.For_4_Hours,
+                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.XHours, 4), AppExceptionTimer.For_4_Hours)
+                );
+            timerTexts.Add(AppExceptionTimer.For_9_Hours,
+                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.XHours, 9), AppExceptionTimer.For_9_Hours)
+                );
+            timerTexts.Add(AppExceptionTimer.For_24_Hours,
+                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.XHours, 24), AppExceptionTimer.For_24_Hours)
+                );
+
             foreach (AppExceptionTimer timerVal in Enum.GetValues(typeof(AppExceptionTimer)))
             {
                 if (timerVal != AppExceptionTimer.Invalid)
-                    cmbTimer.Items.Add(new KeyValuePair<string, AppExceptionTimer>(timerVal.ToString().Replace("_", " "), timerVal));
+                    cmbTimer.Items.Add(timerTexts[timerVal]);
             }
             cmbTimer.DisplayMember = "Key";
             cmbTimer.ValueMember = "Value";

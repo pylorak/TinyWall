@@ -384,7 +384,7 @@
             this.btnImport.Image = global::PKSoft.Resources.Icons.import;
             this.btnImport.Name = "btnImport";
             this.btnImport.UseVisualStyleBackColor = true;
-            this.btnImport.Click += new System.EventHandler(this.btnImport_Click_1);
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
             // 
             // btnExport
             // 
@@ -392,7 +392,7 @@
             this.btnExport.Image = global::PKSoft.Resources.Icons.export;
             this.btnExport.Name = "btnExport";
             this.btnExport.UseVisualStyleBackColor = true;
-            this.btnExport.Click += new System.EventHandler(this.btnExport_Click_1);
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
             // groupBox2
             // 
