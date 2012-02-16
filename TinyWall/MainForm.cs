@@ -15,7 +15,7 @@ namespace PKSoft
         private MouseInterceptor MouseInterceptor;
         private SettingsForm ShownSettings;
         private ServiceState FirewallState;
-        private DateTime LastUpdateNotification;
+        private DateTime LastUpdateNotification = DateTime.MinValue;
 
         // Traffic rate monitoring
         private System.Threading.Timer TrafficTimer = null;
@@ -714,86 +714,6 @@ namespace PKSoft
         private void MainForm_Shown(object sender, EventArgs e)
         {
             Hide();
-
-            // We will load our database parallel to other things to improve startup performance
-            ThreadBarrier barrier = new ThreadBarrier(2);
-            ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
-            {
-                try
-                {
-                    GlobalInstances.ProfileMan = ProfileManager.Load(ProfileManager.DBPath);
-                }
-                catch
-                {
-                    GlobalInstances.ProfileMan = new ProfileManager();
-                    Utils.Invoke(this, (MethodInvoker)delegate()
-                    {
-                        ShowBalloonTip(PKSoft.Resources.Messages.DatabaseIsMissingOrCorrupt, ToolTipIcon.Warning);
-                    });
-                }
-                finally
-                {
-                    barrier.Wait();
-                }
-            });
-            
-            // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
-            // BEGIN
-            mnuElevate.Visible = !Utils.RunningAsAdmin();
-            mnuModeDisabled.Image = Resources.Icons.shield_grey_small.ToBitmap();
-            mnuModeAllowOutgoing.Image = Resources.Icons.shield_red_small.ToBitmap();
-            mnuModeBlockAll.Image = Resources.Icons.shield_yellow_small.ToBitmap();
-            mnuModeNormal.Image = Resources.Icons.shield_green_small.ToBitmap();
-
-            HotKeyWhitelistWindow = new Hotkey(Keys.W, true, true, false, false);
-            HotKeyWhitelistWindow.Pressed += new HandledEventHandler(HotKeyWhitelistWindow_Pressed);
-            HotKeyWhitelistWindow.Register(this);
-
-            HotKeyWhitelistExecutable = new Hotkey(Keys.E, true, true, false, false);
-            HotKeyWhitelistExecutable.Pressed += new HandledEventHandler(HotKeyWhitelistExecutable_Pressed);
-            HotKeyWhitelistExecutable.Register(this);
-
-            HotKeyWhitelistProcess = new Hotkey(Keys.P, true, true, false, false);
-            HotKeyWhitelistProcess.Pressed += new HandledEventHandler(HotKeyWhitelistProcess_Pressed);
-            HotKeyWhitelistProcess.Register(this);
-
-            TrafficTimerTick(null); // Initialize traffic rate counter state by executing the measure once
-            TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
-            GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
-            SettingsManager.ControllerConfig = ControllerSettings.Load();
-
-            barrier.Wait();
-            // END
-            // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
-
-            // --- THREAD BARRIER ---
-
-            LoadSettingsFromServer(true);
-
-            if (StartupOpts.autowhitelist)
-            {
-                ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
-                for (int i = 0; i < allApps.Count; ++i)
-                {
-                    Application app = allApps[i];
-
-                    // If we've found at least one file, add the app to the list
-                    if (!app.Special && app.ResolveFilePaths())
-                    {
-                        foreach (ProfileAssoc appFile in app.FileRealizations)
-                        {
-                            SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, appFile.ToExceptionSetting());
-                        }
-                    }
-                }
-                SettingsManager.CurrentZone.Normalize();
-                ApplyFirewallSettings(null, SettingsManager.CurrentZone);
-            }
-
-            if (StartupOpts.updatenow)
-            {
-                StartUpdate(null, null);
-            }
         }
 
         private void mnuElevate_Click(object sender, EventArgs e)
@@ -830,6 +750,89 @@ namespace PKSoft
             if (BalloonClickedCallback != null)
             {
                 BalloonClickedCallback(Tray, new AnyEventArgs(BalloonClickedCallbackArgument));
+            }
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            // We will load our database parallel to other things to improve startup performance
+            ThreadBarrier barrier = new ThreadBarrier(2);
+            ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
+            {
+                try
+                {
+                    GlobalInstances.ProfileMan = ProfileManager.Load(ProfileManager.DBPath);
+                }
+                catch
+                {
+                    GlobalInstances.ProfileMan = new ProfileManager();
+                    Utils.Invoke(this, (MethodInvoker)delegate()
+                    {
+                        ShowBalloonTip(PKSoft.Resources.Messages.DatabaseIsMissingOrCorrupt, ToolTipIcon.Warning);
+                    });
+                }
+                finally
+                {
+                    barrier.Wait();
+                }
+            });
+
+            // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
+            // BEGIN
+            mnuElevate.Visible = !Utils.RunningAsAdmin();
+            mnuModeDisabled.Image = Resources.Icons.shield_grey_small.ToBitmap();
+            mnuModeAllowOutgoing.Image = Resources.Icons.shield_red_small.ToBitmap();
+            mnuModeBlockAll.Image = Resources.Icons.shield_yellow_small.ToBitmap();
+            mnuModeNormal.Image = Resources.Icons.shield_green_small.ToBitmap();
+
+            HotKeyWhitelistWindow = new Hotkey(Keys.W, true, true, false, false);
+            HotKeyWhitelistWindow.Pressed += new HandledEventHandler(HotKeyWhitelistWindow_Pressed);
+            HotKeyWhitelistWindow.Register(this);
+
+            HotKeyWhitelistExecutable = new Hotkey(Keys.E, true, true, false, false);
+            HotKeyWhitelistExecutable.Pressed += new HandledEventHandler(HotKeyWhitelistExecutable_Pressed);
+            HotKeyWhitelistExecutable.Register(this);
+
+            HotKeyWhitelistProcess = new Hotkey(Keys.P, true, true, false, false);
+            HotKeyWhitelistProcess.Pressed += new HandledEventHandler(HotKeyWhitelistProcess_Pressed);
+            HotKeyWhitelistProcess.Register(this);
+
+            GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
+            SettingsManager.ControllerConfig = ControllerSettings.Load();
+
+            barrier.Wait();
+            // END
+            // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
+
+            // --- THREAD BARRIER ---
+
+            TrafficTimerTick(null); // Initialize traffic rate counter state by executing the measure once
+            TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
+            LoadSettingsFromServer(true);
+
+            if (StartupOpts.autowhitelist)
+            {
+                ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
+                for (int i = 0; i < allApps.Count; ++i)
+                {
+                    Application app = allApps[i];
+
+                    // If we've found at least one file, add the app to the list
+                    if (!app.Special && app.ResolveFilePaths())
+                    {
+                        foreach (ProfileAssoc appFile in app.FileRealizations)
+                        {
+                            SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, appFile.ToExceptionSetting());
+                        }
+                    }
+                }
+                SettingsManager.CurrentZone.Normalize();
+                ApplyFirewallSettings(null, SettingsManager.CurrentZone);
+            }
+
+            if (StartupOpts.updatenow)
+            {
+                StartUpdate(null, null);
             }
         }
     }

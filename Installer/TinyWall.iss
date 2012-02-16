@@ -3,12 +3,12 @@
 
 #define MyAppName "TinyWall"
 #define MyAppNameNoVersion "TinyWall"
-#define MyAppVersion "1.0.3"
+#define MyAppVersion "1.9.0"
 #define MyAppPublisher "Károly Pados"
 
-#define TW_TinyWall_exe_SN "TinyWall, Version=1.0.3.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
+#define TW_TinyWall_exe_SN "TinyWall, Version=1.9.0.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
 #define TW_NetFwTypeLib_dll_SN "Interop.NetFwTypeLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
-#define TW_XmlSerializers_dll_SN "TinyWall.XmlSerializers, Version=1.0.3.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
+#define TW_XmlSerializers_dll_SN "TinyWall.XmlSerializers, Version=1.9.0.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -59,12 +59,11 @@ Source: "Components\Attributions.txt"; DestDir: "{app}"
 Source: "Components\TinyWall.exe.config"; DestDir: "{app}"; Flags:
 Source: "Components\CommonAppData\*"; DestDir: "{commonappdata}"; Flags: recursesubdirs createallsubdirs 
 
-Source: "Components\TinyWall.exe"; DestDir: "{app}"; Flags: replacesameversion gacinstall; StrongAssemblyName: "{#TW_TinyWall_exe_SN}";
-Source: "Components\Interop.NetFwTypeLib.dll"; DestDir: "{app}"; Flags: replacesameversion gacinstall sharedfile uninsnosharedfileprompt; StrongAssemblyName: "{#TW_NetFwTypeLib_dll_SN}";
-Source: "Components\TinyWall.XmlSerializers.dll"; DestDir: "{app}"; Flags: replacesameversion gacinstall sharedfile uninsnosharedfileprompt; StrongAssemblyName: "{#TW_XmlSerializers_dll_SN}";
+Source: "Components\TinyWall.exe"; DestDir: "{app}"; Flags: replacesameversion gacinstall; StrongAssemblyName: {#TW_TinyWall_exe_SN};
+Source: "Components\Interop.NetFwTypeLib.dll"; DestDir: "{app}"; Flags: replacesameversion gacinstall sharedfile uninsnosharedfileprompt; StrongAssemblyName: {#TW_NetFwTypeLib_dll_SN};
+Source: "Components\TinyWall.XmlSerializers.dll"; DestDir: "{app}"; Flags: replacesameversion gacinstall sharedfile uninsnosharedfileprompt; StrongAssemblyName: {#TW_XmlSerializers_dll_SN};
 
 ;Source: "Components\TinyWall.exe"; DestDir: "{app}"; Flags: replacesameversion; StrongAssemblyName: "{#TW_TinyWall_exe_SN}";
-;Source: "Components\TransparentLabel.dll"; DestDir: "{app}"; Flags: replacesameversion sharedfile uninsnosharedfileprompt; StrongAssemblyName: "{#TW_TransparentLabel_dll_SN}";
 ;Source: "Components\Interop.NetFwTypeLib.dll"; DestDir: "{app}"; Flags: replacesameversion sharedfile uninsnosharedfileprompt; StrongAssemblyName: "{#TW_NetFwTypeLib_dll_SN}";
 ;Source: "Components\TinyWall.XmlSerializers.dll"; DestDir: "{app}"; Flags: replacesameversion sharedfile uninsnosharedfileprompt; StrongAssemblyName: "{#TW_XmlSerializers_dll_SN}";
 
@@ -87,8 +86,7 @@ Type: filesandordirs; Name: "{commonappdata}\TinyWall"
 
 [Icons]
 Name: "{group}\TinyWall Controller"; Filename: "{app}\TinyWall.exe"; Parameters: "/desktop"; IconFilename: {app}\TinyWall.exe; Flags: excludefromshowinnewinstall; Comment: "TinyWall Controller"; WorkingDir: "{app}";
-;Name: "{group}\DevelTool"; Filename: "{app}\TinyWall.exe"; Parameters: "/develtool"; IconFilename: {app}\TinyWall.exe; Flags: excludefromshowinnewinstall; Comment: "TinyWall Development Helper"; WorkingDir: "{app}";
-;Name: "{group}\Visit Website"; Filename: "{app}\website.url";
+Name: "{group}\DevelTool"; Filename: "{app}\TinyWall.exe"; Parameters: "/develtool"; IconFilename: {app}\TinyWall.exe; Flags: excludefromshowinnewinstall; Comment: "TinyWall Development Helper"; WorkingDir: "{app}";
 Name: "{group}\FAQ"; Filename: "{app}\FAQ.pdf"; Flags: excludefromshowinnewinstall;
 Name: "{group}\Visit Website"; Filename: "http://tinywall.pados.hu"; Flags: excludefromshowinnewinstall;
 
@@ -101,7 +99,7 @@ CustomForm_Label1_Caption0= \
    application (in Manage, Maintenance). The Windows Control Panel cannot %n \
    be used for uninstallation. %n \
 %n \
-2. After installation finishes, TinyWall prevents network access for most programs.%n \
+2. After installation finishes, TinyWall is configured to block user traffic.%n \
    This means in general you won't be able to access the internet. To grant specific %n \
    applications internet access, use the "Whitelist by..." options from the tray menu.
 

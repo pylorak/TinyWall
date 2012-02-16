@@ -770,7 +770,7 @@ namespace PKSoft
         }
 
         // This is a list of apps that are allowed to change firewall rules
-        private string[] WhitelistedApps = new string[]
+        private readonly string[] WhitelistedApps = new string[]
                 {
                     Utils.ExecutablePath,
                     Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "dllhost.exe")
