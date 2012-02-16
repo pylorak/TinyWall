@@ -47,7 +47,7 @@ AllowCancelDuringInstall=false
 LicenseFile=Components/License.txt
 
 [Messages]
-SetupAppRunningError=Setup has detected that %1 is currently running.%n%nPlease start the uninstaller from the tray application to uninstall.
+SetupAppRunningError=Setup has detected that %1 is currently running.%n%nPlease start the uninstaller from the tray application (go to Manage - Maintenance).
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
