@@ -15,6 +15,7 @@ namespace PKSoft
         internal MachineSettings TmpMachineConfig;
         internal ControllerSettings TmpControllerConfig;
 
+        private List<ListViewItem> ExceptionItems = new List<ListViewItem>();
         private bool LoadingSettings;
         private string m_NewPassword;
 
@@ -78,19 +79,54 @@ namespace PKSoft
 
 
                 // Fill list of applications
-                listApplications.SuspendLayout();
-                listApplications.Items.Clear();
-                for (int i = 0; i < TmpZoneConfig.AppExceptions.Length; ++i)
-                {
-                    AppExceptionSettings ex = TmpZoneConfig.AppExceptions[i];
-                    listApplications.Items.Add(ListItemFromAppException(ex));
-                }
-                listApplications.ResumeLayout(true);
+                RebuildExceptionsList();
             }
             finally
             {
                 LoadingSettings = false;
             }
+        }
+
+        private void RebuildExceptionsList()
+        {
+            ExceptionItems.Clear();
+            for (int i = 0; i < TmpZoneConfig.AppExceptions.Length; ++i)
+            {
+                AppExceptionSettings ex = TmpZoneConfig.AppExceptions[i];
+                ExceptionItems.Add(ListItemFromAppException(ex));
+            }
+            ApplyExceptionFilter();
+        }
+
+        private void ApplyExceptionFilter()
+        {
+            string filter = txtExceptionListFilter.Text.ToUpperInvariant();
+            List<ListViewItem> icoll = new List<ListViewItem>();
+
+            if (string.IsNullOrEmpty(filter))
+            {
+                for (int i = 0; i < ExceptionItems.Count; ++i)
+                {
+                    icoll.Add(ExceptionItems[i]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < ExceptionItems.Count; ++i)
+                {
+                    string sub0 = ExceptionItems[i].SubItems[0].Text.ToUpperInvariant();
+                    string sub1 = ExceptionItems[i].SubItems[1].Text.ToUpperInvariant();
+                    string sub2 = ExceptionItems[i].SubItems[2].Text.ToUpperInvariant();
+                    if (sub0.Contains(filter) || sub1.Contains(filter) || sub2.Contains(filter))
+                        icoll.Add(ExceptionItems[i]);
+                }
+            }
+
+            listApplications.SuspendLayout();
+            listApplications.Items.Clear();
+            listApplications.Items.AddRange(icoll.ToArray());
+            listApplications.ResumeLayout();
+            listApplications_SelectedIndexChanged(listApplications, null);
         }
 
         private ListViewItem ListItemFromAppException(AppExceptionSettings ex)
@@ -195,7 +231,7 @@ namespace PKSoft
         {
             ListViewItem li = listApplications.SelectedItems[0];
             TmpZoneConfig.AppExceptions = Utils.ArrayRemoveItem(TmpZoneConfig.AppExceptions, (AppExceptionSettings)li.Tag);
-            listApplications.Items.Remove(li);
+            RebuildExceptionsList();
         }
 
         private void btnAppRemoveAll_Click(object sender, EventArgs e)
@@ -204,7 +240,7 @@ namespace PKSoft
                 return;
 
             TmpZoneConfig.AppExceptions = new AppExceptionSettings[0];
-            listApplications.Items.Clear();
+            RebuildExceptionsList();
         }
         
         private void btnAppModify_Click(object sender, EventArgs e)
@@ -222,11 +258,7 @@ namespace PKSoft
                     // Add new rule
                     TmpZoneConfig.AppExceptions = Utils.ArrayAddItem(TmpZoneConfig.AppExceptions, f.ExceptionSettings);
                     TmpZoneConfig.Normalize();
-
-                    ListViewItem newLi = ListItemFromAppException(f.ExceptionSettings);
-                    listApplications.Items.Insert(li.Index, newLi);
-                    listApplications.Items.Remove(li);
-                    newLi.Selected = true;
+                    RebuildExceptionsList();
                 }
             }
 
@@ -244,7 +276,7 @@ namespace PKSoft
                     for (int i = 0; i < exceptions.Count; ++i)
                         TmpZoneConfig.AppExceptions = Utils.ArrayAddItem(TmpZoneConfig.AppExceptions, exceptions[i]);
                     TmpZoneConfig.Normalize();
-                    InitSettingsUI();
+                    RebuildExceptionsList();
                 }
             }
         }
@@ -364,7 +396,7 @@ namespace PKSoft
                 {
                     TmpZoneConfig = aff.TmpZoneSettings;
                     TmpZoneConfig.Normalize();
-                    InitSettingsUI();
+                    RebuildExceptionsList();
                 }
             }
         }
@@ -446,6 +478,11 @@ namespace PKSoft
         private void SettingsForm_Load(object sender, EventArgs e)
         {
             tabControl1.SelectedIndex = TmpControllerConfig.ManageTabIndex;
+        }
+
+        private void txtExceptionListFilter_TextChanged(object sender, EventArgs e)
+        {
+            ApplyExceptionFilter();
         }
 
     }

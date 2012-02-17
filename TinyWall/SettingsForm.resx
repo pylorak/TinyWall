@@ -180,6 +180,27 @@
   <data name="&gt;&gt;btnOK.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
+  <data name="txtExceptionListFilter.Location" type="System.Drawing.Point, System.Drawing">
+    <value>61, 75</value>
+  </data>
+  <data name="txtExceptionListFilter.Size" type="System.Drawing.Size, System.Drawing">
+    <value>480, 20</value>
+  </data>
+  <data name="txtExceptionListFilter.TabIndex" type="System.Int32, mscorlib">
+    <value>20</value>
+  </data>
+  <data name="&gt;&gt;txtExceptionListFilter.Name" xml:space="preserve">
+    <value>txtExceptionListFilter</value>
+  </data>
+  <data name="&gt;&gt;txtExceptionListFilter.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtExceptionListFilter.Parent" xml:space="preserve">
+    <value>tabPage3</value>
+  </data>
+  <data name="&gt;&gt;txtExceptionListFilter.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="btnAppRemoveAll.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
   </data>
@@ -208,7 +229,7 @@
     <value>tabPage3</value>
   </data>
   <data name="&gt;&gt;btnAppRemoveAll.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="btnAppAutoDetect.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
@@ -241,7 +262,7 @@
     <value>tabPage3</value>
   </data>
   <data name="&gt;&gt;btnAppAutoDetect.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="btnSubmitAssoc.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -274,7 +295,7 @@
     <value>tabPage3</value>
   </data>
   <data name="&gt;&gt;btnSubmitAssoc.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
     <value>23, 30</value>
@@ -298,7 +319,7 @@
     <value>tabPage3</value>
   </data>
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="btnAppRemove.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -331,7 +352,7 @@
     <value>tabPage3</value>
   </data>
   <data name="&gt;&gt;btnAppRemove.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="btnAppModify.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -364,7 +385,7 @@
     <value>tabPage3</value>
   </data>
   <data name="&gt;&gt;btnAppModify.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="btnAppAdd.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
@@ -394,7 +415,7 @@
     <value>tabPage3</value>
   </data>
   <data name="&gt;&gt;btnAppAdd.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="columnHeader1.Text" xml:space="preserve">
     <value>Executable</value>
@@ -439,7 +460,7 @@
     <value>tabPage3</value>
   </data>
   <data name="&gt;&gt;listApplications.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="label4.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -448,13 +469,13 @@
     <value>23, 78</value>
   </data>
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>105, 13</value>
+    <value>32, 13</value>
   </data>
   <data name="label4.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
-    <value>Enabled applications</value>
+    <value>Filter:</value>
   </data>
   <data name="&gt;&gt;label4.Name" xml:space="preserve">
     <value>label4</value>
@@ -466,7 +487,7 @@
     <value>tabPage3</value>
   </data>
   <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>9</value>
   </data>
   <data name="tabPage3.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>

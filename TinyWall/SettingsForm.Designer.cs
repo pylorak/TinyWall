@@ -33,6 +33,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.txtExceptionListFilter = new System.Windows.Forms.TextBox();
             this.btnAppRemoveAll = new System.Windows.Forms.Button();
             this.btnAppAutoDetect = new System.Windows.Forms.Button();
             this.btnSubmitAssoc = new System.Windows.Forms.Button();
@@ -112,6 +113,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.txtExceptionListFilter);
             this.tabPage3.Controls.Add(this.btnAppRemoveAll);
             this.tabPage3.Controls.Add(this.btnAppAutoDetect);
             this.tabPage3.Controls.Add(this.btnSubmitAssoc);
@@ -124,6 +126,12 @@
             resources.ApplyResources(this.tabPage3, "tabPage3");
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // txtExceptionListFilter
+            // 
+            resources.ApplyResources(this.txtExceptionListFilter, "txtExceptionListFilter");
+            this.txtExceptionListFilter.Name = "txtExceptionListFilter";
+            this.txtExceptionListFilter.TextChanged += new System.EventHandler(this.txtExceptionListFilter_TextChanged);
             // 
             // btnAppRemoveAll
             // 
@@ -566,5 +574,6 @@
         private System.Windows.Forms.CheckBox chkLockHostsFile;
         private System.Windows.Forms.CheckBox chkHostsBlocklist;
         private System.Windows.Forms.Button btnAppRemoveAll;
+        private System.Windows.Forms.TextBox txtExceptionListFilter;
     }
 }
