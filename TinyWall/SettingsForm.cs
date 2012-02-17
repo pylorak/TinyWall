@@ -100,11 +100,12 @@ namespace PKSoft
 
         private void ApplyExceptionFilter()
         {
-            string filter = txtExceptionListFilter.Text.ToUpperInvariant();
+            string filter = txtExceptionListFilter.Text.Trim().ToUpperInvariant();
             List<ListViewItem> icoll = new List<ListViewItem>();
 
             if (string.IsNullOrEmpty(filter))
             {
+                // No filter, add everything
                 for (int i = 0; i < ExceptionItems.Count; ++i)
                 {
                     icoll.Add(ExceptionItems[i]);
@@ -112,6 +113,7 @@ namespace PKSoft
             }
             else
             {
+                // Apply filter
                 for (int i = 0; i < ExceptionItems.Count; ++i)
                 {
                     string sub0 = ExceptionItems[i].SubItems[0].Text.ToUpperInvariant();
@@ -122,10 +124,13 @@ namespace PKSoft
                 }
             }
 
+            // Update visible list
             listApplications.SuspendLayout();
             listApplications.Items.Clear();
             listApplications.Items.AddRange(icoll.ToArray());
             listApplications.ResumeLayout();
+
+            // Update buttons
             listApplications_SelectedIndexChanged(listApplications, null);
         }
 
