@@ -238,6 +238,7 @@ namespace PKSoft
             switch (resp.Command)
             {
                 case TinyWallCommands.RESPONSE_OK:
+                    FirewallState.Mode = mode;
                     ShowBalloonTip(usermsg, ToolTipIcon.Info);
                     break;
                 default:
