@@ -61,8 +61,10 @@ namespace PKSoft
                 {
                     try
                     {
-                        Process p = Utils.StartProcess(Utils.ExecutablePath, "/install", true);
-                        p.WaitForExit();
+                        using (Process p = Utils.StartProcess(Utils.ExecutablePath, "/install", true))
+                        {
+                            p.WaitForExit();
+                        }
                     }
                     catch { }
                 }

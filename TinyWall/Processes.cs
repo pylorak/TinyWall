@@ -61,41 +61,43 @@ namespace PKSoft
             Process[] procs = Process.GetProcesses();
             for (int i = 0; i < procs.Length; ++i)
             {
-                Process p = procs[i];
-                try
+                using (Process p = procs[i])
                 {
-                    string ProcPath = Utils.GetProcessMainModulePath(p);
-                    if (string.IsNullOrEmpty(ProcPath))
-                        continue;
-
-                    // Scan list of already added items to prevent duplicates
-                    bool skip = false;
-                    for (int j = 0; j < listView.Items.Count; ++j)
+                    try
                     {
-                        if (listView.Items[j].SubItems[0].Text.ToUpperInvariant().Equals(p.ProcessName.ToUpperInvariant()) &&
-                            listView.Items[j].SubItems[1].Text.ToUpperInvariant().Equals(ProcPath.ToUpperInvariant())
-                            )
+                        string ProcPath = Utils.GetProcessMainModulePath(p);
+                        if (string.IsNullOrEmpty(ProcPath))
+                            continue;
+
+                        // Scan list of already added items to prevent duplicates
+                        bool skip = false;
+                        for (int j = 0; j < listView.Items.Count; ++j)
                         {
-                            skip = true;
-                            break;
+                            if (listView.Items[j].SubItems[0].Text.ToUpperInvariant().Equals(p.ProcessName.ToUpperInvariant()) &&
+                                listView.Items[j].SubItems[1].Text.ToUpperInvariant().Equals(ProcPath.ToUpperInvariant())
+                                )
+                            {
+                                skip = true;
+                                break;
+                            }
                         }
+                        if (skip)
+                            continue;
+
+                        // Add icon
+                        if (!IconList.Images.ContainsKey(ProcPath))
+                            IconList.Images.Add(ProcPath, Utils.GetIcon(ProcPath, 16, 16));
+
+                        // Add list item
+                        ListViewItem li = new ListViewItem(p.ProcessName);
+                        li.ImageKey = ProcPath;
+                        li.SubItems.Add(ProcPath);
+                        li.Tag = ProcPath;
+                        itemColl.Add(li);
                     }
-                    if (skip)
-                        continue;
-
-                    // Add icon
-                    if (!IconList.Images.ContainsKey(ProcPath))
-                        IconList.Images.Add(ProcPath, Utils.GetIcon(ProcPath, 16, 16));
-
-                    // Add list item
-                    ListViewItem li = new ListViewItem(p.ProcessName);
-                    li.ImageKey = ProcPath;
-                    li.SubItems.Add(ProcPath);
-                    li.Tag = ProcPath;
-                    itemColl.Add(li);
-                }
-                catch
-                {
+                    catch
+                    {
+                    }
                 }
             }
 

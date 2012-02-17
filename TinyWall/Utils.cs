@@ -108,7 +108,10 @@ namespace PKSoft
             int dummy = NativeMethods.GetWindowThreadProcessId(NativeMethods.WindowFromPoint(new System.Drawing.Point(x, y)), out ProcId);
 
             // Get executable of process
-            return Utils.GetProcessMainModulePath(Process.GetProcessById(ProcId));
+            using (Process p = Process.GetProcessById(ProcId))
+            {
+                return Utils.GetProcessMainModulePath(p);
+            }
         }
 
         internal static string RandomString(int length)
