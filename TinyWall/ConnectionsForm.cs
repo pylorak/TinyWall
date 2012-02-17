@@ -12,6 +12,13 @@ namespace PKSoft
 {
     internal partial class ConnectionsForm : Form
     {
+        private struct ProcInfo
+        {
+            internal int pid;
+            internal string name;
+            internal string path;
+        }
+
         private List<FirewallLogEntry> FwLogEntries = new List<FirewallLogEntry>();
         private MainForm MainForm = null;
 
@@ -30,6 +37,7 @@ namespace PKSoft
         private void UpdateList()
         {
             List<ListViewItem> itemColl = new List<ListViewItem>();
+            Dictionary<int, ProcInfo> procCache = new Dictionary<int, ProcInfo>();
 
             ReqResp fwLogRequest = GlobalInstances.CommunicationMan.QueueMessage(new Message(TinyWallCommands.READ_FW_LOG));
 
@@ -40,14 +48,14 @@ namespace PKSoft
             {
                 if ( (chkShowListen.Checked && (tcpRow.State == TcpState.Listen))
                   || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
-                    ConstructListItem(itemColl, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString());
+                    ConstructListItem(itemColl, procCache, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString());
             }
             tcpTable = NetStat.GetExtendedTcp6Table(false);
             foreach (TcpRow tcpRow in tcpTable)
             {
                 if ((chkShowListen.Checked && (tcpRow.State == TcpState.Listen))
                  || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
-                    ConstructListItem(itemColl, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString());
+                    ConstructListItem(itemColl, procCache, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString());
             }
 
             if (chkShowListen.Checked)
@@ -56,12 +64,12 @@ namespace PKSoft
                 UdpTable udpTable = NetStat.GetExtendedUdp4Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
-                    ConstructListItem(itemColl, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen");
+                    ConstructListItem(itemColl, procCache, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen");
                 }
                 udpTable = NetStat.GetExtendedUdp6Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
-                    ConstructListItem(itemColl, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen");
+                    ConstructListItem(itemColl, procCache, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen");
                 }
             }
 
@@ -105,7 +113,7 @@ namespace PKSoft
                 for (int i = 0; i < FwLogEntries.Count; ++i)
                 {
                     FirewallLogEntry entry = FwLogEntries[i];
-                    ConstructListItem(itemColl, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked");
+                    ConstructListItem(itemColl, procCache, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked");
                 }
             }
 
@@ -116,53 +124,63 @@ namespace PKSoft
             list.ResumeLayout(false);
         }
 
-        private void ConstructListItem(List<ListViewItem> itemColl, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state)
+        private void ConstructListItem(List<ListViewItem> itemColl, Dictionary<int, ProcInfo> procCache, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state)
         {
-            // Get process
-            Process proc = null;
             try
             {
-                proc = Process.GetProcessById(procId);
+                // Get process information
+                ProcInfo pi = new ProcInfo();
+                if (procCache.ContainsKey(procId))
+                    pi = procCache[procId];
+                else
+                {
+                    using (Process proc = Process.GetProcessById(procId))
+                    {
+                        pi.pid = procId;
+                        pi.name = proc.ProcessName;
+                        pi.path = Utils.GetProcessMainModulePath(proc);
+                        if (string.IsNullOrEmpty(pi.path))
+                        {
+                            // We couldn't extract path of process
+                            if (pi.name.Equals("System", StringComparison.OrdinalIgnoreCase))
+                                pi.path = "System";
+                            else
+                                pi.path = string.Empty;
+                        }
+                    }
+                    procCache.Add(procId, pi);
+                }
+
+                // Construct list item
+                ListViewItem li = new ListViewItem(string.Format(CultureInfo.CurrentCulture, "{0}({1})", pi.name, pi.pid));
+                li.Tag = pi.pid;
+                li.ToolTipText = pi.path;
+
+                if (System.IO.Path.IsPathRooted(pi.path))
+                {
+                    if (!IconList.Images.ContainsKey(pi.path))
+                    {
+                        // Get icon
+                        IconList.Images.Add(pi.path, Utils.GetIcon(pi.path, 16, 16));
+                    }
+                    li.ImageKey = pi.path;
+                }
+
+                li.SubItems.Add(protocol);
+                li.SubItems.Add(localEP.Port.ToString(CultureInfo.InvariantCulture).PadLeft(5));
+                li.SubItems.Add(localEP.Address.ToString());
+                li.SubItems.Add(remoteEP.Port.ToString(CultureInfo.InvariantCulture).PadLeft(5));
+                li.SubItems.Add(remoteEP.Address.ToString());
+                li.SubItems.Add(state);
+                itemColl.Add(li);
             }
-            catch (ArgumentException)
+            catch
             {
-                // Process ID has become invalid,
-                // do not add item to collection.
+                // Most probably process ID has become invalid,
+                // but we also catch other errors too.
+                // Simply do not add item to the list.
                 return;
             }
-
-            ListViewItem li = new ListViewItem(string.Format(CultureInfo.CurrentCulture, "{0}({1})", proc.ProcessName, proc.Id));
-            li.Tag = proc.Id;
-
-            // Get path
-            string path = Utils.GetProcessMainModulePath(proc);
-            if (string.IsNullOrEmpty(path))
-            {
-                // We couldn't extract path of process
-                if (proc.ProcessName.Equals("System", StringComparison.OrdinalIgnoreCase))
-                    li.ToolTipText = "System";
-                else
-                    li.ToolTipText = string.Empty;
-            }
-            else
-            {
-                li.ToolTipText = path;
-
-                // Get icon
-                if (!IconList.Images.ContainsKey(path))
-                {
-                    IconList.Images.Add(path, Utils.GetIcon(path, 16, 16));
-                }
-                li.ImageKey = path;
-            }
-
-            li.SubItems.Add(protocol);
-            li.SubItems.Add(localEP.Port.ToString(CultureInfo.InvariantCulture).PadLeft(5));
-            li.SubItems.Add(localEP.Address.ToString());
-            li.SubItems.Add(remoteEP.Port.ToString(CultureInfo.InvariantCulture).PadLeft(5));
-            li.SubItems.Add(remoteEP.Address.ToString());
-            li.SubItems.Add(state);
-            itemColl.Add(li);
         }
 
         private void list_ColumnClick(object sender, ColumnClickEventArgs e)
