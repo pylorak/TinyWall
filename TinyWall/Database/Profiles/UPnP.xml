@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Profile Name="SSDP">
+<Profile Name="UPnP">
+  <!-- NOTE: To use UPnP, additionally enable the SSDP profile too! -->
   <Rules>
-    <RuleDef Name="SSDP Server">
+    <RuleDef Name="UPnP Server">
       <Action>Allow</Action>
-      <Protocol>UDP</Protocol>
+      <Protocol>TCP</Protocol>
       <Direction>In</Direction>
-      <LocalPorts>1900</LocalPorts>
+      <LocalPorts>2869</LocalPorts>
       <RemoteAddresses>LocalSubnet</RemoteAddresses>
     </RuleDef>
-    <RuleDef Name="SSDP Client">
+    <RuleDef Name="UPnP Client">
       <Action>Allow</Action>
-      <Protocol>UDP</Protocol>
+      <Protocol>TCP</Protocol>
       <Direction>Out</Direction>
-      <RemotePorts>1900</RemotePorts>
       <RemoteAddresses>LocalSubnet</RemoteAddresses>
     </RuleDef>
   </Rules>

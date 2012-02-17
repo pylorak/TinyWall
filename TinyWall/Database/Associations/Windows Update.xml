@@ -2,7 +2,6 @@
 <Application Name="Windows Update" Recommended="true" Special="true">
 	<Files>
 	<ProfileAssoc Executable="{folder:sys32}\svchost.exe" Service="wuauserv">
-		<Description>Windows Update</Description>
 		<Profiles>
 			<string>HTTP(S) client</string>
 		</Profiles>

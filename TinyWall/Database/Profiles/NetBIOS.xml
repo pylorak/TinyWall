@@ -1,28 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Profile Name="File and printer sharing">
+<Profile Name="NetBIOS">
   <Rules>
-    <RuleDef Name="File and printer sharing UDP Client">
+    <RuleDef Name="NetBIOS UDP Client">
       <Action>Allow</Action>
       <Protocol>UDP</Protocol>
       <Direction>Out</Direction>
       <RemotePorts>137,138</RemotePorts>
       <RemoteAddresses>LocalSubnet</RemoteAddresses>
     </RuleDef>
-    <RuleDef Name="File and printer sharing TCP Client">
+    <RuleDef Name="NetBIOS TCP Client">
       <Action>Allow</Action>
       <Protocol>TCP</Protocol>
       <Direction>Out</Direction>
       <RemotePorts>139,445</RemotePorts>
       <RemoteAddresses>LocalSubnet</RemoteAddresses>
     </RuleDef>
-    <RuleDef Name="File and printer sharing UDP Server">
+    <RuleDef Name="NetBIOS UDP Server">
       <Action>Allow</Action>
       <Protocol>UDP</Protocol>
       <Direction>In</Direction>
       <LocalPorts>137,138</LocalPorts>
       <RemoteAddresses>LocalSubnet</RemoteAddresses>
     </RuleDef>
-    <RuleDef Name="File and printer sharing TCP Server">
+    <RuleDef Name="NetBIOS TCP Server">
       <Action>Allow</Action>
       <Protocol>TCP</Protocol>
       <Direction>In</Direction>

@@ -2,9 +2,9 @@
 <Application Name="Windows DNS Client" Recommended="true" Special="true">
 	<Files>
 	<ProfileAssoc Executable="{folder:sys32}\svchost.exe" Service="Dnscache">
-		<Description>Windows DNS client</Description>
 		<Profiles>
 			<string>DNS client</string>
+			<string>LLMNR-UDP</string>
 		</Profiles>
 	</ProfileAssoc>
 	</Files>

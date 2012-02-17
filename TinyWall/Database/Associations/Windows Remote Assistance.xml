@@ -1,9 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application Name="Windows Remote Assistance" Special="true">
 	<Files>
-	<ProfileAssoc Executable="{folder:sys32}\svchost.exe">
+	<ProfileAssoc Executable="{folder:sys32}\svchost.exe" Service="PNRPsvc">
 		<Profiles>
 			<string>PNRP</string>
+		</Profiles>
+	</ProfileAssoc>
+	<ProfileAssoc Executable="{folder:sys32}\svchost.exe" Service="ssdpsrv">
+		<Profiles>
 			<string>SSDP</string>
 		</Profiles>
 	</ProfileAssoc>

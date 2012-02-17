@@ -2,7 +2,6 @@
 <Application Name="Windows DHCP Client" Recommended="true" Special="true">
 	<Files>
 	<ProfileAssoc Executable="{folder:sys32}\svchost.exe" Service="dhcp">
-		<Description>Windows DHCP client</Description>
 		<Profiles>
 			<string>DHCP client</string>
 		</Profiles>

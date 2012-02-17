@@ -2,10 +2,8 @@
 <Application Name="File and printer sharing" Recommended="false" Special="true">
 	<Files>
 	<ProfileAssoc Executable="System">
-		<Description>File and printer sharing</Description>
 		<Profiles>
-			<string>File and printer sharing</string>
-			<string>LLMNR-UDP</string>
+			<string>NetBIOS</string>
 		</Profiles>
 	</ProfileAssoc>
 	</Files>

@@ -2,7 +2,6 @@
 <Application Name="Windows Time Sync" Recommended="true" Special="true">
 	<Files>
 	<ProfileAssoc Executable="{folder:sys32}\svchost.exe" Service="W32Time">
-		<Description>Windows time synchronization</Description>
 		<Profiles>
 			<string>Time synchronization</string>
 		</Profiles>
