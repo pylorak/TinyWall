@@ -134,10 +134,18 @@ namespace PKSoft
             ListViewItem li = new ListViewItem(string.Format(CultureInfo.CurrentCulture, "{0}({1})", proc.ProcessName, proc.Id));
             li.Tag = proc.Id;
 
-            try
+            // Get path
+            string path = Utils.GetProcessMainModulePath(proc);
+            if (string.IsNullOrEmpty(path))
             {
-                // Get path
-                string path = proc.MainModule.FileName;
+                // We couldn't extract path of process
+                if (proc.ProcessName.Equals("System", StringComparison.OrdinalIgnoreCase))
+                    li.ToolTipText = "System";
+                else
+                    li.ToolTipText = string.Empty;
+            }
+            else
+            {
                 li.ToolTipText = path;
 
                 // Get icon
@@ -146,16 +154,6 @@ namespace PKSoft
                     IconList.Images.Add(path, Utils.GetIcon(path, 16, 16));
                 }
                 li.ImageKey = path;
-            }
-            catch
-            {
-                // If anything goes wrong above, well, we won't have an icon.
-                // Who cares...
-                // Notably, proc.MainModule.FileName throws often for some system processes
-                if (proc.ProcessName.Equals("System", StringComparison.OrdinalIgnoreCase))
-                    li.ToolTipText = "System";
-                else
-                    li.ToolTipText = string.Empty;
             }
 
             li.SubItems.Add(protocol);
