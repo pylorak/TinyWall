@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="WSD Event">
+  <Rules>
+    <RuleDef Name="WSD Event Server">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>In</Direction>
+      <LocalPorts>5357,5358</LocalPorts>
+      <RemoteAddresses>LocalSubnet</RemoteAddresses>
+    </RuleDef>
+    <RuleDef Name="WSD Event Client">
+      <Action>Allow</Action>
+      <Protocol>TCP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>5357,5358</RemotePorts>
+      <RemoteAddresses>LocalSubnet</RemoteAddresses>
+    </RuleDef>
+  </Rules>
+</Profile>

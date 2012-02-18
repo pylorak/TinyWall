@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profile Name="WSD">
+  <Rules>
+    <RuleDef Name="WSD Server">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>In</Direction>
+      <LocalPorts>3702</LocalPorts>
+      <RemoteAddresses>LocalSubnet</RemoteAddresses>
+    </RuleDef>
+    <RuleDef Name="WSD Client">
+      <Action>Allow</Action>
+      <Protocol>UDP</Protocol>
+      <Direction>Out</Direction>
+      <RemotePorts>3702</RemotePorts>
+      <RemoteAddresses>LocalSubnet</RemoteAddresses>
+    </RuleDef>
+  </Rules>
+</Profile>
