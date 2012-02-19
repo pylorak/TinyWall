@@ -5,7 +5,7 @@
       <Action>Allow</Action>
       <Protocol>TCP</Protocol>
       <Direction>In</Direction>
-      <LocalPorts>5900-5902,5800-5802</LocalPorts>
+      <LocalPorts>5900,5901,5902,5800,5801,5802</LocalPorts>
     </RuleDef>
   </Rules>
 </Profile>

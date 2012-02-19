@@ -13,12 +13,12 @@
       <Direction>InOut</Direction>
       <RemotePorts>4500</RemotePorts>
     </RuleDef>
-	<RuleDef Name="LT2P/IPSec Traffic (Initiator)">
-	  <Action>Allow</Action>
-	  <RemotePorts>1701</RemotePorts>
-	  <Protocol>UDP</Protocol>
-	  <Direction>InOut</Direction>
-	</RuleDef>
+    <RuleDef Name="LT2P/IPSec Traffic (Initiator)">
+      <Action>Allow</Action>
+      <RemotePorts>1701</RemotePorts>
+      <Protocol>UDP</Protocol>
+      <Direction>InOut</Direction>
+    </RuleDef>
     <RuleDef Name="IPSec ESP">
       <Action>Allow</Action>
       <Protocol>ESP</Protocol>

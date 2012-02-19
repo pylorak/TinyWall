@@ -430,8 +430,8 @@
     <value>14</value>
   </data>
   <data name="label5.Text" xml:space="preserve">
-    <value>Port descriptions can contain multiple numbers and ranges.
-Example: 21, 80, 1024-1025</value>
+    <value>Port descriptions can contain comma-separated lists.
+Example: 21, 80, 1025</value>
   </data>
   <data name="&gt;&gt;label5.Name" xml:space="preserve">
     <value>label5</value>

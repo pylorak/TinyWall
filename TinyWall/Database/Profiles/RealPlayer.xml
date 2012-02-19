@@ -11,7 +11,7 @@
       <Action>Allow</Action>
       <Protocol>UDP</Protocol>
       <Direction>Out</Direction>
-      <RemotePorts>6970-32000,1755</RemotePorts>
+      <RemotePorts>EPHEMERAL</RemotePorts>
     </RuleDef>
   </Rules>
 </Profile>

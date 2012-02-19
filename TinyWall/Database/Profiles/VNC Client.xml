@@ -5,7 +5,7 @@
       <Action>Allow</Action>
       <Protocol>TCP</Protocol>
       <Direction>Out</Direction>
-      <RemotePorts>5900-5902,5800-5802</RemotePorts>
+      <RemotePorts>5900,5901,5902,5800,5801,5802</RemotePorts>
     </RuleDef>
   </Rules>
 </Profile>

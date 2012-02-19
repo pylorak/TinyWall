@@ -138,8 +138,13 @@ namespace PKSoft
                 }
                 if (!string.IsNullOrEmpty(this.RemotePorts))
                 {
-                    this.RemotePorts = this.RemotePorts.Replace(EPHEMERAL_TOKEN, EPHEMERAL_PORT_RANGE);
-                    r.RemotePorts = this.RemotePorts;
+                    // Windows Vista does not support port ranges. On Vista, we replace EPHEMERAL with no port restriction.
+                    Version Win7Version = new Version(6,1,0,0);
+                    if (!this.RemotePorts.Contains(EPHEMERAL_TOKEN) || (Environment.OSVersion.Version >= Win7Version))
+                    {
+                        this.RemotePorts = this.RemotePorts.Replace(EPHEMERAL_TOKEN, EPHEMERAL_PORT_RANGE);
+                        r.RemotePorts = this.RemotePorts;
+                    }
                 }
 
                 ruleset.Add(r);
