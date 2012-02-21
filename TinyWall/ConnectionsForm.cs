@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -185,7 +184,12 @@ namespace PKSoft
 
         private void list_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            list.ListViewItemSorter = new ListViewItemComparer(e.Column);
+            ListViewItemComparer oldSorter = list.ListViewItemSorter as ListViewItemComparer;
+            ListViewItemComparer newSorter = new ListViewItemComparer(e.Column);
+            if ((oldSorter != null) && (oldSorter.Column == newSorter.Column))
+                newSorter.Ascending = !oldSorter.Ascending;
+
+            list.ListViewItemSorter = newSorter;
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)
@@ -319,24 +323,4 @@ namespace PKSoft
             MainForm.ApplyFirewallSettings(null, SettingsManager.CurrentZone, true);
         }
     }
-
-
-    // Implements the manual sorting of items by columns.
-    internal class ListViewItemComparer : IComparer
-    {
-        private int col;
-        internal ListViewItemComparer()
-        {
-            col = 0;
-        }
-        internal ListViewItemComparer(int column)
-        {
-            col = column;
-        }
-        public int Compare(object x, object y)
-        {
-            return String.Compare(((ListViewItem)x).SubItems[col].Text, ((ListViewItem)y).SubItems[col].Text, StringComparison.CurrentCulture);
-        }
-    }
-
 }

@@ -119,6 +119,7 @@
     <Compile Include="Hasher.cs" />
     <Compile Include="HostsFileManager.cs" />
     <Compile Include="Hotkey.cs" />
+    <Compile Include="ListViewItemComprarer.cs" />
     <Compile Include="Resources\Icons.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

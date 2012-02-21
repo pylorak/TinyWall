@@ -200,6 +200,7 @@
             this.listApplications.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listApplications.UseCompatibleStateImageBehavior = false;
             this.listApplications.View = System.Windows.Forms.View.Details;
+            this.listApplications.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listApplications_ColumnClick);
             this.listApplications.SelectedIndexChanged += new System.EventHandler(this.listApplications_SelectedIndexChanged);
             this.listApplications.DoubleClick += new System.EventHandler(this.listApplications_DoubleClick);
             // 

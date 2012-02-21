@@ -490,5 +490,15 @@ namespace PKSoft
             ApplyExceptionFilter();
         }
 
+        private void listApplications_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            ListViewItemComparer oldSorter = listApplications.ListViewItemSorter as ListViewItemComparer;
+            ListViewItemComparer newSorter = new ListViewItemComparer(e.Column);
+            if ((oldSorter != null) && (oldSorter.Column == newSorter.Column))
+                newSorter.Ascending = !oldSorter.Ascending;
+
+            listApplications.ListViewItemSorter = newSorter;
+        }
+
     }
 }
