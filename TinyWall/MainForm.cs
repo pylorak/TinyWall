@@ -16,6 +16,7 @@ namespace PKSoft
         private SettingsForm ShownSettings;
         private ServiceState FirewallState;
         private DateTime LastUpdateNotification = DateTime.MinValue;
+        private uint WM_NOTIFY_BY_SERVICE;
 
         // Traffic rate monitoring
         private System.Threading.Timer TrafficTimer = null;
@@ -211,8 +212,8 @@ namespace PKSoft
 
         private void SetMode(FirewallMode mode)
         {
-            TinyWallCommands opret = TinyWallCommands.RESPONSE_ERROR;
-            Message req = new Message(TinyWallCommands.MODE_SWITCH, mode);
+            TWControllerMessages opret = TWControllerMessages.RESPONSE_ERROR;
+            Message req = new Message(TWControllerMessages.MODE_SWITCH, mode);
             Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
 
             string usermsg = string.Empty;
@@ -237,7 +238,7 @@ namespace PKSoft
 
             switch (resp.Command)
             {
-                case TinyWallCommands.RESPONSE_OK:
+                case TWControllerMessages.RESPONSE_OK:
                     FirewallState.Mode = mode;
                     ShowBalloonTip(usermsg, ToolTipIcon.Info);
                     break;
@@ -289,9 +290,9 @@ namespace PKSoft
             if (FirewallState == null)
                 FirewallState = new ServiceState();
 
-            Message req = new Message(TinyWallCommands.GET_SETTINGS, force ? int.MinValue : FirewallState.SettingsChangeset );
+            Message req = new Message(TWControllerMessages.GET_SETTINGS, force ? int.MinValue : FirewallState.SettingsChangeset, this.Handle );
             Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
-            if (resp.Command == TinyWallCommands.RESPONSE_OK)
+            if (resp.Command == TWControllerMessages.RESPONSE_OK)
             {
                 int ServerChangeSet = (int)resp.Arguments[0];
                 if (force || (ServerChangeSet != FirewallState.SettingsChangeset))
@@ -399,15 +400,15 @@ namespace PKSoft
             AddNewException(ex); 
         }
         
-        internal TinyWallCommands ApplyFirewallSettings(MachineSettings machine, ZoneSettings zone, bool showUI = true)
+        internal TWControllerMessages ApplyFirewallSettings(MachineSettings machine, ZoneSettings zone, bool showUI = true)
         {
             Message resp;
             if (LoadSettingsFromServer())
             {
                 // From LoadSettingsFromServer we cannot tell if there was a communication error or if no settings were reloaded.
                 // We ping to determine if there was a communication error.
-                resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.PING);
-                if (resp.Command != TinyWallCommands.RESPONSE_OK)
+                resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TWControllerMessages.PING);
+                if (resp.Command != TWControllerMessages.RESPONSE_OK)
                 {
                     DefaultPopups(resp.Command);
                     return resp.Command;
@@ -416,17 +417,17 @@ namespace PKSoft
                 // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
                 ShowBalloonTip(PKSoft.Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
 
-                return TinyWallCommands.RESPONSE_ERROR;
+                return TWControllerMessages.RESPONSE_ERROR;
             }
 
-            Message req = new Message(TinyWallCommands.PUT_SETTINGS, machine, zone);
+            Message req = new Message(TWControllerMessages.PUT_SETTINGS, machine, zone);
             resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
 
             if (showUI)
             {
                 switch (resp.Command)
                 {
-                    case TinyWallCommands.RESPONSE_OK:
+                    case TWControllerMessages.RESPONSE_OK:
                         ShowBalloonTip(PKSoft.Resources.Messages.TheFirewallSettingsHaveBeenUpdated, ToolTipIcon.Info);
                         if (machine != null) 
                             SettingsManager.GlobalConfig = machine;
@@ -443,24 +444,24 @@ namespace PKSoft
             return resp.Command;
         }
 
-        private void DefaultPopups(TinyWallCommands op)
+        private void DefaultPopups(TWControllerMessages op)
         {
             switch (op)
             {
-                case TinyWallCommands.RESPONSE_OK:
+                case TWControllerMessages.RESPONSE_OK:
                     ShowBalloonTip(PKSoft.Resources.Messages.Success, ToolTipIcon.Info);
                     break;
-                case TinyWallCommands.RESPONSE_WARNING:
+                case TWControllerMessages.RESPONSE_WARNING:
                     ShowBalloonTip(PKSoft.Resources.Messages.OtherSettingsPreventEffect, ToolTipIcon.Warning);
                     break;
-                case TinyWallCommands.RESPONSE_ERROR:
+                case TWControllerMessages.RESPONSE_ERROR:
                     ShowBalloonTip(PKSoft.Resources.Messages.OperationFailed, ToolTipIcon.Error);
                     break;
-                case TinyWallCommands.RESPONSE_LOCKED:
+                case TWControllerMessages.RESPONSE_LOCKED:
                     ShowBalloonTip(PKSoft.Resources.Messages.TinyWallIsCurrentlyLocked, ToolTipIcon.Warning);
                     Locked = true;
                     break;
-                case TinyWallCommands.COM_ERROR:
+                case TWControllerMessages.COM_ERROR:
                 default:
                     ShowBalloonTip(PKSoft.Resources.Messages.CommunicationWithTheServiceError, ToolTipIcon.Error);
                     break;
@@ -471,7 +472,7 @@ namespace PKSoft
         {
             if (Locked)
             {
-                DefaultPopups(TinyWallCommands.RESPONSE_LOCKED);
+                DefaultPopups(TWControllerMessages.RESPONSE_LOCKED);
                 return;
             }
 
@@ -502,9 +503,9 @@ namespace PKSoft
                         {
                             // Set the password. If the operation is successfull, do not report anything as we will be setting 
                             // the other settings too and we want to avoid multiple popups.
-                            Message req = new Message(TinyWallCommands.SET_PASSPHRASE, Hasher.HashString(passwd));
+                            Message req = new Message(TWControllerMessages.SET_PASSPHRASE, Hasher.HashString(passwd));
                             Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
-                            if (resp.Command != TinyWallCommands.RESPONSE_OK)  // Only display a popup for setting the password if it did not succeed
+                            if (resp.Command != TWControllerMessages.RESPONSE_OK)  // Only display a popup for setting the password if it did not succeed
                             {
                                 DefaultPopups(resp.Command);
                                 return;
@@ -613,10 +614,10 @@ namespace PKSoft
                 SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, exceptions[i]);
             SettingsManager.CurrentZone.Normalize();
 
-            TinyWallCommands resp = ApplyFirewallSettings(null, SettingsManager.CurrentZone, false);
+            TWControllerMessages resp = ApplyFirewallSettings(null, SettingsManager.CurrentZone, false);
             switch (resp)
             {
-                case TinyWallCommands.RESPONSE_OK:
+                case TWControllerMessages.RESPONSE_OK:
                     if (ex.Recognized.HasValue && ex.Recognized.Value)
                         ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForRecognizedChanged, ex.ExecutableName), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(ex));
                     else
@@ -640,16 +641,16 @@ namespace PKSoft
                     pf.Activate();
                     if (pf.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                     {
-                        Message req = new Message(TinyWallCommands.UNLOCK, pf.PassHash);
+                        Message req = new Message(TWControllerMessages.UNLOCK, pf.PassHash);
                         Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
                         switch (resp.Command)
                         {
-                            case TinyWallCommands.RESPONSE_OK:
+                            case TWControllerMessages.RESPONSE_OK:
                                 this.Locked = false;
                                 FirewallState.Locked = false;
                                 ShowBalloonTip(PKSoft.Resources.Messages.TinyWallHasBeenUnlocked, ToolTipIcon.Info);
                                 break;
-                            case TinyWallCommands.RESPONSE_ERROR:
+                            case TWControllerMessages.RESPONSE_ERROR:
                                 ShowBalloonTip(PKSoft.Resources.Messages.UnlockFailed, ToolTipIcon.Error);
                                 break;
                             default:
@@ -661,7 +662,7 @@ namespace PKSoft
             }
             else
             {
-                if (GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.LOCK).Command == TinyWallCommands.RESPONSE_OK)
+                if (GlobalInstances.CommunicationMan.QueueMessageSimple(TWControllerMessages.LOCK).Command == TWControllerMessages.RESPONSE_OK)
                 {
                     this.Locked = true;
                     FirewallState.Locked = true;
@@ -754,6 +755,24 @@ namespace PKSoft
             }
         }
 
+        private void LoadDatabase()
+        {
+            try
+            {
+                GlobalInstances.ProfileMan = ProfileManager.Load(ProfileManager.DBPath);
+            }
+            catch
+            {
+                GlobalInstances.ProfileMan = new ProfileManager();
+                Utils.Invoke(this, (MethodInvoker)delegate()
+                {
+                    ShowBalloonTip(PKSoft.Resources.Messages.DatabaseIsMissingOrCorrupt, ToolTipIcon.Warning);
+                });
+
+                throw;
+            }
+        }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             // We will load our database parallel to other things to improve startup performance
@@ -762,16 +781,9 @@ namespace PKSoft
             {
                 try
                 {
-                    GlobalInstances.ProfileMan = ProfileManager.Load(ProfileManager.DBPath);
+                    LoadDatabase();
                 }
-                catch
-                {
-                    GlobalInstances.ProfileMan = new ProfileManager();
-                    Utils.Invoke(this, (MethodInvoker)delegate()
-                    {
-                        ShowBalloonTip(PKSoft.Resources.Messages.DatabaseIsMissingOrCorrupt, ToolTipIcon.Warning);
-                    });
-                }
+                catch { }
                 finally
                 {
                     barrier.Wait();
@@ -835,6 +847,34 @@ namespace PKSoft
             {
                 StartUpdate(null, null);
             }
+        }
+
+        protected override void WndProc(ref System.Windows.Forms.Message m)
+        {
+            if (WM_NOTIFY_BY_SERVICE == 0)
+                WM_NOTIFY_BY_SERVICE = NativeMethods.RegisterWindowMessage("WM_NOTIFY_BY_SERVICE");
+
+            //if the window message id equals the QueryCancelAutoPlay message id
+            if ((uint)m.Msg == WM_NOTIFY_BY_SERVICE)
+            {
+                switch (m.WParam.ToInt32())
+                {
+                    case (int)TWServiceMessages.DATABASE_UPDATED:
+                        try
+                        {
+                            LoadDatabase();
+                        }
+                        catch { }
+                        break;
+                    case (int)TWServiceMessages.SETTINGS_CHANGED:
+                        LoadSettingsFromServer();
+                        break;
+                }
+                m.Result = (IntPtr)1;
+            }
+
+            //calling the base first is important, otherwise the values you set later will be lost
+            base.WndProc(ref m);
         }
     }
 

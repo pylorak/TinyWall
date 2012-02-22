@@ -107,8 +107,8 @@ namespace PKSoft
 
             label1.Text = PKSoft.Resources.Messages.StartingUpdate;
             progressBar1.Value = progressBar1.Maximum;
-            Message resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.STOP_DISABLE);
-            if (resp.Command == TinyWallCommands.RESPONSE_LOCKED)
+            Message resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TWControllerMessages.STOP_DISABLE);
+            if (resp.Command == TWControllerMessages.RESPONSE_LOCKED)
             {
                 MessageBox.Show(this, PKSoft.Resources.Messages.TinyWallIsCurrentlyLocked, PKSoft.Resources.Messages.TinyWallUpdate, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 this.Close();

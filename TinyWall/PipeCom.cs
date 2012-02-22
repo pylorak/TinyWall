@@ -42,9 +42,9 @@ namespace PKSoft
             base.Dispose(disposing);
         }
 
-        internal PipeCom(string pipeName, PipeDataReceived recvCallback)
+        internal PipeCom(string serverPipeName, PipeDataReceived recvCallback)
         {
-            PipeName = pipeName;
+            PipeName = serverPipeName;
 
             // Allow authenticated users access to the pipe
             SecurityIdentifier AuthenticatedSID = new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null);
@@ -53,7 +53,7 @@ namespace PKSoft
             ps.AddAccessRule(par);            
 
             // Create pipe server
-            m_Pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.None, 2048, 2048, ps);
+            m_Pipe = new NamedPipeServerStream(serverPipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.None, 2048, 2048, ps);
             m_RcvCallback = recvCallback;
 
             // Start thread that is going to do the actual communication
@@ -62,9 +62,9 @@ namespace PKSoft
             m_PipeWorkerThread.Start();
         }
 
-        internal PipeCom(string pipeName)
+        internal PipeCom(string clientPipeName)
         {
-            PipeName = pipeName;
+            PipeName = clientPipeName;
             m_ReqQueue = new RequestQueue();
 
             // Start thread that is going to do the actual communication
@@ -115,9 +115,9 @@ namespace PKSoft
                 {
                     PipeClient.Connect(50);
                     if (!PipeClient.IsConnected)
-                        return new Message(TinyWallCommands.COM_ERROR);
+                        return new Message(TWControllerMessages.COM_ERROR);
                     else if (!AuthAsClient())
-                        return new Message(TinyWallCommands.COM_ERROR);
+                        return new Message(TWControllerMessages.COM_ERROR);
                 }
 
                 // Send command
@@ -133,7 +133,7 @@ namespace PKSoft
                     m_Pipe.Dispose();
                     m_Pipe = null;
                 }
-                return new Message(TinyWallCommands.COM_ERROR);
+                return new Message(TWControllerMessages.COM_ERROR);
             }
         }
 
@@ -154,7 +154,7 @@ namespace PKSoft
             return resp;
         }
 
-        internal Message QueueMessageSimple(TinyWallCommands cmd)
+        internal Message QueueMessageSimple(TWControllerMessages cmd)
         {
             return QueueMessage(new Message(cmd)).GetResponse();
         }
@@ -173,19 +173,19 @@ namespace PKSoft
         private bool AuthAsServer()
         {
             Message cli = ReadMsg();
-            if ((cli.Command != TinyWallCommands.VERIFY_KEYS) || ((string)cli.Arguments[0] != CLIENT_PUBLIC_KEY))
+            if ((cli.Command != TWControllerMessages.VERIFY_KEYS) || ((string)cli.Arguments[0] != CLIENT_PUBLIC_KEY))
                 return false;
 
-            WriteMsg(new Message(TinyWallCommands.VERIFY_KEYS, SERVER_PUBLIC_KEY));
+            WriteMsg(new Message(TWControllerMessages.VERIFY_KEYS, SERVER_PUBLIC_KEY));
             return true;
         }
 
         private bool AuthAsClient()
         {
-            WriteMsg(new Message(TinyWallCommands.VERIFY_KEYS, CLIENT_PUBLIC_KEY));
+            WriteMsg(new Message(TWControllerMessages.VERIFY_KEYS, CLIENT_PUBLIC_KEY));
 
             Message srv = ReadMsg();
-            if ((srv.Command != TinyWallCommands.VERIFY_KEYS) || ((string)srv.Arguments[0] != SERVER_PUBLIC_KEY))
+            if ((srv.Command != TWControllerMessages.VERIFY_KEYS) || ((string)srv.Arguments[0] != SERVER_PUBLIC_KEY))
                 return false;
 
             return true;

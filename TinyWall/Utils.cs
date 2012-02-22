@@ -93,8 +93,8 @@ namespace PKSoft
             }
             catch
             {
-                Message resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.GET_PROCESS_PATH);
-                if (resp.Command == TinyWallCommands.RESPONSE_OK)
+                Message resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TWControllerMessages.GET_PROCESS_PATH);
+                if (resp.Command == TWControllerMessages.RESPONSE_OK)
                     return resp.Arguments[0] as string;
                 else
                     return null;

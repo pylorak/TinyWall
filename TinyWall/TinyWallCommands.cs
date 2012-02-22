@@ -4,8 +4,8 @@ using System.Threading;
 
 namespace PKSoft
 {
-    // Possible message types between service and controller
-    internal enum TinyWallCommands
+    // Possible message types from controller to service
+    internal enum TWControllerMessages
     {
         // General responses
         INVALID_COMMAND,
@@ -36,34 +36,41 @@ namespace PKSoft
         MINUTE_TIMER
     }
 
+    // Possible message types from service to controller
+    internal enum TWServiceMessages
+    {
+        DATABASE_UPDATED,
+        SETTINGS_CHANGED
+    }
+
     // Encapsulates a message tye and its parameters
     [Serializable]
     internal struct Message
     {
-        internal TinyWallCommands Command;
+        internal TWControllerMessages Command;
         internal object[] Arguments;
 
-        internal Message(TinyWallCommands cmd)
+        internal Message(TWControllerMessages cmd)
         {
             Command = cmd;
             Arguments = null;
         }
-        internal Message(TinyWallCommands cmd, object arg0)
+        internal Message(TWControllerMessages cmd, object arg0)
         {
             Command = cmd;
             Arguments = new object[] { arg0 };
         }
-        internal Message(TinyWallCommands cmd, object arg0, object arg1)
+        internal Message(TWControllerMessages cmd, object arg0, object arg1)
         {
             Command = cmd;
             Arguments = new object[] { arg0, arg1 };
         }
-        internal Message(TinyWallCommands cmd, object arg0, object arg1, object arg2)
+        internal Message(TWControllerMessages cmd, object arg0, object arg1, object arg2)
         {
             Command = cmd;
             Arguments = new object[] { arg0, arg1, arg2 };
         }
-        internal Message(TinyWallCommands cmd, object arg0, object arg1, object arg2, object arg3)
+        internal Message(TWControllerMessages cmd, object arg0, object arg1, object arg2, object arg3)
         {
             Command = cmd;
             Arguments = new object[] { arg0, arg1, arg2, arg3 };

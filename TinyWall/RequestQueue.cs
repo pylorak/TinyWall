@@ -59,7 +59,7 @@ namespace PKSoft
             return ret;
         }
 
-        internal bool HasRequest(TinyWallCommands cmd)
+        internal bool HasRequest(TWControllerMessages cmd)
         {
             lock (FwReqQueue)
             {

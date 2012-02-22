@@ -333,7 +333,7 @@ namespace PKSoft
             {
                 // Stop service
                 // This is a message that does not return successfully even if it was successfull
-                GlobalInstances.CommunicationMan.QueueMessageSimple(TinyWallCommands.STOP_DISABLE);
+                GlobalInstances.CommunicationMan.QueueMessageSimple(TWControllerMessages.STOP_DISABLE);
                 System.Threading.Thread.Sleep(2000);
 
                 // Get path to uninstaller and launch it

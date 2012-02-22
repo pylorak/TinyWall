@@ -29,6 +29,8 @@ namespace PKSoft
         private DateTime LastControllerCommandTime = DateTime.Now;
         private DateTime LastFwLogReadTime = DateTime.Now;
         private FirewallLogWatcher LogWatcher;
+        private IntPtr ControllerHwnd = IntPtr.Zero;
+        private uint WM_NOTIFY_BY_SERVICE = 0;
         
         private WindowsFirewall.Policy Firewall;
         private WindowsFirewall.Rules FwRules;
@@ -393,6 +395,17 @@ namespace PKSoft
             }
         }
 
+        private void NotifyController(TWServiceMessages msg)
+        {
+            if (ControllerHwnd == IntPtr.Zero)
+                return;
+
+            if (WM_NOTIFY_BY_SERVICE == 0)
+                WM_NOTIFY_BY_SERVICE = NativeMethods.RegisterWindowMessage("WM_NOTIFY_BY_SERVICE");
+
+            NativeMethods.PostMessage(ControllerHwnd, WM_NOTIFY_BY_SERVICE, (uint)msg, 0);
+        }
+
         private void UpdaterMethod(object state)
         {
             try
@@ -466,7 +479,8 @@ namespace PKSoft
             FileLocker.UnlockFile(ProfileManager.DBPath);
             File.Copy(tmpFilePath, ProfileManager.DBPath, true);
             FileLocker.LockFile(ProfileManager.DBPath, FileAccess.Read, FileShare.Read);
-            Q.Enqueue(new ReqResp(new Message(TinyWallCommands.REINIT)));
+            NotifyController(TWServiceMessages.DATABASE_UPDATED);
+            Q.Enqueue(new ReqResp(new Message(TWControllerMessages.REINIT)));
         }
 
         public void TimerCallback(Object state)
@@ -474,13 +488,13 @@ namespace PKSoft
             // This timer is called every minute.
 
             // Check if a timed exception has expired
-            if (!Q.HasRequest(TinyWallCommands.MINUTE_TIMER))
-                Q.Enqueue(new ReqResp(new Message(TinyWallCommands.MINUTE_TIMER)));
+            if (!Q.HasRequest(TWControllerMessages.MINUTE_TIMER))
+                Q.Enqueue(new ReqResp(new Message(TWControllerMessages.MINUTE_TIMER)));
 
             // Check for inactivity and lock if necessary
             if (DateTime.Now - LastControllerCommandTime > TimeSpan.FromMinutes(10))
             {
-                Q.Enqueue(new ReqResp(new Message(TinyWallCommands.LOCK)));
+                Q.Enqueue(new ReqResp(new Message(TWControllerMessages.LOCK)));
             }
 
             // Check for updates once every week
@@ -497,30 +511,30 @@ namespace PKSoft
         {
             switch (req.Command)
             {
-                case TinyWallCommands.READ_FW_LOG:
+                case TWControllerMessages.READ_FW_LOG:
                     {
                         if (LogWatcher == null)
                             LogWatcher = new FirewallLogWatcher();
 
                         LastFwLogReadTime = DateTime.Now;
-                        return new Message(TinyWallCommands.RESPONSE_OK, LogWatcher.QueryNewEntries());
+                        return new Message(TWControllerMessages.RESPONSE_OK, LogWatcher.QueryNewEntries());
                     }
-                case TinyWallCommands.PING:
+                case TWControllerMessages.PING:
                     {
-                        return new Message(TinyWallCommands.RESPONSE_OK);
+                        return new Message(TWControllerMessages.RESPONSE_OK);
                     }
-                case TinyWallCommands.MODE_SWITCH:
+                case TWControllerMessages.MODE_SWITCH:
                     {
                         VisibleState.Mode = (FirewallMode)req.Arguments[0];
                         AssembleActiveRules();
                         MergeActiveRulesIntoWinFirewall();
 
                         if (Firewall.LocalPolicyModifyState == LocalPolicyState.GP_OVERRRIDE)
-                            return new Message(TinyWallCommands.RESPONSE_WARNING);
+                            return new Message(TWControllerMessages.RESPONSE_WARNING);
                         else
-                            return new Message(TinyWallCommands.RESPONSE_OK);
+                            return new Message(TWControllerMessages.RESPONSE_OK);
                     }
-                case TinyWallCommands.PUT_SETTINGS:
+                case TWControllerMessages.PUT_SETTINGS:
                     {
                         if (req.Arguments[0] != null)
                         {
@@ -543,12 +557,15 @@ namespace PKSoft
                             InitFirewall();
                         else
                             ReapplySettings();
-                        return new Message(TinyWallCommands.RESPONSE_OK);
+                        return new Message(TWControllerMessages.RESPONSE_OK);
                     }
-                case TinyWallCommands.GET_SETTINGS:
+                case TWControllerMessages.GET_SETTINGS:
                     {
                         // Get changeset of client
                         int changeset = (int)req.Arguments[0];
+
+                        // Get Hwnd of client
+                        ControllerHwnd = (IntPtr)req.Arguments[1];
 
                         // If our changeset is different, send new settings to client
                         if (changeset != VisibleState.SettingsChangeset)
@@ -556,7 +573,7 @@ namespace PKSoft
                             VisibleState.HasPassword = SettingsManager.ServiceConfig.HasPassword;
                             VisibleState.Locked = SettingsManager.ServiceConfig.Locked;
 
-                            return new Message(TinyWallCommands.RESPONSE_OK,
+                            return new Message(TWControllerMessages.RESPONSE_OK,
                                 VisibleState.SettingsChangeset,
                                 SettingsManager.GlobalConfig,
                                 SettingsManager.CurrentZone,
@@ -566,65 +583,65 @@ namespace PKSoft
                         else
                         {
                             // Our changeset is the same, so do not send settings again
-                            return new Message(TinyWallCommands.RESPONSE_OK, VisibleState.SettingsChangeset);
+                            return new Message(TWControllerMessages.RESPONSE_OK, VisibleState.SettingsChangeset);
                         }
                     }
-                case TinyWallCommands.REINIT:
+                case TWControllerMessages.REINIT:
                     {
                         InitFirewall();
-                        return new Message(TinyWallCommands.RESPONSE_OK);
+                        return new Message(TWControllerMessages.RESPONSE_OK);
                     }
-                case TinyWallCommands.RELOAD:
+                case TWControllerMessages.RELOAD:
                     {
                         FwRules = Firewall.GetRules(false);
                         MergeActiveRulesIntoWinFirewall();
-                        return new Message(TinyWallCommands.RESPONSE_OK);
+                        return new Message(TWControllerMessages.RESPONSE_OK);
                     }
-                case TinyWallCommands.UNLOCK:
+                case TWControllerMessages.UNLOCK:
                     {
                         if (SettingsManager.ServiceConfig.Unlock((string)req.Arguments[0]))
-                            return new Message(TinyWallCommands.RESPONSE_OK);
+                            return new Message(TWControllerMessages.RESPONSE_OK);
                         else
-                            return new Message(TinyWallCommands.RESPONSE_ERROR);
+                            return new Message(TWControllerMessages.RESPONSE_ERROR);
                     }
-                case TinyWallCommands.LOCK:
+                case TWControllerMessages.LOCK:
                     {
                         SettingsManager.ServiceConfig.Locked = true;
-                        return new Message(TinyWallCommands.RESPONSE_OK);
+                        return new Message(TWControllerMessages.RESPONSE_OK);
                     }
-                case TinyWallCommands.GET_PROCESS_PATH:
+                case TWControllerMessages.GET_PROCESS_PATH:
                     {
                         try
                         {
                             int pid = (int)req.Arguments[0];
                             using (Process p = Process.GetProcessById(pid))
                             {
-                                return new Message(TinyWallCommands.RESPONSE_OK, p.MainModule.FileName);
+                                return new Message(TWControllerMessages.RESPONSE_OK, p.MainModule.FileName);
                             }
                         }
                         catch
                         {
-                            return new Message(TinyWallCommands.RESPONSE_ERROR);
+                            return new Message(TWControllerMessages.RESPONSE_ERROR);
                         }
                     }
-                case TinyWallCommands.SET_PASSPHRASE:
+                case TWControllerMessages.SET_PASSPHRASE:
                     {
                         FileLocker.UnlockFile(ServiceSettings.PasswordFilePath);
                         try
                         {
                             SettingsManager.ServiceConfig.SetPass((string)req.Arguments[0]);
-                            return new Message(TinyWallCommands.RESPONSE_OK);
+                            return new Message(TWControllerMessages.RESPONSE_OK);
                         }
                         catch
                         {
-                            return new Message(TinyWallCommands.RESPONSE_ERROR);
+                            return new Message(TWControllerMessages.RESPONSE_ERROR);
                         }
                         finally
                         {
                             FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
                         }
                     }
-                case TinyWallCommands.STOP_DISABLE:
+                case TWControllerMessages.STOP_DISABLE:
                     {
                         UninstallRequested = true;
 
@@ -651,9 +668,9 @@ namespace PKSoft
                         // Stop service execution
                         Environment.Exit(0);
 
-                        return new Message(TinyWallCommands.RESPONSE_OK);
+                        return new Message(TWControllerMessages.RESPONSE_OK);
                     }
-                case TinyWallCommands.MINUTE_TIMER:
+                case TWControllerMessages.MINUTE_TIMER:
                     {
                         // Disable firewall logging if its log has not been read recently
                         if (DateTime.Now - LastFwLogReadTime > TimeSpan.FromMinutes(5))
@@ -700,13 +717,14 @@ namespace PKSoft
                             SettingsManager.CurrentZone.AppExceptions = exs;
                             SettingsManager.CurrentZone.Save();
                             VisibleState.SettingsChangeset = Utils.GetRandomNumber();
+                            NotifyController(TWServiceMessages.SETTINGS_CHANGED);
                         }
 
-                        return new Message(TinyWallCommands.RESPONSE_OK);
+                        return new Message(TWControllerMessages.RESPONSE_OK);
                     }
                 default:
                     {
-                        return new Message(TinyWallCommands.RESPONSE_ERROR);
+                        return new Message(TWControllerMessages.RESPONSE_ERROR);
                     }
             }
         }
@@ -753,7 +771,7 @@ namespace PKSoft
             if (((int)req.Command > 2047) && SettingsManager.ServiceConfig.Locked)
             {
                 // Notify that we need to be unlocked first
-                return new Message(TinyWallCommands.RESPONSE_LOCKED, 1);
+                return new Message(TWControllerMessages.RESPONSE_LOCKED, 1);
             }
             else
             {
@@ -782,47 +800,48 @@ namespace PKSoft
                 return;
 
             int propidx = -1;
-            TinyWallCommands cmd = TinyWallCommands.REINIT;
+            TWControllerMessages cmd = TWControllerMessages.REINIT;
             switch (e.EventRecord.Id)
             {
                 case 2003:     // firewall setting changed
                     {
                         propidx = 7;
-                        cmd = TinyWallCommands.REINIT;
+                        cmd = TWControllerMessages.REINIT;
                         break;
                     }
                 case 2004:     // rule added
                     {
                         propidx = 22;
-                        cmd = TinyWallCommands.REINIT;
+                        cmd = TWControllerMessages.REINIT;
                         break;
                     }
                 case 2005:     // rule changed
                     {
                         propidx = 22;
-                        cmd = TinyWallCommands.REINIT;
+                        cmd = TWControllerMessages.REINIT;
                         break;
                     }
                 case 2006:     // rule deleted
                     {
                         propidx = 3;
-                        cmd = TinyWallCommands.REINIT;
+                        cmd = TWControllerMessages.REINIT;
                         break;
                     }
                 case 2010:     // network interface changed profile
                     {   // Event format is different in this case so we handle this separately
                         VisibleState.SettingsChangeset = Utils.GetRandomNumber();
-                        if (!Q.HasRequest(TinyWallCommands.REINIT))
+                        NotifyController(TWServiceMessages.SETTINGS_CHANGED);
+                        if (!Q.HasRequest(TWControllerMessages.REINIT))
                         {
                             EventLog.WriteEntry("Reloading firewall configuration because a network interface changed profile.");
-                            Q.Enqueue(new ReqResp(new Message(TinyWallCommands.REINIT)));
+                            Q.Enqueue(new ReqResp(new Message(TWControllerMessages.REINIT)));
                         }
                         break;
                     }
                 case 2032:     // firewall has been reset
                     {
                         propidx = 1;
-                        cmd = TinyWallCommands.REINIT;
+                        cmd = TWControllerMessages.REINIT;
                         break;
                     }
                 default:
@@ -887,7 +906,7 @@ namespace PKSoft
 
                     // Issue load command
                     Q = new RequestQueue();
-                    Q.Enqueue(new ReqResp(new Message(TinyWallCommands.REINIT)));
+                    Q.Enqueue(new ReqResp(new Message(TWControllerMessages.REINIT)));
 
                     // Start thread that is going to control Windows Firewall
                     FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod));

@@ -19,7 +19,13 @@ namespace PKSoft
             mouse_event(MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP, X, Y, 0, IntPtr.Zero);
         }
 
-        [DllImport("Wer.dll", CharSet=CharSet.Unicode, PreserveSig=false)]
+        [DllImport("user32.dll")]
+        internal static extern uint PostMessage(IntPtr hWnd, uint nMessage, uint wParam, uint lParam);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        internal static extern uint RegisterWindowMessage(string lpString);
+
+        [DllImport("Wer.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
         internal static extern void WerAddExcludedApplication(
             [MarshalAs(UnmanagedType.LPWStr)]
             string pwzExeName,

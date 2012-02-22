@@ -38,7 +38,7 @@ namespace PKSoft
             List<ListViewItem> itemColl = new List<ListViewItem>();
             Dictionary<int, ProcInfo> procCache = new Dictionary<int, ProcInfo>();
 
-            ReqResp fwLogRequest = GlobalInstances.CommunicationMan.QueueMessage(new Message(TinyWallCommands.READ_FW_LOG));
+            ReqResp fwLogRequest = GlobalInstances.CommunicationMan.QueueMessage(new Message(TWControllerMessages.READ_FW_LOG));
 
             // Retrieve IP tables while waiting for log entries
 
