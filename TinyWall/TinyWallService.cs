@@ -650,7 +650,10 @@ namespace PKSoft
                         AssembleActiveRules();
                         MergeActiveRulesIntoWinFirewall();
 
-                        if (VisibleState.Mode != FirewallMode.Disabled)
+                        if (
+                               (VisibleState.Mode != FirewallMode.Disabled)
+                            && (VisibleState.Mode != FirewallMode.Learning)
+                           )
                         {
                             SettingsManager.GlobalConfig.StartupMode = VisibleState.Mode;
                             SettingsManager.GlobalConfig.Save();
@@ -1103,6 +1106,7 @@ namespace PKSoft
 
             FirewallWorkerThread.Abort();
 
+            CommitLearnedRules();
             SettingsManager.GlobalConfig.Save();
             SettingsManager.CurrentZone.Save();
             FileLocker.UnlockAll();
