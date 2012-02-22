@@ -200,6 +200,13 @@ namespace PKSoft.Resources {
             }
         }
         
+        internal static System.Drawing.Bitmap search {
+            get {
+                object obj = ResourceManager.GetObject("search", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Icon shield_green_small {
             get {
                 object obj = ResourceManager.GetObject("shield_green_small", resourceCulture);

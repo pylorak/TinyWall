@@ -354,4 +354,8 @@ Do you wish to uninstall TinyWall?</value>
   <data name="FirewallModeUnknown" xml:space="preserve">
     <value>Unknown</value>
   </data>
+  <data name="CannotGetPathOfProcess" xml:space="preserve">
+    <value>Cannot get path of process.</value>
+    <comment>CannotGetPathOfProcess description</comment>
+  </data>
 </root>

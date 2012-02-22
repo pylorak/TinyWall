@@ -88,6 +88,15 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot get path of process..
+        /// </summary>
+        internal static string CannotGetPathOfProcess {
+            get {
+                return ResourceManager.GetString("CannotGetPathOfProcess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Click on the inner area of any open window to select its application for whitelisting..
         /// </summary>
         internal static string ClickOnAWindowWhitelisting {

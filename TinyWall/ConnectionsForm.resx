@@ -195,8 +195,56 @@
   <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>110, 17</value>
   </metadata>
+  <data name="mnuUnblock.Size" type="System.Drawing.Size, System.Drawing">
+    <value>186, 22</value>
+  </data>
+  <data name="mnuUnblock.Text" xml:space="preserve">
+    <value>Unblock</value>
+  </data>
+  <data name="mnuCloseProcess.Size" type="System.Drawing.Size, System.Drawing">
+    <value>186, 22</value>
+  </data>
+  <data name="mnuCloseProcess.Text" xml:space="preserve">
+    <value>Kill process</value>
+  </data>
+  <data name="mnuVirusTotal.Size" type="System.Drawing.Size, System.Drawing">
+    <value>220, 22</value>
+  </data>
+  <data name="mnuVirusTotal.Text" xml:space="preserve">
+    <value>On VirusTotal</value>
+  </data>
+  <data name="mnuProcessLibrary.Size" type="System.Drawing.Size, System.Drawing">
+    <value>220, 22</value>
+  </data>
+  <data name="mnuProcessLibrary.Text" xml:space="preserve">
+    <value>On ProcessLibrary</value>
+  </data>
+  <data name="mnuFileNameOnTheWeb.Size" type="System.Drawing.Size, System.Drawing">
+    <value>220, 22</value>
+  </data>
+  <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
+    <value>File name on the web</value>
+  </data>
+  <data name="mnuRemoteAddressOnTheWeb.Size" type="System.Drawing.Size, System.Drawing">
+    <value>220, 22</value>
+  </data>
+  <data name="mnuRemoteAddressOnTheWeb.Text" xml:space="preserve">
+    <value>Remote address on the web</value>
+  </data>
+  <data name="mnuSearch.Size" type="System.Drawing.Size, System.Drawing">
+    <value>186, 22</value>
+  </data>
+  <data name="mnuSearch.Text" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="mnuCopyRemoteAddress.Size" type="System.Drawing.Size, System.Drawing">
+    <value>186, 22</value>
+  </data>
+  <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
+    <value>Copy remote address</value>
+  </data>
   <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>153, 70</value>
+    <value>187, 114</value>
   </data>
   <data name="&gt;&gt;contextMenuStrip1.Name" xml:space="preserve">
     <value>contextMenuStrip1</value>
@@ -230,18 +278,6 @@
   </data>
   <data name="&gt;&gt;list.ZOrder" xml:space="preserve">
     <value>5</value>
-  </data>
-  <data name="mnuUnblock.Size" type="System.Drawing.Size, System.Drawing">
-    <value>152, 22</value>
-  </data>
-  <data name="mnuUnblock.Text" xml:space="preserve">
-    <value>Unblock</value>
-  </data>
-  <data name="mnuCloseProcess.Size" type="System.Drawing.Size, System.Drawing">
-    <value>152, 22</value>
-  </data>
-  <data name="mnuCloseProcess.Text" xml:space="preserve">
-    <value>Close process</value>
   </data>
   <data name="btnRefresh.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -424,6 +460,42 @@
     <value>mnuCloseProcess</value>
   </data>
   <data name="&gt;&gt;mnuCloseProcess.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;mnuSearch.Name" xml:space="preserve">
+    <value>mnuSearch</value>
+  </data>
+  <data name="&gt;&gt;mnuSearch.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;mnuVirusTotal.Name" xml:space="preserve">
+    <value>mnuVirusTotal</value>
+  </data>
+  <data name="&gt;&gt;mnuVirusTotal.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;mnuProcessLibrary.Name" xml:space="preserve">
+    <value>mnuProcessLibrary</value>
+  </data>
+  <data name="&gt;&gt;mnuProcessLibrary.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;mnuFileNameOnTheWeb.Name" xml:space="preserve">
+    <value>mnuFileNameOnTheWeb</value>
+  </data>
+  <data name="&gt;&gt;mnuFileNameOnTheWeb.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;mnuRemoteAddressOnTheWeb.Name" xml:space="preserve">
+    <value>mnuRemoteAddressOnTheWeb</value>
+  </data>
+  <data name="&gt;&gt;mnuRemoteAddressOnTheWeb.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;mnuCopyRemoteAddress.Name" xml:space="preserve">
+    <value>mnuCopyRemoteAddress</value>
+  </data>
+  <data name="&gt;&gt;mnuCopyRemoteAddress.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;IconList.Name" xml:space="preserve">

@@ -42,6 +42,12 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuUnblock = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCloseProcess = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSearch = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuVirusTotal = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuProcessLibrary = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuFileNameOnTheWeb = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuRemoteAddressOnTheWeb = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuCopyRemoteAddress = new System.Windows.Forms.ToolStripMenuItem();
             this.IconList = new System.Windows.Forms.ImageList(this.components);
             this.btnRefresh = new System.Windows.Forms.Button();
             this.chkShowListen = new System.Windows.Forms.CheckBox();
@@ -111,7 +117,9 @@
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuUnblock,
-            this.mnuCloseProcess});
+            this.mnuCloseProcess,
+            this.mnuSearch,
+            this.mnuCopyRemoteAddress});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
@@ -129,6 +137,47 @@
             this.mnuCloseProcess.Name = "mnuCloseProcess";
             resources.ApplyResources(this.mnuCloseProcess, "mnuCloseProcess");
             this.mnuCloseProcess.Click += new System.EventHandler(this.mnuCloseProcess_Click);
+            // 
+            // mnuSearch
+            // 
+            this.mnuSearch.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuVirusTotal,
+            this.mnuProcessLibrary,
+            this.mnuFileNameOnTheWeb,
+            this.mnuRemoteAddressOnTheWeb});
+            this.mnuSearch.Image = global::PKSoft.Resources.Icons.search;
+            this.mnuSearch.Name = "mnuSearch";
+            resources.ApplyResources(this.mnuSearch, "mnuSearch");
+            // 
+            // mnuVirusTotal
+            // 
+            this.mnuVirusTotal.Name = "mnuVirusTotal";
+            resources.ApplyResources(this.mnuVirusTotal, "mnuVirusTotal");
+            this.mnuVirusTotal.Click += new System.EventHandler(this.mnuVirusTotal_Click);
+            // 
+            // mnuProcessLibrary
+            // 
+            this.mnuProcessLibrary.Name = "mnuProcessLibrary";
+            resources.ApplyResources(this.mnuProcessLibrary, "mnuProcessLibrary");
+            this.mnuProcessLibrary.Click += new System.EventHandler(this.mnuProcessLibrary_Click);
+            // 
+            // mnuFileNameOnTheWeb
+            // 
+            this.mnuFileNameOnTheWeb.Name = "mnuFileNameOnTheWeb";
+            resources.ApplyResources(this.mnuFileNameOnTheWeb, "mnuFileNameOnTheWeb");
+            this.mnuFileNameOnTheWeb.Click += new System.EventHandler(this.mnuFileNameOnTheWeb_Click);
+            // 
+            // mnuRemoteAddressOnTheWeb
+            // 
+            this.mnuRemoteAddressOnTheWeb.Name = "mnuRemoteAddressOnTheWeb";
+            resources.ApplyResources(this.mnuRemoteAddressOnTheWeb, "mnuRemoteAddressOnTheWeb");
+            this.mnuRemoteAddressOnTheWeb.Click += new System.EventHandler(this.mnuRemoteAddressOnTheWeb_Click);
+            // 
+            // mnuCopyRemoteAddress
+            // 
+            this.mnuCopyRemoteAddress.Name = "mnuCopyRemoteAddress";
+            resources.ApplyResources(this.mnuCopyRemoteAddress, "mnuCopyRemoteAddress");
+            this.mnuCopyRemoteAddress.Click += new System.EventHandler(this.mnuCopyRemoteAddress_Click);
             // 
             // IconList
             // 
@@ -204,5 +253,11 @@
         private System.Windows.Forms.CheckBox chkShowActive;
         private System.Windows.Forms.CheckBox chkShowBlocked;
         private System.Windows.Forms.ToolStripMenuItem mnuUnblock;
+        private System.Windows.Forms.ToolStripMenuItem mnuCopyRemoteAddress;
+        private System.Windows.Forms.ToolStripMenuItem mnuSearch;
+        private System.Windows.Forms.ToolStripMenuItem mnuVirusTotal;
+        private System.Windows.Forms.ToolStripMenuItem mnuProcessLibrary;
+        private System.Windows.Forms.ToolStripMenuItem mnuFileNameOnTheWeb;
+        private System.Windows.Forms.ToolStripMenuItem mnuRemoteAddressOnTheWeb;
     }
 }

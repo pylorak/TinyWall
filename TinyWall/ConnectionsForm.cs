@@ -322,5 +322,79 @@ namespace PKSoft
             SettingsManager.CurrentZone.Normalize();
             MainForm.ApplyFirewallSettings(null, SettingsManager.CurrentZone, true);
         }
+
+        private void mnuCopyRemoteAddress_Click(object sender, EventArgs e)
+        {
+            ListViewItem li = list.SelectedItems[0];
+            Clipboard.SetText(li.SubItems[5].Text, TextDataFormat.UnicodeText);
+        }
+
+        private void mnuVirusTotal_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ListViewItem li = list.SelectedItems[0];
+
+                const string urlTemplate = @"http://www.virustotal.com/file/{0}/analysis/";
+                string hash = Utils.HexEncode(Hasher.HashFile(li.ToolTipText));
+                string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, hash);
+                Utils.StartProcess(url, string.Empty, false);
+            }
+            catch
+            {
+                MessageBox.Show(this, PKSoft.Resources.Messages.CannotGetPathOfProcess, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+            }
+        }
+
+        private void mnuProcessLibrary_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ListViewItem li = list.SelectedItems[0];
+
+                const string urlTemplate = @"http://www.processlibrary.com/search/?q={0}";
+                string filename = System.IO.Path.GetFileName(li.ToolTipText);
+                string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, filename);
+                Utils.StartProcess(url, string.Empty, false);
+            }
+            catch
+            {
+                MessageBox.Show(this, PKSoft.Resources.Messages.CannotGetPathOfProcess, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+        private void mnuFileNameOnTheWeb_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ListViewItem li = list.SelectedItems[0];
+
+                const string urlTemplate = @"www.google.com/search?q={0}";
+                string filename = System.IO.Path.GetFileName(li.ToolTipText);
+                string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, filename);
+                Utils.StartProcess(url, string.Empty, false);
+            }
+            catch
+            {
+                MessageBox.Show(this, PKSoft.Resources.Messages.CannotGetPathOfProcess, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+
+        private void mnuRemoteAddressOnTheWeb_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ListViewItem li = list.SelectedItems[0];
+
+                const string urlTemplate = @"www.google.com/search?q={0}";
+                string address = li.SubItems[5].Text;
+                string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, address);
+                Utils.StartProcess(url, string.Empty, false);
+            }
+            catch
+            {
+                MessageBox.Show(this, PKSoft.Resources.Messages.CannotGetPathOfProcess, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
     }
 }
