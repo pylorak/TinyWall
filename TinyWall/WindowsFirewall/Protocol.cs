@@ -8,6 +8,7 @@ namespace PKSoft.WindowsFirewall
         HOPOPT = 0,
         ICMPv4 = 1,
         ICMPv6 = 58,
+        IGMP = 2,
         TCP = 6,
         UDP = 17,
         GRE = 47,

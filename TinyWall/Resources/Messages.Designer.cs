@@ -251,6 +251,15 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autolearn.
+        /// </summary>
+        internal static string FirewallModeLearn {
+            get {
+                return ResourceManager.GetString("FirewallModeLearn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Normal.
         /// </summary>
         internal static string FirewallModeNormal {
@@ -454,6 +463,15 @@ namespace PKSoft.Resources {
         internal static string TheFirewallIsNowDisabled {
             get {
                 return ResourceManager.GetString("TheFirewallIsNowDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The firewall is now learning while letting all traffic thorugh..
+        /// </summary>
+        internal static string TheFirewallIsNowLearning {
+            get {
+                return ResourceManager.GetString("TheFirewallIsNowLearning", resourceCulture);
             }
         }
         
@@ -681,6 +699,17 @@ namespace PKSoft.Resources {
         internal static string XMinutes {
             get {
                 return ResourceManager.GetString("XMinutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are about to switch TinyWall into its automatic learning mode.
+        ///
+        ///In this mode TinyWall will allow all traffic and remember which applications have used the network. When you exit the learning mode, TinyWall will add exceptions for you automatically. Note however, that rules cannot be learned for &quot;Special Exceptions&quot; of the configuration..
+        /// </summary>
+        internal static string YouAreAboutToEnterLearningMode {
+            get {
+                return ResourceManager.GetString("YouAreAboutToEnterLearningMode", resourceCulture);
             }
         }
         

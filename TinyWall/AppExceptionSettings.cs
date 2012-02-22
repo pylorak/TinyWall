@@ -134,24 +134,25 @@ namespace PKSoft
             return "[TW" + Utils.RandomString(12) + "]";
         }
 
-        internal static List<AppExceptionSettings> CheckForAppDependencies(System.Windows.Forms.IWin32Window parent, AppExceptionSettings ex)
+        internal static List<AppExceptionSettings> CheckForAppDependencies(System.Windows.Forms.IWin32Window parent, AppExceptionSettings ex, bool gui = true, ApplicationCollection allApps = null)
         {
             List<AppExceptionSettings> exceptions = new List<AppExceptionSettings>();
             exceptions.Add(ex);
 
             ProfileAssoc appFile = null;
-            ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
+            if (allApps == null)
+                allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
             Application app = allApps.TryGetRecognizedApp(ex.ExecutablePath, ex.ServiceName, out appFile);
             if ((app != null) && app.ResolveFilePaths())
             {
                 if (app.FileRealizations.Count > 1)
                 {
-                    if (System.Windows.Forms.MessageBox.Show(
+                    if (!gui || (System.Windows.Forms.MessageBox.Show(
                         parent,
                         string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.UnblockPartOfApplication, app.Name),
                         PKSoft.Resources.Messages.TinyWall,
                         System.Windows.Forms.MessageBoxButtons.YesNo,
-                        System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                        System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes))
                     {
                         foreach (ProfileAssoc pa in app.FileRealizations)
                         {

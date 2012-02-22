@@ -31,6 +31,10 @@ namespace PKSoft
         private FirewallLogWatcher LogWatcher;
         private IntPtr ControllerHwnd = IntPtr.Zero;
         private uint WM_NOTIFY_BY_SERVICE = 0;
+
+        // Context needed for learning mode
+        ApplicationCollection LearningKnownApplication;
+        List<AppExceptionSettings> LearningNewExceptions = new List<AppExceptionSettings>();
         
         private WindowsFirewall.Policy Firewall;
         private WindowsFirewall.Rules FwRules;
@@ -100,6 +104,20 @@ namespace PKSoft
                         // Add rule to explicitly allow everything
                         RuleDef def = new RuleDef(ModeId, "Allow everything", PacketAction.Allow, RuleDirection.InOut, Protocol.Any);
                         ActiveRules.Add(def);
+                        break;
+                    }
+                case FirewallMode.Learning:
+                    {
+                        // Remove all rules
+                        ActiveRules.Clear();
+
+                        // Add rule to explicitly allow everything
+                        RuleDef def = new RuleDef(ModeId, "Allow everything", PacketAction.Allow, RuleDirection.InOut, Protocol.Any);
+                        ActiveRules.Add(def);
+
+                        LearningKnownApplication = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
+                        Q.Enqueue(new ReqResp(new Message(TWControllerMessages.READ_FW_LOG)));
+
                         break;
                     }
                 case FirewallMode.Normal:
@@ -507,17 +525,95 @@ namespace PKSoft
             }
         }
 
+        private List<FirewallLogEntry> GetFwLog()
+        {
+            if (LogWatcher == null)
+            {
+                LogWatcher = new FirewallLogWatcher();
+                LogWatcher.NewLogEntry += new EventHandler(LogWatcher_NewLogEntry);
+            }
+
+            LastFwLogReadTime = DateTime.Now;
+            return LogWatcher.QueryNewEntries();
+        }
+
+        private void LogWatcher_NewLogEntry(object sender, EventArgs e)
+        {
+            if (VisibleState.Mode != FirewallMode.Learning)
+                return;
+
+            lock (LogWatcher)
+            {
+                List<FirewallLogEntry> list = LogWatcher.QueryNewEntries();
+                foreach (FirewallLogEntry entry in list)
+                {
+                    string exec = null;
+                    try
+                    {
+                        int pid = (int)entry.ProcessID;
+                        using (Process p = Process.GetProcessById(pid))
+                        {
+                            exec = p.MainModule.FileName;
+                        }
+                    }
+                    catch
+                    {
+                        return;
+                    }
+
+                    for (int j = 0; j < LearningNewExceptions.Count; ++j)
+                    {
+                        if (LearningNewExceptions[j].ExecutablePath.Equals(exec, StringComparison.OrdinalIgnoreCase))
+                            return;
+                    }
+
+                    ProfileAssoc appFile;
+                    Application app = LearningKnownApplication.TryGetRecognizedApp(exec, null, out appFile);
+                    if (app.Special)
+                        return;
+
+                    AppExceptionSettings ex = appFile.ToExceptionSetting();
+                    ex.TryRecognizeApp(true);
+                    LearningNewExceptions.Add(ex);
+                }
+            }
+        }
+
+        private void CommitLearnedRules()
+        {
+            if (LogWatcher == null)
+                return;
+
+            if (LearningNewExceptions == null)
+                return;
+
+            if (LearningNewExceptions.Count > 0)
+            {
+                lock (LogWatcher)
+                {
+                    foreach (AppExceptionSettings ex in LearningNewExceptions)
+                    {
+                        SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, ex);
+                    }
+                    LearningNewExceptions.Clear();
+                }
+                SettingsManager.CurrentZone.Normalize();
+                SettingsManager.CurrentZone.Save();
+                RebuildApplicationRuleDefs();
+
+                VisibleState.SettingsChangeset = Utils.GetRandomNumber();
+                NotifyController(TWServiceMessages.SETTINGS_CHANGED);
+            }
+            return;
+        }
+
         private Message ProcessCmd(Message req)
         {
             switch (req.Command)
             {
                 case TWControllerMessages.READ_FW_LOG:
                     {
-                        if (LogWatcher == null)
-                            LogWatcher = new FirewallLogWatcher();
-
-                        LastFwLogReadTime = DateTime.Now;
-                        return new Message(TWControllerMessages.RESPONSE_OK, LogWatcher.QueryNewEntries());
+                        return new Message(TWControllerMessages.RESPONSE_OK, GetFwLog());
                     }
                 case TWControllerMessages.PING:
                     {
@@ -526,8 +622,16 @@ namespace PKSoft
                 case TWControllerMessages.MODE_SWITCH:
                     {
                         VisibleState.Mode = (FirewallMode)req.Arguments[0];
+
+                        CommitLearnedRules();
                         AssembleActiveRules();
                         MergeActiveRulesIntoWinFirewall();
+
+                        if (VisibleState.Mode != FirewallMode.Disabled)
+                        {
+                            SettingsManager.GlobalConfig.StartupMode = VisibleState.Mode;
+                            SettingsManager.GlobalConfig.Save();
+                        }
 
                         if (Firewall.LocalPolicyModifyState == LocalPolicyState.GP_OVERRRIDE)
                             return new Message(TWControllerMessages.RESPONSE_WARNING);
@@ -588,6 +692,7 @@ namespace PKSoft
                     }
                 case TWControllerMessages.REINIT:
                     {
+                        CommitLearnedRules();
                         InitFirewall();
                         return new Message(TWControllerMessages.RESPONSE_OK);
                     }
@@ -672,13 +777,16 @@ namespace PKSoft
                     }
                 case TWControllerMessages.MINUTE_TIMER:
                     {
-                        // Disable firewall logging if its log has not been read recently
-                        if (DateTime.Now - LastFwLogReadTime > TimeSpan.FromMinutes(5))
+                        if (VisibleState.Mode != FirewallMode.Learning)
                         {
-                            if (LogWatcher != null)
+                            // Disable firewall logging if its log has not been read recently
+                            if (DateTime.Now - LastFwLogReadTime > TimeSpan.FromMinutes(2))
                             {
-                                LogWatcher.Dispose();
-                                LogWatcher = null;
+                                if (LogWatcher != null)
+                                {
+                                    LogWatcher.Dispose();
+                                    LogWatcher = null;
+                                }
                             }
                         }
 

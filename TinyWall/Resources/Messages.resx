@@ -356,6 +356,16 @@ Do you wish to uninstall TinyWall?</value>
   </data>
   <data name="CannotGetPathOfProcess" xml:space="preserve">
     <value>Cannot get path of process.</value>
-    <comment>CannotGetPathOfProcess description</comment>
+  </data>
+  <data name="TheFirewallIsNowLearning" xml:space="preserve">
+    <value>The firewall is now learning while letting all traffic thorugh.</value>
+  </data>
+  <data name="FirewallModeLearn" xml:space="preserve">
+    <value>Autolearn</value>
+  </data>
+  <data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
+    <value>You are about to switch TinyWall into its automatic learning mode.
+
+In this mode TinyWall will allow all traffic and remember which applications have used the network. When you exit the learning mode, TinyWall will add exceptions for you automatically. Note however, that rules cannot be learned for "Special Exceptions" of the configuration.</value>
   </data>
 </root>

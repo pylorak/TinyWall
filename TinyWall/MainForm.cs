@@ -189,6 +189,13 @@ namespace PKSoft
                     mnuMode.Image = mnuModeDisabled.Image;
                     FirewallModeName = PKSoft.Resources.Messages.FirewallModeDisabled;
                     break;
+
+                case FirewallMode.Learning:
+                    Tray.Icon = PKSoft.Resources.Icons.shield_blue_small;
+                    mnuMode.Image = mnuModeLearn.Image;
+                    FirewallModeName = PKSoft.Resources.Messages.FirewallModeLearn;
+                    break;
+
                 case FirewallMode.Unknown:
                     Tray.Icon = PKSoft.Resources.Icons.shield_grey_small;
                     mnuMode.Image = PKSoft.Resources.Icons.shield_grey_small.ToBitmap();
@@ -234,6 +241,10 @@ namespace PKSoft
                 case FirewallMode.Disabled:
                     usermsg = PKSoft.Resources.Messages.TheFirewallIsNowDisabled;
                     break;
+
+                case FirewallMode.Learning:
+                    usermsg = PKSoft.Resources.Messages.TheFirewallIsNowLearning;
+                    break;
             }
 
             switch (resp.Command)
@@ -245,12 +256,6 @@ namespace PKSoft
                 default:
                     DefaultPopups(opret);
                     break;
-            }
-
-            if (mode != FirewallMode.Disabled)
-            {
-                SettingsManager.GlobalConfig.StartupMode = mode;
-                ApplyFirewallSettings(SettingsManager.GlobalConfig, null, false);
             }
         }
 
@@ -797,6 +802,7 @@ namespace PKSoft
             mnuModeAllowOutgoing.Image = Resources.Icons.shield_red_small.ToBitmap();
             mnuModeBlockAll.Image = Resources.Icons.shield_yellow_small.ToBitmap();
             mnuModeNormal.Image = Resources.Icons.shield_green_small.ToBitmap();
+            mnuModeLearn.Image = Resources.Icons.shield_blue_small.ToBitmap();
 
             HotKeyWhitelistWindow = new Hotkey(Keys.W, true, true, false, false);
             HotKeyWhitelistWindow.Pressed += new HandledEventHandler(HotKeyWhitelistWindow_Pressed);
@@ -875,6 +881,13 @@ namespace PKSoft
 
             //calling the base first is important, otherwise the values you set later will be lost
             base.WndProc(ref m);
+        }
+
+        private void mnuModeLearn_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(this, PKSoft.Resources.Messages.YouAreAboutToEnterLearningMode, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            SetMode(FirewallMode.Learning);
+            UpdateDisplay();
         }
     }
 

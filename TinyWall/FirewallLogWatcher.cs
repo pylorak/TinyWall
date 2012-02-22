@@ -8,6 +8,8 @@ namespace PKSoft
 {
     internal enum EventLogEvent
     {
+        ALLOWED_CONNECTION = 5156,
+        ALLOWED_LOCAL_BIND = 5158,
         BLOCKED_CONNECTION = 5157,
         BLOCKED_PACKET = 5152,
         BLOCKED_LOCAL_BIND = 5159
@@ -20,6 +22,7 @@ namespace PKSoft
         internal EventLogEvent Event;
         internal UInt64 ProcessID;
         internal Protocol Protocol;
+        internal RuleDirection Direction;
         internal string SourceIP;
         internal string DestinationIP;
         internal int SourcePort;
@@ -55,6 +58,7 @@ namespace PKSoft
                 (this.Event == obj.Event) &&
                 (this.ProcessID == obj.ProcessID) &&
                 (this.Protocol == obj.Protocol) &&
+                (this.Direction == obj.Direction) &&
                 this.SourceIP.Equals(obj.SourceIP) &&
                 (this.SourcePort == obj.SourcePort);
 
@@ -68,8 +72,10 @@ namespace PKSoft
     internal class FirewallLogWatcher : DisposableObject
     {
         //private readonly string FIREWALLLOG_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"LogFiles\Firewall\pfirewall.log");
-        EventLogWatcher LogWatcher = null;
-        List<FirewallLogEntry> NewEntries = new List<FirewallLogEntry>();
+        private EventLogWatcher LogWatcher = null;
+        private List<FirewallLogEntry> NewEntries = new List<FirewallLogEntry>();
+
+        internal event EventHandler NewLogEntry;
 
         protected override void Dispose(bool disposing)
         {
@@ -93,7 +99,7 @@ namespace PKSoft
         internal FirewallLogWatcher()
         {
             // Create event notifier
-            EventLogQuery evquery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=5157 or EventID=5152 or EventID=5159)]]");
+            EventLogQuery evquery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=5157 or EventID=5152 or EventID=5159 or EventID=5156 or EventID=5158)]]");
             LogWatcher = new EventLogWatcher(evquery);
             LogWatcher.EventRecordWritten += new EventHandler<EventRecordWrittenEventArgs>(LogWatcher_EventRecordWritten);
             LogWatcher.Enabled = true;
@@ -120,6 +126,18 @@ namespace PKSoft
                         entry.DestinationIP = (string)e.EventRecord.Properties[5].Value;
                         ok &= int.TryParse((string)e.EventRecord.Properties[6].Value, out entry.DestinationPort);
                         entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[7].Value;
+                        switch ((string)e.EventRecord.Properties[2].Value)
+                        {
+                            case "%%14593":
+                                entry.Direction = RuleDirection.In;
+                                break;
+                            case "%%14592":
+                                entry.Direction = RuleDirection.Out;
+                                break;
+                            default:
+                                entry.Direction = RuleDirection.Invalid;
+                                break;
+                        }
                         break;
                     }
                 case EventLogEvent.BLOCKED_CONNECTION:
@@ -130,6 +148,18 @@ namespace PKSoft
                         entry.DestinationIP = (string)e.EventRecord.Properties[5].Value;
                         ok &= int.TryParse((string)e.EventRecord.Properties[6].Value, out entry.DestinationPort);
                         entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[7].Value;
+                        switch ((string)e.EventRecord.Properties[2].Value)
+                        {
+                            case "%%14593":
+                                entry.Direction = RuleDirection.In;
+                                break;
+                            case "%%14592":
+                                entry.Direction = RuleDirection.Out;
+                                break;
+                            default:
+                                entry.Direction = RuleDirection.Invalid;
+                                break;
+                        }
                         break;
                     }
                 case EventLogEvent.BLOCKED_LOCAL_BIND:
@@ -137,7 +167,38 @@ namespace PKSoft
                         // TODO: Figure out when and if at all this case can happen
                         break;
                     }
-
+                case EventLogEvent.ALLOWED_CONNECTION:
+                    {
+                        entry.ProcessID = (UInt64)e.EventRecord.Properties[0].Value;
+                        entry.SourceIP = (string)e.EventRecord.Properties[3].Value;
+                        ok &= int.TryParse((string)e.EventRecord.Properties[4].Value, out entry.SourcePort);
+                        entry.DestinationIP = (string)e.EventRecord.Properties[5].Value;
+                        ok &= int.TryParse((string)e.EventRecord.Properties[6].Value, out entry.DestinationPort);
+                        entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[7].Value;
+                        switch ((string)e.EventRecord.Properties[2].Value)
+                        {
+                            case "%%14592":
+                                entry.Direction = RuleDirection.In;
+                                break;
+                            case "%%14593":
+                                entry.Direction = RuleDirection.Out;
+                                break;
+                            default:
+                                entry.Direction = RuleDirection.Invalid;
+                                break;
+                        }
+                        break;
+                    }
+                case EventLogEvent.ALLOWED_LOCAL_BIND:
+                    {
+                        break;
+                    }
+                default:
+#if DEBUG
+                    throw new InvalidOperationException();
+#else
+                    return
+#endif
             }
 
             if (!ok)
@@ -155,6 +216,9 @@ namespace PKSoft
 
                 NewEntries.Add(entry);
             }
+
+            if (NewLogEntry != null)
+                NewLogEntry(this, null);
         }
 
         internal List<FirewallLogEntry> QueryNewEntries()

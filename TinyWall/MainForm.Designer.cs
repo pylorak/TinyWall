@@ -69,6 +69,7 @@ namespace PKSoft
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuQuit = new System.Windows.Forms.ToolStripMenuItem();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
+            this.mnuModeLearn = new System.Windows.Forms.ToolStripMenuItem();
             this.TrayMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -125,7 +126,8 @@ namespace PKSoft
             this.mnuModeNormal,
             this.mnuModeBlockAll,
             this.mnuModeAllowOutgoing,
-            this.mnuModeDisabled});
+            this.mnuModeDisabled,
+            this.mnuModeLearn});
             this.mnuMode.Name = "mnuMode";
             resources.ApplyResources(this.mnuMode, "mnuMode");
             // 
@@ -240,6 +242,12 @@ namespace PKSoft
             // 
             resources.ApplyResources(this.ofd, "ofd");
             // 
+            // mnuModeLearn
+            // 
+            this.mnuModeLearn.Name = "mnuModeLearn";
+            resources.ApplyResources(this.mnuModeLearn, "mnuModeLearn");
+            this.mnuModeLearn.Click += new System.EventHandler(this.mnuModeLearn_Click);
+            // 
             // MainForm
             // 
             resources.ApplyResources(this, "$this");
@@ -286,6 +294,7 @@ namespace PKSoft
         private System.Windows.Forms.ToolStripMenuItem mnuAllowLocalSubnet;
         private System.Windows.Forms.ToolStripMenuItem mnuEnableHostsBlocklist;
         private System.Windows.Forms.ToolStripMenuItem mnuTrafficRate;
+        private System.Windows.Forms.ToolStripMenuItem mnuModeLearn;
     }
 }
 

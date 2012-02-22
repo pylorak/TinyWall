@@ -7,6 +7,7 @@ namespace PKSoft
         BlockAll,
         AllowOutgoing,
         Disabled,
+        Learning,
         Unknown = 100
     }
 }

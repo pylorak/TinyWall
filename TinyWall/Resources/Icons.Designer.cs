@@ -207,6 +207,13 @@ namespace PKSoft.Resources {
             }
         }
         
+        internal static System.Drawing.Icon shield_blue_small {
+            get {
+                object obj = ResourceManager.GetObject("shield_blue_small", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
         internal static System.Drawing.Icon shield_green_small {
             get {
                 object obj = ResourceManager.GetObject("shield_green_small", resourceCulture);
