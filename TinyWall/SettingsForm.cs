@@ -368,6 +368,7 @@ namespace PKSoft
 #if !DEBUG
             // TODO: Make submissions work
             btnSubmitAssoc.Visible = false;
+            chkEnableDefaultWindowsRules.Visible = false;
 #endif
             this.BringToFront();
             this.Activate();
