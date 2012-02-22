@@ -175,7 +175,7 @@ namespace PKSoft
 #if DEBUG
                     throw new InvalidOperationException();
 #else
-                    return
+                    return;
 #endif
             }
 

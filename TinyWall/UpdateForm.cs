@@ -66,7 +66,9 @@ namespace PKSoft
 
                 Utils.Invoke(this, (MethodInvoker)delegate()
                 {
-                    if (new Version(UpdateModule.ComponentVersion) > new Version(System.Windows.Forms.Application.ProductVersion))
+                    Version oldVersion = new Version(System.Windows.Forms.Application.ProductVersion);
+                    Version newVersion = new Version(UpdateModule.ComponentVersion);
+                    if (newVersion > oldVersion)
                     {
                         string prompt = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.UpdateAvailable, UpdateModule.ComponentVersion);
                         if (MessageBox.Show(this, prompt, PKSoft.Resources.Messages.TinyWallUpdate, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.No)
