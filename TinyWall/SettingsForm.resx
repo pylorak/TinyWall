@@ -664,7 +664,7 @@
     <value>True</value>
   </data>
   <data name="chkLockHostsFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>369, 71</value>
+    <value>369, 94</value>
   </data>
   <data name="chkLockHostsFile.Size" type="System.Drawing.Size, System.Drawing">
     <value>183, 17</value>
@@ -691,16 +691,16 @@
     <value>True</value>
   </data>
   <data name="chkHostsBlocklist.Location" type="System.Drawing.Point, System.Drawing">
-    <value>369, 48</value>
+    <value>369, 71</value>
   </data>
   <data name="chkHostsBlocklist.Size" type="System.Drawing.Size, System.Drawing">
-    <value>211, 17</value>
+    <value>247, 17</value>
   </data>
   <data name="chkHostsBlocklist.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
   </data>
   <data name="chkHostsBlocklist.Text" xml:space="preserve">
-    <value>Enable domain-based malware blocklist</value>
+    <value>Enable domain-based malware and ad blocklist</value>
   </data>
   <data name="&gt;&gt;chkHostsBlocklist.Name" xml:space="preserve">
     <value>chkHostsBlocklist</value>
@@ -745,7 +745,7 @@
     <value>True</value>
   </data>
   <data name="chkBlockMalwarePorts.Location" type="System.Drawing.Point, System.Drawing">
-    <value>369, 94</value>
+    <value>369, 48</value>
   </data>
   <data name="chkBlockMalwarePorts.Size" type="System.Drawing.Size, System.Drawing">
     <value>195, 17</value>
