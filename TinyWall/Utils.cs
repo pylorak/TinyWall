@@ -93,7 +93,7 @@ namespace PKSoft
             }
             catch
             {
-                Message resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TWControllerMessages.GET_PROCESS_PATH);
+                Message resp = GlobalInstances.CommunicationMan.QueueMessage(new Message(TWControllerMessages.GET_PROCESS_PATH, p.Id)).GetResponse();
                 if (resp.Command == TWControllerMessages.RESPONSE_OK)
                     return resp.Arguments[0] as string;
                 else
