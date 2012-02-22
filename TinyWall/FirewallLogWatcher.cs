@@ -8,6 +8,8 @@ namespace PKSoft
 {
     internal enum EventLogEvent
     {
+        BLOCKED,
+        ALLOWED,
         ALLOWED_CONNECTION = 5156,
         ALLOWED_LOCAL_BIND = 5158,
         BLOCKED_CONNECTION = 5157,
@@ -120,10 +122,10 @@ namespace PKSoft
             entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[7].Value;
             switch ((string)e.EventRecord.Properties[2].Value)
             {
-                case "%%14593":
+                case "%%14592":
                     entry.Direction = RuleDirection.In;
                     break;
-                case "%%14592":
+                case "%%14593":
                     entry.Direction = RuleDirection.Out;
                     break;
                 default:

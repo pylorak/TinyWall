@@ -3,12 +3,12 @@
 
 #define MyAppName "TinyWall"
 #define MyAppNameNoVersion "TinyWall"
-#define MyAppVersion "1.9.0"
+#define MyAppVersion "1.9.1"
 #define MyAppPublisher "Károly Pados"
 
-#define TW_TinyWall_exe_SN "TinyWall, Version=1.9.0.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
+#define TW_TinyWall_exe_SN "TinyWall, Version=1.9.1.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
 #define TW_NetFwTypeLib_dll_SN "Interop.NetFwTypeLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
-#define TW_XmlSerializers_dll_SN "TinyWall.XmlSerializers, Version=1.9.0.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
+#define TW_XmlSerializers_dll_SN "TinyWall.XmlSerializers, Version=1.9.1.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.

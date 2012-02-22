@@ -89,21 +89,38 @@ namespace PKSoft
             List<FirewallLogEntry> fwLogEntry = resp.Arguments[0] as List<FirewallLogEntry>;
             for (int i = 0; i < fwLogEntry.Count; ++i)
             {
-                bool matchFound = false;
                 FirewallLogEntry newEntry = fwLogEntry[i];
-                for (int j = 0; j < FwLogEntries.Count; ++j)
+                switch (newEntry.Event)
                 {
-                    FirewallLogEntry oldEntry = FwLogEntries[j];
-                    if (oldEntry.Equals(newEntry, false))
-                    {
-                        matchFound = true;
-                        oldEntry.Timestamp = newEntry.Timestamp;
-                        break;
-                    }
-                }
+                    case EventLogEvent.ALLOWED_CONNECTION:
+                    case EventLogEvent.ALLOWED_LOCAL_BIND:
+                        {
+                            newEntry.Event = EventLogEvent.ALLOWED;
+                            break;
+                        }
+                    case EventLogEvent.BLOCKED_CONNECTION:
+                    case EventLogEvent.BLOCKED_LOCAL_BIND:
+                    case EventLogEvent.BLOCKED_PACKET:
+                        {
+                            bool matchFound = false;
+                            newEntry.Event = EventLogEvent.BLOCKED;
 
-                if (!matchFound)
-                    FwLogEntries.Add(newEntry);
+                            for (int j = 0; j < FwLogEntries.Count; ++j)
+                            {
+                                FirewallLogEntry oldEntry = FwLogEntries[j];
+                                if (oldEntry.Equals(newEntry, false))
+                                {
+                                    matchFound = true;
+                                    oldEntry.Timestamp = newEntry.Timestamp;
+                                    break;
+                                }
+                            }
+
+                            if (!matchFound)
+                                FwLogEntries.Add(newEntry);
+                            break;
+                        }
+                }
             }
 
             // Show log entries if requested by user
@@ -112,7 +129,7 @@ namespace PKSoft
                 for (int i = 0; i < FwLogEntries.Count; ++i)
                 {
                     FirewallLogEntry entry = FwLogEntries[i];
-                    ConstructListItem(itemColl, procCache, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked");
+                    ConstructListItem(itemColl, procCache, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked", entry.Direction);
                 }
             }
 
@@ -123,7 +140,7 @@ namespace PKSoft
             list.ResumeLayout(false);
         }
 
-        private void ConstructListItem(List<ListViewItem> itemColl, Dictionary<int, ProcInfo> procCache, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state)
+        private void ConstructListItem(List<ListViewItem> itemColl, Dictionary<int, ProcInfo> procCache, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, PKSoft.WindowsFirewall.RuleDirection dir = WindowsFirewall.RuleDirection.Invalid)
         {
             try
             {
@@ -171,6 +188,17 @@ namespace PKSoft
                 li.SubItems.Add(remoteEP.Port.ToString(CultureInfo.InvariantCulture).PadLeft(5));
                 li.SubItems.Add(remoteEP.Address.ToString());
                 li.SubItems.Add(state);
+                switch (dir)
+                {
+                    case WindowsFirewall.RuleDirection.In:
+                        li.SubItems.Add(PKSoft.Resources.Messages.TrafficIn);
+                        break;
+                    case WindowsFirewall.RuleDirection.Out:
+                        li.SubItems.Add(PKSoft.Resources.Messages.TrafficOut);
+                        break;
+                    default:
+                        break;
+                }
                 itemColl.Add(li);
             }
             catch

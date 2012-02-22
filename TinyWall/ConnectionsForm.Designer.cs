@@ -39,6 +39,7 @@
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuUnblock = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCloseProcess = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,7 +74,8 @@
             this.columnHeader4,
             this.columnHeader5,
             this.columnHeader6,
-            this.columnHeader7});
+            this.columnHeader7,
+            this.columnHeader8});
             this.list.ContextMenuStrip = this.contextMenuStrip1;
             this.list.FullRowSelect = true;
             this.list.GridLines = true;
@@ -112,6 +114,10 @@
             // columnHeader7
             // 
             resources.ApplyResources(this.columnHeader7, "columnHeader7");
+            // 
+            // columnHeader8
+            // 
+            resources.ApplyResources(this.columnHeader8, "columnHeader8");
             // 
             // contextMenuStrip1
             // 
@@ -259,5 +265,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuProcessLibrary;
         private System.Windows.Forms.ToolStripMenuItem mnuFileNameOnTheWeb;
         private System.Windows.Forms.ToolStripMenuItem mnuRemoteAddressOnTheWeb;
+        private System.Windows.Forms.ColumnHeader columnHeader8;
     }
 }

@@ -123,7 +123,7 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="btnClose.Location" type="System.Drawing.Point, System.Drawing">
-    <value>724, 303</value>
+    <value>774, 306</value>
   </data>
   <data name="btnClose.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 33</value>
@@ -163,25 +163,25 @@
     <value>75</value>
   </data>
   <data name="columnHeader3.Text" xml:space="preserve">
-    <value>Local port</value>
+    <value>Source port</value>
   </data>
   <data name="columnHeader3.Width" type="System.Int32, mscorlib">
     <value>68</value>
   </data>
   <data name="columnHeader4.Text" xml:space="preserve">
-    <value>Local address</value>
+    <value>Local/Source address</value>
   </data>
   <data name="columnHeader4.Width" type="System.Int32, mscorlib">
     <value>160</value>
   </data>
   <data name="columnHeader5.Text" xml:space="preserve">
-    <value>Remote port</value>
+    <value>Destination port</value>
   </data>
   <data name="columnHeader5.Width" type="System.Int32, mscorlib">
-    <value>74</value>
+    <value>92</value>
   </data>
   <data name="columnHeader6.Text" xml:space="preserve">
-    <value>Remote address</value>
+    <value>Remote/Destination address</value>
   </data>
   <data name="columnHeader6.Width" type="System.Int32, mscorlib">
     <value>160</value>
@@ -190,7 +190,10 @@
     <value>State</value>
   </data>
   <data name="columnHeader7.Width" type="System.Int32, mscorlib">
-    <value>89</value>
+    <value>88</value>
+  </data>
+  <data name="columnHeader8.Text" xml:space="preserve">
+    <value>Direction</value>
   </data>
   <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>110, 17</value>
@@ -244,7 +247,7 @@
     <value>Copy remote address</value>
   </data>
   <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>187, 114</value>
+    <value>187, 92</value>
   </data>
   <data name="&gt;&gt;contextMenuStrip1.Name" xml:space="preserve">
     <value>contextMenuStrip1</value>
@@ -256,7 +259,7 @@
     <value>12, 12</value>
   </data>
   <data name="list.Size" type="System.Drawing.Size, System.Drawing">
-    <value>787, 285</value>
+    <value>837, 288</value>
   </data>
   <metadata name="IconList.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
@@ -283,7 +286,7 @@
     <value>Bottom, Right</value>
   </data>
   <data name="btnRefresh.Location" type="System.Drawing.Point, System.Drawing">
-    <value>643, 303</value>
+    <value>693, 306</value>
   </data>
   <data name="btnRefresh.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 33</value>
@@ -313,7 +316,7 @@
     <value>True</value>
   </data>
   <data name="chkShowListen.Location" type="System.Drawing.Point, System.Drawing">
-    <value>164, 312</value>
+    <value>164, 315</value>
   </data>
   <data name="chkShowListen.Size" type="System.Drawing.Size, System.Drawing">
     <value>106, 17</value>
@@ -343,7 +346,7 @@
     <value>True</value>
   </data>
   <data name="chkShowActive.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 312</value>
+    <value>12, 315</value>
   </data>
   <data name="chkShowActive.Size" type="System.Drawing.Size, System.Drawing">
     <value>146, 17</value>
@@ -373,7 +376,7 @@
     <value>True</value>
   </data>
   <data name="chkShowBlocked.Location" type="System.Drawing.Point, System.Drawing">
-    <value>276, 312</value>
+    <value>276, 315</value>
   </data>
   <data name="chkShowBlocked.Size" type="System.Drawing.Size, System.Drawing">
     <value>189, 17</value>
@@ -403,7 +406,7 @@
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>811, 348</value>
+    <value>861, 351</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Connections - TinyWall</value>
@@ -448,6 +451,12 @@
     <value>columnHeader7</value>
   </data>
   <data name="&gt;&gt;columnHeader7.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;columnHeader8.Name" xml:space="preserve">
+    <value>columnHeader8</value>
+  </data>
+  <data name="&gt;&gt;columnHeader8.Type" xml:space="preserve">
     <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;mnuUnblock.Name" xml:space="preserve">
