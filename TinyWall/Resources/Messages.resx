@@ -366,6 +366,10 @@ Do you wish to uninstall TinyWall?</value>
   <data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
     <value>You are about to switch TinyWall into its automatic learning mode.
 
-In this mode TinyWall will allow all traffic and remember which applications have used the network. When you exit the learning mode, TinyWall will add exceptions for you automatically. Note however, that rules cannot be learned for "Special Exceptions" of the configuration.</value>
+In this mode TinyWall will allow all traffic and remember which applications have used the network. When you exit learning mode, TinyWall will add exceptions for you automatically. Note however, that rules cannot be learned for "Special Exceptions" of the configuration.
+
+Before entering learning mode, make sure that your system is free of any malware. It is best to run learning mode on freshly installed systems and it is recommended that you check your computer for viruses before using this mode.
+
+Do you want to enter learning mode now?</value>
   </data>
 </root>

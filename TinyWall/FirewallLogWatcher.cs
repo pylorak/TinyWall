@@ -107,59 +107,55 @@ namespace PKSoft
             EnableLogging();    // Enable logging
         }
 
+        private FirewallLogEntry ParseLogEntry(EventRecordWrittenEventArgs e)
+        {
+            FirewallLogEntry entry = new FirewallLogEntry();
+            entry.Timestamp = DateTime.Now;
+            entry.Event = (EventLogEvent)e.EventRecord.Id;
+            entry.ProcessID = (UInt64)e.EventRecord.Properties[0].Value;
+            entry.SourceIP = (string)e.EventRecord.Properties[3].Value;
+            entry.SourcePort = int.Parse((string)e.EventRecord.Properties[4].Value);
+            entry.DestinationIP = (string)e.EventRecord.Properties[5].Value;
+            entry.DestinationPort = int.Parse((string)e.EventRecord.Properties[6].Value);
+            entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[7].Value;
+            switch ((string)e.EventRecord.Properties[2].Value)
+            {
+                case "%%14593":
+                    entry.Direction = RuleDirection.In;
+                    break;
+                case "%%14592":
+                    entry.Direction = RuleDirection.Out;
+                    break;
+                default:
+                    entry.Direction = RuleDirection.Invalid;
+                    break;
+            }
+
+            return entry;
+        }
+
         void LogWatcher_EventRecordWritten(object sender, EventRecordWrittenEventArgs e)
         {
             // Maximum number of allowed entries
             const int MAX_ENTRIES = 1000;
-            bool ok = true;
 
-            FirewallLogEntry entry = new FirewallLogEntry();
-            entry.Timestamp = DateTime.Now;
-            entry.Event = (EventLogEvent)e.EventRecord.Id;
+            FirewallLogEntry entry;
+            try
+            {
+                entry = ParseLogEntry(e);
+            }
+            catch
+            {
+                return;
+            }
             switch (entry.Event)
             {
                 case EventLogEvent.BLOCKED_PACKET:
                     {
-                        entry.ProcessID = (UInt64)e.EventRecord.Properties[0].Value;
-                        entry.SourceIP = (string)e.EventRecord.Properties[3].Value;
-                        ok &= int.TryParse((string)e.EventRecord.Properties[4].Value, out entry.SourcePort);
-                        entry.DestinationIP = (string)e.EventRecord.Properties[5].Value;
-                        ok &= int.TryParse((string)e.EventRecord.Properties[6].Value, out entry.DestinationPort);
-                        entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[7].Value;
-                        switch ((string)e.EventRecord.Properties[2].Value)
-                        {
-                            case "%%14593":
-                                entry.Direction = RuleDirection.In;
-                                break;
-                            case "%%14592":
-                                entry.Direction = RuleDirection.Out;
-                                break;
-                            default:
-                                entry.Direction = RuleDirection.Invalid;
-                                break;
-                        }
                         break;
                     }
                 case EventLogEvent.BLOCKED_CONNECTION:
                     {
-                        entry.ProcessID = (UInt64)e.EventRecord.Properties[0].Value;
-                        entry.SourceIP = (string)e.EventRecord.Properties[3].Value;
-                        ok &= int.TryParse((string)e.EventRecord.Properties[4].Value, out entry.SourcePort);
-                        entry.DestinationIP = (string)e.EventRecord.Properties[5].Value;
-                        ok &= int.TryParse((string)e.EventRecord.Properties[6].Value, out entry.DestinationPort);
-                        entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[7].Value;
-                        switch ((string)e.EventRecord.Properties[2].Value)
-                        {
-                            case "%%14593":
-                                entry.Direction = RuleDirection.In;
-                                break;
-                            case "%%14592":
-                                entry.Direction = RuleDirection.Out;
-                                break;
-                            default:
-                                entry.Direction = RuleDirection.Invalid;
-                                break;
-                        }
                         break;
                     }
                 case EventLogEvent.BLOCKED_LOCAL_BIND:
@@ -169,24 +165,6 @@ namespace PKSoft
                     }
                 case EventLogEvent.ALLOWED_CONNECTION:
                     {
-                        entry.ProcessID = (UInt64)e.EventRecord.Properties[0].Value;
-                        entry.SourceIP = (string)e.EventRecord.Properties[3].Value;
-                        ok &= int.TryParse((string)e.EventRecord.Properties[4].Value, out entry.SourcePort);
-                        entry.DestinationIP = (string)e.EventRecord.Properties[5].Value;
-                        ok &= int.TryParse((string)e.EventRecord.Properties[6].Value, out entry.DestinationPort);
-                        entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[7].Value;
-                        switch ((string)e.EventRecord.Properties[2].Value)
-                        {
-                            case "%%14592":
-                                entry.Direction = RuleDirection.In;
-                                break;
-                            case "%%14593":
-                                entry.Direction = RuleDirection.Out;
-                                break;
-                            default:
-                                entry.Direction = RuleDirection.Invalid;
-                                break;
-                        }
                         break;
                     }
                 case EventLogEvent.ALLOWED_LOCAL_BIND:
@@ -200,9 +178,6 @@ namespace PKSoft
                     return
 #endif
             }
-
-            if (!ok)
-                return;
 
             lock (NewEntries)
             {

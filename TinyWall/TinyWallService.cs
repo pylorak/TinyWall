@@ -525,6 +525,21 @@ namespace PKSoft
             }
         }
 
+        private string GetPathOfProcess(int pid)
+        {
+            try
+            {
+                using (Process p = Process.GetProcessById(pid))
+                {
+                    return p.MainModule.FileName;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         private List<FirewallLogEntry> GetFwLog()
         {
             if (LogWatcher == null)
@@ -547,34 +562,42 @@ namespace PKSoft
                 List<FirewallLogEntry> list = LogWatcher.QueryNewEntries();
                 foreach (FirewallLogEntry entry in list)
                 {
-                    string exec = null;
-                    try
-                    {
-                        int pid = (int)entry.ProcessID;
-                        using (Process p = Process.GetProcessById(pid))
-                        {
-                            exec = p.MainModule.FileName;
-                        }
-                    }
-                    catch
-                    {
-                        return;
-                    }
+                    string exec = GetPathOfProcess((int)entry.ProcessID);
+                    if (exec == null)
+                        continue;
 
+                    bool alreadyExists = false;
                     for (int j = 0; j < LearningNewExceptions.Count; ++j)
                     {
                         if (LearningNewExceptions[j].ExecutablePath.Equals(exec, StringComparison.OrdinalIgnoreCase))
-                            return;
+                        {
+                            alreadyExists = true;
+                            break;
+                        }
                     }
+                    if (alreadyExists)
+                        continue;
 
                     ProfileAssoc appFile;
                     Application app = LearningKnownApplication.TryGetRecognizedApp(exec, null, out appFile);
-                    if (app.Special)
-                        return;
+                    if (app != null)
+                    {
+                        if (app.Special)
+                            continue;
 
-                    AppExceptionSettings ex = appFile.ToExceptionSetting();
-                    ex.TryRecognizeApp(true);
-                    LearningNewExceptions.Add(ex);
+                        app.ResolveFilePaths();
+                        foreach (ProfileAssoc pa in app.FileRealizations)
+                        {
+                            LearningNewExceptions.Add(pa.ToExceptionSetting());
+                        }
+                    }
+                    else
+                    {
+                        appFile = ProfileAssoc.FromExecutable(exec, null);
+                        appFile.Profiles = new string[1] { "Blind trust" };
+                        AppExceptionSettings ex = appFile.ToExceptionSetting();
+                        LearningNewExceptions.Add(ex);
+                    }
                 }
             }
         }
@@ -716,18 +739,12 @@ namespace PKSoft
                     }
                 case TWControllerMessages.GET_PROCESS_PATH:
                     {
-                        try
-                        {
-                            int pid = (int)req.Arguments[0];
-                            using (Process p = Process.GetProcessById(pid))
-                            {
-                                return new Message(TWControllerMessages.RESPONSE_OK, p.MainModule.FileName);
-                            }
-                        }
-                        catch
-                        {
+                        int pid = (int)req.Arguments[0];
+                        string path = GetPathOfProcess(pid);
+                        if (path == null)
+                            return new Message(TWControllerMessages.RESPONSE_OK, path);
+                        else
                             return new Message(TWControllerMessages.RESPONSE_ERROR);
-                        }
                     }
                 case TWControllerMessages.SET_PASSPHRASE:
                     {

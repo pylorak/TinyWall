@@ -885,7 +885,9 @@ namespace PKSoft
 
         private void mnuModeLearn_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(this, PKSoft.Resources.Messages.YouAreAboutToEnterLearningMode, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            if (MessageBox.Show(this, PKSoft.Resources.Messages.YouAreAboutToEnterLearningMode, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) != System.Windows.Forms.DialogResult.Yes)
+                return;
+
             SetMode(FirewallMode.Learning);
             UpdateDisplay();
         }

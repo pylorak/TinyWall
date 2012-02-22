@@ -705,7 +705,9 @@ namespace PKSoft.Resources {
         /// <summary>
         ///   Looks up a localized string similar to You are about to switch TinyWall into its automatic learning mode.
         ///
-        ///In this mode TinyWall will allow all traffic and remember which applications have used the network. When you exit the learning mode, TinyWall will add exceptions for you automatically. Note however, that rules cannot be learned for &quot;Special Exceptions&quot; of the configuration..
+        ///In this mode TinyWall will allow all traffic and remember which applications have used the network. When you exit learning mode, TinyWall will add exceptions for you automatically. Note however, that rules cannot be learned for &quot;Special Exceptions&quot; of the configuration.
+        ///
+        ///Before entering learning mode, make sure that your system is free of any malware. It is best to run learning mode on freshly installed systems and it is recommended tha [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string YouAreAboutToEnterLearningMode {
             get {
