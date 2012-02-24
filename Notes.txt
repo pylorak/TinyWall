@@ -2,7 +2,6 @@ Future developent:
 - App profile submission system
 - IP blocklists
 - Custom profiles
-- Digital certificate
 - User-selectable zones
 - Spyware/malware recognition
 - SQLite database
@@ -10,10 +9,11 @@ Future developent:
 - Action Center integration
 - Updater to detected database format breakage
 - Updated UI
-- Localized versions
 - Better modularization
 
 Done in 2.0.0:
+- Localized versions
+- Digital certificate
 - MVPS hosts
 - Network traffic measurement
 - hosts file locking
