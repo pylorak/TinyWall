@@ -119,7 +119,7 @@ namespace ScmWrapper
 
         [DllImport("advapi32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool QueryServiceConfig(
+        internal static extern bool QueryServiceConfig(
             IntPtr hService,
             IntPtr intPtrQueryConfig,
             UInt32 cbBufSize,

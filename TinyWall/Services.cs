@@ -8,8 +8,8 @@ namespace PKSoft
 {
     internal partial class ServicesForm : Form
     {
-        public string SelectedServiceName;
-        public string SelectedServiceExec;
+        internal string SelectedServiceName;
+        internal string SelectedServiceExec;
 
         internal static AppExceptionSettings ChooseService(IWin32Window parent)
         {

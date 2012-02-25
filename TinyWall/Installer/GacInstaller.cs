@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace PKSoft
 {
-    public class GacInstaller : Installer
+    internal class GacInstaller : Installer
     {
         private readonly string GACUTIL_PATH = Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "gacutil.exe");
         private readonly string TargetFile;

@@ -4,14 +4,14 @@ using System.ServiceProcess;
 
 namespace PKSoft
 {
-    public class ServiceInstaller : Installer
+    internal class ServiceInstaller : Installer
     {
         // Service Account Information
         private System.ServiceProcess.ServiceProcessInstaller serviceProcessInstaller = null;
         // Service Information
         private System.ServiceProcess.ServiceInstaller serviceInstaller = null;
 
-        public ServiceInstaller()
+        internal ServiceInstaller()
         {
             try
             {

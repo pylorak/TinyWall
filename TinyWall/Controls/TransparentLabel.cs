@@ -2,9 +2,9 @@
 
 namespace PKSoft
 {
-    public partial class TransparentLabel : Label
+    internal partial class TransparentLabel : Label
     {
-        public TransparentLabel()
+        internal TransparentLabel()
         {
             InitializeComponent();
             this.SetStyle(ControlStyles.SupportsTransparentBackColor, true);

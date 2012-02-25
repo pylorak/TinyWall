@@ -501,7 +501,7 @@ namespace PKSoft
             Q.Enqueue(new ReqResp(new Message(TWControllerMessages.REINIT)));
         }
 
-        public void TimerCallback(Object state)
+        internal void TimerCallback(Object state)
         {
             // This timer is called every minute.
 

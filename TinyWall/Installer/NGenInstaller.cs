@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace PKSoft
 {
-    public class NgenInstaller : Installer
+    internal class NgenInstaller : Installer
     {
         private readonly string NGEN_PATH = Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "ngen.exe");
         private readonly string TargetFile;

@@ -6,9 +6,9 @@ using System.Windows.Forms;
 
 namespace PKSoft
 {
-    public partial class DevelToolForm : Form
+    internal partial class DevelToolForm : Form
     {
-        public DevelToolForm()
+        internal DevelToolForm()
         {
             InitializeComponent();
         }

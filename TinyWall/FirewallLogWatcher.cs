@@ -47,7 +47,7 @@ namespace PKSoft
                 SourcePort.GetHashCode() ^ DestinationPort.GetHashCode();
         }
 
-        public bool Equals(FirewallLogEntry obj, bool timestampMustMatch)
+        internal bool Equals(FirewallLogEntry obj, bool timestampMustMatch)
         {
             // If parameter cannot be cast to Point return false.
             if ((object)obj == null)

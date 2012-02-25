@@ -9,16 +9,16 @@ using System.Windows.Forms;
 namespace PKSoft
 {
 
-    public partial class UpdateForm : Form
+    internal partial class UpdateForm : Form
     {
         WebClient HTTPClient = new WebClient();
 
-        public UpdateForm()
+        internal UpdateForm()
         {
             InitializeComponent();
         }
 
-        public static void StartUpdate(IWin32Window owner)
+        internal static void StartUpdate(IWin32Window owner)
         {
             if (Utils.RunningAsAdmin())
             {
@@ -42,7 +42,7 @@ namespace PKSoft
             }
         }
 
-        public void StartUpdate()
+        internal void StartUpdate()
         {
             // To prevent blocking the UI, we use a thread from the ThreadPool.
             // We use invoke to be able to update controls from the backgorund thread.
