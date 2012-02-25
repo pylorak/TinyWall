@@ -75,7 +75,6 @@ namespace PKSoft
             // 
             // Tray
             // 
-            this.Tray.ContextMenuStrip = this.TrayMenu;
             resources.ApplyResources(this.Tray, "Tray");
             this.Tray.BalloonTipClicked += new System.EventHandler(this.Tray_BalloonTipClicked);
             this.Tray.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Tray_MouseClick);

@@ -768,6 +768,7 @@ namespace PKSoft
             // --- THREAD BARRIER ---
 
             LoadSettingsFromServer(true);
+            Tray.ContextMenuStrip = TrayMenu;
 
             if (StartupOpts.autowhitelist)
             {

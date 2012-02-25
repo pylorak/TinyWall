@@ -120,10 +120,26 @@
   <metadata name="Tray.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="Tray.Text" xml:space="preserve">
+    <value>TinyWall</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Tray.Visible" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <metadata name="TrayMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>92, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="TrayMenu.Size" type="System.Drawing.Size, System.Drawing">
+    <value>268, 336</value>
+  </data>
+  <data name="&gt;&gt;TrayMenu.Name" xml:space="preserve">
+    <value>TrayMenu</value>
+  </data>
+  <data name="&gt;&gt;TrayMenu.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="mnuCurrentPolicy.Size" type="System.Drawing.Size, System.Drawing">
     <value>267, 22</value>
   </data>
@@ -138,6 +154,12 @@
   </data>
   <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
     <value>264, 6</value>
+  </data>
+  <data name="mnuMode.Size" type="System.Drawing.Size, System.Drawing">
+    <value>267, 22</value>
+  </data>
+  <data name="mnuMode.Text" xml:space="preserve">
+    <value>Change mode</value>
   </data>
   <data name="mnuModeNormal.Size" type="System.Drawing.Size, System.Drawing">
     <value>172, 22</value>
@@ -168,12 +190,6 @@
   </data>
   <data name="mnuModeLearn.Text" xml:space="preserve">
     <value>Autolearn</value>
-  </data>
-  <data name="mnuMode.Size" type="System.Drawing.Size, System.Drawing">
-    <value>267, 22</value>
-  </data>
-  <data name="mnuMode.Text" xml:space="preserve">
-    <value>Change mode</value>
   </data>
   <data name="mnuManage.Size" type="System.Drawing.Size, System.Drawing">
     <value>267, 22</value>
@@ -252,22 +268,6 @@
   </data>
   <data name="mnuQuit.Text" xml:space="preserve">
     <value>Quit</value>
-  </data>
-  <data name="TrayMenu.Size" type="System.Drawing.Size, System.Drawing">
-    <value>268, 336</value>
-  </data>
-  <data name="&gt;&gt;TrayMenu.Name" xml:space="preserve">
-    <value>TrayMenu</value>
-  </data>
-  <data name="&gt;&gt;TrayMenu.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Tray.Text" xml:space="preserve">
-    <value>TinyWall</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Tray.Visible" type="System.Boolean, mscorlib">
-    <value>True</value>
   </data>
   <metadata name="ofd.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>198, 17</value>
