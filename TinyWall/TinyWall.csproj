@@ -59,7 +59,7 @@
     <CodeAnalysisLogFile>bin\Debug\TinyWall.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
@@ -119,6 +119,16 @@
     <Compile Include="Hasher.cs" />
     <Compile Include="HostsFileManager.cs" />
     <Compile Include="Hotkey.cs" />
+    <Compile Include="Installer\GacInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Installer\GacWrap.cs" />
+    <Compile Include="Installer\NGenInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Installer\TinyWallInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ListViewItemComprarer.cs" />
     <Compile Include="Resources\Icons.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -210,7 +220,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TinyWallCommands.cs" />
-    <Compile Include="TinyWallServiceInstaller.cs">
+    <Compile Include="Installer\ServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="WindowsFirewall\Action.cs" />

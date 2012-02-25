@@ -79,6 +79,62 @@ namespace PKSoft
             return 0;
         }
 
+        private static int InstallService()
+        {
+            // Install service
+            try
+            {
+                ManagedInstallerClass.InstallHelper(new string[] { "/i", Utils.ExecutablePath });
+            }
+            catch { }
+
+            // Install service
+            try
+            {
+                TinyWallDoctor.EnsureHealth();
+            }
+            catch { }
+
+            // Start service
+            try
+            {
+                using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
+                {
+                    if (sc.Status == ServiceControllerStatus.Stopped)
+                    {
+                        sc.Start();
+                        sc.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(5));
+                    }
+                }
+            }
+            catch
+            {
+                MessageBox.Show(PKSoft.Resources.Messages.TheTinyWallServiceCouldNotBeStarted, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return -1;
+            }
+
+            return 0;
+        }
+
+        private static int UninstallService()
+        {
+            // Uninstall registry key
+            Utils.RunAtStartup("TinyWall Controller", null);
+
+            // Uninstall service
+            try
+            {
+                ManagedInstallerClass.InstallHelper(new string[] { "/u", Utils.ExecutablePath });
+            }
+            catch { }
+
+            // Remove user settings
+            string UserDir = ControllerSettings.UserDataPath;
+            Directory.Delete(UserDir, true);
+
+            return 0;
+        }
+
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
         /// </summary>
@@ -112,65 +168,15 @@ namespace PKSoft
             if (opts.ProgramMode == StartUpMode.Invalid)
                 opts.ProgramMode = StartUpMode.Controller;
 
-            #region /install
             if (opts.install)
             {
-                // Install service
-                try
-                {
-                    ManagedInstallerClass.InstallHelper(new string[] { "/i", Utils.ExecutablePath });
-                }
-                catch { }
-
-                // Install service
-                try
-                {
-                    TinyWallDoctor.EnsureHealth();
-                }
-                catch { }
-
-                // Start service
-                try
-                {
-                    using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
-                    {
-                        if (sc.Status == ServiceControllerStatus.Stopped)
-                        {
-                            sc.Start();
-                            sc.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(5));
-                        }
-                    }
-                }
-                catch 
-                {
-                    MessageBox.Show(PKSoft.Resources.Messages.TheTinyWallServiceCouldNotBeStarted, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return -1;
-                }
-
-                return 0;
+                return InstallService();
             }
-            #endregion
 
-            #region /uninstall
             if (opts.uninstall)
             {
-                // Uninstall registry key
-                Utils.RunAtStartup("TinyWall Controller", null);
-
-                // Uninstall service
-                try
-                {
-                    ManagedInstallerClass.InstallHelper(new string[] { "/u", Utils.ExecutablePath });
-                }
-                catch { }
-
-                // Remove user settings
-                string UserDir = ControllerSettings.UserDataPath;
-                Directory.Delete(UserDir, true);
-
-                return 0;
+                return UninstallService();
             }
-            #endregion
 
             switch (opts.ProgramMode)
             {

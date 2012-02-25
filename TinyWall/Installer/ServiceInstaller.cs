@@ -4,24 +4,23 @@ using System.ServiceProcess;
 
 namespace PKSoft
 {
-    [RunInstaller(true)]
-    public class TinyWallServiceInstaller : Installer
+    public class ServiceInstaller : Installer
     {
         // Service Account Information
-        private ServiceProcessInstaller serviceProcessInstaller = null;
+        private System.ServiceProcess.ServiceProcessInstaller serviceProcessInstaller = null;
         // Service Information
-        ServiceInstaller serviceInstaller = null;
+        private System.ServiceProcess.ServiceInstaller serviceInstaller = null;
 
-        public TinyWallServiceInstaller()
+        public ServiceInstaller()
         {
             try
             {
-                serviceProcessInstaller = new ServiceProcessInstaller();
+                serviceProcessInstaller = new System.ServiceProcess.ServiceProcessInstaller();
                 serviceProcessInstaller.Account = ServiceAccount.LocalSystem;
                 serviceProcessInstaller.Username = null;
                 serviceProcessInstaller.Password = null;
 
-                serviceInstaller = new ServiceInstaller();
+                serviceInstaller = new System.ServiceProcess.ServiceInstaller();
                 serviceInstaller.DisplayName = TinyWallService.SERVICE_DISPLAY_NAME;
                 serviceInstaller.StartType = ServiceStartMode.Automatic;
                 // This must be identical to the WindowsService.ServiceBase name

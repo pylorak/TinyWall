@@ -6,10 +6,6 @@
 #define MyAppVersion "1.9.1"
 #define MyAppPublisher "Károly Pados"
 
-#define TW_TinyWall_exe_SN "TinyWall, Version=1.9.1.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
-#define TW_NetFwTypeLib_dll_SN "Interop.NetFwTypeLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
-#define TW_XmlSerializers_dll_SN "TinyWall.XmlSerializers, Version=1.9.1.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3"
-
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
@@ -59,26 +55,20 @@ Source: "Components\Attributions.txt"; DestDir: "{app}"
 Source: "Components\TinyWall.exe.config"; DestDir: "{app}"; Flags:
 Source: "Components\CommonAppData\*"; DestDir: "{commonappdata}"; Flags: recursesubdirs createallsubdirs 
 
-Source: "Components\TinyWall.exe"; DestDir: "{app}"; Flags: replacesameversion gacinstall; StrongAssemblyName: {#TW_TinyWall_exe_SN};
-Source: "Components\Interop.NetFwTypeLib.dll"; DestDir: "{app}"; Flags: replacesameversion gacinstall sharedfile uninsnosharedfileprompt; StrongAssemblyName: {#TW_NetFwTypeLib_dll_SN};
-Source: "Components\TinyWall.XmlSerializers.dll"; DestDir: "{app}"; Flags: replacesameversion gacinstall sharedfile uninsnosharedfileprompt; StrongAssemblyName: {#TW_XmlSerializers_dll_SN};
-
-;Source: "Components\TinyWall.exe"; DestDir: "{app}"; Flags: replacesameversion; StrongAssemblyName: "{#TW_TinyWall_exe_SN}";
-;Source: "Components\Interop.NetFwTypeLib.dll"; DestDir: "{app}"; Flags: replacesameversion sharedfile uninsnosharedfileprompt; StrongAssemblyName: "{#TW_NetFwTypeLib_dll_SN}";
-;Source: "Components\TinyWall.XmlSerializers.dll"; DestDir: "{app}"; Flags: replacesameversion sharedfile uninsnosharedfileprompt; StrongAssemblyName: "{#TW_XmlSerializers_dll_SN}";
+Source: "Components\TinyWall.exe"; DestDir: "{app}"; Flags: replacesameversion;
+Source: "Components\Interop.NetFwTypeLib.dll"; DestDir: "{app}"; Flags: replacesameversion;
+Source: "Components\TinyWall.XmlSerializers.dll"; DestDir: "{app}"; Flags: replacesameversion;
 
 [Run]
-Filename: "{dotnet20}\ngen.exe"; Parameters: "install ""{#TW_TinyWall_exe_SN}"""; StatusMsg: "Optimizing performance..."; Flags: runascurrentuser runhidden;
-Filename: "{app}\TinyWall.exe"; Parameters: "/install"; StatusMsg: "Installing service..."; Flags: runascurrentuser;
-Filename: "{app}\TinyWall.exe"; Parameters: "/desktop"; StatusMsg: "Starting firewall..."; Flags: runasoriginaluser nowait; Tasks: not detectnow;
-Filename: "{app}\TinyWall.exe"; Parameters: "/desktop /autowhitelist"; StatusMsg: "Starting firewall..."; Flags: runasoriginaluser nowait; Tasks: detectnow;
+Filename: "{app}\TinyWall.exe"; Parameters: "/install"; StatusMsg: "Setting up system..."; Flags: runascurrentuser;
+Filename: "{app}\TinyWall.exe"; Parameters: "/desktop"; StatusMsg: "Starting user interface..."; Flags: runasoriginaluser nowait; Tasks: not detectnow;
+Filename: "{app}\TinyWall.exe"; Parameters: "/desktop /autowhitelist"; StatusMsg: "user interface..."; Flags: runasoriginaluser nowait; Tasks: detectnow;
 
 [Tasks]
 Name: detectnow; Description: "After setup, automatically unblock some applications (recommended)"; Flags: checkedonce;
 
 [UninstallRun]
 Filename: "{app}\TinyWall.exe"; Parameters: "/uninstall"; StatusMsg: "Uninstalling service..."; Flags: runascurrentuser;
-Filename: "{dotnet20}\ngen.exe"; Parameters: "uninstall ""{#TW_TinyWall_exe_SN}"""; Flags: runascurrentuser runhidden;
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}"

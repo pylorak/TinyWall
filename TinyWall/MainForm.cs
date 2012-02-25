@@ -778,6 +778,26 @@ namespace PKSoft
             }
         }
 
+        private void AutoWhitelist()
+        {
+            ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
+            for (int i = 0; i < allApps.Count; ++i)
+            {
+                Application app = allApps[i];
+
+                // If we've found at least one file, add the app to the list
+                if (!app.Special && app.ResolveFilePaths())
+                {
+                    foreach (ProfileAssoc appFile in app.FileRealizations)
+                    {
+                        SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, appFile.ToExceptionSetting());
+                    }
+                }
+            }
+            SettingsManager.CurrentZone.Normalize();
+            ApplyFirewallSettings(null, SettingsManager.CurrentZone);
+        }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             // We will load our database parallel to other things to improve startup performance
@@ -831,22 +851,7 @@ namespace PKSoft
 
             if (StartupOpts.autowhitelist)
             {
-                ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
-                for (int i = 0; i < allApps.Count; ++i)
-                {
-                    Application app = allApps[i];
-
-                    // If we've found at least one file, add the app to the list
-                    if (!app.Special && app.ResolveFilePaths())
-                    {
-                        foreach (ProfileAssoc appFile in app.FileRealizations)
-                        {
-                            SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, appFile.ToExceptionSetting());
-                        }
-                    }
-                }
-                SettingsManager.CurrentZone.Normalize();
-                ApplyFirewallSettings(null, SettingsManager.CurrentZone);
+                AutoWhitelist();
             }
 
             if (StartupOpts.updatenow)
