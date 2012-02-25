@@ -361,7 +361,7 @@ namespace PKSoft
         {
             IconList.Images.Add("deleted", Resources.Icons.delete);
 
-            lblVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0} {1}", lblVersion.Text, FileVersionInfo.GetVersionInfo(Utils.ExecutablePath).ProductVersion.ToString());
+            lblVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0} {1}", lblVersion.Text, System.Windows.Forms.Application.ProductVersion.ToString());
 
             InitSettingsUI();
 
