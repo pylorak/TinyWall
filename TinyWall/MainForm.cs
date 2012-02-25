@@ -282,9 +282,16 @@ namespace PKSoft
         }
 
         // Returns true if the local copy of the settings have been updated.
-        private bool LoadSettingsFromServer(bool force = false)
+        private bool LoadSettingsFromServer()
         {
-            // Detect of server settings have changed in comparison to ours and download
+            bool comError;
+            return LoadSettingsFromServer(out comError, false);
+        }
+
+        // Returns true if the local copy of the settings have been updated.
+        private bool LoadSettingsFromServer(out bool comError, bool force = false)
+        {
+            // Detect if server settings have changed in comparison to ours and download
             // settings only if we need them. Settings are "version numbered" using the "changeset"
             // property. We send our changeset number to the service and if it differs from his,
             // the service will send back the settings.
@@ -295,6 +302,7 @@ namespace PKSoft
 
             Message req = new Message(TWControllerMessages.GET_SETTINGS, force ? int.MinValue : FirewallState.SettingsChangeset, this.Handle );
             Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
+            comError = (resp.Command == TWControllerMessages.COM_ERROR);
             if (resp.Command == TWControllerMessages.RESPONSE_OK)
             {
                 int ServerChangeSet = (int)resp.Arguments[0];
@@ -319,14 +327,15 @@ namespace PKSoft
             if (SettingsUpdated)
             {
                 UpdateDisplay();
-                if (DateTime.Now - LastUpdateNotification > TimeSpan.FromHours(4))
+            }
+
+            if (DateTime.Now - LastUpdateNotification > TimeSpan.FromHours(4))
+            {
+                ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
                 {
-                    ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
-                    {
-                        VerifyUpdates();
-                    });
-                    LastUpdateNotification = DateTime.Now;
-                }
+                    VerifyUpdates();
+                });
+                LastUpdateNotification = DateTime.Now;
             }
 
             return SettingsUpdated;
@@ -334,25 +343,11 @@ namespace PKSoft
 
         private void TrayMenu_Opening(object sender, CancelEventArgs e)
         {
-            LoadSettingsFromServer();
-
             if (FirewallState.Mode == FirewallMode.Unknown)
             {
-                try
+                if (!TinyWallDoctor.IsServiceRunning())
                 {
-                    // Check if the service is running
-                    using (ServiceController scm = new ServiceController(TinyWallService.SERVICE_NAME))
-                    {
-                        if (scm.Status == ServiceControllerStatus.Stopped)
-                        {
-                            ShowBalloonTip(PKSoft.Resources.Messages.TheTinyWallServiceIsStopped, ToolTipIcon.Error, 10000);
-                            e.Cancel = true;
-                        }
-                    }
-                }
-                catch   // If thrown, it means the TinyWall service did not even exist
-                {
-                    ShowBalloonTip(PKSoft.Resources.Messages.TinyWallServiceIsNotInstalled, ToolTipIcon.Error, 10000);
+                    ShowBalloonTip(PKSoft.Resources.Messages.TheTinyWallServiceIsUnavailable, ToolTipIcon.Error, 10000);
                     e.Cancel = true;
                 }
             }
@@ -767,7 +762,17 @@ namespace PKSoft
 
             // --- THREAD BARRIER ---
 
-            LoadSettingsFromServer(true);
+            bool comError;
+            LoadSettingsFromServer(out comError, true);
+#if !DEBUG
+            if (comError)
+            {
+                TinyWallDoctor.EnsureServiceInstalledAndRunning();
+                UpdateDisplay();
+            }
+#endif
+
+            // Enable opening the tray menu
             Tray.ContextMenuStrip = TrayMenu;
 
             if (StartupOpts.autowhitelist)

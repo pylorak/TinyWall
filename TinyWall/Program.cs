@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Configuration.Install;
-using System.Diagnostics;
 using System.IO;
 using System.ServiceProcess;
 using System.Threading;
@@ -41,37 +40,6 @@ namespace PKSoft
 
         private static int StartController(CmdLineArgs opts)
         {
-#if !DEBUG
-            #region See if the service is installed and running, and try to correct it if not
-
-                bool isRunning;
-                try
-                {
-                    using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
-                    {
-                        isRunning = (sc.Status == ServiceControllerStatus.Running) || (sc.Status == ServiceControllerStatus.StartPending);
-                    }
-                }
-                catch
-                {
-                    isRunning = false;
-                }
-
-                if (!isRunning)
-                {
-                    try
-                    {
-                        using (Process p = Utils.StartProcess(Utils.ExecutablePath, "/install", true))
-                        {
-                            p.WaitForExit();
-                        }
-                    }
-                    catch { }
-                }
-
-            #endregion
-#endif
-
             // Start controller application
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
@@ -81,14 +49,14 @@ namespace PKSoft
 
         private static int InstallService()
         {
-            // Install service
+            // Run installers
             try
             {
                 ManagedInstallerClass.InstallHelper(new string[] { "/i", Utils.ExecutablePath });
             }
             catch { }
 
-            // Install service
+            // Ensure dependencies
             try
             {
                 TinyWallDoctor.EnsureHealth();

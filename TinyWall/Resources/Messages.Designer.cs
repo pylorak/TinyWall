@@ -512,11 +512,11 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The TinyWall service is stopped. Make sure it is started and then retry..
+        ///   Looks up a localized string similar to The TinyWall service is unavailable. Please make sure it is installed and started, then retry..
         /// </summary>
-        internal static string TheTinyWallServiceIsStopped {
+        internal static string TheTinyWallServiceIsUnavailable {
             get {
-                return ResourceManager.GetString("TheTinyWallServiceIsStopped", resourceCulture);
+                return ResourceManager.GetString("TheTinyWallServiceIsUnavailable", resourceCulture);
             }
         }
         
@@ -544,15 +544,6 @@ namespace PKSoft.Resources {
         internal static string TinyWallIsCurrentlyLocked {
             get {
                 return ResourceManager.GetString("TinyWallIsCurrentlyLocked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to TinyWall Service is not installed. Please re-run the TinyWall installer..
-        /// </summary>
-        internal static string TinyWallServiceIsNotInstalled {
-            get {
-                return ResourceManager.GetString("TinyWallServiceIsNotInstalled", resourceCulture);
             }
         }
         

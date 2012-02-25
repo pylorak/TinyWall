@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.ServiceProcess;
 using System.Windows.Forms;
 
 namespace PKSoft
@@ -331,28 +330,22 @@ namespace PKSoft
             bool UninstallFlag = MessageBox.Show(this, msg, PKSoft.Resources.Messages.UninstallTinyWall, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.Yes;
             if (UninstallFlag)
             {
-                // Stop service
-                // This is a message that does not return successfully even if it was successfull
-                GlobalInstances.CommunicationMan.QueueMessageSimple(TWControllerMessages.STOP_DISABLE);
-                System.Threading.Thread.Sleep(2000);
-
                 // Get path to uninstaller and launch it
                 string uninstaller = Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "unins000.exe");
                 if (File.Exists(uninstaller))
                 {
+                    // Stop service
+                    // This is a message that does not return successfully even if it was successfull
+                    GlobalInstances.CommunicationMan.QueueMessageSimple(TWControllerMessages.STOP_DISABLE);
+                    System.Threading.Thread.Sleep(2000);
+
+                    // Start uninstaller
                     Utils.StartProcess(uninstaller, "/SILENT", true);
                     System.Windows.Forms.Application.Exit();
                 }
                 else
                 {
                     MessageBox.Show(this, PKSoft.Resources.Messages.CouldNotFindTheUninstaller, PKSoft.Resources.Messages.UninstallTinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                    // Start service back up
-                    using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
-                    {
-                        if (sc.Status == ServiceControllerStatus.Stopped)
-                            sc.Start();
-                    }
                 }
             }
         }

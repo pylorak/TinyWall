@@ -1,12 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.ServiceProcess;
-using System.Windows.Forms;
 
 namespace PKSoft
 {
     internal static class TinyWallDoctor
     {
+        internal static bool IsServiceRunning()
+        {
+            try
+            {
+                using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
+                {
+                    return (sc.Status == ServiceControllerStatus.Running) || (sc.Status == ServiceControllerStatus.StartPending);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        internal static void EnsureServiceInstalledAndRunning()
+        {
+            if (!TinyWallDoctor.IsServiceRunning())
+            {
+                try
+                {
+                    using (Process p = Utils.StartProcess(Utils.ExecutablePath, "/install", true))
+                    {
+                        p.WaitForExit();
+                    }
+                }
+                catch { }
+            }
+        }
+
         internal static void EnsureHealth()
         {
             // Ensure that TinyWall's dependencies can be started
