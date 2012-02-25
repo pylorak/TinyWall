@@ -20,7 +20,6 @@ namespace PKSoft
 
         // Traffic rate monitoring
         private System.Threading.Timer TrafficTimer = null;
-        private ManagementObjectSearcher searcher = null;
         private const int TRAFFIC_TIMER_INTERVAL = 3;
         private ulong bytesRxTotal = 0;
         private ulong bytesTxTotal = 0;
@@ -91,45 +90,44 @@ namespace PKSoft
 
         private void TrafficTimerTick(object state)
         {
-            // Use WMI technology to retrieve the interface details
-            if (searcher == null)
-                searcher = new ManagementObjectSearcher(@"select BytesReceivedPersec, BytesSentPersec from Win32_PerfRawData_Tcpip_NetworkInterface");
-
-            ulong bytesRxNewTotal = 0;
-            ulong bytesTxNewTotal = 0;
-            ManagementObjectCollection moc = searcher.Get();
-            foreach (ManagementObject adapterObject in moc)
+            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(@"select BytesReceivedPersec, BytesSentPersec from Win32_PerfRawData_Tcpip_NetworkInterface"))
             {
-                bytesRxNewTotal += (ulong)adapterObject["BytesReceivedPersec"];
-                bytesTxNewTotal += (ulong)adapterObject["BytesSentPersec"];
-            }
+                ulong bytesRxNewTotal = 0;
+                ulong bytesTxNewTotal = 0;
+                ManagementObjectCollection moc = searcher.Get();
+                foreach (ManagementObject adapterObject in moc)
+                {
+                    bytesRxNewTotal += (ulong)adapterObject["BytesReceivedPersec"];
+                    bytesTxNewTotal += (ulong)adapterObject["BytesSentPersec"];
+                }
 
-            // If this is the first time we are running.
-            if ((bytesRxTotal == 0) && (bytesTxTotal == 0))
-            {
+                // If this is the first time we are running.
+                if ((bytesRxTotal == 0) && (bytesTxTotal == 0))
+                {
+                    bytesRxTotal = bytesRxNewTotal;
+                    bytesTxTotal = bytesTxNewTotal;
+                }
+
+                float RxDiff = (bytesRxNewTotal - bytesRxTotal) / (float)TRAFFIC_TIMER_INTERVAL;
+                float TxDiff = (bytesTxNewTotal - bytesTxTotal) / (float)TRAFFIC_TIMER_INTERVAL;
                 bytesRxTotal = bytesRxNewTotal;
                 bytesTxTotal = bytesTxNewTotal;
+
+                float KBytesRxPerSec = RxDiff / 1024;
+                float KBytesTxPerSec = TxDiff / 1024;
+                float MBytesRxPerSec = KBytesRxPerSec / 1024;
+                float MBytesTxPerSec = KBytesTxPerSec / 1024;
+
+                if (MBytesRxPerSec > 1)
+                    rxDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}MiB/s", MBytesRxPerSec);
+                else
+                    rxDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}KiB/s", KBytesRxPerSec);
+
+                if (MBytesTxPerSec > 1)
+                    txDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}MiB/s", MBytesTxPerSec);
+                else
+                    txDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}KiB/s", KBytesTxPerSec);
             }
-
-            float RxDiff = (bytesRxNewTotal - bytesRxTotal) / (float)TRAFFIC_TIMER_INTERVAL;
-            float TxDiff = (bytesTxNewTotal - bytesTxTotal) / (float)TRAFFIC_TIMER_INTERVAL;
-            bytesRxTotal = bytesRxNewTotal;
-            bytesTxTotal = bytesTxNewTotal;
-
-            float KBytesRxPerSec = RxDiff / 1024;
-            float KBytesTxPerSec = TxDiff / 1024;
-            float MBytesRxPerSec = KBytesRxPerSec / 1024;
-            float MBytesTxPerSec = KBytesTxPerSec / 1024;
-
-            if (MBytesRxPerSec > 1)
-                rxDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}MiB/s", MBytesRxPerSec);
-            else
-                rxDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}KiB/s", KBytesRxPerSec);
-
-            if (MBytesTxPerSec > 1)
-                txDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}MiB/s", MBytesTxPerSec);
-            else
-                txDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}KiB/s", KBytesTxPerSec);
         }
         
         private void StartUpdate(object sender, AnyEventArgs e)
@@ -800,6 +798,8 @@ namespace PKSoft
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.Zero, TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
+
             // We will load our database parallel to other things to improve startup performance
             ThreadBarrier barrier = new ThreadBarrier(2);
             ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
@@ -845,8 +845,6 @@ namespace PKSoft
 
             // --- THREAD BARRIER ---
 
-            TrafficTimerTick(null); // Initialize traffic rate counter state by executing the measure once
-            TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
             LoadSettingsFromServer(true);
 
             if (StartupOpts.autowhitelist)
