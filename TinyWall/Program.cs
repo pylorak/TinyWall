@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Configuration.Install;
-using System.IO;
 using System.ServiceProcess;
 using System.Threading;
-using System.Windows.Forms;
 
 namespace PKSoft
 {
@@ -49,57 +46,12 @@ namespace PKSoft
 
         private static int InstallService()
         {
-            // Run installers
-            try
-            {
-                ManagedInstallerClass.InstallHelper(new string[] { "/i", Utils.ExecutablePath });
-            }
-            catch { }
-
-            // Ensure dependencies
-            try
-            {
-                TinyWallDoctor.EnsureHealth();
-            }
-            catch { }
-
-            // Start service
-            try
-            {
-                using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
-                {
-                    if (sc.Status == ServiceControllerStatus.Stopped)
-                    {
-                        sc.Start();
-                        sc.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(5));
-                    }
-                }
-            }
-            catch
-            {
-                MessageBox.Show(PKSoft.Resources.Messages.TheTinyWallServiceCouldNotBeStarted, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return -1;
-            }
-
-            return 0;
+            return TinyWallDoctor.EnsureServiceInstalledAndRunning() ? 0 : -1;
         }
 
         private static int UninstallService()
         {
-            // Uninstall registry key
-            Utils.RunAtStartup("TinyWall Controller", null);
-
-            // Uninstall service
-            try
-            {
-                ManagedInstallerClass.InstallHelper(new string[] { "/u", Utils.ExecutablePath });
-            }
-            catch { }
-
-            // Remove user settings
-            string UserDir = ControllerSettings.UserDataPath;
-            Directory.Delete(UserDir, true);
-
+            TinyWallDoctor.Uninstall();
             return 0;
         }
 

@@ -767,8 +767,15 @@ namespace PKSoft
 #if !DEBUG
             if (comError)
             {
-                TinyWallDoctor.EnsureServiceInstalledAndRunning();
-                UpdateDisplay();
+                if (TinyWallDoctor.EnsureServiceInstalledAndRunning())
+                {
+                    LoadSettingsFromServer(out comError, true);
+                    UpdateDisplay();
+                }
+                else
+                {
+                    MessageBox.Show(PKSoft.Resources.Messages.TheTinyWallServiceIsUnavailable, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
 #endif
 

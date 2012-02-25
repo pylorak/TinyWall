@@ -199,9 +199,6 @@ Do you wish to uninstall TinyWall?</value>
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>The configuration file has been successfully exported.</value>
   </data>
-  <data name="TheTinyWallServiceCouldNotBeStarted" xml:space="preserve">
-    <value>The TinyWall Service could not be started. Please ensure that all service dependencies of the TinyWall Service can be started.</value>
-  </data>
   <data name="CurrentZone" xml:space="preserve">
     <value>Current zone: {0}</value>
     <comment>Param0 is name of zone</comment>

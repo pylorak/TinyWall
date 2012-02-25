@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Configuration.Install;
 using System.Diagnostics;
+using System.IO;
 using System.ServiceProcess;
 
 namespace PKSoft
@@ -21,19 +23,76 @@ namespace PKSoft
             }
         }
 
-        internal static void EnsureServiceInstalledAndRunning()
+        internal static bool EnsureServiceInstalledAndRunning()
         {
-            if (!TinyWallDoctor.IsServiceRunning())
+            if (TinyWallDoctor.IsServiceRunning())
+                return true;
+
+            if (Utils.RunningAsAdmin())
             {
+                // Run installers
+                try
+                {
+                    ManagedInstallerClass.InstallHelper(new string[] { "/i", Utils.ExecutablePath });
+                }
+                catch { }
+
+                // Ensure dependencies
+                try
+                {
+                    TinyWallDoctor.EnsureHealth();
+                }
+                catch { }
+
+                // Start service
+                try
+                {
+                    using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
+                    {
+                        if (sc.Status == ServiceControllerStatus.Stopped)
+                        {
+                            sc.Start();
+                            sc.WaitForStatus(ServiceControllerStatus.Running, System.TimeSpan.FromSeconds(5));
+                        }
+                    }
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                // We are not running as admin.
                 try
                 {
                     using (Process p = Utils.StartProcess(Utils.ExecutablePath, "/install", true))
                     {
                         p.WaitForExit();
+                        return (p.ExitCode == 0);
                     }
                 }
-                catch { }
+                catch { return false; }
             }
+
+            return true;
+        }
+
+        internal static void Uninstall()
+        {
+            // Uninstall registry key
+            Utils.RunAtStartup("TinyWall Controller", null);
+
+            // Uninstall service
+            try
+            {
+                ManagedInstallerClass.InstallHelper(new string[] { "/u", Utils.ExecutablePath });
+            }
+            catch { }
+
+            // Remove user settings
+            string UserDir = ControllerSettings.UserDataPath;
+            Directory.Delete(UserDir, true);
         }
 
         internal static void EnsureHealth()

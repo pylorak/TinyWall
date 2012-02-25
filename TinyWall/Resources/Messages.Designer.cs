@@ -503,15 +503,6 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The TinyWall Service could not be started. Please ensure that all service dependencies of the TinyWall Service can be started..
-        /// </summary>
-        internal static string TheTinyWallServiceCouldNotBeStarted {
-            get {
-                return ResourceManager.GetString("TheTinyWallServiceCouldNotBeStarted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The TinyWall service is unavailable. Please make sure it is installed and started, then retry..
         /// </summary>
         internal static string TheTinyWallServiceIsUnavailable {
