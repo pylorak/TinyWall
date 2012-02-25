@@ -9,9 +9,9 @@ namespace PKSoft
     public class NgenInstaller : Installer
     {
         private readonly string NGEN_PATH = Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "ngen.exe");
-        private readonly InstallTargetFile TargetFile;
+        private readonly string TargetFile;
 
-        internal NgenInstaller(InstallTargetFile file)
+        internal NgenInstaller(string file)
         {
             TargetFile = file;
         }
@@ -20,7 +20,7 @@ namespace PKSoft
         {
             base.Install(stateSaver);
 
-            using (Process p = Utils.StartProcess(NGEN_PATH, "install \"" + TargetFile.Path + "\"", true, true))
+            using (Process p = Utils.StartProcess(NGEN_PATH, "install \"" + TargetFile + "\"", true, true))
             {
                 p.WaitForExit();
             }
@@ -30,7 +30,7 @@ namespace PKSoft
         {
             base.Uninstall(stateSaver);
 
-            using (Process p = Utils.StartProcess(NGEN_PATH, "uninstall \"" + TargetFile.Path + "\"", true, true))
+            using (Process p = Utils.StartProcess(NGEN_PATH, "uninstall \"" + TargetFile + "\"", true, true))
             {
                 p.WaitForExit();
             }
