@@ -55,6 +55,7 @@ namespace PKSoft
             this.mnuModeBlockAll = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuModeAllowOutgoing = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuModeDisabled = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuModeLearn = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuManage = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuConnections = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuLock = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,7 +70,6 @@ namespace PKSoft
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuQuit = new System.Windows.Forms.ToolStripMenuItem();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
-            this.mnuModeLearn = new System.Windows.Forms.ToolStripMenuItem();
             this.TrayMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -154,6 +154,12 @@ namespace PKSoft
             this.mnuModeDisabled.Name = "mnuModeDisabled";
             resources.ApplyResources(this.mnuModeDisabled, "mnuModeDisabled");
             this.mnuModeDisabled.Click += new System.EventHandler(this.mnuModeDisabled_Click);
+            // 
+            // mnuModeLearn
+            // 
+            this.mnuModeLearn.Name = "mnuModeLearn";
+            resources.ApplyResources(this.mnuModeLearn, "mnuModeLearn");
+            this.mnuModeLearn.Click += new System.EventHandler(this.mnuModeLearn_Click);
             // 
             // mnuManage
             // 
@@ -242,12 +248,6 @@ namespace PKSoft
             // 
             resources.ApplyResources(this.ofd, "ofd");
             // 
-            // mnuModeLearn
-            // 
-            this.mnuModeLearn.Name = "mnuModeLearn";
-            resources.ApplyResources(this.mnuModeLearn, "mnuModeLearn");
-            this.mnuModeLearn.Click += new System.EventHandler(this.mnuModeLearn_Click);
-            // 
             // MainForm
             // 
             resources.ApplyResources(this, "$this");
@@ -260,7 +260,6 @@ namespace PKSoft
             this.ShowInTaskbar = false;
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
-            this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.TrayMenu.ResumeLayout(false);
