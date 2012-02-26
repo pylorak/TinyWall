@@ -19,8 +19,9 @@ namespace PKSoft
             mouse_event(MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP, X, Y, 0, IntPtr.Zero);
         }
 
-        [DllImport("user32.dll")]
-        internal static extern uint PostMessage(IntPtr hWnd, uint nMessage, uint wParam, uint lParam);
+        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         internal static extern uint RegisterWindowMessage(string lpString);

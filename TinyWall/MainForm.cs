@@ -718,49 +718,51 @@ namespace PKSoft
             TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.Zero, TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
 
             // We will load our database parallel to other things to improve startup performance
-            ThreadBarrier barrier = new ThreadBarrier(2);
-            ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
+            using (ThreadBarrier barrier = new ThreadBarrier(2))
             {
-                try
+                ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
                 {
-                    LoadDatabase();
-                }
-                catch { }
-                finally
-                {
-                    barrier.Wait();
-                }
-            });
+                    try
+                    {
+                        LoadDatabase();
+                    }
+                    catch { }
+                    finally
+                    {
+                        barrier.Wait();
+                    }
+                });
 
-            // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
-            // BEGIN
-            mnuElevate.Visible = !Utils.RunningAsAdmin();
-            mnuModeDisabled.Image = Resources.Icons.shield_grey_small.ToBitmap();
-            mnuModeAllowOutgoing.Image = Resources.Icons.shield_red_small.ToBitmap();
-            mnuModeBlockAll.Image = Resources.Icons.shield_yellow_small.ToBitmap();
-            mnuModeNormal.Image = Resources.Icons.shield_green_small.ToBitmap();
-            mnuModeLearn.Image = Resources.Icons.shield_blue_small.ToBitmap();
+                // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
+                // BEGIN
+                mnuElevate.Visible = !Utils.RunningAsAdmin();
+                mnuModeDisabled.Image = Resources.Icons.shield_grey_small.ToBitmap();
+                mnuModeAllowOutgoing.Image = Resources.Icons.shield_red_small.ToBitmap();
+                mnuModeBlockAll.Image = Resources.Icons.shield_yellow_small.ToBitmap();
+                mnuModeNormal.Image = Resources.Icons.shield_green_small.ToBitmap();
+                mnuModeLearn.Image = Resources.Icons.shield_blue_small.ToBitmap();
 
-            HotKeyWhitelistWindow = new Hotkey(Keys.W, true, true, false, false);
-            HotKeyWhitelistWindow.Pressed += new HandledEventHandler(HotKeyWhitelistWindow_Pressed);
-            HotKeyWhitelistWindow.Register(this);
+                HotKeyWhitelistWindow = new Hotkey(Keys.W, true, true, false, false);
+                HotKeyWhitelistWindow.Pressed += new HandledEventHandler(HotKeyWhitelistWindow_Pressed);
+                HotKeyWhitelistWindow.Register(this);
 
-            HotKeyWhitelistExecutable = new Hotkey(Keys.E, true, true, false, false);
-            HotKeyWhitelistExecutable.Pressed += new HandledEventHandler(HotKeyWhitelistExecutable_Pressed);
-            HotKeyWhitelistExecutable.Register(this);
+                HotKeyWhitelistExecutable = new Hotkey(Keys.E, true, true, false, false);
+                HotKeyWhitelistExecutable.Pressed += new HandledEventHandler(HotKeyWhitelistExecutable_Pressed);
+                HotKeyWhitelistExecutable.Register(this);
 
-            HotKeyWhitelistProcess = new Hotkey(Keys.P, true, true, false, false);
-            HotKeyWhitelistProcess.Pressed += new HandledEventHandler(HotKeyWhitelistProcess_Pressed);
-            HotKeyWhitelistProcess.Register(this);
+                HotKeyWhitelistProcess = new Hotkey(Keys.P, true, true, false, false);
+                HotKeyWhitelistProcess.Pressed += new HandledEventHandler(HotKeyWhitelistProcess_Pressed);
+                HotKeyWhitelistProcess.Register(this);
 
-            GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
-            SettingsManager.ControllerConfig = ControllerSettings.Load();
+                GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
+                SettingsManager.ControllerConfig = ControllerSettings.Load();
 
-            barrier.Wait();
-            // END
-            // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
+                barrier.Wait();
+                // END
+                // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
+                // --- THREAD BARRIER ---
+            }
 
-            // --- THREAD BARRIER ---
 
             bool comError;
             LoadSettingsFromServer(out comError, true);

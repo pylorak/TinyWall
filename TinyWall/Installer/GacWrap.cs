@@ -263,7 +263,7 @@ namespace System.Gac
             if (reference != null)
             {
                 if (!InstallReferenceGuid.IsValidGuidScheme(reference.GuidScheme))
-                    throw new ArgumentException("Invalid reference guid.", "guid");
+                    throw new ArgumentException("Invalid reference guid.", "reference");
             }
 
             IAssemblyCache ac = null;
@@ -292,7 +292,7 @@ namespace System.Gac
             if (reference != null)
             {
                 if (!InstallReferenceGuid.IsValidGuidScheme(reference.GuidScheme))
-                    throw new ArgumentException("Invalid reference guid.", "guid");
+                    throw new ArgumentException("Invalid reference guid.", "reference");
             }
 
             IAssemblyCache ac = null;

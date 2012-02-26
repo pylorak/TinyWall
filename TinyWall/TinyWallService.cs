@@ -321,32 +321,34 @@ namespace PKSoft
         // This method completely reinitializes the firewall.
         private void InitFirewall()
         {
-            ThreadBarrier barrier = new ThreadBarrier(2);
-            ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
+            using (ThreadBarrier barrier = new ThreadBarrier(2))
             {
-                try
+                ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
                 {
-                    LoadDatabase();
-                }
-                finally
-                {
-                    barrier.Wait();
-                }
-            });
+                    try
+                    {
+                        LoadDatabase();
+                    }
+                    finally
+                    {
+                        barrier.Wait();
+                    }
+                });
 
-            Firewall = new Policy();
-            Firewall.ResetFirewall();
-            Firewall.Enabled = true;
-            Firewall.DefaultInboundAction = PacketAction.Block;
-            Firewall.DefaultOutboundAction = PacketAction.Block;
-            Firewall.BlockAllInboundTraffic = false;
-            Firewall.NotificationsDisabled = true;
-            FwRules = Firewall.GetRules(false);
-            for (int i = 0; i < FwRules.Count; ++i)
-                FwRules[i].Enabled = false;
+                Firewall = new Policy();
+                Firewall.ResetFirewall();
+                Firewall.Enabled = true;
+                Firewall.DefaultInboundAction = PacketAction.Block;
+                Firewall.DefaultOutboundAction = PacketAction.Block;
+                Firewall.BlockAllInboundTraffic = false;
+                Firewall.NotificationsDisabled = true;
+                FwRules = Firewall.GetRules(false);
+                for (int i = 0; i < FwRules.Count; ++i)
+                    FwRules[i].Enabled = false;
 
-            barrier.Wait();
-            // --- THREAD BARRIER ---
+                barrier.Wait();
+                // --- THREAD BARRIER ---
+            }
 
             LoadProfile();
             ReapplySettings();
@@ -417,7 +419,7 @@ namespace PKSoft
             if (WM_NOTIFY_BY_SERVICE == 0)
                 WM_NOTIFY_BY_SERVICE = NativeMethods.RegisterWindowMessage("WM_NOTIFY_BY_SERVICE");
 
-            NativeMethods.PostMessage(ControllerHwnd, WM_NOTIFY_BY_SERVICE, (uint)msg, 0);
+            NativeMethods.PostMessage(ControllerHwnd, WM_NOTIFY_BY_SERVICE, new IntPtr((int)msg), IntPtr.Zero);
         }
 
         private void UpdaterMethod(object state)
@@ -1011,49 +1013,41 @@ namespace PKSoft
             // Continue initialization on a new thread to prevent stalling the SCM
             ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object dummy)
             {
-                try
-                {
-                    EventLog.WriteEntry("TinyWall service starting up.");
-                    VisibleState = new ServiceState();
+                EventLog.WriteEntry("TinyWall service starting up.");
+                VisibleState = new ServiceState();
 
-                    FileLocker.LockFile(ProfileManager.DBPath, FileAccess.Read, FileShare.Read);
-                    FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
+                FileLocker.LockFile(ProfileManager.DBPath, FileAccess.Read, FileShare.Read);
+                FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
 
-                    // Lock configuration if we have a password
-                    VisibleState.SettingsChangeset = Utils.GetRandomNumber();
-                    SettingsManager.ServiceConfig = new ServiceSettings();
-                    if (SettingsManager.ServiceConfig.HasPassword)
-                        SettingsManager.ServiceConfig.Locked = true;
+                // Lock configuration if we have a password
+                VisibleState.SettingsChangeset = Utils.GetRandomNumber();
+                SettingsManager.ServiceConfig = new ServiceSettings();
+                if (SettingsManager.ServiceConfig.HasPassword)
+                    SettingsManager.ServiceConfig.Locked = true;
 
-                    // Issue load command
-                    Q = new RequestQueue();
-                    Q.Enqueue(new ReqResp(new Message(TWControllerMessages.REINIT)));
+                // Issue load command
+                Q = new RequestQueue();
+                Q.Enqueue(new ReqResp(new Message(TWControllerMessages.REINIT)));
 
-                    // Start thread that is going to control Windows Firewall
-                    FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod));
-                    FirewallWorkerThread.IsBackground = true;
-                    FirewallWorkerThread.Start();
+                // Start thread that is going to control Windows Firewall
+                FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod));
+                FirewallWorkerThread.IsBackground = true;
+                FirewallWorkerThread.Start();
 
-                    // Fire up pipe
-                    GlobalInstances.CommunicationMan = new PipeCom("TinyWallController", new PipeDataReceived(PipeServerDataReceived));
+                // Fire up pipe
+                GlobalInstances.CommunicationMan = new PipeCom("TinyWallController", new PipeDataReceived(PipeServerDataReceived));
 
 #if !DEBUG
-                    // Messing with the SCM in this method would hang us, so start it parallel
-                    ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
-                    {
-                        try
-                        {
-                            TinyWallDoctor.EnsureHealth();
-                        }
-                        catch { }
-                    });
-#endif
-                }
-                catch (Exception e)
+                // Messing with the SCM in this method would hang us, so start it parallel
+                ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
                 {
-                    CurrentDomain_UnhandledException(null, new UnhandledExceptionEventArgs(e, false));
-                    throw;
-                }
+                    try
+                    {
+                        TinyWallDoctor.EnsureHealth();
+                    }
+                    catch { }
+                });
+#endif
             });
         }
 

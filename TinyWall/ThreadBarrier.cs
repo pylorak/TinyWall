@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace PKSoft
 {
-    internal class ThreadBarrier
+    internal class ThreadBarrier : DisposableObject
     {
         private ManualResetEvent BarrierEvent;
         private int Count;
@@ -22,6 +22,23 @@ namespace PKSoft
                 BarrierEvent.WaitOne();
             else
                 BarrierEvent.Set();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // Release managed resources
+
+                BarrierEvent.Close();
+            }
+
+            // Release unmanaged resources.
+            // Set large fields to null.
+            // Call Dispose on your base class.
+
+            BarrierEvent = null;
+            base.Dispose(disposing);
         }
     }
 }
