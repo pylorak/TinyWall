@@ -24,7 +24,7 @@ namespace PKSoft
                 BarrierEvent.Set();
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
