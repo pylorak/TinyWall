@@ -36,6 +36,9 @@ namespace PKSoft.Parser
                 }
                 else if (input[i] == '}')
                 {
+                    if (stack.Count < 1)
+                        return input;
+
                     var = stack.Pop();
                     int tagValueStart = var.Start + var.GetOpeningTagLength();
                     int tagValueEnd = i;

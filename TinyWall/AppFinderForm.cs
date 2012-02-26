@@ -144,11 +144,7 @@ namespace PKSoft
                         }
                     }
                 }
-            }
-            catch { }
 
-            try
-            {
                 // Recurse into subdirectories
                 string[] dirs = Directory.GetDirectories(path);
                 foreach (string dir in dirs)

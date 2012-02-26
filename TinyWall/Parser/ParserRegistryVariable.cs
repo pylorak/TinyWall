@@ -19,7 +19,14 @@ namespace PKSoft.Parser
                 string keyValue = tokens[1];
                 using (RegistryKey key = Registry.LocalMachine.OpenSubKey(keyPath, false))
                 {
-                    return (string)key.GetValue(keyValue);
+                    if (key == null)
+                        return str;
+
+                    object val = key.GetValue(keyValue);
+                    if (val == null)
+                        return str;
+
+                    return (string)val;
                 }
             }
             catch
