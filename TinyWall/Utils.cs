@@ -383,13 +383,7 @@ namespace PKSoft
                 {
                     sw.WriteLine();
                     sw.WriteLine("------- " + DateTime.Now.ToString(CultureInfo.InvariantCulture) + " -------");
-                    sw.WriteLine(e.Message);
-                    sw.WriteLine(e.StackTrace);
-                    if (e.InnerException != null)
-                    {
-                        sw.WriteLine(e.InnerException.Message);
-                        sw.WriteLine(e.InnerException.StackTrace);
-                    }
+                    sw.WriteLine(e.ToString());
                     sw.WriteLine();
                 }
             }
