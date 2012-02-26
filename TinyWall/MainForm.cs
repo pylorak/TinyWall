@@ -133,9 +133,9 @@ namespace PKSoft
             }
             catch
             {
-                // On some system the WMI query fails. We disable traffic monitoring on those systems.
+                // On some systems the WMI query fails. We disable traffic monitoring on those systems.
                 mnuTrafficRate.Visible = false;
-                TrafficTimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+                TrafficTimer.Change(Timeout.Infinite, Timeout.Infinite);
             }
         }
         
