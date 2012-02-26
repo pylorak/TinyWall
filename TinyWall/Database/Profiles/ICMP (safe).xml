@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Profile Name="ICMP (safe)">
+<Profile Name="ICMP (safe)" AppSpecific="true">
   <Rules>
-    <RuleDef Name="ICMPv4 (echo-req)">
+    <RuleDef Name="ICMPv4 (echo-req) out">
       <Action>Allow</Action>
       <Protocol>ICMPv4</Protocol>
       <Direction>Out</Direction>
       <IcmpTypesAndCodes>8:0</IcmpTypesAndCodes>
     </RuleDef>
-    <RuleDef Name="ICMPv6 (echo-req)">
+    <RuleDef Name="ICMPv6 (echo-req) out">
       <Action>Allow</Action>
       <Protocol>ICMPv6</Protocol>
       <Direction>Out</Direction>
