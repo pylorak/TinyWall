@@ -90,43 +90,52 @@ namespace PKSoft
 
         private void TrafficTimerTick(object state)
         {
-            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(@"select BytesReceivedPersec, BytesSentPersec from Win32_PerfRawData_Tcpip_NetworkInterface"))
+            try
             {
-                ulong bytesRxNewTotal = 0;
-                ulong bytesTxNewTotal = 0;
-                ManagementObjectCollection moc = searcher.Get();
-                foreach (ManagementObject adapterObject in moc)
+                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(@"select BytesReceivedPersec, BytesSentPersec from Win32_PerfRawData_Tcpip_NetworkInterface"))
                 {
-                    bytesRxNewTotal += (ulong)adapterObject["BytesReceivedPersec"];
-                    bytesTxNewTotal += (ulong)adapterObject["BytesSentPersec"];
-                }
+                    ulong bytesRxNewTotal = 0;
+                    ulong bytesTxNewTotal = 0;
+                    ManagementObjectCollection moc = searcher.Get();
+                    foreach (ManagementObject adapterObject in moc)
+                    {
+                        bytesRxNewTotal += (ulong)adapterObject["BytesReceivedPersec"];
+                        bytesTxNewTotal += (ulong)adapterObject["BytesSentPersec"];
+                    }
 
-                // If this is the first time we are running.
-                if ((bytesRxTotal == 0) && (bytesTxTotal == 0))
-                {
+                    // If this is the first time we are running.
+                    if ((bytesRxTotal == 0) && (bytesTxTotal == 0))
+                    {
+                        bytesRxTotal = bytesRxNewTotal;
+                        bytesTxTotal = bytesTxNewTotal;
+                    }
+
+                    float RxDiff = (bytesRxNewTotal - bytesRxTotal) / (float)TRAFFIC_TIMER_INTERVAL;
+                    float TxDiff = (bytesTxNewTotal - bytesTxTotal) / (float)TRAFFIC_TIMER_INTERVAL;
                     bytesRxTotal = bytesRxNewTotal;
                     bytesTxTotal = bytesTxNewTotal;
+
+                    float KBytesRxPerSec = RxDiff / 1024;
+                    float KBytesTxPerSec = TxDiff / 1024;
+                    float MBytesRxPerSec = KBytesRxPerSec / 1024;
+                    float MBytesTxPerSec = KBytesTxPerSec / 1024;
+
+                    if (MBytesRxPerSec > 1)
+                        rxDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}MiB/s", MBytesRxPerSec);
+                    else
+                        rxDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}KiB/s", KBytesRxPerSec);
+
+                    if (MBytesTxPerSec > 1)
+                        txDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}MiB/s", MBytesTxPerSec);
+                    else
+                        txDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}KiB/s", KBytesTxPerSec);
                 }
-
-                float RxDiff = (bytesRxNewTotal - bytesRxTotal) / (float)TRAFFIC_TIMER_INTERVAL;
-                float TxDiff = (bytesTxNewTotal - bytesTxTotal) / (float)TRAFFIC_TIMER_INTERVAL;
-                bytesRxTotal = bytesRxNewTotal;
-                bytesTxTotal = bytesTxNewTotal;
-
-                float KBytesRxPerSec = RxDiff / 1024;
-                float KBytesTxPerSec = TxDiff / 1024;
-                float MBytesRxPerSec = KBytesRxPerSec / 1024;
-                float MBytesTxPerSec = KBytesTxPerSec / 1024;
-
-                if (MBytesRxPerSec > 1)
-                    rxDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}MiB/s", MBytesRxPerSec);
-                else
-                    rxDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}KiB/s", KBytesRxPerSec);
-
-                if (MBytesTxPerSec > 1)
-                    txDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}MiB/s", MBytesTxPerSec);
-                else
-                    txDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}KiB/s", KBytesTxPerSec);
+            }
+            catch
+            {
+                // On some system the WMI query fails. We disable traffic monitoring on those systems.
+                mnuTrafficRate.Visible = false;
+                TrafficTimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
             }
         }
         
