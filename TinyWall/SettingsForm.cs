@@ -41,7 +41,6 @@ namespace PKSoft
             {
                 // General page
                 chkAutoUpdateCheck.Checked = TmpMachineConfig.AutoUpdateCheck;
-                chkEnableDefaultWindowsRules.Checked = TmpZoneConfig.EnableDefaultWindowsRules;
                 chkAskForExceptionDetails.Checked = TmpControllerConfig.AskForExceptionDetails;
 
                 // Fill Machine Settings tab
@@ -186,7 +185,6 @@ namespace PKSoft
 
             // Save settings
             TmpZoneConfig.BlockMalwarePorts = chkBlockMalwarePorts.Checked;
-            TmpZoneConfig.EnableDefaultWindowsRules = chkEnableDefaultWindowsRules.Checked;
             TmpControllerConfig.AskForExceptionDetails = chkAskForExceptionDetails.Checked;
             TmpMachineConfig.AutoUpdateCheck = chkAutoUpdateCheck.Checked;
             TmpControllerConfig.ManageTabIndex = tabControl1.SelectedIndex;
@@ -361,7 +359,6 @@ namespace PKSoft
 #if !DEBUG
             // TODO: Make submissions work
             btnSubmitAssoc.Visible = false;
-            chkEnableDefaultWindowsRules.Visible = false;
 #endif
             this.BringToFront();
             this.Activate();

@@ -984,33 +984,6 @@
   <data name="&gt;&gt;chkAskForExceptionDetails.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
-  <data name="chkEnableDefaultWindowsRules.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="chkEnableDefaultWindowsRules.Location" type="System.Drawing.Point, System.Drawing">
-    <value>104, 94</value>
-  </data>
-  <data name="chkEnableDefaultWindowsRules.Size" type="System.Drawing.Size, System.Drawing">
-    <value>166, 17</value>
-  </data>
-  <data name="chkEnableDefaultWindowsRules.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="chkEnableDefaultWindowsRules.Text" xml:space="preserve">
-    <value>Enable default Windows rules</value>
-  </data>
-  <data name="&gt;&gt;chkEnableDefaultWindowsRules.Name" xml:space="preserve">
-    <value>chkEnableDefaultWindowsRules</value>
-  </data>
-  <data name="&gt;&gt;chkEnableDefaultWindowsRules.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;chkEnableDefaultWindowsRules.Parent" xml:space="preserve">
-    <value>tabPage1</value>
-  </data>
-  <data name="&gt;&gt;chkEnableDefaultWindowsRules.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
   <data name="tabPage1.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>

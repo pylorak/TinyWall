@@ -27,7 +27,6 @@ namespace PKSoft
         public string ZoneName = "Unknown";
         public string[] SpecialExceptions = new string[0];
         public bool BlockMalwarePorts = false;
-        public bool EnableDefaultWindowsRules = false;
         public bool AllowLocalSubnet = false;
         public AppExceptionSettings[] AppExceptions = new AppExceptionSettings[0];
 

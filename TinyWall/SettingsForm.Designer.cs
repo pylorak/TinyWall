@@ -66,7 +66,6 @@
             this.txtPasswordAgain = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.chkAskForExceptionDetails = new System.Windows.Forms.CheckBox();
-            this.chkEnableDefaultWindowsRules = new System.Windows.Forms.CheckBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.btnImport = new System.Windows.Forms.Button();
@@ -277,7 +276,6 @@
             this.tabPage1.Controls.Add(this.chkBlockMalwarePorts);
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.chkAskForExceptionDetails);
-            this.tabPage1.Controls.Add(this.chkEnableDefaultWindowsRules);
             resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -358,12 +356,6 @@
             resources.ApplyResources(this.chkAskForExceptionDetails, "chkAskForExceptionDetails");
             this.chkAskForExceptionDetails.Name = "chkAskForExceptionDetails";
             this.chkAskForExceptionDetails.UseVisualStyleBackColor = true;
-            // 
-            // chkEnableDefaultWindowsRules
-            // 
-            resources.ApplyResources(this.chkEnableDefaultWindowsRules, "chkEnableDefaultWindowsRules");
-            this.chkEnableDefaultWindowsRules.Name = "chkEnableDefaultWindowsRules";
-            this.chkEnableDefaultWindowsRules.UseVisualStyleBackColor = true;
             // 
             // tabControl1
             // 
@@ -541,7 +533,6 @@
         private System.Windows.Forms.CheckedListBox listOptionalGlobalProfiles;
         private System.Windows.Forms.CheckedListBox listRecommendedGlobalProfiles;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.CheckBox chkEnableDefaultWindowsRules;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.CheckBox chkAskForExceptionDetails;
         private System.Windows.Forms.GroupBox groupBox1;

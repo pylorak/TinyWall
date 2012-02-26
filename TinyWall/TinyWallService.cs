@@ -327,7 +327,6 @@ namespace PKSoft
                 try
                 {
                     LoadDatabase();
-                    LoadProfile();
                 }
                 finally
                 {
@@ -343,16 +342,13 @@ namespace PKSoft
             Firewall.BlockAllInboundTraffic = false;
             Firewall.NotificationsDisabled = true;
             FwRules = Firewall.GetRules(false);
+            for (int i = 0; i < FwRules.Count; ++i)
+                FwRules[i].Enabled = false;
 
             barrier.Wait();
             // --- THREAD BARRIER ---
 
-            if (!SettingsManager.CurrentZone.EnableDefaultWindowsRules)
-            {
-                for (int i = 0; i < FwRules.Count; ++i)
-                    FwRules[i].Enabled = false;
-            }
-
+            LoadProfile();
             ReapplySettings();
         }
 
@@ -683,10 +679,7 @@ namespace PKSoft
                             SettingsManager.CurrentZone = newZone;
                         }
 
-                        if (newZone.EnableDefaultWindowsRules != oldZone.EnableDefaultWindowsRules)
-                            InitFirewall();
-                        else
-                            ReapplySettings();
+                        ReapplySettings();
                         return new Message(TWControllerMessages.RESPONSE_OK);
                     }
                 case TWControllerMessages.GET_SETTINGS:
