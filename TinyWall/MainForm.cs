@@ -841,9 +841,12 @@ namespace PKSoft
             catch
             {
                 GlobalInstances.ProfileMan = new ProfileManager();
-                Utils.Invoke(this, (MethodInvoker)delegate()
+                ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
                 {
-                    ShowBalloonTip(PKSoft.Resources.Messages.DatabaseIsMissingOrCorrupt, ToolTipIcon.Warning);
+                    Utils.Invoke(this, (MethodInvoker)delegate()
+                    {
+                        ShowBalloonTip(PKSoft.Resources.Messages.DatabaseIsMissingOrCorrupt, ToolTipIcon.Warning);
+                    });
                 });
 
                 throw;
