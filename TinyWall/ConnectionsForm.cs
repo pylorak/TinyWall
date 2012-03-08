@@ -263,6 +263,7 @@ namespace PKSoft
 
         private void ConnectionsForm_Load(object sender, EventArgs e)
         {
+            list.ListViewItemSorter = new ListViewItemComparer(0);
             this.Size = SettingsManager.ControllerConfig.ConnFormWindowSize;
             this.Location = SettingsManager.ControllerConfig.ConnFormWindowLoc;
             this.WindowState = SettingsManager.ControllerConfig.ConnFormWindowState;

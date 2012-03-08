@@ -468,6 +468,7 @@ namespace PKSoft
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
+            listApplications.ListViewItemSorter = new ListViewItemComparer(0);
             tabControl1.SelectedIndex = TmpControllerConfig.ManageTabIndex;
         }
 
