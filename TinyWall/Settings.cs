@@ -26,7 +26,6 @@ namespace PKSoft
 
         public string ZoneName = "Unknown";
         public string[] SpecialExceptions = new string[0];
-        public bool BlockMalwarePorts = false;
         public bool AllowLocalSubnet = false;
         public AppExceptionSettings[] AppExceptions = new AppExceptionSettings[0];
 
@@ -119,6 +118,14 @@ namespace PKSoft
         }
     }
 
+    [Serializable]
+    public class BlockListSettings
+    {
+        public bool EnableBlocklists = false;
+        public bool EnablePortBlocklist = true;
+        public bool EnableHostsBlocklist = true;
+    }
+
     // Machine settings are global for the current computer
     // Applied by: Service
     // Controlled by: Controller
@@ -130,8 +137,8 @@ namespace PKSoft
         private const string ENC_IV = @"X0@!H93!Y=8&/M/T";   // must be 16/24/32 bytes
         private readonly object locker = new object();
 
-        public bool LockHostsFile = false;
-        public bool HostsBlocklist = false;
+        public BlockListSettings Blocklists = new BlockListSettings();
+        public bool LockHostsFile = true;
         public DateTime LastUpdateCheck;
         public bool AutoUpdateCheck = true;
         public FirewallMode StartupMode = FirewallMode.Normal;

@@ -39,48 +39,60 @@ namespace PKSoft
             FileLocker.LockFile(HOSTS_ORIGINAL, FileAccess.Read, FileShare.Read);
         }
 
-        internal static void UpdateHostsFile(string path, bool enable)
+        internal static void UpdateHostsFile(string path)
         {
             // We keep a copy of the hosts file for ourself, so that
             // we can re-install it any time without a net connection.
             FileLocker.UnlockFile(HOSTS_BACKUP);
             File.Copy(path, HOSTS_BACKUP, true);
             FileLocker.LockFile(HOSTS_BACKUP, FileAccess.Read, FileShare.Read);
-
-            if (enable)
-                EnableHostsFile();
         }
 
         internal static string GetHostsHash()
         {
-            return Utils.HexEncode(Hasher.HashFile(HOSTS_PATH));
+            return Utils.HexEncode(Hasher.HashFile(HOSTS_BACKUP));
         }
 
-        internal static void EnableHostsFile()
+        internal static bool EnableHostsFile()
         {
             // If we have no backup of the user's original hosts file,
             // we make a copy of it.
             if (!File.Exists(HOSTS_ORIGINAL))
                 CreateOriginalBackup();
 
-            InstallHostsFile(HOSTS_BACKUP);
-
-            FlushDNSCache();
+            try
+            {
+                InstallHostsFile(HOSTS_BACKUP);
+                FlushDNSCache();
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        internal static void DisableHostsFile()
+        internal static bool DisableHostsFile()
         {
-            InstallHostsFile(HOSTS_ORIGINAL);
-
-            // Delete backup of original so that it can be
-            // recreated next time we install a custom hosts.
-            if (File.Exists(HOSTS_ORIGINAL))
+            try
             {
-                FileLocker.UnlockFile(HOSTS_ORIGINAL);
-                File.Delete(HOSTS_ORIGINAL);
-            }
+                InstallHostsFile(HOSTS_ORIGINAL);
 
-            FlushDNSCache();
+                // Delete backup of original so that it can be
+                // recreated next time we install a custom hosts.
+                if (File.Exists(HOSTS_ORIGINAL))
+                {
+                    FileLocker.UnlockFile(HOSTS_ORIGINAL);
+                    File.Delete(HOSTS_ORIGINAL);
+                }
+
+                FlushDNSCache();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private static void FlushDNSCache()

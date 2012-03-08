@@ -54,6 +54,7 @@
             this.listOptionalGlobalProfiles = new System.Windows.Forms.CheckedListBox();
             this.listRecommendedGlobalProfiles = new System.Windows.Forms.CheckedListBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.chkEnableBlocklists = new System.Windows.Forms.CheckBox();
             this.chkLockHostsFile = new System.Windows.Forms.CheckBox();
             this.chkHostsBlocklist = new System.Windows.Forms.CheckBox();
             this.chkAutoUpdateCheck = new System.Windows.Forms.CheckBox();
@@ -270,6 +271,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.chkEnableBlocklists);
             this.tabPage1.Controls.Add(this.chkLockHostsFile);
             this.tabPage1.Controls.Add(this.chkHostsBlocklist);
             this.tabPage1.Controls.Add(this.chkAutoUpdateCheck);
@@ -279,6 +281,13 @@
             resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // chkEnableBlocklists
+            // 
+            resources.ApplyResources(this.chkEnableBlocklists, "chkEnableBlocklists");
+            this.chkEnableBlocklists.Name = "chkEnableBlocklists";
+            this.chkEnableBlocklists.UseVisualStyleBackColor = true;
+            this.chkEnableBlocklists.CheckedChanged += new System.EventHandler(this.chkEnableBlocklists_CheckedChanged);
             // 
             // chkLockHostsFile
             // 
@@ -291,7 +300,6 @@
             resources.ApplyResources(this.chkHostsBlocklist, "chkHostsBlocklist");
             this.chkHostsBlocklist.Name = "chkHostsBlocklist";
             this.chkHostsBlocklist.UseVisualStyleBackColor = true;
-            this.chkHostsBlocklist.CheckedChanged += new System.EventHandler(this.chkHostsBlocklist_CheckedChanged);
             // 
             // chkAutoUpdateCheck
             // 
@@ -567,5 +575,6 @@
         private System.Windows.Forms.CheckBox chkHostsBlocklist;
         private System.Windows.Forms.Button btnAppRemoveAll;
         private System.Windows.Forms.TextBox txtExceptionListFilter;
+        private System.Windows.Forms.CheckBox chkEnableBlocklists;
     }
 }

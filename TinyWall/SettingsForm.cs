@@ -44,9 +44,11 @@ namespace PKSoft
                 chkAskForExceptionDetails.Checked = TmpControllerConfig.AskForExceptionDetails;
 
                 // Fill Machine Settings tab
-                chkBlockMalwarePorts.Checked = TmpZoneConfig.BlockMalwarePorts;
                 chkLockHostsFile.Checked = TmpMachineConfig.LockHostsFile;
-                chkHostsBlocklist.Checked = TmpMachineConfig.HostsBlocklist;
+                chkHostsBlocklist.Checked = TmpMachineConfig.Blocklists.EnableHostsBlocklist;
+                chkBlockMalwarePorts.Checked = TmpMachineConfig.Blocklists.EnablePortBlocklist;
+                chkEnableBlocklists.Checked = TmpMachineConfig.Blocklists.EnableBlocklists;
+                chkEnableBlocklists_CheckedChanged(null, null);
 
                 // These will be reused multiple times
                 ApplicationCollection allApps = GlobalInstances.ProfileMan.KnownApplications;
@@ -184,12 +186,13 @@ namespace PKSoft
             m_NewPassword = chkChangePassword.Checked ? txtPassword.Text : null;
 
             // Save settings
-            TmpZoneConfig.BlockMalwarePorts = chkBlockMalwarePorts.Checked;
             TmpControllerConfig.AskForExceptionDetails = chkAskForExceptionDetails.Checked;
             TmpMachineConfig.AutoUpdateCheck = chkAutoUpdateCheck.Checked;
             TmpControllerConfig.ManageTabIndex = tabControl1.SelectedIndex;
             TmpMachineConfig.LockHostsFile = chkLockHostsFile.Checked;
-            TmpMachineConfig.HostsBlocklist = chkHostsBlocklist.Checked;
+            TmpMachineConfig.Blocklists.EnablePortBlocklist = chkBlockMalwarePorts.Checked;
+            TmpMachineConfig.Blocklists.EnableHostsBlocklist = chkHostsBlocklist.Checked;
+            TmpMachineConfig.Blocklists.EnableBlocklists = chkEnableBlocklists.Checked;
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
@@ -463,14 +466,6 @@ namespace PKSoft
             }
         }
 
-        private void chkHostsBlocklist_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkHostsBlocklist.Checked)
-                chkLockHostsFile.Checked = true;
-
-            chkLockHostsFile.Enabled = !chkHostsBlocklist.Checked;
-        }
-
         private void SettingsForm_Load(object sender, EventArgs e)
         {
             tabControl1.SelectedIndex = TmpControllerConfig.ManageTabIndex;
@@ -489,6 +484,12 @@ namespace PKSoft
                 newSorter.Ascending = !oldSorter.Ascending;
 
             listApplications.ListViewItemSorter = newSorter;
+        }
+
+        private void chkEnableBlocklists_CheckedChanged(object sender, EventArgs e)
+        {
+            chkHostsBlocklist.Enabled = chkEnableBlocklists.Checked;
+            chkBlockMalwarePorts.Enabled = chkEnableBlocklists.Checked;
         }
 
     }

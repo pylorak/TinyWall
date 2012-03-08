@@ -212,7 +212,7 @@ namespace PKSoft
             mnuLock.Visible = FirewallState.HasPassword;
 
             mnuAllowLocalSubnet.Checked = SettingsManager.CurrentZone.AllowLocalSubnet;
-            mnuEnableHostsBlocklist.Checked = SettingsManager.GlobalConfig.HostsBlocklist;
+            mnuEnableHostsBlocklist.Checked = SettingsManager.GlobalConfig.Blocklists.EnableBlocklists;
         }
 
         private void SetMode(FirewallMode mode)
@@ -689,10 +689,7 @@ namespace PKSoft
         private void mnuEnableHostsBlocklist_Click(object sender, EventArgs e)
         {
             mnuEnableHostsBlocklist.Checked = !mnuEnableHostsBlocklist.Checked;
-            SettingsManager.GlobalConfig.HostsBlocklist = mnuEnableHostsBlocklist.Checked;
-            if (SettingsManager.GlobalConfig.HostsBlocklist)
-                SettingsManager.GlobalConfig.LockHostsFile = true;
-
+            SettingsManager.GlobalConfig.Blocklists.EnableBlocklists = mnuEnableHostsBlocklist.Checked;
             ApplyFirewallSettings(SettingsManager.GlobalConfig, null);
         }
 

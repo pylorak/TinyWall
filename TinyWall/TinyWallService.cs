@@ -65,7 +65,8 @@ namespace PKSoft
             }
 
             // Do we want to block known malware ports?
-            if (SettingsManager.CurrentZone.BlockMalwarePorts)
+            if (SettingsManager.GlobalConfig.Blocklists.EnableBlocklists
+                && SettingsManager.GlobalConfig.Blocklists.EnablePortBlocklist)
             {
                 Profile profileMalwarePortBlock = GlobalInstances.ProfileMan.GetProfile("Malware port block");
                 if (profileMalwarePortBlock != null)
@@ -381,7 +382,8 @@ namespace PKSoft
             MergeActiveRulesIntoWinFirewall();
 
             HostsFileManager.EnableProtection(SettingsManager.GlobalConfig.LockHostsFile);
-            if (SettingsManager.GlobalConfig.HostsBlocklist)
+            if (SettingsManager.GlobalConfig.Blocklists.EnableBlocklists
+                && SettingsManager.GlobalConfig.Blocklists.EnableHostsBlocklist)
                 HostsFileManager.EnableHostsFile();
             else
                 HostsFileManager.DisableHostsFile();
@@ -448,14 +450,11 @@ namespace PKSoft
             {
                 GetCompressedUpdate(module, DatabaseUpdateInstall);
             }
-            if (SettingsManager.GlobalConfig.HostsBlocklist)
-            {
-                module = UpdateChecker.GetHostsFileModule(VisibleState.Update);
 
-                if (!module.DownloadHash.Equals(HostsFileManager.GetHostsHash(), StringComparison.OrdinalIgnoreCase))
-                {
-                    GetCompressedUpdate(module, HostsUpdateInstall);
-                }
+            module = UpdateChecker.GetHostsFileModule(VisibleState.Update);
+            if (!module.DownloadHash.Equals(HostsFileManager.GetHostsHash(), StringComparison.OrdinalIgnoreCase))
+            {
+                GetCompressedUpdate(module, HostsUpdateInstall);
             }
         }
 
@@ -486,7 +485,13 @@ namespace PKSoft
         private void HostsUpdateInstall(object file)
         {
             string tmpHostsPath = (string)file;
-            HostsFileManager.UpdateHostsFile(tmpHostsPath, SettingsManager.GlobalConfig.HostsBlocklist);
+            HostsFileManager.UpdateHostsFile(tmpHostsPath);
+
+            if (SettingsManager.GlobalConfig.Blocklists.EnableBlocklists
+                && SettingsManager.GlobalConfig.Blocklists.EnableHostsBlocklist)
+            {
+                HostsFileManager.EnableHostsFile();
+            }
         }
         private void DatabaseUpdateInstall(object file)
         {
