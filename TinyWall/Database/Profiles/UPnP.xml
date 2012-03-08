@@ -13,6 +13,7 @@
       <Action>Allow</Action>
       <Protocol>TCP</Protocol>
       <Direction>Out</Direction>
+      <RemotePorts>2869</RemotePorts>
       <RemoteAddresses>LocalSubnet</RemoteAddresses>
     </RuleDef>
   </Rules>
