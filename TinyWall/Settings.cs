@@ -123,7 +123,7 @@ namespace PKSoft
     {
         public bool EnableBlocklists = false;
         public bool EnablePortBlocklist = true;
-        public bool EnableHostsBlocklist = true;
+        public bool EnableHostsBlocklist = false;
     }
 
     // Machine settings are global for the current computer
