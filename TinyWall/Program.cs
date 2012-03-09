@@ -74,7 +74,7 @@ namespace PKSoft
             CmdLineArgs opts = new CmdLineArgs();
             if (Utils.ArrayContains(args, "/desktop"))
                 opts.ProgramMode = StartUpMode.Controller;
-            if (Utils.ArrayContains(args, "/service"))
+            if (!Environment.UserInteractive || Utils.ArrayContains(args, "/service"))
                 opts.ProgramMode = StartUpMode.Service;
             if (Utils.ArrayContains(args, "/selfhosted"))
                 opts.ProgramMode = StartUpMode.SelfHosted;

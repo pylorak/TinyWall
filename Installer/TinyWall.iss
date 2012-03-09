@@ -102,6 +102,7 @@ function InitializeSetup(): Boolean;
 var
     ErrorCode: Integer;
     netFramework35Installed : Boolean;
+    netFramework40Installed : Boolean;
     isInstalled: Cardinal;
 begin
   result := true;
@@ -111,7 +112,11 @@ begin
   netFramework35Installed := RegQueryDWordValue(HKLM, 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5', 'Install', isInstalled);
   if ((netFramework35Installed)  and (isInstalled <> 1)) then netFramework35Installed := false;
  
-  if (netFramework35Installed = false) then
+  isInstalled := 0;
+  netFramework40Installed := RegQueryDWordValue(HKLM, 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Client', 'Install', isInstalled);
+  if ((netFramework40Installed)  and (isInstalled <> 1)) then netFramework40Installed := false;
+
+  if ((netFramework35Installed = false) and (netFramework40Installed = false)) then
   begin
     if (MsgBox(ExpandConstant('{cm:dotnetmissing}'),
         mbConfirmation, MB_YESNO) = idYes) then
