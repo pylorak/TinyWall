@@ -172,18 +172,8 @@ Do you want TinyWall to automatically whitelist these files for you?</value>
     <value>Are you sure you want to remove all firewall exceptions?</value>
   </data>
   <data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
-    <value>You do not have administrative privileges needed to uninstall TinyWall.
+    <value>You do not have administrative privileges needed to perform this operation.
 Select Elevate from the tray menu and try again.</value>
-  </data>
-  <data name="YouAreAboutToRemoveTinyWall" xml:space="preserve">
-    <value>You are about to remove TinyWall from your computer.
-Do you wish to uninstall TinyWall?</value>
-  </data>
-  <data name="UninstallTinyWall" xml:space="preserve">
-    <value>Uninstall TinyWall</value>
-  </data>
-  <data name="CouldNotFindTheUninstaller" xml:space="preserve">
-    <value>Could not find the uninstaller application. Removal aborted.</value>
   </data>
   <data name="TinyWallSettingsFileFilter" xml:space="preserve">
     <value>TinyWall Settings</value>
@@ -365,5 +355,8 @@ In this mode TinyWall will allow all traffic and remember which applications hav
 Before entering learning mode, make sure that your system is free of any malware. It is best to run learning mode on freshly installed systems and it is recommended that you check your computer for viruses before using this mode.
 
 Do you want to enter learning mode now?</value>
+  </data>
+  <data name="DidYouInitiateTheUninstall" xml:space="preserve">
+    <value>Did you initiate the uninstall of TinyWall?</value>
   </data>
 </root>

@@ -42,9 +42,6 @@ VersionInfoVersion={#MyAppVersion}
 AllowCancelDuringInstall=false
 LicenseFile=Components/License.txt
 
-[Messages]
-SetupAppRunningError=Please start the uninstaller from the tray application (Manage -> Maintenance).
-
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
@@ -67,8 +64,8 @@ Filename: "{app}\TinyWall.exe"; Parameters: "/desktop /autowhitelist"; StatusMsg
 [Tasks]
 Name: detectnow; Description: "After setup, automatically unblock some applications (recommended)"; Flags: checkedonce;
 
-[UninstallRun]
-Filename: "{app}\TinyWall.exe"; Parameters: "/uninstall"; StatusMsg: "Uninstalling service..."; Flags: runascurrentuser;
+;[UninstallRun]
+;Filename: "{app}\TinyWall.exe"; Parameters: "/uninstall"; StatusMsg: "Uninstalling service..."; Flags: runascurrentuser;
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}"
@@ -85,11 +82,7 @@ dotnetmissing=This application needs Microsoft .Net 3.5 which is not yet install
 CustomForm_Caption=Important notice
 CustomForm_Description=Please read the following carefully to avoid confusion
 CustomForm_Label1_Caption0= \
-1. To uninstall TinyWall, you must use the Uninstall command from the tray %n \
-   application (in Manage, Maintenance). The Windows Control Panel cannot %n \
-   be used for uninstallation. %n \
-%n \
-2. After installation finishes, TinyWall is configured to block user traffic.%n \
+   After installation finishes, TinyWall is configured to block user traffic.%n \
    This means in general you won't be able to access the internet. To grant specific %n \
    applications internet access, use the "Whitelist by..." options from the tray menu.
 
@@ -144,4 +137,12 @@ begin
     Height := ScaleY(400);
     Font.Color := clRed;
    end;
+end;
+
+function InitializeUninstall(): Boolean;
+var
+  ErrorCode: Integer;
+begin
+  Exec(ExpandConstant('{app}\TinyWall.exe'), '/uninstall', '', SW_HIDE, ewWaitUntilTerminated, ErrorCode);
+  result := (ErrorCode = 0);
 end;

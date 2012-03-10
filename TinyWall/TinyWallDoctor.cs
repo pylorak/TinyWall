@@ -78,10 +78,65 @@ namespace PKSoft
             return true;
         }
 
-        internal static void Uninstall()
+        internal static int Uninstall()
         {
-            // Uninstall registry key
+            if (System.Windows.Forms.MessageBox.Show(
+                PKSoft.Resources.Messages.DidYouInitiateTheUninstall,
+                PKSoft.Resources.Messages.TinyWall,
+                System.Windows.Forms.MessageBoxButtons.YesNo,
+                System.Windows.Forms.MessageBoxIcon.Exclamation) != System.Windows.Forms.DialogResult.Yes)
+            {
+                return -1;
+            }
+
+            // Disable automatic re-start of service
+            try
+            {
+                using (ScmWrapper.ServiceControlManager scm = new ScmWrapper.ServiceControlManager())
+                {
+                    scm.SetStartupMode(TinyWallService.SERVICE_NAME, ServiceStartMode.Automatic);
+                    scm.SetRestartOnFailure(TinyWallService.SERVICE_NAME, false);
+                }
+            }
+            catch { }
+
+            // Terminate TinyWall processes
+            {
+                int ownPid = Process.GetCurrentProcess().Id;
+                Process[] procs = Process.GetProcesses();
+                foreach (Process p in procs)
+                {
+                    if (p.Id != ownPid)
+                    {
+                        try
+                        {
+                            if (p.ProcessName.Contains("TinyWall"))
+                            {
+                                if (!p.CloseMainWindow())
+                                    p.Kill();
+                                else if (!p.WaitForExit(5000))
+                                    p.Kill();
+                            }
+                        }
+                        catch
+                        {
+                        }
+                    }
+                }
+            }
+
+            // Give some additional time for process shutdown
+            System.Threading.Thread.Sleep(1000);
+
+            // Disable automatic start of controller
             Utils.RunAtStartup("TinyWall Controller", null);
+
+            // Put back the user's original hosts file
+            HostsFileManager.DisableHostsFile();
+
+            // Reset Windows Firewall to its default state
+            WindowsFirewall.Policy Firewall = new WindowsFirewall.Policy();
+            Firewall.ResetFirewall();
 
             // Uninstall service
             try
@@ -93,6 +148,8 @@ namespace PKSoft
             // Remove user settings
             string UserDir = ControllerSettings.UserDataPath;
             Directory.Delete(UserDir, true);
+
+            return 0;
         }
 
         internal static void EnsureHealth()

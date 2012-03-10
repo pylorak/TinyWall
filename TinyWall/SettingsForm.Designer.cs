@@ -81,7 +81,6 @@
             this.label12 = new System.Windows.Forms.Label();
             this.btnUpdate = new System.Windows.Forms.Button();
             this.btnWeb = new System.Windows.Forms.Button();
-            this.btnUninstall = new System.Windows.Forms.Button();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.tabPage3.SuspendLayout();
@@ -382,7 +381,6 @@
             this.tabPage4.Controls.Add(this.groupBox2);
             this.tabPage4.Controls.Add(this.btnUpdate);
             this.tabPage4.Controls.Add(this.btnWeb);
-            this.tabPage4.Controls.Add(this.btnUninstall);
             resources.ApplyResources(this.tabPage4, "tabPage4");
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -478,14 +476,6 @@
             this.btnWeb.UseVisualStyleBackColor = true;
             this.btnWeb.Click += new System.EventHandler(this.btnWeb_Click);
             // 
-            // btnUninstall
-            // 
-            resources.ApplyResources(this.btnUninstall, "btnUninstall");
-            this.btnUninstall.Image = global::PKSoft.Resources.Icons.uninstall;
-            this.btnUninstall.Name = "btnUninstall";
-            this.btnUninstall.UseVisualStyleBackColor = true;
-            this.btnUninstall.Click += new System.EventHandler(this.btnUninstall_Click);
-            // 
             // sfd
             // 
             this.sfd.DefaultExt = "xml";
@@ -553,7 +543,6 @@
         private System.Windows.Forms.Button btnSubmitAssoc;
         private System.Windows.Forms.SaveFileDialog sfd;
         private System.Windows.Forms.TabPage tabPage4;
-        private System.Windows.Forms.Button btnUninstall;
         private System.Windows.Forms.Button btnWeb;
         private System.Windows.Forms.Label lblVersion;
         private System.Windows.Forms.Label label12;

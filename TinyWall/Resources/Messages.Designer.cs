@@ -160,15 +160,6 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not find the uninstaller application. Removal aborted..
-        /// </summary>
-        internal static string CouldNotFindTheUninstaller {
-            get {
-                return ResourceManager.GetString("CouldNotFindTheUninstaller", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Could not whitelist process of {0}..
         /// </summary>
         internal static string CouldNotWhitelistProcess {
@@ -192,6 +183,15 @@ namespace PKSoft.Resources {
         internal static string DatabaseIsMissingOrCorrupt {
             get {
                 return ResourceManager.GetString("DatabaseIsMissingOrCorrupt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Did you initiate the uninstall of TinyWall?.
+        /// </summary>
+        internal static string DidYouInitiateTheUninstall {
+            get {
+                return ResourceManager.GetString("DidYouInitiateTheUninstall", resourceCulture);
             }
         }
         
@@ -586,15 +586,6 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uninstall TinyWall.
-        /// </summary>
-        internal static string UninstallTinyWall {
-            get {
-                return ResourceManager.GetString("UninstallTinyWall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unknown application.
         /// </summary>
         internal static string UnknownApplication {
@@ -698,17 +689,7 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You are about to remove TinyWall from your computer.
-        ///Do you wish to uninstall TinyWall?.
-        /// </summary>
-        internal static string YouAreAboutToRemoveTinyWall {
-            get {
-                return ResourceManager.GetString("YouAreAboutToRemoveTinyWall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You do not have administrative privileges needed to uninstall TinyWall.
+        ///   Looks up a localized string similar to You do not have administrative privileges needed to perform this operation.
         ///Select Elevate from the tray menu and try again..
         /// </summary>
         internal static string YouDoNotHaveAdministrativePrivilegesNeeded {

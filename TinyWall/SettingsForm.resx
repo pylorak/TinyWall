@@ -1368,36 +1368,6 @@
   <data name="&gt;&gt;btnWeb.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="btnUninstall.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
-    <value>Flat</value>
-  </data>
-  <data name="btnUninstall.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleLeft</value>
-  </data>
-  <data name="btnUninstall.Location" type="System.Drawing.Point, System.Drawing">
-    <value>274, 89</value>
-  </data>
-  <data name="btnUninstall.Size" type="System.Drawing.Size, System.Drawing">
-    <value>127, 36</value>
-  </data>
-  <data name="btnUninstall.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="btnUninstall.Text" xml:space="preserve">
-    <value>Uninstall</value>
-  </data>
-  <data name="&gt;&gt;btnUninstall.Name" xml:space="preserve">
-    <value>btnUninstall</value>
-  </data>
-  <data name="&gt;&gt;btnUninstall.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btnUninstall.Parent" xml:space="preserve">
-    <value>tabPage4</value>
-  </data>
-  <data name="&gt;&gt;btnUninstall.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
   <data name="tabPage4.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>

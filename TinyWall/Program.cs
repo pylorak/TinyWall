@@ -51,8 +51,7 @@ namespace PKSoft
 
         private static int UninstallService()
         {
-            TinyWallDoctor.Uninstall();
-            return 0;
+            return TinyWallDoctor.Uninstall();
         }
 
         /// <summary>

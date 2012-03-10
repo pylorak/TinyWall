@@ -312,45 +312,6 @@ namespace PKSoft
             Process.Start(psi);
         }
 
-        private void btnUninstall_Click(object sender, EventArgs e)
-        {
-            string msg = string.Empty;
-
-            if (!Utils.RunningAsAdmin())
-            {
-                msg = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.YouDoNotHaveAdministrativePrivilegesNeeded);
-                MessageBox.Show(this, msg, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-                return;
-            }
-
-
-             msg = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.YouAreAboutToRemoveTinyWall);
-
-            // Handle uninstall request
-            bool UninstallFlag = MessageBox.Show(this, msg, PKSoft.Resources.Messages.UninstallTinyWall, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.Yes;
-            if (UninstallFlag)
-            {
-                // Get path to uninstaller and launch it
-                string uninstaller = Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "unins000.exe");
-                if (File.Exists(uninstaller))
-                {
-                    // Stop service
-                    // This is a message that does not return successfully even if it was successfull
-                    GlobalInstances.CommunicationMan.QueueMessageSimple(TWControllerMessages.STOP_DISABLE);
-                    System.Threading.Thread.Sleep(2000);
-
-                    // Start uninstaller
-                    Utils.StartProcess(uninstaller, "/SILENT", true);
-                    System.Windows.Forms.Application.Exit();
-                }
-                else
-                {
-                    MessageBox.Show(this, PKSoft.Resources.Messages.CouldNotFindTheUninstaller, PKSoft.Resources.Messages.UninstallTinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
         private void SettingsForm_Shown(object sender, EventArgs e)
         {
             IconList.Images.Add("deleted", Resources.Icons.delete);

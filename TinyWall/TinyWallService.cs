@@ -781,15 +781,6 @@ namespace PKSoft
                         }
                         catch { }
 
-                        // Disable automatic start of controller
-                        Utils.RunAtStartup("TinyWall Controller", null);
-
-                        // Put back the user's original hosts file
-                        HostsFileManager.DisableHostsFile();
-
-                        // Reset Windows Firewall to its default state
-                        Firewall.ResetFirewall();
-
                         // Stop service execution
                         Environment.Exit(0);
 
