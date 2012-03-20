@@ -3,7 +3,7 @@
 
 #define MyAppName "TinyWall"
 #define MyAppNameNoVersion "TinyWall"
-#define MyAppVersion "1.9.1"
+#define MyAppVersion "1.9.2"
 #define MyAppPublisher "Károly Pados"
 
 [Setup]

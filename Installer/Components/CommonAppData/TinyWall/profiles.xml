@@ -39,12 +39,19 @@
     </Profile>
     <Profile Name="DNS client">
       <Rules>
-        <RuleDef Name="DNS client">
+        <RuleDef Name="DNS client TCP">
           <Action>Allow</Action>
           <RemotePorts>53</RemotePorts>
           <RemoteAddresses>DNS</RemoteAddresses>
-          <Protocol>TcpUdp</Protocol>
+          <Protocol>TCP</Protocol>
           <Direction>Out</Direction>
+        </RuleDef>
+        <RuleDef Name="DNS client UDP">
+          <Action>Allow</Action>
+          <RemotePorts>53</RemotePorts>
+          <RemoteAddresses>DNS</RemoteAddresses>
+          <Protocol>UDP</Protocol>
+          <Direction>InOut</Direction>
         </RuleDef>
       </Rules>
     </Profile>
@@ -55,38 +62,6 @@
           <RemotePorts>25,110,143,465,993,995,587</RemotePorts>
           <Protocol>TCP</Protocol>
           <Direction>Out</Direction>
-        </RuleDef>
-      </Rules>
-    </Profile>
-    <Profile Name="File and printer sharing">
-      <Rules>
-        <RuleDef Name="File and printer sharing UDP Client">
-          <Action>Allow</Action>
-          <RemotePorts>137,138</RemotePorts>
-          <RemoteAddresses>LocalSubnet</RemoteAddresses>
-          <Protocol>UDP</Protocol>
-          <Direction>Out</Direction>
-        </RuleDef>
-        <RuleDef Name="File and printer sharing TCP Client">
-          <Action>Allow</Action>
-          <RemotePorts>139,445</RemotePorts>
-          <RemoteAddresses>LocalSubnet</RemoteAddresses>
-          <Protocol>TCP</Protocol>
-          <Direction>Out</Direction>
-        </RuleDef>
-        <RuleDef Name="File and printer sharing UDP Server">
-          <Action>Allow</Action>
-          <LocalPorts>137,138</LocalPorts>
-          <RemoteAddresses>LocalSubnet</RemoteAddresses>
-          <Protocol>UDP</Protocol>
-          <Direction>In</Direction>
-        </RuleDef>
-        <RuleDef Name="File and printer sharing TCP Server">
-          <Action>Allow</Action>
-          <LocalPorts>139,445</LocalPorts>
-          <RemoteAddresses>LocalSubnet</RemoteAddresses>
-          <Protocol>TCP</Protocol>
-          <Direction>In</Direction>
         </RuleDef>
       </Rules>
     </Profile>
@@ -141,6 +116,29 @@
         </RuleDef>
       </Rules>
     </Profile>
+    <Profile Name="Hamachi" AppSpecific="true">
+      <Rules>
+        <RuleDef Name="Hamachi TCP Client">
+          <Action>Allow</Action>
+          <RemotePorts>12975,32976,443</RemotePorts>
+          <Protocol>TCP</Protocol>
+          <Direction>Out</Direction>
+        </RuleDef>
+        <RuleDef Name="Hamachi TCP Server">
+          <Action>Allow</Action>
+          <LocalPorts>12975,32976,443</LocalPorts>
+          <Protocol>TCP</Protocol>
+          <Direction>In</Direction>
+        </RuleDef>
+        <RuleDef Name="Hamachi UDP Relay">
+          <Action>Allow</Action>
+          <LocalPorts>17771</LocalPorts>
+          <RemotePorts>17771</RemotePorts>
+          <Protocol>UDP</Protocol>
+          <Direction>InOut</Direction>
+        </RuleDef>
+      </Rules>
+    </Profile>
     <Profile Name="HTTP(S) client">
       <Rules>
         <RuleDef Name="HTTP(S) client">
@@ -161,25 +159,66 @@
         </RuleDef>
       </Rules>
     </Profile>
-    <Profile Name="ICMP (safe)">
+    <Profile Name="ICMP (safe)" AppSpecific="true">
       <Rules>
-        <RuleDef Name="ICMP (echo-req)">
+        <RuleDef Name="ICMPv4 (echo-req) out">
           <Action>Allow</Action>
           <IcmpTypesAndCodes>8:0</IcmpTypesAndCodes>
-          <Protocol>ICMP</Protocol>
+          <Protocol>ICMPv4</Protocol>
+          <Direction>Out</Direction>
+        </RuleDef>
+        <RuleDef Name="ICMPv6 (echo-req) out">
+          <Action>Allow</Action>
+          <IcmpTypesAndCodes>128:0</IcmpTypesAndCodes>
+          <Protocol>ICMPv6</Protocol>
           <Direction>Out</Direction>
         </RuleDef>
         <RuleDef Name="ICMPv4 (safe)">
           <Action>Allow</Action>
-          <IcmpTypesAndCodes>0:0,3:*,11:*</IcmpTypesAndCodes>
+          <RemoteAddresses>Defaultgateway</RemoteAddresses>
+          <IcmpTypesAndCodes>3:*,11:*</IcmpTypesAndCodes>
           <Protocol>ICMPv4</Protocol>
           <Direction>In</Direction>
         </RuleDef>
         <RuleDef Name="ICMPv6 (safe)">
           <Action>Allow</Action>
-          <IcmpTypesAndCodes>0:0,3:*,11:*,2:0</IcmpTypesAndCodes>
+          <IcmpTypesAndCodes>129:0,1:*,3:*,2:0</IcmpTypesAndCodes>
           <Protocol>ICMPv6</Protocol>
           <Direction>In</Direction>
+        </RuleDef>
+      </Rules>
+    </Profile>
+    <Profile Name="Incoming ICMP Ping" AppSpecific="true">
+      <Rules>
+        <RuleDef Name="ICMPv4 (echo-req) in">
+          <Action>Allow</Action>
+          <IcmpTypesAndCodes>8:0</IcmpTypesAndCodes>
+          <Protocol>ICMPv4</Protocol>
+          <Direction>In</Direction>
+        </RuleDef>
+        <RuleDef Name="ICMPv6 (echo-req) in">
+          <Action>Allow</Action>
+          <IcmpTypesAndCodes>128:0</IcmpTypesAndCodes>
+          <Protocol>ICMPv6</Protocol>
+          <Direction>In</Direction>
+        </RuleDef>
+      </Rules>
+    </Profile>
+    <Profile Name="LLMNR-UDP">
+      <Rules>
+        <RuleDef Name="LLMNR-UDP (client)">
+          <Action>Allow</Action>
+          <RemotePorts>5355</RemotePorts>
+          <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          <Protocol>UDP</Protocol>
+          <Direction>InOut</Direction>
+        </RuleDef>
+        <RuleDef Name="LLMNR-UDP (server)">
+          <Action>Allow</Action>
+          <LocalPorts>5355</LocalPorts>
+          <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          <Protocol>UDP</Protocol>
+          <Direction>InOut</Direction>
         </RuleDef>
       </Rules>
     </Profile>
@@ -217,6 +256,54 @@
           <RemotePorts>2,31,41,48,58,59,99,121,133,146,170,315,421,456,531,555,606,667,669,692,777,808,815,911,999,1000,1001,1003,1010,1011,1012,1015,1016,1020,1033,1034,1042,1045,1047,1050,1081,1082,1083,1090,1095,1097,1098,1099,1137,1170,1200,1201,1207,1208,1212,1225,1234,1243,1245,1255,1256,1269,1313,1338,1349,1441,1492,1509,1524,1600,1700,1777,1784,1807,1966,1969,1981,2000,2001,2002,2003,2004,2005,2023,2115,2140,2208,2283,2565,2583,2600,2718,2773,2801,2989,3000,3024,3128,3129,3150,3456,3459,3586,3700,3791,3801,4092,4242,4245,4321,4444,4567,4590,4711,4950,5011,5031,5032,5321,5333,5343,5400,5401,5402,5512,5521,5550,5555,5556,5557,5569,5598,5637,5638,5698,5714,5741,5742,5881,5882,5889,6000,6006,6272,6400,6500,6666,6669,6670,6711,6712,6713,6723,6767,6771,6776,6789,6838,6883,6912,6939,6969,7000,7001,7201,7215,7300,7301,7306,7307,7308,7424,7597,7609,7789,7983,8787,8897,8989,9000,9325,9400,9872,9873,9874,9875,9876,9878,9989,9999,10067,10085,10086,10101,10167,10520,10528,10607,10666,11000,11050,11051,11223,12076,12223,12345,12346,12349,12361,12362,12623,12624,12631,12701,12754,13000,13010,13700,14456,14500,14501,14502,14503,15000,15092,15104,16484,16660,16772,16969,17166,17300,17490,17500,17569,17777,18753,19864,20001,20002,20034,20203,20331,20432,21544,21554,22222,23005,23023,23432,23456,23476,23477,26274,26681,27374,27444,27665,28431,28432,29104,29891,30001,30029,30100,30101,30102,30103,30133,30303,30947,30999,31335,31336,31337,31338,31339,31554,31666,31778,31785,31787,31788,31789,31790,31791,31792,32100,32418,33333,33577,33777,33911,34324,34555,35555,37651,40412,40421,40422,40423,40425,40426,41666,43210,44444,47262,49301,50505,50766,51996,53001,53217,54283,54320,54321,57341,58339,60000,60068,60411,61348,61466,61603,63485,65000,65432,65506,65535</RemotePorts>
           <Protocol>TcpUdp</Protocol>
           <Direction>InOut</Direction>
+        </RuleDef>
+      </Rules>
+    </Profile>
+    <Profile Name="NetBIOS">
+      <Rules>
+        <RuleDef Name="NetBIOS UDP Client">
+          <Action>Allow</Action>
+          <RemotePorts>137,138</RemotePorts>
+          <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          <Protocol>UDP</Protocol>
+          <Direction>Out</Direction>
+        </RuleDef>
+        <RuleDef Name="NetBIOS TCP Client">
+          <Action>Allow</Action>
+          <RemotePorts>139,445</RemotePorts>
+          <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          <Protocol>TCP</Protocol>
+          <Direction>Out</Direction>
+        </RuleDef>
+        <RuleDef Name="NetBIOS UDP Server">
+          <Action>Allow</Action>
+          <LocalPorts>137,138</LocalPorts>
+          <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          <Protocol>UDP</Protocol>
+          <Direction>In</Direction>
+        </RuleDef>
+        <RuleDef Name="NetBIOS TCP Server">
+          <Action>Allow</Action>
+          <LocalPorts>139,445</LocalPorts>
+          <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          <Protocol>TCP</Protocol>
+          <Direction>In</Direction>
+        </RuleDef>
+      </Rules>
+    </Profile>
+    <Profile Name="PNRP">
+      <Rules>
+        <RuleDef Name="PNRP Server">
+          <Action>Allow</Action>
+          <LocalPorts>3540</LocalPorts>
+          <Protocol>UDP</Protocol>
+          <Direction>In</Direction>
+        </RuleDef>
+        <RuleDef Name="PNRP Client">
+          <Action>Allow</Action>
+          <RemotePorts>3540</RemotePorts>
+          <Protocol>UDP</Protocol>
+          <Direction>Out</Direction>
         </RuleDef>
       </Rules>
     </Profile>
@@ -265,7 +352,7 @@
         </RuleDef>
         <RuleDef Name="RealPlayer UDP">
           <Action>Allow</Action>
-          <RemotePorts>6970-32000,1755</RemotePorts>
+          <RemotePorts>EPHEMERAL</RemotePorts>
           <Protocol>UDP</Protocol>
           <Direction>Out</Direction>
         </RuleDef>
@@ -277,6 +364,24 @@
           <Action>Allow</Action>
           <RemotePorts>1080</RemotePorts>
           <Protocol>TCP</Protocol>
+          <Direction>Out</Direction>
+        </RuleDef>
+      </Rules>
+    </Profile>
+    <Profile Name="SSDP">
+      <Rules>
+        <RuleDef Name="SSDP Server">
+          <Action>Allow</Action>
+          <LocalPorts>1900</LocalPorts>
+          <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          <Protocol>UDP</Protocol>
+          <Direction>In</Direction>
+        </RuleDef>
+        <RuleDef Name="SSDP Client">
+          <Action>Allow</Action>
+          <RemotePorts>1900</RemotePorts>
+          <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          <Protocol>UDP</Protocol>
           <Direction>Out</Direction>
         </RuleDef>
       </Rules>
@@ -293,41 +398,12 @@
     </Profile>
     <Profile Name="Steam" AppSpecific="true">
       <Rules>
-        <RuleDef Name="Steam Client TCP Out">
+        <RuleDef Name="Steam">
           <Action>Allow</Action>
-          <RemotePorts>27014-27050</RemotePorts>
-          <Protocol>TCP</Protocol>
-          <Direction>Out</Direction>
-        </RuleDef>
-        <RuleDef Name="Steam Client UDP Out">
-          <Action>Allow</Action>
-          <RemotePorts>27000-27030,4380</RemotePorts>
-          <Protocol>UDP</Protocol>
-          <Direction>Out</Direction>
-        </RuleDef>
-        <RuleDef Name="Steam P2P+Voice Out">
-          <Action>Allow</Action>
-          <RemotePorts>3478,4379,4380</RemotePorts>
-          <Protocol>UDP</Protocol>
-          <Direction>Out</Direction>
-        </RuleDef>
-        <RuleDef Name="Steam Client TCP In">
-          <Action>Allow</Action>
-          <LocalPorts>27014-27050</LocalPorts>
-          <Protocol>TCP</Protocol>
-          <Direction>In</Direction>
-        </RuleDef>
-        <RuleDef Name="Steam Client UDP In">
-          <Action>Allow</Action>
-          <LocalPorts>27000-27030,4380</LocalPorts>
-          <Protocol>UDP</Protocol>
-          <Direction>In</Direction>
-        </RuleDef>
-        <RuleDef Name="Steam P2P+Voice In">
-          <Action>Allow</Action>
-          <LocalPorts>3478,4379,4380</LocalPorts>
-          <Protocol>UDP</Protocol>
-          <Direction>In</Direction>
+          <LocalPorts>EPHEMERAL</LocalPorts>
+          <RemotePorts>EPHEMERAL</RemotePorts>
+          <Protocol>TcpUdp</Protocol>
+          <Direction>InOut</Direction>
         </RuleDef>
       </Rules>
     </Profile>
@@ -363,11 +439,29 @@
         </RuleDef>
       </Rules>
     </Profile>
+    <Profile Name="UPnP">
+      <Rules>
+        <RuleDef Name="UPnP Server">
+          <Action>Allow</Action>
+          <LocalPorts>2869</LocalPorts>
+          <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          <Protocol>TCP</Protocol>
+          <Direction>In</Direction>
+        </RuleDef>
+        <RuleDef Name="UPnP Client">
+          <Action>Allow</Action>
+          <RemotePorts>2869</RemotePorts>
+          <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          <Protocol>TCP</Protocol>
+          <Direction>Out</Direction>
+        </RuleDef>
+      </Rules>
+    </Profile>
     <Profile Name="VNC Client">
       <Rules>
         <RuleDef Name="VNC Client">
           <Action>Allow</Action>
-          <RemotePorts>5900-5902,5800-5802</RemotePorts>
+          <RemotePorts>5900,5901,5902,5800,5801,5802</RemotePorts>
           <Protocol>TCP</Protocol>
           <Direction>Out</Direction>
         </RuleDef>
@@ -377,7 +471,7 @@
       <Rules>
         <RuleDef Name="VNC Server">
           <Action>Allow</Action>
-          <LocalPorts>5900-5902,5800-5802</LocalPorts>
+          <LocalPorts>5900,5901,5902,5800,5801,5802</LocalPorts>
           <Protocol>TCP</Protocol>
           <Direction>In</Direction>
         </RuleDef>
@@ -385,34 +479,16 @@
     </Profile>
     <Profile Name="Web browser">
       <Rules>
-        <RuleDef Name="HTTP(S) client">
-          <Action>Allow</Action>
-          <RemotePorts>80,443</RemotePorts>
-          <Protocol>TCP</Protocol>
-          <Direction>Out</Direction>
-        </RuleDef>
-        <RuleDef Name="RTMP client">
-          <Action>Allow</Action>
-          <RemotePorts>1935</RemotePorts>
-          <Protocol>TCP</Protocol>
-          <Direction>Out</Direction>
-        </RuleDef>
         <RuleDef Name="RTSP client (control)">
           <Action>Allow</Action>
           <RemotePorts>554</RemotePorts>
           <Protocol>TcpUdp</Protocol>
           <Direction>Out</Direction>
         </RuleDef>
-        <RuleDef Name="RTSP client (data)">
+        <RuleDef Name="Browser">
           <Action>Allow</Action>
-          <RemotePorts>5004,5005</RemotePorts>
-          <Protocol>UDP</Protocol>
-          <Direction>Out</Direction>
-        </RuleDef>
-        <RuleDef Name="MMS client">
-          <Action>Allow</Action>
-          <RemotePorts>1755</RemotePorts>
-          <Protocol>TcpUdp</Protocol>
+          <RemotePorts>80,443,EPHEMERAL</RemotePorts>
+          <Protocol>TCP</Protocol>
           <Direction>Out</Direction>
         </RuleDef>
       </Rules>
@@ -424,6 +500,42 @@
           <RemotePorts>80,443</RemotePorts>
           <Protocol>TCP</Protocol>
           <Direction>In</Direction>
+        </RuleDef>
+      </Rules>
+    </Profile>
+    <Profile Name="WSD Event">
+      <Rules>
+        <RuleDef Name="WSD Event Server">
+          <Action>Allow</Action>
+          <LocalPorts>5357,5358</LocalPorts>
+          <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          <Protocol>TCP</Protocol>
+          <Direction>In</Direction>
+        </RuleDef>
+        <RuleDef Name="WSD Event Client">
+          <Action>Allow</Action>
+          <RemotePorts>5357,5358</RemotePorts>
+          <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          <Protocol>TCP</Protocol>
+          <Direction>Out</Direction>
+        </RuleDef>
+      </Rules>
+    </Profile>
+    <Profile Name="WSD">
+      <Rules>
+        <RuleDef Name="WSD Server">
+          <Action>Allow</Action>
+          <LocalPorts>3702</LocalPorts>
+          <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          <Protocol>UDP</Protocol>
+          <Direction>In</Direction>
+        </RuleDef>
+        <RuleDef Name="WSD Client">
+          <Action>Allow</Action>
+          <RemotePorts>3702</RemotePorts>
+          <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          <Protocol>UDP</Protocol>
+          <Direction>Out</Direction>
         </RuleDef>
       </Rules>
     </Profile>
@@ -439,437 +551,867 @@
     </Profile>
   </AvailableProfiles>
   <KnownApplications>
-    <ProfileAssoc Recommended="true" Executable="avast.setup">
-      <Description>Avast Antivirus</Description>
-      <Profiles>
-        <string>HTTP(S) client</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100BB718981D7B42D0FBC3799B83817293A6901D9065F7348B8ED8F2B69CC6DDD98F8DB4F6887BFF51F6D8DA583D1411BC9C58A151117328876A078954D6E55C04B30976AEB2B8DEF655A7CCCF789AC6F2C3625909967E00B661A83BB35239622957D574153C4EBB47A071E39AC152FE05022AF4B961B41A22611EE37E2437B9B94D279A7743D7368D67B42027617E600BEE67A6E25F91834ABA328990140AE4132FEA810241E7ED84B8EC13D88695CE4735236571B27309D84B0BBED137C020BAC10F0E96D85F0A9B7A68077893E78040AA384A77C8FB67C298AC7B064A1A6F5D3F8E2E904B0318F8D44E7505EE9A7C66B9B9B95F1A69EE52A8AFE89A8A641C08B0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Recommended="true" Executable="avgmfapx.exe">
-      <Description>AVG Antivirus Updater</Description>
-      <Profiles>
-        <string>HTTP(S) client</string>
-      </Profiles>
-      <PublicKeys>
-        <string>30818902818100C16FDD2099B7047A9A7CDA5ADEC7527DF9ACF9E3FFFDBB970F588A980D1B3ACA7361A5D2181923674ADEADE4D5000D07F6AADDCE858E745F25634E8254B263805B796404EFA96A1EACACE941AD3BAA680C30F219C57348BC022733875F12BD8BE263E8F241914EE8C0CE3A208C4E98F4B4456A2678AD953721ADDD91599B1FCB0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Recommended="true" Executable="update.exe">
-      <Description>Avira Antivirus Updater</Description>
-      <Profiles>
-        <string>HTTP(S) client</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100C876D2B6CB80462E940846C9CB8D537DE363EC642BEE0D6DDA5AB888598B705E7AAB005D7868FE25880CB2F7979ABE5D6C97D517F3460BBA7050E31CE2B7B5BFC90071DC85DBFD6F17389E9EE40B22A7B3B569DDCC1E82F340C1B47F156A66646EB1AA89049DAF67611F7D347528262A6D4474AC05FB5F5B89407EB205D5C717CDF9A38218F1F3EABBAA799683809C25E36B6D7BA12A72E426992CBCE8A8B4C90386287475090AAB0CC8A0F28BF85F70B9A86782866A404664E8AF7513E522B88F7DF6686B40FCF1C8EB0FC61A7B4CF0211F6809A5C11FE8FE404AE2D72429E0D2F4D183F597FAEE8C0FA33F0E728ED64BD9E4963E8461EB73FFBFBEE5B269F10203010001</string>
-        <string>30818902818100E3B5CC8059EF29D0A6F2C3F2E116408BE11912AA0BD1866C83DDE9B9A446B05E390AA683290A012BE12ECBB254C2EA9F85914DA5CB3AC5FFE0A95BC71B9F6802837A87428151217CBFEDB891CB8B049B8F29597A4FCE3E192607936920F8D4B1420B5250F6F4A765F2D3A67D5D3CCF357A23B04BEA5AFAFC2AF3904ACE2B37690203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="Azureus.exe">
-      <Profiles>
-        <string>Blind trust</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100D0273E18D36444E357D6400C2A8551BE0F7368B26B9DDDF6A2A617CF4ACF3A3B9E12FC44AE4602D6B106244DFEDC539C820B3391E820EDAC19FAC53396AA77056DD1A05E68B4A1843AAB83E1B539855DAC3A1A0B2EEC8E285BA6820A5558A35EE0EC54EA4D856782E96AFB2CC94341A5EE8D4854219C81FB01D1E0B189B821C1BF611A86F8121F4B4D9379F15AC0F2A7C82416DD031C0A0FB8D9C111931BEA6C50E2D4AD4371FE6D7C76A83C22962EA8380439BD5BE7B5C8F36A0ECD39CAEFCC4599B56ABD0FD02D1F8F3793190C16712E85180458C7C60350F58C72226D1DBADF516D17F61DE668529CDF0C3F5B043379CF7A069C6067B5BE8B76FBF8228C730203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="BitTorrent.exe">
-      <Profiles>
-        <string>Blind trust</string>
-      </Profiles>
-      <PublicKeys>
-        <string>30818902818100B577F692EBF14F6FD7AEA30B5F8E4BAC23E84E65B17F4D1774B263054247038ACEC5DE113507AA1BCD325B11D322D7E599DF3F5BAD378C1768C24582B0EDF24194572AFA3BD78DB98C49290793F8307301620438C581D7AF79751308EF4BB6B290384DB9747E344F99A5A54A9B71EBA7F2DEC05599C5877FFE478C571A92D5ED0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="Brosix.exe">
-      <Profiles>
-        <string>HTTP(S) client</string>
-        <string>Brosix</string>
-      </Profiles>
-      <PublicKeys>
-        <string>30818902818100CDD6E39C8060A6E02BF683FDA9CF2498501EEB444AB743C19E5B4E517A78EC1586645906B43080422031F28824241DBB99F36FCC1EE583EAD0C820310FD3F9C202912EA34C68EADB9A2377D62FB2BC11C1DF13446547CA9F8074A124BB6CB55A88F22DF90E7655A06407C91275D01E35E1B4CA0380CF41CED990819436AE0FFD0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="chrome.exe">
-      <Profiles>
-        <string>Web browser</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100BCF1A76CD81CEC207864E1E1A40039C086462B3683F17FEC8599A0432C97C02580FCA39A8BF322179CC18F57280BD161E8E2CB67E02BFDD3450A2EF1C178BDB6BE87185184772175BD69DD31A805124B670D2ED6DF439595C0B743F5B0C120621654A6D8305C7EBB139C2153C12E1C50C2D6165C12823BC5BA22A360EA2E23969C2F195AE8DB921CE5117B486891A5734A3D46465BEF04D6E99426E181059C1F4245FD0F9706CC95595858F895F5B96518BD56A05D48D540C5B35FF0E06495FE33899F9A5A6C40BCA03D04D7C87C422333540B56E653ABFBA402D17C308A7534DE40A41EB94F5DA701F9C1DE110C5AC9B1DDCA3A8D441F5F8CE2256B5BC26C1D0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="Dropbox.exe">
-      <Profiles>
-        <string>HTTP(S) client</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100C0E80058ACCAC93019A956765EEA649DCA79327B82D6B3848BB82E207CED84B2CD3FEA8E69D88491B60AD2AC37C8C1673F309BB89FD2A623ABA39091791E3935ED5A4A46A85DBF125A830FC8717376BB781E1F19BEF3C8777CAB4AA5BF1BB1F7DDEE93921E9E7DA5BCBADC2708C17FCC745C1329374A311A5FF2F5FEFE1BDAC1330D106D955C0808279604068D89F528C1F0F2B4B80B5E40C79208579C2E0857432B40BF12C18B00A7BABF6BC308FCF1BAF0A6F64E3479C6D6A66E8FEC1C68AB52F46922DD55B522C938020212C73CCDB1C9EA3B9E9CB0523B4D8504C742FAB7CB09FCAB4BE16AD18D106DD43ECEA743BBD3C47DE13F4E10D3D291C45E78CD010203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Recommended="true" Executable="ekrn.exe">
-      <Description>Eset NOD32</Description>
-      <Profiles>
-        <string>HTTP(S) client</string>
-      </Profiles>
-      <PublicKeys>
-        <string>30818902818100C3DF9588040A55EA50F14EAC533F1A4787568CAC7356AB3E23D90C49AFF07BCD68C8C54B3F3D0ECA263CACF31B5DC2D3985A3DE1DB23C98A7BB5218E186D4779B8D0ED1CFBD26E05016954960DDF633A5C3129416A73143DD729B5118E832B1A9CCCF942E3AAC2E45AC6976300F5DAC76D0F1BBCF65EDE9D591438B7B71B03F70203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Special="true" Executable="System">
-      <Description>File and printer sharing</Description>
-      <Profiles>
-        <string>File and printer sharing</string>
-      </Profiles>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="filezilla.exe">
-      <Profiles>
-        <string>FTP client</string>
-      </Profiles>
-      <HashesSHA1>
-        <string>306b24c433bc91d4251957506290f557adf16144</string>
-        <string>F176956DF45090C636F5729EED1BDA167672C07D</string>
-      </HashesSHA1>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="Firefox.exe">
-      <Profiles>
-        <string>Web browser</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A028201010092CE4E1EAEB7533F4A9DA2335F08977DC65DC35D530D528BE809BF4DCBDA27FABD36B75FFBCC5BC7FEF34FE3363CAC049553B52A3116E2AF8A048DDC539304E3F801BA6DBF4D082846673950842D8DC1DE7255F82CA1A3A741B39EC62F7016C9009540F27A40C10137DB0B692516201E11356B1C2B385BCA97DF8B0645D72710DE7531C736FEF0B3BA570F0A235B8DE8E79EBF9F4484864BE9AFE2A74F7C0DA8F54403D04F47CE0669130CD55AF4C3414454071B384F129347675CEF7D7125C5434AA3E89A0A848D105B1031CF079ADF584E2AB9F01B86A8204FAAEC02042FF31B227334137E094D73F06456E7D46E2BEA20FB5B14FF136CCA839839415C749D0203010001</string>
-        <string>3082010A0282010100EE9353A3A9DFE1B4D856468580B6DEC589F7C8E8461E35AE4CB337BEA3FF85244F4F3398CF7DEECB1BF0218A5C2F8521F1D905D8D5139D04D9CC8333EA5ECDB6F77BCBD6F7763303CDAA518DC8FAFF9ABA3A6252DA1CDF7E86561DE6FAD3599FDA05A2FEBAF28E46571D078E3D26D45E7E7E613C047A5BFAE3668B358F6D193BC23A7FBE64445F7F412B20483BB15AE3F73A34963D0718C9D061A1A85FC7E417B629BCB374F5E20FE19715B9F27389F05825C9D83EE1171E8FC2897F98F92487042F2B8BFC01F5C3676BBAFDE23CFC737523EF9478885431A2538BC01F8A19F7E34C2DC5859980842713D8DDB96BEEFEF1C86AF1E8C459270C6E2CFEAC6750D70203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="plugin-container.exe">
-      <Profiles>
-        <string>Web browser</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A028201010092CE4E1EAEB7533F4A9DA2335F08977DC65DC35D530D528BE809BF4DCBDA27FABD36B75FFBCC5BC7FEF34FE3363CAC049553B52A3116E2AF8A048DDC539304E3F801BA6DBF4D082846673950842D8DC1DE7255F82CA1A3A741B39EC62F7016C9009540F27A40C10137DB0B692516201E11356B1C2B385BCA97DF8B0645D72710DE7531C736FEF0B3BA570F0A235B8DE8E79EBF9F4484864BE9AFE2A74F7C0DA8F54403D04F47CE0669130CD55AF4C3414454071B384F129347675CEF7D7125C5434AA3E89A0A848D105B1031CF079ADF584E2AB9F01B86A8204FAAEC02042FF31B227334137E094D73F06456E7D46E2BEA20FB5B14FF136CCA839839415C749D0203010001</string>
-        <string>3082010A0282010100EE9353A3A9DFE1B4D856468580B6DEC589F7C8E8461E35AE4CB337BEA3FF85244F4F3398CF7DEECB1BF0218A5C2F8521F1D905D8D5139D04D9CC8333EA5ECDB6F77BCBD6F7763303CDAA518DC8FAFF9ABA3A6252DA1CDF7E86561DE6FAD3599FDA05A2FEBAF28E46571D078E3D26D45E7E7E613C047A5BFAE3668B358F6D193BC23A7FBE64445F7F412B20483BB15AE3F73A34963D0718C9D061A1A85FC7E417B629BCB374F5E20FE19715B9F27389F05825C9D83EE1171E8FC2897F98F92487042F2B8BFC01F5C3676BBAFDE23CFC737523EF9478885431A2538BC01F8A19F7E34C2DC5859980842713D8DDB96BEEFEF1C86AF1E8C459270C6E2CFEAC6750D70203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="flashget.exe">
-      <Profiles>
-        <string>Blind trust</string>
-      </Profiles>
-      <HashesSHA1>
-        <string>DA710C2DCC10061B9BBE43739229F8D0A7579A92</string>
-      </HashesSHA1>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="fdm.exe">
-      <Profiles>
-        <string>Blind trust</string>
-      </Profiles>
-      <HashesSHA1>
-        <string>CDB540F29FB692782673B312656F5E079A92C983</string>
-        <string>8199702B65CF1F1DA848E86A0C6B97D6EAA861C5</string>
-      </HashesSHA1>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="GameRanger.exe">
-      <Profiles>
-        <string>Blind trust</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A028201010097A61004C741A5A1E464B20A8887F62882874C7878199E870E8AEE80FF5681D01FB1DE038CFB0C2864A8EF46658CE1D05C7A360B1300C53993EAD5766742AB5981DD5B4BB6E2E04D13102C188D28D9E7DD5802885E8105D82A2B7245CD414C39D71D706C65B324E91EDE65FFED51C68EE880FC026505757CECAE2C357BF31A5A2804C9ADEF16EA630A37874A7A966F842FECC3AF93A5894991E07F11378D9AAEC6209AB63ACAF0FB94485E21C235E60278F56865C61708F362709A072B429DC72FA6385401E81DA8CD5AAAA239282A52549D28329653606D3BA0741A1F291C8C82420B8D5665EE97F93CEAA49DB94337029E586B85AAB5CDD491546A20AA71FD0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="Garena.exe">
-      <Profiles>
-        <string>Blind trust</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100F6B1E16F0E2524B23523A05FE093F18536BE342FB18746639E3E9B31AE0AE5904B111197E57667E5CED505362E80503B2A5132C1048B03B7EAB5839622B57921CA2A9037688F1E2889775A707B60D35CFFD2FDFFBF64FAA6E2A54460C200A20115B13BF55FD9DF9914E9B240F23BA50751BF7283BFCBF98D53D382EFEBA85F4B0367D3B840BDAC26CCF2BE7C21A888CF7FB0F69C609488E08ABBA565AEF72F3273A5B6F625077C99CAC94C8FEB3DAFD63DD845694713C3755AD1725876D03EC4E0A0B37E11036F03480C2535CDB5DE26411B2E0042450ACC946FC98B37348BB54C08CA0727A79EC756E46220B0CAA0A33926F3B1035B1A0CB123DA2D1442DFA70203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="GetRight.exe">
-      <Profiles>
-        <string>Outbound</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A028201010099F7EB83ECCD994C26ACA819934971B6B2CE4F897CE66304E59B93C01070150F8F8BBA0AAF866CF0B4C36D78F9C80AC2D8F5F4456A7F090B5772026A4577E28CE704103375BAD5EA6338B55FEE01D3A33088991D4F02F8EE28292C64CEFEC3CC937072A2C8447A7249CE54F8518AB155DC0838A62583B0A0DE1249B94FD485112239F96202598244CD3EB3F93A4FD44CB64625E43A19B464C3704D559F6D5F7043746680F0AEF5E1C731DBCEC39A1B4CE5A854EDCCFB7A79AC09B330A0D195C3CE2606B32F3B6996CCEB447CB298CF422DC38519D8CFC1AD0B5F9CD0EA8706AAD0967C1D65FDEC428904281FFF13DDC557B310FDDBD569B6B135432852E6D18F0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="iexplore.exe">
-      <Profiles>
-        <string>Web browser</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100CC7E807B41FA8BB44D992943DDE6F852DF5B4297BD33199CEFB5DAD0C0DCE8F1B7BE5CE10AB2C235A07EE4F3D438A7F20F4272A7BA9BCF1F24DE560D8473CCD363F717CDAF696F614D4C804FC8771C5164C8D304F31426B3B8423F3343B0DB26595893B56D89620F07565BD512A0B109CC162BF98CDF6156E806787FD77388260367D1A3FF3482AC2D4CD802ECED6FB9A231C5324CBBF6FD5F625B5EF1F66491C78577471CF6A72B472D0B37544FB61F048DB5EC6027A7F37EB67CA14C91A68B71D6C6356147BCC1154BDDAC3322BE0619964B8A1E6E00EBBE1E69DD585921032B3CBEE61305176635A7862D1AF1D934C001801AFC9A469D6EA4E748DC35EA370203010001</string>
-        <string>3082010A0282010100E57740E7C8EA4FF2CB588A53E656E5F71BAFC6630D745B6EA2C9F3D53B81DE5D112B552D031A503386511A136E4CBBC2EB6B66138C9429D3B9EB7548F7B9AB0F604D9BCD55703580266CA91FCBB4248090058777152D370F4DF6344ABA3AC024159083B26DDF1DE48701178D7AE9F1323FF226876B8473727EFCCFC6BB75F7227143BD2CB5D7F0082F2A997E5BF4083A1F2DBE849E5DF01FF043CD7E33589D4B8C503C402C8A670E2511A76FB8F33F2A0E1D69775F6808FBBF988E924F1F248187AE205A2E3E927580CBE8A005010A8DA8C1269458C025C7B6D0D683556094ACFDD758593D392D9F08038AE1451796E4E1939F1D0B1D507E38E3ACD0CB97CC7B0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="IDMan.exe">
-      <Profiles>
-        <string>Outbound</string>
-      </Profiles>
-      <PublicKeys>
-        <string>308189028181009B1025E0E8715FC74E5A9176C0914185CFDF9AD292614992B08C9157518A0971BC8740AE5998B4020D576500F6989E1B23DB89C474ABBF9AF2B964FE4C6DF554724CBF11200E0E08DF3B4F346B568CEE9CF34C7A911E2E79E78CD26D0E3D7D41B89FC88B4398D4A6CDE6B2B6A5AB066F605B9887B65AB83B035957C2F7BA07A90203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Recommended="true" Executable="avp.exe">
-      <Description>Kaspersky Antivirus</Description>
-      <Profiles>
-        <string>HTTP(S) client</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100BD95605A15BB1DDE23A63BABD273EA44381EEE29917FF322B639CE401F4345247DB4B0DF6EBF5D3A19F9C8E103567FC243848A019D17C39F84ED75EECA9E44FEFB414819D2D129D794166B03E8641F66A8C64CA20226265C5F316528D88762B8BC0CFB9F5A34C66B0601EB6DC8B3EDB1BC52FC3D289BBC94C6CF6624E19345620252149A668D3D1ECE5EA72DBF0DD1823FF1BB198E132EE6CC74CE24B1FAA44316D10C9EC36E20C60E365E68F5DED093B178209359EFB8D8B954FC81909EB14F5FCF50A9FF5BB459AFB30994A30321DDD74DFC1E118C4AA48B68FBC689243CA0DDB855B856A5BA3F4833E62AE110C49FB156C0313113DE41D23EFD1F236E14B70203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Recommended="true" Executable="mbam.exe">
-      <Profiles>
-        <string>HTTP(S) client</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100D9FADC1557166D876EE3F80F294A3F5D1AF16D1C273166906B7DA47F1DEA9A811AF9D418D5BFC6B3553680110DCACD065EC775DEE951E9F9F93FD61242B94B780E7B2CFDD37C4CC1E35801C6A17CB39FCA5115AD015EBD67E4C533DCF2FF71C6271EC2E5279FB1227533E6148D430EDD1C2E8910899915927CCCF68D57DDB1167BFF35ABC69863FC7616374949AB9FF3FD889684920D1D9CBFF363F659AB8F895B351F02821D355A98359F4ACB1381C64C78ABD317D5AE3DB87E9790618EB8F91B8FA3EC798383886B306D019BA70011E2105ECD18ACF55A370B11BB2BD743097F151ECE507E65A3005E7A39D4C1BDE132CFF2B84F6E95B5501B4C88D5744E7B0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Recommended="true" Executable="ccSvcHst.exe">
-      <Description>Norton Antivirus LiveUpdates</Description>
-      <Profiles>
-        <string>HTTP(S) client</string>
-      </Profiles>
-      <PublicKeys>
-        <string>30818902818100BEE3B40431A0C66DD2A92C243A9C06F48C58241CC1A7AB5ABEFB8E40E6BD02597BAA83210003A89E522338FED03E1924A3173310D3E58C710FB7CB674522249BCD4EADB8C76E3A5AA9E2355D2AB39322F0926B13302B117C0186EFB2625058834AA819BFD066BC3757E3162545FE093A9233F0D22E976467DD36F1DCA81EAE590203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="opera.exe">
-      <Profiles>
-        <string>Web browser</string>
-      </Profiles>
-      <PublicKeys>
-        <string>30818902818100D0D988AD59FFD0C61E0E1589A7C176510AB90AF69E73CBD3F037B6116A3D780F7D8C5FA6E3C785EBCE1E703E9C0801CA89CE7A1372B36A1512F8F49B26602D3571CE83C4E0C438F3B4AFA4B802C45BC739DCF1C238FD5CBAAE127EE3E82E2E7F8E6F7A0CB4BC367825F7327F257DDD3D1FE673554EA7FBDE7A7D073B3142431B0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="orbitdm.exe">
-      <Profiles>
-        <string>Outbound</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100CF605CE5FC2156C170FD3E76EA7BB1B8472FC143F78B3CDBE4C3897A52179A905D9D4A12A5B3C27CEB1248127E1A5AEDABE248D0906B818717231EEF730DABA934364294A2BADC10B4386C10F17753280B96D112AA88950F13F7D3581FC265D5132756839E665AFA7BC8B07DAE7328EC0C72971FF35E77B511890B6E4C54CB2DB0AA6FC0BBD1AEA90C8FE51CF86D73EC7060D78822C35FE73B1A0F662694373F4B07A625AE91863C80352BF5C55427EA5767ADA3FC9D76C21D9CC89A2243B27808466D7E0F57F012A9BB24BA12C5D163964F23F5F0D3E6C26124BA817883D6869202521C8F094CAD2F449900FD707262C4731F2895440E6EC5E59870E79ABBA50203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Recommended="true" Executable="Upgrader.exe">
-      <Description>Panda Antivirus Updater</Description>
-      <Profiles>
-        <string>HTTP(S) client</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100B6757612808A339D67A0B71D9E19BE070A7CAEC4DB80DEB1F649F07BD7429846625D4F1D1E806EBED89A4EE2C30632E22986C88FDCD19CA0C9F1A2CE6C6E2496484BF3B8E42C1B6E7987B0E8DBE94DE1B1ED9011D8617EE244EC47D94395D5E4F7F39248FD50DF0463FE98F691E589BCC17C4DDBB018C8B059CF29F0629C8C998F730815A223656E770A4AC0211D219D5D5CB24E49142CBB79BE6B650C443FAC80316D484612EE44B8B4060A3B54E577EB7033AA8368A5A7DF0A5CFE86703BB286058407F9DAE3507E8E0F9AF09A610D4AC919F3E30229CF92BADEFF93F68125412674E70BCA44BC2FA16CA407DCC77359117D19C33D1286DAEE514F9FB980CD0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Recommended="true" Executable="peerblock.exe">
-      <Profiles>
-        <string>HTTP(S) client</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100A2D0DCCFD763E5DBB2E676C9F0E5A5F9C4D9EC72EA68493C33F6403D4F262E41C7EA14A62A56F1F1C065277E9EF7028FF373184AED1A4A692D6C8A876F761AB2C4D523B4E725993FA5A94400481961E90EF4D23345A4039902DDCD34EA992A62B6253264B061E227ADDDD33B1F8C6E22B22CEA1BD110B041F296592CF2AC2B5748274043D770E3D6B7CEB4DF6D7063D41A502DE99A0BF0BB8C4FF3C2E20A03126AF5F30D73216B482C6FF23102A54AC6C01587DB4C2CA391AA8B2DD9CD20D821206626F43A1AFFBE36E9A2ECC354F655555B9E0CC62AA261BC44343AB16676A8B1521FF8A3D4C639E473250C2F4B940B10D2E7DFD5E1DA39729CB99D49B9B49B0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="pidgin.exe">
-      <Profiles>
-        <string>Blind trust</string>
-      </Profiles>
-      <HashesSHA1>
-        <string>af68710ffdb5654f1b46c5f2b920de920d4fbf07</string>
-      </HashesSHA1>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="putty.exe">
-      <Profiles>
-        <string>SSH client</string>
-      </Profiles>
-      <HashesSHA1>
-        <string>b11a526d3d37be5c38e31a56ab762b9471957cca</string>
-      </HashesSHA1>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="realplay.exe">
-      <Profiles>
-        <string>HTTP(S) client</string>
-        <string>RealPlayer</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100AF24191EBD922AF5D40E22FDC71FB6B3CE02788B3FAB6B757DDA8ABDAB196794EF78D200B3A207C18D0CF2401B29DFBDE4A8FCD4D007475E2EF8D4C4BF1A194F3794982D5C5BDF8366BCF9E41C0327BA972ED1C73D401B55EE1CC8D4876CDAAC2C847FE31F1C97E4B21B896E17EB88494E7D6B92648B014BEAC55CDB1CE1C02B35C3FE80DA95BAA6DA735809F0EC6205BC29FAD0156C65F9A9E1C8B562E7408C77B87959B719D52711BF92D15505451D868675D8BBBDEBF7ED98FCEB3C4AC1C5602120D068AC76C36C24321FF2C193DA8FE609A0CBE5723EB79F31498428886B1A413E632F84FFA3C79E87A40F94187F662603392D0335E507D13DADBDAE3C3F0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="recordingmanager.exe">
-      <Profiles>
-        <string>HTTP(S) client</string>
-        <string>RealPlayer</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100AF24191EBD922AF5D40E22FDC71FB6B3CE02788B3FAB6B757DDA8ABDAB196794EF78D200B3A207C18D0CF2401B29DFBDE4A8FCD4D007475E2EF8D4C4BF1A194F3794982D5C5BDF8366BCF9E41C0327BA972ED1C73D401B55EE1CC8D4876CDAAC2C847FE31F1C97E4B21B896E17EB88494E7D6B92648B014BEAC55CDB1CE1C02B35C3FE80DA95BAA6DA735809F0EC6205BC29FAD0156C65F9A9E1C8B562E7408C77B87959B719D52711BF92D15505451D868675D8BBBDEBF7ED98FCEB3C4AC1C5602120D068AC76C36C24321FF2C193DA8FE609A0CBE5723EB79F31498428886B1A413E632F84FFA3C79E87A40F94187F662603392D0335E507D13DADBDAE3C3F0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Recommended="true" Special="true" Executable="">
-      <Description>Safe ICMP traffic</Description>
-      <Profiles>
-        <string>ICMP (safe)</string>
-      </Profiles>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="sidebar.exe">
-      <Profiles>
-        <string>HTTP(S) client</string>
-      </Profiles>
-      <HashesSHA1>
-        <string>12a602b86fc394b1c88348fb099685eabb876495</string>
-      </HashesSHA1>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="Skype.exe">
-      <Profiles>
-        <string>Symmetric TCP</string>
-        <string>HTTP(S) client</string>
-      </Profiles>
-      <PublicKeys>
-        <string>308189028181009DD28B484B7E50813106FF3692ECE543FBD7D65EDF73A70C6A2E05B00D98D8E51DD861B9305294955B18F9994DED5C3927609993499E1AB657EB482EA60F8749F4E5606F5B4CFAD63245746E4F488DE5635BB42EB61A8358D47D61AAE18E70E19AAAC276FECF362E02758C9977EEEFB251340319B35845325A06506CC6C771090203010001</string>
-        <string>3081890281810095178D40B1A7B36F2737C624587CF0EAD076D19DC56EE593472B50656DDD7774A7873CCF25C322D98D416A62784630340D32A287F770D4E887735239F7ED5281C7C07423DA4E357C640326D7AA183F1EC229A3B48C281EE7C343E47AF14B3ADBE8A5C0D2DD526B1CAC14472153E8CCD5FCE3CF1983F259DCD83B552072BF5F850203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Recommended="true" Executable="SDUpdate.exe">
-      <Profiles>
-        <string>HTTP(S) client</string>
-      </Profiles>
-      <PublicKeys>
-        <string>30818902818100D00538653D4F329DA489454DC1FB2B5DEC5BEB691C4D3CE8EEEC6B3BC4FB2A05A182F54CFD6D00FB87D6036EC26003C96B6A7CC659AF040CF21D6DF5E855F74F06CDC569BAB902D76264B30BC61816332D7DBC1F8AB59CC5916BC53B24625C9E24CE59AEA172DCD83E42E0C0C6D5E16F47A9092CE78969A60A87F18CC9483BA90203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="Steam.exe">
-      <Profiles>
-        <string>Steam</string>
-        <string>Web browser</string>
-      </Profiles>
-      <PublicKeys>
-        <string>30818902818100CAAAB6B0973C3BC98A04A2B4E7D62DFD4E08315D55974B7C10272374DD595BC06A4D3731820E1A7C21B3FE90368D4D799CA774B27573D89DE1C16B1C1C9C45495AADA9CB6C6D8C4C55F42C04825C2567A407450A7BA642952DAE97501CA971D84B89FD2454148F563C1E0491036F925C4CA5CAD33D804E54B2CD8155785598E90203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="sunbird.exe">
-      <Profiles>
-        <string>Outbound</string>
-      </Profiles>
-    </ProfileAssoc>
-    <ProfileAssoc Service="dhcp" Recommended="true" Special="true" Executable="{sys32}\svchost.exe">
-      <Description>Windows DHCP client</Description>
-      <Profiles>
-        <string>DHCP client</string>
-      </Profiles>
-    </ProfileAssoc>
-    <ProfileAssoc Service="Dnscache" Recommended="true" Special="true" Executable="{sys32}\svchost.exe">
-      <Description>Windows DNS client</Description>
-      <Profiles>
-        <string>DNS client</string>
-      </Profiles>
-    </ProfileAssoc>
-    <ProfileAssoc Service="W32Time" Recommended="true" Special="true" Executable="{sys32}\svchost.exe">
-      <Description>Windows time synchronization</Description>
-      <Profiles>
-        <string>Time synchronization</string>
-      </Profiles>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="thunderbird.exe">
-      <Profiles>
-        <string>E-mail client</string>
-        <string>Web browser</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100B9A25BD573CAF0901E9993A85352965B7CC9947BAD58103C8D9FD0EA0219393AE75E7367498FB7260380B4309DE896B0BA87E35D14284CA5851F8560499713B17819E4BF2A80902BDE651EAE9A50290405E5B3465B3D8E19EE94BA87F60959FEE247BD81D5BF7E6AB11A8E78C384EA3506A0DC7FA530F1B23714C72891D6C300E429CC85F5F8AB2FAD5B3B6EC098EFABFF1099039CF2910A65465B2EB6FDD8D792AFD724FEC13F330896CE004B9441426DEF416CF17380652C057DDCD0EFA68805B9532004A69A93A6D7DD86622F93F68C0E00B8F20A2C8BDCFE498E24003630CB0497BBA8D17ED483360EFDB062ADE3309A09F0116BD13EA9753913F071D9790203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Recommended="true" Special="true" Executable="{TWPath}\TinyWall.exe">
-      <Description>TinyWall</Description>
-      <Profiles>
-        <string>HTTP(S) client</string>
-      </Profiles>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="uTorrent.exe">
-      <Profiles>
-        <string>Blind trust</string>
-      </Profiles>
-      <PublicKeys>
-        <string>30818902818100B577F692EBF14F6FD7AEA30B5F8E4BAC23E84E65B17F4D1774B263054247038ACEC5DE113507AA1BCD325B11D322D7E599DF3F5BAD378C1768C24582B0EDF24194572AFA3BD78DB98C49290793F8307301620438C581D7AF79751308EF4BB6B290384DB9747E344F99A5A54A9B71EBA7F2DEC05599C5877FFE478C571A92D5ED0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="vncviewer.exe">
-      <Profiles>
-        <string>VNC Client</string>
-      </Profiles>
-      <PublicKeys>
-        <string>30818902818100935AFDD2025ADF35C3785784F389B9E4AC3EF82E9378E7BBA6820C1777559FF3C6CDC1326A402E51BEA69D1D0FCDB6905EB55C8EF75695DD5B14259291CFC690FCC618924CD02E807321E93CE34B0B5A0EADF716BE2224FA2A9C270C9375A2BA92576A06445021B059578CEFA4A7CC4BE249752423EE40CA731C7D1F5413831F0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="msnmsgr.exe">
-      <Description>Windows Live Messenger</Description>
-      <Profiles>
-        <string>HTTP(S) client</string>
-        <string>Symmetric TCP</string>
-        <string>Symmetric UDP</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100BD3089FB4572A8536B9E894F0023C0BED41D3DB1594038F373918226E696120053D91C820E3CCE1DBBBDF7428D97D4FC381AE4B9F9E3ECD36103BFA0D3D6754D5C46A9ED5EF0D2E2695B1A73EAB31C8D04CD2944A064592F1E985D6EC7AB18398265C4A7BCAB758819EA87971426B37F2676A4D4383984E3B326D518F92BE9D2C9165A5421F2978D878629FEF4492CE68BF8043F7DCDCD9692860D7103E2D0FE0C4235FFD7B83FDD8E450A7DF6D74BAD5BF076721D77237D8935C41C5DB250034B476D07A75588980680A681AD544ED881D6FABF42C031BE550D99D553491230EBE5A5887C5EC47A5A148708B43769A0EB32248C08EBF9D414BAE0FCCDEAA4150203010001</string>
-        <string>3082010A0282010100A5717418CBDB9C2FFAF1631980A38EFFC870830CA1472AFAFA5AB0CE4D0FBD3BDA21CD05D57D7C3FB59976253ADCA04F20E572D34371E6FF6C14F99F84B22587BD14B55DBE37892EC5AB856071858127B93303F9ADD69302EEB6551102CB8385F6C185636119A0149C9D9F9C466337D8113C57C748205316F7CC58FEF6C01ACAB6466C0DE83A05CEA61CE388F0DDAAC270835BD1F2F23FB8D9A49DA3006EAA81CDEE3A04ADC04A922C13E0E941760980016C6720B431B03E6BD2400883D570308D30E7BE8CD02FEED4863F1A5AA5C06885E8897C91034A6E594320489C88FEC945B7E84C04010B62CEA2EC1C9325FDD0B10EC6F8B6241A7BFB7CD65C4ED167E90203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="wlcomm.exe">
-      <Description>Windows Live Contacts</Description>
-      <Profiles>
-        <string>Web browser</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100A5717418CBDB9C2FFAF1631980A38EFFC870830CA1472AFAFA5AB0CE4D0FBD3BDA21CD05D57D7C3FB59976253ADCA04F20E572D34371E6FF6C14F99F84B22587BD14B55DBE37892EC5AB856071858127B93303F9ADD69302EEB6551102CB8385F6C185636119A0149C9D9F9C466337D8113C57C748205316F7CC58FEF6C01ACAB6466C0DE83A05CEA61CE388F0DDAAC270835BD1F2F23FB8D9A49DA3006EAA81CDEE3A04ADC04A922C13E0E941760980016C6720B431B03E6BD2400883D570308D30E7BE8CD02FEED4863F1A5AA5C06885E8897C91034A6E594320489C88FEC945B7E84C04010B62CEA2EC1C9325FDD0B10EC6F8B6241A7BFB7CD65C4ED167E90203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="WLIDSVC.EXE">
-      <Description>Windows Live Login</Description>
-      <Profiles>
-        <string>Web browser</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100A5717418CBDB9C2FFAF1631980A38EFFC870830CA1472AFAFA5AB0CE4D0FBD3BDA21CD05D57D7C3FB59976253ADCA04F20E572D34371E6FF6C14F99F84B22587BD14B55DBE37892EC5AB856071858127B93303F9ADD69302EEB6551102CB8385F6C185636119A0149C9D9F9C466337D8113C57C748205316F7CC58FEF6C01ACAB6466C0DE83A05CEA61CE388F0DDAAC270835BD1F2F23FB8D9A49DA3006EAA81CDEE3A04ADC04A922C13E0E941760980016C6720B431B03E6BD2400883D570308D30E7BE8CD02FEED4863F1A5AA5C06885E8897C91034A6E594320489C88FEC945B7E84C04010B62CEA2EC1C9325FDD0B10EC6F8B6241A7BFB7CD65C4ED167E90203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Service="wuauserv" Recommended="true" Special="true" Executable="{sys32}\svchost.exe">
-      <Description>Windows Update</Description>
-      <Profiles>
-        <string>HTTP(S) client</string>
-      </Profiles>
-    </ProfileAssoc>
-    <ProfileAssoc Special="true" Executable="">
-      <Description>VPN L2TP/IPSec</Description>
-      <Profiles>
-        <string>L2TP/IPSec</string>
-      </Profiles>
-    </ProfileAssoc>
-    <ProfileAssoc Special="true" Executable="">
-      <Description>VPN PPTP</Description>
-      <Profiles>
-        <string>PPTP</string>
-      </Profiles>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="WinSCP.exe">
-      <Profiles>
-        <string>FTP client</string>
-        <string>SSH client</string>
-      </Profiles>
-      <HashesSHA1>
-        <string>6ee7daf8f0fed8b652a5b2d1ee5d05ff05e84535</string>
-      </HashesSHA1>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="winvnc4.exe">
-      <Profiles>
-        <string>VNC Server</string>
-      </Profiles>
-      <PublicKeys>
-        <string>30818902818100935AFDD2025ADF35C3785784F389B9E4AC3EF82E9378E7BBA6820C1777559FF3C6CDC1326A402E51BEA69D1D0FCDB6905EB55C8EF75695DD5B14259291CFC690FCC618924CD02E807321E93CE34B0B5A0EADF716BE2224FA2A9C270C9375A2BA92576A06445021B059578CEFA4A7CC4BE249752423EE40CA731C7D1F5413831F0203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
-    <ProfileAssoc Executable="Xfire.exe">
-      <Profiles>
-        <string>Xfire</string>
-        <string>Web browser</string>
-        <string>Symmetric UDP</string>
-      </Profiles>
-      <PublicKeys>
-        <string>3082010A0282010100F8E93482AA0344EFF98B2E2C4E6B8BB18F08742F1033B19B70F06712A558FBD77F5E8523D8976A798A69359CBD44B5C04561E2258C7D415A12C29C993F5A1C3D6996C304B635ED59C55D487FF2775A798B24711E87F59DA423B06B37C8641F0754722DAB083DA141DD61A88140C09AB837A5389C347E0D20D8C76908DE3121A7374C7AB266EA0068E0B492724E5E261B5324D98482596D2CD555A5A6AB585A1F5AB263DEC14A55E34777903BF3CEFC012902EAF3D91CF7C73FB576AE452C9C571BDCFB9B85722465BA60C7065053ECE347014875591CD511645BCA52914B438F707AD5FCC2AD07D9343D597DDCD9C02E41A689A9F8B306435A0345005C913F030203010001</string>
-      </PublicKeys>
-    </ProfileAssoc>
+    <Application Name="AdMuncher" Recommended="true" Special="true">
+      <Files>
+        <ProfileAssoc Executable="AdMunch.exe">
+          <Profiles>
+            <string>Web browser</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{reg:SOFTWARE\Wow6432Node\AdMuncher:AppPath}</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>3082010A0282010100E8C2584DAE2A39A0A0AF72E5B393EC4DB266B17AA21C1735B4BDC976BEFFAB150932604E26BCF166DC122D4F43EFDD1412513FEC1ECC0F9C353044EF706368A9C6C0C1589F1EA5B69ACE30D39A7C8AAFC6930C47CA88C9E767DBFDC943F16EF55F7C203F95C84E9C10F23699ABA1E8FC8ED2D209D010756B53CAD2FAAB46AF3C08F535AF55EFACFA1DA5282196471EAA229F78436636F2C37280B7C467BF472F6FEDAB36A68256044BA6652D4FE147EF19073ADD3DA6D1A4A39A64AC8B4F08B61207BB09A916763A548E5BE766D96C84739DB67DA4E1E8521E463BFEED41A0285BDC79C92ACC77026A7D7F749D79E6A9C5BADCCFBE3D36DCF1DCC312FF53A56D0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="avast! Antivirus" Recommended="true" Special="true">
+      <Files>
+        <ProfileAssoc Executable="avast.setup">
+          <Description>Avast Antivirus Updater</Description>
+          <Profiles>
+            <string>HTTP(S) client</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{reg:SOFTWARE\Wow6432Node\AVAST Software\Avast:ProgramFolder}</string>
+            <string>{reg:SOFTWARE\AVAST Software\Avast:ProgramFolder}</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>3082010A0282010100BB718981D7B42D0FBC3799B83817293A6901D9065F7348B8ED8F2B69CC6DDD98F8DB4F6887BFF51F6D8DA583D1411BC9C58A151117328876A078954D6E55C04B30976AEB2B8DEF655A7CCCF789AC6F2C3625909967E00B661A83BB35239622957D574153C4EBB47A071E39AC152FE05022AF4B961B41A22611EE37E2437B9B94D279A7743D7368D67B42027617E600BEE67A6E25F91834ABA328990140AE4132FEA810241E7ED84B8EC13D88695CE4735236571B27309D84B0BBED137C020BAC10F0E96D85F0A9B7A68077893E78040AA384A77C8FB67C298AC7B064A1A6F5D3F8E2E904B0318F8D44E7505EE9A7C66B9B9B95F1A69EE52A8AFE89A8A641C08B0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+        <ProfileAssoc Executable="AvastSvc.exe">
+          <Profiles>
+            <string>Outbound</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{reg:SOFTWARE\Wow6432Node\AVAST Software\Avast:ProgramFolder}</string>
+            <string>{reg:SOFTWARE\AVAST Software\Avast:ProgramFolder}</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>3082010A0282010100BB718981D7B42D0FBC3799B83817293A6901D9065F7348B8ED8F2B69CC6DDD98F8DB4F6887BFF51F6D8DA583D1411BC9C58A151117328876A078954D6E55C04B30976AEB2B8DEF655A7CCCF789AC6F2C3625909967E00B661A83BB35239622957D574153C4EBB47A071E39AC152FE05022AF4B961B41A22611EE37E2437B9B94D279A7743D7368D67B42027617E600BEE67A6E25F91834ABA328990140AE4132FEA810241E7ED84B8EC13D88695CE4735236571B27309D84B0BBED137C020BAC10F0E96D85F0A9B7A68077893E78040AA384A77C8FB67C298AC7B064A1A6F5D3F8E2E904B0318F8D44E7505EE9A7C66B9B9B95F1A69EE52A8AFE89A8A641C08B0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="AVG Antivirus" Recommended="true">
+      <Files>
+        <ProfileAssoc Executable="avgmfapx.exe">
+          <Description>AVG Antivirus Updater</Description>
+          <Profiles>
+            <string>HTTP(S) client</string>
+          </Profiles>
+          <PublicKeys>
+            <string>30818902818100C16FDD2099B7047A9A7CDA5ADEC7527DF9ACF9E3FFFDBB970F588A980D1B3ACA7361A5D2181923674ADEADE4D5000D07F6AADDCE858E745F25634E8254B263805B796404EFA96A1EACACE941AD3BAA680C30F219C57348BC022733875F12BD8BE263E8F241914EE8C0CE3A208C4E98F4B4456A2678AD953721ADDD91599B1FCB0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Avira Antivir Desktop" Recommended="true">
+      <Files>
+        <ProfileAssoc Executable="update.exe">
+          <Description>Avira Antivirus Updater</Description>
+          <Profiles>
+            <string>HTTP(S) client</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A0282010100C876D2B6CB80462E940846C9CB8D537DE363EC642BEE0D6DDA5AB888598B705E7AAB005D7868FE25880CB2F7979ABE5D6C97D517F3460BBA7050E31CE2B7B5BFC90071DC85DBFD6F17389E9EE40B22A7B3B569DDCC1E82F340C1B47F156A66646EB1AA89049DAF67611F7D347528262A6D4474AC05FB5F5B89407EB205D5C717CDF9A38218F1F3EABBAA799683809C25E36B6D7BA12A72E426992CBCE8A8B4C90386287475090AAB0CC8A0F28BF85F70B9A86782866A404664E8AF7513E522B88F7DF6686B40FCF1C8EB0FC61A7B4CF0211F6809A5C11FE8FE404AE2D72429E0D2F4D183F597FAEE8C0FA33F0E728ED64BD9E4963E8461EB73FFBFBEE5B269F10203010001</string>
+            <string>30818902818100E3B5CC8059EF29D0A6F2C3F2E116408BE11912AA0BD1866C83DDE9B9A446B05E390AA683290A012BE12ECBB254C2EA9F85914DA5CB3AC5FFE0A95BC71B9F6802837A87428151217CBFEDB891CB8B049B8F29597A4FCE3E192607936920F8D4B1420B5250F6F4A765F2D3A67D5D3CCF357A23B04BEA5AFAFC2AF3904ACE2B37690203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Azureus">
+      <Files>
+        <ProfileAssoc Executable="Azureus.exe">
+          <Profiles>
+            <string>Blind trust</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A0282010100D0273E18D36444E357D6400C2A8551BE0F7368B26B9DDDF6A2A617CF4ACF3A3B9E12FC44AE4602D6B106244DFEDC539C820B3391E820EDAC19FAC53396AA77056DD1A05E68B4A1843AAB83E1B539855DAC3A1A0B2EEC8E285BA6820A5558A35EE0EC54EA4D856782E96AFB2CC94341A5EE8D4854219C81FB01D1E0B189B821C1BF611A86F8121F4B4D9379F15AC0F2A7C82416DD031C0A0FB8D9C111931BEA6C50E2D4AD4371FE6D7C76A83C22962EA8380439BD5BE7B5C8F36A0ECD39CAEFCC4599B56ABD0FD02D1F8F3793190C16712E85180458C7C60350F58C72226D1DBADF516D17F61DE668529CDF0C3F5B043379CF7A069C6067B5BE8B76FBF8228C730203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="BitTorrent">
+      <Files>
+        <ProfileAssoc Executable="BitTorrent.exe">
+          <Profiles>
+            <string>Blind trust</string>
+          </Profiles>
+          <PublicKeys>
+            <string>30818902818100B577F692EBF14F6FD7AEA30B5F8E4BAC23E84E65B17F4D1774B263054247038ACEC5DE113507AA1BCD325B11D322D7E599DF3F5BAD378C1768C24582B0EDF24194572AFA3BD78DB98C49290793F8307301620438C581D7AF79751308EF4BB6B290384DB9747E344F99A5A54A9B71EBA7F2DEC05599C5877FFE478C571A92D5ED0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Brosix">
+      <Files>
+        <ProfileAssoc Executable="Brosix.exe">
+          <Profiles>
+            <string>HTTP(S) client</string>
+            <string>Brosix</string>
+          </Profiles>
+          <PublicKeys>
+            <string>30818902818100CDD6E39C8060A6E02BF683FDA9CF2498501EEB444AB743C19E5B4E517A78EC1586645906B43080422031F28824241DBB99F36FCC1EE583EAD0C820310FD3F9C202912EA34C68EADB9A2377D62FB2BC11C1DF13446547CA9F8074A124BB6CB55A88F22DF90E7655A06407C91275D01E35E1B4CA0380CF41CED990819436AE0FFD0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Google Chrome">
+      <Files>
+        <ProfileAssoc Executable="chrome.exe">
+          <Profiles>
+            <string>Web browser</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{folder:LocalAppData}\Google\Chrome\Application</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>3082010A0282010100BCF1A76CD81CEC207864E1E1A40039C086462B3683F17FEC8599A0432C97C02580FCA39A8BF322179CC18F57280BD161E8E2CB67E02BFDD3450A2EF1C178BDB6BE87185184772175BD69DD31A805124B670D2ED6DF439595C0B743F5B0C120621654A6D8305C7EBB139C2153C12E1C50C2D6165C12823BC5BA22A360EA2E23969C2F195AE8DB921CE5117B486891A5734A3D46465BEF04D6E99426E181059C1F4245FD0F9706CC95595858F895F5B96518BD56A05D48D540C5B35FF0E06495FE33899F9A5A6C40BCA03D04D7C87C422333540B56E653ABFBA402D17C308A7534DE40A41EB94F5DA701F9C1DE110C5AC9B1DDCA3A8D441F5F8CE2256B5BC26C1D0203010001</string>
+            <string>3082010A0282010100DD88F3C40340E3BB9364DB5247E4D284F3E41C03EB325AC4FA069D7BCF82C49C57A6F630F50463138131B723EC97096EC7834C20F96EDB48C452A0443170B64AE37C6C581ACA7C7DDCFC66D460FEA5C97E1372145D124CAAAEE7C100BED3ACEDBDB5590FB080EC0BC7B710A8CEB93E07E29E798B270DB17F6EC802BB8C50D1AD4C816C4CA2D3D2E75D3DA28B9E66845AD8FD7ED6FDA3259F753B228A7831B2DD06B657385D88836BCB55AFE1C35566BCE72C8F53A9C889F0E5282FB61DA31C9E7D3971351C232109E5C77A6AE6B6C77735AAE7DF265BCD0720B7425DDE5ABF27CC2AFE81E23A8E1741AC749EA5CEDBFD3F341EA2CC2D74FBCF996C8B0CD556F30203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Dropbox">
+      <Files>
+        <ProfileAssoc Executable="Dropbox.exe">
+          <Profiles>
+            <string>HTTP(S) client</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A0282010100C0E80058ACCAC93019A956765EEA649DCA79327B82D6B3848BB82E207CED84B2CD3FEA8E69D88491B60AD2AC37C8C1673F309BB89FD2A623ABA39091791E3935ED5A4A46A85DBF125A830FC8717376BB781E1F19BEF3C8777CAB4AA5BF1BB1F7DDEE93921E9E7DA5BCBADC2708C17FCC745C1329374A311A5FF2F5FEFE1BDAC1330D106D955C0808279604068D89F528C1F0F2B4B80B5E40C79208579C2E0857432B40BF12C18B00A7BABF6BC308FCF1BAF0A6F64E3479C6D6A66E8FEC1C68AB52F46922DD55B522C938020212C73CCDB1C9EA3B9E9CB0523B4D8504C742FAB7CB09FCAB4BE16AD18D106DD43ECEA743BBD3C47DE13F4E10D3D291C45E78CD010203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="NOD32 Antivirus" Recommended="true">
+      <Files>
+        <ProfileAssoc Executable="ekrn.exe">
+          <Description>Eset NOD32</Description>
+          <Profiles>
+            <string>HTTP(S) client</string>
+          </Profiles>
+          <PublicKeys>
+            <string>30818902818100C3DF9588040A55EA50F14EAC533F1A4787568CAC7356AB3E23D90C49AFF07BCD68C8C54B3F3D0ECA263CACF31B5DC2D3985A3DE1DB23C98A7BB5218E186D4779B8D0ED1CFBD26E05016954960DDF633A5C3129416A73143DD729B5118E832B1A9CCCF942E3AAC2E45AC6976300F5DAC76D0F1BBCF65EDE9D591438B7B71B03F70203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="File and printer sharing" Special="true">
+      <Files>
+        <ProfileAssoc Executable="System">
+          <Profiles>
+            <string>NetBIOS</string>
+          </Profiles>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="FileZilla">
+      <Files>
+        <ProfileAssoc Executable="filezilla.exe">
+          <Profiles>
+            <string>FTP client</string>
+          </Profiles>
+          <HashesSHA1>
+            <string>306b24c433bc91d4251957506290f557adf16144</string>
+            <string>F176956DF45090C636F5729EED1BDA167672C07D</string>
+            <string>45F816D3D881A935BCC9B8E93F56EB021286F491</string>
+          </HashesSHA1>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Filtered ICMP traffic" Recommended="true" Special="true">
+      <Files>
+        <ProfileAssoc Executable="">
+          <Description>Safe ICMP traffic</Description>
+          <Profiles>
+            <string>ICMP (safe)</string>
+          </Profiles>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Mozilla Firefox">
+      <Files>
+        <ProfileAssoc Executable="Firefox.exe">
+          <Profiles>
+            <string>Web browser</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{reg:SOFTWARE\Wow6432Node\Mozilla\Mozilla Firefox\{reg:SOFTWARE\Wow6432Node\Mozilla\Mozilla Firefox:CurrentVersion}\Main:Install Directory}</string>
+            <string>{reg:SOFTWARE\Mozilla\Mozilla Firefox\{reg:SOFTWARE\Mozilla\Mozilla Firefox:CurrentVersion}\Main:Install Directory}</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>3082010A028201010092CE4E1EAEB7533F4A9DA2335F08977DC65DC35D530D528BE809BF4DCBDA27FABD36B75FFBCC5BC7FEF34FE3363CAC049553B52A3116E2AF8A048DDC539304E3F801BA6DBF4D082846673950842D8DC1DE7255F82CA1A3A741B39EC62F7016C9009540F27A40C10137DB0B692516201E11356B1C2B385BCA97DF8B0645D72710DE7531C736FEF0B3BA570F0A235B8DE8E79EBF9F4484864BE9AFE2A74F7C0DA8F54403D04F47CE0669130CD55AF4C3414454071B384F129347675CEF7D7125C5434AA3E89A0A848D105B1031CF079ADF584E2AB9F01B86A8204FAAEC02042FF31B227334137E094D73F06456E7D46E2BEA20FB5B14FF136CCA839839415C749D0203010001</string>
+            <string>3082010A0282010100EE9353A3A9DFE1B4D856468580B6DEC589F7C8E8461E35AE4CB337BEA3FF85244F4F3398CF7DEECB1BF0218A5C2F8521F1D905D8D5139D04D9CC8333EA5ECDB6F77BCBD6F7763303CDAA518DC8FAFF9ABA3A6252DA1CDF7E86561DE6FAD3599FDA05A2FEBAF28E46571D078E3D26D45E7E7E613C047A5BFAE3668B358F6D193BC23A7FBE64445F7F412B20483BB15AE3F73A34963D0718C9D061A1A85FC7E417B629BCB374F5E20FE19715B9F27389F05825C9D83EE1171E8FC2897F98F92487042F2B8BFC01F5C3676BBAFDE23CFC737523EF9478885431A2538BC01F8A19F7E34C2DC5859980842713D8DDB96BEEFEF1C86AF1E8C459270C6E2CFEAC6750D70203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+        <ProfileAssoc Executable="plugin-container.exe">
+          <Profiles>
+            <string>Web browser</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{reg:SOFTWARE\Wow6432Node\Mozilla\Mozilla Firefox\{reg:SOFTWARE\Wow6432Node\Mozilla\Mozilla Firefox:CurrentVersion}\Main:Install Directory}</string>
+            <string>{reg:SOFTWARE\Mozilla\Mozilla Firefox\{reg:SOFTWARE\Mozilla\Mozilla Firefox:CurrentVersion}\Main:Install Directory}</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>3082010A028201010092CE4E1EAEB7533F4A9DA2335F08977DC65DC35D530D528BE809BF4DCBDA27FABD36B75FFBCC5BC7FEF34FE3363CAC049553B52A3116E2AF8A048DDC539304E3F801BA6DBF4D082846673950842D8DC1DE7255F82CA1A3A741B39EC62F7016C9009540F27A40C10137DB0B692516201E11356B1C2B385BCA97DF8B0645D72710DE7531C736FEF0B3BA570F0A235B8DE8E79EBF9F4484864BE9AFE2A74F7C0DA8F54403D04F47CE0669130CD55AF4C3414454071B384F129347675CEF7D7125C5434AA3E89A0A848D105B1031CF079ADF584E2AB9F01B86A8204FAAEC02042FF31B227334137E094D73F06456E7D46E2BEA20FB5B14FF136CCA839839415C749D0203010001</string>
+            <string>3082010A0282010100EE9353A3A9DFE1B4D856468580B6DEC589F7C8E8461E35AE4CB337BEA3FF85244F4F3398CF7DEECB1BF0218A5C2F8521F1D905D8D5139D04D9CC8333EA5ECDB6F77BCBD6F7763303CDAA518DC8FAFF9ABA3A6252DA1CDF7E86561DE6FAD3599FDA05A2FEBAF28E46571D078E3D26D45E7E7E613C047A5BFAE3668B358F6D193BC23A7FBE64445F7F412B20483BB15AE3F73A34963D0718C9D061A1A85FC7E417B629BCB374F5E20FE19715B9F27389F05825C9D83EE1171E8FC2897F98F92487042F2B8BFC01F5C3676BBAFDE23CFC737523EF9478885431A2538BC01F8A19F7E34C2DC5859980842713D8DDB96BEEFEF1C86AF1E8C459270C6E2CFEAC6750D70203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="FlashGet">
+      <Files>
+        <ProfileAssoc Executable="flashget.exe">
+          <Profiles>
+            <string>Blind trust</string>
+          </Profiles>
+          <HashesSHA1>
+            <string>DA710C2DCC10061B9BBE43739229F8D0A7579A92</string>
+          </HashesSHA1>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Free Download Manager">
+      <Files>
+        <ProfileAssoc Executable="fdm.exe">
+          <Profiles>
+            <string>Blind trust</string>
+          </Profiles>
+          <HashesSHA1>
+            <string>CDB540F29FB692782673B312656F5E079A92C983</string>
+            <string>8199702B65CF1F1DA848E86A0C6B97D6EAA861C5</string>
+          </HashesSHA1>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="GameRanger">
+      <Files>
+        <ProfileAssoc Executable="GameRanger.exe">
+          <Profiles>
+            <string>Blind trust</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A028201010097A61004C741A5A1E464B20A8887F62882874C7878199E870E8AEE80FF5681D01FB1DE038CFB0C2864A8EF46658CE1D05C7A360B1300C53993EAD5766742AB5981DD5B4BB6E2E04D13102C188D28D9E7DD5802885E8105D82A2B7245CD414C39D71D706C65B324E91EDE65FFED51C68EE880FC026505757CECAE2C357BF31A5A2804C9ADEF16EA630A37874A7A966F842FECC3AF93A5894991E07F11378D9AAEC6209AB63ACAF0FB94485E21C235E60278F56865C61708F362709A072B429DC72FA6385401E81DA8CD5AAAA239282A52549D28329653606D3BA0741A1F291C8C82420B8D5665EE97F93CEAA49DB94337029E586B85AAB5CDD491546A20AA71FD0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Garena">
+      <Files>
+        <ProfileAssoc Executable="Garena.exe">
+          <Profiles>
+            <string>Blind trust</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A0282010100F6B1E16F0E2524B23523A05FE093F18536BE342FB18746639E3E9B31AE0AE5904B111197E57667E5CED505362E80503B2A5132C1048B03B7EAB5839622B57921CA2A9037688F1E2889775A707B60D35CFFD2FDFFBF64FAA6E2A54460C200A20115B13BF55FD9DF9914E9B240F23BA50751BF7283BFCBF98D53D382EFEBA85F4B0367D3B840BDAC26CCF2BE7C21A888CF7FB0F69C609488E08ABBA565AEF72F3273A5B6F625077C99CAC94C8FEB3DAFD63DD845694713C3755AD1725876D03EC4E0A0B37E11036F03480C2535CDB5DE26411B2E0042450ACC946FC98B37348BB54C08CA0727A79EC756E46220B0CAA0A33926F3B1035B1A0CB123DA2D1442DFA70203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="GetRight">
+      <Files>
+        <ProfileAssoc Executable="GetRight.exe">
+          <Profiles>
+            <string>Outbound</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A028201010099F7EB83ECCD994C26ACA819934971B6B2CE4F897CE66304E59B93C01070150F8F8BBA0AAF866CF0B4C36D78F9C80AC2D8F5F4456A7F090B5772026A4577E28CE704103375BAD5EA6338B55FEE01D3A33088991D4F02F8EE28292C64CEFEC3CC937072A2C8447A7249CE54F8518AB155DC0838A62583B0A0DE1249B94FD485112239F96202598244CD3EB3F93A4FD44CB64625E43A19B464C3704D559F6D5F7043746680F0AEF5E1C731DBCEC39A1B4CE5A854EDCCFB7A79AC09B330A0D195C3CE2606B32F3B6996CCEB447CB298CF422DC38519D8CFC1AD0B5F9CD0EA8706AAD0967C1D65FDEC428904281FFF13DDC557B310FDDBD569B6B135432852E6D18F0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Hamachi2">
+      <Files>
+        <ProfileAssoc Executable="hamachi-2.exe">
+          <Profiles>
+            <string>Hamachi</string>
+            <string>Symmetric UDP</string>
+          </Profiles>
+          <PublicKeys>
+            <string>308189028181008922294D740ECB002C9E8B7C0A192EF6D1A471D3CCBB2919048A8E41BC7921EBC06FD33CB4DC07BD828444FD224531E70FB4C7E3B79F171ED6956BCF41A395798ACC3609EAC572F747CA93108F7C96D06B9053D9A1D6678DB87D15E6C0AD3CD0A14B0C95E4886F107B272D08E53976163DBE18DDDA3795C4F15EA959C7C451090203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Internet Explorer">
+      <Files>
+        <ProfileAssoc Executable="iexplore.exe">
+          <Profiles>
+            <string>Web browser</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{folder:pf32}\Internet Explorer</string>
+            <string>{folder:pf64}\Internet Explorer</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>3082010A0282010100CC7E807B41FA8BB44D992943DDE6F852DF5B4297BD33199CEFB5DAD0C0DCE8F1B7BE5CE10AB2C235A07EE4F3D438A7F20F4272A7BA9BCF1F24DE560D8473CCD363F717CDAF696F614D4C804FC8771C5164C8D304F31426B3B8423F3343B0DB26595893B56D89620F07565BD512A0B109CC162BF98CDF6156E806787FD77388260367D1A3FF3482AC2D4CD802ECED6FB9A231C5324CBBF6FD5F625B5EF1F66491C78577471CF6A72B472D0B37544FB61F048DB5EC6027A7F37EB67CA14C91A68B71D6C6356147BCC1154BDDAC3322BE0619964B8A1E6E00EBBE1E69DD585921032B3CBEE61305176635A7862D1AF1D934C001801AFC9A469D6EA4E748DC35EA370203010001</string>
+            <string>3082010A0282010100E57740E7C8EA4FF2CB588A53E656E5F71BAFC6630D745B6EA2C9F3D53B81DE5D112B552D031A503386511A136E4CBBC2EB6B66138C9429D3B9EB7548F7B9AB0F604D9BCD55703580266CA91FCBB4248090058777152D370F4DF6344ABA3AC024159083B26DDF1DE48701178D7AE9F1323FF226876B8473727EFCCFC6BB75F7227143BD2CB5D7F0082F2A997E5BF4083A1F2DBE849E5DF01FF043CD7E33589D4B8C503C402C8A670E2511A76FB8F33F2A0E1D69775F6808FBBF988E924F1F248187AE205A2E3E927580CBE8A005010A8DA8C1269458C025C7B6D0D683556094ACFDD758593D392D9F08038AE1451796E4E1939F1D0B1D507E38E3ACD0CB97CC7B0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Internet Download Manager">
+      <Files>
+        <ProfileAssoc Executable="IDMan.exe">
+          <Profiles>
+            <string>Outbound</string>
+          </Profiles>
+          <PublicKeys>
+            <string>308189028181009B1025E0E8715FC74E5A9176C0914185CFDF9AD292614992B08C9157518A0971BC8740AE5998B4020D576500F6989E1B23DB89C474ABBF9AF2B964FE4C6DF554724CBF11200E0E08DF3B4F346B568CEE9CF34C7A911E2E79E78CD26D0E3D7D41B89FC88B4398D4A6CDE6B2B6A5AB066F605B9887B65AB83B035957C2F7BA07A90203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Kaspersky Antivirus" Recommended="true">
+      <Files>
+        <ProfileAssoc Executable="avp.exe">
+          <Description>Kaspersky Antivirus</Description>
+          <Profiles>
+            <string>HTTP(S) client</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A0282010100BD95605A15BB1DDE23A63BABD273EA44381EEE29917FF322B639CE401F4345247DB4B0DF6EBF5D3A19F9C8E103567FC243848A019D17C39F84ED75EECA9E44FEFB414819D2D129D794166B03E8641F66A8C64CA20226265C5F316528D88762B8BC0CFB9F5A34C66B0601EB6DC8B3EDB1BC52FC3D289BBC94C6CF6624E19345620252149A668D3D1ECE5EA72DBF0DD1823FF1BB198E132EE6CC74CE24B1FAA44316D10C9EC36E20C60E365E68F5DED093B178209359EFB8D8B954FC81909EB14F5FCF50A9FF5BB459AFB30994A30321DDD74DFC1E118C4AA48B68FBC689243CA0DDB855B856A5BA3F4833E62AE110C49FB156C0313113DE41D23EFD1F236E14B70203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Local machine pingable" Special="true">
+      <Files>
+        <ProfileAssoc Executable="">
+          <Profiles>
+            <string>Incoming ICMP Ping</string>
+          </Profiles>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="MailWasher" Recommended="true">
+      <Files>
+        <ProfileAssoc Executable="MailWasher.exe">
+          <Profiles>
+            <string>E-mail client</string>
+            <string>Web browser</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A0282010100A32A0A99524FE12764C08A2642040958163872BEB48D0F93604121BFBE677C7E51A93D957C41ECA7FD2E1B6D2676C28D12A90E66DC751A11E2C4DB2A2C6C37336CB7145E4C2D0571E67D8D4C94C42D72A0956EDCF428AFC010AE1729B6C47A5FDB452FFD796FAD26B0614BD3C54AB9EE85959FDC342B2200AB4806086FD030943C454144CBE75F593C4643044B465BECEBB17B8DBA318C347887C0A530382B7821FCA2001099F9CE180DEB8EAE3F2434D1DFF4B42923117B64F000E58EFC9B756AD4FA1045CAC55BC50B72BEF635F328372588FCB37342B6D5D7210EB588C977F3E0784795E063B5C30DACCE54142BC8A45358F5DAF9200B708DA941881297690203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="MailWasherPro" Recommended="true">
+      <Files>
+        <ProfileAssoc Executable="MailWasherPro.exe">
+          <Profiles>
+            <string>E-mail client</string>
+            <string>Web browser</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A0282010100A32A0A99524FE12764C08A2642040958163872BEB48D0F93604121BFBE677C7E51A93D957C41ECA7FD2E1B6D2676C28D12A90E66DC751A11E2C4DB2A2C6C37336CB7145E4C2D0571E67D8D4C94C42D72A0956EDCF428AFC010AE1729B6C47A5FDB452FFD796FAD26B0614BD3C54AB9EE85959FDC342B2200AB4806086FD030943C454144CBE75F593C4643044B465BECEBB17B8DBA318C347887C0A530382B7821FCA2001099F9CE180DEB8EAE3F2434D1DFF4B42923117B64F000E58EFC9B756AD4FA1045CAC55BC50B72BEF635F328372588FCB37342B6D5D7210EB588C977F3E0784795E063B5C30DACCE54142BC8A45358F5DAF9200B708DA941881297690203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Malwarebytes Anti-Malware" Recommended="true">
+      <Files>
+        <ProfileAssoc Executable="mbam.exe">
+          <Profiles>
+            <string>HTTP(S) client</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A0282010100D9FADC1557166D876EE3F80F294A3F5D1AF16D1C273166906B7DA47F1DEA9A811AF9D418D5BFC6B3553680110DCACD065EC775DEE951E9F9F93FD61242B94B780E7B2CFDD37C4CC1E35801C6A17CB39FCA5115AD015EBD67E4C533DCF2FF71C6271EC2E5279FB1227533E6148D430EDD1C2E8910899915927CCCF68D57DDB1167BFF35ABC69863FC7616374949AB9FF3FD889684920D1D9CBFF363F659AB8F895B351F02821D355A98359F4ACB1381C64C78ABD317D5AE3DB87E9790618EB8F91B8FA3EC798383886B306D019BA70011E2105ECD18ACF55A370B11BB2BD743097F151ECE507E65A3005E7A39D4C1BDE132CFF2B84F6E95B5501B4C88D5744E7B0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Norton Antivirus" Recommended="true">
+      <Files>
+        <ProfileAssoc Executable="ccSvcHst.exe">
+          <Description>Norton Antivirus LiveUpdates</Description>
+          <Profiles>
+            <string>HTTP(S) client</string>
+          </Profiles>
+          <PublicKeys>
+            <string>30818902818100BEE3B40431A0C66DD2A92C243A9C06F48C58241CC1A7AB5ABEFB8E40E6BD02597BAA83210003A89E522338FED03E1924A3173310D3E58C710FB7CB674522249BCD4EADB8C76E3A5AA9E2355D2AB39322F0926B13302B117C0186EFB2625058834AA819BFD066BC3757E3162545FE093A9233F0D22E976467DD36F1DCA81EAE590203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Opera Browser">
+      <Files>
+        <ProfileAssoc Executable="opera.exe">
+          <Profiles>
+            <string>Web browser</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{reg:SOFTWARE\Wow6432Node\Netscape\Netscape Navigator\Opera\main:Install Directory}</string>
+            <string>{reg:SOFTWARE\Netscape\Netscape Navigator\Opera\main:Install Directory}</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>30818902818100D0D988AD59FFD0C61E0E1589A7C176510AB90AF69E73CBD3F037B6116A3D780F7D8C5FA6E3C785EBCE1E703E9C0801CA89CE7A1372B36A1512F8F49B26602D3571CE83C4E0C438F3B4AFA4B802C45BC739DCF1C238FD5CBAAE127EE3E82E2E7F8E6F7A0CB4BC367825F7327F257DDD3D1FE673554EA7FBDE7A7D073B3142431B0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Orbit Downloader">
+      <Files>
+        <ProfileAssoc Executable="orbitdm.exe">
+          <Profiles>
+            <string>Outbound</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A0282010100CF605CE5FC2156C170FD3E76EA7BB1B8472FC143F78B3CDBE4C3897A52179A905D9D4A12A5B3C27CEB1248127E1A5AEDABE248D0906B818717231EEF730DABA934364294A2BADC10B4386C10F17753280B96D112AA88950F13F7D3581FC265D5132756839E665AFA7BC8B07DAE7328EC0C72971FF35E77B511890B6E4C54CB2DB0AA6FC0BBD1AEA90C8FE51CF86D73EC7060D78822C35FE73B1A0F662694373F4B07A625AE91863C80352BF5C55427EA5767ADA3FC9D76C21D9CC89A2243B27808466D7E0F57F012A9BB24BA12C5D163964F23F5F0D3E6C26124BA817883D6869202521C8F094CAD2F449900FD707262C4731F2895440E6EC5E59870E79ABBA50203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Panda Antivirus" Recommended="true">
+      <Files>
+        <ProfileAssoc Executable="Upgrader.exe">
+          <Description>Panda Antivirus Updater</Description>
+          <Profiles>
+            <string>HTTP(S) client</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A0282010100B6757612808A339D67A0B71D9E19BE070A7CAEC4DB80DEB1F649F07BD7429846625D4F1D1E806EBED89A4EE2C30632E22986C88FDCD19CA0C9F1A2CE6C6E2496484BF3B8E42C1B6E7987B0E8DBE94DE1B1ED9011D8617EE244EC47D94395D5E4F7F39248FD50DF0463FE98F691E589BCC17C4DDBB018C8B059CF29F0629C8C998F730815A223656E770A4AC0211D219D5D5CB24E49142CBB79BE6B650C443FAC80316D484612EE44B8B4060A3B54E577EB7033AA8368A5A7DF0A5CFE86703BB286058407F9DAE3507E8E0F9AF09A610D4AC919F3E30229CF92BADEFF93F68125412674E70BCA44BC2FA16CA407DCC77359117D19C33D1286DAEE514F9FB980CD0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="PeerBlock" Recommended="true">
+      <Files>
+        <ProfileAssoc Executable="peerblock.exe">
+          <Profiles>
+            <string>HTTP(S) client</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A0282010100A2D0DCCFD763E5DBB2E676C9F0E5A5F9C4D9EC72EA68493C33F6403D4F262E41C7EA14A62A56F1F1C065277E9EF7028FF373184AED1A4A692D6C8A876F761AB2C4D523B4E725993FA5A94400481961E90EF4D23345A4039902DDCD34EA992A62B6253264B061E227ADDDD33B1F8C6E22B22CEA1BD110B041F296592CF2AC2B5748274043D770E3D6B7CEB4DF6D7063D41A502DE99A0BF0BB8C4FF3C2E20A03126AF5F30D73216B482C6FF23102A54AC6C01587DB4C2CA391AA8B2DD9CD20D821206626F43A1AFFBE36E9A2ECC354F655555B9E0CC62AA261BC44343AB16676A8B1521FF8A3D4C639E473250C2F4B940B10D2E7DFD5E1DA39729CB99D49B9B49B0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Pidgin">
+      <Files>
+        <ProfileAssoc Executable="pidgin.exe">
+          <Profiles>
+            <string>Blind trust</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{reg:SOFTWARE\pidgin:}</string>
+            <string>{reg:SOFTWARE\Wow6432Node\pidgin:}</string>
+          </SearchPaths>
+          <HashesSHA1>
+            <string>af68710ffdb5654f1b46c5f2b920de920d4fbf07</string>
+          </HashesSHA1>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Putty">
+      <Files>
+        <ProfileAssoc Executable="putty.exe">
+          <Profiles>
+            <string>SSH client</string>
+          </Profiles>
+          <HashesSHA1>
+            <string>b11a526d3d37be5c38e31a56ab762b9471957cca</string>
+          </HashesSHA1>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Real Player">
+      <Files>
+        <ProfileAssoc Executable="realplay.exe">
+          <Profiles>
+            <string>HTTP(S) client</string>
+            <string>RealPlayer</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A0282010100AF24191EBD922AF5D40E22FDC71FB6B3CE02788B3FAB6B757DDA8ABDAB196794EF78D200B3A207C18D0CF2401B29DFBDE4A8FCD4D007475E2EF8D4C4BF1A194F3794982D5C5BDF8366BCF9E41C0327BA972ED1C73D401B55EE1CC8D4876CDAAC2C847FE31F1C97E4B21B896E17EB88494E7D6B92648B014BEAC55CDB1CE1C02B35C3FE80DA95BAA6DA735809F0EC6205BC29FAD0156C65F9A9E1C8B562E7408C77B87959B719D52711BF92D15505451D868675D8BBBDEBF7ED98FCEB3C4AC1C5602120D068AC76C36C24321FF2C193DA8FE609A0CBE5723EB79F31498428886B1A413E632F84FFA3C79E87A40F94187F662603392D0335E507D13DADBDAE3C3F0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+        <ProfileAssoc Executable="recordingmanager.exe">
+          <Profiles>
+            <string>HTTP(S) client</string>
+            <string>RealPlayer</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A0282010100AF24191EBD922AF5D40E22FDC71FB6B3CE02788B3FAB6B757DDA8ABDAB196794EF78D200B3A207C18D0CF2401B29DFBDE4A8FCD4D007475E2EF8D4C4BF1A194F3794982D5C5BDF8366BCF9E41C0327BA972ED1C73D401B55EE1CC8D4876CDAAC2C847FE31F1C97E4B21B896E17EB88494E7D6B92648B014BEAC55CDB1CE1C02B35C3FE80DA95BAA6DA735809F0EC6205BC29FAD0156C65F9A9E1C8B562E7408C77B87959B719D52711BF92D15505451D868675D8BBBDEBF7ED98FCEB3C4AC1C5602120D068AC76C36C24321FF2C193DA8FE609A0CBE5723EB79F31498428886B1A413E632F84FFA3C79E87A40F94187F662603392D0335E507D13DADBDAE3C3F0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Windows Sidebar">
+      <Files>
+        <ProfileAssoc Executable="sidebar.exe">
+          <Profiles>
+            <string>HTTP(S) client</string>
+          </Profiles>
+          <HashesSHA1>
+            <string>12a602b86fc394b1c88348fb099685eabb876495</string>
+          </HashesSHA1>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Skype">
+      <Files>
+        <ProfileAssoc Executable="Skype.exe">
+          <Profiles>
+            <string>Symmetric TCP</string>
+            <string>HTTP(S) client</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{parent:{reg:SOFTWARE\Wow6432Node\Skype\Phone:SkypePath}}</string>
+            <string>{parent:{reg:SOFTWARE\Skype\Phone:SkypePath}}</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>308189028181009DD28B484B7E50813106FF3692ECE543FBD7D65EDF73A70C6A2E05B00D98D8E51DD861B9305294955B18F9994DED5C3927609993499E1AB657EB482EA60F8749F4E5606F5B4CFAD63245746E4F488DE5635BB42EB61A8358D47D61AAE18E70E19AAAC276FECF362E02758C9977EEEFB251340319B35845325A06506CC6C771090203010001</string>
+            <string>3081890281810095178D40B1A7B36F2737C624587CF0EAD076D19DC56EE593472B50656DDD7774A7873CCF25C322D98D416A62784630340D32A287F770D4E887735239F7ED5281C7C07423DA4E357C640326D7AA183F1EC229A3B48C281EE7C343E47AF14B3ADBE8A5C0D2DD526B1CAC14472153E8CCD5FCE3CF1983F259DCD83B552072BF5F850203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="SpyBot SD" Recommended="true">
+      <Files>
+        <ProfileAssoc Executable="SDUpdate.exe">
+          <Profiles>
+            <string>HTTP(S) client</string>
+          </Profiles>
+          <PublicKeys>
+            <string>30818902818100D00538653D4F329DA489454DC1FB2B5DEC5BEB691C4D3CE8EEEC6B3BC4FB2A05A182F54CFD6D00FB87D6036EC26003C96B6A7CC659AF040CF21D6DF5E855F74F06CDC569BAB902D76264B30BC61816332D7DBC1F8AB59CC5916BC53B24625C9E24CE59AEA172DCD83E42E0C0C6D5E16F47A9092CE78969A60A87F18CC9483BA90203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Steam Client">
+      <Files>
+        <ProfileAssoc Executable="Steam.exe">
+          <Profiles>
+            <string>Steam</string>
+            <string>Web browser</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{reg:SOFTWARE\Wow6432Node\Valve\Steam:InstallPath}</string>
+            <string>{reg:SOFTWARE\Valve\Steam:InstallPath}</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>30818902818100CAAAB6B0973C3BC98A04A2B4E7D62DFD4E08315D55974B7C10272374DD595BC06A4D3731820E1A7C21B3FE90368D4D799CA774B27573D89DE1C16B1C1C9C45495AADA9CB6C6D8C4C55F42C04825C2567A407450A7BA642952DAE97501CA971D84B89FD2454148F563C1E0491036F925C4CA5CAD33D804E54B2CD8155785598E90203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+        <ProfileAssoc Executable="GameOverlayUI.exe">
+          <Profiles>
+            <string>Steam</string>
+            <string>Web browser</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{reg:SOFTWARE\Wow6432Node\Valve\Steam:InstallPath}</string>
+            <string>{reg:SOFTWARE\Valve\Steam:InstallPath}</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>30818902818100CAAAB6B0973C3BC98A04A2B4E7D62DFD4E08315D55974B7C10272374DD595BC06A4D3731820E1A7C21B3FE90368D4D799CA774B27573D89DE1C16B1C1C9C45495AADA9CB6C6D8C4C55F42C04825C2567A407450A7BA642952DAE97501CA971D84B89FD2454148F563C1E0491036F925C4CA5CAD33D804E54B2CD8155785598E90203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Mozilla Sunbird">
+      <Files>
+        <ProfileAssoc Executable="sunbird.exe">
+          <Profiles>
+            <string>Outbound</string>
+          </Profiles>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Mozilla Thunderbird">
+      <Files>
+        <ProfileAssoc Executable="thunderbird.exe">
+          <Profiles>
+            <string>E-mail client</string>
+            <string>Web browser</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{reg:SOFTWARE\Wow6432Node\Mozilla\Mozilla Thunderbird\{reg:SOFTWARE\Wow6432Node\Mozilla\Mozilla Thunderbird:CurrentVersion}\Main:Install Directory}</string>
+            <string>{reg:SOFTWARE\Mozilla\Mozilla Thunderbird\{reg:SOFTWARE\Mozilla\Mozilla Thunderbird:CurrentVersion}\Main:Install Directory}</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>3082010A0282010100B9A25BD573CAF0901E9993A85352965B7CC9947BAD58103C8D9FD0EA0219393AE75E7367498FB7260380B4309DE896B0BA87E35D14284CA5851F8560499713B17819E4BF2A80902BDE651EAE9A50290405E5B3465B3D8E19EE94BA87F60959FEE247BD81D5BF7E6AB11A8E78C384EA3506A0DC7FA530F1B23714C72891D6C300E429CC85F5F8AB2FAD5B3B6EC098EFABFF1099039CF2910A65465B2EB6FDD8D792AFD724FEC13F330896CE004B9441426DEF416CF17380652C057DDCD0EFA68805B9532004A69A93A6D7DD86622F93F68C0E00B8F20A2C8BDCFE498E24003630CB0497BBA8D17ED483360EFDB062ADE3309A09F0116BD13EA9753913F071D9790203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="TinyWall" Recommended="true" Special="true">
+      <Files>
+        <ProfileAssoc Executable="{folder:twpath}\TinyWall.exe">
+          <Description>TinyWall</Description>
+          <Profiles>
+            <string>HTTP(S) client</string>
+          </Profiles>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="uTorrent">
+      <Files>
+        <ProfileAssoc Executable="uTorrent.exe">
+          <Profiles>
+            <string>Blind trust</string>
+          </Profiles>
+          <PublicKeys>
+            <string>30818902818100B577F692EBF14F6FD7AEA30B5F8E4BAC23E84E65B17F4D1774B263054247038ACEC5DE113507AA1BCD325B11D322D7E599DF3F5BAD378C1768C24582B0EDF24194572AFA3BD78DB98C49290793F8307301620438C581D7AF79751308EF4BB6B290384DB9747E344F99A5A54A9B71EBA7F2DEC05599C5877FFE478C571A92D5ED0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="RealVNC">
+      <Files>
+        <ProfileAssoc Executable="vncviewer.exe">
+          <Profiles>
+            <string>VNC Client</string>
+          </Profiles>
+          <PublicKeys>
+            <string>30818902818100935AFDD2025ADF35C3785784F389B9E4AC3EF82E9378E7BBA6820C1777559FF3C6CDC1326A402E51BEA69D1D0FCDB6905EB55C8EF75695DD5B14259291CFC690FCC618924CD02E807321E93CE34B0B5A0EADF716BE2224FA2A9C270C9375A2BA92576A06445021B059578CEFA4A7CC4BE249752423EE40CA731C7D1F5413831F0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Windows DHCP Client" Recommended="true" Special="true">
+      <Files>
+        <ProfileAssoc Service="dhcp" Executable="{folder:sys32}\svchost.exe">
+          <Profiles>
+            <string>DHCP client</string>
+          </Profiles>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Windows DNS Client" Recommended="true" Special="true">
+      <Files>
+        <ProfileAssoc Service="Dnscache" Executable="{folder:sys32}\svchost.exe">
+          <Profiles>
+            <string>DNS client</string>
+            <string>LLMNR-UDP</string>
+          </Profiles>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Windows Live Apps">
+      <Files>
+        <ProfileAssoc Executable="msnmsgr.exe">
+          <Description>Windows Live Messenger</Description>
+          <Profiles>
+            <string>HTTP(S) client</string>
+            <string>Symmetric TCP</string>
+            <string>Symmetric UDP</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{folder:pf32}\Windows Live\Messenger</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>3082010A0282010100BD3089FB4572A8536B9E894F0023C0BED41D3DB1594038F373918226E696120053D91C820E3CCE1DBBBDF7428D97D4FC381AE4B9F9E3ECD36103BFA0D3D6754D5C46A9ED5EF0D2E2695B1A73EAB31C8D04CD2944A064592F1E985D6EC7AB18398265C4A7BCAB758819EA87971426B37F2676A4D4383984E3B326D518F92BE9D2C9165A5421F2978D878629FEF4492CE68BF8043F7DCDCD9692860D7103E2D0FE0C4235FFD7B83FDD8E450A7DF6D74BAD5BF076721D77237D8935C41C5DB250034B476D07A75588980680A681AD544ED881D6FABF42C031BE550D99D553491230EBE5A5887C5EC47A5A148708B43769A0EB32248C08EBF9D414BAE0FCCDEAA4150203010001</string>
+            <string>3082010A0282010100A5717418CBDB9C2FFAF1631980A38EFFC870830CA1472AFAFA5AB0CE4D0FBD3BDA21CD05D57D7C3FB59976253ADCA04F20E572D34371E6FF6C14F99F84B22587BD14B55DBE37892EC5AB856071858127B93303F9ADD69302EEB6551102CB8385F6C185636119A0149C9D9F9C466337D8113C57C748205316F7CC58FEF6C01ACAB6466C0DE83A05CEA61CE388F0DDAAC270835BD1F2F23FB8D9A49DA3006EAA81CDEE3A04ADC04A922C13E0E941760980016C6720B431B03E6BD2400883D570308D30E7BE8CD02FEED4863F1A5AA5C06885E8897C91034A6E594320489C88FEC945B7E84C04010B62CEA2EC1C9325FDD0B10EC6F8B6241A7BFB7CD65C4ED167E90203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+        <ProfileAssoc Executable="wlmail.exe">
+          <Description>Windows Live Mail</Description>
+          <Profiles>
+            <string>E-mail client</string>
+            <string>Web browser</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{folder:pf32}\Windows Live\Mail</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>3082010A0282010100BD3089FB4572A8536B9E894F0023C0BED41D3DB1594038F373918226E696120053D91C820E3CCE1DBBBDF7428D97D4FC381AE4B9F9E3ECD36103BFA0D3D6754D5C46A9ED5EF0D2E2695B1A73EAB31C8D04CD2944A064592F1E985D6EC7AB18398265C4A7BCAB758819EA87971426B37F2676A4D4383984E3B326D518F92BE9D2C9165A5421F2978D878629FEF4492CE68BF8043F7DCDCD9692860D7103E2D0FE0C4235FFD7B83FDD8E450A7DF6D74BAD5BF076721D77237D8935C41C5DB250034B476D07A75588980680A681AD544ED881D6FABF42C031BE550D99D553491230EBE5A5887C5EC47A5A148708B43769A0EB32248C08EBF9D414BAE0FCCDEAA4150203010001</string>
+            <string>3082010A0282010100A5717418CBDB9C2FFAF1631980A38EFFC870830CA1472AFAFA5AB0CE4D0FBD3BDA21CD05D57D7C3FB59976253ADCA04F20E572D34371E6FF6C14F99F84B22587BD14B55DBE37892EC5AB856071858127B93303F9ADD69302EEB6551102CB8385F6C185636119A0149C9D9F9C466337D8113C57C748205316F7CC58FEF6C01ACAB6466C0DE83A05CEA61CE388F0DDAAC270835BD1F2F23FB8D9A49DA3006EAA81CDEE3A04ADC04A922C13E0E941760980016C6720B431B03E6BD2400883D570308D30E7BE8CD02FEED4863F1A5AA5C06885E8897C91034A6E594320489C88FEC945B7E84C04010B62CEA2EC1C9325FDD0B10EC6F8B6241A7BFB7CD65C4ED167E90203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+        <ProfileAssoc Executable="WLSync.exe">
+          <Description>Windows Live Mesh</Description>
+          <Profiles>
+            <string>Outbound</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{folder:pf32}\Windows Live\Mesh</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>3082010A0282010100BD3089FB4572A8536B9E894F0023C0BED41D3DB1594038F373918226E696120053D91C820E3CCE1DBBBDF7428D97D4FC381AE4B9F9E3ECD36103BFA0D3D6754D5C46A9ED5EF0D2E2695B1A73EAB31C8D04CD2944A064592F1E985D6EC7AB18398265C4A7BCAB758819EA87971426B37F2676A4D4383984E3B326D518F92BE9D2C9165A5421F2978D878629FEF4492CE68BF8043F7DCDCD9692860D7103E2D0FE0C4235FFD7B83FDD8E450A7DF6D74BAD5BF076721D77237D8935C41C5DB250034B476D07A75588980680A681AD544ED881D6FABF42C031BE550D99D553491230EBE5A5887C5EC47A5A148708B43769A0EB32248C08EBF9D414BAE0FCCDEAA4150203010001</string>
+            <string>3082010A0282010100A5717418CBDB9C2FFAF1631980A38EFFC870830CA1472AFAFA5AB0CE4D0FBD3BDA21CD05D57D7C3FB59976253ADCA04F20E572D34371E6FF6C14F99F84B22587BD14B55DBE37892EC5AB856071858127B93303F9ADD69302EEB6551102CB8385F6C185636119A0149C9D9F9C466337D8113C57C748205316F7CC58FEF6C01ACAB6466C0DE83A05CEA61CE388F0DDAAC270835BD1F2F23FB8D9A49DA3006EAA81CDEE3A04ADC04A922C13E0E941760980016C6720B431B03E6BD2400883D570308D30E7BE8CD02FEED4863F1A5AA5C06885E8897C91034A6E594320489C88FEC945B7E84C04010B62CEA2EC1C9325FDD0B10EC6F8B6241A7BFB7CD65C4ED167E90203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+        <ProfileAssoc Executable="wlcomm.exe">
+          <Description>Windows Live Contacts</Description>
+          <Profiles>
+            <string>Web browser</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{folder:pf32}\Windows Live\Contacts</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>3082010A0282010100A5717418CBDB9C2FFAF1631980A38EFFC870830CA1472AFAFA5AB0CE4D0FBD3BDA21CD05D57D7C3FB59976253ADCA04F20E572D34371E6FF6C14F99F84B22587BD14B55DBE37892EC5AB856071858127B93303F9ADD69302EEB6551102CB8385F6C185636119A0149C9D9F9C466337D8113C57C748205316F7CC58FEF6C01ACAB6466C0DE83A05CEA61CE388F0DDAAC270835BD1F2F23FB8D9A49DA3006EAA81CDEE3A04ADC04A922C13E0E941760980016C6720B431B03E6BD2400883D570308D30E7BE8CD02FEED4863F1A5AA5C06885E8897C91034A6E594320489C88FEC945B7E84C04010B62CEA2EC1C9325FDD0B10EC6F8B6241A7BFB7CD65C4ED167E90203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+        <ProfileAssoc Executable="WLIDSVC.EXE">
+          <Description>Windows Live Login</Description>
+          <Profiles>
+            <string>Web browser</string>
+          </Profiles>
+          <SearchPaths>
+            <string>{folder:pf32}\Common Files\microsoft shared\Windows Live</string>
+            <string>{folder:pf64}\Common Files\Microsoft Shared\Windows Live</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>3082010A0282010100A5717418CBDB9C2FFAF1631980A38EFFC870830CA1472AFAFA5AB0CE4D0FBD3BDA21CD05D57D7C3FB59976253ADCA04F20E572D34371E6FF6C14F99F84B22587BD14B55DBE37892EC5AB856071858127B93303F9ADD69302EEB6551102CB8385F6C185636119A0149C9D9F9C466337D8113C57C748205316F7CC58FEF6C01ACAB6466C0DE83A05CEA61CE388F0DDAAC270835BD1F2F23FB8D9A49DA3006EAA81CDEE3A04ADC04A922C13E0E941760980016C6720B431B03E6BD2400883D570308D30E7BE8CD02FEED4863F1A5AA5C06885E8897C91034A6E594320489C88FEC945B7E84C04010B62CEA2EC1C9325FDD0B10EC6F8B6241A7BFB7CD65C4ED167E90203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Windows Network Discovery" Recommended="true" Special="true">
+      <Files>
+        <ProfileAssoc Service="ssdpsrv" Executable="{folder:sys32}\svchost.exe">
+          <Profiles>
+            <string>SSDP</string>
+          </Profiles>
+        </ProfileAssoc>
+        <ProfileAssoc Service="upnphost" Executable="{folder:sys32}\svchost.exe">
+          <Profiles>
+            <string>UPnP</string>
+          </Profiles>
+        </ProfileAssoc>
+        <ProfileAssoc Service="fdphost" Executable="{folder:sys32}\svchost.exe">
+          <Profiles>
+            <string>WSD</string>
+          </Profiles>
+        </ProfileAssoc>
+        <ProfileAssoc Executable="System">
+          <Profiles>
+            <string>UPnP</string>
+            <string>WSD Event</string>
+          </Profiles>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Windows Remote Assistance" Special="true">
+      <Files>
+        <ProfileAssoc Service="PNRPsvc" Executable="{folder:sys32}\svchost.exe">
+          <Profiles>
+            <string>PNRP</string>
+          </Profiles>
+        </ProfileAssoc>
+        <ProfileAssoc Service="ssdpsrv" Executable="{folder:sys32}\svchost.exe">
+          <Profiles>
+            <string>SSDP</string>
+          </Profiles>
+        </ProfileAssoc>
+        <ProfileAssoc Executable="{folder:sys32}\raserver.exe">
+          <Profiles>
+            <string>Blind trust</string>
+          </Profiles>
+        </ProfileAssoc>
+        <ProfileAssoc Executable="{folder:sys32}\msra.exe">
+          <Profiles>
+            <string>Blind trust</string>
+          </Profiles>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Windows Remote Desktop" Special="true">
+      <Files>
+        <ProfileAssoc Executable="System">
+          <Profiles>
+            <string>RDP Server</string>
+          </Profiles>
+        </ProfileAssoc>
+        <ProfileAssoc Executable="{folder:sys32}\svchost.exe">
+          <Profiles>
+            <string>RDP Server</string>
+          </Profiles>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Windows Time Sync" Recommended="true" Special="true">
+      <Files>
+        <ProfileAssoc Service="W32Time" Executable="{folder:sys32}\svchost.exe">
+          <Profiles>
+            <string>Time synchronization</string>
+          </Profiles>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Windows Update" Recommended="true" Special="true">
+      <Files>
+        <ProfileAssoc Service="wuauserv" Executable="{folder:sys32}\svchost.exe">
+          <Profiles>
+            <string>HTTP(S) client</string>
+          </Profiles>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="VPN L2TP/IPSec" Special="true">
+      <Files>
+        <ProfileAssoc Executable="">
+          <Description>VPN L2TP/IPSec</Description>
+          <Profiles>
+            <string>L2TP/IPSec</string>
+          </Profiles>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="VPN PPTP" Special="true">
+      <Files>
+        <ProfileAssoc Executable="">
+          <Description>VPN PPTP</Description>
+          <Profiles>
+            <string>PPTP</string>
+          </Profiles>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="WinSCP">
+      <Files>
+        <ProfileAssoc Executable="WinSCP.exe">
+          <Profiles>
+            <string>FTP client</string>
+            <string>SSH client</string>
+          </Profiles>
+          <HashesSHA1>
+            <string>6ee7daf8f0fed8b652a5b2d1ee5d05ff05e84535</string>
+          </HashesSHA1>
+        </ProfileAssoc>
+        <ProfileAssoc Executable="WinSCP.exe">
+          <Profiles>
+            <string>FTP client</string>
+            <string>SSH client</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A0282010100AEB2C4D6FADDA86C63F5CF1D8384358C4536FEA539E227AD5D0DB088B7AC1EB31142422A42C08E5C63E0FAEA624638704AF02FD02FDB9ADADFEE7CEB39C97C1A8B365CC516B907AD3C19905D4050D9E011479185101E9F77CC97CD56C42399120B24E8FD9FF6BCA7B3BEEDFB634220FEADE53E84545F9CAA6495CE5212B78468ECFC5BA806A0418B3CFD3C490A6631B15E9CFE6E1F718F94D776A284CBDA2B6741629391A88393DF8E605A7E906290A019AE1C941652D773A05B1A640F0412E77BD9AAD890F56776493DEFB278FE43B4D9C3C8A7C48097540080582D3DCE131F5F3073C40D8B45CE8F440C84E8160F80310416228F1D580D72A542CBDA093B3F0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="RealVNC">
+      <Files>
+        <ProfileAssoc Executable="winvnc4.exe">
+          <Profiles>
+            <string>VNC Server</string>
+          </Profiles>
+          <PublicKeys>
+            <string>30818902818100935AFDD2025ADF35C3785784F389B9E4AC3EF82E9378E7BBA6820C1777559FF3C6CDC1326A402E51BEA69D1D0FCDB6905EB55C8EF75695DD5B14259291CFC690FCC618924CD02E807321E93CE34B0B5A0EADF716BE2224FA2A9C270C9375A2BA92576A06445021B059578CEFA4A7CC4BE249752423EE40CA731C7D1F5413831F0203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
+    <Application Name="Xfire">
+      <Files>
+        <ProfileAssoc Executable="Xfire.exe">
+          <Profiles>
+            <string>Xfire</string>
+            <string>Web browser</string>
+            <string>Symmetric UDP</string>
+          </Profiles>
+          <PublicKeys>
+            <string>3082010A0282010100F8E93482AA0344EFF98B2E2C4E6B8BB18F08742F1033B19B70F06712A558FBD77F5E8523D8976A798A69359CBD44B5C04561E2258C7D415A12C29C993F5A1C3D6996C304B635ED59C55D487FF2775A798B24711E87F59DA423B06B37C8641F0754722DAB083DA141DD61A88140C09AB837A5389C347E0D20D8C76908DE3121A7374C7AB266EA0068E0B492724E5E261B5324D98482596D2CD555A5A6AB585A1F5AB263DEC14A55E34777903BF3CEFC012902EAF3D91CF7C73FB576AE452C9C571BDCFB9B85722465BA60C7065053ECE347014875591CD511645BCA52914B438F707AD5FCC2AD07D9343D597DDCD9C02E41A689A9F8B306435A0345005C913F030203010001</string>
+          </PublicKeys>
+        </ProfileAssoc>
+      </Files>
+    </Application>
   </KnownApplications>
 </ProfileManager>

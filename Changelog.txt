@@ -2,6 +2,8 @@ TinyWall Changelog
 ---------------------
 
 2.0.0 - Major release (xx.xx.xxxx.)
+- Windows 8 CTP support
+- .Net Framework 4 support
 - Connections window shows blocked applications
 - Domain blocklist support
 - Hosts file protection
