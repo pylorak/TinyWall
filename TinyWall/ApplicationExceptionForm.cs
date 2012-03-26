@@ -209,9 +209,10 @@ namespace PKSoft
 
         private void btnProcess_Click(object sender, EventArgs e)
         {
-            TmpExceptionSettings = ProcessesForm.ChooseProcess(this);
-            if (TmpExceptionSettings == null) return;
+            AppExceptionSettings proc = ProcessesForm.ChooseProcess(this);
+            if (proc == null) return;
 
+            TmpExceptionSettings = proc;
             TmpExceptionSettings.TryRecognizeApp(true);
             UpdateUI();
         }
@@ -229,9 +230,10 @@ namespace PKSoft
 
         private void btnChooseService_Click(object sender, EventArgs e)
         {
-            TmpExceptionSettings = ServicesForm.ChooseService(this);
-            if (TmpExceptionSettings == null) return;
+            AppExceptionSettings serv = ServicesForm.ChooseService(this);
+            if (serv == null) return;
 
+            TmpExceptionSettings = serv;
             TmpExceptionSettings.TryRecognizeApp(true);
             UpdateUI(); 
         }
