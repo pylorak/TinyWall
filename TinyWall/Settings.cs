@@ -25,19 +25,26 @@ namespace PKSoft
         private const string ENC_IV = "X0@!H93!Y=8&/M/T";   // must be 16/24/32 bytes
 
         public string ZoneName = "Unknown";
-        public string[] SpecialExceptions = new string[0];
+        public List<string> SpecialExceptions = new List<string>();
         public bool AllowLocalSubnet = false;
-        public FirewallException[] AppExceptions = new FirewallException[0];
+        public List<FirewallException> AppExceptions = new List<FirewallException>();
 
 
         internal ZoneSettings()
         {
-            // Add recommended profiles as standard
-            ApplicationCollection allKnownApps = GlobalInstances.ProfileMan.KnownApplications;
-            foreach (Application app in allKnownApps)
+        }
+
+        internal ZoneSettings(bool enableRecommendedExceptions)
+        {
+            if (enableRecommendedExceptions)
             {
-                if (app.Recommended && app.Special)
-                    SpecialExceptions = Utils.ArrayAddItem(SpecialExceptions, app.Name);
+                // Add recommended profiles as standard
+                ApplicationCollection allKnownApps = GlobalInstances.ProfileMan.KnownApplications;
+                foreach (Application app in allKnownApps)
+                {
+                    if (app.Recommended && app.Special)
+                        SpecialExceptions.Add(app.Name);
+                }
             }
         }
 
@@ -64,11 +71,15 @@ namespace PKSoft
                 string key = ENC_SALT + MachineFingerprint.Fingerprint();
                 key = Hasher.HashString(key).Substring(0, 16);
 
-                return SerializationHelper.LoadFromEncryptedXMLFile<ZoneSettings>(SettingsFile, key, ENC_IV);
+                ZoneSettings zone = SerializationHelper.LoadFromEncryptedXMLFile<ZoneSettings>(SettingsFile, key, ENC_IV);
+                List<string> distinctSpecialEx = new List<string>();
+                distinctSpecialEx.AddRange(zone.SpecialExceptions.Distinct());
+                zone.SpecialExceptions = distinctSpecialEx;
+                return zone;
             }
             catch
             {
-                ZoneSettings settings = new ZoneSettings();
+                ZoneSettings settings = new ZoneSettings(true);
                 settings.ZoneName = zoneName;
                 return settings;
             }
@@ -76,11 +87,11 @@ namespace PKSoft
 
         internal void Normalize()
         {
-            for (int i = 0; i < AppExceptions.Length; ++i)
+            for (int i = 0; i < AppExceptions.Count; ++i)
             {
                 FirewallException app1 = AppExceptions[i];
 
-                for (int j = AppExceptions.Length-1; j > i; --j)
+                for (int j = AppExceptions.Count - 1; j > i; --j)
                 {
                     FirewallException app2 = AppExceptions[j];
 
@@ -95,7 +106,7 @@ namespace PKSoft
                             older = app2;
                             newer = app1;
                         }
-                        AppExceptions = Utils.ArrayRemoveItem(AppExceptions, older);
+                        AppExceptions.Remove(older);
                         newer.RegenerateID();
                     }
                     else if (FirewallException.ExecutableNameEquals(app1, app2) &&
@@ -105,7 +116,7 @@ namespace PKSoft
 
                         app1.RegenerateID();
                         app2.MergeRulesTo(app1);
-                        AppExceptions = Utils.ArrayRemoveItem(AppExceptions, app2);
+                        AppExceptions.Remove(app2);
                     }
                 }
 

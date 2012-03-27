@@ -328,7 +328,7 @@ namespace PKSoft
             else
             {
                 SettingsManager.GlobalConfig = new MachineSettings();
-                SettingsManager.CurrentZone = new ZoneSettings();
+                SettingsManager.CurrentZone = new ZoneSettings(true);
                 FirewallState = new ServiceState();
                 SettingsUpdated = true;
             }
@@ -618,7 +618,7 @@ namespace PKSoft
         {
             List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(this, ex);
             for (int i = 0; i < exceptions.Count; ++i)
-                SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, exceptions[i]);
+                SettingsManager.CurrentZone.AppExceptions.Add(exceptions[i]);
             SettingsManager.CurrentZone.Normalize();
 
             TWControllerMessages resp = ApplyFirewallSettings(null, SettingsManager.CurrentZone, false);
@@ -869,11 +869,11 @@ namespace PKSoft
                 // If we've found at least one file, add the app to the list
                 if (!app.Special && app.ResolveFilePaths())
                 {
-                    foreach (AppExceptionAssoc p in app.FileTemplates)
+                    foreach (AppExceptionAssoc template in app.FileTemplates)
                     {
-                        foreach (string execPath in p.ExecutableRealizations)
+                        foreach (string execPath in template.ExecutableRealizations)
                         {
-                            SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, p.CreateException(execPath));
+                            SettingsManager.CurrentZone.AppExceptions.Add(template.CreateException(execPath));
                         }
                     }
                 }

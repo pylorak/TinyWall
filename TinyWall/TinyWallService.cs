@@ -204,7 +204,7 @@ namespace PKSoft
             SpecialRules.Clear();
 
             ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
-            for (int i = 0; i < SettingsManager.CurrentZone.SpecialExceptions.Length; ++i)
+            for (int i = 0; i < SettingsManager.CurrentZone.SpecialExceptions.Count; ++i)
             {
                 try
                 {   //This try-catch will prevent errors if an exception profile string is invalid
@@ -229,7 +229,7 @@ namespace PKSoft
             // We will collect all our rules into this list
             AppExRules.Clear();
 
-            for (int i = 0; i < SettingsManager.CurrentZone.AppExceptions.Length; ++i)
+            for (int i = 0; i < SettingsManager.CurrentZone.AppExceptions.Count; ++i)
             {
                 try
                 {   //This try-catch will prevent errors if an exception profile string is invalid
@@ -660,7 +660,7 @@ namespace PKSoft
                 {
                     foreach (FirewallException ex in LearningNewExceptions)
                     {
-                        SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, ex);
+                        SettingsManager.CurrentZone.AppExceptions.Add(ex);
                     }
                     LearningNewExceptions.Clear();
                 }
@@ -845,8 +845,8 @@ namespace PKSoft
                         bool needsSave = false;
 
                         // Check all exceptions if any one has expired
-                        FirewallException[] exs = SettingsManager.CurrentZone.AppExceptions;
-                        for (int i = 0; i < exs.Length; ++i)
+                        List<FirewallException> exs = SettingsManager.CurrentZone.AppExceptions;
+                        for (int i = exs.Count-1; i >= 0; --i)
                         {
                             // Timer values above zero are the number of minutes to stay active
                             if ((int)exs[i].Timer <= 0)
@@ -867,7 +867,7 @@ namespace PKSoft
                                 }
 
                                 // Remove exception
-                                exs = Utils.ArrayRemoveItem(exs, exs[i]);
+                                exs.RemoveAt(i);
                                 needsSave = true;
                             }
                         }
@@ -1105,8 +1105,8 @@ namespace PKSoft
 
             // Check all exceptions if any one has expired
             {
-                FirewallException[] exs = SettingsManager.CurrentZone.AppExceptions;
-                for (int i = 0; i < exs.Length; ++i)
+                List<FirewallException> exs = SettingsManager.CurrentZone.AppExceptions;
+                for (int i = exs.Count-1; i >= 0; --i)
                 {
                     // "Permanent" exceptions do not expire, skip them
                     if (exs[i].Timer == AppExceptionTimer.Permanent)
@@ -1116,7 +1116,7 @@ namespace PKSoft
                     if (exs[i].Timer == AppExceptionTimer.Until_Reboot)
                     {
                         // Remove exception
-                        exs = Utils.ArrayRemoveItem(exs, exs[i]);
+                        exs.RemoveAt(i);
                         needsSave = true;
                     }
                 }

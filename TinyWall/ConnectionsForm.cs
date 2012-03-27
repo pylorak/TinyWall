@@ -334,11 +334,11 @@ namespace PKSoft
                     {
                         List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(this, ex);
                         for (int i = 0; i < exceptions.Count; ++i)
-                            SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, exceptions[i]);
+                            SettingsManager.CurrentZone.AppExceptions.Add(exceptions[i]);
                     }
                     else
                     {
-                        SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, ex);
+                        SettingsManager.CurrentZone.AppExceptions.Add(ex);
                     }
                 }
                 catch

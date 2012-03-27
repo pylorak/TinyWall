@@ -248,7 +248,7 @@ namespace PKSoft
                             {
                                 if (AppExceptionAssoc.IsValidExecutablePath(execPath))
                                 {
-                                    TmpZoneSettings.AppExceptions = Utils.ArrayAddItem(TmpZoneSettings.AppExceptions, template.CreateException(execPath));
+                                    TmpZoneSettings.AppExceptions.Add(template.CreateException(execPath));
                                 }
                             }
                             catch (ArgumentException) { }

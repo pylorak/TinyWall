@@ -16,58 +16,18 @@ namespace PKSoft
         public static ProfileManager Load(string filePath)
         {
             ProfileManager newInstance = SerializationHelper.LoadFromXMLFile<ProfileManager>(filePath);
-            newInstance.FinishLoading();
             return newInstance;
         }
 
         public void Save(string filePath)
         {
             SerializationHelper.SaveToXMLFile(this, filePath);
-
-            // TODO: Figure out why we call FinishLoading() here?
-            FinishLoading();
         }
 
         public ProfileManager()
         {
             m_Profiles = new ProfileCollection();
             m_Applications = new ApplicationCollection();
-            FinishLoading();
-        }
-
-        private void FinishLoading()
-        {
-            // Create built-in profiles
-            {
-                Profile p;
-
-                if (!m_Profiles.Contains("Blind trust"))
-                {
-                    // "Blind trust"
-                    p = new Profile();
-                    p.Name = "Blind trust";
-                    p.Rules = new RuleDef[] { new RuleDef(FirewallException.GenerateID(), "Blind trust", WindowsFirewall.PacketAction.Allow, WindowsFirewall.RuleDirection.InOut, WindowsFirewall.Protocol.Any) };
-                    m_Profiles.Add(p);
-                }
-
-                if (!m_Profiles.Contains("Outbound"))
-                {
-                    // "Outbound"
-                    p = new Profile();
-                    p.Name = "Outbound";
-                    p.Rules = new RuleDef[] { new RuleDef(FirewallException.GenerateID(), "Allow outbound", WindowsFirewall.PacketAction.Allow, WindowsFirewall.RuleDirection.Out, WindowsFirewall.Protocol.TcpUdp) };
-                    m_Profiles.Add(p);
-                }
-
-                if (!m_Profiles.Contains("Block"))
-                {
-                    // "Block"
-                    p = new Profile();
-                    p.Name = "Block";
-                    p.Rules = new RuleDef[] { new RuleDef(FirewallException.GenerateID(), "Block", WindowsFirewall.PacketAction.Block, WindowsFirewall.RuleDirection.InOut, WindowsFirewall.Protocol.Any) };
-                    m_Profiles.Add(p);
-                }
-            }
         }
 
         public ProfileCollection AvailableProfiles

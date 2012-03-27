@@ -90,7 +90,7 @@ namespace PKSoft
         private void RebuildExceptionsList()
         {
             ExceptionItems.Clear();
-            for (int i = 0; i < TmpZoneConfig.AppExceptions.Length; ++i)
+            for (int i = 0; i < TmpZoneConfig.AppExceptions.Count; ++i)
             {
                 FirewallException ex = TmpZoneConfig.AppExceptions[i];
                 ExceptionItems.Add(ListItemFromAppException(ex));
@@ -194,11 +194,11 @@ namespace PKSoft
             string itemText = clb.Items[e.Index].ToString();
             if (e.NewValue == CheckState.Checked)
             {
-                TmpZoneConfig.SpecialExceptions = Utils.ArrayAddItem(TmpZoneConfig.SpecialExceptions, itemText);
+                TmpZoneConfig.SpecialExceptions.Add(itemText);
             }
             else
             {
-                TmpZoneConfig.SpecialExceptions = Utils.ArrayRemoveItem(TmpZoneConfig.SpecialExceptions, itemText);
+                TmpZoneConfig.SpecialExceptions.Remove(itemText);
             }
         }
 
@@ -219,7 +219,7 @@ namespace PKSoft
         private void btnAppRemove_Click(object sender, EventArgs e)
         {
             ListViewItem li = listApplications.SelectedItems[0];
-            TmpZoneConfig.AppExceptions = Utils.ArrayRemoveItem(TmpZoneConfig.AppExceptions, (FirewallException)li.Tag);
+            TmpZoneConfig.AppExceptions.Remove((FirewallException)li.Tag);
             RebuildExceptionsList();
         }
 
@@ -228,7 +228,7 @@ namespace PKSoft
             if (MessageBox.Show(this, PKSoft.Resources.Messages.AreYouSureYouWantToRemoveAllExceptions, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.No)
                 return;
 
-            TmpZoneConfig.AppExceptions = new FirewallException[0];
+            TmpZoneConfig.AppExceptions.Clear();
             RebuildExceptionsList();
         }
         
@@ -243,9 +243,9 @@ namespace PKSoft
                 if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {
                     // Remove old rule
-                    TmpZoneConfig.AppExceptions = Utils.ArrayRemoveItem(TmpZoneConfig.AppExceptions, oldEx);
+                    TmpZoneConfig.AppExceptions.Remove(oldEx);
                     // Add new rule
-                    TmpZoneConfig.AppExceptions = Utils.ArrayAddItem(TmpZoneConfig.AppExceptions, f.ExceptionSettings);
+                    TmpZoneConfig.AppExceptions.Add(f.ExceptionSettings);
                     TmpZoneConfig.Normalize();
                     RebuildExceptionsList();
                 }
@@ -263,7 +263,7 @@ namespace PKSoft
                 {
                     List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(this, f.ExceptionSettings);
                     for (int i = 0; i < exceptions.Count; ++i)
-                        TmpZoneConfig.AppExceptions = Utils.ArrayAddItem(TmpZoneConfig.AppExceptions, exceptions[i]);
+                        TmpZoneConfig.AppExceptions.Add(exceptions[i]);
                     TmpZoneConfig.Normalize();
                     RebuildExceptionsList();
                 }
