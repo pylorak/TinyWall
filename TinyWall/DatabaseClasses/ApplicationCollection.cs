@@ -27,8 +27,7 @@ namespace PKSoft
                     ProfileAssoc assoc = this[i].FileTemplates[j];
                     if (assoc.DoesExecutableSatisfy(exe))
                     {
-                        file = Utils.DeepClone(assoc);
-                        file.Executable = executablePath;
+                        file = assoc.InstantiateWithNewExecutable(executablePath);
                         return this[i];
                     }
                 }

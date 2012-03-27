@@ -133,10 +133,14 @@ namespace PKSoft
                         Application app = allApps.TryGetRecognizedApp(file, null, out appFile);
                         if ((app != null) && (!app.Special))
                         {
-                            if (!app.FileRealizations.ContainsFileRealization(file))
+                            foreach (ProfileAssoc template in app.FileTemplates)
                             {
-                                app.FileRealizations.Add(appFile);
-                            }
+                                if (!template.ExecutableRealizations.Contains(file))
+                                {
+                                    template.ExecutableRealizations.Add(appFile.Executable);
+                                }
+                            } 
+                            
                             Utils.Invoke(list, (MethodInvoker)delegate()
                             {
                                 AddRecognizedAppToList(app);
@@ -170,7 +174,7 @@ namespace PKSoft
 
             if (!IconList.Images.ContainsKey(app.Name))
             {
-                string iconPath = app.FileRealizations[0].Executable;
+                string iconPath = app.FileTemplates[0].ExecutableRealizations[0];
                 if (!File.Exists(iconPath))
                     IconList.Images.Add(app.Name, Resources.Icons.window);
                 else
@@ -236,14 +240,19 @@ namespace PKSoft
                 if (li.Checked)
                 {
                     Application app = li.Tag as Application;
-                    foreach (ProfileAssoc pa in app.FileRealizations)
+                    foreach (ProfileAssoc template in app.FileTemplates)
                     {
-                        try
+                        foreach (string execPath in template.ExecutableRealizations)
                         {
-                            if (ProfileAssoc.IsValidExecutablePath(pa.Executable))
-                                TmpZoneSettings.AppExceptions = Utils.ArrayAddItem(TmpZoneSettings.AppExceptions, pa.ToExceptionSetting());
+                            try
+                            {
+                                if (ProfileAssoc.IsValidExecutablePath(execPath))
+                                {
+                                    TmpZoneSettings.AppExceptions = Utils.ArrayAddItem(TmpZoneSettings.AppExceptions, template.CreateException(execPath));
+                                }
+                            }
+                            catch (ArgumentException) { }
                         }
-                        catch (ArgumentException) { }
                     }
                 }
             }

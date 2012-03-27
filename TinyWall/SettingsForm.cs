@@ -92,7 +92,7 @@ namespace PKSoft
             ExceptionItems.Clear();
             for (int i = 0; i < TmpZoneConfig.AppExceptions.Length; ++i)
             {
-                AppExceptionSettings ex = TmpZoneConfig.AppExceptions[i];
+                FirewallException ex = TmpZoneConfig.AppExceptions[i];
                 ExceptionItems.Add(ListItemFromAppException(ex));
             }
             ApplyExceptionFilter();
@@ -134,7 +134,7 @@ namespace PKSoft
             listApplications_SelectedIndexChanged(listApplications, null);
         }
 
-        private ListViewItem ListItemFromAppException(AppExceptionSettings ex)
+        private ListViewItem ListItemFromAppException(FirewallException ex)
         {
             string name = string.IsNullOrEmpty(ex.ServiceName) ? ex.ExecutableName : "Srv: " + ex.ServiceName;
 
@@ -235,7 +235,7 @@ namespace PKSoft
         private void btnAppRemove_Click(object sender, EventArgs e)
         {
             ListViewItem li = listApplications.SelectedItems[0];
-            TmpZoneConfig.AppExceptions = Utils.ArrayRemoveItem(TmpZoneConfig.AppExceptions, (AppExceptionSettings)li.Tag);
+            TmpZoneConfig.AppExceptions = Utils.ArrayRemoveItem(TmpZoneConfig.AppExceptions, (FirewallException)li.Tag);
             RebuildExceptionsList();
         }
 
@@ -244,15 +244,15 @@ namespace PKSoft
             if (MessageBox.Show(this, PKSoft.Resources.Messages.AreYouSureYouWantToRemoveAllExceptions, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.No)
                 return;
 
-            TmpZoneConfig.AppExceptions = new AppExceptionSettings[0];
+            TmpZoneConfig.AppExceptions = new FirewallException[0];
             RebuildExceptionsList();
         }
         
         private void btnAppModify_Click(object sender, EventArgs e)
         {
             ListViewItem li = listApplications.SelectedItems[0];
-            AppExceptionSettings oldEx = (AppExceptionSettings)li.Tag;
-            AppExceptionSettings newEx = Utils.DeepClone(oldEx);
+            FirewallException oldEx = (FirewallException)li.Tag;
+            FirewallException newEx = Utils.DeepClone(oldEx);
             newEx.RegenerateID();
             using (ApplicationExceptionForm f = new ApplicationExceptionForm(newEx))
             {
@@ -272,12 +272,12 @@ namespace PKSoft
 
         private void btnAppAdd_Click(object sender, EventArgs e)
         {
-            AppExceptionSettings ex = new AppExceptionSettings();
+            FirewallException ex = new FirewallException();
             using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
             {
                 if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {
-                    List<AppExceptionSettings> exceptions = AppExceptionSettings.CheckForAppDependencies(this, f.ExceptionSettings);
+                    List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(this, f.ExceptionSettings);
                     for (int i = 0; i < exceptions.Count; ++i)
                         TmpZoneConfig.AppExceptions = Utils.ArrayAddItem(TmpZoneConfig.AppExceptions, exceptions[i]);
                     TmpZoneConfig.Normalize();
@@ -293,9 +293,10 @@ namespace PKSoft
 
         private void btnSubmitAssoc_Click(object sender, EventArgs e)
         {
+            /* TODO
             // Get exception
             ListViewItem li = listApplications.SelectedItems[0];
-            AppExceptionSettings ex = (AppExceptionSettings)li.Tag;
+            FirewallException ex = (FirewallException)li.Tag;
 
             // Construct association
             ProfileAssoc pa = ProfileAssoc.FromExecutable(ex.ExecutablePath, string.Empty);
@@ -310,6 +311,7 @@ namespace PKSoft
             psi.UseShellExecute = true;
             psi.RedirectStandardOutput = false;
             Process.Start(psi);
+            */
         }
 
         private void SettingsForm_Shown(object sender, EventArgs e)

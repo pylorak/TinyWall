@@ -78,12 +78,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdvancedExceptionForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AdvancedExceptionForm.Designer.cs">
-      <DependentUpon>AdvancedExceptionForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="AppFinderForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -198,7 +192,7 @@
       <DependentUpon>UpdateForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils.cs" />
-    <Compile Include="AppExceptionSettings.cs" />
+    <Compile Include="FirewallException.cs" />
     <Compile Include="PipeCom.cs" />
     <Compile Include="Processes.cs">
       <SubType>Form</SubType>
@@ -235,10 +229,6 @@
     <Compile Include="WindowsFirewall\RuleDirection.cs" />
     <Compile Include="WindowsFirewall\Rules.cs" />
     <Compile Include="WindowsFirewall\ServiceRestriction.cs" />
-    <EmbeddedResource Include="AdvancedExceptionForm.resx">
-      <DependentUpon>AdvancedExceptionForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="AppFinderForm.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
       <SubType>Designer</SubType>

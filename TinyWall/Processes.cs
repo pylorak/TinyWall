@@ -9,15 +9,14 @@ namespace PKSoft
     {
         internal string SelectedPath;
 
-        internal static AppExceptionSettings ChooseProcess(IWin32Window parent)
+        internal static FirewallException ChooseProcess(IWin32Window parent)
         {
             using (ProcessesForm pf = new ProcessesForm())
             {
                 if (pf.ShowDialog(parent) == DialogResult.Cancel)
                     return null;
 
-                AppExceptionSettings ex = new AppExceptionSettings(pf.SelectedPath);
-                ex.ServiceName = string.Empty;
+                FirewallException ex = new FirewallException(pf.SelectedPath, null);
                 return ex;
             }
         }

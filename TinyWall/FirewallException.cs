@@ -21,15 +21,67 @@ namespace PKSoft
     }
 
     [Serializable]
-    public class AppExceptionSettings : ICloneable
+    public class FirewallException
     {
-        public bool? Recognized = null;
-        public string ServiceName;
+        public bool Template = false;
+        public bool ShouldSerializeTemplate()
+        {
+            return Template;
+        }
 
-        public string[] Profiles;
+        public bool? Recognized = null;
+        public bool ShouldSerializeRecognized()
+        {
+            return (Recognized != null);
+        }
+
+        public string ServiceName = null;
+        public bool ShouldSerializeServiceName()
+        {
+            return !string.IsNullOrEmpty(ServiceName);
+        }
+
+        public string[] Profiles = null;
+        public bool ShouldSerializeProfiles()
+        {
+            return (Profiles != null) && (Profiles.Length > 0);
+        }
+
         public AppExceptionTimer Timer;
+        public bool ShouldSerializeTimer()
+        {
+            return !Template;
+        }
+
         public DateTime CreationDate = DateTime.Now;
+        public bool ShouldSerializeCreationDate()
+        {
+            return !Template;
+        }
+
         public string AppID = GenerateID();
+        public bool ShouldSerializeAppID()
+        {
+            return !Template;
+        }
+
+        public bool LocalNetworkOnly;
+        public bool ShouldSerializeLocalNetworkOnly()
+        {
+            return LocalNetworkOnly;
+        }
+
+        public bool AlwaysBlockTraffic;
+        public bool ShouldSerializeAlwaysBlockTraffic()
+        {
+            return AlwaysBlockTraffic;
+        }
+
+        public bool UnrestricedTraffic;
+        public bool ShouldSerializeUnrestricedTraffic()
+        {
+            return UnrestricedTraffic;
+        }
 
         internal void RegenerateID()
         {
@@ -53,11 +105,30 @@ namespace PKSoft
         }
 
         public string OpenPortOutboundRemoteTCP = string.Empty;
+        public bool ShouldSerializeOpenPortOutboundRemoteTCP()
+        {
+            return !string.IsNullOrEmpty(OpenPortOutboundRemoteTCP);
+        }
+
         public string OpenPortListenLocalTCP = string.Empty;
+        public bool ShouldSerializeOpenPortListenLocalTCP()
+        {
+            return !string.IsNullOrEmpty(OpenPortListenLocalTCP);
+        }
+
         public string OpenPortOutboundRemoteUDP = string.Empty;
-        public string OpenPortListenLocalUDP = string.Empty;
+        public bool ShouldSerializeOpenPortOutboundRemoteUDP()
+        {
+            return !string.IsNullOrEmpty(OpenPortOutboundRemoteUDP);
+        }
         
-        public AppExceptionSettings()
+        public string OpenPortListenLocalUDP = string.Empty;
+        public bool ShouldSerializeOpenPortListenLocalUDP()
+        {
+            return !string.IsNullOrEmpty(OpenPortListenLocalUDP);
+        }
+
+        public FirewallException()
         {
             ExecutablePath = string.Empty;
             ServiceName = string.Empty;
@@ -66,9 +137,10 @@ namespace PKSoft
             CreationDate = DateTime.Now;
         }
 
-        public AppExceptionSettings(string execPath)
+        public FirewallException(string execPath, string service)
         {
             this.ExecutablePath = execPath;
+            this.ServiceName = service;
             this.Profiles = new string[0];
         }
 
@@ -77,17 +149,12 @@ namespace PKSoft
             get { return !string.IsNullOrEmpty(ServiceName); }
         }
 
-        public object Clone()
-        {
-            return Utils.DeepClone(this);
-        }
-
         public override string ToString()
         {
             return ExecutablePath;
         }
 
-        public static bool ExecutableNameEquals(AppExceptionSettings app1, AppExceptionSettings app2)
+        public static bool ExecutableNameEquals(FirewallException app1, FirewallException app2)
         {
             // File path must match
             if (!string.Equals(app1.ExecutablePath, app2.ExecutablePath, StringComparison.OrdinalIgnoreCase))
@@ -134,18 +201,29 @@ namespace PKSoft
             return "[TW" + Utils.RandomString(12) + "]";
         }
 
-        internal static List<AppExceptionSettings> CheckForAppDependencies(System.Windows.Forms.IWin32Window parent, AppExceptionSettings ex, bool gui = true, ApplicationCollection allApps = null)
+        internal static List<FirewallException> CheckForAppDependencies(System.Windows.Forms.IWin32Window parent, FirewallException ex, bool gui = true, ApplicationCollection allApps = null)
         {
-            List<AppExceptionSettings> exceptions = new List<AppExceptionSettings>();
+            List<FirewallException> exceptions = new List<FirewallException>();
             exceptions.Add(ex);
 
             ProfileAssoc appFile = null;
             if (allApps == null)
                 allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
+
             Application app = allApps.TryGetRecognizedApp(ex.ExecutablePath, ex.ServiceName, out appFile);
             if ((app != null) && app.ResolveFilePaths())
             {
-                if (app.FileRealizations.Count > 1)
+                List<FirewallException> exceptions2 = new List<FirewallException>();
+                exceptions2.Add(ex);
+                foreach (ProfileAssoc template in app.FileTemplates)
+                {
+                    foreach (string execPath in template.ExecutableRealizations)
+                    {
+                        exceptions2.Add(template.CreateException(execPath));
+                    }
+                }
+
+                if (exceptions.Count > 1)
                 {
                     if (!gui || (System.Windows.Forms.MessageBox.Show(
                         parent,
@@ -154,10 +232,7 @@ namespace PKSoft
                         System.Windows.Forms.MessageBoxButtons.YesNo,
                         System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes))
                     {
-                        foreach (ProfileAssoc pa in app.FileRealizations)
-                        {
-                            exceptions.Add(pa.ToExceptionSetting());
-                        }
+                        exceptions.AddRange(exceptions2);
                     }
                 }
             }

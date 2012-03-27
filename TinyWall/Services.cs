@@ -11,15 +11,14 @@ namespace PKSoft
         internal string SelectedServiceName;
         internal string SelectedServiceExec;
 
-        internal static AppExceptionSettings ChooseService(IWin32Window parent)
+        internal static FirewallException ChooseService(IWin32Window parent)
         {
             using (ServicesForm sf = new ServicesForm())
             {
                 if (sf.ShowDialog(parent) == DialogResult.Cancel)
                     return null;
 
-                AppExceptionSettings ex = new AppExceptionSettings(sf.SelectedServiceExec);
-                ex.ServiceName = sf.SelectedServiceName;
+                FirewallException ex = new FirewallException(sf.SelectedServiceExec, sf.SelectedServiceName);
                 return ex;
             }
         }

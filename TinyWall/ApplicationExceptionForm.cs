@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
+using PKSoft.WindowsFirewall;
 
 namespace PKSoft
 {
     internal partial class ApplicationExceptionForm : Form
     {
-        private AppExceptionSettings TmpExceptionSettings;
-        internal AppExceptionSettings ExceptionSettings
+        private FirewallException TmpExceptionSettings;
+        internal FirewallException ExceptionSettings
         {
             get { return TmpExceptionSettings; }
         }
@@ -33,7 +34,7 @@ namespace PKSoft
             }
         }
 
-        internal ApplicationExceptionForm(AppExceptionSettings AppEx)
+        internal ApplicationExceptionForm(FirewallException AppEx)
         {
             InitializeComponent();
             this.Icon = Resources.Icons.firewall;
@@ -92,9 +93,7 @@ namespace PKSoft
 
         private void UpdateUI()
         {
-            this.RecognizedApp = TmpExceptionSettings.Recognized.Value;
-            txtAppPath.Text = TmpExceptionSettings.ExecutablePath;
-            txtSrvName.Text = TmpExceptionSettings.ServiceName;
+            // Display timer
             for (int i = 0; i < cmbTimer.Items.Count; ++i)
             {
                 if (((KeyValuePair<string, AppExceptionTimer>)cmbTimer.Items[i]).Value == TmpExceptionSettings.Timer)
@@ -104,54 +103,63 @@ namespace PKSoft
                 }
             }
 
-            listAllProfiles.SuspendLayout();
-            listEnabledProfiles.SuspendLayout();
+            this.RecognizedApp = TmpExceptionSettings.Recognized.Value;
+            txtAppPath.Text = TmpExceptionSettings.ExecutablePath;
+            txtSrvName.Text = TmpExceptionSettings.ServiceName;
+            chkRestrictToLocalNetwork.Checked = TmpExceptionSettings.LocalNetworkOnly;
 
-            listAllProfiles.Items.Clear();
-            listEnabledProfiles.Items.Clear();
+            // Display ports list
+            txtOutboundPortTCP.Text = TmpExceptionSettings.OpenPortOutboundRemoteTCP.Replace(",", ", ");
+            txtOutboundPortUDP.Text = TmpExceptionSettings.OpenPortOutboundRemoteUDP.Replace(",", ", ");
+            txtListenPortTCP.Text = TmpExceptionSettings.OpenPortListenLocalTCP.Replace(",", ", ");
+            txtListenPortUDP.Text = TmpExceptionSettings.OpenPortListenLocalUDP.Replace(",", ", ");
 
-
-            ProfileCollection profiles = new ProfileCollection();
-            ProfileAssoc appFile = null;
-            if (System.IO.File.Exists(txtAppPath.Text))
+            // Select the right radio button
+            if (TmpExceptionSettings.AlwaysBlockTraffic)
             {
-                Application app = GlobalInstances.ProfileMan.KnownApplications.TryGetRecognizedApp(TmpExceptionSettings.ExecutablePath, TmpExceptionSettings.ServiceName, out appFile);
+                radBlock.Checked = true;
             }
-
-            if (appFile != null)
-                profiles = GlobalInstances.ProfileMan.GetProfilesFor(appFile);
-
-            // Add enabled profiles
-            listEnabledProfiles.Items.AddRange(TmpExceptionSettings.Profiles);
-
-            // Add disabled profiles
-            for (int i = 0; i < profiles.Count; ++i)
+            else if (TmpExceptionSettings.UnrestricedTraffic)
             {
-                bool alreadyEnabled = listEnabledProfiles.Items.Contains(profiles[i].Name);
-
-                // Only add as available if this profile is not already enabled for the current application
-                if (!alreadyEnabled)
-                    listAllProfiles.Items.Add(profiles[i].Name);
+                radUnrestricted.Checked = true;
             }
-
-            // Add available profiles
-            profiles = GlobalInstances.ProfileMan.AvailableProfiles;
-            for (int i = 0; i < profiles.Count; ++i)
+            else if (
+                string.Equals(TmpExceptionSettings.OpenPortListenLocalTCP, "*")
+                && string.Equals(TmpExceptionSettings.OpenPortListenLocalUDP, "*")
+                && string.Equals(TmpExceptionSettings.OpenPortOutboundRemoteTCP, "*")
+                && string.Equals(TmpExceptionSettings.OpenPortOutboundRemoteUDP, "*")
+                )
             {
-                // Only add as available if this profile is not already enabled for the current application
-                bool alreadyEnabled = listEnabledProfiles.Items.Contains(profiles[i].Name);
-                bool alreadyAdded = listAllProfiles.Items.Contains(profiles[i].Name);
-                bool appSpecific = profiles[i].AppSpecific;
-                if (!alreadyEnabled && !alreadyAdded && !appSpecific)
-                    listAllProfiles.Items.Add(profiles[i].Name);
+                radTcpUdpUnrestricted.Checked = true;
             }
-
-            listEnabledProfiles.ResumeLayout(true);
-            listAllProfiles.ResumeLayout(true);
+            else if (
+                string.Equals(TmpExceptionSettings.OpenPortOutboundRemoteTCP, "*")
+                && string.Equals(TmpExceptionSettings.OpenPortOutboundRemoteUDP, "*")
+                )
+            {
+                radTcpUdpOut.Checked = true;
+            }
+            else
+            {
+                radOnlySpecifiedPorts.Checked = true;
+            }
 
             UpdateOKButtonEnabled();
         }
 
+        private static string CleanupPortsList(string str)
+        {
+            string res = str;
+            res = res.Replace(" ", string.Empty);
+            res = res.Replace(';', ',');
+
+            // Check validity
+            Rule r = new Rule("", "", ProfileType.Private, RuleDirection.In, PacketAction.Allow, Protocol.TCP);
+            r.LocalPorts = res;
+
+            return res;
+        }
+        
         private void UpdateOKButtonEnabled()
         {
             btnOK.Enabled = System.IO.File.Exists(TmpExceptionSettings.ExecutablePath);
@@ -159,52 +167,32 @@ namespace PKSoft
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            // Validate port lists
+            try
+            {
+                TmpExceptionSettings.OpenPortOutboundRemoteTCP = CleanupPortsList(txtOutboundPortTCP.Text);
+                TmpExceptionSettings.OpenPortOutboundRemoteUDP = CleanupPortsList(txtOutboundPortUDP.Text);
+                TmpExceptionSettings.OpenPortListenLocalTCP = CleanupPortsList(txtListenPortTCP.Text);
+                TmpExceptionSettings.OpenPortListenLocalUDP = CleanupPortsList(txtListenPortUDP.Text);
+            }
+            catch
+            {
+                MessageBox.Show(this, PKSoft.Resources.Messages.TheFormatOfThePortListIsInvalid, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            this.TmpExceptionSettings.LocalNetworkOnly = chkRestrictToLocalNetwork.Checked;
             this.TmpExceptionSettings.CreationDate = DateTime.Now;
+            this.TmpExceptionSettings.AlwaysBlockTraffic = radBlock.Checked;
+            this.TmpExceptionSettings.UnrestricedTraffic = radUnrestricted.Checked;
+            
+
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-        }
-
-        private void listAllProfiles_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnAddProfile.Enabled = listAllProfiles.SelectedIndex != -1;
-        }
-
-        private void listEnabledProfiles_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnRemoveProfile.Enabled = listEnabledProfiles.SelectedIndex != -1;
-        }
-
-        private static string MoveItemBetweenLists(ListBox from, ListBox to)
-        {
-            // Get selected profile
-            string profile = from.Items[from.SelectedIndex].ToString();
-
-            // Remove from available
-            from.Items.RemoveAt(from.SelectedIndex);
-
-            // Add to enabled
-            int newIdx = to.Items.Add(profile);
-
-            // Select same item in new list
-            to.SelectedIndex = newIdx;
-
-            return profile;
-        }
-
-        private void btnAddProfile_Click(object sender, EventArgs e)
-        {
-            string profile = MoveItemBetweenLists(listAllProfiles, listEnabledProfiles);
-            TmpExceptionSettings.Profiles = Utils.ArrayAddItem(TmpExceptionSettings.Profiles, profile);
-        }
-
-        private void btnRemoveProfile_Click(object sender, EventArgs e)
-        {
-            string profile = MoveItemBetweenLists(listEnabledProfiles, listAllProfiles);
-            TmpExceptionSettings.Profiles = Utils.ArrayRemoveItem(TmpExceptionSettings.Profiles, profile);
         }
 
         private void btnProcess_Click(object sender, EventArgs e)
@@ -246,38 +234,57 @@ namespace PKSoft
             UpdateOKButtonEnabled();
         }
 
-        private void listAllProfiles_DoubleClick(object sender, EventArgs e)
-        {
-            if (btnAddProfile.Enabled)
-            {
-                btnAddProfile_Click(null, null);
-            }
-        }
-
-        private void listEnabledProfiles_DoubleClick(object sender, EventArgs e)
-        {
-            if (btnRemoveProfile.Enabled)
-            {
-                btnRemoveProfile_Click(null, null);
-            }
-        }
-
         private void cmbTimer_SelectedIndexChanged(object sender, EventArgs e)
         {
             TmpExceptionSettings.Timer = ((KeyValuePair<string, AppExceptionTimer>)cmbTimer.SelectedItem).Value;
         }
 
-        private void btnAdvSettings_Click(object sender, EventArgs e)
+        private void radRestriction_CheckedChanged(object sender, EventArgs e)
         {
-            AppExceptionSettings app = TmpExceptionSettings.Clone() as AppExceptionSettings;
-            using (AdvancedExceptionForm aef = new AdvancedExceptionForm(app))
+            if (radBlock.Checked)
             {
-                if (aef.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
-                {
-                    TmpExceptionSettings = aef.TmpAppException;
-                }
+                panel3.Enabled = false;
+                txtListenPortTCP.Text = string.Empty;
+                txtListenPortUDP.Text = string.Empty;
+                txtOutboundPortTCP.Text = string.Empty;
+                txtOutboundPortUDP.Text = string.Empty;
             }
-            this.DialogResult = System.Windows.Forms.DialogResult.None;
+            else if (radOnlySpecifiedPorts.Checked)
+            {
+                panel3.Enabled = true;
+                txtListenPortTCP.Text = string.Empty;
+                txtListenPortUDP.Text = string.Empty;
+                txtOutboundPortTCP.Text = string.Empty;
+                txtOutboundPortUDP.Text = string.Empty;
+            }
+            else if (radTcpUdpOut.Checked)
+            {
+                panel3.Enabled = true;
+                txtListenPortTCP.Text = string.Empty;
+                txtListenPortUDP.Text = string.Empty;
+                txtOutboundPortTCP.Text = "*";
+                txtOutboundPortUDP.Text = "*";
+            }
+            else if (radTcpUdpUnrestricted.Checked)
+            {
+                panel3.Enabled = false;
+                txtListenPortTCP.Text = "*";
+                txtListenPortUDP.Text = "*";
+                txtOutboundPortTCP.Text = "*";
+                txtOutboundPortUDP.Text = "*";
+            }
+            else if (radUnrestricted.Checked)
+            {
+                panel3.Enabled = false;
+                txtListenPortTCP.Text = "*";
+                txtListenPortUDP.Text = "*";
+                txtOutboundPortTCP.Text = "*";
+                txtOutboundPortUDP.Text = "*";
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
     }
 }

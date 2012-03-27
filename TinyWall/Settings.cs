@@ -27,7 +27,7 @@ namespace PKSoft
         public string ZoneName = "Unknown";
         public string[] SpecialExceptions = new string[0];
         public bool AllowLocalSubnet = false;
-        public AppExceptionSettings[] AppExceptions = new AppExceptionSettings[0];
+        public FirewallException[] AppExceptions = new FirewallException[0];
 
 
         internal ZoneSettings()
@@ -78,16 +78,16 @@ namespace PKSoft
         {
             for (int i = 0; i < AppExceptions.Length; ++i)
             {
-                AppExceptionSettings app1 = AppExceptions[i];
+                FirewallException app1 = AppExceptions[i];
 
                 for (int j = AppExceptions.Length-1; j > i; --j)
                 {
-                    AppExceptionSettings app2 = AppExceptions[j];
+                    FirewallException app2 = AppExceptions[j];
 
                     if (app1.AppID == app2.AppID)
                     {
-                        AppExceptionSettings older = app1;
-                        AppExceptionSettings newer = app2;
+                        FirewallException older = app1;
+                        FirewallException newer = app2;
                         if (app1.CreationDate > app2.CreationDate)
                         {
                             older = app2;
@@ -96,7 +96,7 @@ namespace PKSoft
                         AppExceptions = Utils.ArrayRemoveItem(AppExceptions, older);
                         newer.RegenerateID();
                     }
-                    else if (AppExceptionSettings.ExecutableNameEquals(app1, app2) &&
+                    else if (FirewallException.ExecutableNameEquals(app1, app2) &&
                         (app1.Timer == AppExceptionTimer.Permanent) && (app2.Timer == AppExceptionTimer.Permanent))
                     {
                         List<string> profs = new List<string>();

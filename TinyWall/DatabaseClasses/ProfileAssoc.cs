@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -11,20 +12,26 @@ using PKSoft.Parser;
 
 namespace PKSoft
 {
-    [Serializable]  // Needed for ICloneable implementation 
-    public class ProfileAssoc : ICloneable
+    [Serializable]  // Needed for cloning
+    public class ProfileAssoc
     {
+        public ProfileAssoc(string exec, string service = null)
+        {
+            m_Executable = exec;
+            Service = service;
+        }
+
         // Filename or full path. File must have this name.
         private string m_Executable;
         [XmlAttributeAttribute()]
         public string Executable
         {
             get { return m_Executable; }
-            set
+            private set
             {
                 m_Executable = value;
-                PublicKeys = null;
-                HashesSHA1 = null;
+                m_PublicKeys = null;
+                m_Hashes = null;
             }
         }
 
@@ -32,14 +39,24 @@ namespace PKSoft
         [XmlAttributeAttribute()]
         public string Service;
 
-        // Human readable name or description of the executable
-        public string Description;
+        // Found files after searching in the user's file system.
+        [XmlIgnore]
+        public StringCollection ExecutableRealizations = new StringCollection();
 
-        // List of profiles to associate with above executable if all conditions below are met.
-        public string[] Profiles;
+        // Description of the firewall exception.
+        public FirewallException ExceptionTemplate;
+
+        internal FirewallException CreateException(string fullPath)
+        {
+            FirewallException res = Utils.DeepClone(ExceptionTemplate);
+            res.ExecutablePath = fullPath;
+            res.ServiceName = Service;
+            res.RegenerateID();
+            return res;
+        }
 
         // List of locations that specify where to search for this file.
-        // File path or registry location in the format "reg:<RegKey>:<RegValue>"
+        // Any string that can be resolved by RecursiveParser is valid.
         public string[] SearchPaths;
 
         // List of possible public keys.
@@ -67,49 +84,43 @@ namespace PKSoft
             set { m_PublicKeys = value; }
         }
 
-        // List of possible hash strings. If the array has more than one items,
-        // only one needs to apply.
-        private string[] m_HashesSHA1;
-        public string[] HashesSHA1
+        // List of possible hash strings.
+        // If the array has more than one items, only one needs to apply.
+        private string[] m_Hashes;
+        public string[] Hashes
         {
             get
             {
-                if ((m_HashesSHA1 == null) && File.Exists(Executable))
+                if ((m_Hashes == null) && File.Exists(Executable))
                 {
                     using (FileStream fs = new FileStream(Executable, FileMode.Open, FileAccess.Read))
                     using (SHA1Cng hasher = new SHA1Cng())
                     {
-                        m_HashesSHA1 = new string[] { Utils.HexEncode(hasher.ComputeHash(fs)) };
+                        m_Hashes = new string[] { Utils.HexEncode(hasher.ComputeHash(fs)) };
                     }
                 }
 
-                return m_HashesSHA1;
+                return m_Hashes;
             }
-            set { m_HashesSHA1 = value; }
+            set { m_Hashes = value; }
         }
 
         // Tries to get the actual file path based on the search crateria
-        // specified by SearchPaths. Returns a collection of all files found.
-        public ProfileAssocCollection SearchForFile()
+        // specified by SearchPaths. Writes found files to ExecutableRealizations.
+        public bool SearchForFile()
         {
-            ProfileAssocCollection foundFiles = new ProfileAssocCollection();
+            ExecutableRealizations.Clear();
 
             string exec = PKSoft.Parser.RecursiveParser.ResolveString(this.Executable);
             if (IsValidExecutablePath(exec))
             {
-                ProfileAssoc foundFile = ProfileAssoc.FromExecutable(exec, this.Service);
-                if (this.DoesExecutableSatisfy(foundFile))
+                if (this.DoesExecutableSatisfy(exec, this.Service))
                 {
-                    foundFile = Utils.DeepClone(this);
-                    foundFile.Executable = exec;
-                    foundFiles.Add(foundFile);
+                    ExecutableRealizations.Add(exec);
                 }
             }
-            else
+            else if (this.SearchPaths != null)
             {
-                if (this.SearchPaths == null)
-                    return foundFiles;
-
                 for (int i = 0; i < this.SearchPaths.Length; ++i)
                 {
                     string path = SearchPaths[i];
@@ -120,19 +131,22 @@ namespace PKSoft
 
                     if (IsValidExecutablePath(filePath))
                     {
-                        ProfileAssoc foundFile = ProfileAssoc.FromExecutable(filePath, this.Service);
-                        if (this.DoesExecutableSatisfy(foundFile))
+                        if (this.DoesExecutableSatisfy(filePath, this.Service))
                         {
-                            string resolvedPath = foundFile.Executable;
-                            foundFile = Utils.DeepClone(this);
-                            foundFile.Executable = resolvedPath;
-                            foundFiles.Add(foundFile);
+                            ExecutableRealizations.Add(filePath);
                         }
                     }
                 }
             }
 
-            return foundFiles;
+            return ExecutableRealizations.Count > 0;
+        }
+
+        internal ProfileAssoc InstantiateWithNewExecutable(string exec)
+        {
+            ProfileAssoc res = Utils.DeepClone(this);
+            res.Executable = exec;
+            return res;
         }
 
         public static bool IsValidExecutablePath(string path)
@@ -142,30 +156,18 @@ namespace PKSoft
                 || path.Equals("System", StringComparison.OrdinalIgnoreCase)    // System-process
                 || (File.Exists(path) && Path.IsPathRooted(path));  // File path on filesystem
         }
-
-        public AppExceptionSettings ToExceptionSetting()
-        {
-            AppExceptionSettings ex = new AppExceptionSettings(Executable);
-            ex.ServiceName = Service;
-            ex.CreationDate = DateTime.Now;
-            ex.Timer = AppExceptionTimer.Permanent;
-            ex.Profiles = new string[Profiles.Length];
-
-            Array.Copy(Profiles, ex.Profiles, Profiles.Length);
-
-            return ex;
-        }
         
         public static ProfileAssoc FromExecutable(string filePath, string service)
         {
             if (!IsValidExecutablePath(filePath))
                 throw new FileNotFoundException();
 
-            ProfileAssoc exe = new ProfileAssoc();
-            exe.Executable = filePath;
-            exe.Service = service;
+            return new ProfileAssoc(filePath, service);
+        }
 
-            return exe;
+        public bool DoesExecutableSatisfy(string filePath, string service)
+        {
+            return DoesExecutableSatisfy(FromExecutable(filePath, service));
         }
 
         public bool DoesExecutableSatisfy(ProfileAssoc exe)
@@ -198,16 +200,16 @@ namespace PKSoft
             }
 
             // Do we have an SHA1 match? Either one of the listed hashes in this instance is sufficient.
-            if ((this.HashesSHA1 != null) && (this.HashesSHA1.Length > 0))
+            if ((this.Hashes != null) && (this.Hashes.Length > 0))
             {
-                if ((exe.HashesSHA1 == null) || (exe.HashesSHA1.Length == 0))
+                if ((exe.Hashes == null) || (exe.Hashes.Length == 0))
                     // We need a hash, but the executable doesn't have one.
                     return false;
 
                 bool sha1match = false;
-                for (int i = 0; i < this.HashesSHA1.Length; ++i)
+                for (int i = 0; i < this.Hashes.Length; ++i)
                 {
-                    if (string.Compare(HashesSHA1[i], exe.HashesSHA1[0], StringComparison.OrdinalIgnoreCase) == 0)
+                    if (string.Compare(Hashes[i], exe.Hashes[0], StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         sha1match = true;
                         break;
@@ -246,11 +248,6 @@ namespace PKSoft
         public override string ToString()
         {
             return this.Executable;
-        }
-
-        public object Clone()
-        {
-            return Utils.DeepClone(this);
         }
     }
 }

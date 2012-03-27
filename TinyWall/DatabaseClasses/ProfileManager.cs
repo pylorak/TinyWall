@@ -6,7 +6,6 @@ namespace PKSoft
     public class ProfileManager
     {
         private ProfileCollection m_Profiles;
-        private ProfileCollection m_GenericProfiles;
         private ApplicationCollection m_Applications;
 
         public static string DBPath
@@ -25,13 +24,13 @@ namespace PKSoft
         {
             SerializationHelper.SaveToXMLFile(this, filePath);
 
+            // TODO: Figure out why we call FinishLoading() here?
             FinishLoading();
         }
 
         public ProfileManager()
         {
             m_Profiles = new ProfileCollection();
-            m_GenericProfiles = new ProfileCollection();
             m_Applications = new ApplicationCollection();
             FinishLoading();
         }
@@ -42,48 +41,43 @@ namespace PKSoft
             {
                 Profile p;
 
-                if (!m_GenericProfiles.Contains("Blind trust"))
+                if (!m_Profiles.Contains("Blind trust"))
                 {
                     // "Blind trust"
                     p = new Profile();
                     p.Name = "Blind trust";
-                    p.Rules = new RuleDef[] { new RuleDef(AppExceptionSettings.GenerateID(), "Blind trust", WindowsFirewall.PacketAction.Allow, WindowsFirewall.RuleDirection.InOut, WindowsFirewall.Protocol.Any) };
-                    m_GenericProfiles.Add(p);
+                    p.Rules = new RuleDef[] { new RuleDef(FirewallException.GenerateID(), "Blind trust", WindowsFirewall.PacketAction.Allow, WindowsFirewall.RuleDirection.InOut, WindowsFirewall.Protocol.Any) };
+                    m_Profiles.Add(p);
                 }
 
-                if (!m_GenericProfiles.Contains("Outbound"))
+                if (!m_Profiles.Contains("Outbound"))
                 {
                     // "Outbound"
                     p = new Profile();
                     p.Name = "Outbound";
-                    p.Rules = new RuleDef[] { new RuleDef(AppExceptionSettings.GenerateID(), "Allow outbound", WindowsFirewall.PacketAction.Allow, WindowsFirewall.RuleDirection.Out, WindowsFirewall.Protocol.TcpUdp) };
-                    m_GenericProfiles.Add(p);
+                    p.Rules = new RuleDef[] { new RuleDef(FirewallException.GenerateID(), "Allow outbound", WindowsFirewall.PacketAction.Allow, WindowsFirewall.RuleDirection.Out, WindowsFirewall.Protocol.TcpUdp) };
+                    m_Profiles.Add(p);
                 }
 
-                if (!m_GenericProfiles.Contains("Block"))
+                if (!m_Profiles.Contains("Block"))
                 {
                     // "Block"
                     p = new Profile();
                     p.Name = "Block";
-                    p.Rules = new RuleDef[] { new RuleDef(AppExceptionSettings.GenerateID(), "Block", WindowsFirewall.PacketAction.Block, WindowsFirewall.RuleDirection.InOut, WindowsFirewall.Protocol.Any) };
-                    m_GenericProfiles.Add(p);
+                    p.Rules = new RuleDef[] { new RuleDef(FirewallException.GenerateID(), "Block", WindowsFirewall.PacketAction.Block, WindowsFirewall.RuleDirection.InOut, WindowsFirewall.Protocol.Any) };
+                    m_Profiles.Add(p);
                 }
             }
         }
 
         public ProfileCollection AvailableProfiles
         {
-            get { return m_GenericProfiles; }
+            get { return m_Profiles; }
         }
 
         public Profile GetProfile(string name)
         {
-            for (int i = 0; i < this.m_GenericProfiles.Count; ++i)
-            {
-                if (name.Equals(m_GenericProfiles[i].Name, System.StringComparison.OrdinalIgnoreCase))
-                    return Utils.DeepClone(m_GenericProfiles[i]);
-            }
-            for (int i = 0; i < m_Profiles.Count; ++i)
+            for (int i = 0; i < this.m_Profiles.Count; ++i)
             {
                 if (name.Equals(m_Profiles[i].Name, System.StringComparison.OrdinalIgnoreCase))
                     return Utils.DeepClone(m_Profiles[i]);
@@ -99,9 +93,10 @@ namespace PKSoft
         public ProfileCollection GetProfilesFor(ProfileAssoc app)
         {
             ProfileCollection ret = new ProfileCollection();
-            for (int j = 0; j < app.Profiles.Length; ++j)
+            FirewallException ex = app.ExceptionTemplate;
+            for (int j = 0; j < ex.Profiles.Length; ++j)
             {
-                Profile p = GetProfile(app.Profiles[j]);
+                Profile p = GetProfile(ex.Profiles[j]);
                 if (p != null)
                     ret.Add(p);
             }
