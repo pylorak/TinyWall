@@ -137,6 +137,7 @@ namespace PKSoft
             {
                 radOnlySpecifiedPorts.Checked = true;
             }
+            radRestriction_CheckedChanged(null, null);
 
             // Display ports list
             txtOutboundPortTCP.Text = TmpExceptionSettings.OpenPortOutboundRemoteTCP.Replace(",", ", ");
@@ -256,6 +257,10 @@ namespace PKSoft
                 txtListenPortUDP.Text = string.Empty;
                 txtOutboundPortTCP.Text = string.Empty;
                 txtOutboundPortUDP.Text = string.Empty;
+                txtOutboundPortTCP.Enabled = true;
+                txtOutboundPortUDP.Enabled = true;
+                label7.Enabled = true;
+                label8.Enabled = true;
             }
             else if (radTcpUdpOut.Checked)
             {
@@ -264,6 +269,10 @@ namespace PKSoft
                 txtListenPortUDP.Text = string.Empty;
                 txtOutboundPortTCP.Text = "*";
                 txtOutboundPortUDP.Text = "*";
+                txtOutboundPortTCP.Enabled = false;
+                txtOutboundPortUDP.Enabled = false;
+                label7.Enabled = false;
+                label8.Enabled = false;
             }
             else if (radTcpUdpUnrestricted.Checked)
             {
