@@ -306,7 +306,7 @@ namespace PKSoft
                 // Add extra ports
                 if (!string.IsNullOrEmpty(ex.OpenPortListenLocalTCP))
                 {
-                    RuleDef def = new RuleDef(ex.AppID, "Extra Tcp Listen Ports", PacketAction.Allow, RuleDirection.In,  Protocol.TCP);
+                    RuleDef def = new RuleDef(ex.AppID, "TCP Listen Ports", PacketAction.Allow, RuleDirection.In,  Protocol.TCP);
                     def.Application = ex.ExecutablePath;
                     def.ServiceName = ex.ServiceName;
                     if (!ex.OpenPortListenLocalTCP.Equals("*"))
@@ -317,7 +317,7 @@ namespace PKSoft
                 }
                 if (!string.IsNullOrEmpty(ex.OpenPortListenLocalUDP))
                 {
-                    RuleDef def = new RuleDef(ex.AppID, "Extra Udp Listen Ports", PacketAction.Allow, RuleDirection.In, Protocol.UDP);
+                    RuleDef def = new RuleDef(ex.AppID, "UDP Listen Ports", PacketAction.Allow, RuleDirection.In, Protocol.UDP);
                     def.Application = ex.ExecutablePath;
                     def.ServiceName = ex.ServiceName;
                     if (!ex.OpenPortListenLocalUDP.Equals("*"))
@@ -328,7 +328,7 @@ namespace PKSoft
                 }
                 if (!string.IsNullOrEmpty(ex.OpenPortOutboundRemoteTCP))
                 {
-                    RuleDef def = new RuleDef(ex.AppID, "Extra Tcp Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.TCP);
+                    RuleDef def = new RuleDef(ex.AppID, "TCP Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.TCP);
                     def.Application = ex.ExecutablePath;
                     def.ServiceName = ex.ServiceName;
                     if (!ex.OpenPortOutboundRemoteTCP.Equals("*"))
@@ -339,7 +339,7 @@ namespace PKSoft
                 }
                 if (!string.IsNullOrEmpty(ex.OpenPortOutboundRemoteUDP))
                 {
-                    RuleDef def = new RuleDef(ex.AppID, "Extra Udp Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.UDP);
+                    RuleDef def = new RuleDef(ex.AppID, "UDP Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.UDP);
                     def.Application = ex.ExecutablePath;
                     def.ServiceName = ex.ServiceName;
                     if (!ex.OpenPortOutboundRemoteUDP.Equals("*"))

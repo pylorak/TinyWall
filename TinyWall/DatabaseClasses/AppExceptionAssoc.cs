@@ -18,6 +18,7 @@ namespace PKSoft
         public AppExceptionAssoc()
         {
         }
+
         public AppExceptionAssoc(string exec, string service = null)
         {
             m_Executable = exec;
@@ -43,9 +44,24 @@ namespace PKSoft
         public string Service;
 
         // Found files after searching in the user's file system.
-        [XmlIgnore]
         [NonSerialized]
-        public List<string> ExecutableRealizations = new List<string>();
+        private List<string> _ExecutableRealizations;
+
+        [XmlIgnore]
+        public List<string> ExecutableRealizations
+        {
+            get
+            {
+                if (_ExecutableRealizations == null)
+                    _ExecutableRealizations = new List<string>();
+
+                return _ExecutableRealizations;
+            }
+            set
+            {
+                _ExecutableRealizations = value;
+            }
+        }
 
         // Description of the firewall exception.
         public FirewallException ExceptionTemplate;
@@ -114,7 +130,7 @@ namespace PKSoft
         // specified by SearchPaths. Writes found files to ExecutableRealizations.
         public bool SearchForFile()
         {
-            ExecutableRealizations = new List<string>();
+            ExecutableRealizations.Clear();
 
             string exec = PKSoft.Parser.RecursiveParser.ResolveString(this.Executable);
             if (IsValidExecutablePath(exec))
