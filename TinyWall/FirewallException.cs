@@ -180,7 +180,7 @@ namespace PKSoft
             if (File.Exists(ExecutablePath))
                 app = GlobalInstances.ProfileMan.KnownApplications.TryGetRecognizedApp(ExecutablePath, ServiceName, out appFile);
 
-            this.Recognized = (app != null);
+            this.Recognized = (app != null) && (!app.Special);
 
             if (allowModify)
             {
@@ -285,7 +285,7 @@ namespace PKSoft
                     }
                 }
 
-                if (exceptions.Count > 1)
+                if (exceptions2.Count > 1)
                 {
                     if (!gui || (System.Windows.Forms.MessageBox.Show(
                         parent,

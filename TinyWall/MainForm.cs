@@ -617,8 +617,7 @@ namespace PKSoft
         private void AddNewException(FirewallException ex)
         {
             List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(this, ex);
-            for (int i = 0; i < exceptions.Count; ++i)
-                SettingsManager.CurrentZone.AppExceptions.Add(exceptions[i]);
+            SettingsManager.CurrentZone.AppExceptions.AddRange(exceptions);
             SettingsManager.CurrentZone.Normalize();
 
             TWControllerMessages resp = ApplyFirewallSettings(null, SettingsManager.CurrentZone, false);
