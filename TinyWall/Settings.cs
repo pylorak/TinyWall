@@ -86,6 +86,8 @@ namespace PKSoft
 
                     if (app1.AppID == app2.AppID)
                     {
+                        // With equal AppIDs, keep only the newer one
+
                         FirewallException older = app1;
                         FirewallException newer = app2;
                         if (app1.CreationDate > app2.CreationDate)
@@ -99,20 +101,23 @@ namespace PKSoft
                     else if (FirewallException.ExecutableNameEquals(app1, app2) &&
                         (app1.Timer == AppExceptionTimer.Permanent) && (app2.Timer == AppExceptionTimer.Permanent))
                     {
-                        List<string> profs = new List<string>();
-                        profs.AddRange(app1.Profiles);
-                        profs.AddRange(app2.Profiles);
+                        // Merge rules
+
                         app1.RegenerateID();
-                        app1.Profiles = profs.Distinct().ToArray();
+                        app2.MergeRulesTo(app1);
                         AppExceptions = Utils.ArrayRemoveItem(AppExceptions, app2);
                     }
                 }
 
-                // If "Blind trust" is enabled, then all other profiles are redundant
-                if (Utils.ArrayContains(app1.Profiles, "Blind trust"))
+                // If communication is unrestricted, then all other rules are redundant
+                if (app1.UnrestricedTraffic)
                 {
                     app1.RegenerateID();
-                    app1.Profiles = new string[] { "Blind trust" };
+                    app1.Profiles = null;
+                    app1.OpenPortListenLocalTCP = null;
+                    app1.OpenPortListenLocalUDP = null;
+                    app1.OpenPortOutboundRemoteTCP = null;
+                    app1.OpenPortOutboundRemoteUDP = null;
                 }
             }
         }

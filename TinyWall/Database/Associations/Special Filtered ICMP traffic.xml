@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application Name="Filtered ICMP traffic" Recommended="true" Special="true">
+	<Files>
+    <AppExceptionAssoc Executable="">
+      <ExceptionTemplate Template="true">
+        <Profiles>
+          <string>ICMP (safe)</string>
+        </Profiles>
+      </ExceptionTemplate>
+    </AppExceptionAssoc>
+	</Files>
+</Application>

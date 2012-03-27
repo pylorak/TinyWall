@@ -108,12 +108,6 @@ namespace PKSoft
             txtSrvName.Text = TmpExceptionSettings.ServiceName;
             chkRestrictToLocalNetwork.Checked = TmpExceptionSettings.LocalNetworkOnly;
 
-            // Display ports list
-            txtOutboundPortTCP.Text = TmpExceptionSettings.OpenPortOutboundRemoteTCP.Replace(",", ", ");
-            txtOutboundPortUDP.Text = TmpExceptionSettings.OpenPortOutboundRemoteUDP.Replace(",", ", ");
-            txtListenPortTCP.Text = TmpExceptionSettings.OpenPortListenLocalTCP.Replace(",", ", ");
-            txtListenPortUDP.Text = TmpExceptionSettings.OpenPortListenLocalUDP.Replace(",", ", ");
-
             // Select the right radio button
             if (TmpExceptionSettings.AlwaysBlockTraffic)
             {
@@ -143,6 +137,12 @@ namespace PKSoft
             {
                 radOnlySpecifiedPorts.Checked = true;
             }
+
+            // Display ports list
+            txtOutboundPortTCP.Text = TmpExceptionSettings.OpenPortOutboundRemoteTCP.Replace(",", ", ");
+            txtOutboundPortUDP.Text = TmpExceptionSettings.OpenPortOutboundRemoteUDP.Replace(",", ", ");
+            txtListenPortTCP.Text = TmpExceptionSettings.OpenPortListenLocalTCP.Replace(",", ", ");
+            txtListenPortUDP.Text = TmpExceptionSettings.OpenPortListenLocalUDP.Replace(",", ", ");
 
             UpdateOKButtonEnabled();
         }

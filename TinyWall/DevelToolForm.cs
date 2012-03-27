@@ -25,7 +25,7 @@ namespace PKSoft
         {
             if (File.Exists(txtAssocExePath.Text))
             {
-                ProfileAssoc pa = ProfileAssoc.FromExecutable(txtAssocExePath.Text, string.Empty);
+                AppExceptionAssoc pa = AppExceptionAssoc.FromExecutable(txtAssocExePath.Text, string.Empty);
                 string tmpfile = Path.GetTempFileName();
                 SerializationHelper.SaveToXMLFile(pa, tmpfile);
                 using (StreamReader sr = new StreamReader(tmpfile))

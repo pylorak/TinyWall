@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace PKSoft
@@ -23,6 +24,7 @@ namespace PKSoft
     [Serializable]
     public class FirewallException
     {
+        [XmlAttributeAttribute]
         public bool Template = false;
         public bool ShouldSerializeTemplate()
         {
@@ -32,7 +34,7 @@ namespace PKSoft
         public bool? Recognized = null;
         public bool ShouldSerializeRecognized()
         {
-            return (Recognized != null);
+            return (Recognized.HasValue);
         }
 
         public string ServiceName = null;
@@ -41,10 +43,10 @@ namespace PKSoft
             return !string.IsNullOrEmpty(ServiceName);
         }
 
-        public string[] Profiles = null;
+        public List<string> Profiles = null;
         public bool ShouldSerializeProfiles()
         {
-            return (Profiles != null) && (Profiles.Length > 0);
+            return (Profiles != null) && (Profiles.Count > 0);
         }
 
         public AppExceptionTimer Timer;
@@ -103,6 +105,10 @@ namespace PKSoft
                 _ExecutablePath = PKSoft.Parser.RecursiveParser.ResolveString(value);
             }
         }
+        public bool ShouldSerializeExecutablePath()
+        {
+            return !string.IsNullOrEmpty(_ExecutablePath);
+        }
 
         public string OpenPortOutboundRemoteTCP = string.Empty;
         public bool ShouldSerializeOpenPortOutboundRemoteTCP()
@@ -130,9 +136,6 @@ namespace PKSoft
 
         public FirewallException()
         {
-            ExecutablePath = string.Empty;
-            ServiceName = string.Empty;
-            Profiles = new string[0];
             Timer = AppExceptionTimer.Permanent;
             CreationDate = DateTime.Now;
         }
@@ -141,7 +144,6 @@ namespace PKSoft
         {
             this.ExecutablePath = execPath;
             this.ServiceName = service;
-            this.Profiles = new string[0];
         }
 
         public bool IsService
@@ -173,7 +175,7 @@ namespace PKSoft
         internal void TryRecognizeApp(bool allowModify)
         {
             Application app = null;
-            ProfileAssoc appFile = null;
+            AppExceptionAssoc appFile = null;
 
             if (File.Exists(ExecutablePath))
                 app = GlobalInstances.ProfileMan.KnownApplications.TryGetRecognizedApp(ExecutablePath, ServiceName, out appFile);
@@ -182,18 +184,78 @@ namespace PKSoft
 
             if (allowModify)
             {
+                // Apply default settings
+                MakeUnrestrictTcpUdp();
+
+                // Apply recognized settings, if available
                 if (Recognized.Value)
                 {
                     ProfileCollection profiles = GlobalInstances.ProfileMan.GetProfilesFor(appFile);
-                    Profiles = new string[profiles.Count];
-                    for (int i = 0; i < profiles.Count; ++i)
-                        Profiles[i] = profiles[i].Name;
-                }
-                else
-                {
-                    Profiles = new string[1] { "Outbound" };
+                    appFile.ExceptionTemplate.CopyRulesTo(this);
                 }
             }
+        }
+
+        internal void CopyRulesTo(FirewallException o)
+        {
+            o.AlwaysBlockTraffic = this.AlwaysBlockTraffic;
+            o.LocalNetworkOnly = this.LocalNetworkOnly;
+            o.OpenPortListenLocalTCP = this.OpenPortListenLocalTCP;
+            o.OpenPortListenLocalUDP = this.OpenPortListenLocalUDP;
+            o.OpenPortOutboundRemoteTCP = this.OpenPortOutboundRemoteTCP;
+            o.OpenPortOutboundRemoteUDP = this.OpenPortOutboundRemoteUDP;
+            o.ServiceName = this.ServiceName;
+            o.UnrestricedTraffic = this.UnrestricedTraffic;
+            if (this.Profiles != null)
+            {
+                o.Profiles = new List<string>();
+                o.Profiles.AddRange(this.Profiles);
+            }
+        }
+
+        internal void MergeRulesTo(FirewallException o)
+        {
+            List<string> mergedProfiles = new List<string>();
+            if (this.Profiles != null)
+            mergedProfiles.AddRange(this.Profiles);
+            if (o.Profiles != null)
+            mergedProfiles.AddRange(o.Profiles);
+            o.Profiles.Clear();
+            o.Profiles.AddRange(mergedProfiles.Distinct());
+
+            if (this.AlwaysBlockTraffic != o.AlwaysBlockTraffic)
+                o.AlwaysBlockTraffic = false;
+            if (this.LocalNetworkOnly != o.LocalNetworkOnly)
+                o.LocalNetworkOnly = true;
+            if (this.UnrestricedTraffic != o.UnrestricedTraffic)
+                o.UnrestricedTraffic = false;
+
+            o.OpenPortListenLocalTCP = MergeStringList(this.OpenPortListenLocalTCP, o.OpenPortListenLocalTCP);
+            o.OpenPortListenLocalUDP = MergeStringList(this.OpenPortListenLocalUDP, o.OpenPortListenLocalUDP);
+            o.OpenPortOutboundRemoteTCP = MergeStringList(this.OpenPortOutboundRemoteTCP, o.OpenPortOutboundRemoteTCP);
+            o.OpenPortOutboundRemoteUDP = MergeStringList(this.OpenPortOutboundRemoteUDP, o.OpenPortOutboundRemoteUDP);
+        }
+
+        private static string MergeStringList(string str1, string str2)
+        {
+            string[] list1 = str1.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] list2 = str2.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            List<string> mergedList = new List<string>();
+            mergedList.AddRange(list1);
+            mergedList.AddRange(list2);
+            return string.Join(",", mergedList.Distinct().ToArray());
+        }
+
+        internal void MakeUnrestrictTcpUdp()
+        {
+            Profiles = null;
+            OpenPortOutboundRemoteTCP = "*";
+            OpenPortOutboundRemoteUDP = "*";
+            OpenPortListenLocalTCP = "*";
+            OpenPortListenLocalUDP = "*";
+            AlwaysBlockTraffic = false;
+            UnrestricedTraffic = false;
+            LocalNetworkOnly = false;
         }
 
         static internal string GenerateID()
@@ -206,7 +268,7 @@ namespace PKSoft
             List<FirewallException> exceptions = new List<FirewallException>();
             exceptions.Add(ex);
 
-            ProfileAssoc appFile = null;
+            AppExceptionAssoc appFile = null;
             if (allApps == null)
                 allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
 
@@ -215,7 +277,7 @@ namespace PKSoft
             {
                 List<FirewallException> exceptions2 = new List<FirewallException>();
                 exceptions2.Add(ex);
-                foreach (ProfileAssoc template in app.FileTemplates)
+                foreach (AppExceptionAssoc template in app.FileTemplates)
                 {
                     foreach (string execPath in template.ExecutableRealizations)
                     {

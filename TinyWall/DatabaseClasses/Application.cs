@@ -24,7 +24,7 @@ namespace PKSoft
 
         // Executables that belong to this application
         [XmlArray("Files")]
-        public ProfileAssocCollection FileTemplates = new ProfileAssocCollection();
+        public AppExceptionAssocCollection FileTemplates = new AppExceptionAssocCollection();
 
         public bool ShouldSerializeRecommended()
         {

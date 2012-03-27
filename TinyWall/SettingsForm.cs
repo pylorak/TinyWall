@@ -151,22 +151,6 @@ namespace PKSoft
             else
                 li.ImageKey = "deleted";
 
-            string AppProfiles = string.Empty;
-            if (ex.Profiles.Length > 0)
-            {
-                // Add first profile
-                if (GlobalInstances.ProfileMan.GetProfile(ex.Profiles[0]) != null)
-                    AppProfiles = ex.Profiles[0];
-
-                // Add rest of profiles
-                for (int j = 1; j < ex.Profiles.Length; ++j)
-                {
-                    if (GlobalInstances.ProfileMan.GetProfile(ex.Profiles[j]) != null)
-                        AppProfiles += ", " + ex.Profiles[j];
-                }
-            }
-
-            li.SubItems.Add(AppProfiles);
             return li;
         }
 

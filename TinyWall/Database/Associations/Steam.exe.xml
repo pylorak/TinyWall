@@ -1,31 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application Name="Steam Client">
 	<Files>
-	<ProfileAssoc Executable="Steam.exe">
-		<Profiles>
-			<string>Steam</string>
-			<string>Web browser</string>
-		</Profiles>
-		<PublicKeys>
-			<string>30818902818100CAAAB6B0973C3BC98A04A2B4E7D62DFD4E08315D55974B7C10272374DD595BC06A4D3731820E1A7C21B3FE90368D4D799CA774B27573D89DE1C16B1C1C9C45495AADA9CB6C6D8C4C55F42C04825C2567A407450A7BA642952DAE97501CA971D84B89FD2454148F563C1E0491036F925C4CA5CAD33D804E54B2CD8155785598E90203010001</string>
-		</PublicKeys>
-		<SearchPaths>
-			<string>{reg:SOFTWARE\Wow6432Node\Valve\Steam:InstallPath}</string>
-			<string>{reg:SOFTWARE\Valve\Steam:InstallPath}</string>
-		</SearchPaths>
-	</ProfileAssoc>
-	<ProfileAssoc Executable="GameOverlayUI.exe">
-		<Profiles>
-			<string>Steam</string>
-			<string>Web browser</string>
-		</Profiles>
-		<PublicKeys>
-			<string>30818902818100CAAAB6B0973C3BC98A04A2B4E7D62DFD4E08315D55974B7C10272374DD595BC06A4D3731820E1A7C21B3FE90368D4D799CA774B27573D89DE1C16B1C1C9C45495AADA9CB6C6D8C4C55F42C04825C2567A407450A7BA642952DAE97501CA971D84B89FD2454148F563C1E0491036F925C4CA5CAD33D804E54B2CD8155785598E90203010001</string>
-		</PublicKeys>
-		<SearchPaths>
-			<string>{reg:SOFTWARE\Wow6432Node\Valve\Steam:InstallPath}</string>
-			<string>{reg:SOFTWARE\Valve\Steam:InstallPath}</string>
-		</SearchPaths>
-	</ProfileAssoc>
+    <AppExceptionAssoc Executable="Steam.exe">
+      <ExceptionTemplate Template="true">
+        <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+        <OpenPortListenLocalTCP>*</OpenPortListenLocalTCP>
+        <OpenPortOutboundRemoteUDP>*</OpenPortOutboundRemoteUDP>
+        <OpenPortListenLocalUDP>*</OpenPortListenLocalUDP>
+      </ExceptionTemplate>
+      <PublicKeys>
+        <string>30818902818100CAAAB6B0973C3BC98A04A2B4E7D62DFD4E08315D55974B7C10272374DD595BC06A4D3731820E1A7C21B3FE90368D4D799CA774B27573D89DE1C16B1C1C9C45495AADA9CB6C6D8C4C55F42C04825C2567A407450A7BA642952DAE97501CA971D84B89FD2454148F563C1E0491036F925C4CA5CAD33D804E54B2CD8155785598E90203010001</string>
+      </PublicKeys>
+      <SearchPaths>
+        <string>{reg:SOFTWARE\Wow6432Node\Valve\Steam:InstallPath}</string>
+        <string>{reg:SOFTWARE\Valve\Steam:InstallPath}</string>
+      </SearchPaths>
+    </AppExceptionAssoc>
+    <AppExceptionAssoc Executable="GameOverlayUI.exe">
+      <ExceptionTemplate Template="true">
+        <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+        <OpenPortListenLocalTCP>*</OpenPortListenLocalTCP>
+        <OpenPortOutboundRemoteUDP>*</OpenPortOutboundRemoteUDP>
+        <OpenPortListenLocalUDP>*</OpenPortListenLocalUDP>
+      </ExceptionTemplate>
+      <PublicKeys>
+        <string>30818902818100CAAAB6B0973C3BC98A04A2B4E7D62DFD4E08315D55974B7C10272374DD595BC06A4D3731820E1A7C21B3FE90368D4D799CA774B27573D89DE1C16B1C1C9C45495AADA9CB6C6D8C4C55F42C04825C2567A407450A7BA642952DAE97501CA971D84B89FD2454148F563C1E0491036F925C4CA5CAD33D804E54B2CD8155785598E90203010001</string>
+      </PublicKeys>
+      <SearchPaths>
+        <string>{reg:SOFTWARE\Wow6432Node\Valve\Steam:InstallPath}</string>
+        <string>{reg:SOFTWARE\Valve\Steam:InstallPath}</string>
+      </SearchPaths>
+    </AppExceptionAssoc>
 	</Files>
 </Application>

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -13,9 +13,12 @@ using PKSoft.Parser;
 namespace PKSoft
 {
     [Serializable]  // Needed for cloning
-    public class ProfileAssoc
+    public class AppExceptionAssoc
     {
-        public ProfileAssoc(string exec, string service = null)
+        public AppExceptionAssoc()
+        {
+        }
+        public AppExceptionAssoc(string exec, string service = null)
         {
             m_Executable = exec;
             Service = service;
@@ -23,11 +26,11 @@ namespace PKSoft
 
         // Filename or full path. File must have this name.
         private string m_Executable;
-        [XmlAttributeAttribute()]
+        [XmlAttributeAttribute]
         public string Executable
         {
             get { return m_Executable; }
-            private set
+            set
             {
                 m_Executable = value;
                 m_PublicKeys = null;
@@ -36,12 +39,13 @@ namespace PKSoft
         }
 
         // Short name of the service
-        [XmlAttributeAttribute()]
+        [XmlAttributeAttribute]
         public string Service;
 
         // Found files after searching in the user's file system.
         [XmlIgnore]
-        public StringCollection ExecutableRealizations = new StringCollection();
+        [NonSerialized]
+        public List<string> ExecutableRealizations = new List<string>();
 
         // Description of the firewall exception.
         public FirewallException ExceptionTemplate;
@@ -52,6 +56,7 @@ namespace PKSoft
             res.ExecutablePath = fullPath;
             res.ServiceName = Service;
             res.RegenerateID();
+            res.Template = false;
             return res;
         }
 
@@ -109,7 +114,7 @@ namespace PKSoft
         // specified by SearchPaths. Writes found files to ExecutableRealizations.
         public bool SearchForFile()
         {
-            ExecutableRealizations.Clear();
+            ExecutableRealizations = new List<string>();
 
             string exec = PKSoft.Parser.RecursiveParser.ResolveString(this.Executable);
             if (IsValidExecutablePath(exec))
@@ -142,9 +147,9 @@ namespace PKSoft
             return ExecutableRealizations.Count > 0;
         }
 
-        internal ProfileAssoc InstantiateWithNewExecutable(string exec)
+        internal AppExceptionAssoc InstantiateWithNewExecutable(string exec)
         {
-            ProfileAssoc res = Utils.DeepClone(this);
+            AppExceptionAssoc res = Utils.DeepClone(this);
             res.Executable = exec;
             return res;
         }
@@ -157,12 +162,12 @@ namespace PKSoft
                 || (File.Exists(path) && Path.IsPathRooted(path));  // File path on filesystem
         }
         
-        public static ProfileAssoc FromExecutable(string filePath, string service)
+        public static AppExceptionAssoc FromExecutable(string filePath, string service)
         {
             if (!IsValidExecutablePath(filePath))
                 throw new FileNotFoundException();
 
-            return new ProfileAssoc(filePath, service);
+            return new AppExceptionAssoc(filePath, service);
         }
 
         public bool DoesExecutableSatisfy(string filePath, string service)
@@ -170,7 +175,7 @@ namespace PKSoft
             return DoesExecutableSatisfy(FromExecutable(filePath, service));
         }
 
-        public bool DoesExecutableSatisfy(ProfileAssoc exe)
+        public bool DoesExecutableSatisfy(AppExceptionAssoc exe)
         {
             if (exe == null)
                 return false;

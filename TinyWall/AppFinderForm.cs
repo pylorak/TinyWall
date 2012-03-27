@@ -68,7 +68,7 @@ namespace PKSoft
             HashSet<string> exts = new HashSet<string>();
             foreach (Application app in allApps)
             {
-                foreach (ProfileAssoc appFile in app.FileTemplates)
+                foreach (AppExceptionAssoc appFile in app.FileTemplates)
                 {
                     string extFilter = "*" + Path.GetExtension(appFile.Executable).ToUpperInvariant();
                     if (extFilter != "*")
@@ -129,11 +129,11 @@ namespace PKSoft
                             break;
 
                         // Try to match file
-                        ProfileAssoc appFile;
+                        AppExceptionAssoc appFile;
                         Application app = allApps.TryGetRecognizedApp(file, null, out appFile);
                         if ((app != null) && (!app.Special))
                         {
-                            foreach (ProfileAssoc template in app.FileTemplates)
+                            foreach (AppExceptionAssoc template in app.FileTemplates)
                             {
                                 if (!template.ExecutableRealizations.Contains(file))
                                 {
@@ -240,13 +240,13 @@ namespace PKSoft
                 if (li.Checked)
                 {
                     Application app = li.Tag as Application;
-                    foreach (ProfileAssoc template in app.FileTemplates)
+                    foreach (AppExceptionAssoc template in app.FileTemplates)
                     {
                         foreach (string execPath in template.ExecutableRealizations)
                         {
                             try
                             {
-                                if (ProfileAssoc.IsValidExecutablePath(execPath))
+                                if (AppExceptionAssoc.IsValidExecutablePath(execPath))
                                 {
                                     TmpZoneSettings.AppExceptions = Utils.ArrayAddItem(TmpZoneSettings.AppExceptions, template.CreateException(execPath));
                                 }

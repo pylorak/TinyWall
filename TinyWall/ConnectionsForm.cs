@@ -338,7 +338,6 @@ namespace PKSoft
                     }
                     else
                     {
-                        ex.Profiles = new string[] { "Blind trust" };
                         SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, ex);
                     }
                 }

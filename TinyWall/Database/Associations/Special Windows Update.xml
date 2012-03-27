@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Name="TinyWall" Recommended="true" Special="true">
+<Application Name="Windows Update" Recommended="true" Special="true">
 	<Files>
-    <AppExceptionAssoc Executable="{folder:twpath}\TinyWall.exe">
+	<AppExceptionAssoc Executable="{folder:sys32}\svchost.exe" Service="wuauserv">
       <ExceptionTemplate Template="true">
         <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
       </ExceptionTemplate>
-    </AppExceptionAssoc>
+	</AppExceptionAssoc>
 	</Files>
 </Application>

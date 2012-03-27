@@ -16,15 +16,15 @@ namespace PKSoft
             return null;
         }
 
-        internal Application TryGetRecognizedApp(string executablePath, string service, out ProfileAssoc file)
+        internal Application TryGetRecognizedApp(string executablePath, string service, out AppExceptionAssoc file)
         {
-            ProfileAssoc exe = ProfileAssoc.FromExecutable(executablePath, service);
+            AppExceptionAssoc exe = AppExceptionAssoc.FromExecutable(executablePath, service);
 
             for (int i = 0; i < this.Count; ++i)
             {
                 for (int j = 0; j < this[i].FileTemplates.Count; ++j)
                 {
-                    ProfileAssoc assoc = this[i].FileTemplates[j];
+                    AppExceptionAssoc assoc = this[i].FileTemplates[j];
                     if (assoc.DoesExecutableSatisfy(exe))
                     {
                         file = assoc.InstantiateWithNewExecutable(executablePath);

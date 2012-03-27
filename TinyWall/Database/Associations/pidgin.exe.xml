@@ -1,17 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application Name="Pidgin">
 	<Files>
-	<ProfileAssoc Executable="pidgin.exe">
-		<Profiles>
-			<string>Blind trust</string>
-		</Profiles>
-		<HashesSHA1>
-			<string>af68710ffdb5654f1b46c5f2b920de920d4fbf07</string>
-		</HashesSHA1>
-		<SearchPaths>
-			<string>{reg:SOFTWARE\pidgin:}</string>
-			<string>{reg:SOFTWARE\Wow6432Node\pidgin:}</string>
-		</SearchPaths>
-	</ProfileAssoc>
+    <AppExceptionAssoc Executable="pidgin.exe">
+      <ExceptionTemplate Template="true">
+        <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+        <OpenPortListenLocalTCP>*</OpenPortListenLocalTCP>
+        <OpenPortOutboundRemoteUDP>*</OpenPortOutboundRemoteUDP>
+        <OpenPortListenLocalUDP>*</OpenPortListenLocalUDP>
+      </ExceptionTemplate>
+      <Hashes>
+        <string>af68710ffdb5654f1b46c5f2b920de920d4fbf07</string>
+      </Hashes>
+      <SearchPaths>
+        <string>{reg:SOFTWARE\pidgin:}</string>
+        <string>{reg:SOFTWARE\Wow6432Node\pidgin:}</string>
+      </SearchPaths>
+    </AppExceptionAssoc>
 	</Files>
 </Application>

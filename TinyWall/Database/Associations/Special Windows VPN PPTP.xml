@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application Name="VPN PPTP" Special="true">
+	<Files>
+	<AppExceptionAssoc Executable="">
+      <ExceptionTemplate Template="true">
+        <string>PPTP</string>
+      </ExceptionTemplate>
+	</AppExceptionAssoc>
+	</Files>
+</Application>

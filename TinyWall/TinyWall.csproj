@@ -150,8 +150,8 @@
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DatabaseClasses\Profile.cs" />
-    <Compile Include="DatabaseClasses\ProfileAssoc.cs" />
-    <Compile Include="DatabaseClasses\ProfileAssocCollection.cs" />
+    <Compile Include="DatabaseClasses\AppExceptionAssoc.cs" />
+    <Compile Include="DatabaseClasses\AppExceptionAssocCollection.cs" />
     <Compile Include="DatabaseClasses\ProfileCollection.cs" />
     <Compile Include="DatabaseClasses\ProfileManager.cs" />
     <Compile Include="Resources\Messages.Designer.cs">

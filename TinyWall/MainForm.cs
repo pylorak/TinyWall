@@ -869,7 +869,7 @@ namespace PKSoft
                 // If we've found at least one file, add the app to the list
                 if (!app.Special && app.ResolveFilePaths())
                 {
-                    foreach (ProfileAssoc p in app.FileTemplates)
+                    foreach (AppExceptionAssoc p in app.FileTemplates)
                     {
                         foreach (string execPath in p.ExecutableRealizations)
                         {

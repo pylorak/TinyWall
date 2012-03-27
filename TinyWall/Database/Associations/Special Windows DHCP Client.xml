@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application Name="Windows DHCP Client" Recommended="true" Special="true">
+	<Files>
+	<AppExceptionAssoc Executable="{folder:sys32}\svchost.exe" Service="dhcp">
+      <ExceptionTemplate Template="true">
+        <Profiles>
+          <string>DHCP client</string>
+        </Profiles>
+      </ExceptionTemplate>
+	</AppExceptionAssoc>
+	</Files>
+</Application>

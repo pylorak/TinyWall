@@ -90,11 +90,11 @@ namespace PKSoft
             get { return m_Applications; }
         }
 
-        public ProfileCollection GetProfilesFor(ProfileAssoc app)
+        public ProfileCollection GetProfilesFor(AppExceptionAssoc app)
         {
             ProfileCollection ret = new ProfileCollection();
             FirewallException ex = app.ExceptionTemplate;
-            for (int j = 0; j < ex.Profiles.Length; ++j)
+            for (int j = 0; j < ex.Profiles.Count; ++j)
             {
                 Profile p = GetProfile(ex.Profiles[j]);
                 if (p != null)
