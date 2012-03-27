@@ -390,6 +390,8 @@ namespace PKSoft
             if (ofd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
                 SettingsContainer sc = SerializationHelper.LoadFromXMLFile<SettingsContainer>(ofd.FileName);
+                sc.CurrentZone.ZoneName = TmpZoneConfig.ZoneName;
+
                 TmpControllerConfig = sc.ControllerConfig;
                 TmpZoneConfig = sc.CurrentZone;
                 TmpMachineConfig = sc.GlobalConfig;
