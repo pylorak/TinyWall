@@ -520,7 +520,6 @@ namespace PKSoft
                             else
                             {
                                 FirewallState.HasPassword = !string.IsNullOrEmpty(passwd);
-                                UpdateDisplay();
                             }
                         }
 
@@ -534,6 +533,7 @@ namespace PKSoft
             finally
             {
                 this.ShownSettings = null;
+                UpdateDisplay();
             }
         }
 
