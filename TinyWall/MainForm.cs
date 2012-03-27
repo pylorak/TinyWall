@@ -328,7 +328,7 @@ namespace PKSoft
             else
             {
                 SettingsManager.GlobalConfig = new MachineSettings();
-                SettingsManager.CurrentZone = new ZoneSettings();
+                SettingsManager.CurrentZone = new ZoneSettings(true);
                 FirewallState = new ServiceState();
                 SettingsUpdated = true;
             }
@@ -369,7 +369,7 @@ namespace PKSoft
             if (ofd.ShowDialog(this) != System.Windows.Forms.DialogResult.OK)
                 return;
 
-            AppExceptionSettings ex = new AppExceptionSettings(ofd.FileName);
+            FirewallException ex = new FirewallException(ofd.FileName, null);
             ex.ServiceName = string.Empty;
 
             ex.TryRecognizeApp(true);
@@ -389,7 +389,7 @@ namespace PKSoft
 
         private void mnuWhitelistByProcess_Click(object sender, EventArgs e)
         {
-            AppExceptionSettings ex = ProcessesForm.ChooseProcess(this);
+            FirewallException ex = ProcessesForm.ChooseProcess(this);
             if (ex == null) return;
 
             ex.TryRecognizeApp(true);
@@ -520,7 +520,6 @@ namespace PKSoft
                             else
                             {
                                 FirewallState.HasPassword = !string.IsNullOrEmpty(passwd);
-                                UpdateDisplay();
                             }
                         }
 
@@ -534,6 +533,7 @@ namespace PKSoft
             finally
             {
                 this.ShownSettings = null;
+                UpdateDisplay();
             }
         }
 
@@ -582,7 +582,7 @@ namespace PKSoft
                         return;
                     }
 
-                    AppExceptionSettings ex = new AppExceptionSettings(AppPath);
+                    FirewallException ex = new FirewallException(AppPath, null);
                     ex.TryRecognizeApp(true);
                     if (SettingsManager.ControllerConfig.AskForExceptionDetails)
                     {
@@ -602,7 +602,7 @@ namespace PKSoft
 
         private void EditRecentException(object sender, AnyEventArgs e)
         {
-            AppExceptionSettings ex = e.Arg as AppExceptionSettings;
+            FirewallException ex = e.Arg as FirewallException;
             using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
             {
                 if (f.ShowDialog(this) == DialogResult.Cancel)
@@ -614,11 +614,10 @@ namespace PKSoft
             AddNewException(ex);
         }
 
-        private void AddNewException(AppExceptionSettings ex)
+        private void AddNewException(FirewallException ex)
         {
-            List<AppExceptionSettings> exceptions = AppExceptionSettings.CheckForAppDependencies(this, ex);
-            for (int i = 0; i < exceptions.Count; ++i)
-                SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, exceptions[i]);
+            List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(this, ex);
+            SettingsManager.CurrentZone.AppExceptions.AddRange(exceptions);
             SettingsManager.CurrentZone.Normalize();
 
             TWControllerMessages resp = ApplyFirewallSettings(null, SettingsManager.CurrentZone, false);
@@ -869,9 +868,12 @@ namespace PKSoft
                 // If we've found at least one file, add the app to the list
                 if (!app.Special && app.ResolveFilePaths())
                 {
-                    foreach (ProfileAssoc appFile in app.FileRealizations)
+                    foreach (AppExceptionAssoc template in app.FileTemplates)
                     {
-                        SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, appFile.ToExceptionSetting());
+                        foreach (string execPath in template.ExecutableRealizations)
+                        {
+                            SettingsManager.CurrentZone.AppExceptions.Add(template.CreateException(execPath));
+                        }
                     }
                 }
             }

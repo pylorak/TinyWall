@@ -68,7 +68,7 @@ namespace PKSoft
             HashSet<string> exts = new HashSet<string>();
             foreach (Application app in allApps)
             {
-                foreach (ProfileAssoc appFile in app.FileTemplates)
+                foreach (AppExceptionAssoc appFile in app.FileTemplates)
                 {
                     string extFilter = "*" + Path.GetExtension(appFile.Executable).ToUpperInvariant();
                     if (extFilter != "*")
@@ -129,14 +129,18 @@ namespace PKSoft
                             break;
 
                         // Try to match file
-                        ProfileAssoc appFile;
+                        AppExceptionAssoc appFile;
                         Application app = allApps.TryGetRecognizedApp(file, null, out appFile);
                         if ((app != null) && (!app.Special))
                         {
-                            if (!app.FileRealizations.ContainsFileRealization(file))
+                            foreach (AppExceptionAssoc template in app.FileTemplates)
                             {
-                                app.FileRealizations.Add(appFile);
-                            }
+                                if (!template.ExecutableRealizations.Contains(file))
+                                {
+                                    template.ExecutableRealizations.Add(appFile.Executable);
+                                }
+                            } 
+                            
                             Utils.Invoke(list, (MethodInvoker)delegate()
                             {
                                 AddRecognizedAppToList(app);
@@ -170,7 +174,7 @@ namespace PKSoft
 
             if (!IconList.Images.ContainsKey(app.Name))
             {
-                string iconPath = app.FileRealizations[0].Executable;
+                string iconPath = app.FileTemplates[0].ExecutableRealizations[0];
                 if (!File.Exists(iconPath))
                     IconList.Images.Add(app.Name, Resources.Icons.window);
                 else
@@ -236,14 +240,19 @@ namespace PKSoft
                 if (li.Checked)
                 {
                     Application app = li.Tag as Application;
-                    foreach (ProfileAssoc pa in app.FileRealizations)
+                    foreach (AppExceptionAssoc template in app.FileTemplates)
                     {
-                        try
+                        foreach (string execPath in template.ExecutableRealizations)
                         {
-                            if (ProfileAssoc.IsValidExecutablePath(pa.Executable))
-                                TmpZoneSettings.AppExceptions = Utils.ArrayAddItem(TmpZoneSettings.AppExceptions, pa.ToExceptionSetting());
+                            try
+                            {
+                                if (AppExceptionAssoc.IsValidExecutablePath(execPath))
+                                {
+                                    TmpZoneSettings.AppExceptions.Add(template.CreateException(execPath));
+                                }
+                            }
+                            catch (ArgumentException) { }
                         }
-                        catch (ArgumentException) { }
                     }
                 }
             }

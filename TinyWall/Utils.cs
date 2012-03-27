@@ -228,16 +228,6 @@ namespace PKSoft
 
             return false;
         }
-        internal static T[] ArrayRemoveItem<T>(T[] arr, T val)
-        {
-            return Array.FindAll(arr, item => !item.Equals(val));
-        }
-        internal static T[] ArrayAddItem<T>(T[] arr, T val)
-        {
-            Array.Resize(ref arr, arr.Length + 1);
-            arr[arr.Length - 1] = val;
-            return arr;
-        }
 
         internal static void RunAtStartup(string ApplicationName, string ApplicationPath)
         {

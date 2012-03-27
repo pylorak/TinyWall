@@ -6,7 +6,6 @@ namespace PKSoft
     public class ProfileManager
     {
         private ProfileCollection m_Profiles;
-        private ProfileCollection m_GenericProfiles;
         private ApplicationCollection m_Applications;
 
         public static string DBPath
@@ -17,73 +16,28 @@ namespace PKSoft
         public static ProfileManager Load(string filePath)
         {
             ProfileManager newInstance = SerializationHelper.LoadFromXMLFile<ProfileManager>(filePath);
-            newInstance.FinishLoading();
             return newInstance;
         }
 
         public void Save(string filePath)
         {
             SerializationHelper.SaveToXMLFile(this, filePath);
-
-            FinishLoading();
         }
 
         public ProfileManager()
         {
             m_Profiles = new ProfileCollection();
-            m_GenericProfiles = new ProfileCollection();
             m_Applications = new ApplicationCollection();
-            FinishLoading();
-        }
-
-        private void FinishLoading()
-        {
-            // Create built-in profiles
-            {
-                Profile p;
-
-                if (!m_GenericProfiles.Contains("Blind trust"))
-                {
-                    // "Blind trust"
-                    p = new Profile();
-                    p.Name = "Blind trust";
-                    p.Rules = new RuleDef[] { new RuleDef(AppExceptionSettings.GenerateID(), "Blind trust", WindowsFirewall.PacketAction.Allow, WindowsFirewall.RuleDirection.InOut, WindowsFirewall.Protocol.Any) };
-                    m_GenericProfiles.Add(p);
-                }
-
-                if (!m_GenericProfiles.Contains("Outbound"))
-                {
-                    // "Outbound"
-                    p = new Profile();
-                    p.Name = "Outbound";
-                    p.Rules = new RuleDef[] { new RuleDef(AppExceptionSettings.GenerateID(), "Allow outbound", WindowsFirewall.PacketAction.Allow, WindowsFirewall.RuleDirection.Out, WindowsFirewall.Protocol.TcpUdp) };
-                    m_GenericProfiles.Add(p);
-                }
-
-                if (!m_GenericProfiles.Contains("Block"))
-                {
-                    // "Block"
-                    p = new Profile();
-                    p.Name = "Block";
-                    p.Rules = new RuleDef[] { new RuleDef(AppExceptionSettings.GenerateID(), "Block", WindowsFirewall.PacketAction.Block, WindowsFirewall.RuleDirection.InOut, WindowsFirewall.Protocol.Any) };
-                    m_GenericProfiles.Add(p);
-                }
-            }
         }
 
         public ProfileCollection AvailableProfiles
         {
-            get { return m_GenericProfiles; }
+            get { return m_Profiles; }
         }
 
         public Profile GetProfile(string name)
         {
-            for (int i = 0; i < this.m_GenericProfiles.Count; ++i)
-            {
-                if (name.Equals(m_GenericProfiles[i].Name, System.StringComparison.OrdinalIgnoreCase))
-                    return Utils.DeepClone(m_GenericProfiles[i]);
-            }
-            for (int i = 0; i < m_Profiles.Count; ++i)
+            for (int i = 0; i < this.m_Profiles.Count; ++i)
             {
                 if (name.Equals(m_Profiles[i].Name, System.StringComparison.OrdinalIgnoreCase))
                     return Utils.DeepClone(m_Profiles[i]);
@@ -96,12 +50,13 @@ namespace PKSoft
             get { return m_Applications; }
         }
 
-        public ProfileCollection GetProfilesFor(ProfileAssoc app)
+        public ProfileCollection GetProfilesFor(AppExceptionAssoc app)
         {
             ProfileCollection ret = new ProfileCollection();
-            for (int j = 0; j < app.Profiles.Length; ++j)
+            FirewallException ex = app.ExceptionTemplate;
+            for (int j = 0; j < ex.Profiles.Count; ++j)
             {
-                Profile p = GetProfile(app.Profiles[j]);
+                Profile p = GetProfile(ex.Profiles[j]);
                 if (p != null)
                     ret.Add(p);
             }

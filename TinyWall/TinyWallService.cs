@@ -34,7 +34,7 @@ namespace PKSoft
 
         // Context needed for learning mode
         ApplicationCollection LearningKnownApplication;
-        List<AppExceptionSettings> LearningNewExceptions = new List<AppExceptionSettings>();
+        List<FirewallException> LearningNewExceptions = new List<FirewallException>();
         
         private WindowsFirewall.Policy Firewall;
         private WindowsFirewall.Rules FwRules;
@@ -54,7 +54,7 @@ namespace PKSoft
             ActiveRules.AddRange(AppExRules);
             ActiveRules.AddRange(SpecialRules);
 
-            string ModeId = AppExceptionSettings.GenerateID();
+            string ModeId = FirewallException.GenerateID();
 
             // Do we want to let local traffic through?
             if (SettingsManager.CurrentZone.AllowLocalSubnet)
@@ -131,7 +131,7 @@ namespace PKSoft
 
         private void MergeActiveRulesIntoWinFirewall()
         {
-            int lenId = AppExceptionSettings.GenerateID().Length;
+            int lenId = FirewallException.GenerateID().Length;
             List<Rule> rules = new List<Rule>();
 
             // Add new rules
@@ -204,17 +204,20 @@ namespace PKSoft
             SpecialRules.Clear();
 
             ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
-            for (int i = 0; i < SettingsManager.CurrentZone.SpecialExceptions.Length; ++i)
+            for (int i = 0; i < SettingsManager.CurrentZone.SpecialExceptions.Count; ++i)
             {
                 try
                 {   //This try-catch will prevent errors if an exception profile string is invalid
                     Application app = allApps.GetApplicationByName(SettingsManager.CurrentZone.SpecialExceptions[i]);
                     app.ResolveFilePaths();
-                    for (int j = 0; j < app.FileRealizations.Count; ++j)
+                    foreach (AppExceptionAssoc template in app.FileTemplates)
                     {
-                        AppExceptionSettings ex = app.FileRealizations[j].ToExceptionSetting();
-                        ex.AppID = AppExceptionSettings.GenerateID();
-                        GetRulesForException(ex, SpecialRules);
+                        foreach (string execPath in template.ExecutableRealizations)
+                        {
+                            FirewallException ex = template.CreateException(execPath);
+                            ex.AppID = FirewallException.GenerateID();
+                            GetRulesForException(ex, SpecialRules);
+                        }
                     }
                 }
                 catch { }
@@ -226,18 +229,18 @@ namespace PKSoft
             // We will collect all our rules into this list
             AppExRules.Clear();
 
-            for (int i = 0; i < SettingsManager.CurrentZone.AppExceptions.Length; ++i)
+            for (int i = 0; i < SettingsManager.CurrentZone.AppExceptions.Count; ++i)
             {
                 try
                 {   //This try-catch will prevent errors if an exception profile string is invalid
-                    AppExceptionSettings ex = SettingsManager.CurrentZone.AppExceptions[i];
+                    FirewallException ex = SettingsManager.CurrentZone.AppExceptions[i];
                     GetRulesForException(ex, AppExRules);
                 }
                 catch { }
             }
         }
 
-        private void GetRulesForException(AppExceptionSettings ex, List<RuleDef> ruleset)
+        private void GetRulesForException(FirewallException ex, List<RuleDef> ruleset)
         {
             if (string.IsNullOrEmpty(ex.AppID))
             {
@@ -250,7 +253,26 @@ namespace PKSoft
 #endif
             }
 
-            for (int i = 0; i < ex.Profiles.Length; ++i)    // for each profile
+            if (ex.AlwaysBlockTraffic)
+            {
+                RuleDef def = new RuleDef(ex.AppID, "Block", PacketAction.Block, RuleDirection.InOut, Protocol.Any);
+                def.Application = ex.ExecutablePath;
+                def.ServiceName = ex.ServiceName;
+                ruleset.Add(def);
+                return;
+            }
+            if (ex.UnrestricedTraffic)
+            {
+                RuleDef def = new RuleDef(ex.AppID, "Full access", PacketAction.Allow, RuleDirection.InOut, Protocol.Any);
+                def.Application = ex.ExecutablePath;
+                def.ServiceName = ex.ServiceName;
+                if (ex.LocalNetworkOnly)
+                    def.RemoteAddresses = "LocalSubnet";
+                ruleset.Add(def);
+                return;
+            }
+
+            for (int i = 0; i < ex.Profiles.Count; ++i)    // for each profile
             {
                 // Get the rules for this profile
                 Profile p = GlobalInstances.ProfileMan.GetProfile(ex.Profiles[i]);
@@ -265,6 +287,8 @@ namespace PKSoft
                         def.ExceptionId = ex.AppID;
                         def.Application = ex.ExecutablePath;
                         def.ServiceName = ex.ServiceName;
+                        if (ex.LocalNetworkOnly)
+                            def.RemoteAddresses = "LocalSubnet";
                         ruleset.Add(def);
                     }
                     catch
@@ -282,34 +306,46 @@ namespace PKSoft
                 // Add extra ports
                 if (!string.IsNullOrEmpty(ex.OpenPortListenLocalTCP))
                 {
-                    RuleDef def = new RuleDef(ex.AppID, "Extra Tcp Listen Ports", PacketAction.Allow, RuleDirection.In,  Protocol.TCP);
-                    def.LocalPorts = ex.OpenPortListenLocalTCP;
+                    RuleDef def = new RuleDef(ex.AppID, "TCP Listen Ports", PacketAction.Allow, RuleDirection.In,  Protocol.TCP);
                     def.Application = ex.ExecutablePath;
                     def.ServiceName = ex.ServiceName;
+                    if (!ex.OpenPortListenLocalTCP.Equals("*"))
+                        def.LocalPorts = ex.OpenPortListenLocalTCP;
+                    if (ex.LocalNetworkOnly)
+                        def.RemoteAddresses = "LocalSubnet";
                     ruleset.Add(def);
                 }
                 if (!string.IsNullOrEmpty(ex.OpenPortListenLocalUDP))
                 {
-                    RuleDef def = new RuleDef(ex.AppID, "Extra Udp Listen Ports", PacketAction.Allow, RuleDirection.In, Protocol.UDP);
-                    def.LocalPorts = ex.OpenPortListenLocalUDP;
+                    RuleDef def = new RuleDef(ex.AppID, "UDP Listen Ports", PacketAction.Allow, RuleDirection.In, Protocol.UDP);
                     def.Application = ex.ExecutablePath;
                     def.ServiceName = ex.ServiceName;
+                    if (!ex.OpenPortListenLocalUDP.Equals("*"))
+                        def.LocalPorts = ex.OpenPortListenLocalUDP;
+                    if (ex.LocalNetworkOnly)
+                        def.RemoteAddresses = "LocalSubnet";
                     ruleset.Add(def);
                 }
                 if (!string.IsNullOrEmpty(ex.OpenPortOutboundRemoteTCP))
                 {
-                    RuleDef def = new RuleDef(ex.AppID, "Extra Tcp Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.TCP);
-                    def.RemotePorts = ex.OpenPortOutboundRemoteTCP;
+                    RuleDef def = new RuleDef(ex.AppID, "TCP Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.TCP);
                     def.Application = ex.ExecutablePath;
                     def.ServiceName = ex.ServiceName;
+                    if (!ex.OpenPortOutboundRemoteTCP.Equals("*"))
+                        def.RemotePorts = ex.OpenPortOutboundRemoteTCP;
+                    if (ex.LocalNetworkOnly)
+                        def.RemoteAddresses = "LocalSubnet";
                     ruleset.Add(def);
                 }
                 if (!string.IsNullOrEmpty(ex.OpenPortOutboundRemoteUDP))
                 {
-                    RuleDef def = new RuleDef(ex.AppID, "Extra Udp Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.UDP);
-                    def.RemotePorts = ex.OpenPortOutboundRemoteUDP;
+                    RuleDef def = new RuleDef(ex.AppID, "UDP Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.UDP);
                     def.Application = ex.ExecutablePath;
                     def.ServiceName = ex.ServiceName;
+                    if (!ex.OpenPortOutboundRemoteUDP.Equals("*"))
+                        def.RemotePorts = ex.OpenPortOutboundRemoteUDP;
+                    if (ex.LocalNetworkOnly)
+                        def.RemoteAddresses = "LocalSubnet";
                     ruleset.Add(def);
                 }
             }
@@ -581,7 +617,7 @@ namespace PKSoft
                     if (alreadyExists)
                         continue;
 
-                    ProfileAssoc appFile;
+                    AppExceptionAssoc appFile;
                     Application app = LearningKnownApplication.TryGetRecognizedApp(exec, null, out appFile);
                     if (app != null)
                     {
@@ -589,16 +625,21 @@ namespace PKSoft
                             continue;
 
                         app.ResolveFilePaths();
-                        foreach (ProfileAssoc pa in app.FileRealizations)
+                        foreach (AppExceptionAssoc p in app.FileTemplates)
                         {
-                            LearningNewExceptions.Add(pa.ToExceptionSetting());
+                            foreach (string execPath in p.ExecutableRealizations)
+                            {
+                                LearningNewExceptions.Add(p.CreateException(execPath));
+                            }
                         }
                     }
                     else
                     {
-                        appFile = ProfileAssoc.FromExecutable(exec, null);
-                        appFile.Profiles = new string[1] { "Blind trust" };
-                        AppExceptionSettings ex = appFile.ToExceptionSetting();
+                        FirewallException ex = new FirewallException(exec, null);
+                        ex.OpenPortListenLocalTCP = "*";
+                        ex.OpenPortListenLocalUDP = "*";
+                        ex.OpenPortOutboundRemoteTCP = "*";
+                        ex.OpenPortOutboundRemoteUDP = "*";
                         LearningNewExceptions.Add(ex);
                     }
                 }
@@ -617,9 +658,9 @@ namespace PKSoft
             {
                 lock (LogWatcher)
                 {
-                    foreach (AppExceptionSettings ex in LearningNewExceptions)
+                    foreach (FirewallException ex in LearningNewExceptions)
                     {
-                        SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, ex);
+                        SettingsManager.CurrentZone.AppExceptions.Add(ex);
                     }
                     LearningNewExceptions.Clear();
                 }
@@ -804,8 +845,8 @@ namespace PKSoft
                         bool needsSave = false;
 
                         // Check all exceptions if any one has expired
-                        AppExceptionSettings[] exs = SettingsManager.CurrentZone.AppExceptions;
-                        for (int i = 0; i < exs.Length; ++i)
+                        List<FirewallException> exs = SettingsManager.CurrentZone.AppExceptions;
+                        for (int i = exs.Count-1; i >= 0; --i)
                         {
                             // Timer values above zero are the number of minutes to stay active
                             if ((int)exs[i].Timer <= 0)
@@ -826,7 +867,7 @@ namespace PKSoft
                                 }
 
                                 // Remove exception
-                                exs = Utils.ArrayRemoveItem(exs, exs[i]);
+                                exs.RemoveAt(i);
                                 needsSave = true;
                             }
                         }
@@ -1064,8 +1105,8 @@ namespace PKSoft
 
             // Check all exceptions if any one has expired
             {
-                AppExceptionSettings[] exs = SettingsManager.CurrentZone.AppExceptions;
-                for (int i = 0; i < exs.Length; ++i)
+                List<FirewallException> exs = SettingsManager.CurrentZone.AppExceptions;
+                for (int i = exs.Count-1; i >= 0; --i)
                 {
                     // "Permanent" exceptions do not expire, skip them
                     if (exs[i].Timer == AppExceptionTimer.Permanent)
@@ -1075,7 +1116,7 @@ namespace PKSoft
                     if (exs[i].Timer == AppExceptionTimer.Until_Reboot)
                     {
                         // Remove exception
-                        exs = Utils.ArrayRemoveItem(exs, exs[i]);
+                        exs.RemoveAt(i);
                         needsSave = true;
                     }
                 }

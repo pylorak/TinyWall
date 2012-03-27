@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application Name="Windows Network Discovery" Special="true" Recommended="true">
+	<Files>
+	<AppExceptionAssoc Executable="{folder:sys32}\svchost.exe" Service="ssdpsrv">
+      <ExceptionTemplate Template="true">
+        <Profiles>
+          <string>SSDP</string>
+        </Profiles>
+      </ExceptionTemplate>
+	</AppExceptionAssoc>
+	<AppExceptionAssoc Executable="{folder:sys32}\svchost.exe" Service="upnphost">
+      <ExceptionTemplate Template="true">
+        <Profiles>
+          <string>UPnP</string>
+        </Profiles>
+      </ExceptionTemplate>
+	</AppExceptionAssoc>
+	<AppExceptionAssoc Executable="{folder:sys32}\svchost.exe" Service="fdphost">
+      <ExceptionTemplate Template="true">
+        <Profiles>
+          <string>WSD</string>
+        </Profiles>
+      </ExceptionTemplate>
+	</AppExceptionAssoc>
+	<AppExceptionAssoc Executable="System">
+      <ExceptionTemplate Template="true">
+        <Profiles>
+        <string>UPnP</string>
+        <string>WSD Event</string>
+        </Profiles>
+      </ExceptionTemplate>
+	</AppExceptionAssoc>
+	</Files>
+</Application>

@@ -327,20 +327,18 @@ namespace PKSoft
 
                 try
                 {
-                    AppExceptionSettings ex = new AppExceptionSettings(path);
-                    ex.ServiceName = string.Empty;
+                    FirewallException ex = new FirewallException(path, null);
                     ex.TryRecognizeApp(true);
 
                     if (ex.Recognized.Value)
                     {
-                        List<AppExceptionSettings> exceptions = AppExceptionSettings.CheckForAppDependencies(this, ex);
+                        List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(this, ex);
                         for (int i = 0; i < exceptions.Count; ++i)
-                            SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, exceptions[i]);
+                            SettingsManager.CurrentZone.AppExceptions.Add(exceptions[i]);
                     }
                     else
                     {
-                        ex.Profiles = new string[] { "Blind trust" };
-                        SettingsManager.CurrentZone.AppExceptions = Utils.ArrayAddItem(SettingsManager.CurrentZone.AppExceptions, ex);
+                        SettingsManager.CurrentZone.AppExceptions.Add(ex);
                     }
                 }
                 catch

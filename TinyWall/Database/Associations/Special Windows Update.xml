@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application Name="Windows Update" Recommended="true" Special="true">
+	<Files>
+	<AppExceptionAssoc Executable="{folder:sys32}\svchost.exe" Service="wuauserv">
+      <ExceptionTemplate Template="true">
+        <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+      </ExceptionTemplate>
+	</AppExceptionAssoc>
+	</Files>
+</Application>

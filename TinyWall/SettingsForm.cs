@@ -90,9 +90,9 @@ namespace PKSoft
         private void RebuildExceptionsList()
         {
             ExceptionItems.Clear();
-            for (int i = 0; i < TmpZoneConfig.AppExceptions.Length; ++i)
+            for (int i = 0; i < TmpZoneConfig.AppExceptions.Count; ++i)
             {
-                AppExceptionSettings ex = TmpZoneConfig.AppExceptions[i];
+                FirewallException ex = TmpZoneConfig.AppExceptions[i];
                 ExceptionItems.Add(ListItemFromAppException(ex));
             }
             ApplyExceptionFilter();
@@ -134,7 +134,7 @@ namespace PKSoft
             listApplications_SelectedIndexChanged(listApplications, null);
         }
 
-        private ListViewItem ListItemFromAppException(AppExceptionSettings ex)
+        private ListViewItem ListItemFromAppException(FirewallException ex)
         {
             string name = string.IsNullOrEmpty(ex.ServiceName) ? ex.ExecutableName : "Srv: " + ex.ServiceName;
 
@@ -151,22 +151,6 @@ namespace PKSoft
             else
                 li.ImageKey = "deleted";
 
-            string AppProfiles = string.Empty;
-            if (ex.Profiles.Length > 0)
-            {
-                // Add first profile
-                if (GlobalInstances.ProfileMan.GetProfile(ex.Profiles[0]) != null)
-                    AppProfiles = ex.Profiles[0];
-
-                // Add rest of profiles
-                for (int j = 1; j < ex.Profiles.Length; ++j)
-                {
-                    if (GlobalInstances.ProfileMan.GetProfile(ex.Profiles[j]) != null)
-                        AppProfiles += ", " + ex.Profiles[j];
-                }
-            }
-
-            li.SubItems.Add(AppProfiles);
             return li;
         }
 
@@ -210,11 +194,11 @@ namespace PKSoft
             string itemText = clb.Items[e.Index].ToString();
             if (e.NewValue == CheckState.Checked)
             {
-                TmpZoneConfig.SpecialExceptions = Utils.ArrayAddItem(TmpZoneConfig.SpecialExceptions, itemText);
+                TmpZoneConfig.SpecialExceptions.Add(itemText);
             }
             else
             {
-                TmpZoneConfig.SpecialExceptions = Utils.ArrayRemoveItem(TmpZoneConfig.SpecialExceptions, itemText);
+                TmpZoneConfig.SpecialExceptions.Remove(itemText);
             }
         }
 
@@ -235,7 +219,7 @@ namespace PKSoft
         private void btnAppRemove_Click(object sender, EventArgs e)
         {
             ListViewItem li = listApplications.SelectedItems[0];
-            TmpZoneConfig.AppExceptions = Utils.ArrayRemoveItem(TmpZoneConfig.AppExceptions, (AppExceptionSettings)li.Tag);
+            TmpZoneConfig.AppExceptions.Remove((FirewallException)li.Tag);
             RebuildExceptionsList();
         }
 
@@ -244,24 +228,24 @@ namespace PKSoft
             if (MessageBox.Show(this, PKSoft.Resources.Messages.AreYouSureYouWantToRemoveAllExceptions, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.No)
                 return;
 
-            TmpZoneConfig.AppExceptions = new AppExceptionSettings[0];
+            TmpZoneConfig.AppExceptions.Clear();
             RebuildExceptionsList();
         }
         
         private void btnAppModify_Click(object sender, EventArgs e)
         {
             ListViewItem li = listApplications.SelectedItems[0];
-            AppExceptionSettings oldEx = (AppExceptionSettings)li.Tag;
-            AppExceptionSettings newEx = Utils.DeepClone(oldEx);
+            FirewallException oldEx = (FirewallException)li.Tag;
+            FirewallException newEx = Utils.DeepClone(oldEx);
             newEx.RegenerateID();
             using (ApplicationExceptionForm f = new ApplicationExceptionForm(newEx))
             {
                 if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {
                     // Remove old rule
-                    TmpZoneConfig.AppExceptions = Utils.ArrayRemoveItem(TmpZoneConfig.AppExceptions, oldEx);
+                    TmpZoneConfig.AppExceptions.Remove(oldEx);
                     // Add new rule
-                    TmpZoneConfig.AppExceptions = Utils.ArrayAddItem(TmpZoneConfig.AppExceptions, f.ExceptionSettings);
+                    TmpZoneConfig.AppExceptions.Add(f.ExceptionSettings);
                     TmpZoneConfig.Normalize();
                     RebuildExceptionsList();
                 }
@@ -272,14 +256,14 @@ namespace PKSoft
 
         private void btnAppAdd_Click(object sender, EventArgs e)
         {
-            AppExceptionSettings ex = new AppExceptionSettings();
+            FirewallException ex = new FirewallException();
             using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
             {
                 if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {
-                    List<AppExceptionSettings> exceptions = AppExceptionSettings.CheckForAppDependencies(this, f.ExceptionSettings);
+                    List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(this, f.ExceptionSettings);
                     for (int i = 0; i < exceptions.Count; ++i)
-                        TmpZoneConfig.AppExceptions = Utils.ArrayAddItem(TmpZoneConfig.AppExceptions, exceptions[i]);
+                        TmpZoneConfig.AppExceptions.Add(exceptions[i]);
                     TmpZoneConfig.Normalize();
                     RebuildExceptionsList();
                 }
@@ -293,9 +277,10 @@ namespace PKSoft
 
         private void btnSubmitAssoc_Click(object sender, EventArgs e)
         {
+            /* TODO
             // Get exception
             ListViewItem li = listApplications.SelectedItems[0];
-            AppExceptionSettings ex = (AppExceptionSettings)li.Tag;
+            FirewallException ex = (FirewallException)li.Tag;
 
             // Construct association
             ProfileAssoc pa = ProfileAssoc.FromExecutable(ex.ExecutablePath, string.Empty);
@@ -310,6 +295,7 @@ namespace PKSoft
             psi.UseShellExecute = true;
             psi.RedirectStandardOutput = false;
             Process.Start(psi);
+            */
         }
 
         private void SettingsForm_Shown(object sender, EventArgs e)
@@ -404,6 +390,8 @@ namespace PKSoft
             if (ofd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
                 SettingsContainer sc = SerializationHelper.LoadFromXMLFile<SettingsContainer>(ofd.FileName);
+                sc.CurrentZone.ZoneName = TmpZoneConfig.ZoneName;
+
                 TmpControllerConfig = sc.ControllerConfig;
                 TmpZoneConfig = sc.CurrentZone;
                 TmpMachineConfig = sc.GlobalConfig;

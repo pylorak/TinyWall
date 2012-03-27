@@ -1,13 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application Name="Internet Download Manager">
 	<Files>
-	<ProfileAssoc Executable="IDMan.exe">
-		<Profiles>
-			<string>Outbound</string>
-		</Profiles>
-		<PublicKeys>
-			<string>308189028181009B1025E0E8715FC74E5A9176C0914185CFDF9AD292614992B08C9157518A0971BC8740AE5998B4020D576500F6989E1B23DB89C474ABBF9AF2B964FE4C6DF554724CBF11200E0E08DF3B4F346B568CEE9CF34C7A911E2E79E78CD26D0E3D7D41B89FC88B4398D4A6CDE6B2B6A5AB066F605B9887B65AB83B035957C2F7BA07A90203010001</string>
-		</PublicKeys>
-	</ProfileAssoc>
+    <AppExceptionAssoc Executable="IDMan.exe">
+      <ExceptionTemplate Template="true">
+        <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+        <OpenPortListenLocalTCP>*</OpenPortListenLocalTCP>
+        <OpenPortOutboundRemoteUDP>*</OpenPortOutboundRemoteUDP>
+        <OpenPortListenLocalUDP>*</OpenPortListenLocalUDP>
+      </ExceptionTemplate>
+      <PublicKeys>
+        <string>308189028181009B1025E0E8715FC74E5A9176C0914185CFDF9AD292614992B08C9157518A0971BC8740AE5998B4020D576500F6989E1B23DB89C474ABBF9AF2B964FE4C6DF554724CBF11200E0E08DF3B4F346B568CEE9CF34C7A911E2E79E78CD26D0E3D7D41B89FC88B4398D4A6CDE6B2B6A5AB066F605B9887B65AB83B035957C2F7BA07A90203010001</string>
+      </PublicKeys>
+    </AppExceptionAssoc>
 	</Files>
 </Application>

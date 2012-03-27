@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application Name="Windows DNS Client" Recommended="true" Special="true">
+	<Files>
+	<AppExceptionAssoc Executable="{folder:sys32}\svchost.exe" Service="Dnscache">
+      <ExceptionTemplate Template="true">
+        <Profiles>
+          <string>DNS client</string>
+          <string>LLMNR-UDP</string>
+        </Profiles>
+      </ExceptionTemplate>
+	</AppExceptionAssoc>
+	</Files>
+</Application>

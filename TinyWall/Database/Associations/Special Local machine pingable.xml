@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application Name="Local machine pingable" Special="true">
+	<Files>
+    <AppExceptionAssoc Executable="">
+      <ExceptionTemplate Template="true">
+        <Profiles>
+          <string>Incoming ICMP Ping</string>
+        </Profiles>
+      </ExceptionTemplate>
+    </AppExceptionAssoc>
+	</Files>
+</Application>

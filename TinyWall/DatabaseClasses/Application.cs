@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 namespace PKSoft
 {
     [Serializable]  // Needed for ICloneable implementation 
-    public class Application : ICloneable
+    public class Application
     {
         // Application name
         [XmlAttributeAttribute()]
@@ -24,11 +24,7 @@ namespace PKSoft
 
         // Executables that belong to this application
         [XmlArray("Files")]
-        public ProfileAssocCollection FileTemplates = new ProfileAssocCollection();
-
-        // Executables that belong to this application
-        [XmlIgnore]
-        public ProfileAssocCollection FileRealizations = new ProfileAssocCollection();
+        public AppExceptionAssocCollection FileTemplates = new AppExceptionAssocCollection();
 
         public bool ShouldSerializeRecommended()
         {
@@ -40,11 +36,6 @@ namespace PKSoft
             return Special;
         }
 
-        public object Clone()
-        {
-            return Utils.DeepClone(this);
-        }
-
         public override string ToString()
         {
             return this.Name;
@@ -52,19 +43,12 @@ namespace PKSoft
 
         internal bool ResolveFilePaths()
         {
-            ProfileAssocCollection foundFiles = new ProfileAssocCollection();
+            bool foundFiles = false;
             for (int i = 0; i < FileTemplates.Count; ++i)
             {
-                ProfileAssocCollection pac = FileTemplates[i].SearchForFile();
-                foreach (ProfileAssoc pa in pac)
-                    foundFiles.Add(pa);
+                foundFiles |= FileTemplates[i].SearchForFile();
             }
-
-            FileRealizations.Clear();
-            foreach (ProfileAssoc file in foundFiles)
-                FileRealizations.Add(file);
-
-            return foundFiles.Count > 0;
+            return foundFiles;
         }
     }
 }

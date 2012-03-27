@@ -25,19 +25,26 @@ namespace PKSoft
         private const string ENC_IV = "X0@!H93!Y=8&/M/T";   // must be 16/24/32 bytes
 
         public string ZoneName = "Unknown";
-        public string[] SpecialExceptions = new string[0];
+        public List<string> SpecialExceptions = new List<string>();
         public bool AllowLocalSubnet = false;
-        public AppExceptionSettings[] AppExceptions = new AppExceptionSettings[0];
+        public List<FirewallException> AppExceptions = new List<FirewallException>();
 
 
         internal ZoneSettings()
         {
-            // Add recommended profiles as standard
-            ApplicationCollection allKnownApps = GlobalInstances.ProfileMan.KnownApplications;
-            foreach (Application app in allKnownApps)
+        }
+
+        internal ZoneSettings(bool enableRecommendedExceptions)
+        {
+            if (enableRecommendedExceptions)
             {
-                if (app.Recommended && app.Special)
-                    SpecialExceptions = Utils.ArrayAddItem(SpecialExceptions, app.Name);
+                // Add recommended profiles as standard
+                ApplicationCollection allKnownApps = GlobalInstances.ProfileMan.KnownApplications;
+                foreach (Application app in allKnownApps)
+                {
+                    if (app.Recommended && app.Special)
+                        SpecialExceptions.Add(app.Name);
+                }
             }
         }
 
@@ -64,11 +71,15 @@ namespace PKSoft
                 string key = ENC_SALT + MachineFingerprint.Fingerprint();
                 key = Hasher.HashString(key).Substring(0, 16);
 
-                return SerializationHelper.LoadFromEncryptedXMLFile<ZoneSettings>(SettingsFile, key, ENC_IV);
+                ZoneSettings zone = SerializationHelper.LoadFromEncryptedXMLFile<ZoneSettings>(SettingsFile, key, ENC_IV);
+                List<string> distinctSpecialEx = new List<string>();
+                distinctSpecialEx.AddRange(zone.SpecialExceptions.Distinct());
+                zone.SpecialExceptions = distinctSpecialEx;
+                return zone;
             }
             catch
             {
-                ZoneSettings settings = new ZoneSettings();
+                ZoneSettings settings = new ZoneSettings(true);
                 settings.ZoneName = zoneName;
                 return settings;
             }
@@ -76,43 +87,48 @@ namespace PKSoft
 
         internal void Normalize()
         {
-            for (int i = 0; i < AppExceptions.Length; ++i)
+            for (int i = 0; i < AppExceptions.Count; ++i)
             {
-                AppExceptionSettings app1 = AppExceptions[i];
+                FirewallException app1 = AppExceptions[i];
 
-                for (int j = AppExceptions.Length-1; j > i; --j)
+                for (int j = AppExceptions.Count - 1; j > i; --j)
                 {
-                    AppExceptionSettings app2 = AppExceptions[j];
+                    FirewallException app2 = AppExceptions[j];
 
                     if (app1.AppID == app2.AppID)
                     {
-                        AppExceptionSettings older = app1;
-                        AppExceptionSettings newer = app2;
+                        // With equal AppIDs, keep only the newer one
+
+                        FirewallException older = app1;
+                        FirewallException newer = app2;
                         if (app1.CreationDate > app2.CreationDate)
                         {
                             older = app2;
                             newer = app1;
                         }
-                        AppExceptions = Utils.ArrayRemoveItem(AppExceptions, older);
+                        AppExceptions.Remove(older);
                         newer.RegenerateID();
                     }
-                    else if (AppExceptionSettings.ExecutableNameEquals(app1, app2) &&
+                    else if (FirewallException.ExecutableNameEquals(app1, app2) &&
                         (app1.Timer == AppExceptionTimer.Permanent) && (app2.Timer == AppExceptionTimer.Permanent))
                     {
-                        List<string> profs = new List<string>();
-                        profs.AddRange(app1.Profiles);
-                        profs.AddRange(app2.Profiles);
+                        // Merge rules
+
                         app1.RegenerateID();
-                        app1.Profiles = profs.Distinct().ToArray();
-                        AppExceptions = Utils.ArrayRemoveItem(AppExceptions, app2);
+                        app2.MergeRulesTo(app1);
+                        AppExceptions.Remove(app2);
                     }
                 }
 
-                // If "Blind trust" is enabled, then all other profiles are redundant
-                if (Utils.ArrayContains(app1.Profiles, "Blind trust"))
+                // If communication is unrestricted, then all other rules are redundant
+                if (app1.UnrestricedTraffic)
                 {
                     app1.RegenerateID();
-                    app1.Profiles = new string[] { "Blind trust" };
+                    app1.Profiles = null;
+                    app1.OpenPortListenLocalTCP = null;
+                    app1.OpenPortListenLocalUDP = null;
+                    app1.OpenPortOutboundRemoteTCP = null;
+                    app1.OpenPortOutboundRemoteUDP = null;
                 }
             }
         }
