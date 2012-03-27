@@ -281,7 +281,8 @@ namespace PKSoft
                 {
                     foreach (string execPath in template.ExecutableRealizations)
                     {
-                        exceptions2.Add(template.CreateException(execPath));
+                        if (!ex.ExecutablePath.Equals(execPath, StringComparison.OrdinalIgnoreCase))
+                            exceptions2.Add(template.CreateException(execPath));
                     }
                 }
 
