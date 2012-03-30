@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+
+  <!-- String constants -->
+  <?define ProductName="TinyWall" ?>
+  <?define Manufacturer="Károly Pados" ?>
+  <?define Description="A non-intrusive firewall solution." ?>
+  <?define ProductURL="http://tinywall.pados.hu" ?>
+  <?define ProductVersion="!(bind.fileVersion.TinyWallEXE)" ?>
+  <?define OldestUpgradeableVersion="1.9.2.9" ?>
+
+  <!-- Architecture selection -->
+  <?if $(var.Platform) = x64 ?>
+    <?define BuildArch="x64" ?>
+    <?define Win64 = "yes" ?>
+    <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+    <?define NgenBitness = "64bit" ?>
+  <?else ?>
+    <?define BuildArch="x86" ?>
+    <?define Win64 = "no" ?>
+    <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+    <?define NgenBitness = "32bit" ?>
+  <?endif ?>
+
+  <Product Id="*" Codepage="1250" Name="$(var.ProductName)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="{0D009F71-BB22-4962-AEE0-6D42FA952B84}">
+		<Package Id="*" InstallerVersion="301" Compressed="yes" InstallScope="perMachine" SummaryCodepage="1250" Description="$(var.Description)" Manufacturer="$(var.Manufacturer)" />
+
+    <!-- Automatic media generation and assignment -->
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <!-- Add/Remove Programs -->
+    <Property Id="ARPPRODUCTICON" Value="TinyWallIcon.exe" />
+    <Property Id="ARPCOMMENTS" Value="$(var.Description)" />
+    <Property Id="ARPCONTACT" Value="$(var.Manufacturer)" />
+    <Property Id="ARPURLINFOABOUT" Value="$(var.ProductURL)" />
+    <CustomAction Id="SetARPINSTALLLOCATION" Property="ARPINSTALLLOCATION" Value="[INSTALLDIR]" />
+
+    <!-- Disable use of "Files in Use" dialogs, we manage that ourself over cusotm actions -->
+    <Property Id="MSIRESTARTMANAGERCONTROL" Value="Disable" />
+
+    <!-- .Net Framework detection -->
+    <Condition Message="You need to be running Windows Vista or later to install $(var.ProductName).">VersionNT >= 600</Condition>
+    <PropertyRef Id="NETFRAMEWORK35"/>
+    <PropertyRef Id="NETFRAMEWORK40FULL"/>
+    <Condition Message='This setup requires the .NET Framework 3.5 or 4.0 installed.'>
+      <![CDATA[NETFRAMEWORK35 OR NETFRAMEWORK40FULL]]>
+    </Condition>
+
+    <!-- Feature description -->
+    <Feature Id="ProductFeature" Title="Complete" Description="The complete package." ConfigurableDirectory="INSTALLDIR" Level="1">
+      <ComponentRef Id='MainExecutable' />
+      <ComponentRef Id='ProgramMenuDir' />
+      <ComponentRef Id='RemoveAppDataDir' />
+      <ComponentRef Id='RegistryKeys' />
+      <ComponentRef Id='License' />
+      <ComponentRef Id='Attributions' />
+      <ComponentRef Id='FAQ' />
+      <ComponentRef Id='NetFwTypeLib' />
+      <ComponentRef Id='XmlSerializersLib' />
+      <ComponentRef Id='MainExecutableConfig' />
+      <ComponentRef Id='Database' />
+      <ComponentRef Id='hosts' />
+    </Feature>
+
+    <!-- Search for older versions -->
+    <Property Id="OLDER_INCOMPATIBLE_FOUND" Secure="yes" />
+    <Property Id="OLDER_UPGRADEABLE_FOUND" Secure="yes" />
+    <Property Id="SELF_FOUND" Secure="yes" />
+    <Property Id="NEWER_FOUND" Secure="yes" />
+    <Upgrade Id='{0D009F71-BB22-4962-AEE0-6D42FA952B84}'>
+      <UpgradeVersion OnlyDetect='yes' Property='OLDER_INCOMPATIBLE_FOUND'
+        Maximum="$(var.OldestUpgradeableVersion)" IncludeMaximum='no' />
+      <UpgradeVersion Property='OLDER_UPGRADEABLE_FOUND'
+        Minimum="$(var.OldestUpgradeableVersion)" IncludeMinimum='yes'
+        Maximum="$(var.ProductVersion)" IncludeMaximum='no' />
+      <UpgradeVersion OnlyDetect='yes' Property='SELF_FOUND'
+        Minimum="$(var.ProductVersion)" IncludeMinimum='yes'
+        Maximum="$(var.ProductVersion)" IncludeMaximum='yes' />
+      <UpgradeVersion OnlyDetect='yes' Property='NEWER_FOUND'
+        Minimum="$(var.ProductVersion)" IncludeMinimum='no' />
+    </Upgrade>
+
+    <!-- Custom actions -->
+    <CustomAction Id='FoundIncompatibleVersion' Error='An older version of $(var.ProductName) is installed that cannot be automatically updated. Please uninstall the existing version first, then try again.' />
+    <CustomAction Id='FoundNewerVersion' Error='A newer version of $(var.ProductName) is already installed. Installation cannot continue.' />
+    <CustomAction Id='InstallCustom' FileKey='TinyWallEXE' ExeCommand='/install' Return='check' Execute='deferred' Impersonate='no' />
+    <CustomAction Id='InstallCustomRollback' FileKey='TinyWallEXE' ExeCommand='/uninstall' Return='check' Execute='rollback' Impersonate='no' />
+    <CustomAction Id='UninstallCustom' FileKey='TinyWallEXE' ExeCommand='/uninstall' Return='check' Execute='deferred' Impersonate='no' />
+    <CustomAction Id='StartControllerAndDetect' FileKey='TinyWallEXE' ExeCommand='/desktop /autowhitelist' Return='asyncNoWait' Execute='deferred' />
+    <CustomAction Id='StartController' FileKey='TinyWallEXE' ExeCommand='/desktop' Return='asyncNoWait' Execute='deferred' />
+
+    <!-- Sequencing -->
+    <InstallExecuteSequence>
+      <!-- FindRelatedProducts -->
+      <Custom Action='FoundNewerVersion' After='FindRelatedProducts'>NEWER_FOUND</Custom>
+      <Custom Action='FoundIncompatibleVersion' After='FindRelatedProducts'>OLDER_INCOMPATIBLE_FOUND</Custom>
+      <!-- InstallValidate -->
+      <Custom Action="SetARPINSTALLLOCATION" After="InstallValidate"></Custom>
+      <RemoveExistingProducts After='InstallValidate'>OLDER_UPGRADEABLE_FOUND</RemoveExistingProducts>
+      <!-- InstallInitialize -->
+      <Custom Action='UninstallCustom' Before='UnpublishFeatures'>Installed</Custom>
+      <Custom Action='InstallCustomRollback' Before='InstallCustom'>NOT Installed</Custom>
+      <Custom Action='InstallCustom' After='InstallFiles'>NOT Installed</Custom>
+      <Custom Action='StartControllerAndDetect' After='InstallCustom'>NOT OLDER_UPGRADEABLE_FOUND</Custom>
+      <Custom Action='StartController' After='InstallCustom'>OLDER_UPGRADEABLE_FOUND</Custom>
+      <!-- InstallFinalize -->
+    </InstallExecuteSequence>
+
+    <!-- Sequencing -->
+    <InstallUISequence>
+      <Custom Action='FoundNewerVersion' After='FindRelatedProducts'>NEWER_FOUND</Custom>
+      <Custom Action='FoundIncompatibleVersion' After='FoundNewerVersion'>OLDER_INCOMPATIBLE_FOUND</Custom>
+    </InstallUISequence>
+
+    <!-- UI definition and overrides -->
+    <UIRef Id="WixUI_Minimal" />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALTEXT" Value='The default configuration of TinyWall is to block most programs. If an application is unable to access the network, remember to use one of the "Whitelist by..." options from the tray menu.' />
+    <WixVariable Id="WixUILicenseRtf" Value="Sources\ProgramFiles\TinyWall\License.rtf" />
+
+  </Product>
+
+  <Fragment>
+
+	  <Directory Id="TARGETDIR" Name="SourceDir">
+
+      <!-- Program Files -->
+      <Directory Id="$(var.PlatformProgramFilesFolder)" Name="ProgramFiles">
+        <Directory Id="INSTALLDIR" Name="TinyWall">
+          <Component Id="MainExecutable" Guid="{D0A4DEC7-42C7-48F1-912D-76A4B33AC644}" Win64="$(var.Win64)">
+            <File Id="TinyWallEXE" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe" Vital="yes" KeyPath="yes" Assembly=".net" Checksum="yes" AssemblyApplication="TinyWallEXE">
+              <netfx:NativeImage Id="ngen_TinyWallEXE" Platform="$(var.NgenBitness)" Priority="0" AppBaseDirectory="INSTALLDIR" Dependencies="yes"/>
+            </File>
+          </Component>
+          <Component Id="License" Guid="{2F2FF77C-8900-406A-AB6E-6DCFF4B53463}" Win64="$(var.Win64)">
+            <File Id="LicenseRTF" Source="Sources\ProgramFiles\TinyWall\License.rtf" KeyPath="yes" />
+          </Component>
+          <Component Id="Attributions" Guid="{76058250-1331-4D79-B09C-2B6ADEC3E7E2}" Win64="$(var.Win64)">
+            <File Id="AttributionsTXT" Source="Sources\ProgramFiles\TinyWall\Attributions.txt" KeyPath="yes" />
+          </Component>
+          <Component Id="FAQ" Guid="{603B371F-F380-47AF-9811-D8CD8DAD9086}" Win64="$(var.Win64)">
+            <File Id="FAQPDF" Source="Sources\ProgramFiles\TinyWall\FAQ.pdf" KeyPath="yes" />
+          </Component>
+          <Component Id="NetFwTypeLib" Guid="{7AB618A2-D50A-499A-93B9-101AEF6BC809}" Win64="$(var.Win64)">
+            <File Id="NetFwTypeLibDLL" Source="Sources\ProgramFiles\TinyWall\Interop.NetFwTypeLib.dll" Vital="yes" KeyPath="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+          </Component>
+          <Component Id="XmlSerializersLib" Guid="{C4ABBB1A-478B-4BDA-953B-CF1F8C39AF41}" Win64="$(var.Win64)">
+            <File Id="XmlSerializersDLL" Source="Sources\ProgramFiles\TinyWall\TinyWall.XmlSerializers.dll" Vital="yes" KeyPath="yes" Assembly=".net" AssemblyApplication="TinyWallEXE">
+              <netfx:NativeImage Id="ngen_XmlSerializersDLL" Platform="$(var.NgenBitness)" Priority="0" AppBaseDirectory="INSTALLDIR" Dependencies="yes" AssemblyApplication="TinyWallEXE" />
+            </File>
+          </Component>
+          <Component Id="MainExecutableConfig" Guid="{81CD5E43-FAE3-4B3C-AA84-A7A0C660FDB4}" Win64="$(var.Win64)">
+            <File Id="TinyWallCONFIG" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe.config" KeyPath="yes" />
+          </Component>
+        </Directory>
+		  </Directory>
+
+      <!-- ProgramData -->
+      <Directory Id="CommonAppDataFolder" Name="CommonAppData">
+        <Directory Id="AppDataDir" Name="TinyWall">
+          <Component Id="Database" Guid="{988A8CB6-614A-4568-809A-7D6AE512F30A}" Win64="$(var.Win64)">
+            <File Id="DatabaseXML" Source="Sources\CommonAppData\TinyWall\profiles.xml" Vital="yes" KeyPath="yes" />
+          </Component>
+          <Component Id="hosts" Guid="{3AF39B32-B459-4A47-860F-B4E679712BD8}" Win64="$(var.Win64)">
+            <File Id="HostsBCK" Source="Sources\CommonAppData\TinyWall\hosts.bck" Vital="yes" KeyPath="yes" />
+          </Component>
+          <Component Id="RemoveAppDataDir" Guid="{EE339191-7EC0-4F07-AF89-6527658FC9D7}" Win64="$(var.Win64)" Transitive="yes">
+            <RemoveFile Id="AppDataDirFiles" On='install' Name='*' />
+            <RemoveFolder Id="AppDataDirFolder" On='install' />
+            <Condition><![CDATA[NOT OLDER_UPGRADEABLE_FOUND]]></Condition>
+          </Component>
+        </Directory>
+      </Directory>
+
+      <!-- Start Menu -->
+      <Directory Id="ProgramMenuFolder" Name="Programs">
+        <Directory Id="ProgramMenuDir" Name="$(var.ProductName)">
+          <Component Id="ProgramMenuDir" Guid="{14A26A5D-7F56-485F-98DE-9407F1E93F57}" Win64="$(var.Win64)">
+            <RemoveFolder Id='ProgramMenuDir' On='uninstall' />
+            <RegistryValue Root='HKCU' Key='Software\[ProductName]' Type='string' Value='' KeyPath='yes' />
+            <Shortcut Id="ControllerShortcut" Icon="TinyWallIcon.exe" Directory="ProgramMenuDir" Name="TinyWall Controller" Arguments="/desktop" Target="[INSTALLDIR]TinyWall.exe"/>
+            <Shortcut Id="DevelToolShortcut" Icon="TinyWallIcon.exe" Directory="ProgramMenuDir" Name="DevelTool" Arguments="/develtool" Target="[INSTALLDIR]TinyWall.exe"/>
+            <Shortcut Id="FAQShortcut" Directory="ProgramMenuDir" Name="FAQ" Target="[INSTALLDIR]FAQ.pdf"/>
+            <util:InternetShortcut Id="WebsiteShortcut" Name="TinyWall Official Website" Target="$(var.ProductURL)"/>
+          </Component>
+        </Directory>
+      </Directory>
+      
+	  </Directory>
+
+    <!-- Registry -->
+    <Component Id="RegistryKeys" Guid="{85FFE113-2363-4EF9-AAA4-05F522907839}" Directory="INSTALLDIR" Win64="$(var.Win64)">
+      <RegistryKey Id='RegInstallDir' Root='HKLM' Key='Software\TinyWall' ForceDeleteOnUninstall='yes'>
+        <RegistryValue Type='string' Name='InstallDir' Value='[INSTALLDIR]'/>
+      </RegistryKey>
+    </Component>
+
+    <!-- Icons -->
+    <Icon Id="TinyWallIcon.exe" SourceFile="Sources\ProgramFiles\TinyWall\TinyWall.ico" />
+
+    </Fragment>
+
+</Wix>

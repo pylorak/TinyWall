@@ -557,10 +557,10 @@ namespace PKSoft
             // Check for updates once every week
             if (SettingsManager.GlobalConfig.AutoUpdateCheck)
             {
-                if (DateTime.Now - SettingsManager.GlobalConfig.LastUpdateCheck < TimeSpan.FromDays(2))
-                    return;
-
-                ThreadPool.QueueUserWorkItem(UpdaterMethod);
+                if (DateTime.Now - SettingsManager.GlobalConfig.LastUpdateCheck >= TimeSpan.FromDays(2))
+                {
+                    ThreadPool.QueueUserWorkItem(UpdaterMethod);
+                }
             }
         }
 

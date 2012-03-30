@@ -80,6 +80,7 @@ namespace PKSoft
 
         internal static int Uninstall()
         {
+            /*
             if (System.Windows.Forms.MessageBox.Show(
                 PKSoft.Resources.Messages.DidYouInitiateTheUninstall,
                 PKSoft.Resources.Messages.TinyWall,
@@ -87,7 +88,7 @@ namespace PKSoft
                 System.Windows.Forms.MessageBoxIcon.Exclamation) != System.Windows.Forms.DialogResult.Yes)
             {
                 return -1;
-            }
+            }*/
 
             // Disable automatic re-start of service
             try

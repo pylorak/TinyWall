@@ -124,8 +124,8 @@
     <value>TinyWall Update</value>
   </data>
   <data name="ErrorCheckingForUpdates" xml:space="preserve">
-    <value>There was an error while checking for updates.
-Please make sure that TinyWall has been granted internet access, then try again.</value>
+    <value>Cannot access the update server.
+The server might be down, or please make sure that TinyWall has been granted internet access, then try again.</value>
   </data>
   <data name="UpdateAvailable" xml:space="preserve">
     <value>A newer version {0} of TinyWall is available. Do you want to update now?</value>

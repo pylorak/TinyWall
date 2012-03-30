@@ -198,7 +198,7 @@ namespace PKSoft
 
         private void btnProcess_Click(object sender, EventArgs e)
         {
-            AppExceptionSettings proc = ProcessesForm.ChooseProcess(this);
+            FirewallException proc = ProcessesForm.ChooseProcess(this);
             if (proc == null) return;
 
             TmpExceptionSettings = proc;
@@ -219,7 +219,7 @@ namespace PKSoft
 
         private void btnChooseService_Click(object sender, EventArgs e)
         {
-            AppExceptionSettings serv = ServicesForm.ChooseService(this);
+            FirewallException serv = ServicesForm.ChooseService(this);
             if (serv == null) return;
 
             TmpExceptionSettings = serv;

@@ -45,7 +45,7 @@ namespace PKSoft
         internal void StartUpdate()
         {
             // To prevent blocking the UI, we use a thread from the ThreadPool.
-            // We use invoke to be able to update controls from the backgorund thread.
+            // We use invoke to be able to update controls from the background thread.
             ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
             {
                 UpdateModule UpdateModule = null;

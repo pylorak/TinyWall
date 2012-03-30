@@ -214,8 +214,8 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There was an error while checking for updates.
-        ///Please make sure that TinyWall has been granted internet access, then try again..
+        ///   Looks up a localized string similar to Cannot access the update server.
+        ///The server might be down, or please make sure that TinyWall has been granted internet access, then try again..
         /// </summary>
         internal static string ErrorCheckingForUpdates {
             get {

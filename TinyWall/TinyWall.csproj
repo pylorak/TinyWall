@@ -113,13 +113,6 @@
     <Compile Include="Hasher.cs" />
     <Compile Include="HostsFileManager.cs" />
     <Compile Include="Hotkey.cs" />
-    <Compile Include="Installer\GacInstaller.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Installer\GacWrap.cs" />
-    <Compile Include="Installer\NGenInstaller.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Installer\TinyWallInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
