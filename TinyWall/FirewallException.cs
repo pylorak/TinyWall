@@ -43,7 +43,7 @@ namespace PKSoft
             return !string.IsNullOrEmpty(ServiceName);
         }
 
-        public List<string> Profiles = null;
+        public List<string> Profiles = new List<string>();
         public bool ShouldSerializeProfiles()
         {
             return (Profiles != null) && (Profiles.Count > 0);
