@@ -208,10 +208,11 @@ namespace PKSoft
             }
         }
 
-        internal static Process StartProcess(string path, string args, bool asAdmin)
+        internal static Process StartProcess(string path, string args, bool asAdmin, bool shellexec = false)
         {
             ProcessStartInfo psi = new ProcessStartInfo(path, args);
             psi.WorkingDirectory = Path.GetDirectoryName(path);
+            psi.UseShellExecute = shellexec;
             if (asAdmin)
             {
                 psi.Verb = "runas";

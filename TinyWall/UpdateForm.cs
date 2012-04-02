@@ -69,7 +69,21 @@ namespace PKSoft
 
                 Utils.Invoke(this, (MethodInvoker)delegate()
                 {
-                    if (UpdateVersion > new Version(Application.ProductVersion))
+                    if (UpdateVersion >= new Version(2, 0))
+                    {
+                        string prompt = "A new major version of TinyWall is available.\r\n" +
+                            "An automatic update procedure is not supported in this case, so please follow the steps below carefully:\r\n" +
+                            "\r\n" +
+                           "1. Uninstall the current version. Use the Uninstall button in the Manage window, Maintenance tab.\r\n" +
+                           "2. Download the latest version from the website. You will be automatically taken to the website after you close this message.\r\n" +
+                           "3. Install the latest version of TinyWall by starting the file you downloaded in the previous step.";
+
+                        System.Windows.Forms.MessageBox.Show(prompt, "Update available", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Utils.StartProcess(@"http://tinywall.pados.hu", string.Empty, false, true);
+                        this.Close();
+                        return;
+                    }
+                    else if (UpdateVersion > new Version(Application.ProductVersion))
                     {
                         string prompt = "A newer version " + UpdateVersion.ToString() + " of TinyWall is available. Do you want to update now?";
                         if (MessageBox.Show(this, prompt, "Update available", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.No)
