@@ -217,10 +217,10 @@ namespace PKSoft
         {
             List<string> mergedProfiles = new List<string>();
             if (this.Profiles != null)
-            mergedProfiles.AddRange(this.Profiles);
+                mergedProfiles.AddRange(this.Profiles);
             if (o.Profiles != null)
-            mergedProfiles.AddRange(o.Profiles);
-            o.Profiles.Clear();
+                mergedProfiles.AddRange(o.Profiles);
+            o.Profiles = new List<string>();
             o.Profiles.AddRange(mergedProfiles.Distinct());
 
             if (this.AlwaysBlockTraffic != o.AlwaysBlockTraffic)
