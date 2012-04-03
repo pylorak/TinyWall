@@ -302,7 +302,7 @@ namespace PKSoft
                         dialog.CustomMainIcon = PKSoft.Resources.Icons.firewall;
                         dialog.WindowTitle = PKSoft.Resources.Messages.TinyWall;
                         dialog.MainInstruction = firstLine;
-                        dialog.Content = string.Format(CultureInfo.InvariantCulture, contentLines, app.Name);
+                        dialog.Content = contentLines;
                         dialog.DefaultButton = 1;
                         dialog.ExpandedControlText = PKSoft.Resources.Messages.UnblockAppShowRelated;
                         dialog.ExpandFooterArea = true;

@@ -7,6 +7,7 @@ using System.Management;
 using System.ServiceProcess;
 using System.Threading;
 using System.Windows.Forms;
+using Microsoft.Samples;
 
 namespace PKSoft
 {
@@ -914,7 +915,18 @@ namespace PKSoft
 
         private void mnuModeLearn_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show(this, PKSoft.Resources.Messages.YouAreAboutToEnterLearningMode, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) != System.Windows.Forms.DialogResult.Yes)
+            string firstLine, contentLines;
+            Utils.SplitFirstLine(PKSoft.Resources.Messages.YouAreAboutToEnterLearningMode, out firstLine, out contentLines);
+
+            TaskDialog dialog = new TaskDialog();
+            dialog.CustomMainIcon = PKSoft.Resources.Icons.firewall;
+            dialog.WindowTitle = PKSoft.Resources.Messages.TinyWall;
+            dialog.MainInstruction = firstLine;
+            dialog.Content = contentLines;
+            dialog.AllowDialogCancellation = false;
+            dialog.CommonButtons = TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No;
+
+            if (dialog.Show(this)  != (int)DialogResult.Yes)
                 return;
 
             SetMode(FirewallMode.Learning);
