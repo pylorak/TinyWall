@@ -209,7 +209,7 @@ namespace Microsoft.Samples
     /// A custom button for the TaskDialog.
     /// </summary>
     [SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")] // Would be unused code as not required for usage.
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack=1)]
     internal struct TaskDialogButton
     {
         /// <summary>
