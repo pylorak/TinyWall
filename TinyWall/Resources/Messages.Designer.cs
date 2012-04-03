@@ -549,11 +549,11 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TinyWall Update.
+        ///   Looks up a localized string similar to TinyWall Updater.
         /// </summary>
-        internal static string TinyWallUpdate {
+        internal static string TinyWallUpdater {
             get {
-                return ResourceManager.GetString("TinyWallUpdate", resourceCulture);
+                return ResourceManager.GetString("TinyWallUpdater", resourceCulture);
             }
         }
         

@@ -185,12 +185,6 @@
       <DependentUpon>TransparentLabel.cs</DependentUpon>
     </Compile>
     <Compile Include="UpdateChecker.cs" />
-    <Compile Include="UpdateForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UpdateForm.Designer.cs">
-      <DependentUpon>UpdateForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Utils.cs" />
     <Compile Include="FirewallException.cs" />
     <Compile Include="PipeCom.cs" />
@@ -276,9 +270,6 @@
     <EmbeddedResource Include="Controls\TransparentLabel.resx">
       <DependentUpon>TransparentLabel.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateForm.resx">
-      <DependentUpon>UpdateForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config">
       <SubType>Designer</SubType>

@@ -142,7 +142,7 @@ namespace PKSoft
         
         private void StartUpdate(object sender, AnyEventArgs e)
         {
-            UpdateForm.StartUpdate(this);
+            Updater.StartUpdate(this);
         }
 
         void HotKeyWhitelistProcess_Pressed(object sender, HandledEventArgs e)

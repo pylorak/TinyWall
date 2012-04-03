@@ -331,7 +331,7 @@ namespace PKSoft
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            UpdateForm.StartUpdate(this);
+            Updater.StartUpdate(this);
         }
 
         private void btnAppAutoDetect_Click(object sender, EventArgs e)
