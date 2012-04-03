@@ -10,6 +10,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using Microsoft.Samples;
 
 namespace PKSoft
 {
@@ -330,6 +331,17 @@ namespace PKSoft
                 return Environment.GetEnvironmentVariable("ProgramFiles(x86)");
             else
                 return Environment.GetEnvironmentVariable("ProgramFiles");
+        }
+
+        internal static DialogResult ShowMessageBox(IWin32Window owner, string msg, string title, TaskDialogCommonButtons buttons, TaskDialogIcon icon, string content = null)
+        {
+            TaskDialog taskDialog = new TaskDialog();
+            taskDialog.WindowTitle = title;
+            taskDialog.MainInstruction = msg;
+            taskDialog.CommonButtons = buttons;
+            taskDialog.MainIcon = icon;
+            taskDialog.Content = content;
+            return (DialogResult)taskDialog.Show(owner);
         }
 
         private static string _ExecutablePath = null;

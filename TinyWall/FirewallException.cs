@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
+using Microsoft.Samples;
 
 namespace PKSoft
 {
@@ -288,14 +289,42 @@ namespace PKSoft
 
                 if (exceptions2.Count > 1)
                 {
-                    if (!gui || (System.Windows.Forms.MessageBox.Show(
-                        parent,
-                        string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.UnblockPartOfApplication, app.Name),
-                        PKSoft.Resources.Messages.TinyWall,
-                        System.Windows.Forms.MessageBoxButtons.YesNo,
-                        System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes))
+                    if (!gui)
                     {
-                        exceptions.AddRange(exceptions2);
+                        return exceptions2;
+                    }
+                    else
+                    {
+                        TaskDialog dialog = new TaskDialog();
+                        dialog.CustomMainIcon = PKSoft.Resources.Icons.firewall;
+                        dialog.WindowTitle = PKSoft.Resources.Messages.TinyWall;
+                        dialog.MainInstruction = PKSoft.Resources.Messages.UnblockAppMain;
+                        dialog.Content = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.UnblockAppInfo, app.Name);
+                        dialog.DefaultButton = 1;
+                        dialog.ExpandedControlText = PKSoft.Resources.Messages.UnblockAppShowRelated;
+                        dialog.ExpandFooterArea = true;
+                        dialog.AllowDialogCancellation = false;
+                        dialog.UseCommandLinks = true;
+
+                        TaskDialogButton button1 = new TaskDialogButton(101, PKSoft.Resources.Messages.UnblockAppUnblockAllRecommended);
+                        TaskDialogButton button2 = new TaskDialogButton(102, PKSoft.Resources.Messages.UnblockAppUnblockOnlySelected);
+                        TaskDialogButton button3 = new TaskDialogButton(103, PKSoft.Resources.Messages.UnblockAppCancel);
+                        dialog.Buttons = new TaskDialogButton[] { button1, button2, button3 };
+
+                        string fileListStr = string.Empty;
+                        foreach (FirewallException filePath in exceptions2)
+                            fileListStr += filePath.ExecutablePath + Environment.NewLine;
+                        dialog.ExpandedInformation = fileListStr.Trim();
+
+                        switch (dialog.Show(parent))
+                        {
+                            case 101:
+                                return exceptions2;
+                            case 102:
+                                return exceptions;
+                            case 103:
+                                return new List<FirewallException>();
+                        }
                     }
                 }
             }

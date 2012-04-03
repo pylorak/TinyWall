@@ -333,6 +333,8 @@ namespace PKSoft
                     if (ex.Recognized.Value)
                     {
                         List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(this, ex);
+                        if (exceptions.Count == 0)
+                            return;
                         for (int i = 0; i < exceptions.Count; ++i)
                             SettingsManager.CurrentZone.AppExceptions.Add(exceptions[i]);
                     }

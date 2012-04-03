@@ -617,6 +617,9 @@ namespace PKSoft
         private void AddNewException(FirewallException ex)
         {
             List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(this, ex);
+            if (exceptions.Count == 0)
+                return;
+
             SettingsManager.CurrentZone.AppExceptions.AddRange(exceptions);
             SettingsManager.CurrentZone.Normalize();
 

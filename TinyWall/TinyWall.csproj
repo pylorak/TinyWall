@@ -97,6 +97,13 @@
     <Compile Include="ConnectionsForm.Designer.cs">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TaskDialog\ActiveTaskDialog.cs" />
+    <Compile Include="Controls\TaskDialog\TaskDialog.cs" />
+    <Compile Include="Controls\TaskDialog\TaskDialogCommonDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TaskDialog\TaskDialogNotificationArgs.cs" />
+    <Compile Include="Controls\TaskDialog\UnsafeNativeMethods.cs" />
     <Compile Include="DatabaseClasses\Application.cs" />
     <Compile Include="DatabaseClasses\ApplicationCollection.cs" />
     <Compile Include="DevelToolForm.cs">

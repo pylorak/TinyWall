@@ -159,12 +159,6 @@ The server might be down, or please make sure that TinyWall has been granted int
     <value>Could not close process {0}({1}).</value>
     <comment>Param0 is name, param1 is pid of process.</comment>
   </data>
-  <data name="UnblockPartOfApplication" xml:space="preserve">
-    <value>A file you are about to unblock is part of {0}. This application requires additional files whitelisted to function properly. 
-
-Do you want TinyWall to automatically whitelist these files for you?</value>
-    <comment>Param0 is name of application.</comment>
-  </data>
   <data name="PasswordFieldsDoNotMatch" xml:space="preserve">
     <value>Password fields do not match. Please verify your input.</value>
   </data>
@@ -358,5 +352,27 @@ Do you want to enter learning mode now?</value>
   </data>
   <data name="DidYouInitiateTheUninstall" xml:space="preserve">
     <value>Did you initiate the uninstall of TinyWall?</value>
+  </data>
+  <data name="ValidPortListDescription" xml:space="preserve">
+    <value>You can use one or more numbers in the range of 1-65535, separated by commas. An asterix (*) can also be used to refer to all possible ports.</value>
+  </data>
+  <data name="UnblockAppCancel" xml:space="preserve">
+    <value>Cancel whitelisting</value>
+  </data>
+  <data name="UnblockAppInfo" xml:space="preserve">
+    <value>The selected executable is part of {0}. To ensure that this application can be used without limitations, it is recommended to also unblock some other files.</value>
+    <comment>Param0 is name of the app</comment>
+  </data>
+  <data name="UnblockAppMain" xml:space="preserve">
+    <value>Related files found</value>
+  </data>
+  <data name="UnblockAppShowRelated" xml:space="preserve">
+    <value>Show/hide related executables</value>
+  </data>
+  <data name="UnblockAppUnblockAllRecommended" xml:space="preserve">
+    <value>Unblock all recommended files</value>
+  </data>
+  <data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
+    <value>Unblock only selected file</value>
   </data>
 </root>

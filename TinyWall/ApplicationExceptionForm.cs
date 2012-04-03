@@ -178,7 +178,13 @@ namespace PKSoft
             }
             catch
             {
-                MessageBox.Show(this, PKSoft.Resources.Messages.TheFormatOfThePortListIsInvalid, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.ShowMessageBox(this,
+                    PKSoft.Resources.Messages.TheFormatOfThePortListIsInvalid,
+                    PKSoft.Resources.Messages.TinyWall,
+                    Microsoft.Samples.TaskDialogCommonButtons.Ok,
+                    Microsoft.Samples.TaskDialogIcon.Warning,
+                    PKSoft.Resources.Messages.ValidPortListDescription);
+
                 return;
             }
 
