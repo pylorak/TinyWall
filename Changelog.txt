@@ -5,21 +5,23 @@ TinyWall Changelog
 - Windows 8 CTP support
 - .Net Framework 4 support
 - Connections window shows blocked applications
+- Auto-learning mode
 - Domain blocklist support
 - Hosts file protection
 - Settings update without breaking existing connections
-- New XML-based updater system
-- Traffic rate monitor
+- XML-based updater system
+- Integrated traffic rate monitor
 - Lightning-fast search for some recognized applications
-- Increased service startup performance
+- Increased startup performance
 - Better support for Windows Networking, Remote Desktop and Remote Assistance
 - Remember last used firewall mode (except disabled mode)
 - Offer user to whitelist additional files that belong to the same application
-- Signed by digital certificate
+- Signed by a digital certificate
 - Ability to whitelist apps with higher privileges
+- Better adherence to Vista/Win7 UI style
+- Better installer experience
 - Localizability
 - Fix: Controller update issues with password lock
-- Fix: Uninstaller now removes user-specific configuration files too
 - Fix: Custom ports are not applied to services
 - Fix: Don't lose settings in a virtual machine
 

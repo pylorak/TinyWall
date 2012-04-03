@@ -179,11 +179,10 @@ namespace PKSoft
             catch
             {
                 Utils.ShowMessageBox(this,
-                    PKSoft.Resources.Messages.TheFormatOfThePortListIsInvalid,
+                    PKSoft.Resources.Messages.PortListInvalid,
                     PKSoft.Resources.Messages.TinyWall,
                     Microsoft.Samples.TaskDialogCommonButtons.Ok,
-                    Microsoft.Samples.TaskDialogIcon.Warning,
-                    PKSoft.Resources.Messages.ValidPortListDescription);
+                    Microsoft.Samples.TaskDialogIcon.Warning);
 
                 return;
             }

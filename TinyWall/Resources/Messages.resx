@@ -275,9 +275,6 @@ Select Elevate from the tray menu and try again.</value>
   <data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
     <value>Database is missing or corrupt.</value>
   </data>
-  <data name="TheFormatOfThePortListIsInvalid" xml:space="preserve">
-    <value>The format of the port list is invalid.</value>
-  </data>
   <data name="Stop" xml:space="preserve">
     <value>Stop</value>
   </data>
@@ -353,18 +350,18 @@ Do you want to enter learning mode now?</value>
   <data name="DidYouInitiateTheUninstall" xml:space="preserve">
     <value>Did you initiate the uninstall of TinyWall?</value>
   </data>
-  <data name="ValidPortListDescription" xml:space="preserve">
-    <value>You can use one or more numbers in the range of 1-65535, separated by commas. An asterix (*) can also be used to refer to all possible ports.</value>
+  <data name="PortListInvalid" xml:space="preserve">
+    <value>The format of the port list is invalid.
+You can use one or more numbers in the range of 1-65535, separated by commas. An asterix (*) can also be used to refer to all possible ports.</value>
+    <comment>First line is dialog main text. Rest are further information in smaller letters.</comment>
   </data>
   <data name="UnblockAppCancel" xml:space="preserve">
     <value>Cancel whitelisting</value>
   </data>
-  <data name="UnblockAppInfo" xml:space="preserve">
-    <value>The selected executable is part of {0}. To ensure that this application can be used without limitations, it is recommended to also unblock some other files.</value>
-    <comment>Param0 is name of the app</comment>
-  </data>
-  <data name="UnblockAppMain" xml:space="preserve">
-    <value>Related files found</value>
+  <data name="UnblockApp" xml:space="preserve">
+    <value>Related files found
+The selected executable is part of {0}. To ensure that this application can be used without limitations, it is recommended to also unblock some other files.</value>
+    <comment>First line is dialog main text. Rest are further information in smaller letters. Param0 is name of the app.</comment>
   </data>
   <data name="UnblockAppShowRelated" xml:space="preserve">
     <value>Show/hide related executables</value>

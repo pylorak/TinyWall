@@ -368,6 +368,16 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The format of the port list is invalid.
+        ///You can use one or more numbers in the range of 1-65535, separated by commas. An asterix (*) can also be used to refer to all possible ports..
+        /// </summary>
+        internal static string PortListInvalid {
+            get {
+                return ResourceManager.GetString("PortListInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Recognized application.
         /// </summary>
         internal static string RecognizedApplication {
@@ -494,15 +504,6 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The format of the port list is invalid..
-        /// </summary>
-        internal static string TheFormatOfThePortListIsInvalid {
-            get {
-                return ResourceManager.GetString("TheFormatOfThePortListIsInvalid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The TinyWall service is unavailable. Please make sure it is installed and started, then retry..
         /// </summary>
         internal static string TheTinyWallServiceIsUnavailable {
@@ -575,29 +576,21 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Related files found
+        ///The selected executable is part of {0}. To ensure that this application can be used without limitations, it is recommended to also unblock some other files..
+        /// </summary>
+        internal static string UnblockApp {
+            get {
+                return ResourceManager.GetString("UnblockApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel whitelisting.
         /// </summary>
         internal static string UnblockAppCancel {
             get {
                 return ResourceManager.GetString("UnblockAppCancel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The selected executable is part of {0}. To ensure that this application can be used without limitations, it is recommended to also unblock some other files..
-        /// </summary>
-        internal static string UnblockAppInfo {
-            get {
-                return ResourceManager.GetString("UnblockAppInfo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Related files found.
-        /// </summary>
-        internal static string UnblockAppMain {
-            get {
-                return ResourceManager.GetString("UnblockAppMain", resourceCulture);
             }
         }
         
@@ -679,15 +672,6 @@ namespace PKSoft.Resources {
         internal static string UpdateAvailableBubble {
             get {
                 return ResourceManager.GetString("UpdateAvailableBubble", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You can use one or more numbers in the range of 1-65535, separated by commas. An asterix (*) can also be used to refer to all possible ports..
-        /// </summary>
-        internal static string ValidPortListDescription {
-            get {
-                return ResourceManager.GetString("ValidPortListDescription", resourceCulture);
             }
         }
         

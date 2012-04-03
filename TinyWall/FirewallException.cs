@@ -295,11 +295,14 @@ namespace PKSoft
                     }
                     else
                     {
+                        string firstLine, contentLines;
+                        Utils.SplitFirstLine(string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.UnblockApp, app.Name), out firstLine, out contentLines);
+
                         TaskDialog dialog = new TaskDialog();
                         dialog.CustomMainIcon = PKSoft.Resources.Icons.firewall;
                         dialog.WindowTitle = PKSoft.Resources.Messages.TinyWall;
-                        dialog.MainInstruction = PKSoft.Resources.Messages.UnblockAppMain;
-                        dialog.Content = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.UnblockAppInfo, app.Name);
+                        dialog.MainInstruction = firstLine;
+                        dialog.Content = string.Format(CultureInfo.InvariantCulture, contentLines, app.Name);
                         dialog.DefaultButton = 1;
                         dialog.ExpandedControlText = PKSoft.Resources.Messages.UnblockAppShowRelated;
                         dialog.ExpandFooterArea = true;

@@ -333,14 +333,32 @@ namespace PKSoft
                 return Environment.GetEnvironmentVariable("ProgramFiles");
         }
 
-        internal static DialogResult ShowMessageBox(IWin32Window owner, string msg, string title, TaskDialogCommonButtons buttons, TaskDialogIcon icon, string content = null)
+        internal static void SplitFirstLine(string str, out string firstLine, out string restLines)
         {
+            string[] lines = str.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+
+            firstLine = lines[0];
+            restLines = null;
+
+            if (lines.Length > 1)
+            {
+                restLines = lines[1];
+                for (int i = 2; i < lines.Length; ++i)
+                    restLines += Environment.NewLine + lines[i];
+            }
+        }
+
+        internal static DialogResult ShowMessageBox(IWin32Window owner, string msg, string title, TaskDialogCommonButtons buttons, TaskDialogIcon icon)
+        {
+            string firstLine, contentLines;
+            Utils.SplitFirstLine(msg, out firstLine, out contentLines);
+
             TaskDialog taskDialog = new TaskDialog();
             taskDialog.WindowTitle = title;
-            taskDialog.MainInstruction = msg;
+            taskDialog.MainInstruction = firstLine;
             taskDialog.CommonButtons = buttons;
             taskDialog.MainIcon = icon;
-            taskDialog.Content = content;
+            taskDialog.Content = contentLines;
             return (DialogResult)taskDialog.Show(owner);
         }
 
