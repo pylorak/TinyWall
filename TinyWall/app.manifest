@@ -35,7 +35,7 @@
   </compatibility>
   
   <!-- Designs für allgemeine Windows-Steuerelemente und -Dialogfelder (Windows XP und höher) aktivieren -->
-  <!-- <dependency>
+  <dependency>
     <dependentAssembly>
       <assemblyIdentity
           type="win32"
@@ -46,6 +46,6 @@
           language="*"
         />
     </dependentAssembly>
-  </dependency>-->
+  </dependency>
 
 </asmv1:assembly>
