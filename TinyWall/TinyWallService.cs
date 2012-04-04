@@ -515,6 +515,7 @@ namespace PKSoft
                 if (Utils.HexEncode(Hasher.HashFile(tmpFile)).Equals(module.DownloadHash))
                     installMethod(tmpFile);
             }
+            catch { }
             finally
             {
                 if (File.Exists(tmpCompressedPath))
