@@ -30,5 +30,5 @@ Generic profile support:
 - SSDP/UPnP
 
 XML serialization assembly generation:
-"C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\sgen.exe" /a:TinyWall.exe /compiler:"/keyfile:TinyWall.key.snk /baseaddress:0x59570000" /force
-"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\sgen.exe" /a:TinyWall.exe /compiler:"/keyfile:TinyWall.key.snk /baseaddress:0x59570000" /force
+"C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\sgen.exe" /a:TinyWall.exe /compiler:"/keyfile:..\..\TinyWall.key.snk" /force
+"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\sgen.exe" /a:TinyWall.exe /compiler:"/keyfile:..\..\TinyWall.key.snk" /force
