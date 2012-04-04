@@ -158,9 +158,7 @@
 
       <!-- GAC -->
       <Component Id="gac_MainExecutable" Guid="{8487EFE8-C7C1-4832-93B1-C72C7997BC91}" Win64="$(var.Win64)">
-        <File Id="gac_TinyWallEXE" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" >
-          <netfx:NativeImage Id="ngen_TinyWallEXE" Platform="$(var.NgenBitness)" Debug="no" Priority="1" AppBaseDirectory="INSTALLDIR" Dependencies="yes"/>
-        </File>
+        <File Id="gac_TinyWallEXE" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" />
       </Component>
       <Component Id="gac_NetFwTypeLib" Guid="{9EC03A82-4E6F-4456-8C8E-878400C34EC7}" Win64="$(var.Win64)">
         <File Id="gac_NetFwTypeLibDLL" Source="Sources\ProgramFiles\TinyWall\Interop.NetFwTypeLib.dll" Vital="yes" KeyPath="yes" Assembly=".net" />
