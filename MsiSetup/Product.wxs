@@ -51,6 +51,7 @@
     <!-- Feature description -->
     <Feature Id="ProductFeature" Title="Complete" Description="The complete package." ConfigurableDirectory="INSTALLDIR" Level="1">
       <ComponentRef Id='MainExecutable' />
+      <ComponentRef Id='gac_MainExecutable' />
       <ComponentRef Id='ProgramMenuDir' />
       <ComponentRef Id='RemoveAppDataDir' />
       <ComponentRef Id='RegistryKeys' />
@@ -58,7 +59,9 @@
       <ComponentRef Id='Attributions' />
       <ComponentRef Id='FAQ' />
       <ComponentRef Id='NetFwTypeLib' />
+      <ComponentRef Id='gac_NetFwTypeLib' />
       <ComponentRef Id='XmlSerializersLib' />
+      <ComponentRef Id='gac_XmlSerializersLib' />
       <ComponentRef Id='MainExecutableConfig' />
       <ComponentRef Id='Database' />
       <ComponentRef Id='hosts' />
@@ -130,9 +133,7 @@
       <Directory Id="$(var.PlatformProgramFilesFolder)" Name="ProgramFiles">
         <Directory Id="INSTALLDIR" Name="TinyWall">
           <Component Id="MainExecutable" Guid="{D0A4DEC7-42C7-48F1-912D-76A4B33AC644}" Win64="$(var.Win64)">
-            <File Id="TinyWallEXE" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe" Vital="yes" KeyPath="yes" Assembly=".net" Checksum="yes" AssemblyApplication="TinyWallEXE">
-              <netfx:NativeImage Id="ngen_TinyWallEXE" Platform="$(var.NgenBitness)" Priority="0" AppBaseDirectory="INSTALLDIR" Dependencies="yes"/>
-            </File>
+            <File Id="TinyWallEXE" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
           </Component>
           <Component Id="License" Guid="{2F2FF77C-8900-406A-AB6E-6DCFF4B53463}" Win64="$(var.Win64)">
             <File Id="LicenseRTF" Source="Sources\ProgramFiles\TinyWall\License.rtf" KeyPath="yes" />
@@ -147,15 +148,26 @@
             <File Id="NetFwTypeLibDLL" Source="Sources\ProgramFiles\TinyWall\Interop.NetFwTypeLib.dll" Vital="yes" KeyPath="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
           </Component>
           <Component Id="XmlSerializersLib" Guid="{C4ABBB1A-478B-4BDA-953B-CF1F8C39AF41}" Win64="$(var.Win64)">
-            <File Id="XmlSerializersDLL" Source="Sources\ProgramFiles\TinyWall\TinyWall.XmlSerializers.dll" Vital="yes" KeyPath="yes" Assembly=".net" AssemblyApplication="TinyWallEXE">
-              <netfx:NativeImage Id="ngen_XmlSerializersDLL" Platform="$(var.NgenBitness)" Priority="0" AppBaseDirectory="INSTALLDIR" Dependencies="yes" AssemblyApplication="TinyWallEXE" />
-            </File>
+            <File Id="XmlSerializersDLL" Source="Sources\ProgramFiles\TinyWall\TinyWall.XmlSerializers.dll" Vital="yes" KeyPath="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
           </Component>
           <Component Id="MainExecutableConfig" Guid="{81CD5E43-FAE3-4B3C-AA84-A7A0C660FDB4}" Win64="$(var.Win64)">
             <File Id="TinyWallCONFIG" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe.config" KeyPath="yes" />
           </Component>
         </Directory>
 		  </Directory>
+
+      <!-- GAC -->
+      <Component Id="gac_MainExecutable" Guid="{8487EFE8-C7C1-4832-93B1-C72C7997BC91}" Win64="$(var.Win64)">
+        <File Id="gac_TinyWallEXE" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" >
+          <netfx:NativeImage Id="ngen_TinyWallEXE" Platform="$(var.NgenBitness)" Debug="no" Priority="1" AppBaseDirectory="INSTALLDIR" Dependencies="yes"/>
+        </File>
+      </Component>
+      <Component Id="gac_NetFwTypeLib" Guid="{9EC03A82-4E6F-4456-8C8E-878400C34EC7}" Win64="$(var.Win64)">
+        <File Id="gac_NetFwTypeLibDLL" Source="Sources\ProgramFiles\TinyWall\Interop.NetFwTypeLib.dll" Vital="yes" KeyPath="yes" Assembly=".net" />
+      </Component>
+      <Component Id="gac_XmlSerializersLib" Guid="{70CD3800-B50A-4BA0-9A04-4B2BE48AFF8D}" Win64="$(var.Win64)">
+        <File Id="gac_XmlSerializersDLL" Source="Sources\ProgramFiles\TinyWall\TinyWall.XmlSerializers.dll" Vital="yes" KeyPath="yes" Assembly=".net" />
+      </Component>
 
       <!-- ProgramData -->
       <Directory Id="CommonAppDataFolder" Name="CommonAppData">
