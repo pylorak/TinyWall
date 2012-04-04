@@ -62,27 +62,35 @@ namespace PKSoft
 
         internal static ZoneSettings Load(string zoneName)
         {
-            try
-            {
-                // Construct file path
-                string SettingsFile = Path.Combine(SettingsManager.AppDataPath, "Zone"+zoneName);
+            ZoneSettings zone = null;
 
-                // Construct key
-                string key = ENC_SALT + MachineFingerprint.Fingerprint();
-                key = Hasher.HashString(key).Substring(0, 16);
+            // Construct file path
+            string SettingsFile = Path.Combine(SettingsManager.AppDataPath, "Zone" + zoneName);
 
-                ZoneSettings zone = SerializationHelper.LoadFromEncryptedXMLFile<ZoneSettings>(SettingsFile, key, ENC_IV);
-                List<string> distinctSpecialEx = new List<string>();
-                distinctSpecialEx.AddRange(zone.SpecialExceptions.Distinct());
-                zone.SpecialExceptions = distinctSpecialEx;
-                return zone;
-            }
-            catch
+            if (File.Exists(SettingsFile))
             {
-                ZoneSettings settings = new ZoneSettings(true);
-                settings.ZoneName = zoneName;
-                return settings;
+                try
+                {
+                    // Construct key
+                    string key = ENC_SALT + MachineFingerprint.Fingerprint();
+                    key = Hasher.HashString(key).Substring(0, 16);
+
+                    zone = SerializationHelper.LoadFromEncryptedXMLFile<ZoneSettings>(SettingsFile, key, ENC_IV);
+                    List<string> distinctSpecialEx = new List<string>();
+                    distinctSpecialEx.AddRange(zone.SpecialExceptions.Distinct());
+                    zone.SpecialExceptions = distinctSpecialEx;
+                }
+                catch
+                {
+                }
             }
+
+            if (zone == null)
+            {
+                zone = new ZoneSettings(true);
+                zone.ZoneName = zoneName;
+            }
+            return zone;
         }
 
         internal void Normalize()
@@ -176,21 +184,33 @@ namespace PKSoft
 
         internal static MachineSettings Load()
         {
-            try
-            {
-                // Construct file path
-                string SettingsFile = Path.Combine(SettingsManager.AppDataPath, "MachineConfig");
+            MachineSettings ret = null;
 
-                // Construct key
-                string key = ENC_SALT + MachineFingerprint.Fingerprint();
-                key = Hasher.HashString(key).Substring(0, 16);
+            // Construct file path
+            string SettingsFile = Path.Combine(SettingsManager.AppDataPath, "MachineConfig");
 
-                return SerializationHelper.LoadFromEncryptedXMLFile<MachineSettings>(SettingsFile, key, ENC_IV);
-            }
-            catch
+            if (File.Exists(SettingsFile))
             {
-                return new MachineSettings();
+                try
+                {
+
+                    // Construct key
+                    string key = ENC_SALT + MachineFingerprint.Fingerprint();
+                    key = Hasher.HashString(key).Substring(0, 16);
+
+                    ret = SerializationHelper.LoadFromEncryptedXMLFile<MachineSettings>(SettingsFile, key, ENC_IV);
+                }
+                catch
+                {
+                }
             }
+
+            if (ret == null)
+            {
+                ret = new MachineSettings();
+            }
+
+            return ret;
         }
     }
 
