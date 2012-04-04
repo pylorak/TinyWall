@@ -9,6 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Principal;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
 using Microsoft.Win32;
 using Microsoft.Samples;
 
@@ -23,6 +24,11 @@ namespace PKSoft
 
             [DllImport("user32.dll", SetLastError = true)]
             internal static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
+
+            [DllImport("kernel32.dll")]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool SetProcessWorkingSetSize(IntPtr process,
+                UIntPtr minimumWorkingSetSize, UIntPtr maximumWorkingSetSize);
         }
 
         private static readonly Random _rng = new Random();
@@ -407,6 +413,17 @@ namespace PKSoft
                     sw.WriteLine();
                 }
             }
+        }
+
+        internal static void MinimizeMemory()
+        {
+            System.Threading.ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object dummy)
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                NativeMethods.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle,
+                    (UIntPtr)0xFFFFFFFF, (UIntPtr)0xFFFFFFFF);
+            });
         }
     }
 }

@@ -60,6 +60,10 @@ namespace PKSoft
         [STAThread]
         static int Main(string[] args)
         {
+#if DEBUG
+            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(CurrentDomain_AssemblyLoad);
+#endif
+
             // WerAddExcludedApplication will fail every time we are not running as admin, 
             // so wrap it around a try-catch.
             try
@@ -119,5 +123,11 @@ namespace PKSoft
             } // switch
 
         } // Main
+
+        static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
+        {
+            string assembly = args.LoadedAssembly.FullName;
+        }
+
     } // class
 } //namespace

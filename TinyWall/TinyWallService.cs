@@ -127,6 +127,8 @@ namespace PKSoft
                         break;
                     }
             }
+
+            ActiveRules.TrimExcess();
         }
 
         private void MergeActiveRulesIntoWinFirewall()
@@ -222,6 +224,8 @@ namespace PKSoft
                 }
                 catch { }
             }
+
+            SpecialRules.TrimExcess();
         }
 
         private void RebuildApplicationRuleDefs()
@@ -238,6 +242,8 @@ namespace PKSoft
                 }
                 catch { }
             }
+
+            AppExRules.TrimExcess();
         }
 
         private void GetRulesForException(FirewallException ex, List<RuleDef> ruleset)

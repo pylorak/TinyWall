@@ -770,6 +770,8 @@ namespace PKSoft
                 // END
                 // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
                 // --- THREAD BARRIER ---
+
+                Utils.MinimizeMemory();
             }
 
 
