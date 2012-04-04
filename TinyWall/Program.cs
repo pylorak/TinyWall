@@ -62,6 +62,7 @@ namespace PKSoft
         {
 #if DEBUG
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(CurrentDomain_AssemblyLoad);
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 #endif
 
             // WerAddExcludedApplication will fail every time we are not running as admin, 
@@ -121,8 +122,13 @@ namespace PKSoft
                 default:
                     return -1;
             } // switch
-
         } // Main
+
+        static System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            string assembly = args.Name;
+            return null;
+        }
 
         static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
         {
