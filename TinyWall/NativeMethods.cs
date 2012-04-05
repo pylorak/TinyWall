@@ -23,7 +23,7 @@ namespace PKSoft
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         internal static extern uint RegisterWindowMessage(string lpString);
 
         [DllImport("Wer.dll", CharSet = CharSet.Unicode, PreserveSig = false)]

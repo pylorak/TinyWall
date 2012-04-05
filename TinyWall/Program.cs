@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ServiceProcess;
 using System.Threading;
+using System.Diagnostics;
 
 namespace PKSoft
 {
@@ -25,6 +26,11 @@ namespace PKSoft
                 }
 
                 TinyWallService tw = new TinyWallService();
+                tw.ServiceName = TinyWallService.SERVICE_NAME;
+                if (!EventLog.SourceExists("TinyWallService"))
+                    EventLog.CreateEventSource("TinyWallService", null);
+                tw.EventLog.Source = "TinyWallService";
+
 
 #if DEBUG
                 tw.Start(null);

@@ -273,12 +273,12 @@ namespace Microsoft.Samples
         /// <param name="pnButton">The push button pressed.</param>
         /// <param name="pnRadioButton">The radio button that was selected.</param>
         /// <param name="pfVerificationFlagChecked">The state of the verification checkbox on dismiss of the Task Dialog.</param>
-        [DllImport("ComCtl32", CharSet = CharSet.Unicode, PreserveSig = false)]
+        [DllImport("ComCtl32.dll", CharSet = CharSet.Unicode, PreserveSig = false, EntryPoint = "TaskDialogIndirect")]
         internal static extern void TaskDialogIndirect(
             [In] ref TASKDIALOGCONFIG pTaskConfig,
             [Out] out int pnButton,
             [Out] out int pnRadioButton,
-            [Out] out bool pfVerificationFlagChecked);
+            [Out, MarshalAs(UnmanagedType.Bool)] out bool pfVerificationFlagChecked);
 
         /// <summary>
         /// Win32 SendMessage.

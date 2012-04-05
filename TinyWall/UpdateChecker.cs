@@ -129,22 +129,24 @@ namespace PKSoft
 
             string tmpFile = Path.GetTempFileName() + ".msi";
             Uri UpdateURL = new Uri(mainModule.UpdateURL);
-            WebClient HTTPClient = new WebClient();
-            HTTPClient.DownloadFileCompleted += new AsyncCompletedEventHandler(Updater_DownloadFinished);
-            HTTPClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(Updater_DownloadProgressChanged);
-            HTTPClient.DownloadFileAsync(UpdateURL, tmpFile, tmpFile);
-
-            switch (updater.TDialog.Show(updater.ParentControl))
+            using (WebClient HTTPClient = new WebClient())
             {
-                case (int)DialogResult.Cancel:
-                    HTTPClient.CancelAsync();
-                    break;
-                case (int)DialogResult.OK:
-                    InstallUpdate(tmpFile);
-                    break;
-                case (int)DialogResult.Abort:
-                    Utils.ShowMessageBox(updater.ParentControl, updater.ErrorMsg, PKSoft.Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
-                    break;
+                HTTPClient.DownloadFileCompleted += new AsyncCompletedEventHandler(Updater_DownloadFinished);
+                HTTPClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(Updater_DownloadProgressChanged);
+                HTTPClient.DownloadFileAsync(UpdateURL, tmpFile, tmpFile);
+
+                switch (updater.TDialog.Show(updater.ParentControl))
+                {
+                    case (int)DialogResult.Cancel:
+                        HTTPClient.CancelAsync();
+                        break;
+                    case (int)DialogResult.OK:
+                        InstallUpdate(tmpFile);
+                        break;
+                    case (int)DialogResult.Abort:
+                        Utils.ShowMessageBox(updater.ParentControl, updater.ErrorMsg, PKSoft.Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
+                        break;
+                }
             }
         }
 

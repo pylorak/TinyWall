@@ -1038,11 +1038,6 @@ namespace PKSoft
 
         internal TinyWallService()
         {
-            this.ServiceName = SERVICE_NAME;
-            if (!EventLog.SourceExists("TinyWallService"))
-                EventLog.CreateEventSource("TinyWallService", null);
-            this.EventLog.Source = "TinyWallService";
-
             this.CanShutdown = true;
 #if DEBUG
             this.CanStop = true;
