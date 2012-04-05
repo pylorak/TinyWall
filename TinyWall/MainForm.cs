@@ -770,10 +770,7 @@ namespace PKSoft
                 // END
                 // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
                 // --- THREAD BARRIER ---
-
-                Utils.MinimizeMemory();
             }
-
 
             bool comError;
             LoadSettingsFromServer(out comError, true);
@@ -804,6 +801,8 @@ namespace PKSoft
             {
                 StartUpdate(null, null);
             }
+
+            Utils.MinimizeMemory();
         }
 
         private void mnuElevate_Click(object sender, EventArgs e)
