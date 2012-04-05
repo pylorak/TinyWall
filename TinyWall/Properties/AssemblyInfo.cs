@@ -9,7 +9,6 @@ using System.Resources;
 // die mit einer Assembly verknüpft sind.
 [assembly: AssemblyTitle("TinyWall")]
 [assembly: AssemblyDescription("An application to control and secure the built-in firewall of Windows.")]
-[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Károly Pados")]
 [assembly: AssemblyProduct("TinyWall")]
 [assembly: AssemblyCopyright("Copyright © Károly Pados 2011-2012")]
@@ -34,8 +33,15 @@ using System.Resources;
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.9.3")]
-[assembly: AssemblyFileVersion("1.9.3")]
+[assembly: AssemblyVersion("1.9.3")]                  // used by the CLR
+[assembly: AssemblyFileVersion("1.9.3")]              // full assembly version
+[assembly: AssemblyInformationalVersion("1.9.3")]     // informal version for customers
 [assembly: NeutralResourcesLanguageAttribute("en")]
 
 [assembly: CLSCompliant(true)]
+
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
+[assembly: AssemblyConfiguration("Release")]
+#endif

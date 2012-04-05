@@ -25,7 +25,7 @@
   <?endif ?>
 
   <Product Id="*" Codepage="1250" Name="$(var.ProductName)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="{0D009F71-BB22-4962-AEE0-6D42FA952B84}">
-		<Package Id="*" InstallerVersion="301" Compressed="yes" InstallScope="perMachine" SummaryCodepage="1250" Description="$(var.Description)" Manufacturer="$(var.Manufacturer)" />
+    <Package Id="*" InstallerVersion="301" Compressed="yes" InstallScope="perMachine" SummaryCodepage="1250" Description="$(var.Description)" Manufacturer="$(var.Manufacturer)" />
 
     <!-- Automatic media generation and assignment -->
     <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
@@ -127,7 +127,7 @@
 
   <Fragment>
 
-	  <Directory Id="TARGETDIR" Name="SourceDir">
+    <Directory Id="TARGETDIR" Name="SourceDir">
 
       <!-- Program Files -->
       <Directory Id="$(var.PlatformProgramFilesFolder)" Name="ProgramFiles">
@@ -154,7 +154,7 @@
             <File Id="TinyWallCONFIG" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe.config" KeyPath="yes" />
           </Component>
         </Directory>
-		  </Directory>
+      </Directory>
 
       <!-- GAC -->
       <Component Id="gac_MainExecutable" Guid="{8487EFE8-C7C1-4832-93B1-C72C7997BC91}" Win64="$(var.Win64)">
@@ -197,8 +197,8 @@
           </Component>
         </Directory>
       </Directory>
-      
-	  </Directory>
+
+    </Directory>
 
     <!-- Registry -->
     <Component Id="RegistryKeys" Guid="{85FFE113-2363-4EF9-AAA4-05F522907839}" Directory="INSTALLDIR" Win64="$(var.Win64)">
