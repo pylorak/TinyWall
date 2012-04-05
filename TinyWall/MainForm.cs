@@ -617,7 +617,7 @@ namespace PKSoft
 
         private void AddNewException(FirewallException ex)
         {
-            List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(this, ex);
+            List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(ex, true, true, this);
             if (exceptions.Count == 0)
                 return;
 

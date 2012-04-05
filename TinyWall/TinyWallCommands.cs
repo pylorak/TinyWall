@@ -28,7 +28,6 @@ namespace PKSoft
         // Privileged write commands (>2047)
         MODE_SWITCH = 2048,
         REINIT,
-        RELOAD,
         PUT_SETTINGS,
         LOCK,
         SET_PASSPHRASE,

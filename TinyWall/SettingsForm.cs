@@ -261,7 +261,7 @@ namespace PKSoft
             {
                 if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {
-                    List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(this, f.ExceptionSettings);
+                    List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(f.ExceptionSettings, true, true, this);
                     for (int i = 0; i < exceptions.Count; ++i)
                         TmpZoneConfig.AppExceptions.Add(exceptions[i]);
                     TmpZoneConfig.Normalize();

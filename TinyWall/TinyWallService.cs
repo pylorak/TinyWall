@@ -34,11 +34,9 @@ namespace PKSoft
 
         // Context needed for learning mode
         ApplicationCollection LearningKnownApplication;
-        List<FirewallException> LearningNewExceptions = new List<FirewallException>();
+        List<FirewallException> LearningNewExceptions;
         
-        private WindowsFirewall.Policy Firewall;
         private WindowsFirewall.Rules FwRules;
-
         private List<RuleDef> ActiveRules;
         private List<RuleDef> AppExRules;
         private List<RuleDef> SpecialRules;
@@ -116,9 +114,8 @@ namespace PKSoft
                         RuleDef def = new RuleDef(ModeId, "Allow everything", PacketAction.Allow, RuleDirection.InOut, Protocol.Any);
                         ActiveRules.Add(def);
 
-                        LearningKnownApplication = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
+                        // Start up firewall logging
                         Q.Enqueue(new ReqResp(new Message(TWControllerMessages.READ_FW_LOG)));
-
                         break;
                     }
                 case FirewallMode.Normal:
@@ -364,6 +361,8 @@ namespace PKSoft
         // This method completely reinitializes the firewall.
         private void InitFirewall()
         {
+            Policy Firewall = new Policy();
+
             using (ThreadBarrier barrier = new ThreadBarrier(2))
             {
                 ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
@@ -378,7 +377,6 @@ namespace PKSoft
                     }
                 });
 
-                Firewall = new Policy();
                 Firewall.ResetFirewall();
                 Firewall.Enabled = true;
                 Firewall.DefaultInboundAction = PacketAction.Block;
@@ -393,13 +391,13 @@ namespace PKSoft
                 // --- THREAD BARRIER ---
             }
 
-            LoadProfile();
+            LoadProfile(Firewall);
             ReapplySettings();
         }
 
-        private void LoadProfile()
+        private void LoadProfile(Policy firewallPolicy)
         {
-            Profile = Firewall.CurrentProfileTypes;
+            Profile = firewallPolicy.CurrentProfileTypes;
             string ProfileDisplayName;
             if ((int)(Profile & ProfileType.Private) != 0)
                 ProfileDisplayName = "Private";
@@ -605,12 +603,15 @@ namespace PKSoft
 
             lock (LogWatcher)
             {
-                List<FirewallLogEntry> list = LogWatcher.QueryNewEntries();
+                List<FirewallLogEntry> list = GetFwLog();
                 foreach (FirewallLogEntry entry in list)
                 {
                     string exec = GetPathOfProcess((int)entry.ProcessID);
                     if (exec == null)
                         continue;
+
+                    if (LearningNewExceptions == null)
+                        LearningNewExceptions = new List<FirewallException>();
 
                     bool alreadyExists = false;
                     for (int j = 0; j < LearningNewExceptions.Count; ++j)
@@ -624,31 +625,13 @@ namespace PKSoft
                     if (alreadyExists)
                         continue;
 
-                    AppExceptionAssoc appFile;
-                    Application app = LearningKnownApplication.TryGetRecognizedApp(exec, null, out appFile);
-                    if (app != null)
-                    {
-                        if (app.Special)
-                            continue;
+                    if (LearningKnownApplication == null)
+                        LearningKnownApplication = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
 
-                        app.ResolveFilePaths();
-                        foreach (AppExceptionAssoc p in app.FileTemplates)
-                        {
-                            foreach (string execPath in p.ExecutableRealizations)
-                            {
-                                LearningNewExceptions.Add(p.CreateException(execPath));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        FirewallException ex = new FirewallException(exec, null);
-                        ex.OpenPortListenLocalTCP = "*";
-                        ex.OpenPortListenLocalUDP = "*";
-                        ex.OpenPortOutboundRemoteTCP = "*";
-                        ex.OpenPortOutboundRemoteUDP = "*";
-                        LearningNewExceptions.Add(ex);
-                    }
+                    FirewallException ex = new FirewallException(exec, null);
+                    ex.MakeUnrestrictTcpUdp();
+                    List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(ex, false, false, null, LearningKnownApplication);
+                    LearningNewExceptions.AddRange(exceptions);
                 }
             }
         }
@@ -669,7 +652,9 @@ namespace PKSoft
                     {
                         SettingsManager.CurrentZone.AppExceptions.Add(ex);
                     }
-                    LearningNewExceptions.Clear();
+
+                    LearningKnownApplication = null;
+                    LearningNewExceptions = null;
                 }
                 SettingsManager.CurrentZone.Normalize();
                 SettingsManager.CurrentZone.Save();
@@ -678,6 +663,7 @@ namespace PKSoft
                 VisibleState.SettingsChangeset = Utils.GetRandomNumber();
                 NotifyController(TWServiceMessages.SETTINGS_CHANGED);
             }
+
             return;
         }
 
@@ -710,6 +696,7 @@ namespace PKSoft
                             SettingsManager.GlobalConfig.Save();
                         }
 
+                        Policy Firewall = new Policy();
                         if (Firewall.LocalPolicyModifyState == LocalPolicyState.GP_OVERRRIDE)
                             return new Message(TWControllerMessages.RESPONSE_WARNING);
                         else
@@ -768,12 +755,6 @@ namespace PKSoft
                     {
                         CommitLearnedRules();
                         InitFirewall();
-                        return new Message(TWControllerMessages.RESPONSE_OK);
-                    }
-                case TWControllerMessages.RELOAD:
-                    {
-                        FwRules = Firewall.GetRules(false);
-                        MergeActiveRulesIntoWinFirewall();
                         return new Message(TWControllerMessages.RESPONSE_OK);
                     }
                 case TWControllerMessages.UNLOCK:

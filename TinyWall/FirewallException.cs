@@ -90,7 +90,7 @@ namespace PKSoft
         {
             AppID = GenerateID();
         }
-        
+
         [XmlIgnore]
         public string ExecutableName
         {
@@ -128,7 +128,7 @@ namespace PKSoft
         {
             return !string.IsNullOrEmpty(OpenPortOutboundRemoteUDP);
         }
-        
+
         public string OpenPortListenLocalUDP = string.Empty;
         public bool ShouldSerializeOpenPortListenLocalUDP()
         {
@@ -264,76 +264,83 @@ namespace PKSoft
             return "[TW" + Utils.RandomString(12) + "]";
         }
 
-        internal static List<FirewallException> CheckForAppDependencies(System.Windows.Forms.IWin32Window parent, FirewallException ex, bool gui = true, ApplicationCollection allApps = null)
+        internal static List<FirewallException> CheckForAppDependencies(FirewallException ex, bool useExOnRecognized, bool specialAllowed, System.Windows.Forms.IWin32Window parent = null, ApplicationCollection allApps = null)
         {
             List<FirewallException> exceptions = new List<FirewallException>();
-            exceptions.Add(ex);
+            bool promptUI = (parent != null);
 
             AppExceptionAssoc appFile = null;
             if (allApps == null)
                 allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
 
             Application app = allApps.TryGetRecognizedApp(ex.ExecutablePath, ex.ServiceName, out appFile);
-            if ((app != null) && app.ResolveFilePaths())
+            if (app != null)
             {
-                List<FirewallException> exceptions2 = new List<FirewallException>();
-                exceptions2.Add(ex);
+                if (!specialAllowed && app.Special)
+                    return exceptions;
+
+                app.ResolveFilePaths();
+
+                if (useExOnRecognized)
+                    exceptions.Add(ex);
+                else
+                    exceptions.Add(appFile.CreateException(ex.ExecutablePath));
+
                 foreach (AppExceptionAssoc template in app.FileTemplates)
                 {
                     foreach (string execPath in template.ExecutableRealizations)
                     {
                         if (!ex.ExecutablePath.Equals(execPath, StringComparison.OrdinalIgnoreCase))
-                            exceptions2.Add(template.CreateException(execPath));
+                            exceptions.Add(template.CreateException(execPath));
                     }
                 }
+            }
+            else
+            {
+                exceptions.Add(ex);
+            }
 
-                if (exceptions2.Count > 1)
+            if ((exceptions.Count > 1) && promptUI)
+            {
+                string firstLine, contentLines;
+                Utils.SplitFirstLine(string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.UnblockApp, app.Name), out firstLine, out contentLines);
+
+                TaskDialog dialog = new TaskDialog();
+                dialog.CustomMainIcon = PKSoft.Resources.Icons.firewall;
+                dialog.WindowTitle = PKSoft.Resources.Messages.TinyWall;
+                dialog.MainInstruction = firstLine;
+                dialog.Content = contentLines;
+                dialog.DefaultButton = 1;
+                dialog.ExpandedControlText = PKSoft.Resources.Messages.UnblockAppShowRelated;
+                dialog.ExpandFooterArea = true;
+                dialog.AllowDialogCancellation = false;
+                dialog.UseCommandLinks = true;
+
+                TaskDialogButton button1 = new TaskDialogButton(101, PKSoft.Resources.Messages.UnblockAppUnblockAllRecommended);
+                TaskDialogButton button2 = new TaskDialogButton(102, PKSoft.Resources.Messages.UnblockAppUnblockOnlySelected);
+                TaskDialogButton button3 = new TaskDialogButton(103, PKSoft.Resources.Messages.UnblockAppCancel);
+                dialog.Buttons = new TaskDialogButton[] { button1, button2, button3 };
+
+                string fileListStr = string.Empty;
+                foreach (FirewallException filePath in exceptions)
+                    fileListStr += filePath.ExecutablePath + Environment.NewLine;
+                dialog.ExpandedInformation = fileListStr.Trim();
+
+                switch (dialog.Show(parent))
                 {
-                    if (!gui)
-                    {
-                        return exceptions2;
-                    }
-                    else
-                    {
-                        string firstLine, contentLines;
-                        Utils.SplitFirstLine(string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.UnblockApp, app.Name), out firstLine, out contentLines);
-
-                        TaskDialog dialog = new TaskDialog();
-                        dialog.CustomMainIcon = PKSoft.Resources.Icons.firewall;
-                        dialog.WindowTitle = PKSoft.Resources.Messages.TinyWall;
-                        dialog.MainInstruction = firstLine;
-                        dialog.Content = contentLines;
-                        dialog.DefaultButton = 1;
-                        dialog.ExpandedControlText = PKSoft.Resources.Messages.UnblockAppShowRelated;
-                        dialog.ExpandFooterArea = true;
-                        dialog.AllowDialogCancellation = false;
-                        dialog.UseCommandLinks = true;
-
-                        TaskDialogButton button1 = new TaskDialogButton(101, PKSoft.Resources.Messages.UnblockAppUnblockAllRecommended);
-                        TaskDialogButton button2 = new TaskDialogButton(102, PKSoft.Resources.Messages.UnblockAppUnblockOnlySelected);
-                        TaskDialogButton button3 = new TaskDialogButton(103, PKSoft.Resources.Messages.UnblockAppCancel);
-                        dialog.Buttons = new TaskDialogButton[] { button1, button2, button3 };
-
-                        string fileListStr = string.Empty;
-                        foreach (FirewallException filePath in exceptions2)
-                            fileListStr += filePath.ExecutablePath + Environment.NewLine;
-                        dialog.ExpandedInformation = fileListStr.Trim();
-
-                        switch (dialog.Show(parent))
-                        {
-                            case 101:
-                                return exceptions2;
-                            case 102:
-                                return exceptions;
-                            case 103:
-                                return new List<FirewallException>();
-                        }
-                    }
+                    case 101:
+                        break;
+                    case 102:
+                        exceptions.RemoveRange(1, exceptions.Count - 1);
+                        break;
+                    case 103:
+                        exceptions.Clear();
+                        break;
                 }
             }
 
             return exceptions;
         }
-    };
+    }
 
 }

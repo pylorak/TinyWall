@@ -328,29 +328,22 @@ namespace PKSoft
                 try
                 {
                     FirewallException ex = new FirewallException(path, null);
-                    ex.TryRecognizeApp(true);
+                    ex.MakeUnrestrictTcpUdp();
+                    List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(ex, true, true, this);
+                    if (exceptions.Count == 0)
+                        return;
 
-                    if (ex.Recognized.Value)
-                    {
-                        List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(this, ex);
-                        if (exceptions.Count == 0)
-                            return;
-                        for (int i = 0; i < exceptions.Count; ++i)
-                            SettingsManager.CurrentZone.AppExceptions.Add(exceptions[i]);
-                    }
-                    else
-                    {
-                        SettingsManager.CurrentZone.AppExceptions.Add(ex);
-                    }
+                    for (int i = 0; i < exceptions.Count; ++i)
+                        SettingsManager.CurrentZone.AppExceptions.Add(exceptions[i]);
+
+                    SettingsManager.CurrentZone.Normalize();
+                    MainForm.ApplyFirewallSettings(null, SettingsManager.CurrentZone, true);
                 }
                 catch
                 {
                     MessageBox.Show(this, string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CouldNotWhitelistProcess, path), PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
-
-            SettingsManager.CurrentZone.Normalize();
-            MainForm.ApplyFirewallSettings(null, SettingsManager.CurrentZone, true);
         }
 
         private void mnuCopyRemoteAddress_Click(object sender, EventArgs e)
