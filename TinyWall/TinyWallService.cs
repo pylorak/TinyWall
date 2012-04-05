@@ -957,6 +957,9 @@ namespace PKSoft
         // This is a list of apps that are allowed to change firewall rules
         private readonly string[] WhitelistedApps = new string[]
                 {
+#if DEBUG
+                    Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "TinyWall.vshost.exe"),
+#endif
                     Utils.ExecutablePath,
                     Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "dllhost.exe")
                 };
@@ -997,12 +1000,12 @@ namespace PKSoft
                 case 2010:     // network interface changed profile
                     {   // Event format is different in this case so we handle this separately
                         VisibleState.SettingsChangeset = Utils.GetRandomNumber();
-                        NotifyController(TWServiceMessages.SETTINGS_CHANGED);
                         if (!Q.HasRequest(TWControllerMessages.REINIT))
                         {
                             EventLog.WriteEntry("Reloading firewall configuration because a network interface changed profile.");
                             Q.Enqueue(new ReqResp(new Message(TWControllerMessages.REINIT)));
                         }
+                        NotifyController(TWServiceMessages.SETTINGS_CHANGED);
                         break;
                     }
                 case 2032:     // firewall has been reset
