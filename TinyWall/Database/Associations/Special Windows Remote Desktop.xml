@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Name="Windows Remote Desktop" Special="true">
+<Application Name="Windows_Remote_Desktop" Special="true">
 	<Files>
 	<AppExceptionAssoc Executable="System">
       <ExceptionTemplate Template="true">

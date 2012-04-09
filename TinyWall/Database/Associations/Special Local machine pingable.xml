@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Name="Local machine pingable" Special="true">
+<Application Name="Pingable_local_machine" Special="true">
 	<Files>
     <AppExceptionAssoc Executable="">
       <ExceptionTemplate Template="true">

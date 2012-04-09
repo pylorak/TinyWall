@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Name="Windows DNS Client" Recommended="true" Special="true">
+<Application Name="Windows_DNS_Client" Recommended="true" Special="true">
 	<Files>
 	<AppExceptionAssoc Executable="{folder:sys32}\svchost.exe" Service="Dnscache">
       <ExceptionTemplate Template="true">

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Name="Filtered ICMP traffic" Recommended="true" Special="true">
+<Application Name="Filtered_ICMP_Traffic" Recommended="true" Special="true">
 	<Files>
     <AppExceptionAssoc Executable="">
       <ExceptionTemplate Template="true">

@@ -10,6 +10,23 @@ namespace PKSoft
 {
     internal partial class SettingsForm : Form
     {
+        private class IdWithName
+        {
+            internal string Id;
+            internal string Name;
+
+            internal IdWithName(string id, string name)
+            {
+                Id = id;
+                Name = name;
+            }
+
+            public override string ToString()
+            {
+                return Name;
+            }
+        }
+
         internal ZoneSettings TmpZoneConfig;
         internal MachineSettings TmpMachineConfig;
         internal ControllerSettings TmpControllerConfig;
@@ -62,15 +79,22 @@ namespace PKSoft
                 {
                     if (app.Special && app.ResolveFilePaths())
                     {
+                        // Get localized name
+                        IdWithName item = new IdWithName(app.Name, PKSoft.Resources.Exceptions.ResourceManager.GetString(app.Name, PKSoft.Resources.Exceptions.Culture));
+
+                        // Construct default name in case no localization exists
+                        if (string.IsNullOrEmpty(item.Name))
+                            item.Name = item.Id.Replace('_', ' ');
+
                         if (app.Recommended)
                         {
-                            int itemIdx = listRecommendedGlobalProfiles.Items.Add(app.Name);
-                            listRecommendedGlobalProfiles.SetItemChecked(itemIdx, TmpZoneConfig.SpecialExceptions.Contains(app.Name));
+                            int itemIdx = listRecommendedGlobalProfiles.Items.Add(item);
+                            listRecommendedGlobalProfiles.SetItemChecked(itemIdx, TmpZoneConfig.SpecialExceptions.Contains(item.Id));
                         }
                         else
                         {
-                            int itemIdx = listOptionalGlobalProfiles.Items.Add(app.Name);
-                            listOptionalGlobalProfiles.SetItemChecked(itemIdx, TmpZoneConfig.SpecialExceptions.Contains(app.Name));
+                            int itemIdx = listOptionalGlobalProfiles.Items.Add(item);
+                            listOptionalGlobalProfiles.SetItemChecked(itemIdx, TmpZoneConfig.SpecialExceptions.Contains(item.Id));
                         }
                     }
                 }
@@ -191,14 +215,14 @@ namespace PKSoft
             if (LoadingSettings) return;
 
             CheckedListBox clb = sender as CheckedListBox;
-            string itemText = clb.Items[e.Index].ToString();
+            IdWithName item = clb.Items[e.Index] as IdWithName;
             if (e.NewValue == CheckState.Checked)
             {
-                TmpZoneConfig.SpecialExceptions.Add(itemText);
+                TmpZoneConfig.SpecialExceptions.Add(item.Id);
             }
             else
             {
-                TmpZoneConfig.SpecialExceptions.Remove(itemText);
+                TmpZoneConfig.SpecialExceptions.Remove(item.Id);
             }
         }
 

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Name="File and printer sharing" Recommended="false" Special="true">
+<Application Name="File_and_Printer_Sharing" Recommended="false" Special="true">
 	<Files>
     <AppExceptionAssoc Executable="System">
       <ExceptionTemplate Template="true">

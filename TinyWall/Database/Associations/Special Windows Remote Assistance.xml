@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Name="Windows Remote Assistance" Special="true">
+<Application Name="Windows_Remote_Assistance" Special="true">
 	<Files>
 	<AppExceptionAssoc Executable="{folder:sys32}\svchost.exe" Service="PNRPsvc">
       <ExceptionTemplate Template="true">

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Name="Windows Network Discovery" Special="true" Recommended="true">
+<Application Name="Windows_Network_Discovery" Special="true" Recommended="true">
 	<Files>
 	<AppExceptionAssoc Executable="{folder:sys32}\svchost.exe" Service="ssdpsrv">
       <ExceptionTemplate Template="true">

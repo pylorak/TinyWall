@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Name="Windows Time Sync" Recommended="true" Special="true">
+<Application Name="Windows_Time_Sync" Recommended="true" Special="true">
 	<Files>
 	<AppExceptionAssoc Executable="{folder:sys32}\svchost.exe" Service="W32Time">
       <ExceptionTemplate Template="true">
