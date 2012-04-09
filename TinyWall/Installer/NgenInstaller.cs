@@ -20,20 +20,28 @@ namespace PKSoft
         {
             base.Install(stateSaver);
 
-            using (Process p = Utils.StartProcess(NGEN_PATH, "install \"" + TargetFile + "\"", true, true))
+            try
             {
-                p.WaitForExit();
+                using (Process p = Utils.StartProcess(NGEN_PATH, "install \"" + TargetFile + "\"", true, true))
+                {
+                    p.WaitForExit();
+                }
             }
+            catch { }
         }
 
         public override void Uninstall(IDictionary stateSaver)
         {
             base.Uninstall(stateSaver);
 
-            using (Process p = Utils.StartProcess(NGEN_PATH, "uninstall \"" + TargetFile + "\"", true, true))
+            try
             {
-                p.WaitForExit();
+                using (Process p = Utils.StartProcess(NGEN_PATH, "uninstall \"" + TargetFile + "\"", true, true))
+                {
+                    p.WaitForExit();
+                }
             }
+            catch { }
         }
     }
 }
