@@ -59,6 +59,16 @@ namespace PKSoft
                 // General page
                 chkAutoUpdateCheck.Checked = TmpMachineConfig.AutoUpdateCheck;
                 chkAskForExceptionDetails.Checked = TmpControllerConfig.AskForExceptionDetails;
+                comboLanguages.SelectedIndex = 0;
+                for(int i = 0; i < comboLanguages.Items.Count; ++i)
+                {
+                    IdWithName item = comboLanguages.Items[i] as IdWithName;
+                    if (item.Id.Equals(TmpControllerConfig.Language, StringComparison.OrdinalIgnoreCase))
+                    {
+                        comboLanguages.SelectedIndex = i;
+                        break;
+                    }
+                }
 
                 // Fill Machine Settings tab
                 chkLockHostsFile.Checked = TmpMachineConfig.LockHostsFile;
@@ -202,6 +212,8 @@ namespace PKSoft
             TmpMachineConfig.Blocklists.EnableHostsBlocklist = chkHostsBlocklist.Checked;
             TmpMachineConfig.Blocklists.EnableBlocklists = chkEnableBlocklists.Checked;
 
+            TmpControllerConfig.Language = (comboLanguages.SelectedItem as IdWithName).Id;
+
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
@@ -324,6 +336,9 @@ namespace PKSoft
 
         private void SettingsForm_Shown(object sender, EventArgs e)
         {
+            comboLanguages.Items.Add(new IdWithName("auto", "Automatic"));
+            comboLanguages.Items.Add(new IdWithName("en", "English"));
+
             IconList.Images.Add("deleted", Resources.Icons.delete);
 
             lblVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0} {1}", lblVersion.Text, System.Windows.Forms.Application.ProductVersion.ToString());
@@ -465,6 +480,5 @@ namespace PKSoft
             chkHostsBlocklist.Enabled = chkEnableBlocklists.Checked;
             chkBlockMalwarePorts.Enabled = chkEnableBlocklists.Checked;
         }
-
     }
 }

@@ -348,6 +348,9 @@ namespace PKSoft
     [Serializable]
     public class ControllerSettings : SettingsBase
     {
+        // UI Localization
+        public string Language = "auto";
+
         // Connections window
         public System.Windows.Forms.FormWindowState ConnFormWindowState = System.Windows.Forms.FormWindowState.Normal;
         public System.Drawing.Point ConnFormWindowLoc = new System.Drawing.Point(150, 150);

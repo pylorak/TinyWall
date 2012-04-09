@@ -53,6 +53,8 @@
             this.listOptionalGlobalProfiles = new System.Windows.Forms.CheckedListBox();
             this.listRecommendedGlobalProfiles = new System.Windows.Forms.CheckedListBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.comboLanguages = new System.Windows.Forms.ComboBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.chkEnableBlocklists = new System.Windows.Forms.CheckBox();
             this.chkLockHostsFile = new System.Windows.Forms.CheckBox();
             this.chkHostsBlocklist = new System.Windows.Forms.CheckBox();
@@ -264,6 +266,8 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.comboLanguages);
+            this.tabPage1.Controls.Add(this.label11);
             this.tabPage1.Controls.Add(this.chkEnableBlocklists);
             this.tabPage1.Controls.Add(this.chkLockHostsFile);
             this.tabPage1.Controls.Add(this.chkHostsBlocklist);
@@ -274,6 +278,18 @@
             resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // comboLanguages
+            // 
+            this.comboLanguages.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboLanguages.FormattingEnabled = true;
+            resources.ApplyResources(this.comboLanguages, "comboLanguages");
+            this.comboLanguages.Name = "comboLanguages";
+            // 
+            // label11
+            // 
+            resources.ApplyResources(this.label11, "label11");
+            this.label11.Name = "label11";
             // 
             // chkEnableBlocklists
             // 
@@ -558,5 +574,7 @@
         private System.Windows.Forms.Button btnAppRemoveAll;
         private System.Windows.Forms.TextBox txtExceptionListFilter;
         private System.Windows.Forms.CheckBox chkEnableBlocklists;
+        private System.Windows.Forms.ComboBox comboLanguages;
+        private System.Windows.Forms.Label label11;
     }
 }

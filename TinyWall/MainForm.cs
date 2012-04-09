@@ -58,6 +58,13 @@ namespace PKSoft
         {
             this.StartupOpts = opts;
 
+            SettingsManager.ControllerConfig = ControllerSettings.Load();
+            try
+            {
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo(SettingsManager.ControllerConfig.Language);
+            }
+            catch { }
+
             InitializeComponent();
             this.Icon = Resources.Icons.firewall;
             this.Tray.Icon = Resources.Icons.firewall;
@@ -764,7 +771,6 @@ namespace PKSoft
                 HotKeyWhitelistProcess.Register(this);
 
                 GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
-                SettingsManager.ControllerConfig = ControllerSettings.Load();
 
                 barrier.Wait();
                 // END
