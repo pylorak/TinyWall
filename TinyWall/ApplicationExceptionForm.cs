@@ -9,29 +9,11 @@ namespace PKSoft
     internal partial class ApplicationExceptionForm : Form
     {
         private FirewallException TmpExceptionSettings;
+        private string AppName = string.Empty;
+
         internal FirewallException ExceptionSettings
         {
             get { return TmpExceptionSettings; }
-        }
-
-        private bool RecognizedApp
-        {
-            set
-            {
-                if (value)
-                {
-                    // Recognized app
-                    panel1.BackgroundImage = Resources.Icons.green_banner;
-                    transparentLabel1.Text = PKSoft.Resources.Messages.RecognizedApplication;
-                }
-                else
-                {
-                    // Unknown app
-                    panel1.BackgroundImage = Resources.Icons.blue_banner;
-                    transparentLabel1.Text = PKSoft.Resources.Messages.UnknownApplication;
-                }
-                Utils.CenterControlInParent(transparentLabel1);
-            }
         }
 
         internal ApplicationExceptionForm(FirewallException AppEx)
@@ -83,7 +65,7 @@ namespace PKSoft
             cmbTimer.ResumeLayout(true);
 
             if (!TmpExceptionSettings.Recognized.HasValue)
-                TmpExceptionSettings.TryRecognizeApp(true);
+                AppName = TmpExceptionSettings.TryRecognizeApp(true);
         }
 
         private void ApplicationExceptionForm_Load(object sender, EventArgs e)
@@ -103,7 +85,20 @@ namespace PKSoft
                 }
             }
 
-            this.RecognizedApp = TmpExceptionSettings.Recognized.Value;
+            if (TmpExceptionSettings.Recognized.Value)
+            {
+                // Recognized app
+                panel1.BackgroundImage = Resources.Icons.green_banner;
+                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.RecognizedApplication, AppName);
+            }
+            else
+            {
+                // Unknown app
+                panel1.BackgroundImage = Resources.Icons.blue_banner;
+                transparentLabel1.Text = PKSoft.Resources.Messages.UnknownApplication;
+            }
+
+            Utils.CenterControlInParent(transparentLabel1);
             txtAppPath.Text = TmpExceptionSettings.ExecutablePath;
             txtSrvName.Text = TmpExceptionSettings.ServiceName;
             chkRestrictToLocalNetwork.Checked = TmpExceptionSettings.LocalNetworkOnly;
@@ -207,7 +202,7 @@ namespace PKSoft
             if (proc == null) return;
 
             TmpExceptionSettings = proc;
-            TmpExceptionSettings.TryRecognizeApp(true);
+            AppName = TmpExceptionSettings.TryRecognizeApp(true);
             UpdateUI();
         }
 
@@ -218,7 +213,7 @@ namespace PKSoft
 
             TmpExceptionSettings.ExecutablePath = ofd.FileName;
             TmpExceptionSettings.ServiceName = string.Empty;
-            TmpExceptionSettings.TryRecognizeApp(true);
+            AppName = TmpExceptionSettings.TryRecognizeApp(true);
             UpdateUI();
         }
 
@@ -228,7 +223,7 @@ namespace PKSoft
             if (serv == null) return;
 
             TmpExceptionSettings = serv;
-            TmpExceptionSettings.TryRecognizeApp(true);
+            AppName = TmpExceptionSettings.TryRecognizeApp(true);
             UpdateUI(); 
         }
 

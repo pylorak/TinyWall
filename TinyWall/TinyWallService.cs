@@ -980,6 +980,7 @@ namespace PKSoft
                     }
                 case 2010:     // network interface changed profile
                     {   // Event format is different in this case so we handle this separately
+                        propidx = -1;
                         VisibleState.SettingsChangeset = Utils.GetRandomNumber();
                         if (!Q.HasRequest(TWControllerMessages.REINIT))
                         {

@@ -41,6 +41,7 @@
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.label6 = new System.Windows.Forms.Label();
             this.cmbTimer = new System.Windows.Forms.ComboBox();
+            this.transparentLabel1 = new TransparentLabel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.chkRestrictToLocalNetwork = new System.Windows.Forms.CheckBox();
@@ -64,7 +65,6 @@
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
-            this.transparentLabel1 = new TransparentLabel();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -155,19 +155,19 @@
             this.cmbTimer.Name = "cmbTimer";
             this.cmbTimer.SelectedIndexChanged += new System.EventHandler(this.cmbTimer_SelectedIndexChanged);
             // 
-            // transparentLabel1
-            // 
-            resources.ApplyResources(this.transparentLabel1, "transparentLabel1");
-            this.transparentLabel1.BackColor = System.Drawing.Color.Transparent;
-            this.transparentLabel1.ForeColor = System.Drawing.Color.White;
-            this.transparentLabel1.Name = "transparentLabel1";
-            // 
             // panel1
             // 
             resources.ApplyResources(this.panel1, "panel1");
             this.panel1.BackgroundImage = global::PKSoft.Resources.Icons.green_banner;
             this.panel1.Controls.Add(this.transparentLabel1);
             this.panel1.Name = "panel1";
+            // 
+            // transparentLabel1
+            // 
+            resources.ApplyResources(this.transparentLabel1, "transparentLabel1");
+            this.transparentLabel1.BackColor = System.Drawing.Color.Transparent;
+            this.transparentLabel1.ForeColor = System.Drawing.Color.White;
+            this.transparentLabel1.Name = "transparentLabel1";
             // 
             // panel2
             // 

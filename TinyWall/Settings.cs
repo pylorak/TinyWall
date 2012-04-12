@@ -296,49 +296,6 @@ namespace PKSoft
                 SerializationHelper.SaveToEncryptedXMLFile<string>(passHash, SettingsFile, key, ENC_IV);
             }
         }
-
-        /* Keep this around in case we need it in the future
-        internal void Save()
-        {
-            // Construct file path
-            string SettingsFile = FilePath;
-
-            // Construct key
-            string key = ENC_SALT + MachineFingerprint.Fingerprint();
-            key = Hasher.HashString(key).Substring(0, 16);
-
-            SerializationHelper.SaveToEncryptedXMLFile<ServiceSettings>(this, SettingsFile, key, ENC_IV);
-        }
-
-        internal static ServiceSettings Load()
-        {
-            try
-            {
-                // Construct file path
-                string SettingsFile = FilePath;
-
-                // Construct key
-                string key = ENC_SALT + MachineFingerprint.Fingerprint();
-                key = Hasher.HashString(key).Substring(0, 16);
-
-                return SerializationHelper.LoadFromEncryptedXMLFile<ServiceSettings>(SettingsFile, key, ENC_IV);
-            }
-            catch
-            {
-                // TODO: handle this in caller
-                return new ServiceSettings();
-            }
-        }
-
-        internal static string FilePath
-        {
-            get
-            {
-                const string fn = "SrvConfig";
-                return Path.Combine(SettingsManager.AppDataPath, fn);
-            }
-        }
-        */
     }
 
     // Operational settings for the controller

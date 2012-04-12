@@ -173,7 +173,7 @@ namespace PKSoft
             return true;
         }
 
-        internal void TryRecognizeApp(bool allowModify)
+        internal string TryRecognizeApp(bool allowModify)
         {
             Application app = null;
             AppExceptionAssoc appFile = null;
@@ -195,6 +195,11 @@ namespace PKSoft
                     appFile.ExceptionTemplate.CopyRulesTo(this);
                 }
             }
+
+            if (Recognized.Value)
+                return app.Name;
+            else
+                return null;
         }
 
         internal void CopyRulesTo(FirewallException o)

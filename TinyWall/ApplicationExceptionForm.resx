@@ -414,6 +414,9 @@
   <data name="&gt;&gt;cmbTimer.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="panel1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
   <data name="transparentLabel1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -424,28 +427,25 @@
     <value>162, 12</value>
   </data>
   <data name="transparentLabel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>207, 24</value>
+    <value>217, 24</value>
   </data>
   <data name="transparentLabel1.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
   <data name="transparentLabel1.Text" xml:space="preserve">
-    <value>Recognized application</value>
+    <value>Recognized placeholder</value>
   </data>
   <data name="&gt;&gt;transparentLabel1.Name" xml:space="preserve">
     <value>transparentLabel1</value>
   </data>
   <data name="&gt;&gt;transparentLabel1.Type" xml:space="preserve">
-    <value>PKSoft.TransparentLabel, TinyWall, Version=1.9.1.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3</value>
+    <value>PKSoft.TransparentLabel, TinyWall, Version=1.9.3.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3</value>
   </data>
   <data name="&gt;&gt;transparentLabel1.Parent" xml:space="preserve">
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;transparentLabel1.ZOrder" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="panel1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
   </data>
   <data name="panel1.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, -1</value>

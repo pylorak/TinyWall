@@ -289,8 +289,8 @@ Select Elevate from the tray menu and try again.</value>
     <value>Search results:</value>
   </data>
   <data name="RecognizedApplication" xml:space="preserve">
-    <value>Recognized application</value>
-    <comment>Exception details window banner text</comment>
+    <value>Recognized {0}</value>
+    <comment>Exception details window banner text. Param0 is name of application.</comment>
   </data>
   <data name="UnknownApplication" xml:space="preserve">
     <value>Unknown application</value>
