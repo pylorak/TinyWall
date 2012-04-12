@@ -41,12 +41,12 @@ namespace PKSoft
             return this.Name;
         }
 
-        internal bool ResolveFilePaths()
+        internal bool ResolveFilePaths(string pathHint = null)
         {
             bool foundFiles = false;
             for (int i = 0; i < FileTemplates.Count; ++i)
             {
-                foundFiles |= FileTemplates[i].SearchForFile();
+                foundFiles |= FileTemplates[i].SearchForFile(pathHint);
             }
             return foundFiles;
         }

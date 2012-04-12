@@ -284,7 +284,7 @@ namespace PKSoft
                 if (!specialAllowed && app.Special)
                     return exceptions;
 
-                app.ResolveFilePaths();
+                app.ResolveFilePaths(Path.GetDirectoryName(ex.ExecutablePath));
 
                 if (useExOnRecognized)
                     exceptions.Add(ex);

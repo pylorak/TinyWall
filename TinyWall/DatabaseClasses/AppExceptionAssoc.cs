@@ -128,7 +128,7 @@ namespace PKSoft
 
         // Tries to get the actual file path based on the search crateria
         // specified by SearchPaths. Writes found files to ExecutableRealizations.
-        public bool SearchForFile()
+        public bool SearchForFile(string pathHint = null)
         {
             ExecutableRealizations.Clear();
 
@@ -140,7 +140,21 @@ namespace PKSoft
                     ExecutableRealizations.Add(exec);
                 }
             }
-            else if (this.SearchPaths != null)
+
+            if ((ExecutableRealizations.Count == 0) && (pathHint != null))
+            {
+                string fileName = Path.GetFileName(exec);
+                string filePath = Path.Combine(pathHint, fileName);
+                if (IsValidExecutablePath(filePath))
+                {
+                    if (this.DoesExecutableSatisfy(filePath, this.Service))
+                    {
+                        ExecutableRealizations.Add(filePath);
+                    }
+                }
+            }
+
+            if ((ExecutableRealizations.Count == 0) && (this.SearchPaths != null))
             {
                 for (int i = 0; i < this.SearchPaths.Length; ++i)
                 {
