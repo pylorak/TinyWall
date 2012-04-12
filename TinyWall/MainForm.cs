@@ -182,7 +182,7 @@ namespace PKSoft
             switch (FirewallState.Mode)
             {
                 case FirewallMode.Normal:
-                    Tray.Icon = PKSoft.Resources.Icons.firewall;
+                    Tray.Icon = PKSoft.Resources.Icons.shield_green_small;
                     mnuMode.Image = mnuModeNormal.Image;
                     FirewallModeName = PKSoft.Resources.Messages.FirewallModeNormal;
                     break;
