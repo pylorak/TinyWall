@@ -477,7 +477,7 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The firewall is now learning while letting all traffic thorugh..
+        ///   Looks up a localized string similar to The firewall is now learning while letting all traffic through..
         /// </summary>
         internal static string TheFirewallIsNowLearning {
             get {

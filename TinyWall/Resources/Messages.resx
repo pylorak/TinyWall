@@ -333,7 +333,7 @@ Select Elevate from the tray menu and try again.</value>
     <value>Cannot get path of process.</value>
   </data>
   <data name="TheFirewallIsNowLearning" xml:space="preserve">
-    <value>The firewall is now learning while letting all traffic thorugh.</value>
+    <value>The firewall is now learning while letting all traffic through.</value>
   </data>
   <data name="FirewallModeLearn" xml:space="preserve">
     <value>Autolearn</value>
