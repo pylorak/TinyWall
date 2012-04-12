@@ -358,7 +358,7 @@ namespace PKSoft
             {
                 ListViewItem li = list.SelectedItems[0];
 
-                const string urlTemplate = @"http://www.virustotal.com/file/{0}/analysis/";
+                const string urlTemplate = @"https://www.virustotal.com/latest-scan/{0}";
                 string hash = Utils.HexEncode(Hasher.HashFile(li.ToolTipText));
                 string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, hash);
                 Utils.StartProcess(url, string.Empty, false);
