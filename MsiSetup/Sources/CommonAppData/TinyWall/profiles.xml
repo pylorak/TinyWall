@@ -771,6 +771,7 @@
           </SearchPaths>
           <Hashes>
             <string>af68710ffdb5654f1b46c5f2b920de920d4fbf07</string>
+            <string>4FA411CBC2091457EBCC7FB58D1300F4888D2623</string>
           </Hashes>
         </AppExceptionAssoc>
       </Files>
@@ -809,6 +810,34 @@
         </AppExceptionAssoc>
       </Files>
     </Application>
+    <Application Name="Secunia PSI">
+      <Files>
+        <AppExceptionAssoc Executable="psi.exe">
+          <ExceptionTemplate Template="true">
+            <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+          </ExceptionTemplate>
+          <PublicKeys>
+            <string>30818902818100BD50ABEA0755CDD4A2B67DBC7E8FBBBDF0292680302796ECA82B5341B2E63D9631AE3D4D411B4D4EF6F2FE63F5BEEDD0CB560EC7664D9598A0192AF54067FABE428F424E90F94FF479AC0EA88DD4147E59BD174CC1870B6B6C1D721DEA918C933ABBDB7513F439629F6AC941F45CF0E5728DA38E5865185C077ED2FBACCB4DA50203010001</string>
+          </PublicKeys>
+        </AppExceptionAssoc>
+        <AppExceptionAssoc Executable="PSIA.exe">
+          <ExceptionTemplate Template="true">
+            <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+          </ExceptionTemplate>
+          <PublicKeys>
+            <string>30818902818100BD50ABEA0755CDD4A2B67DBC7E8FBBBDF0292680302796ECA82B5341B2E63D9631AE3D4D411B4D4EF6F2FE63F5BEEDD0CB560EC7664D9598A0192AF54067FABE428F424E90F94FF479AC0EA88DD4147E59BD174CC1870B6B6C1D721DEA918C933ABBDB7513F439629F6AC941F45CF0E5728DA38E5865185C077ED2FBACCB4DA50203010001</string>
+          </PublicKeys>
+        </AppExceptionAssoc>
+        <AppExceptionAssoc Executable="sua.exe">
+          <ExceptionTemplate Template="true">
+            <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+          </ExceptionTemplate>
+          <PublicKeys>
+            <string>30818902818100BD50ABEA0755CDD4A2B67DBC7E8FBBBDF0292680302796ECA82B5341B2E63D9631AE3D4D411B4D4EF6F2FE63F5BEEDD0CB560EC7664D9598A0192AF54067FABE428F424E90F94FF479AC0EA88DD4147E59BD174CC1870B6B6C1D721DEA918C933ABBDB7513F439629F6AC941F45CF0E5728DA38E5865185C077ED2FBACCB4DA50203010001</string>
+          </PublicKeys>
+        </AppExceptionAssoc>
+      </Files>
+    </Application>
     <Application Name="Windows Sidebar">
       <Files>
         <AppExceptionAssoc Executable="sidebar.exe">
@@ -839,7 +868,7 @@
         </AppExceptionAssoc>
       </Files>
     </Application>
-    <Application Name="File and printer sharing" Special="true">
+    <Application Name="File_and_Printer_Sharing" Special="true">
       <Files>
         <AppExceptionAssoc Executable="System">
           <ExceptionTemplate Template="true">
@@ -850,7 +879,7 @@
         </AppExceptionAssoc>
       </Files>
     </Application>
-    <Application Name="Filtered ICMP traffic" Recommended="true" Special="true">
+    <Application Name="Filtered_ICMP_Traffic" Recommended="true" Special="true">
       <Files>
         <AppExceptionAssoc Executable="">
           <ExceptionTemplate Template="true">
@@ -861,7 +890,7 @@
         </AppExceptionAssoc>
       </Files>
     </Application>
-    <Application Name="Local machine pingable" Special="true">
+    <Application Name="Pingable_local_machine" Special="true">
       <Files>
         <AppExceptionAssoc Executable="">
           <ExceptionTemplate Template="true">
@@ -872,7 +901,16 @@
         </AppExceptionAssoc>
       </Files>
     </Application>
-    <Application Name="Windows DHCP Client" Recommended="true" Special="true">
+    <Application Name="TinyWall" Recommended="true" Special="true">
+      <Files>
+        <AppExceptionAssoc Executable="{folder:twpath}\TinyWall.exe">
+          <ExceptionTemplate Template="true">
+            <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+          </ExceptionTemplate>
+        </AppExceptionAssoc>
+      </Files>
+    </Application>
+    <Application Name="Windows_DHCP_Client" Recommended="true" Special="true">
       <Files>
         <AppExceptionAssoc Service="dhcp" Executable="{folder:sys32}\svchost.exe">
           <ExceptionTemplate Template="true">
@@ -883,7 +921,7 @@
         </AppExceptionAssoc>
       </Files>
     </Application>
-    <Application Name="Windows DNS Client" Recommended="true" Special="true">
+    <Application Name="Windows_DNS_Client" Recommended="true" Special="true">
       <Files>
         <AppExceptionAssoc Service="Dnscache" Executable="{folder:sys32}\svchost.exe">
           <ExceptionTemplate Template="true">
@@ -895,7 +933,7 @@
         </AppExceptionAssoc>
       </Files>
     </Application>
-    <Application Name="Windows Network Discovery" Recommended="true" Special="true">
+    <Application Name="Windows_Network_Discovery" Recommended="true" Special="true">
       <Files>
         <AppExceptionAssoc Service="ssdpsrv" Executable="{folder:sys32}\svchost.exe">
           <ExceptionTemplate Template="true">
@@ -928,7 +966,7 @@
         </AppExceptionAssoc>
       </Files>
     </Application>
-    <Application Name="Windows Remote Assistance" Special="true">
+    <Application Name="Windows_Remote_Assistance" Special="true">
       <Files>
         <AppExceptionAssoc Service="PNRPsvc" Executable="{folder:sys32}\svchost.exe">
           <ExceptionTemplate Template="true">
@@ -962,7 +1000,7 @@
         </AppExceptionAssoc>
       </Files>
     </Application>
-    <Application Name="Windows Remote Desktop" Special="true">
+    <Application Name="Windows_Remote_Desktop" Special="true">
       <Files>
         <AppExceptionAssoc Executable="System">
           <ExceptionTemplate Template="true">
@@ -980,7 +1018,7 @@
         </AppExceptionAssoc>
       </Files>
     </Application>
-    <Application Name="Windows Time Sync" Recommended="true" Special="true">
+    <Application Name="Windows_Time_Sync" Recommended="true" Special="true">
       <Files>
         <AppExceptionAssoc Service="W32Time" Executable="{folder:sys32}\svchost.exe">
           <ExceptionTemplate Template="true">
@@ -991,7 +1029,7 @@
         </AppExceptionAssoc>
       </Files>
     </Application>
-    <Application Name="Windows Update" Recommended="true" Special="true">
+    <Application Name="Windows_Update" Recommended="true" Special="true">
       <Files>
         <AppExceptionAssoc Service="wuauserv" Executable="{folder:sys32}\svchost.exe">
           <ExceptionTemplate Template="true">
@@ -1000,14 +1038,14 @@
         </AppExceptionAssoc>
       </Files>
     </Application>
-    <Application Name="VPN L2TP/IPSec" Special="true">
+    <Application Name="VPN_L2TP_IPSec" Special="true">
       <Files>
         <AppExceptionAssoc Executable="">
           <ExceptionTemplate Template="true" />
         </AppExceptionAssoc>
       </Files>
     </Application>
-    <Application Name="VPN PPTP" Special="true">
+    <Application Name="VPN_PPTP" Special="true">
       <Files>
         <AppExceptionAssoc Executable="">
           <ExceptionTemplate Template="true" />
@@ -1073,16 +1111,8 @@
           </SearchPaths>
           <PublicKeys>
             <string>3082010A0282010100B9A25BD573CAF0901E9993A85352965B7CC9947BAD58103C8D9FD0EA0219393AE75E7367498FB7260380B4309DE896B0BA87E35D14284CA5851F8560499713B17819E4BF2A80902BDE651EAE9A50290405E5B3465B3D8E19EE94BA87F60959FEE247BD81D5BF7E6AB11A8E78C384EA3506A0DC7FA530F1B23714C72891D6C300E429CC85F5F8AB2FAD5B3B6EC098EFABFF1099039CF2910A65465B2EB6FDD8D792AFD724FEC13F330896CE004B9441426DEF416CF17380652C057DDCD0EFA68805B9532004A69A93A6D7DD86622F93F68C0E00B8F20A2C8BDCFE498E24003630CB0497BBA8D17ED483360EFDB062ADE3309A09F0116BD13EA9753913F071D9790203010001</string>
+            <string>3082010A0282010100EE9353A3A9DFE1B4D856468580B6DEC589F7C8E8461E35AE4CB337BEA3FF85244F4F3398CF7DEECB1BF0218A5C2F8521F1D905D8D5139D04D9CC8333EA5ECDB6F77BCBD6F7763303CDAA518DC8FAFF9ABA3A6252DA1CDF7E86561DE6FAD3599FDA05A2FEBAF28E46571D078E3D26D45E7E7E613C047A5BFAE3668B358F6D193BC23A7FBE64445F7F412B20483BB15AE3F73A34963D0718C9D061A1A85FC7E417B629BCB374F5E20FE19715B9F27389F05825C9D83EE1171E8FC2897F98F92487042F2B8BFC01F5C3676BBAFDE23CFC737523EF9478885431A2538BC01F8A19F7E34C2DC5859980842713D8DDB96BEEFEF1C86AF1E8C459270C6E2CFEAC6750D70203010001</string>
           </PublicKeys>
-        </AppExceptionAssoc>
-      </Files>
-    </Application>
-    <Application Name="TinyWall" Recommended="true" Special="true">
-      <Files>
-        <AppExceptionAssoc Executable="{folder:twpath}\TinyWall.exe">
-          <ExceptionTemplate Template="true">
-            <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
-          </ExceptionTemplate>
         </AppExceptionAssoc>
       </Files>
     </Application>

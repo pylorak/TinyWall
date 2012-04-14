@@ -203,8 +203,7 @@ namespace PKSoft
     internal static class UpdateChecker
     {
         private const int UPDATER_VERSION = 2;
-        //TODO: correct update url
-        private const string URL_UPDATE_DESCRIPTOR = @"http://tinywall.pados.hu/updates/UpdVer{0}_/update.xml";
+        private const string URL_UPDATE_DESCRIPTOR = @"http://tinywall.pados.hu/updates/UpdVer{0}/update.xml";
 
         internal static UpdateDescriptor GetDescriptor()
         {

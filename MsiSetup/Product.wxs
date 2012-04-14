@@ -106,8 +106,8 @@
       <Custom Action='UninstallCustom' Before='UnpublishFeatures'>Installed</Custom>
       <Custom Action='InstallCustomRollback' Before='InstallCustom'>NOT Installed</Custom>
       <Custom Action='InstallCustom' After='InstallFiles'>NOT Installed</Custom>
-      <Custom Action='StartControllerAndDetect' After='InstallCustom'>NOT OLDER_UPGRADEABLE_FOUND</Custom>
-      <Custom Action='StartController' After='InstallCustom'>OLDER_UPGRADEABLE_FOUND</Custom>
+      <Custom Action='StartControllerAndDetect' After='InstallCustom'>(NOT Installed) AND (NOT OLDER_UPGRADEABLE_FOUND)</Custom>
+      <Custom Action='StartController' After='InstallCustom'>(NOT Installed) AND OLDER_UPGRADEABLE_FOUND</Custom>
       <!-- InstallFinalize -->
     </InstallExecuteSequence>
 

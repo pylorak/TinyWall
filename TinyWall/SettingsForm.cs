@@ -152,8 +152,7 @@ namespace PKSoft
                 {
                     string sub0 = ExceptionItems[i].SubItems[0].Text.ToUpperInvariant();
                     string sub1 = ExceptionItems[i].SubItems[1].Text.ToUpperInvariant();
-                    string sub2 = ExceptionItems[i].SubItems[2].Text.ToUpperInvariant();
-                    if (sub0.Contains(filter) || sub1.Contains(filter) || sub2.Contains(filter))
+                    if (sub0.Contains(filter) || sub1.Contains(filter))
                         icoll.Add(ExceptionItems[i]);
                 }
             }

@@ -1,4 +1,7 @@
-Future developent:
+Future development ideas:
+- Connections window auto refresh checkbox
+- Connections window always on top checkbox
+- VirusTotal integration
 - App profile submission system
 - IP blocklists
 - Custom profiles
