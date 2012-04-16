@@ -3,7 +3,9 @@
 	<Files>
 	<AppExceptionAssoc Executable="">
       <ExceptionTemplate Template="true">
-        <string>PPTP</string>
+        <Profiles>
+          <string>PPTP</string>
+        </Profiles>
       </ExceptionTemplate>
 	</AppExceptionAssoc>
 	</Files>

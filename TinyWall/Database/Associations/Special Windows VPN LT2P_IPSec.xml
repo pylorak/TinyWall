@@ -3,7 +3,9 @@
 	<Files>
 	<AppExceptionAssoc Executable="">
       <ExceptionTemplate Template="true">
-        <string>L2TP/IPSec</string>
+        <Profiles>
+          <string>L2TP/IPSec</string>
+        </Profiles>
       </ExceptionTemplate>
 	</AppExceptionAssoc>
 	</Files>
