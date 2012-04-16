@@ -57,17 +57,29 @@ namespace PKSoft
             using (FileStream inFile = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
             {
                 // Create the compressed file.
-                using (FileStream outFile = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
-                using (DeflateStream Compress = new DeflateStream(outFile, CompressionMode.Compress, true))
+                FileStream outFile = null;
+                try
                 {
-                    // Copy the source file into 
-                    // the compression stream.
-                    byte[] buffer = new byte[4096];
-                    int numRead;
-                    while ((numRead = inFile.Read(buffer, 0, buffer.Length)) != 0)
+                    outFile = new FileStream(outputFile, FileMode.Create, FileAccess.Write);
+
+                    using (DeflateStream Compress = new DeflateStream(outFile, CompressionMode.Compress, true))
                     {
-                        Compress.Write(buffer, 0, numRead);
+                        outFile = null;
+
+                        // Copy the source file into 
+                        // the compression stream.
+                        byte[] buffer = new byte[4096];
+                        int numRead;
+                        while ((numRead = inFile.Read(buffer, 0, buffer.Length)) != 0)
+                        {
+                            Compress.Write(buffer, 0, numRead);
+                        }
                     }
+                }
+                finally
+                {
+                    if (outFile != null)
+                        outFile.Dispose();
                 }
             }
         }
@@ -78,16 +90,27 @@ namespace PKSoft
             using (FileStream outFile = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
             {
                 // Get the stream of the source file.
-                using (FileStream inFile = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
-                using (DeflateStream Decompress = new DeflateStream(inFile, CompressionMode.Decompress, true))
+                FileStream inFile = null;
+                try
                 {
-                    //Copy the decompression stream into the output file.
-                    byte[] buffer = new byte[4096];
-                    int numRead;
-                    while ((numRead = Decompress.Read(buffer, 0, buffer.Length)) != 0)
+                    inFile = new FileStream(inputFile, FileMode.Open, FileAccess.Read);
+                    using (DeflateStream Decompress = new DeflateStream(inFile, CompressionMode.Decompress, true))
                     {
-                        outFile.Write(buffer, 0, numRead);
+                        inFile = null;
+
+                        //Copy the decompression stream into the output file.
+                        byte[] buffer = new byte[4096];
+                        int numRead;
+                        while ((numRead = Decompress.Read(buffer, 0, buffer.Length)) != 0)
+                        {
+                            outFile.Write(buffer, 0, numRead);
+                        }
                     }
+                }
+                finally
+                {
+                    if (inFile != null)
+                        inFile.Dispose();
                 }
             }
         }

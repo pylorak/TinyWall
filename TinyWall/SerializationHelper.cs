@@ -32,14 +32,25 @@ namespace PKSoft
                 symmetricKey.IV = Encoding.ASCII.GetBytes(iv);
 
                 // Decrypt
-                using (FileStream fs = new FileStream(filepath, FileMode.Open, FileAccess.Read))
-                using (CryptoStream cryptoStream = new CryptoStream(fs, symmetricKey.CreateDecryptor(), CryptoStreamMode.Read))
+                FileStream fs = null;
+                try
                 {
-                    XmlSerializer serializer = new XmlSerializer(typeof(T));
-                    //using (StreamReader sr = new StreamReader(cryptoStream))
+                    fs = new FileStream(filepath, FileMode.Open, FileAccess.Read);
+                    using (CryptoStream cryptoStream = new CryptoStream(fs, symmetricKey.CreateDecryptor(), CryptoStreamMode.Read))
                     {
-                        return (T)serializer.Deserialize(cryptoStream);
+                        fs = null;
+
+                        XmlSerializer serializer = new XmlSerializer(typeof(T));
+                        //using (StreamReader sr = new StreamReader(cryptoStream))
+                        {
+                            return (T)serializer.Deserialize(cryptoStream);
+                        }
                     }
+                }
+                finally
+                {
+                    if (fs != null)
+                        fs.Dispose();
                 }
             }
         }
@@ -54,15 +65,26 @@ namespace PKSoft
                 symmetricKey.IV = Encoding.ASCII.GetBytes(iv);
 
                 // Encrypt
-                using (FileStream fs = new FileStream(filepath, FileMode.Create, FileAccess.Write))
-                using (CryptoStream cryptoStream = new CryptoStream(fs, symmetricKey.CreateEncryptor(), CryptoStreamMode.Write))
+                FileStream fs = null;
+                try
                 {
-                    //Create our own namespaces for the output
-                    XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-                    ns.Add("", "");
+                    fs = new FileStream(filepath, FileMode.Create, FileAccess.Write);
+                    using (CryptoStream cryptoStream = new CryptoStream(fs, symmetricKey.CreateEncryptor(), CryptoStreamMode.Write))
+                    {
+                        fs = null;
 
-                    XmlSerializer serializer = new XmlSerializer(typeof(T));
-                    serializer.Serialize(cryptoStream, obj, ns);
+                        //Create our own namespaces for the output
+                        XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+                        ns.Add("", "");
+
+                        XmlSerializer serializer = new XmlSerializer(typeof(T));
+                        serializer.Serialize(cryptoStream, obj, ns);
+                    }
+                }
+                finally
+                {
+                    if (fs != null)
+                        fs.Dispose();
                 }
             }
 
