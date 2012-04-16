@@ -237,7 +237,13 @@ namespace PKSoft
                     FirewallException ex = SettingsManager.CurrentZone.AppExceptions[i];
                     GetRulesForException(ex, AppExRules);
                 }
-                catch { }
+                catch (Exception e)
+                {
+                    Utils.LogCrash(e);
+#if DEBUG
+                    throw;
+#endif
+                }
             }
 
             AppExRules.TrimExcess();
@@ -275,16 +281,16 @@ namespace PKSoft
                 return;
             }
 
-            for (int i = 0; i < ex.Profiles.Count; ++i)    // for each profile
+            if (ex.Profiles != null)
             {
-                // Get the rules for this profile
-                Profile p = GlobalInstances.ProfileMan.GetProfile(ex.Profiles[i]);
-                if (p == null)
-                    continue;
-
-                for (int j = 0; j < p.Rules.Length; ++j)    // for each rule in profile
+                for (int i = 0; i < ex.Profiles.Count; ++i)    // for each profile
                 {
-                    try
+                    // Get the rules for this profile
+                    Profile p = GlobalInstances.ProfileMan.GetProfile(ex.Profiles[i]);
+                    if (p == null)
+                        continue;
+
+                    for (int j = 0; j < p.Rules.Length; ++j)    // for each rule in profile
                     {
                         RuleDef def = p.Rules[j];
                         def.ExceptionId = ex.AppID;
@@ -294,67 +300,53 @@ namespace PKSoft
                             def.RemoteAddresses = "LocalSubnet";
                         ruleset.Add(def);
                     }
-                    catch
-                    {
-// Do not let the service crash if a rule cannot be constructed 
-#if DEBUG
-                        throw;
-#endif
-                    }
                 }
             }
 
-            try
+            // Add extra ports
+            if (!string.IsNullOrEmpty(ex.OpenPortListenLocalTCP))
             {
-                // Add extra ports
-                if (!string.IsNullOrEmpty(ex.OpenPortListenLocalTCP))
-                {
-                    RuleDef def = new RuleDef(ex.AppID, "TCP Listen Ports", PacketAction.Allow, RuleDirection.In,  Protocol.TCP);
-                    def.Application = ex.ExecutablePath;
-                    def.ServiceName = ex.ServiceName;
-                    if (!ex.OpenPortListenLocalTCP.Equals("*"))
-                        def.LocalPorts = ex.OpenPortListenLocalTCP;
-                    if (ex.LocalNetworkOnly)
-                        def.RemoteAddresses = "LocalSubnet";
-                    ruleset.Add(def);
-                }
-                if (!string.IsNullOrEmpty(ex.OpenPortListenLocalUDP))
-                {
-                    RuleDef def = new RuleDef(ex.AppID, "UDP Listen Ports", PacketAction.Allow, RuleDirection.In, Protocol.UDP);
-                    def.Application = ex.ExecutablePath;
-                    def.ServiceName = ex.ServiceName;
-                    if (!ex.OpenPortListenLocalUDP.Equals("*"))
-                        def.LocalPorts = ex.OpenPortListenLocalUDP;
-                    if (ex.LocalNetworkOnly)
-                        def.RemoteAddresses = "LocalSubnet";
-                    ruleset.Add(def);
-                }
-                if (!string.IsNullOrEmpty(ex.OpenPortOutboundRemoteTCP))
-                {
-                    RuleDef def = new RuleDef(ex.AppID, "TCP Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.TCP);
-                    def.Application = ex.ExecutablePath;
-                    def.ServiceName = ex.ServiceName;
-                    if (!ex.OpenPortOutboundRemoteTCP.Equals("*"))
-                        def.RemotePorts = ex.OpenPortOutboundRemoteTCP;
-                    if (ex.LocalNetworkOnly)
-                        def.RemoteAddresses = "LocalSubnet";
-                    ruleset.Add(def);
-                }
-                if (!string.IsNullOrEmpty(ex.OpenPortOutboundRemoteUDP))
-                {
-                    RuleDef def = new RuleDef(ex.AppID, "UDP Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.UDP);
-                    def.Application = ex.ExecutablePath;
-                    def.ServiceName = ex.ServiceName;
-                    if (!ex.OpenPortOutboundRemoteUDP.Equals("*"))
-                        def.RemotePorts = ex.OpenPortOutboundRemoteUDP;
-                    if (ex.LocalNetworkOnly)
-                        def.RemoteAddresses = "LocalSubnet";
-                    ruleset.Add(def);
-                }
+                RuleDef def = new RuleDef(ex.AppID, "TCP Listen Ports", PacketAction.Allow, RuleDirection.In,  Protocol.TCP);
+                def.Application = ex.ExecutablePath;
+                def.ServiceName = ex.ServiceName;
+                if (!ex.OpenPortListenLocalTCP.Equals("*"))
+                    def.LocalPorts = ex.OpenPortListenLocalTCP;
+                if (ex.LocalNetworkOnly)
+                    def.RemoteAddresses = "LocalSubnet";
+                ruleset.Add(def);
             }
-            catch (Exception)
+            if (!string.IsNullOrEmpty(ex.OpenPortListenLocalUDP))
             {
-                this.EventLog.WriteEntry("Error applying custom port rules for " + ex.ExecutableName + ".", EventLogEntryType.Error);
+                RuleDef def = new RuleDef(ex.AppID, "UDP Listen Ports", PacketAction.Allow, RuleDirection.In, Protocol.UDP);
+                def.Application = ex.ExecutablePath;
+                def.ServiceName = ex.ServiceName;
+                if (!ex.OpenPortListenLocalUDP.Equals("*"))
+                    def.LocalPorts = ex.OpenPortListenLocalUDP;
+                if (ex.LocalNetworkOnly)
+                    def.RemoteAddresses = "LocalSubnet";
+                ruleset.Add(def);
+            }
+            if (!string.IsNullOrEmpty(ex.OpenPortOutboundRemoteTCP))
+            {
+                RuleDef def = new RuleDef(ex.AppID, "TCP Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.TCP);
+                def.Application = ex.ExecutablePath;
+                def.ServiceName = ex.ServiceName;
+                if (!ex.OpenPortOutboundRemoteTCP.Equals("*"))
+                    def.RemotePorts = ex.OpenPortOutboundRemoteTCP;
+                if (ex.LocalNetworkOnly)
+                    def.RemoteAddresses = "LocalSubnet";
+                ruleset.Add(def);
+            }
+            if (!string.IsNullOrEmpty(ex.OpenPortOutboundRemoteUDP))
+            {
+                RuleDef def = new RuleDef(ex.AppID, "UDP Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.UDP);
+                def.Application = ex.ExecutablePath;
+                def.ServiceName = ex.ServiceName;
+                if (!ex.OpenPortOutboundRemoteUDP.Equals("*"))
+                    def.RemotePorts = ex.OpenPortOutboundRemoteUDP;
+                if (ex.LocalNetworkOnly)
+                    def.RemoteAddresses = "LocalSubnet";
+                ruleset.Add(def);
             }
         }
 
