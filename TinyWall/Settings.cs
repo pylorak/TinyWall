@@ -342,17 +342,28 @@ namespace PKSoft
 
         public static ControllerSettings Load()
         {
-            try
-            {
-                // Construct file path
-                string SettingsFile = Path.Combine(UserDataPath, "ControllerConfig");
+            ControllerSettings ret = null;
 
-                return SerializationHelper.LoadFromXMLFile<ControllerSettings>(SettingsFile);
-            }
-            catch
+            // Construct file path
+            string SettingsFile = Path.Combine(UserDataPath, "ControllerConfig");
+
+            if (File.Exists(SettingsFile))
             {
-                return new ControllerSettings();
+                try
+                {
+                    ret = SerializationHelper.LoadFromXMLFile<ControllerSettings>(SettingsFile);
+                }
+                catch
+                {
+                }
             }
+
+            if (ret == null)
+            {
+                ret = new ControllerSettings();
+            }
+
+            return ret;
         }
     }
     
