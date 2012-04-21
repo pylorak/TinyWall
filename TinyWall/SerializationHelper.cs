@@ -41,7 +41,6 @@ namespace PKSoft
                         fs = null;
 
                         XmlSerializer serializer = new XmlSerializer(typeof(T));
-                        //using (StreamReader sr = new StreamReader(cryptoStream))
                         {
                             return (T)serializer.Deserialize(cryptoStream);
                         }
