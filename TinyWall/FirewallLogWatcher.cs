@@ -10,8 +10,10 @@ namespace PKSoft
     {
         BLOCKED,
         ALLOWED,
+        ALLOWED_LISTEN = 5154,
         ALLOWED_CONNECTION = 5156,
         ALLOWED_LOCAL_BIND = 5158,
+        BLOCKED_LISTEN = 5155,
         BLOCKED_CONNECTION = 5157,
         BLOCKED_PACKET = 5152,
         BLOCKED_LOCAL_BIND = 5159
@@ -101,7 +103,7 @@ namespace PKSoft
         internal FirewallLogWatcher()
         {
             // Create event notifier
-            EventLogQuery evquery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=5157 or EventID=5152 or EventID=5159 or EventID=5156 or EventID=5158)]]");
+            EventLogQuery evquery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=5154 or EventID=5155 or EventID=5157 or EventID=5152 or EventID=5159 or EventID=5156 or EventID=5158)]]");
             LogWatcher = new EventLogWatcher(evquery);
             LogWatcher.EventRecordWritten += new EventHandler<EventRecordWrittenEventArgs>(LogWatcher_EventRecordWritten);
             LogWatcher.Enabled = true;
@@ -152,6 +154,10 @@ namespace PKSoft
             }
             switch (entry.Event)
             {
+                case EventLogEvent.BLOCKED_LISTEN:
+                    {
+                        break;
+                    }
                 case EventLogEvent.BLOCKED_PACKET:
                     {
                         break;
@@ -163,6 +169,10 @@ namespace PKSoft
                 case EventLogEvent.BLOCKED_LOCAL_BIND:
                     {
                         // TODO: Figure out when and if at all this case can happen
+                        break;
+                    }
+                case EventLogEvent.ALLOWED_LISTEN:
+                    {
                         break;
                     }
                 case EventLogEvent.ALLOWED_CONNECTION:

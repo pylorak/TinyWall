@@ -92,12 +92,14 @@ namespace PKSoft
                 FirewallLogEntry newEntry = fwLogEntry[i];
                 switch (newEntry.Event)
                 {
+                    case EventLogEvent.ALLOWED_LISTEN:
                     case EventLogEvent.ALLOWED_CONNECTION:
                     case EventLogEvent.ALLOWED_LOCAL_BIND:
                         {
                             newEntry.Event = EventLogEvent.ALLOWED;
                             break;
                         }
+                    case EventLogEvent.BLOCKED_LISTEN:
                     case EventLogEvent.BLOCKED_CONNECTION:
                     case EventLogEvent.BLOCKED_LOCAL_BIND:
                     case EventLogEvent.BLOCKED_PACKET:

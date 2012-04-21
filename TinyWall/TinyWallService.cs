@@ -133,6 +133,14 @@ namespace PKSoft
             int lenId = FirewallException.GenerateID().Length;
             List<Rule> rules = new List<Rule>();
 
+            // We cache rule names locally to lighten on string creation.
+            // Each time Rule.Name is accessed, interop creates new strings.
+            // By preloading all rules names (which we will use often)
+            // we spare CPU and memory resources.
+            List<string> rule_names = new List<string>(FwRules.Count);
+            for (int i = 0; i < FwRules.Count; ++i)
+                rule_names.Add(FwRules[i].Name);
+
             // Add new rules
             for (int i = ActiveRules.Count - 1; i >= 0; --i)          // for each TW firewall rule
             {
@@ -140,10 +148,9 @@ namespace PKSoft
                 string id_i = rule_i.ExceptionId.Substring(0, lenId);
 
                 bool found = false;
-                for (int j = FwRules.Count - 1; j >= 0; --j)    // for each Win firewall rule
+                for (int j = rule_names.Count - 1; j >= 0; --j)    // for each Win firewall rule
                 {
-                    Rule rule_j = FwRules[j];
-                    string name_j = rule_j.Name;
+                    string name_j = rule_names[j];
 
                     // Skip if this is not a TinyWall rule
                     if (!name_j.StartsWith("[TW", StringComparison.Ordinal))
@@ -168,10 +175,9 @@ namespace PKSoft
             FwRules.Add(rules);
 
             // Remove dead rules
-            for (int i = FwRules.Count - 1; i >= 0; --i)    // for each Win firewall rule
+            for (int i = rule_names.Count - 1; i >= 0; --i)    // for each Win firewall rule
             {
-                Rule rule_i = FwRules[i];
-                string name_i = rule_i.Name;
+                string name_i = rule_names[i];
 
                 // Skip if this is not a TinyWall rule
                 if (!name_i.StartsWith("[TW", StringComparison.Ordinal))
@@ -202,7 +208,7 @@ namespace PKSoft
             // We will collect all our rules into this list
             SpecialRules.Clear();
 
-            ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
+            ApplicationCollection allApps = GlobalInstances.ProfileMan.KnownApplications;
             for (int i = 0; i < SettingsManager.CurrentZone.SpecialExceptions.Count; ++i)
             {
                 try
@@ -598,6 +604,18 @@ namespace PKSoft
                 List<FirewallLogEntry> list = GetFwLog();
                 foreach (FirewallLogEntry entry in list)
                 {
+                    if (  // IPv4
+                        ((entry.DestinationIP.Equals("127.0.0.1", StringComparison.Ordinal)
+                        && entry.SourceIP.Equals("127.0.0.1", StringComparison.Ordinal)))
+                       || // IPv6
+                        ((entry.DestinationIP.Equals("::1", StringComparison.Ordinal)
+                        && entry.SourceIP.Equals("::1", StringComparison.Ordinal)))
+                       )
+                    {
+                        // Ignore communication within local machine
+                        continue;
+                    }
+
                     string exec = GetPathOfProcess((int)entry.ProcessID);
                     if (exec == null)
                         continue;
@@ -621,7 +639,17 @@ namespace PKSoft
                         LearningKnownApplication = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
 
                     FirewallException ex = new FirewallException(exec, null);
-                    ex.MakeUnrestrictTcpUdp();
+                    if (((entry.Direction == RuleDirection.In) && (entry.Event == EventLogEvent.ALLOWED_CONNECTION))
+                        || entry.Event == EventLogEvent.ALLOWED_LISTEN)
+                    {
+                        ex.OpenPortListenLocalTCP = "*";
+                        ex.OpenPortListenLocalUDP = "*";
+                    }
+                    else
+                    {
+                        ex.OpenPortOutboundRemoteTCP = "*";
+                        ex.OpenPortOutboundRemoteUDP = "*";
+                    }
                     List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(ex, false, false, null, LearningKnownApplication);
                     LearningNewExceptions.AddRange(exceptions);
                 }
@@ -994,16 +1022,16 @@ namespace PKSoft
 
             if (propidx != -1)
             {
-                // If the rules were changed by an allowed app, do nothing
-                string EVpath = (string)e.EventRecord.Properties[propidx].Value;
-                for (int i = 0; i < WhitelistedApps.Length; ++i)
-                {
-                    if (string.Compare(WhitelistedApps[i], EVpath, StringComparison.OrdinalIgnoreCase) == 0)
-                        return;
-                }
-
                 if (!Q.HasRequest(cmd))
                 {
+                    // If the rules were changed by an allowed app, do nothing
+                    string EVpath = (string)e.EventRecord.Properties[propidx].Value;
+                    for (int i = 0; i < WhitelistedApps.Length; ++i)
+                    {
+                        if (string.Compare(WhitelistedApps[i], EVpath, StringComparison.OrdinalIgnoreCase) == 0)
+                            return;
+                    }
+
                     EventLog.WriteEntry("Reloading firewall configuration because " + EVpath + " has modified it.");
                     Q.Enqueue(new ReqResp(new Message(cmd)));
                 }
