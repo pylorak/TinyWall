@@ -31,7 +31,7 @@ namespace PKSoft.Parser
         internal static bool IsStartTag(string str, int pos)
         {
             int tagLen = OpeningTagLength;
-            return (str.Length > pos + tagLen) && str.Substring(pos, tagLen).Equals(OPENING_TAG);
+            return (str.Length > pos + tagLen) && (string.CompareOrdinal(OPENING_TAG, 0, str, pos, tagLen) == 0);
         }
 
         internal override string GetOpeningTag()
