@@ -36,7 +36,6 @@ namespace PKSoft
         ApplicationCollection LearningKnownApplication;
         List<FirewallException> LearningNewExceptions;
         
-        private WindowsFirewall.Rules FwRules;
         private List<RuleDef> ActiveRules;
         private List<RuleDef> AppExRules;
         private List<RuleDef> SpecialRules;
@@ -128,7 +127,7 @@ namespace PKSoft
             ActiveRules.TrimExcess();
         }
 
-        private void MergeActiveRulesIntoWinFirewall()
+        private void MergeActiveRulesIntoWinFirewall(WindowsFirewall.Rules FwRules)
         {
             int lenId = FirewallException.GenerateID().Length;
             List<Rule> rules = new List<Rule>();
@@ -360,6 +359,7 @@ namespace PKSoft
         private void InitFirewall()
         {
             Policy Firewall = new Policy();
+            WindowsFirewall.Rules FwRules = null;
 
             using (ThreadBarrier barrier = new ThreadBarrier(2))
             {
@@ -381,6 +381,7 @@ namespace PKSoft
                 Firewall.DefaultOutboundAction = PacketAction.Block;
                 Firewall.BlockAllInboundTraffic = false;
                 Firewall.NotificationsDisabled = true;
+
                 FwRules = Firewall.GetRules(false);
                 for (int i = 0; i < FwRules.Count; ++i)
                     FwRules[i].Enabled = false;
@@ -390,7 +391,7 @@ namespace PKSoft
             }
 
             LoadProfile(Firewall);
-            ReapplySettings();
+            ReapplySettings(FwRules);
         }
 
         private void LoadProfile(Policy firewallPolicy)
@@ -412,12 +413,12 @@ namespace PKSoft
         }
 
         // This method reapplies all firewall settings.
-        private void ReapplySettings()
+        private void ReapplySettings(WindowsFirewall.Rules FwRules)
         {
             RebuildApplicationRuleDefs();
             RebuildSpecialRuleDefs();
             AssembleActiveRules();
-            MergeActiveRulesIntoWinFirewall();
+            MergeActiveRulesIntoWinFirewall(FwRules);
 
             HostsFileManager.EnableProtection(SettingsManager.GlobalConfig.LockHostsFile);
             if (SettingsManager.GlobalConfig.Blocklists.EnableBlocklists
@@ -703,9 +704,10 @@ namespace PKSoft
                     {
                         VisibleState.Mode = (FirewallMode)req.Arguments[0];
 
+                        Policy Firewall = new Policy();
                         CommitLearnedRules();
                         AssembleActiveRules();
-                        MergeActiveRulesIntoWinFirewall();
+                        MergeActiveRulesIntoWinFirewall(Firewall.GetRules(false));
 
                         if (
                                (VisibleState.Mode != FirewallMode.Disabled)
@@ -716,7 +718,6 @@ namespace PKSoft
                             SettingsManager.GlobalConfig.Save();
                         }
 
-                        Policy Firewall = new Policy();
                         if (Firewall.LocalPolicyModifyState == LocalPolicyState.GP_OVERRRIDE)
                             return new Message(TWControllerMessages.RESPONSE_WARNING);
                         else
@@ -741,7 +742,8 @@ namespace PKSoft
                             SettingsManager.CurrentZone = newZone;
                         }
 
-                        ReapplySettings();
+                        Policy Firewall = new Policy();
+                        ReapplySettings(Firewall.GetRules(false));
                         return new Message(TWControllerMessages.RESPONSE_OK);
                     }
                 case TWControllerMessages.GET_SETTINGS:
@@ -853,6 +855,8 @@ namespace PKSoft
                         bool needsSave = false;
 
                         // Check all exceptions if any one has expired
+                        Policy Firewall = new Policy();
+                        WindowsFirewall.Rules FwRules = Firewall.GetRules(false);
                         List<FirewallException> exs = SettingsManager.CurrentZone.AppExceptions;
                         for (int i = exs.Count-1; i >= 0; --i)
                         {
