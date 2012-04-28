@@ -133,7 +133,7 @@
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="btnCancel.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
+    <value>16</value>
   </data>
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Cancel</value>
@@ -163,7 +163,7 @@
     <value>75, 33</value>
   </data>
   <data name="btnOK.TabIndex" type="System.Int32, mscorlib">
-    <value>9</value>
+    <value>15</value>
   </data>
   <data name="btnOK.Text" xml:space="preserve">
     <value>OK</value>
@@ -241,7 +241,7 @@
     <value>214, 20</value>
   </data>
   <data name="txtSrvName.TabIndex" type="System.Int32, mscorlib">
-    <value>16</value>
+    <value>18</value>
   </data>
   <data name="&gt;&gt;txtSrvName.Name" xml:space="preserve">
     <value>txtSrvName</value>
@@ -286,7 +286,7 @@
     <value>142, 23</value>
   </data>
   <data name="btnBrowse.TabIndex" type="System.Int32, mscorlib">
-    <value>18</value>
+    <value>2</value>
   </data>
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Browse for a file...</value>
@@ -313,7 +313,7 @@
     <value>142, 23</value>
   </data>
   <data name="btnProcess.TabIndex" type="System.Int32, mscorlib">
-    <value>19</value>
+    <value>1</value>
   </data>
   <data name="btnProcess.Text" xml:space="preserve">
     <value>Select a process...</value>
@@ -340,7 +340,7 @@
     <value>142, 23</value>
   </data>
   <data name="btnChooseService.TabIndex" type="System.Int32, mscorlib">
-    <value>20</value>
+    <value>3</value>
   </data>
   <data name="btnChooseService.Text" xml:space="preserve">
     <value>Choose a service...</value>
@@ -400,7 +400,7 @@
     <value>144, 21</value>
   </data>
   <data name="cmbTimer.TabIndex" type="System.Int32, mscorlib">
-    <value>29</value>
+    <value>4</value>
   </data>
   <data name="&gt;&gt;cmbTimer.Name" xml:space="preserve">
     <value>cmbTimer</value>
@@ -413,9 +413,6 @@
   </data>
   <data name="&gt;&gt;cmbTimer.ZOrder" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="panel1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
   </data>
   <data name="transparentLabel1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -439,13 +436,16 @@
     <value>transparentLabel1</value>
   </data>
   <data name="&gt;&gt;transparentLabel1.Type" xml:space="preserve">
-    <value>PKSoft.TransparentLabel, TinyWall, Version=1.9.3.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3</value>
+    <value>PKSoft.TransparentLabel, TinyWall, Version=1.9.5.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3</value>
   </data>
   <data name="&gt;&gt;transparentLabel1.Parent" xml:space="preserve">
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;transparentLabel1.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <data name="panel1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
   </data>
   <data name="panel1.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, -1</value>
@@ -499,7 +499,7 @@
     <value>140, 17</value>
   </data>
   <data name="chkRestrictToLocalNetwork.TabIndex" type="System.Int32, mscorlib">
-    <value>33</value>
+    <value>5</value>
   </data>
   <data name="chkRestrictToLocalNetwork.Text" xml:space="preserve">
     <value>Restrict to local network</value>
@@ -526,7 +526,7 @@
     <value>129, 17</value>
   </data>
   <data name="radBlock.TabIndex" type="System.Int32, mscorlib">
-    <value>34</value>
+    <value>6</value>
   </data>
   <data name="radBlock.Text" xml:space="preserve">
     <value>Always block all traffic</value>
@@ -553,7 +553,7 @@
     <value>194, 17</value>
   </data>
   <data name="radTcpUdpOut.TabIndex" type="System.Int32, mscorlib">
-    <value>35</value>
+    <value>8</value>
   </data>
   <data name="radTcpUdpOut.Text" xml:space="preserve">
     <value>Allow outgoing UDP and TCP traffic</value>
@@ -580,7 +580,7 @@
     <value>182, 17</value>
   </data>
   <data name="radTcpUdpUnrestricted.TabIndex" type="System.Int32, mscorlib">
-    <value>36</value>
+    <value>9</value>
   </data>
   <data name="radTcpUdpUnrestricted.Text" xml:space="preserve">
     <value>Unrestricted UDP and TCP traffic</value>
@@ -607,7 +607,7 @@
     <value>92, 17</value>
   </data>
   <data name="radUnrestricted.TabIndex" type="System.Int32, mscorlib">
-    <value>37</value>
+    <value>10</value>
   </data>
   <data name="radUnrestricted.Text" xml:space="preserve">
     <value>No restrictions</value>
@@ -658,7 +658,7 @@
     <value>140, 20</value>
   </data>
   <data name="txtListenPortUDP.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
+    <value>14</value>
   </data>
   <data name="&gt;&gt;txtListenPortUDP.Name" xml:space="preserve">
     <value>txtListenPortUDP</value>
@@ -679,7 +679,7 @@
     <value>140, 20</value>
   </data>
   <data name="txtListenPortTCP.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+    <value>13</value>
   </data>
   <data name="&gt;&gt;txtListenPortTCP.Name" xml:space="preserve">
     <value>txtListenPortTCP</value>
@@ -760,7 +760,7 @@
     <value>140, 20</value>
   </data>
   <data name="txtOutboundPortUDP.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
+    <value>12</value>
   </data>
   <data name="&gt;&gt;txtOutboundPortUDP.Name" xml:space="preserve">
     <value>txtOutboundPortUDP</value>
@@ -781,7 +781,7 @@
     <value>140, 20</value>
   </data>
   <data name="txtOutboundPortTCP.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+    <value>11</value>
   </data>
   <data name="&gt;&gt;txtOutboundPortTCP.Name" xml:space="preserve">
     <value>txtOutboundPortTCP</value>
@@ -910,7 +910,7 @@
     <value>143, 17</value>
   </data>
   <data name="radOnlySpecifiedPorts.TabIndex" type="System.Int32, mscorlib">
-    <value>43</value>
+    <value>7</value>
   </data>
   <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
     <value>Allow only specified ports</value>
