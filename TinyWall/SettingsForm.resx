@@ -1503,6 +1503,12 @@
   <data name="&gt;&gt;btnExport.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
+  <data name="btnDonate.AccessibleDescription" xml:space="preserve">
+    <value>Donate</value>
+  </data>
+  <data name="btnDonate.AccessibleName" xml:space="preserve">
+    <value>Donation</value>
+  </data>
   <data name="btnDonate.Location" type="System.Drawing.Point, System.Drawing">
     <value>375, 79</value>
   </data>

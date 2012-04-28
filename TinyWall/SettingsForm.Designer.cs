@@ -426,10 +426,11 @@
             // 
             // btnDonate
             // 
+            resources.ApplyResources(this.btnDonate, "btnDonate");
+            this.btnDonate.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btnDonate.BackColor = System.Drawing.Color.Transparent;
             this.btnDonate.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnDonate.Image = global::PKSoft.Resources.Icons.donate;
-            resources.ApplyResources(this.btnDonate, "btnDonate");
             this.btnDonate.Name = "btnDonate";
             this.btnDonate.TabStop = false;
             this.btnDonate.Click += new System.EventHandler(this.btnDonate_Click);

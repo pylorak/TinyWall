@@ -105,12 +105,14 @@ namespace PKSoft
             // 
             // mnuCurrentPolicy
             // 
+            this.mnuCurrentPolicy.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
             this.mnuCurrentPolicy.Image = global::PKSoft.Resources.Icons.info;
             this.mnuCurrentPolicy.Name = "mnuCurrentPolicy";
             resources.ApplyResources(this.mnuCurrentPolicy, "mnuCurrentPolicy");
             // 
             // mnuTrafficRate
             // 
+            this.mnuTrafficRate.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
             this.mnuTrafficRate.Name = "mnuTrafficRate";
             resources.ApplyResources(this.mnuTrafficRate, "mnuTrafficRate");
             // 
@@ -121,6 +123,7 @@ namespace PKSoft
             // 
             // mnuMode
             // 
+            this.mnuMode.AccessibleRole = System.Windows.Forms.AccessibleRole.ButtonMenu;
             this.mnuMode.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuModeNormal,
             this.mnuModeBlockAll,
