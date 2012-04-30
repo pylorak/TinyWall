@@ -44,4 +44,5 @@ using System.Resources;
 [assembly: AssemblyConfiguration("Debug")]
 #else
 [assembly: AssemblyConfiguration("Release")]
+[assembly: System.Diagnostics.Debuggable(false, false)]
 #endif
