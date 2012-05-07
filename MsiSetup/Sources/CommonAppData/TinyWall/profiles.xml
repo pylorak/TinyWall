@@ -338,6 +338,19 @@
             <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
           </ExceptionTemplate>
           <SearchPaths>
+            <string>{reg:SOFTWARE\Wow6432Node\AVAST Software\Avast:ProgramFolder}\Setup</string>
+            <string>{reg:SOFTWARE\AVAST Software\Avast:ProgramFolder}\Setup</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>3082010A0282010100BB718981D7B42D0FBC3799B83817293A6901D9065F7348B8ED8F2B69CC6DDD98F8DB4F6887BFF51F6D8DA583D1411BC9C58A151117328876A078954D6E55C04B30976AEB2B8DEF655A7CCCF789AC6F2C3625909967E00B661A83BB35239622957D574153C4EBB47A071E39AC152FE05022AF4B961B41A22611EE37E2437B9B94D279A7743D7368D67B42027617E600BEE67A6E25F91834ABA328990140AE4132FEA810241E7ED84B8EC13D88695CE4735236571B27309D84B0BBED137C020BAC10F0E96D85F0A9B7A68077893E78040AA384A77C8FB67C298AC7B064A1A6F5D3F8E2E904B0318F8D44E7505EE9A7C66B9B9B95F1A69EE52A8AFE89A8A641C08B0203010001</string>
+          </PublicKeys>
+        </AppExceptionAssoc>
+        <AppExceptionAssoc Executable="AvastUI.exe">
+          <ExceptionTemplate Template="true">
+            <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+            <OpenPortOutboundRemoteUDP>*</OpenPortOutboundRemoteUDP>
+          </ExceptionTemplate>
+          <SearchPaths>
             <string>{reg:SOFTWARE\Wow6432Node\AVAST Software\Avast:ProgramFolder}</string>
             <string>{reg:SOFTWARE\AVAST Software\Avast:ProgramFolder}</string>
           </SearchPaths>
@@ -372,12 +385,30 @@
         </AppExceptionAssoc>
       </Files>
     </Application>
-    <Application Name="Avira Antivir Desktop" Recommended="true">
+    <Application Name="Avira Antivir" Recommended="true" Special="true">
       <Files>
         <AppExceptionAssoc Executable="update.exe">
           <ExceptionTemplate Template="true">
             <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
           </ExceptionTemplate>
+          <SearchPaths>
+            <string>{reg:SOFTWARE\Wow6432Node\Avira\AntiVir Desktop:Path}</string>
+            <string>{reg:SOFTWARE\Avira\AntiVir Desktop:Path}</string>
+          </SearchPaths>
+          <PublicKeys>
+            <string>3082010A0282010100C876D2B6CB80462E940846C9CB8D537DE363EC642BEE0D6DDA5AB888598B705E7AAB005D7868FE25880CB2F7979ABE5D6C97D517F3460BBA7050E31CE2B7B5BFC90071DC85DBFD6F17389E9EE40B22A7B3B569DDCC1E82F340C1B47F156A66646EB1AA89049DAF67611F7D347528262A6D4474AC05FB5F5B89407EB205D5C717CDF9A38218F1F3EABBAA799683809C25E36B6D7BA12A72E426992CBCE8A8B4C90386287475090AAB0CC8A0F28BF85F70B9A86782866A404664E8AF7513E522B88F7DF6686B40FCF1C8EB0FC61A7B4CF0211F6809A5C11FE8FE404AE2D72429E0D2F4D183F597FAEE8C0FA33F0E728ED64BD9E4963E8461EB73FFBFBEE5B269F10203010001</string>
+            <string>30818902818100E3B5CC8059EF29D0A6F2C3F2E116408BE11912AA0BD1866C83DDE9B9A446B05E390AA683290A012BE12ECBB254C2EA9F85914DA5CB3AC5FFE0A95BC71B9F6802837A87428151217CBFEDB891CB8B049B8F29597A4FCE3E192607936920F8D4B1420B5250F6F4A765F2D3A67D5D3CCF357A23B04BEA5AFAFC2AF3904ACE2B37690203010001</string>
+          </PublicKeys>
+        </AppExceptionAssoc>
+        <AppExceptionAssoc Executable="avwebgrd.exe">
+          <ExceptionTemplate Template="true">
+            <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+            <OpenPortOutboundRemoteUDP>*</OpenPortOutboundRemoteUDP>
+          </ExceptionTemplate>
+          <SearchPaths>
+            <string>{reg:SOFTWARE\Wow6432Node\Avira\AntiVir Desktop:Path}</string>
+            <string>{reg:SOFTWARE\Avira\AntiVir Desktop:Path}</string>
+          </SearchPaths>
           <PublicKeys>
             <string>3082010A0282010100C876D2B6CB80462E940846C9CB8D537DE363EC642BEE0D6DDA5AB888598B705E7AAB005D7868FE25880CB2F7979ABE5D6C97D517F3460BBA7050E31CE2B7B5BFC90071DC85DBFD6F17389E9EE40B22A7B3B569DDCC1E82F340C1B47F156A66646EB1AA89049DAF67611F7D347528262A6D4474AC05FB5F5B89407EB205D5C717CDF9A38218F1F3EABBAA799683809C25E36B6D7BA12A72E426992CBCE8A8B4C90386287475090AAB0CC8A0F28BF85F70B9A86782866A404664E8AF7513E522B88F7DF6686B40FCF1C8EB0FC61A7B4CF0211F6809A5C11FE8FE404AE2D72429E0D2F4D183F597FAEE8C0FA33F0E728ED64BD9E4963E8461EB73FFBFBEE5B269F10203010001</string>
             <string>30818902818100E3B5CC8059EF29D0A6F2C3F2E116408BE11912AA0BD1866C83DDE9B9A446B05E390AA683290A012BE12ECBB254C2EA9F85914DA5CB3AC5FFE0A95BC71B9F6802837A87428151217CBFEDB891CB8B049B8F29597A4FCE3E192607936920F8D4B1420B5250F6F4A765F2D3A67D5D3CCF357A23B04BEA5AFAFC2AF3904ACE2B37690203010001</string>
@@ -1041,14 +1072,22 @@
     <Application Name="VPN_L2TP_IPSec" Special="true">
       <Files>
         <AppExceptionAssoc Executable="">
-          <ExceptionTemplate Template="true" />
+          <ExceptionTemplate Template="true">
+            <Profiles>
+              <string>L2TP/IPSec</string>
+            </Profiles>
+          </ExceptionTemplate>
         </AppExceptionAssoc>
       </Files>
     </Application>
     <Application Name="VPN_PPTP" Special="true">
       <Files>
         <AppExceptionAssoc Executable="">
-          <ExceptionTemplate Template="true" />
+          <ExceptionTemplate Template="true">
+            <Profiles>
+              <string>PPTP</string>
+            </Profiles>
+          </ExceptionTemplate>
         </AppExceptionAssoc>
       </Files>
     </Application>
