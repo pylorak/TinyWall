@@ -164,7 +164,14 @@ namespace PKSoft
 
             update.Modules[0] = new UpdateModule();
             update.Modules[0].Component = "TinyWall";
-            update.Modules[0].ComponentVersion = installerInfo.ProductVersion.ToString().Trim();
+            try
+            {
+                update.Modules[0].ComponentVersion = installerInfo.ProductVersion.ToString().Trim();
+            }
+            catch
+            {
+                update.Modules[0].ComponentVersion = "0.0.0";
+            }
             update.Modules[0].DownloadHash = Utils.HexEncode(Hasher.HashFile(txtUpdateTWInstaller.Text));
             update.Modules[0].UpdateURL = txtUpdateURL.Text + installerFilename;
 
