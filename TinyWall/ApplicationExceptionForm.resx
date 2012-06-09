@@ -436,7 +436,7 @@
     <value>transparentLabel1</value>
   </data>
   <data name="&gt;&gt;transparentLabel1.Type" xml:space="preserve">
-    <value>PKSoft.TransparentLabel, TinyWall, Version=1.9.5.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3</value>
+    <value>PKSoft.TransparentLabel, TinyWall, Version=1.9.7.0, Culture=neutral, PublicKeyToken=d9a8adbcd0c171b3</value>
   </data>
   <data name="&gt;&gt;transparentLabel1.Parent" xml:space="preserve">
     <value>panel1</value>
@@ -651,6 +651,9 @@
   <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="txtListenPortUDP.AccessibleName" xml:space="preserve">
+    <value>Incoming UDP</value>
+  </data>
   <data name="txtListenPortUDP.Location" type="System.Drawing.Point, System.Drawing">
     <value>296, 101</value>
   </data>
@@ -671,6 +674,9 @@
   </data>
   <data name="&gt;&gt;txtListenPortUDP.ZOrder" xml:space="preserve">
     <value>3</value>
+  </data>
+  <data name="txtListenPortTCP.AccessibleName" xml:space="preserve">
+    <value>Incoming TCP</value>
   </data>
   <data name="txtListenPortTCP.Location" type="System.Drawing.Point, System.Drawing">
     <value>76, 101</value>
@@ -753,6 +759,9 @@
   <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
+  <data name="txtOutboundPortUDP.AccessibleName" xml:space="preserve">
+    <value>Outgoing UDP</value>
+  </data>
   <data name="txtOutboundPortUDP.Location" type="System.Drawing.Point, System.Drawing">
     <value>296, 61</value>
   </data>
@@ -773,6 +782,9 @@
   </data>
   <data name="&gt;&gt;txtOutboundPortUDP.ZOrder" xml:space="preserve">
     <value>5</value>
+  </data>
+  <data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
+    <value>Outgoing TCP</value>
   </data>
   <data name="txtOutboundPortTCP.Location" type="System.Drawing.Point, System.Drawing">
     <value>76, 61</value>

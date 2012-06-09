@@ -105,14 +105,14 @@ namespace PKSoft
             // 
             // mnuCurrentPolicy
             // 
-            this.mnuCurrentPolicy.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
+            this.mnuCurrentPolicy.AccessibleRole = System.Windows.Forms.AccessibleRole.StaticText;
             this.mnuCurrentPolicy.Image = global::PKSoft.Resources.Icons.info;
             this.mnuCurrentPolicy.Name = "mnuCurrentPolicy";
             resources.ApplyResources(this.mnuCurrentPolicy, "mnuCurrentPolicy");
             // 
             // mnuTrafficRate
             // 
-            this.mnuTrafficRate.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
+            this.mnuTrafficRate.AccessibleRole = System.Windows.Forms.AccessibleRole.StaticText;
             this.mnuTrafficRate.Name = "mnuTrafficRate";
             resources.ApplyResources(this.mnuTrafficRate, "mnuTrafficRate");
             // 
