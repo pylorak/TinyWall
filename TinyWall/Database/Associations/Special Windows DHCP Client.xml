@@ -8,5 +8,10 @@
         </Profiles>
       </ExceptionTemplate>
 	</AppExceptionAssoc>
+	<AppExceptionAssoc Executable="{folder:sys32}\svchost.exe" Service="lmhosts">
+      <ExceptionTemplate Template="true">
+        <OpenPortOutboundRemoteUDP>67</OpenPortOutboundRemoteUDP>
+      </ExceptionTemplate>
+	</AppExceptionAssoc>
 	</Files>
 </Application>
