@@ -121,31 +121,32 @@
             // 
             // contextMenuStrip1
             // 
+            resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuUnblock,
             this.mnuCloseProcess,
             this.mnuSearch,
             this.mnuCopyRemoteAddress});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // mnuUnblock
             // 
+            resources.ApplyResources(this.mnuUnblock, "mnuUnblock");
             this.mnuUnblock.Image = global::PKSoft.Resources.Icons.executable;
             this.mnuUnblock.Name = "mnuUnblock";
-            resources.ApplyResources(this.mnuUnblock, "mnuUnblock");
             this.mnuUnblock.Click += new System.EventHandler(this.mnuUnblock_Click);
             // 
             // mnuCloseProcess
             // 
+            resources.ApplyResources(this.mnuCloseProcess, "mnuCloseProcess");
             this.mnuCloseProcess.Image = global::PKSoft.Resources.Icons.exit;
             this.mnuCloseProcess.Name = "mnuCloseProcess";
-            resources.ApplyResources(this.mnuCloseProcess, "mnuCloseProcess");
             this.mnuCloseProcess.Click += new System.EventHandler(this.mnuCloseProcess_Click);
             // 
             // mnuSearch
             // 
+            resources.ApplyResources(this.mnuSearch, "mnuSearch");
             this.mnuSearch.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuVirusTotal,
             this.mnuProcessLibrary,
@@ -153,36 +154,35 @@
             this.mnuRemoteAddressOnTheWeb});
             this.mnuSearch.Image = global::PKSoft.Resources.Icons.search;
             this.mnuSearch.Name = "mnuSearch";
-            resources.ApplyResources(this.mnuSearch, "mnuSearch");
             // 
             // mnuVirusTotal
             // 
-            this.mnuVirusTotal.Name = "mnuVirusTotal";
             resources.ApplyResources(this.mnuVirusTotal, "mnuVirusTotal");
+            this.mnuVirusTotal.Name = "mnuVirusTotal";
             this.mnuVirusTotal.Click += new System.EventHandler(this.mnuVirusTotal_Click);
             // 
             // mnuProcessLibrary
             // 
-            this.mnuProcessLibrary.Name = "mnuProcessLibrary";
             resources.ApplyResources(this.mnuProcessLibrary, "mnuProcessLibrary");
+            this.mnuProcessLibrary.Name = "mnuProcessLibrary";
             this.mnuProcessLibrary.Click += new System.EventHandler(this.mnuProcessLibrary_Click);
             // 
             // mnuFileNameOnTheWeb
             // 
-            this.mnuFileNameOnTheWeb.Name = "mnuFileNameOnTheWeb";
             resources.ApplyResources(this.mnuFileNameOnTheWeb, "mnuFileNameOnTheWeb");
+            this.mnuFileNameOnTheWeb.Name = "mnuFileNameOnTheWeb";
             this.mnuFileNameOnTheWeb.Click += new System.EventHandler(this.mnuFileNameOnTheWeb_Click);
             // 
             // mnuRemoteAddressOnTheWeb
             // 
-            this.mnuRemoteAddressOnTheWeb.Name = "mnuRemoteAddressOnTheWeb";
             resources.ApplyResources(this.mnuRemoteAddressOnTheWeb, "mnuRemoteAddressOnTheWeb");
+            this.mnuRemoteAddressOnTheWeb.Name = "mnuRemoteAddressOnTheWeb";
             this.mnuRemoteAddressOnTheWeb.Click += new System.EventHandler(this.mnuRemoteAddressOnTheWeb_Click);
             // 
             // mnuCopyRemoteAddress
             // 
-            this.mnuCopyRemoteAddress.Name = "mnuCopyRemoteAddress";
             resources.ApplyResources(this.mnuCopyRemoteAddress, "mnuCopyRemoteAddress");
+            this.mnuCopyRemoteAddress.Name = "mnuCopyRemoteAddress";
             this.mnuCopyRemoteAddress.Click += new System.EventHandler(this.mnuCopyRemoteAddress_Click);
             // 
             // IconList
