@@ -950,6 +950,11 @@
             </Profiles>
           </ExceptionTemplate>
         </AppExceptionAssoc>
+        <AppExceptionAssoc Service="lmhosts" Executable="{folder:sys32}\svchost.exe">
+          <ExceptionTemplate Template="true">
+            <OpenPortOutboundRemoteUDP>67</OpenPortOutboundRemoteUDP>
+          </ExceptionTemplate>
+        </AppExceptionAssoc>
       </Files>
     </Application>
     <Application Name="Windows_DNS_Client" Recommended="true" Special="true">
