@@ -1,0 +1,100 @@
+TINYWALL LOCALIZATION INSTRUCTIONS
+
+This file contains instruction on localizing (translating) TinyWall into
+various spoken languages. Please follow the instructions carefully.
+
+-------------------------
+
+Tools needed:
+1. A UTF-8-capable text editor (for example Notepad++)
+2. WinRes.exe from the Microsoft Windows SDK
+3. TinyWall installed
+
+
+TRANSLATING FORMS
+-------------------------
+
+"Forms" are the various windows TinyWall can show to the user.
+
+1. Download the "Microsoft Windows SDK for Windows 7 and .NET Framework 4"
+installer. (http://www.microsoft.com/download/en/confirmation.aspx?id=8279)
+This is an online installer that will download components on the go. It accesses
+the internet using a temporarily extracted executable, so set TinyWall into
+"Allow outgoing" or "Learning" mode for the duration of the setup.
+
+2. When prompted for the components to install, the only one you need is
+.NET Development -> Tools.
+
+3. When installation finishes, launch WinRes.exe. Look for it in a subfolder of
+"C:\Program Files (x86)\Microsoft SDKs\Windows\" (for example
+"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Bin"
+
+4. At this point, make sure TinyWall is installed. If it is not,
+then install it.
+
+5. Open a .resx file located in Resources\Forms. This will show you a simplified
+view of the selected TinyWall window. Translate each text carefully into your
+chosen language by selecting a control and changing its Text property. Only
+modify size and position if needed (mostly when the translated text is 
+significantly longer than the english version).
+
+6. When all text in a form is translated, save. In the language selection
+window, select a generic variant of your language without a country 
+specialization. For example, do not select "German (Austria)", but select
+the generic "German" language. In File Mode, make sure the 
+"Visual Studio File Mode-VSFM" is selected.
+
+7. Repeat steps 5-6 for all other forms in Resources\Forms.
+
+TRANSLATING OTHER STRINGS
+-------------------------
+
+Not all text is contained in forms. This section describes how to translate 
+non-forms text.
+
+1. Use a UTF-8-capable text editor, and make sure that whenever you save you 
+save in UTF-8 encoding.
+
+2. Two files need to be translated, Exceptions.resx and Messages.resx.
+Exceptions.resx contains localized names of firewall exception names, while
+Messages.resx contains all kinds of text.
+
+3. Open one of the the .resx files in the text editor. Each file is a valid XML 
+file so be sure not to acidentially destroy the XML structure. ONLY translate
+the contents of <value> tags and do NOT touch anything else. 
+Each string to be translated is structured like:
+
+  <data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
+    <value>Could not elevate privileges necessary for update.</value>
+  </data>
+
+In the above exmaple, you would ONLY translate
+"Could not elevate privileges necessary for update." in the middle.
+
+Sometimes, you can also find comments, like:
+
+  <data name="CouldNotWhitelistProcess" xml:space="preserve">
+    <value>Could not whitelist process of {0}.</value>
+    <comment>Param0 is a file path.</comment>
+  </data>
+
+Do NOT translate the text inside the comment. Comments will never be shown to 
+the user. Comments only provide aid to translators. The comment in the above
+example is telling the translator that {0} will be replaced by a file path
+when the value is shown to the user.
+
+4. Save in UTF-8 encoding. Name the file similar to the way WinRes.exe has named
+its output files. For example, if the original name was Messages.resx, and you 
+are translating to German, name the output Messages.de.resx. Replace "de" by
+the 2-letter country code of your language. For a list of valid country codes,
+see the "Culture Name" column in 
+http://msdn.microsoft.com/en-us/goglobal/bb896001.aspx.
+
+5. Repeat steps 3-4. for other non-forms .resx files.
+
+-------------------------
+
+When all is done, zip up and send me all the files to tinywall @ pados.hu.
+
+THANK YOU FOR YOUR TRANSLATION!
+

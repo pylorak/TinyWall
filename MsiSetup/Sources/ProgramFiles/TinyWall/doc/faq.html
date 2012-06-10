@@ -1,0 +1,135 @@
+﻿<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <title>TinyWall F.A.Q.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 1140px Grid styles for IE -->
+  <!--[if lte IE 9]><link rel="stylesheet" href="css/ie.css" type="text/css" media="screen" /><![endif]-->
+
+  <!-- The 1140px Grid - http://cssgrid.net/ -->
+  <link rel="stylesheet" href="css/1140.css" type="text/css" media="screen" />
+
+  <!-- HTML5BP abd your styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<!-- BODY BEGINS-->
+
+<body>
+<div class="content">
+<header>
+  <div class="container" style="background-color: #000000; height: 10px;"></div>
+  <div class="container gradient-bg">
+    <div class="row">
+      <div class="twelvecol last" style="padding-top: 10px;">
+        <h1 class="headertitle">Frequently Asked Questions</h1>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div style="height: 20px;">
+</div>
+
+<!-- CONTENT BEGINS-->
+
+<div role="main">
+
+  <div class="container">
+    <div class="row">
+      <div class="twelvecol last">
+        <h3>What are the system requirements to run TinyWall?</h3>
+        <p>TinyWall runs on all versions (including all editions and languages, 32bit and 64bit) of Windows Vista, Windows 7 and Windows 8 CTP. However, firewall tampering protection is not active on Windows Vista. Windows Vista users need to install Microsoft .Net Framework 3.5 SP1 or newer before installing TinyWall.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>How does TinyWall compare to other firewall products?</h3>
+        <p>The traditional task of a firewall is to filter network traffic to ensure that no unwanted network communication takes place. In this regard TinyWall is just as reliable as any other paid firewall. Some other products include a Host-based Intrusion Prevention System (HIPS) which provides additional security, at the cost of incompatibility with some applications and the need for more user intervention. TinyWall does not come with HIPS functionality.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>Why do I need a software firewall? I already have a hardware firewall.</h3>
+        <p>Hardware firewalls restrict traffic based on information in the network packets, like ports, hosts and protocols, but they are unable to determine what applications are communicating. If you allow HTTP/80 in your hardware firewall, you will be able to browse the internet, but you’ve also automatically given internet access to all other kinds of software you might not trust. A software firewall allows you to control applications separately.</p>
+        <p>Additionally, most consumer hardware firewalls are set up to only filter incoming communication. TinyWall will also let you control network traffic originating from your computer.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>How do I uninstall TinyWall?</h3>
+        <p>The latest version of TinyWall can be uninstalled from the Windows Control Panel just like any other software.</p>
+        <p>If you are using version 1.0.x, in TinyWall's tray menu go to Manage, select the Maintenance tab and click the Uninstall button there. If this button is greyed out, you first need to select Elevate in the tray menu to make sure you have the necessary privileges.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>Is TinyWall compatible with other security software?</h3>
+        <ul>
+        <li>TinyWall is compatible with all antivirus filesystem protections. For possible problems with other protection modules, see the FAQ section about Application Specific Instructions.</li>
+        <li>With the exception of Windows Firewall, no other firewall software should be active while TinyWall is installed. Even if two firewall products can technically coexist, it is strongly discouraged to avoid user confusion.</li>
+        <li>No compatibility problems have been detected with blocklisting software.</li>
+        <li>If you are using HIPS software, make sure not to restrict TinyWall in the HIPS software.</li>
+        <li>If TinyWall is set to do so in its settings, no other software may be used to manage or protect the hosts file.</li>
+        </ul>
+      </div>
+      <div class="twelvecol last">
+        <h3>After installation TinyWall is automatically granted internet access. Why?</h3>
+        <p>This is to enable the automatic update checks and the download of updates for TinyWall. TinyWall does not send any information about the user or the computer over the internet. If you still wish to deny TinyWall access to the internet, disable TinyWall on the Special Exceptions tab.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>I installed TinyWall and now I cannot access the internet. What happened?</h3>
+        <p>Upon installation TinyWall locks down your PC such that no network communication may take place, except for a few known applications. If you experience connectivity problems in some programs, use one of the "Whitelist by ..." options in the tray menu to unblock specific applications.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>Why block applications if TinyWall blocks all applications by default anyway?</h3>
+        <p>TinyWall blocks all applications by default in some of its operation modes, including the "Normal" mode which is the standard mode of operation. Explicitly blocking is useful to deny network access for an application even when the firewall mode is set to allow all outgoing communication.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>What is the "Unblock LAN traffic" option for?</h3>
+        <p>It is an option to easily allow network traffic from/to the local network. It is most useful if you only wish to control internet traffic. When TinyWall is operating in "Normal" mode with this option unchecked, it will block all traffic except for the defined exceptions. If "Unblock LAN traffic" is checked, traffic from/to the LAN will be allowed by default even in "Normal" mode. Basically, if this options is enabled, TinyWall behaves as if the firewall was mostly disabled for the local network, but enabled for the internet.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>What is the difference between port-based and domain-based blocklists?</h3>
+        <p>Port-based blocklist is implemented as a firewall rule and blocks traffic based on port numbers irrespective of the remote host. Its goal is to undermine some common and known malware that use specific ports. It usually affects only specific (malicious) applications. Domain-based blocklist is implemented as a custom hosts file and blocks specific remote hosts irrespective of the port number. Its goal is to block certain hosts no matter what application tries to communicate with them, and in addition to malware it will also block some forms of internet advertising.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>I have whitelisted an application but it still cannot access the network. What is going on?</h3>
+        <p>You might find that even though you have whitelisted the executable of an application, it still cannot connect to the internet. However, the conclusion that TinyWall is not working is probably wrong. This kind of issue is most often caused by whitelisting the wrong executable, or not whitelisting every executable needed for the operation of that particular program. Some applications use multiple executables to connect to the internet. If you do not unblock them all, it might appear that TinyWall is not working.</p>
+        <p>If you do not know which files need to be whitelisted for an application to work, the easiest solution is to use the learning mode of TinyWall. Enter learning mode using the tray menu, use the application for a few minutes, then switch TinyWall back to its "Normal" mode. For maximized security, you should ensure that no other programs are used at the same time and that your computer is free from malware before entering learning mode.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>I have Avast! Antivirus installed and I have problems whitelisting.</h3>
+        <p>Some shields of avast! work by redirecting other applications to the local computer, then making the internet connection themselves instead of the original program. As a result, avast! needs to be unblocked instead of your browser, for example, to be able to access the internet. The recommended solution is to unblock the "avast! Antivirus" service in TinyWall. The downside is that you won‘t be able to control the applications separately that connect over this service.</p>
+        <p>A second solution is to disable the corresponding avast! shield (for example, the Web Shield), but this is not recommended because you'd loose that protection of avast!.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>I have AdMuncher installed and I have problems whitelisting.</h3>
+        <p>AdMuncher works similarly to avast! (see FAQ entry above), redirecting other applications to itself. The solution is to unblock AdMuncher in TinyWall.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>I have MailWasher installed and I have problems whitelisting.</h3>
+        <p>MailWasher works similarly to avast! (see FAQ entry above), redirecting other applications to itself. The solution is to unblock MailWasher in TinyWall.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT ENDS-->
+
+<div class="push"></div>
+</div>
+
+<footer class="gradient-bg-reverse">
+  <div class="container">
+    <div class="row">
+      <div class="twelvecol last centertext">
+      <br/>
+      <p>Copyright (c) 2012 Károly Pados</p>
+    </div>
+    </div>
+  </div>
+</footer>
+</body>
+
+<!-- BODY ENDS -->
+
+</html>

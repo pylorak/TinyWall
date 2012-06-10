@@ -1,0 +1,104 @@
+﻿<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <title>What's new in TinyWall</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 1140px Grid styles for IE -->
+  <!--[if lte IE 9]><link rel="stylesheet" href="css/ie.css" type="text/css" media="screen" /><![endif]-->
+
+  <!-- The 1140px Grid - http://cssgrid.net/ -->
+  <link rel="stylesheet" href="css/1140.css" type="text/css" media="screen" />
+
+  <!-- HTML5BP abd your styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<!-- BODY BEGINS-->
+
+<body>
+<div class="content">
+<header>
+  <div class="container" style="background-color: #000000; height: 10px;"></div>
+  <div class="container gradient-bg">
+    <div class="row">
+      <div class="twelvecol last" style="padding-top: 10px;">
+        <h1 class="headertitle">What's new in TinyWall</h1>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div style="height: 20px;">
+</div>
+
+<!-- CONTENT BEGINS-->
+
+<div role="main">
+
+  <div class="container">
+    <div class="row">
+      <div class="eightcol">
+        <h2>Version 2.0</h2>
+        <p>TinyWall 2.0 incorporates a wide range of new features, many which has been requested by the user community. All aspects of the application are improved, including security, user friendliness, compatibility, performance and stability.</p>
+        <ul>
+        <li>Easier first-time setup. The search for most recognized applications has become blazing-fast and TinyWall will automatically whitelist known and trusted applications when starting for the first time.</li>
+        <li>Added new learning mode. In this mode TinyWall will observe what applications use the internet and how, and remember them in normal mode. Setting up complex applications or a freshly installed system becomes a piece of cake. Start learning mode, use the applications, then switch back to normal mode.</li>
+        <li>A greatly rewritten firewall exception dialog. No more confusing profiles, only a streamlined and simpler interface and a direct possibility to manually specify ports.</li>
+        <li>In this versions it is now possible to restrict applications, each one separately, to the local network.</li>
+        <li>TinyWall 2.0 installs and uninstalls like any other application. By common request it can now be removed from the Control Panel.</li>
+        <li>Better support for built-in Windows features. TinyWall 2.0 can now be expected to work well and be compatible with Windows Networking, Remote Desktop, Remote Assistance and other network-related Windows features.</li>
+        <li>Easier whitelisting of complex applications by recognizing related files. If an executable needs additional files whitelisted to work correctly, TinyWall will autoatically notify and offer you to whitelist those files when you try to unblock it.</li>
+        <li>Domain blocklist support. Implemented by installing a custom hosts file, this feature will keep you safe from many malicious websites and increase your browsing speed by blocking trackers and ads. This feature is disabled by default, needs to be turned on explicitly. It can be easily switched on and off from the tray menu. TinyWall will keep the hosts file updated to ensure you always get the latest protection. (Currently the MVPS hosts file is used.)</li>
+        <li>Hosts file protection. A common web-related attack by malicious code is redirecting the user to fake sites to phish data or install further bad code. TinyWall will lock the hosts file to ensure its protection and prevent malicious redirection using the hosts file.</li>
+        <li>Mouse picking of windows with higher privileges. In v1 when TinyWall's controller was not running elevated, it was impossible to whitelist another application that is running with admin rights by mouse picking (by window). You either needed to use a different method or you needed to elevate TinyWall too. TinyWall 2.0 allows you to whitelist most admin applications by window without having to elevate TinyWall itself.</li>
+        <li>Saving of settings without breaking existing connections. TinyWall will no longer break existing TCP connections when applying firewall settings.</li>
+        <li>New updater system. The updater now supports updating not only the application, but also the data components separately. It will naglessly keep your hosts file (if enabled) and the recognition database up-to-date without you having to install new versions of TinyWall.</li>
+        <li>Traffic rate monitor. This is a feature in the form of a tray menu entry that will always tell you the current total download and upload rate of your computer.</li>
+        <li>Connections window shows blocked applications. The Connections window will now optionally show you what the firewall has blocked recently, and a right-click menu allows you to either unblock or close processes. Even multiple at once.</li>
+        <li>Increased performance. Reorganized code and a parallelized load process makes TinyWall 2.0 start much faster than earlier versions and firewall settings take less time to apply.</li>
+        <li>Remember the last used firewall mode. TinyWall 2.0 saves the firewall mode between reboots (with the exception of the Disabled and Learning modes, which will not be remembered).</li>
+        <li>Digitally signed applications executables. All binaries shipped by TinyWall are signed using a recognized digital certificate. A digital certificate assures users that the author is no fictional person and it will identify all software releases coming from me. It means that as long as Windows is telling you that TinyWall has been published by "Károly Pados" and that it is valid certificate, you can be sure that the TinyWall you have downloaded really is from me and that it has not been compromised by others since its release.</li>
+        <li>Localizability. The interface in 2.0 can be translated to other languages, as of 2.0 a French translation is included in the distribution.</li>
+        <li>Improved support for accessability, keyboard navigation and screen readers.</li>
+        <li>Support for running in a virtualized environment.</li>
+        <li>Support for quickly filtering the list of application exceptions. Makes it a breeze to search for something in a long list.</li>
+        <li>From the Connections window, you can easily initiate searches for processes on VirusTotal, ProcessLibrary and Google.</li>
+        <li>Support for Windows 8 (tested on CTP) and .Net Framework 4.</li>
+        </ul>
+      </div>
+      <div class="fourcol last">
+        <br/><br/><br/><br/><br/><br/>
+        <img src="img/exception_details.png" /><br/><br/><br/>
+        <img src="img/unblock_task_dial.png" /><br/><br/>
+        <img src="img/tray_menu.png" /><br/><br/><br/>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT ENDS-->
+
+<div class="push"></div>
+</div>
+
+<footer class="gradient-bg-reverse">
+  <div class="container">
+    <div class="row">
+      <div class="twelvecol last centertext">
+      <br/>
+      <p>Copyright (c) 2012 Károly Pados</p>
+    </div>
+    </div>
+  </div>
+</footer>
+</body>
+
+<!-- BODY ENDS -->
+
+</html>
