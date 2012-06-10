@@ -44,7 +44,7 @@
     <Condition Message="You need to be running Windows Vista or later to install $(var.ProductName).">VersionNT >= 600</Condition>
     <PropertyRef Id="NETFRAMEWORK35"/>
     <PropertyRef Id="NETFRAMEWORK40FULL"/>
-    <Condition Message='This setup requires the .NET Framework 3.5 or 4.0 installed.'>
+    <Condition Message='This setup requires the .NET Framework 3.5 SP1 or newer to be installed.'>
       <![CDATA[NETFRAMEWORK35 OR NETFRAMEWORK40FULL]]>
     </Condition>
 
@@ -65,6 +65,8 @@
       <ComponentRef Id='MainExecutableConfig' />
       <ComponentRef Id='Database' />
       <ComponentRef Id='hosts' />
+      <ComponentRef Id='LocFrenchSatelliteLib' />
+      <ComponentGroupRef Id='Documentation' />
     </Feature>
 
     <!-- Search for older versions -->
@@ -153,9 +155,44 @@
           <Component Id="MainExecutableConfig" Guid="{81CD5E43-FAE3-4B3C-AA84-A7A0C660FDB4}" Win64="$(var.Win64)">
             <File Id="TinyWallCONFIG" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe.config" KeyPath="yes" />
           </Component>
+          <Directory Id="LOCDIR" Name="fr">
+            <Component Id="LocFrenchSatelliteLib" Guid="{C5A9E9ED-2298-461B-8EFC-536717B2EC57}" Win64="$(var.Win64)">
+              <File Id="LocFrenchSatelliteDLL" Source="Sources\ProgramFiles\TinyWall\fr\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+            </Component>
+          </Directory>
+          <Directory Id="DOCDIR" Name="doc">
+            <Component Id="DocWhatsNewComp" Win64="$(var.Win64)">
+              <File Id="DocWhatsNewFile" Source="Sources\ProgramFiles\TinyWall\doc\whatsnew.html" Vital="yes" KeyPath="yes" Checksum="yes" />
+            </Component>
+            <Component Id="DocFAQComp" Win64="$(var.Win64)">
+              <File Id="DocFAQFile" Source="Sources\ProgramFiles\TinyWall\doc\faq.html" Vital="yes" KeyPath="yes" Checksum="yes" />
+            </Component>
+            <Directory Id="DOCCSSDIR" Name="css">
+              <Component Id="DocCss00Comp" Win64="$(var.Win64)">
+                <File Id="DocCss00File" Source="Sources\ProgramFiles\TinyWall\doc\css\1140.css" Vital="yes" KeyPath="yes" Checksum="yes" />
+              </Component>
+              <Component Id="DocCss01Comp" Win64="$(var.Win64)">
+                <File Id="DocCss01File" Source="Sources\ProgramFiles\TinyWall\doc\css\ie.css" Vital="yes" KeyPath="yes" Checksum="yes" />
+              </Component>
+              <Component Id="DocCss02Comp" Win64="$(var.Win64)">
+                <File Id="DocCss02File" Source="Sources\ProgramFiles\TinyWall\doc\css\style.css" Vital="yes" KeyPath="yes" Checksum="yes" />
+              </Component>
+            </Directory>
+            <Directory Id="DOCIMGDIR" Name="img">
+              <Component Id="DocImg00Comp" Win64="$(var.Win64)">
+                <File Id="DocImg00Comp" Source="Sources\ProgramFiles\TinyWall\doc\img\exception_details.png" Vital="yes" KeyPath="yes" Checksum="yes" />
+              </Component>
+              <Component Id="DocImg01Comp" Win64="$(var.Win64)">
+                <File Id="DocImg01Comp" Source="Sources\ProgramFiles\TinyWall\doc\img\tray_menu.png" Vital="yes" KeyPath="yes" Checksum="yes" />
+              </Component>
+              <Component Id="DocImg02Comp" Win64="$(var.Win64)">
+                <File Id="DocImg02Comp" Source="Sources\ProgramFiles\TinyWall\doc\img\unblock_task_dial.png" Vital="yes" KeyPath="yes" Checksum="yes" />
+              </Component>
+            </Directory>
+          </Directory>
         </Directory>
       </Directory>
-
+      
       <!-- GAC -->
       <Component Id="gac_MainExecutable" Guid="{8487EFE8-C7C1-4832-93B1-C72C7997BC91}" Win64="$(var.Win64)">
         <File Id="gac_TinyWallEXE" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" />
@@ -192,8 +229,9 @@
             <RegistryValue Root='HKCU' Key='Software\[ProductName]' Type='string' Value='' KeyPath='yes' />
             <Shortcut Id="ControllerShortcut" Icon="TinyWallIcon.exe" Directory="ProgramMenuDir" Name="TinyWall Controller" Arguments="/desktop" Target="[INSTALLDIR]TinyWall.exe"/>
             <Shortcut Id="DevelToolShortcut" Icon="TinyWallIcon.exe" Directory="ProgramMenuDir" Name="DevelTool" Arguments="/develtool" Target="[INSTALLDIR]TinyWall.exe"/>
-            <Shortcut Id="FAQShortcut" Directory="ProgramMenuDir" Name="FAQ" Target="[INSTALLDIR]FAQ.pdf"/>
-            <util:InternetShortcut Id="WebsiteShortcut" Name="TinyWall Official Website" Target="$(var.ProductURL)"/>
+            <Shortcut Id="FAQShortcut" Directory="ProgramMenuDir" Name="FAQ" Target="[INSTALLDIR]doc\faq.html"/>
+            <Shortcut Id="WhatsNewShortcut" Directory="ProgramMenuDir" Name="What's new" Target="[INSTALLDIR]doc\whatsnew.html"/>
+            <util:InternetShortcut Id="WebsiteShortcut" Name="Website" Target="$(var.ProductURL)"/>
           </Component>
         </Directory>
       </Directory>
@@ -210,6 +248,17 @@
     <!-- Icons -->
     <Icon Id="TinyWallIcon.exe" SourceFile="Sources\ProgramFiles\TinyWall\TinyWall.ico" />
 
-    </Fragment>
+    <!-- Documentation groupping -->
+    <ComponentGroup Id="Documentation">
+      <ComponentRef Id="DocWhatsNewComp"/>
+      <ComponentRef Id="DocFAQComp"/>
+      <ComponentRef Id="DocCss00Comp"/>
+      <ComponentRef Id="DocCss01Comp"/>
+      <ComponentRef Id="DocCss02Comp"/>
+      <ComponentRef Id="DocImg00Comp"/>
+      <ComponentRef Id="DocImg01Comp"/>
+      <ComponentRef Id="DocImg02Comp"/>
+    </ComponentGroup>
+  </Fragment>
 
 </Wix>
