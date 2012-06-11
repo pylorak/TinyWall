@@ -57,7 +57,6 @@
       <ComponentRef Id='RegistryKeys' />
       <ComponentRef Id='License' />
       <ComponentRef Id='Attributions' />
-      <ComponentRef Id='FAQ' />
       <ComponentRef Id='NetFwTypeLib' />
       <ComponentRef Id='gac_NetFwTypeLib' />
       <ComponentRef Id='XmlSerializersLib' />
@@ -142,9 +141,6 @@
           </Component>
           <Component Id="Attributions" Guid="{76058250-1331-4D79-B09C-2B6ADEC3E7E2}" Win64="$(var.Win64)">
             <File Id="AttributionsTXT" Source="Sources\ProgramFiles\TinyWall\Attributions.txt" KeyPath="yes" />
-          </Component>
-          <Component Id="FAQ" Guid="{603B371F-F380-47AF-9811-D8CD8DAD9086}" Win64="$(var.Win64)">
-            <File Id="FAQPDF" Source="Sources\ProgramFiles\TinyWall\FAQ.pdf" KeyPath="yes" />
           </Component>
           <Component Id="NetFwTypeLib" Guid="{7AB618A2-D50A-499A-93B9-101AEF6BC809}" Win64="$(var.Win64)">
             <File Id="NetFwTypeLibDLL" Source="Sources\ProgramFiles\TinyWall\Interop.NetFwTypeLib.dll" Vital="yes" KeyPath="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
