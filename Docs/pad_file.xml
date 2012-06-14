@@ -17,7 +17,7 @@
 		<Contact_Info>
 			<Author_First_Name>Károly</Author_First_Name>
 			<Author_Last_Name>Pados</Author_Last_Name>
-			<Author_Email>pados@pados.hu</Author_Email>
+			<Author_Email>tinywall@pados.hu</Author_Email>
 			<Contact_First_Name>Károly</Contact_First_Name>
 			<Contact_Last_Name>Pados</Contact_Last_Name>
 			<Contact_Email>tinywall@pados.hu</Contact_Email>
@@ -34,26 +34,26 @@
 	</Company_Info>
 	<Program_Info>
 		<Program_Name>TinyWall</Program_Name>
-		<Program_Version>1.0.3</Program_Version>
-		<Program_Release_Month>01</Program_Release_Month>
-		<Program_Release_Day>21</Program_Release_Day>
+		<Program_Version>2.0.0</Program_Version>
+		<Program_Release_Month>06</Program_Release_Month>
+		<Program_Release_Day>11</Program_Release_Day>
 		<Program_Release_Year>2012</Program_Release_Year>
 		<Program_Cost_Dollars>0</Program_Cost_Dollars>
 		<Program_Cost_Other_Code />
 		<Program_Cost_Other />
 		<Program_Type>Freeware</Program_Type>
-		<Program_Release_Status>New Release</Program_Release_Status>
+		<Program_Release_Status>Major Update</Program_Release_Status>
 		<Program_Install_Support>Install and Uninstall</Program_Install_Support>
 		<Program_OS_Support>Win7 x32,Win7 x64,WinVista,WinVista x64</Program_OS_Support>
-		<Program_Language>English</Program_Language>
+		<Program_Language>English,French</Program_Language>
 		<Program_Change_Info>See http://tinywall.pados.hu/changelog.txt</Program_Change_Info>
 		<Program_Specific_Category>Utilities</Program_Specific_Category>
-		<Program_Category_Class>Security &amp; Privacy::Other</Program_Category_Class>
+		<Program_Category_Class>Security &amp; Privacy::Access Control</Program_Category_Class>
 		<Program_System_Requirements>Microsoft .Net Framework 3.5 SP1</Program_System_Requirements>
 		<File_Info>
-			<File_Size_Bytes>822679</File_Size_Bytes>
-			<File_Size_K>803</File_Size_K>
-			<File_Size_MB>0.78</File_Size_MB>
+			<File_Size_Bytes>1032192</File_Size_Bytes>
+			<File_Size_K>1008</File_Size_K>
+			<File_Size_MB>0.98</File_Size_MB>
 		</File_Info>
 		<Expire_Info>
 			<Has_Expire_Info>N</Has_Expire_Info>
@@ -70,8 +70,8 @@
 			<Keywords>firewall,security,protection,privacy,network</Keywords>
 			<Char_Desc_45>A lightweight, non-intrusive firewall</Char_Desc_45>
 			<Char_Desc_80>Harden and control the firewall built into Windows with ease, without annoyance </Char_Desc_80>
-			<Char_Desc_250>TinyWall hardens and controls the firewall built into Windows, but does not display popups. Instead, TinyWall allows users to whitelist or unblock programs via various other innovative methods. Designed to be simple, secure and non-intrusive.</Char_Desc_250>
-			<Char_Desc_450>TinyWall hardens and controls the firewall built into Windows, but does not display popups. Instead, TinyWall allows users to whitelist or unblock programs via various other innovative methods. Designed to be simple, secure and non-intrusive. Provides firewall tampering protection, supports password lock, firewall modes and abstracts application protocols into profiles so that you don't need to know about ports and rules by heart.</Char_Desc_450>
+			<Char_Desc_250>TinyWall hardens and controls the firewall built into Windows, but does not display popups. Instead, TinyWall allows users to whitelist or unblock programs via various other innovative methods. Designed to be simple to use, secure and non-intrusive.</Char_Desc_250>
+			<Char_Desc_450>TinyWall hardens and controls the firewall built into Windows, but does not display popups. Instead, TinyWall allows users to whitelist or unblock programs via various other innovative methods.Designed to be simple to use, secure and non-intrusive. TinyWall provides firewall tampering protection, supports password lock, multiple firewall modes, automatic learning, blocklists and many other features that make it a unique firewall.</Char_Desc_450>
 			<Char_Desc_2000>Designed to harden and control the advanced firewall built into Windows, TinyWall includes a combination of features that sets it apart from both commercial and freeware firewalls.
 
 TinyWall does not display popups that "urge users to allow". In fact, it will not notify you of any blocked action. Rather than displaying popups, TinyWall allows users to whitelist or unblock programs via various methods. For example, you can just initiate whitelisting by a hotkey, then click on a window that you want to allow. Or, you can select an application from the list of running processes. (Of course, the traditional way of selecting an executable also works.)
@@ -84,23 +84,23 @@ Key features:
 - TinyWall lets you work while protecting you. There are no annoying popups but configuration is very simple.
 - Using the advanced Windows Firewall built into newer Windows versions, TinyWall's performance impact is neglible.
 - No drivers or kernel-components are installed so it does not influence system stability.
-- Password lock, firewall tampering protection and built-in tight firewall rules help increase TinyWall's and your computer's security even further.
+- Automatic learning, blocklists, password lock, firewall tampering protection and built-in tight firewall rules help increase TinyWall's and your computer's security even further.
 - Firewall modes and lots of other convenience features make TinyWall extremely easy to use for anybody.
 - All packed into a download that is less than a megabyte.
 
-Requires Microsoft .Net Framework 3.5 SP1.</Char_Desc_2000>
+Requires Microsoft .Net Framework 3.5 SP1 or newer.</Char_Desc_2000>
 		</English>
 	</Program_Descriptions>
 	<Web_Info>
 		<Application_URLs>
 			<Application_Info_URL>http://tinywall.pados.hu/</Application_Info_URL>
 			<Application_Order_URL />
-			<Application_Screenshot_URL>http://tinywall.pados.hu/PAD/tinywall_menu.png</Application_Screenshot_URL>
+			<Application_Screenshot_URL>http://tinywall.pados.hu/PAD/tinywall_menu.jpg</Application_Screenshot_URL>
 			<Application_Icon_URL>http://tinywall.pados.hu/PAD/tinywall_icon.png</Application_Icon_URL>
 			<Application_XML_File_URL>http://tinywall.pados.hu/PAD/pad_file.xml</Application_XML_File_URL>
 		</Application_URLs>
 		<Download_URLs>
-			<Primary_Download_URL>http://tinywall.pados.hu/ccount/click.php?id=1</Primary_Download_URL>
+			<Primary_Download_URL>http://tinywall.pados.hu/ccount/click.php?id=2</Primary_Download_URL>
 			<Secondary_Download_URL />
 			<Additional_Download_URL_1 />
 			<Additional_Download_URL_2 />
