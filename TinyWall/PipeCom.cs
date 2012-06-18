@@ -113,7 +113,7 @@ namespace PKSoft
 
                 if (!PipeClient.IsConnected)
                 {
-                    PipeClient.Connect(50);
+                    PipeClient.Connect(200);
                     if (!PipeClient.IsConnected)
                         return new Message(TWControllerMessages.COM_ERROR);
                     else if (!AuthAsClient())
@@ -142,7 +142,16 @@ namespace PKSoft
             while (m_RunThreads)
             {
                 ReqResp req = m_ReqQueue.Dequeue();
-                req.Response = SenderProcessor(req.Request);
+
+                // In case of a communication error,
+                // retry a small number of times.
+                for (int i = 0; i < 2; ++i)
+                {
+                    req.Response = SenderProcessor(req.Request);
+                    if (req.Request.Command != TWControllerMessages.COM_ERROR)
+                        break;
+                }
+
                 req.SignalResponse();
             }
         }
