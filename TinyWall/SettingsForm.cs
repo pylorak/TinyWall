@@ -338,6 +338,7 @@ namespace PKSoft
             comboLanguages.Items.Add(new IdWithName("auto", "Automatic"));
             comboLanguages.Items.Add(new IdWithName("en", "English"));
             comboLanguages.Items.Add(new IdWithName("fr", "Français"));
+            comboLanguages.Items.Add(new IdWithName("ja-JP", "日本語"));
 
             IconList.Images.Add("deleted", Resources.Icons.delete);
 

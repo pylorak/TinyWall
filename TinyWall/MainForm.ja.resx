@@ -117,35 +117,71 @@
 	<resheader name="writer">
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
-	<data name="columnHeader2.Text" xml:space="preserve">
-    <value>Nom</value>
-  </data>
-	<data name="columnHeader3.Text" xml:space="preserve">
-    <value>Exécutable</value>
+	<data name="$this.Text" xml:space="preserve">
+    <value>TinyWall コントローラ</value>
   </data>
 	<assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-	<data name="btnOK.Location" type="System.Drawing.Point, System.Drawing">
-		<value>361, 258</value>
+	<data name="TrayMenu.Size" type="System.Drawing.Size, System.Drawing">
+		<value>61, 4</value>
 	</data>
-	<data name="btnOK.Size" type="System.Drawing.Size, System.Drawing">
-		<value>105, 33</value>
+	<data name="Tray.Text" xml:space="preserve">
+		<value>TinyWall</value>
 	</data>
-	<data name="btnOK.Text" xml:space="preserve">
-    <value>Sélectionner</value>
-  </data>
-	<data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
-		<value>472, 258</value>
+	<data name="mnuCurrentPolicy.Text" xml:space="preserve">
+		<value>パブリックネットワーク</value>
 	</data>
-	<data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
-		<value>104, 33</value>
+	<data name="mnuModeNormal.Text" xml:space="preserve">
+		<value>通常</value>
 	</data>
-	<data name="btnCancel.Text" xml:space="preserve">
-    <value>Annuler</value>
-  </data>
-	<data name="columnHeader1.Text" xml:space="preserve">
-		<value>Description</value>
+	<data name="mnuModeBlockAll.Text" xml:space="preserve">
+		<value>すべてブロック</value>
 	</data>
-	<data name="$this.Text" xml:space="preserve">
-		<value>Services</value>
+	<data name="mnuModeAllowOutgoing.Text" xml:space="preserve">
+		<value>送信を許可</value>
+	</data>
+	<data name="mnuModeDisabled.Text" xml:space="preserve">
+		<value>firewall を無効にする</value>
+	</data>
+	<data name="mnuModeLearn.Text" xml:space="preserve">
+		<value>自動記憶</value>
+	</data>
+	<data name="mnuMode.Text" xml:space="preserve">
+		<value>オペレーションモードを変更</value>
+	</data>
+	<data name="mnuManage.Text" xml:space="preserve">
+		<value>プロパティ</value>
+	</data>
+	<data name="mnuConnections.Text" xml:space="preserve">
+		<value>接続先</value>
+	</data>
+	<data name="mnuLock.Text" xml:space="preserve">
+		<value>ロック</value>
+	</data>
+	<data name="mnuElevate.Text" xml:space="preserve">
+		<value>権限の昇格</value>
+	</data>
+	<data name="mnuAllowLocalSubnet.Text" xml:space="preserve">
+		<value>LANトラフィックを許可</value>
+	</data>
+	<data name="mnuEnableHostsBlocklist.Text" xml:space="preserve">
+		<value>ブロックリストを有効化</value>
+	</data>
+	<data name="mnuWhitelistByExecutable.Text" xml:space="preserve">
+		<value>ファイルを選択して許可</value>
+	</data>
+	<data name="mnuWhitelistByProcess.Text" xml:space="preserve">
+		<value>プロセスを選択して許可</value>
+	</data>
+	<data name="mnuWhitelistByWindow.Text" xml:space="preserve">
+		<value>ウィンドウを選択して許可</value>
+	</data>
+	<data name="mnuQuit.Text" xml:space="preserve">
+		<value>閉じる</value>
+	</data>
+	<data name="ofd.Filter" xml:space="preserve">
+		<value>すべてのファイル|*.*</value>
+	</data>
+	<data name="mnuTrafficRate.Text" xml:space="preserve">
+		<value>&lt;Traffic rate&gt;</value>
 	</data>
 </root>
