@@ -113,7 +113,6 @@
             // 
             // tabPage3
             // 
-            resources.ApplyResources(this.tabPage3, "tabPage3");
             this.tabPage3.Controls.Add(this.txtExceptionListFilter);
             this.tabPage3.Controls.Add(this.btnAppRemoveAll);
             this.tabPage3.Controls.Add(this.btnAppAutoDetect);
@@ -124,6 +123,7 @@
             this.tabPage3.Controls.Add(this.btnAppAdd);
             this.tabPage3.Controls.Add(this.listApplications);
             this.tabPage3.Controls.Add(this.label4);
+            resources.ApplyResources(this.tabPage3, "tabPage3");
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
@@ -188,12 +188,12 @@
             // 
             // listApplications
             // 
-            resources.ApplyResources(this.listApplications, "listApplications");
             this.listApplications.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
             this.listApplications.FullRowSelect = true;
             this.listApplications.GridLines = true;
+            resources.ApplyResources(this.listApplications, "listApplications");
             this.listApplications.Name = "listApplications";
             this.listApplications.SmallImageList = this.IconList;
             this.listApplications.Sorting = System.Windows.Forms.SortOrder.Ascending;
@@ -224,12 +224,12 @@
             // 
             // tabPage2
             // 
-            resources.ApplyResources(this.tabPage2, "tabPage2");
             this.tabPage2.Controls.Add(this.label5);
             this.tabPage2.Controls.Add(this.label2);
             this.tabPage2.Controls.Add(this.label1);
             this.tabPage2.Controls.Add(this.listOptionalGlobalProfiles);
             this.tabPage2.Controls.Add(this.listRecommendedGlobalProfiles);
+            resources.ApplyResources(this.tabPage2, "tabPage2");
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
@@ -250,23 +250,22 @@
             // 
             // listOptionalGlobalProfiles
             // 
-            resources.ApplyResources(this.listOptionalGlobalProfiles, "listOptionalGlobalProfiles");
             this.listOptionalGlobalProfiles.FormattingEnabled = true;
+            resources.ApplyResources(this.listOptionalGlobalProfiles, "listOptionalGlobalProfiles");
             this.listOptionalGlobalProfiles.Name = "listOptionalGlobalProfiles";
             this.listOptionalGlobalProfiles.Sorted = true;
             this.listOptionalGlobalProfiles.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listOptionalGlobalProfiles_ItemCheck);
             // 
             // listRecommendedGlobalProfiles
             // 
-            resources.ApplyResources(this.listRecommendedGlobalProfiles, "listRecommendedGlobalProfiles");
             this.listRecommendedGlobalProfiles.FormattingEnabled = true;
+            resources.ApplyResources(this.listRecommendedGlobalProfiles, "listRecommendedGlobalProfiles");
             this.listRecommendedGlobalProfiles.Name = "listRecommendedGlobalProfiles";
             this.listRecommendedGlobalProfiles.Sorted = true;
             this.listRecommendedGlobalProfiles.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listRecommendedGlobalProfiles_ItemCheck);
             // 
             // tabPage1
             // 
-            resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Controls.Add(this.comboLanguages);
             this.tabPage1.Controls.Add(this.label11);
             this.tabPage1.Controls.Add(this.chkEnableBlocklists);
@@ -276,14 +275,15 @@
             this.tabPage1.Controls.Add(this.chkBlockMalwarePorts);
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.chkAskForExceptionDetails);
+            resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // comboLanguages
             // 
-            resources.ApplyResources(this.comboLanguages, "comboLanguages");
             this.comboLanguages.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboLanguages.FormattingEnabled = true;
+            resources.ApplyResources(this.comboLanguages, "comboLanguages");
             this.comboLanguages.Name = "comboLanguages";
             // 
             // label11
@@ -324,13 +324,13 @@
             // 
             // groupBox1
             // 
-            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.chkChangePassword);
             this.groupBox1.Controls.Add(this.txtPasswordAgain);
             this.groupBox1.Controls.Add(this.txtPassword);
+            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.TabStop = false;
             // 
@@ -386,12 +386,12 @@
             // 
             // tabPage4
             // 
-            resources.ApplyResources(this.tabPage4, "tabPage4");
             this.tabPage4.Controls.Add(this.btnImport);
             this.tabPage4.Controls.Add(this.btnExport);
             this.tabPage4.Controls.Add(this.groupBox2);
             this.tabPage4.Controls.Add(this.btnUpdate);
             this.tabPage4.Controls.Add(this.btnWeb);
+            resources.ApplyResources(this.tabPage4, "tabPage4");
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
@@ -413,7 +413,6 @@
             // 
             // groupBox2
             // 
-            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Controls.Add(this.btnDonate);
             this.groupBox2.Controls.Add(this.lblLinkLicense);
             this.groupBox2.Controls.Add(this.label10);
@@ -421,6 +420,7 @@
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.lblVersion);
             this.groupBox2.Controls.Add(this.label12);
+            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
             // 
@@ -490,11 +490,6 @@
             // sfd
             // 
             this.sfd.DefaultExt = "xml";
-            resources.ApplyResources(this.sfd, "sfd");
-            // 
-            // ofd
-            // 
-            resources.ApplyResources(this.ofd, "ofd");
             // 
             // SettingsForm
             // 
