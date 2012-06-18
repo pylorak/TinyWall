@@ -109,6 +109,11 @@
         <h3>I have MailWasher installed and I have problems whitelisting.</h3>
         <p>MailWasher works similarly to avast! (see FAQ entry above), redirecting other applications to itself. The solution is to unblock MailWasher in TinyWall.</p>
       </div>
+      <div class="twelvecol last">
+        <h3>Why does TinyWall seem to use a lot of memory?</h3>
+        <p>Memory analysis of a process, especially .Net processes like TinyWall, is more complicated than looking at the values reported by the Task Manager. First of all, all .Net processes have a somewhat increased memory usage, because of the supporting runtime that gets loaded, but this is perfectly normal and expected. This is how Microsoft designed it. Second, what the Task Manager counts is not the memory reserved by TinyWall itself, but the memory reserved by the .Net runtime, which is higher but not really all used. Third, you'd be mistaken to sum the memory amounts used by the two TinyWall processes. The two processes of TinyWall share a lot of things in memory which are thus loaded only once, but Windows counts them separtately for each process, thereby double-counting a significant portion of TinyWall's memory usage. The end effect of all these is that the actually used amount of memory is less than what is reported to you by such simple tools.</p>
+        <p>Another thing you might want to ask yourself is, whether you are actually interested in how much megabytes TinyWall uses. The answer is probably, no. What you really want to know is whether it will slow down your computer, and the answer to that is too, no.</p>
+      </div>
     </div>
   </div>
 </div>
