@@ -13,7 +13,6 @@ namespace PKSoft
 {
     internal partial class MainForm : Form
     {
-        private MouseInterceptor MouseInterceptor;
         private SettingsForm ShownSettings;
         private ServiceState FirewallState;
         private DateTime LastUpdateNotification = DateTime.MinValue;
@@ -547,65 +546,21 @@ namespace PKSoft
 
         private void mnuWhitelistByWindow_Click(object sender, EventArgs e)
         {
-            if (MouseInterceptor == null)
+            Message req = new Message(TWControllerMessages.PICK_BY_WINDOW, 0);
+            Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
+            if (resp.Command != TWControllerMessages.RESPONSE_OK)
             {
-                MouseInterceptor = new MouseInterceptor();
-                MouseInterceptor.MouseLButtonDown += new PKSoft.MouseInterceptor.MouseHookLButtonDown(MouseInterceptor_MouseLButtonDown);
-                ShowBalloonTip(PKSoft.Resources.Messages.ClickOnAWindowWhitelisting, ToolTipIcon.Info);
+                DefaultPopups(resp.Command);
+                return;
             }
             else
             {
-                MouseInterceptor.Dispose();
-                MouseInterceptor = null;
-                ShowBalloonTip(PKSoft.Resources.Messages.WhitelistingCancelled, ToolTipIcon.Info);
+                bool success = (bool)resp.Arguments[0];
+                if (success)
+                    ShowBalloonTip(PKSoft.Resources.Messages.ClickOnAWindowWhitelisting, ToolTipIcon.Info);
+                else
+                    ShowBalloonTip(PKSoft.Resources.Messages.WhitelistingCancelled, ToolTipIcon.Info);
             }
-        }
-
-        internal void MouseInterceptor_MouseLButtonDown(int x, int y)
-        {
-            // So, this looks crazy, doesn't it?
-            // Call a method in a parallel thread just so that it can be called
-            // on this same thread again?
-            //
-            // The point is, the body will execute on this same thread *after* this procedure
-            // has terminated. We want this procedure to terminate before
-            // calling MouseInterceptor.Dispose() or else it will lock up our UI thread for a 
-            // couple of seconds. It will lock up because we are currently running in a hook procedure,
-            // and MouseInterceptor.Dispose() unhooks us while we are running.
-            // This apparently brings Windows temporarily to its knees. Anyway, starting
-            // another thread that will invoke the body on our own thread again makes sure that the hook
-            // has terminated by the time we unhook it, resolving all our problems.
-
-            ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
-            {
-                Utils.Invoke(this, (MethodInvoker)delegate()
-                {
-                    MouseInterceptor.Dispose();
-                    MouseInterceptor = null;
-
-                    string AppPath = Utils.GetExecutableUnderCursor(x, y);
-                    if (string.IsNullOrEmpty(AppPath))
-                    {
-                        ShowBalloonTip(PKSoft.Resources.Messages.CannotGetExecutablePathWhitelisting, ToolTipIcon.Error);
-                        return;
-                    }
-
-                    FirewallException ex = new FirewallException(AppPath, null);
-                    ex.TryRecognizeApp(true);
-                    if (SettingsManager.ControllerConfig.AskForExceptionDetails)
-                    {
-                        using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
-                        {
-                            if (f.ShowDialog(this) == DialogResult.Cancel)
-                                return;
-
-                            ex = f.ExceptionSettings;
-                        }
-                    }
-
-                    AddNewException(ex);
-                });
-            });
         }
 
         private void EditRecentException(object sender, AnyEventArgs e)
@@ -687,12 +642,6 @@ namespace PKSoft
             }
 
             UpdateDisplay();
-        }
-
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (MouseInterceptor != null)
-                MouseInterceptor.Dispose();
         }
 
         private void mnuAllowLocalSubnet_Click(object sender, EventArgs e)
@@ -903,15 +852,46 @@ namespace PKSoft
                 switch (m.WParam.ToInt32())
                 {
                     case (int)TWServiceMessages.DATABASE_UPDATED:
-                        try
                         {
-                            LoadDatabase();
+                            try
+                            {
+                                LoadDatabase();
+                            }
+                            catch { }
+                            break;
                         }
-                        catch { }
-                        break;
                     case (int)TWServiceMessages.SETTINGS_CHANGED:
-                        LoadSettingsFromServer();
-                        break;
+                        {
+                            LoadSettingsFromServer();
+                            break;
+                        }
+                    case (int)TWServiceMessages.MOUSE_PICK_READY:
+                        {
+                            Message req = new Message(TWControllerMessages.RETRIEVE_PICK);
+                            Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
+                            string AppPath = (string)resp.Arguments[0];
+                            if (string.IsNullOrEmpty(AppPath))
+                            {
+                                ShowBalloonTip(PKSoft.Resources.Messages.CannotGetExecutablePathWhitelisting, ToolTipIcon.Error);
+                                return;
+                            }
+
+                            FirewallException ex = new FirewallException(AppPath, null);
+                            ex.TryRecognizeApp(true);
+                            if (SettingsManager.ControllerConfig.AskForExceptionDetails)
+                            {
+                                using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
+                                {
+                                    if (f.ShowDialog(this) == DialogResult.Cancel)
+                                        return;
+
+                                    ex = f.ExceptionSettings;
+                                }
+                            }
+
+                            AddNewException(ex);
+                            break;
+                        }
                 }
                 m.Result = (IntPtr)1;
             }
