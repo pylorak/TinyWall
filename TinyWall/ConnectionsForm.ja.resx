@@ -152,7 +152,7 @@
 		<value>302, 315</value>
 	</data>
 	<data name="columnHeader1.Text" xml:space="preserve">
-		<value>実行中のアプリケーション(id)</value>
+		<value>プロセス(ID)</value>
 	</data>
 	<data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
 		<value>ファイル名をインターネットで検索</value>

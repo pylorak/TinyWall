@@ -238,4 +238,7 @@
 	<data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
 		<value>送信する TCP</value>
 	</data>
+	<data name="transparentLabel1.Text" xml:space="preserve">
+		<value>認識されたプレースフォルダ</value>
+	</data>
 </root>

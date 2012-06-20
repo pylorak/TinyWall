@@ -182,6 +182,6 @@
 		<value>すべてのファイル|*.*</value>
 	</data>
 	<data name="mnuTrafficRate.Text" xml:space="preserve">
-		<value>&lt;Traffic rate&gt;</value>
+		<value>&lt;トラフィックレート&gt;</value>
 	</data>
 </root>

@@ -289,4 +289,7 @@
 	<data name="lblLinkLicense.Text" xml:space="preserve">
 		<value>利用許諾契約</value>
 	</data>
+	<data name="label12.Text" xml:space="preserve">
+		<value>著作権 © 2011 Károly Pados</value>
+	</data>
 </root>
