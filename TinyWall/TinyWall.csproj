@@ -240,6 +240,9 @@
     <EmbeddedResource Include="AppFinderForm.ja.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="AppFinderForm.pt-BR.resx">
+      <DependentUpon>AppFinderForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AppFinderForm.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -250,6 +253,9 @@
     <EmbeddedResource Include="ApplicationExceptionForm.ja.resx">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationExceptionForm.pt-BR.resx">
+      <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ApplicationExceptionForm.resx">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -258,6 +264,9 @@
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionsForm.ja.resx">
+      <DependentUpon>ConnectionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConnectionsForm.pt-BR.resx">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionsForm.resx">
@@ -275,10 +284,16 @@
     <EmbeddedResource Include="MainForm.ja.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.pt-BR.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PasswordForm.fr.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PasswordForm.ja.resx">
+      <DependentUpon>PasswordForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PasswordForm.pt-BR.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Processes.fr.resx">
@@ -287,8 +302,12 @@
     <EmbeddedResource Include="Processes.ja.resx">
       <DependentUpon>Processes.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Processes.pt-BR.resx">
+      <DependentUpon>Processes.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Exceptions.fr.resx" />
     <EmbeddedResource Include="Resources\Exceptions.ja.resx" />
+    <EmbeddedResource Include="Resources\Exceptions.pt-BR.resx" />
     <EmbeddedResource Include="Resources\Exceptions.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Exceptions.Designer.cs</LastGenOutput>
@@ -303,6 +322,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Messages.fr.resx" />
     <EmbeddedResource Include="Resources\Messages.ja.resx" />
+    <EmbeddedResource Include="Resources\Messages.pt-BR.resx" />
     <EmbeddedResource Include="Resources\Messages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -312,6 +332,9 @@
       <DependentUpon>Services.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Services.ja.resx">
+      <DependentUpon>Services.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Services.pt-BR.resx">
       <DependentUpon>Services.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Services.resx">
@@ -329,6 +352,9 @@
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.ja.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsForm.pt-BR.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
