@@ -397,7 +397,7 @@ namespace PKSoft
         {
             try
             {
-                ProcessStartInfo psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "License.txt"));
+                ProcessStartInfo psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "License.rtf"));
                 psi.UseShellExecute = true;
                 Process.Start(psi);
             }
