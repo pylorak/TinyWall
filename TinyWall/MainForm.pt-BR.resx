@@ -141,7 +141,7 @@
     <value>Deabilitar o firewall</value>
   </data>
   <data name="mnuModeLearn.Text" xml:space="preserve">
-    <value>Automático</value>
+    <value>Automático (aprendizado)</value>
   </data>
   <data name="mnuMode.Text" xml:space="preserve">
     <value>Mudar o modo</value>
@@ -156,7 +156,7 @@
     <value>Bloquear</value>
   </data>
   <data name="mnuElevate.Text" xml:space="preserve">
-    <value>Elevar</value>
+    <value>Elevar direitos de acesso</value>
   </data>
   <data name="mnuAllowLocalSubnet.Text" xml:space="preserve">
     <value>Desbloquear o tráfego de LAN</value>
@@ -168,7 +168,7 @@
     <value>Ctrl+Shift+E</value>
   </data>
   <data name="mnuWhitelistByExecutable.Text" xml:space="preserve">
-    <value>Lista brande por executáveis</value>
+    <value>Lista branca por executáveis</value>
   </data>
   <data name="mnuWhitelistByProcess.ShortcutKeyDisplayString" xml:space="preserve">
     <value>Ctrl+Shift+P</value>

@@ -161,6 +161,21 @@
               <File Id="LocSatelliteDLL_ja" Source="Sources\ProgramFiles\TinyWall\ja\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
             </Component>
           </Directory>
+          <Directory Id="LOCDIR_de" Name="de">
+            <Component Id="LocSatelliteLib_de" Guid="{F7BC44A5-6433-4CA9-9FD2-C820EE506A1D}" Win64="$(var.Win64)">
+              <File Id="LocSatelliteDLL_de" Source="Sources\ProgramFiles\TinyWall\de\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+            </Component>
+          </Directory>
+          <Directory Id="LOCDIR_nl" Name="nl">
+            <Component Id="LocSatelliteLib_nl" Guid="{DE072136-DEC8-4020-8FE8-0F41B04A65ED}" Win64="$(var.Win64)">
+              <File Id="LocSatelliteDLL_nl" Source="Sources\ProgramFiles\TinyWall\nl\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+            </Component>
+          </Directory>
+          <Directory Id="LOCDIR_nl" Name="ru">
+            <Component Id="LocSatelliteLib_ru" Guid="{E6ACA74E-3D0E-47D8-BF85-AC4925B89E5B}" Win64="$(var.Win64)">
+              <File Id="LocSatelliteDLL_ru" Source="Sources\ProgramFiles\TinyWall\ru\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+            </Component>
+          </Directory>
           <Directory Id="LOCDIR_ptBR" Name="pt-BR">
             <Component Id="LocSatelliteLib_ptBR" Guid="{6629C09A-05EE-4767-9DE4-E1B0BB9DA9D2}" Win64="$(var.Win64)">
               <File Id="LocSatelliteDLL_ptBR" Source="Sources\ProgramFiles\TinyWall\pt-BR\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
@@ -258,6 +273,9 @@
     <ComponentGroup Id="Localizations">
       <ComponentRef Id="LocSatelliteLib_fr"/>
       <ComponentRef Id="LocSatelliteLib_ja"/>
+      <ComponentRef Id="LocSatelliteLib_de"/>
+      <ComponentRef Id="LocSatelliteLib_nl"/>
+      <ComponentRef Id="LocSatelliteLib_ru"/>
       <ComponentRef Id="LocSatelliteLib_ptBR"/>
     </ComponentGroup>
 

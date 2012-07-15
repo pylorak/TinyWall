@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
+		<value>Недостаточно прав для выполнения обновления.</value>
+	</data>
+	<data name="TinyWallUpdater" xml:space="preserve">
+		<value>Обновление TinyWall </value>
+	</data>
+	<data name="ErrorCheckingForUpdates" xml:space="preserve">
+		<value>Не могу соединиться с сервером обновлений. Сервер может быть недоступен. Пожалйста убедитесь, что TinyWall имеет доступ к интернету, а потом попробуйте обновиться снова.  </value>
+	</data>
+	<data name="UpdateAvailable" xml:space="preserve">
+		<value>Новая версия {0} TinyWall доступна для загрузки и установки. Вы хотите обновить программу прямо сейчас?</value>
+	</data>
+	<data name="DownloadingUpdate" xml:space="preserve">
+		<value>Загрузка обновлений...</value>
+	</data>
+	<data name="NoUpdateAvailable" xml:space="preserve">
+		<value>У вас самая новая версия TinyWall. Обновление не нужно.</value>
+	</data>
+	<data name="DownloadInterrupted" xml:space="preserve">
+		<value>Загрузка прервана.</value>
+	</data>
+	<data name="StartingUpdate" xml:space="preserve">
+		<value>Начинаем обновление...</value>
+	</data>
+	<data name="TinyWallIsCurrentlyLocked" xml:space="preserve">
+		<value>TinyWall заблокирована. Разблокируйте программу и повторите попытку.</value>
+	</data>
+	<data name="PleaseWaitWhileTinyWallChecksForUpdates" xml:space="preserve">
+		<value>Пожалуйста подождите, пока TinyWall проверит доступность обновлений.</value>
+	</data>
+	<data name="CouldNotWhitelistProcess" xml:space="preserve">
+		<value>Процесс {0} не удалось добавить в белый список.</value>
+	</data>
+	<data name="TinyWall" xml:space="preserve">
+		<value>TinyWall</value>
+	</data>
+	<data name="CouldNotCloseProcess" xml:space="preserve">
+		<value>Не могу закрыть процесс {0}({1}).</value>
+	</data>
+	<data name="PasswordFieldsDoNotMatch" xml:space="preserve">
+		<value>Введён неверный пароль. Пожалуйста убедитесь в корректности ввода.</value>
+	</data>
+	<data name="AreYouSureYouWantToRemoveAllExceptions" xml:space="preserve">
+		<value>Вы точно хотите удалить все исключения фаервола? </value>
+	</data>
+	<data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
+		<value>У вас нет прав администратора для выполнения этой операции. Выберите повышение прав в меню трея и попробуйте снова.</value>
+	</data>
+	<data name="TinyWallSettingsFileFilter" xml:space="preserve">
+		<value>Настройки TinyWall </value>
+	</data>
+	<data name="AllFilesFileFilter" xml:space="preserve">
+		<value>Все файлы</value>
+	</data>
+	<data name="ConfigurationHasBeenImported" xml:space="preserve">
+		<value>Файл настроек успешно импортирован. Нажмите кнопку Применить в окне Настроек, чтоб сделать новые настройки текущими.</value>
+	</data>
+	<data name="ConfigurationHasBeenExported" xml:space="preserve">
+		<value>Файл настроек успешно экспортирован.</value>
+	</data>
+	<data name="CurrentZone" xml:space="preserve">
+		<value>Текущее местоположение: {0}</value>
+	</data>
+	<data name="Zone" xml:space="preserve">
+		<value>Местоположение</value>
+	</data>
+	<data name="Mode" xml:space="preserve">
+		<value>Режим</value>
+	</data>
+	<data name="Unlock" xml:space="preserve">
+		<value>Разблокировать</value>
+	</data>
+	<data name="Lock" xml:space="preserve">
+		<value>Блокировать</value>
+	</data>
+	<data name="UpdateAvailableBubble" xml:space="preserve">
+		<value>Новая версия {0} TinyWall доступна. Нажмите на сюда для запуска процесса обновления.</value>
+	</data>
+	<data name="TheFirewallIsNowOperatingAsRecommended" xml:space="preserve">
+		<value>Фаервол работает в рекомендуемом режиме.</value>
+	</data>
+	<data name="TheFirewallIsNowAllowsOutgoingConnections" xml:space="preserve">
+		<value>Фаервол сейчас блокирует входящие и пропускает исходящие соединения.</value>
+	</data>
+	<data name="TheFirewallIsNowBlockingAllInAndOut" xml:space="preserve">
+		<value>Фаервол сейчас блокирует весь входящий и исходящий трафик.</value>
+	</data>
+	<data name="TheFirewallIsNowDisabled" xml:space="preserve">
+		<value>Фаервол выключен.</value>
+	</data>
+	<data name="TheTinyWallServiceIsUnavailable" xml:space="preserve">
+		<value>Служба TinyWall недоступна. Убедитесь, что она установлена и запущена, и повторите попытку.</value>
+	</data>
+	<data name="TrafficIn" xml:space="preserve">
+		<value>Входящий</value>
+	</data>
+	<data name="TrafficOut" xml:space="preserve">
+		<value>Исходящий</value>
+	</data>
+	<data name="SettingHaveChangedRetry" xml:space="preserve">
+		<value>Пока вы меняли настройки, текущий профиль сети был изменен. Чтобы избежать потерю настроек, измените их снова.</value>
+	</data>
+	<data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
+		<value>Настройки фаервола были успешно обновлены.</value>
+	</data>
+	<data name="Success" xml:space="preserve">
+		<value>Успех.</value>
+	</data>
+	<data name="OtherSettingsPreventEffect" xml:space="preserve">
+		<value>Операция выполнена успешно, но другие настройки повлияли на её выполнение.</value>
+	</data>
+	<data name="OperationFailed" xml:space="preserve">
+		<value>Операция не выполнена.</value>
+	</data>
+	<data name="CommunicationWithTheServiceError" xml:space="preserve">
+		<value>При взаимодействии со службой TinyWall произошла ошибка.</value>
+	</data>
+	<data name="ClickOnAWindowWhitelisting" xml:space="preserve">
+		<value>Щелкните мышкой по содержимому любого окна, для его добавления в белый список</value>
+	</data>
+	<data name="WhitelistingCancelled" xml:space="preserve">
+		<value>Отмена добавления в белый список.</value>
+	</data>
+	<data name="CannotGetExecutablePathWhitelisting" xml:space="preserve">
+		<value>Не могу получить путь исполняемого файла. Ошибка добавления в белый список.</value>
+	</data>
+	<data name="FirewallRulesForRecognizedChanged" xml:space="preserve">
+		<value>Правило фаервола для известной программы {0} изменилось. Щелкните по этому сообщению для редактирования исключения.</value>
+	</data>
+	<data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
+		<value>Правило фаервола для неизвестной программы {0} изменилось. Щелкните по этому сообщению для редактирования исключения.</value>
+	</data>
+	<data name="TinyWallHasBeenUnlocked" xml:space="preserve">
+		<value>Программа TinyWall разблокирована. Теперь вы можете выполнят команды, изменяющие ее настройки.</value>
+	</data>
+	<data name="UnlockFailed" xml:space="preserve">
+		<value>Разблокировка неудачна. Попробуйте снова с другим паролем.</value>
+	</data>
+	<data name="CouldNotElevatePrivileges" xml:space="preserve">
+		<value>Не могу повысить привилегии.</value>
+	</data>
+	<data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
+		<value>База данных отсутствует или повреждена.</value>
+	</data>
+	<data name="Stop" xml:space="preserve">
+		<value>Остановить</value>
+	</data>
+	<data name="Start" xml:space="preserve">
+		<value>Запустить</value>
+	</data>
+	<data name="SearchingPath" xml:space="preserve">
+		<value>Поиск: {0}</value>
+	</data>
+	<data name="SearchResults" xml:space="preserve">
+		<value>Результаты поиска:</value>
+	</data>
+	<data name="RecognizedApplication" xml:space="preserve">
+		<value>Распознано {0}</value>
+	</data>
+	<data name="UnknownApplication" xml:space="preserve">
+		<value>Неизвестные приложения</value>
+	</data>
+	<data name="Permanent" xml:space="preserve">
+		<value>Постоянный</value>
+	</data>
+	<data name="UntilReboot" xml:space="preserve">
+		<value>До перезагрузки</value>
+	</data>
+	<data name="XMinutes" xml:space="preserve">
+		<value>{0} минут</value>
+	</data>
+	<data name="XHour" xml:space="preserve">
+		<value>{0} час</value>
+	</data>
+	<data name="XHours" xml:space="preserve">
+		<value>{0} часов</value>
+	</data>
+	<data name="FirewallModeAllowOut" xml:space="preserve">
+		<value>Разрешены исходящие</value>
+	</data>
+	<data name="FirewallModeBlockAll" xml:space="preserve">
+		<value>Влокировать всё</value>
+	</data>
+	<data name="FirewallModeDisabled" xml:space="preserve">
+		<value>Отключен</value>
+	</data>
+	<data name="FirewallModeNormal" xml:space="preserve">
+		<value>Обычный</value>
+	</data>
+	<data name="FirewallModeUnknown" xml:space="preserve">
+		<value>Неизвестный</value>
+	</data>
+	<data name="CannotGetPathOfProcess" xml:space="preserve">
+		<value>Не могу получить путь процесса.</value>
+	</data>
+	<data name="TheFirewallIsNowLearning" xml:space="preserve">
+		<value>Фаервол в режиме обучения. Трафик не ограничивается.</value>
+	</data>
+	<data name="FirewallModeLearn" xml:space="preserve">
+		<value>Автообучение.</value>
+	</data>
+	<data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
+		<value>Вы уверены, что хотите включить режим автообучения? В этом режиме TinyWall пропускает любой трафик и запоминает приложения, использующие сеть. Когда вы выйдете из режима обучения, TinyWall добавит исключения автоматически. Обратите внимание на то, что правила для "Специальных исключений", в процессе обучения не создаются.
+
+Перед входом в режим обучения убедитесь, что в вашей системе нет вредоносных прграмм. Самый хороший вариант - запуск режима обучения на только что установленной операционной системе. Также рекомендуется проверить компьютер на вирусы.
+
+Вы уверены, что хотите запустить режим обучения прямо сейчас?</value>
+	</data>
+	<data name="DidYouInitiateTheUninstall" xml:space="preserve">
+		<value>Удалить TinyWall?</value>
+	</data>
+	<data name="PortListInvalid" xml:space="preserve">
+		<value>Неправильный формат списка портов. Вы можете использовать одно или несколько чисел в диапозоне 1-65535, отделяя их запятыми. Можно использовать звездочку (*) для задания всевозможных портов.</value>
+	</data>
+	<data name="UnblockAppCancel" xml:space="preserve">
+		<value>Отмена добавления в белый список</value>
+	</data>
+	<data name="UnblockApp" xml:space="preserve">
+		<value>Обнаружены файлы, связанные с исполняемым, который является частью {0}. Для уверенности, что это приложение может использоваться без ограничений, рекоменуется разблокировать некоторые другие файлы.</value>
+	</data>
+	<data name="UnblockAppShowRelated" xml:space="preserve">
+		<value>Показать/Спрятать файлы связанные с исполняемым файлы</value>
+	</data>
+	<data name="UnblockAppUnblockAllRecommended" xml:space="preserve">
+		<value>Разблокировать все рекомендуемые файлы</value>
+	</data>
+	<data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
+		<value>Разблокировать только выделенные файлы</value>
+	</data>
+</root>

@@ -121,13 +121,13 @@
     <value>ID do Executável</value>
   </data>
   <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
-    <value>Procurar nome do arquivo na web</value>
+    <value>O nome do arquivo na web</value>
   </data>
   <data name="chkShowListen.Text" xml:space="preserve">
-    <value>Exibir as portas abertas</value>
+    <value>Exibir só as portas abertas</value>
   </data>
   <data name="chkShowActive.Text" xml:space="preserve">
-    <value>Exibir as conexões ativas</value>
+    <value>Só exibir as conexões ativas</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
   <data name="columnHeader3.Text" xml:space="preserve">
@@ -168,6 +168,9 @@
   <data name="btnClose.Text" xml:space="preserve">
     <value>Fechar</value>
   </data>
+  <data name="chkShowListen.Location" type="System.Drawing.Point, System.Drawing">
+    <value>185, 315</value>
+  </data>
   <data name="btnRefresh.Text" xml:space="preserve">
     <value>Atualizar</value>
   </data>
@@ -181,12 +184,12 @@
     <value>Endereço local/origem</value>
   </data>
   <data name="mnuRemoteAddressOnTheWeb.Text" xml:space="preserve">
-    <value>Procurar o endereço remoto na web</value>
+    <value>O endereço remoto na web</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Conexões - TinyWall</value>
   </data>
   <data name="chkShowBlocked.Location" type="System.Drawing.Point, System.Drawing">
-    <value>308, 315</value>
+    <value>352, 315</value>
   </data>
 </root>

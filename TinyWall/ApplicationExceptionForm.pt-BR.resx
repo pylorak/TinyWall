@@ -126,11 +126,14 @@
   <data name="btnOK.Text" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>32, 60</value>
+  </data>
   <data name="label1.Text" xml:space="preserve">
     <value>Cam. executável:</value>
   </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>36, 87</value>
+    <value>31, 87</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
     <value>Nome do serviço:</value>
@@ -150,14 +153,20 @@
   <data name="ofd.Title" xml:space="preserve">
     <value>Escolha o executável</value>
   </data>
+  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>32, 33</value>
+  </data>
   <data name="label6.Text" xml:space="preserve">
-    <value>Exceção vitalícia:</value>
+    <value>Controlar:</value>
+  </data>
+  <data name="cmbTimer.Size" type="System.Drawing.Size, System.Drawing">
+    <value>214, 21</value>
   </data>
   <data name="transparentLabel1.Text" xml:space="preserve">
     <value>Demarcador de reconhecidos</value>
   </data>
   <data name="chkRestrictToLocalNetwork.Text" xml:space="preserve">
-    <value>Restringir à rede local</value>
+    <value>Restringir o tráfego à rede local</value>
   </data>
   <data name="radBlock.Text" xml:space="preserve">
     <value>Sempre bloquear qualquer tipo de tráfego</value>
@@ -172,7 +181,7 @@
     <value>Não impor nenhuma restrição</value>
   </data>
   <data name="label5.Text" xml:space="preserve">
-    <value>Abrir as seguintes portas, além das restrições indicadas acima. (Separar por vírgula)</value>
+    <value>Abrir as seguintes portas, além de impor a restrição indicada acima. (Separar por vírgula)</value>
   </data>
   <data name="txtListenPortUDP.AccessibleName" xml:space="preserve">
     <value>UDP de Entrada</value>
@@ -223,9 +232,9 @@
     <value>UDP de saída:</value>
   </data>
   <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
-    <value>Só permitir pelas portas especificadas</value>
+    <value>Só permitir pelas portas especificadas abaixo</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Adição/Modificação de Exceções - TinyWall</value>
+    <value>Adição/Modificação de Aplicativo Controlado - Exceções - TinyWall</value>
   </data>
 </root>

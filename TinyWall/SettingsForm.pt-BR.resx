@@ -142,7 +142,7 @@
     <value>23, 24</value>
   </data>
   <data name="label3.Text" xml:space="preserve">
-    <value>Edite a lista de aplicativos que gostaria de conceder aceso à rede. Só os aplicativos desta lista poderão acessar a rede. Usar o botão Detectar se quiser que o TinyWall detecte alguns programas. Se preferir, adicione programas você mesmo.</value>
+    <value>Crie ou edite abaixo a lista de aplicativos aos quais gostaria de conceder aceso à rede. Só os aplicativos desta lista poderão acessar a rede. Use o botão Detectar se quiser que o TinyWall identifique e configure alguns programas. Se preferir, adicione programas você mesmo.</value>
   </data>
   <data name="btnAppRemove.Text" xml:space="preserve">
     <value>Remover</value>
@@ -163,19 +163,19 @@
     <value>Filtro:</value>
   </data>
   <data name="tabPage3.Text" xml:space="preserve">
-    <value>Aplicativos Fora do Controle de Acesso (Exceções)</value>
+    <value>Aplicativos Fora da Lista de Acesso Controlado / Exceções</value>
   </data>
   <data name="tabPage2.Text" xml:space="preserve">
     <value>Exceções Especiais</value>
   </data>
   <data name="label5.Text" xml:space="preserve">
-    <value>Selecione tarefas ou aplicativos especiais do computador aos quais deseja conceder acesso. Note que, se desabilitar exceções recomendadas, você poderá limitar muito o funcionamento e a segurança de seu sistema.</value>
+    <value>Selecione tarefas ou aplicativos especiais do computador aos quais deseja conceder acesso. Note que, se desabilitar opções recomendadas, você poderá limitar muito o funcionamento e a segurança de seu sistema.</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
     <value>Itens Opcionais</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
-    <value>Recomendados</value>
+    <value>Opções Recomendadas</value>
   </data>
   <data name="tabPage1.Text" xml:space="preserve">
     <value>Principal</value>
@@ -190,16 +190,16 @@
     <value>Impedir a modificação do arquivo de servidores (hosts)</value>
   </data>
   <data name="chkHostsBlocklist.Text" xml:space="preserve">
-    <value>Lista de bloqueio de malfeitores e anúncios com base em sites</value>
+    <value>E a de bloqueio de malfeitores e anúncios com base em domínios</value>
   </data>
   <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
     <value>Procurar atualização automaticamente</value>
   </data>
   <data name="chkBlockMalwarePorts.Text" xml:space="preserve">
-    <value>Lista de bloqueio de malfeitores com base em portas de acesso</value>
+    <value>E a de bloqueio de malfeitores com base em portas de acesso</value>
   </data>
   <data name="groupBox1.Text" xml:space="preserve">
-    <value>Proteger o acesso à configuração com senha</value>
+    <value>Proteção da Configuração</value>
   </data>
   <data name="label9.Location" type="System.Drawing.Point, System.Drawing">
     <value>249, 58</value>
@@ -208,7 +208,7 @@
     <value>253, 42</value>
   </data>
   <data name="label9.Text" xml:space="preserve">
-    <value>Para remover a proteção com senha, marque a opção "Modificar a senha" e deixe os campos vazios.</value>
+    <value>Para remover a proteção com senha, marque acima a opção "Proteger a configuração com senha" e deixe os campos de senha vazios.</value>
   </data>
   <data name="label8.Text" xml:space="preserve">
     <value>Repita:</value>
@@ -217,7 +217,7 @@
     <value>Senha:</value>
   </data>
   <data name="chkChangePassword.Text" xml:space="preserve">
-    <value>Modificar a senha</value>
+    <value>Proteger a configuração com senha</value>
   </data>
   <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
     <value>Informar sobre detalhes de exceções</value>
@@ -250,7 +250,7 @@
     <value>279, 39</value>
   </data>
   <data name="label10.Text" xml:space="preserve">
-    <value>Se gostar deste programa e usá-lo, favor considerar a possibilidade de fazer uma doação para cobrir custos com hospedagem e de desenvolvimento do programa.</value>
+    <value>Se gostar deste programa e usá-lo, favor considerar a possibilidade de fazer donativos para cobrir custos com hospedagem e de desenvolvimento do TinyWall.</value>
   </data>
   <data name="lblAboutHomepageLink.Text" xml:space="preserve">
     <value>http://tinywall.pados.hu</value>

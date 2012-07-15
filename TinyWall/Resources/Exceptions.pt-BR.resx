@@ -121,7 +121,7 @@
     <value>Compartilhamento de Arquivos e Impressora</value>
   </data>
   <data name="Filtered_ICMP_Traffic" xml:space="preserve">
-    <value>Tráfego de ICMP Filtrado</value>
+    <value>Filtrar Tráfego de ICMP</value>
   </data>
   <data name="Pingable_local_machine" xml:space="preserve">
     <value>Computador local para teste de latência</value>
