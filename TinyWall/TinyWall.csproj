@@ -129,7 +129,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ListViewItemComprarer.cs" />
-    <Compile Include="MessagePump.cs" />
     <Compile Include="Resources\Exceptions.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

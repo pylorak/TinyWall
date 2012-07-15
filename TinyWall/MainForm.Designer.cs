@@ -23,6 +23,8 @@ namespace PKSoft
                 HotKeyWhitelistExecutable.Dispose();
                 HotKeyWhitelistProcess.Dispose();
                 HotKeyWhitelistWindow.Dispose();
+                if (MouseInterceptor != null)
+                    MouseInterceptor.Dispose();
 
                 using (WaitHandle wh = new AutoResetEvent(false))
                 {
@@ -259,6 +261,7 @@ namespace PKSoft
             this.Name = "MainForm";
             this.ShowInTaskbar = false;
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.TrayMenu.ResumeLayout(false);

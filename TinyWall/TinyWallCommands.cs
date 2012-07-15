@@ -21,8 +21,6 @@ namespace PKSoft
         GET_PROCESS_PATH,
         VERIFY_KEYS,
         READ_FW_LOG,
-        PICK_BY_WINDOW,
-        RETRIEVE_PICK,
 
         // Unprivileged write commands (>1023)
         UNLOCK = 1024,
@@ -41,8 +39,7 @@ namespace PKSoft
     internal enum TWServiceMessages
     {
         DATABASE_UPDATED,
-        SETTINGS_CHANGED,
-        MOUSE_PICK_READY
+        SETTINGS_CHANGED
     }
 
     // Encapsulates a message tye and its parameters

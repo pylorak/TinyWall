@@ -35,12 +35,6 @@ namespace PKSoft
         // Context needed for learning mode
         ApplicationCollection LearningKnownApplication;
         List<FirewallException> LearningNewExceptions;
-
-        // Context needed for mouse picking
-        private MouseInterceptor MouseInterceptor = null;
-        private MessagePump MouseInterceptorPump = null;
-        private string MousePickedWindowPath = null;
-        private uint WM_EXIT_PUMP = 0; 
         
         private List<RuleDef> ActiveRules;
         private List<RuleDef> AppExRules;
@@ -694,61 +688,10 @@ namespace PKSoft
             return;
         }
 
-        internal void MouseInterceptor_MouseLButtonDown(int x, int y)
-        {
-            // We want this procedure to terminate before
-            // calling MouseInterceptor.Dispose() or else it will lock up our UI thread for a 
-            // couple of seconds. It will lock up because we are currently running in a hook procedure,
-            // and MouseInterceptor.Dispose() unhooks us while we are running.
-            // This apparently brings Windows temporarily to its knees. Anyway, starting
-            // another thread that will invoke the body on our own thread again makes sure that the hook
-            // has terminated by the time we unhook it, resolving all our problems.
-
-            MousePickedWindowPath = Utils.GetExecutableUnderCursor(x, y);
-            NotifyController(TWServiceMessages.MOUSE_PICK_READY);
-            NativeMethods.PostMessage(MouseInterceptorPump.hWnd, WM_EXIT_PUMP, IntPtr.Zero, IntPtr.Zero);
-        }
-        
-        private void LLMousePumpMsg(object sender, MessagePump.WindowMessageEventArgs args)
-        {
-            if (args.Message.Msg == MessagePump.WM_INIT_PUMP)
-            {
-                MouseInterceptor = new MouseInterceptor();
-                MouseInterceptor.MouseLButtonDown += new PKSoft.MouseInterceptor.MouseHookLButtonDown(MouseInterceptor_MouseLButtonDown);
-            }
-            if (args.Message.Msg == WM_EXIT_PUMP)
-            {
-                MouseInterceptor.Dispose();
-                MouseInterceptor = null;
-                MouseInterceptorPump.Dispose();
-                MouseInterceptorPump = null;
-            }
-        }
-
         private Message ProcessCmd(Message req)
         {
             switch (req.Command)
             {
-                case TWControllerMessages.RETRIEVE_PICK:
-                    {
-                        return new Message(TWControllerMessages.RESPONSE_OK, MousePickedWindowPath);
-                    }
-                case TWControllerMessages.PICK_BY_WINDOW:
-                    {
-                        WM_EXIT_PUMP = NativeMethods.RegisterWindowMessage("WM_EXIT_PUMP");
-
-                        if (MouseInterceptorPump == null)
-                        {
-                            MousePickedWindowPath = null;
-                            MouseInterceptorPump = new MessagePump("TinyWall_LLMOUSE_Pump", LLMousePumpMsg);
-                            return new Message(TWControllerMessages.RESPONSE_OK, true);
-                        }
-                        else
-                        {
-                            NativeMethods.PostMessage(MouseInterceptorPump.hWnd, WM_EXIT_PUMP, IntPtr.Zero, IntPtr.Zero);
-                            return new Message(TWControllerMessages.RESPONSE_OK, false);
-                        }
-                    }
                 case TWControllerMessages.READ_FW_LOG:
                     {
                         return new Message(TWControllerMessages.RESPONSE_OK, GetFwLog());
@@ -857,7 +800,6 @@ namespace PKSoft
                         else
                             return new Message(TWControllerMessages.RESPONSE_ERROR);
                     }
-
                 case TWControllerMessages.SET_PASSPHRASE:
                     {
                         FileLocker.UnlockFile(ServiceSettings.PasswordFilePath);

@@ -117,8 +117,6 @@ namespace PKSoft
 
         internal static string GetProcessMainModulePath(Process p)
         {
-            // This must not be called from the service.
-
             try
             {
                 return p.MainModule.FileName;
@@ -135,8 +133,6 @@ namespace PKSoft
         
         internal static string GetExecutableUnderCursor(int x, int y)
         {
-            // Do not call GetProcessMainModulePath() here, as we cna be called by the service.
-
             // Get process id under cursor
             int ProcId;
             int dummy = NativeMethods.GetWindowThreadProcessId(NativeMethods.WindowFromPoint(new System.Drawing.Point(x, y)), out ProcId);
@@ -144,7 +140,7 @@ namespace PKSoft
             // Get executable of process
             using (Process p = Process.GetProcessById(ProcId))
             {
-                return p.MainModule.FileName;
+                return Utils.GetProcessMainModulePath(p);
             }
         }
 
