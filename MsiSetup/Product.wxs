@@ -161,7 +161,7 @@
               <File Id="LocSatelliteDLL_ja" Source="Sources\ProgramFiles\TinyWall\ja\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
             </Component>
           </Directory>
-          <Directory Id="LOCDIR_ptBR" Name="ptBR">
+          <Directory Id="LOCDIR_ptBR" Name="pt-BR">
             <Component Id="LocSatelliteLib_ptBR" Guid="{6629C09A-05EE-4767-9DE4-E1B0BB9DA9D2}" Win64="$(var.Win64)">
               <File Id="LocSatelliteDLL_ptBR" Source="Sources\ProgramFiles\TinyWall\pt-BR\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
             </Component>
