@@ -244,6 +244,11 @@ namespace PKSoft
 
         private static string MergeStringList(string str1, string str2)
         {
+            if (str1 == null)
+                return str2;
+            if (str2 == null)
+                return str1;
+
             string[] list1 = str1.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             string[] list2 = str2.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             List<string> mergedList = new List<string>();
