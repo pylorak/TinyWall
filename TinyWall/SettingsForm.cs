@@ -59,6 +59,7 @@ namespace PKSoft
                 // General page
                 chkAutoUpdateCheck.Checked = TmpMachineConfig.AutoUpdateCheck;
                 chkAskForExceptionDetails.Checked = TmpControllerConfig.AskForExceptionDetails;
+                chkEnableHotkeys.Checked = TmpControllerConfig.EnableGlobalHotkeys;
                 comboLanguages.SelectedIndex = 0;
                 for(int i = 0; i < comboLanguages.Items.Count; ++i)
                 {
@@ -204,6 +205,7 @@ namespace PKSoft
 
             // Save settings
             TmpControllerConfig.AskForExceptionDetails = chkAskForExceptionDetails.Checked;
+            TmpControllerConfig.EnableGlobalHotkeys = chkEnableHotkeys.Checked;
             TmpMachineConfig.AutoUpdateCheck = chkAutoUpdateCheck.Checked;
             TmpControllerConfig.ManageTabIndex = tabControl1.SelectedIndex;
             TmpMachineConfig.LockHostsFile = chkLockHostsFile.Checked;
@@ -336,9 +338,12 @@ namespace PKSoft
         private void SettingsForm_Shown(object sender, EventArgs e)
         {
             comboLanguages.Items.Add(new IdWithName("auto", "Automatic"));
+            comboLanguages.Items.Add(new IdWithName("de", "Deutsch"));
             comboLanguages.Items.Add(new IdWithName("en", "English"));
             comboLanguages.Items.Add(new IdWithName("fr", "Français"));
+            comboLanguages.Items.Add(new IdWithName("nl", "Nederlands"));
             comboLanguages.Items.Add(new IdWithName("pt-BR", "Português Brasileiro"));
+            comboLanguages.Items.Add(new IdWithName("ru", "Русский"));
             comboLanguages.Items.Add(new IdWithName("ja", "日本語"));
 
             IconList.Images.Add("deleted", Resources.Icons.delete);

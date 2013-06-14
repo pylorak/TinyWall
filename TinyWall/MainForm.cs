@@ -541,6 +541,7 @@ namespace PKSoft
             finally
             {
                 this.ShownSettings = null;
+                ApplyControllerSettings();
                 UpdateDisplay();
             }
         }
@@ -758,18 +759,6 @@ namespace PKSoft
                 mnuModeNormal.Image = Resources.Icons.shield_green_small.ToBitmap();
                 mnuModeLearn.Image = Resources.Icons.shield_blue_small.ToBitmap();
 
-                HotKeyWhitelistWindow = new Hotkey(Keys.W, true, true, false, false);
-                HotKeyWhitelistWindow.Pressed += new HandledEventHandler(HotKeyWhitelistWindow_Pressed);
-                HotKeyWhitelistWindow.Register(this);
-
-                HotKeyWhitelistExecutable = new Hotkey(Keys.E, true, true, false, false);
-                HotKeyWhitelistExecutable.Pressed += new HandledEventHandler(HotKeyWhitelistExecutable_Pressed);
-                HotKeyWhitelistExecutable.Register(this);
-
-                HotKeyWhitelistProcess = new Hotkey(Keys.P, true, true, false, false);
-                HotKeyWhitelistProcess.Pressed += new HandledEventHandler(HotKeyWhitelistProcess_Pressed);
-                HotKeyWhitelistProcess.Register(this);
-
                 GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
 
                 barrier.Wait();
@@ -803,12 +792,68 @@ namespace PKSoft
                 AutoWhitelist();
             }
 
+            ApplyControllerSettings();
+
             if (StartupOpts.updatenow)
             {
                 StartUpdate(null, null);
             }
 
             Utils.MinimizeMemory();
+        }
+
+        private void ApplyControllerSettings()
+        {
+            if (SettingsManager.ControllerConfig.EnableGlobalHotkeys)
+            {
+                System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+                if (HotKeyWhitelistWindow == null)
+                {
+                    HotKeyWhitelistWindow = new Hotkey(Keys.W, true, true, false, false);
+                    HotKeyWhitelistWindow.Pressed += new HandledEventHandler(HotKeyWhitelistWindow_Pressed);
+                    HotKeyWhitelistWindow.Register(this);
+                    resources.ApplyResources(this.mnuWhitelistByExecutable, "mnuWhitelistByExecutable");
+                }
+
+                if (HotKeyWhitelistExecutable == null)
+                {
+                    HotKeyWhitelistExecutable = new Hotkey(Keys.E, true, true, false, false);
+                    HotKeyWhitelistExecutable.Pressed += new HandledEventHandler(HotKeyWhitelistExecutable_Pressed);
+                    HotKeyWhitelistExecutable.Register(this);
+                    resources.ApplyResources(this.mnuWhitelistByProcess, "mnuWhitelistByProcess");
+                }
+
+                if (HotKeyWhitelistProcess == null)
+                {
+                    HotKeyWhitelistProcess = new Hotkey(Keys.P, true, true, false, false);
+                    HotKeyWhitelistProcess.Pressed += new HandledEventHandler(HotKeyWhitelistProcess_Pressed);
+                    HotKeyWhitelistProcess.Register(this);
+                    resources.ApplyResources(this.mnuWhitelistByWindow, "mnuWhitelistByWindow");
+                }
+            }
+            else
+            {
+                if (mnuWhitelistByExecutable != null)
+                {
+                    mnuWhitelistByExecutable.Dispose();
+                    mnuWhitelistByExecutable = null;
+                }
+                mnuWhitelistByExecutable.ShortcutKeyDisplayString = string.Empty;
+
+                if (mnuWhitelistByProcess != null)
+                {
+                    mnuWhitelistByProcess.Dispose();
+                    mnuWhitelistByProcess = null;
+                }
+                mnuWhitelistByProcess.ShortcutKeyDisplayString = string.Empty;
+
+                if (mnuWhitelistByWindow != null)
+                {
+                    mnuWhitelistByWindow.Dispose();
+                    mnuWhitelistByWindow = null;
+                }
+                mnuWhitelistByWindow.ShortcutKeyDisplayString = string.Empty;
+            }
         }
 
         private void mnuElevate_Click(object sender, EventArgs e)

@@ -20,11 +20,10 @@ namespace PKSoft
                 components.Dispose();
 
                 // Manually added
-                HotKeyWhitelistExecutable.Dispose();
-                HotKeyWhitelistProcess.Dispose();
-                HotKeyWhitelistWindow.Dispose();
-                if (MouseInterceptor != null)
-                    MouseInterceptor.Dispose();
+                if (HotKeyWhitelistExecutable != null) HotKeyWhitelistExecutable.Dispose();
+                if (HotKeyWhitelistProcess != null) HotKeyWhitelistProcess.Dispose();
+                if (HotKeyWhitelistWindow != null) HotKeyWhitelistWindow.Dispose();
+                if (MouseInterceptor != null) MouseInterceptor.Dispose();
 
                 using (WaitHandle wh = new AutoResetEvent(false))
                 {

@@ -84,6 +84,7 @@
             this.btnWeb = new System.Windows.Forms.Button();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
+            this.chkEnableHotkeys = new System.Windows.Forms.CheckBox();
             this.tabPage3.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -266,6 +267,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.chkEnableHotkeys);
             this.tabPage1.Controls.Add(this.comboLanguages);
             this.tabPage1.Controls.Add(this.label11);
             this.tabPage1.Controls.Add(this.chkEnableBlocklists);
@@ -491,6 +493,12 @@
             // 
             this.sfd.DefaultExt = "xml";
             // 
+            // chkEnableHotkeys
+            // 
+            resources.ApplyResources(this.chkEnableHotkeys, "chkEnableHotkeys");
+            this.chkEnableHotkeys.Name = "chkEnableHotkeys";
+            this.chkEnableHotkeys.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             resources.ApplyResources(this, "$this");
@@ -577,5 +585,6 @@
         private System.Windows.Forms.CheckBox chkEnableBlocklists;
         private System.Windows.Forms.ComboBox comboLanguages;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.CheckBox chkEnableHotkeys;
     }
 }
