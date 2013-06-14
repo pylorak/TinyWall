@@ -45,6 +45,21 @@ namespace PKSoft
 			// No work done here!
 		}
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // Release managed resources
+            }
+
+            // Release unmanaged resources.
+            // Set large fields to null.
+            this.Unregister();
+
+            // Call Dispose on your base class.
+            base.Dispose(disposing);
+        }
+        
         internal Hotkey(Keys keyCode, bool shift, bool control, bool alt, bool windows)
 		{
 			// Assign properties
@@ -56,13 +71,6 @@ namespace PKSoft
 
 			// Register us as a message filter
 			System.Windows.Forms.Application.AddMessageFilter(this);
-		}
-
-		~Hotkey()
-		{
-			// Unregister the hotkey if necessary
-			if (this.Registered)
-			{ this.Unregister(); }
 		}
 
         internal bool Register(Control control)

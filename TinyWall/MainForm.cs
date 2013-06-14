@@ -833,24 +833,24 @@ namespace PKSoft
             }
             else
             {
-                if (mnuWhitelistByExecutable != null)
+                if (HotKeyWhitelistExecutable != null)
                 {
-                    mnuWhitelistByExecutable.Dispose();
-                    mnuWhitelistByExecutable = null;
+                    HotKeyWhitelistExecutable.Dispose();
+                    HotKeyWhitelistExecutable = null;
                 }
                 mnuWhitelistByExecutable.ShortcutKeyDisplayString = string.Empty;
 
-                if (mnuWhitelistByProcess != null)
+                if (HotKeyWhitelistProcess != null)
                 {
-                    mnuWhitelistByProcess.Dispose();
-                    mnuWhitelistByProcess = null;
+                    HotKeyWhitelistProcess.Dispose();
+                    HotKeyWhitelistProcess = null;
                 }
                 mnuWhitelistByProcess.ShortcutKeyDisplayString = string.Empty;
 
-                if (mnuWhitelistByWindow != null)
+                if (HotKeyWhitelistWindow != null)
                 {
-                    mnuWhitelistByWindow.Dispose();
-                    mnuWhitelistByWindow = null;
+                    HotKeyWhitelistWindow.Dispose();
+                    HotKeyWhitelistWindow = null;
                 }
                 mnuWhitelistByWindow.ShortcutKeyDisplayString = string.Empty;
             }
