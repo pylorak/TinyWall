@@ -116,22 +116,42 @@ namespace PKSoft
             FirewallLogEntry entry = new FirewallLogEntry();
             entry.Timestamp = DateTime.Now;
             entry.Event = (EventLogEvent)e.EventRecord.Id;
-            entry.ProcessID = (UInt64)e.EventRecord.Properties[0].Value;
-            entry.SourceIP = (string)e.EventRecord.Properties[3].Value;
-            entry.SourcePort = int.Parse((string)e.EventRecord.Properties[4].Value);
-            entry.DestinationIP = (string)e.EventRecord.Properties[5].Value;
-            entry.DestinationPort = int.Parse((string)e.EventRecord.Properties[6].Value);
-            entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[7].Value;
-            switch ((string)e.EventRecord.Properties[2].Value)
+
+            switch (e.EventRecord.Id)
             {
-                case "%%14592":
-                    entry.Direction = RuleDirection.In;
+                case 5154:
+                case 5155:
+                case 5158:
+                case 5159:
+                    entry.ProcessID = (UInt64)e.EventRecord.Properties[0].Value;
+                    entry.SourceIP = (string)e.EventRecord.Properties[2].Value;
+                    entry.SourcePort = int.Parse((string)e.EventRecord.Properties[3].Value);
+                    entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[4].Value;
+                    entry.DestinationIP = string.Empty;
+                    entry.DestinationPort = 0;
                     break;
-                case "%%14593":
-                    entry.Direction = RuleDirection.Out;
-                    break;
+                case 5152:
+                case 5156:
+                case 5157:
                 default:
-                    entry.Direction = RuleDirection.Invalid;
+                    entry.ProcessID = (UInt64)e.EventRecord.Properties[0].Value;
+                    entry.SourceIP = (string)e.EventRecord.Properties[3].Value;
+                    entry.SourcePort = int.Parse((string)e.EventRecord.Properties[4].Value);
+                    entry.DestinationIP = (string)e.EventRecord.Properties[5].Value;
+                    entry.DestinationPort = int.Parse((string)e.EventRecord.Properties[6].Value);
+                    entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[7].Value;
+                    switch ((string)e.EventRecord.Properties[2].Value)
+                    {
+                        case "%%14592":
+                            entry.Direction = RuleDirection.In;
+                            break;
+                        case "%%14593":
+                            entry.Direction = RuleDirection.Out;
+                            break;
+                        default:
+                            entry.Direction = RuleDirection.Invalid;
+                            break;
+                    }
                     break;
             }
 
