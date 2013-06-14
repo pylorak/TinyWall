@@ -1,4 +1,8 @@
 Future development ideas:
+- avast.setup
+- Checkboxes in mode menu
+- Batch-cleanup exceptions with invalid file paths
+- Option to also allow descendent programs
 - Connections window auto refresh checkbox
 - Connections window always on top checkbox
 - VirusTotal integration
