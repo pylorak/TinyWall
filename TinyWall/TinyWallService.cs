@@ -171,7 +171,20 @@ namespace PKSoft
 
             // We add new rules before removing invalid ones, 
             // so that we don't break existing connections.
-            FwRules.Add(rules);
+            List<Rule> failedRules = new List<Rule>();
+            FwRules.Add(rules, ref failedRules);
+
+            // If we couldn't add a rule, log rule details to log for later inspection
+            if (failedRules.Count > 0)
+            {
+                string log = string.Empty;
+                for (int i = 0; i< failedRules.Count;++i)
+                {
+                    Rule r = failedRules[i];
+                    log += r.Name + "; " + r.Action + "; " + r.ApplicationName + "; " + r.Direction + "; " + r.Protocol + "; " + r.LocalAddresses + "; " + r.LocalPorts + "; " + r.RemoteAddresses + "; " + r.RemotePorts + "; " + r.ServiceName + Environment.NewLine;
+                }
+                Utils.Log(log);
+            }
 
             // Remove dead rules
             for (int i = rule_names.Count - 1; i >= 0; --i)    // for each Win firewall rule

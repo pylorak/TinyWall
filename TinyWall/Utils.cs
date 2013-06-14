@@ -415,6 +415,10 @@ namespace PKSoft
         private static object logLocker = new object();
         internal static void LogCrash(Exception e)
         {
+            Utils.Log(e.ToString());
+        }
+        internal static void Log(string info)
+        {
             lock (logLocker)
             {
                 string logfile = Path.Combine(SettingsManager.AppDataPath, "errorlog");
@@ -432,7 +436,7 @@ namespace PKSoft
                 {
                     sw.WriteLine();
                     sw.WriteLine("------- " + DateTime.Now.ToString(CultureInfo.InvariantCulture) + " -------");
-                    sw.WriteLine(e.ToString());
+                    sw.WriteLine(info);
                     sw.WriteLine();
                 }
             }

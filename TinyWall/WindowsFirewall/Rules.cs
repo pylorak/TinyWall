@@ -62,10 +62,19 @@ namespace PKSoft.WindowsFirewall
             this.InsertItem(index, item);
         }
 
-        internal void Add(List<Rule> ruleset)
+        internal void Add(List<Rule> ruleset, ref List<Rule> failedRules)
         {
             for (int i = 0; i < ruleset.Count; ++i)
-                Add(ruleset[i]);
+            {
+                try
+                {
+                    Add(ruleset[i]);
+                }
+                catch
+                {
+                    failedRules.Add(ruleset[i]);
+                }
+            }
         }
 
         internal void DisableAllRules()
