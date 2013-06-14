@@ -583,6 +583,10 @@ namespace PKSoft
 
         private string GetPathOfProcess(int pid)
         {
+            // Shortcut for special case
+            if ((pid == 0) || (pid == 4))
+                return null;
+
             try
             {
                 using (Process p = Process.GetProcessById(pid))
