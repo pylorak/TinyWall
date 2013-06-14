@@ -157,14 +157,6 @@ namespace PKSoft
                         pi.pid = procId;
                         pi.name = proc.ProcessName;
                         pi.path = Utils.GetProcessMainModulePath(proc);
-                        if (string.IsNullOrEmpty(pi.path))
-                        {
-                            // We couldn't extract path of process
-                            if (pi.name.Equals("System", StringComparison.OrdinalIgnoreCase))
-                                pi.path = "System";
-                            else
-                                pi.path = string.Empty;
-                        }
                     }
                     procCache.Add(procId, pi);
                 }

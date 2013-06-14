@@ -117,6 +117,10 @@ namespace PKSoft
 
         internal static string GetProcessMainModulePath(Process p)
         {
+            // Shortcut for special case
+            if ((p.Id == 0) || (p.Id == 4))
+                return "System";
+
             try
             {
                 return p.MainModule.FileName;
@@ -127,7 +131,7 @@ namespace PKSoft
                 if (resp.Command == TWControllerMessages.RESPONSE_OK)
                     return resp.Arguments[0] as string;
                 else
-                    return null;
+                    return string.Empty;
             }
         }
         
