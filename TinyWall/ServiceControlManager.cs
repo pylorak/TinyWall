@@ -486,10 +486,5 @@ namespace ScmWrapper
             SCManager = null;
             base.Dispose(disposing);
         }
-
-        ~ServiceControlManager()
-        {
-            Dispose(false);
-        }
     }
 }
