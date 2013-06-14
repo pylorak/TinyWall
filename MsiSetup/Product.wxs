@@ -171,7 +171,7 @@
               <File Id="LocSatelliteDLL_nl" Source="Sources\ProgramFiles\TinyWall\nl\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
             </Component>
           </Directory>
-          <Directory Id="LOCDIR_nl" Name="ru">
+          <Directory Id="LOCDIR_ru" Name="ru">
             <Component Id="LocSatelliteLib_ru" Guid="{E6ACA74E-3D0E-47D8-BF85-AC4925B89E5B}" Win64="$(var.Win64)">
               <File Id="LocSatelliteDLL_ru" Source="Sources\ProgramFiles\TinyWall\ru\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
             </Component>
