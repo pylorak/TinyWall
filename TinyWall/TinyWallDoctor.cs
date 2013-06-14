@@ -91,36 +91,39 @@ namespace PKSoft
             }*/
 
             // Disable automatic re-start of service
-            try
+            for (int i = 0; i < 5; ++i)
             {
-                using (ScmWrapper.ServiceControlManager scm = new ScmWrapper.ServiceControlManager())
+                try
                 {
-                    scm.SetStartupMode(TinyWallService.SERVICE_NAME, ServiceStartMode.Automatic);
-                    scm.SetRestartOnFailure(TinyWallService.SERVICE_NAME, false);
-                }
-            }
-            catch { }
-
-            // Terminate TinyWall processes
-            {
-                int ownPid = Process.GetCurrentProcess().Id;
-                Process[] procs = Process.GetProcesses();
-                foreach (Process p in procs)
-                {
-                    if (p.Id != ownPid)
+                    using (ScmWrapper.ServiceControlManager scm = new ScmWrapper.ServiceControlManager())
                     {
-                        try
+                        scm.SetStartupMode(TinyWallService.SERVICE_NAME, ServiceStartMode.Automatic);
+                        scm.SetRestartOnFailure(TinyWallService.SERVICE_NAME, false);
+                    }
+                }
+                catch { }
+
+                // Terminate TinyWall processes
+                {
+                    int ownPid = Process.GetCurrentProcess().Id;
+                    Process[] procs = Process.GetProcesses();
+                    foreach (Process p in procs)
+                    {
+                        if (p.Id != ownPid)
                         {
-                            if (p.ProcessName.Contains("TinyWall"))
+                            try
                             {
-                                if (!p.CloseMainWindow())
-                                    p.Kill();
-                                else if (!p.WaitForExit(5000))
-                                    p.Kill();
+                                if (p.ProcessName.Contains("TinyWall"))
+                                {
+                                    if (!p.CloseMainWindow())
+                                        p.Kill();
+                                    else if (!p.WaitForExit(5000))
+                                        p.Kill();
+                                }
                             }
-                        }
-                        catch
-                        {
+                            catch
+                            {
+                            }
                         }
                     }
                 }
