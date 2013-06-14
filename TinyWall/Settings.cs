@@ -320,6 +320,9 @@ namespace PKSoft
         public bool AskForExceptionDetails = false;
         public int ManageTabIndex;
 
+        // Hotkeys
+        public bool EnableGlobalHotkeys = true;
+
         public static string UserDataPath
         {
             get
