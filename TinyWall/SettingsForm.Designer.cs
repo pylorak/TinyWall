@@ -53,6 +53,7 @@
             this.listOptionalGlobalProfiles = new System.Windows.Forms.CheckedListBox();
             this.listRecommendedGlobalProfiles = new System.Windows.Forms.CheckedListBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.chkEnableHotkeys = new System.Windows.Forms.CheckBox();
             this.comboLanguages = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
             this.chkEnableBlocklists = new System.Windows.Forms.CheckBox();
@@ -84,7 +85,6 @@
             this.btnWeb = new System.Windows.Forms.Button();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
-            this.chkEnableHotkeys = new System.Windows.Forms.CheckBox();
             this.tabPage3.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -280,6 +280,12 @@
             resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // chkEnableHotkeys
+            // 
+            resources.ApplyResources(this.chkEnableHotkeys, "chkEnableHotkeys");
+            this.chkEnableHotkeys.Name = "chkEnableHotkeys";
+            this.chkEnableHotkeys.UseVisualStyleBackColor = true;
             // 
             // comboLanguages
             // 
@@ -492,12 +498,6 @@
             // sfd
             // 
             this.sfd.DefaultExt = "xml";
-            // 
-            // chkEnableHotkeys
-            // 
-            resources.ApplyResources(this.chkEnableHotkeys, "chkEnableHotkeys");
-            this.chkEnableHotkeys.Name = "chkEnableHotkeys";
-            this.chkEnableHotkeys.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 

@@ -84,8 +84,11 @@ namespace PKSoft
                             continue;
 
                         // Add icon
-                        if (!IconList.Images.ContainsKey(ProcPath))
-                            IconList.Images.Add(ProcPath, Utils.GetIcon(ProcPath, 16, 16));
+                        if (System.IO.Path.IsPathRooted(ProcPath) && System.IO.File.Exists(ProcPath))
+                        {
+                            if (!IconList.Images.ContainsKey(ProcPath))
+                                IconList.Images.Add(ProcPath, Utils.GetIcon(ProcPath, 16, 16));
+                        }
 
                         // Add list item
                         ListViewItem li = new ListViewItem(p.ProcessName);

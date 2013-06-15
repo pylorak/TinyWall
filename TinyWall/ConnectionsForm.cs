@@ -166,7 +166,7 @@ namespace PKSoft
                 li.Tag = pi.pid;
                 li.ToolTipText = pi.path;
 
-                if (System.IO.Path.IsPathRooted(pi.path))
+                if (System.IO.Path.IsPathRooted(pi.path) && System.IO.File.Exists(pi.path))
                 {
                     if (!IconList.Images.ContainsKey(pi.path))
                     {
