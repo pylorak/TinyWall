@@ -661,7 +661,7 @@
     <value>True</value>
   </data>
   <data name="chkEnableHotkeys.Location" type="System.Drawing.Point, System.Drawing">
-    <value>104, 94</value>
+    <value>104, 117</value>
   </data>
   <data name="chkEnableHotkeys.Size" type="System.Drawing.Size, System.Drawing">
     <value>130, 17</value>
@@ -763,7 +763,7 @@
     <value>True</value>
   </data>
   <data name="chkLockHostsFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>104, 117</value>
+    <value>104, 94</value>
   </data>
   <data name="chkLockHostsFile.Size" type="System.Drawing.Size, System.Drawing">
     <value>183, 17</value>

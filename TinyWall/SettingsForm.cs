@@ -337,25 +337,6 @@ namespace PKSoft
 
         private void SettingsForm_Shown(object sender, EventArgs e)
         {
-            comboLanguages.Items.Add(new IdWithName("auto", "Automatic"));
-            comboLanguages.Items.Add(new IdWithName("de", "Deutsch"));
-            comboLanguages.Items.Add(new IdWithName("en", "English"));
-            comboLanguages.Items.Add(new IdWithName("fr", "Français"));
-            comboLanguages.Items.Add(new IdWithName("nl", "Nederlands"));
-            comboLanguages.Items.Add(new IdWithName("pt-BR", "Português Brasileiro"));
-            comboLanguages.Items.Add(new IdWithName("ru", "Русский"));
-            comboLanguages.Items.Add(new IdWithName("ja", "日本語"));
-
-            IconList.Images.Add("deleted", Resources.Icons.delete);
-
-            lblVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0} {1}", lblVersion.Text, System.Windows.Forms.Application.ProductVersion.ToString());
-
-            InitSettingsUI();
-
-#if !DEBUG
-            // TODO: Make submissions work
-            btnSubmitAssoc.Visible = false;
-#endif
             this.BringToFront();
             this.Activate();
         }
@@ -463,8 +444,31 @@ namespace PKSoft
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
+            ReferencedBool loadingDone = MarqueeForm.ShowProgress();
+           
             listApplications.ListViewItemSorter = new ListViewItemComparer(0);
             tabControl1.SelectedIndex = TmpControllerConfig.ManageTabIndex;
+
+            comboLanguages.Items.Add(new IdWithName("auto", "Automatic"));
+            comboLanguages.Items.Add(new IdWithName("de", "Deutsch"));
+            comboLanguages.Items.Add(new IdWithName("en", "English"));
+            comboLanguages.Items.Add(new IdWithName("fr", "Français"));
+            comboLanguages.Items.Add(new IdWithName("nl", "Nederlands"));
+            comboLanguages.Items.Add(new IdWithName("pt-BR", "Português Brasileiro"));
+            comboLanguages.Items.Add(new IdWithName("ru", "Русский"));
+            comboLanguages.Items.Add(new IdWithName("ja", "日本語"));
+
+            IconList.Images.Add("deleted", Resources.Icons.delete);
+
+            lblVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0} {1}", lblVersion.Text, System.Windows.Forms.Application.ProductVersion.ToString());
+
+            InitSettingsUI();
+
+#if !DEBUG
+            // TODO: Make submissions work
+            btnSubmitAssoc.Visible = false;
+#endif
+            loadingDone.Value = true;
         }
 
         private void txtExceptionListFilter_TextChanged(object sender, EventArgs e)
