@@ -104,8 +104,19 @@ namespace PKSoft
             }
 
             listView.SuspendLayout();
+            listView.ListViewItemSorter = new ListViewItemComparer(0);
             listView.Items.AddRange(itemColl.ToArray());
             listView.ResumeLayout(true);
+        }
+
+        private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            ListViewItemComparer oldSorter = listView.ListViewItemSorter as ListViewItemComparer;
+            ListViewItemComparer newSorter = new ListViewItemComparer(e.Column);
+            if ((oldSorter != null) && (oldSorter.Column == newSorter.Column))
+                newSorter.Ascending = !oldSorter.Ascending;
+
+            listView.ListViewItemSorter = newSorter;
         }
     }
 }

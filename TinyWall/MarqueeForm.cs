@@ -25,6 +25,7 @@ namespace PKSoft
                 using (MarqueeForm splashForm = new MarqueeForm())
                 {
                     splashForm.Show();
+                    splashForm.BringToFront();
                     while (!bLoadingDone.Value)
                         System.Windows.Forms.Application.DoEvents();
                     splashForm.Close();
