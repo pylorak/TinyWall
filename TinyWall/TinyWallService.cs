@@ -41,6 +41,7 @@ namespace PKSoft
         private List<RuleDef> SpecialRules;
 
         private ProfileType Profile;
+        private string ZoneFilePath = null;
         private bool UninstallRequested = false;
 
         private ServiceState VisibleState = null;
@@ -409,19 +410,31 @@ namespace PKSoft
 
         private void LoadProfile(Policy firewallPolicy)
         {
-            Profile = firewallPolicy.CurrentProfileTypes;
-            string ProfileDisplayName;
-            if ((int)(Profile & ProfileType.Private) != 0)
-                ProfileDisplayName = "Private";
-            else if ((int)(Profile & ProfileType.Domain) != 0)
-                ProfileDisplayName = "Domain";
-            else if ((int)(Profile & ProfileType.Public) != 0)
-                ProfileDisplayName = "Public";
-            else
-                throw new InvalidOperationException("Unexpected network profile value.");
+            ZoneFilePath = Path.Combine(SettingsManager.AppDataPath, "AllZones21");
+
+            if (!File.Exists(ZoneFilePath))
+            {
+                // ZoneFile not found. In this case, before creating an empty one,
+                // we first try to migrate an old zone file from pre-2.1 TW versions.
+
+                Profile = firewallPolicy.CurrentProfileTypes;
+                string ProfileDisplayName;
+                if ((int)(Profile & ProfileType.Private) != 0)
+                    ProfileDisplayName = "Private";
+                else if ((int)(Profile & ProfileType.Domain) != 0)
+                    ProfileDisplayName = "Domain";
+                else if ((int)(Profile & ProfileType.Public) != 0)
+                    ProfileDisplayName = "Public";
+                else
+                    throw new InvalidOperationException("Unexpected network profile value.");
+
+                string OldZoneFile = Path.Combine(SettingsManager.AppDataPath, "Zone" + ProfileDisplayName);
+                if (File.Exists(OldZoneFile))
+                    File.Copy(OldZoneFile, ZoneFilePath, true);
+            }
 
             SettingsManager.GlobalConfig = MachineSettings.Load();
-            SettingsManager.CurrentZone = ZoneSettings.Load(ProfileDisplayName);
+            SettingsManager.CurrentZone = ZoneSettings.Load(ZoneFilePath);
             VisibleState.Mode = SettingsManager.GlobalConfig.StartupMode;
         }
 
@@ -695,7 +708,7 @@ namespace PKSoft
                     LearningNewExceptions = null;
                 }
                 SettingsManager.CurrentZone.Normalize();
-                SettingsManager.CurrentZone.Save();
+                SettingsManager.CurrentZone.Save(ZoneFilePath);
                 RebuildApplicationRuleDefs();
 
                 VisibleState.SettingsChangeset = Utils.GetRandomNumber();
@@ -755,7 +768,7 @@ namespace PKSoft
                             // This roundabout way is to prevent overwriting the wrong zone if the controller is sending us
                             // data from a zone that is not the current one.
                             newZone = (ZoneSettings)req.Arguments[1];
-                            newZone.Save();
+                            newZone.Save(ZoneFilePath);
                             SettingsManager.CurrentZone = newZone;
                         }
 
@@ -904,7 +917,7 @@ namespace PKSoft
                         if (needsSave)
                         {
                             SettingsManager.CurrentZone.AppExceptions = exs;
-                            SettingsManager.CurrentZone.Save();
+                            SettingsManager.CurrentZone.Save(ZoneFilePath);
                             VisibleState.SettingsChangeset = Utils.GetRandomNumber();
                             NotifyController(TWServiceMessages.SETTINGS_CHANGED);
                         }
@@ -1020,15 +1033,7 @@ namespace PKSoft
                         break;
                     }
                 case 2010:     // network interface changed profile
-                    {   // Event format is different in this case so we handle this separately
-                        propidx = -1;
-                        VisibleState.SettingsChangeset = Utils.GetRandomNumber();
-                        if (!Q.HasRequest(TWControllerMessages.REINIT))
-                        {
-                            EventLog.WriteEntry("Reloading firewall configuration because a network interface changed profile.");
-                            Q.Enqueue(new ReqResp(new Message(TWControllerMessages.REINIT)));
-                        }
-                        NotifyController(TWServiceMessages.SETTINGS_CHANGED);
+                    {
                         break;
                     }
                 case 2032:     // firewall has been reset
@@ -1152,7 +1157,7 @@ namespace PKSoft
                 if (needsSave)
                 {
                     SettingsManager.CurrentZone.AppExceptions = exs;
-                    SettingsManager.CurrentZone.Save();
+                    SettingsManager.CurrentZone.Save(ZoneFilePath);
                 }
             }
 
@@ -1160,7 +1165,7 @@ namespace PKSoft
 
             CommitLearnedRules();
             SettingsManager.GlobalConfig.Save();
-            SettingsManager.CurrentZone.Save();
+            SettingsManager.CurrentZone.Save(ZoneFilePath);
             FileLocker.UnlockAll();
 
             if (LogWatcher != null)

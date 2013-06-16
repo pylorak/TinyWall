@@ -46,7 +46,6 @@ namespace PKSoft
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.Tray = new System.Windows.Forms.NotifyIcon(this.components);
             this.TrayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.mnuCurrentPolicy = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTrafficRate = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuMode = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,7 +80,6 @@ namespace PKSoft
             // TrayMenu
             // 
             this.TrayMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuCurrentPolicy,
             this.mnuTrafficRate,
             this.toolStripMenuItem1,
             this.mnuMode,
@@ -102,16 +100,10 @@ namespace PKSoft
             resources.ApplyResources(this.TrayMenu, "TrayMenu");
             this.TrayMenu.Opening += new System.ComponentModel.CancelEventHandler(this.TrayMenu_Opening);
             // 
-            // mnuCurrentPolicy
-            // 
-            this.mnuCurrentPolicy.AccessibleRole = System.Windows.Forms.AccessibleRole.StaticText;
-            this.mnuCurrentPolicy.Image = global::PKSoft.Resources.Icons.info;
-            this.mnuCurrentPolicy.Name = "mnuCurrentPolicy";
-            resources.ApplyResources(this.mnuCurrentPolicy, "mnuCurrentPolicy");
-            // 
             // mnuTrafficRate
             // 
             this.mnuTrafficRate.AccessibleRole = System.Windows.Forms.AccessibleRole.StaticText;
+            this.mnuTrafficRate.Image = global::PKSoft.Resources.Icons.info;
             this.mnuTrafficRate.Name = "mnuTrafficRate";
             resources.ApplyResources(this.mnuTrafficRate, "mnuTrafficRate");
             // 
@@ -261,6 +253,7 @@ namespace PKSoft
             this.ShowInTaskbar = false;
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.TrayMenu.ResumeLayout(false);
@@ -272,7 +265,6 @@ namespace PKSoft
 
         private System.Windows.Forms.NotifyIcon Tray;
         private System.Windows.Forms.ContextMenuStrip TrayMenu;
-        private System.Windows.Forms.ToolStripMenuItem mnuCurrentPolicy;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem mnuQuit;

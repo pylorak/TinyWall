@@ -175,7 +175,7 @@ namespace PKSoft
         private void UpdateDisplay()
         {
             // Update string showing current network profile
-            mnuCurrentPolicy.Text = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CurrentZone, SettingsManager.CurrentZone.ZoneName);
+            // TODO: Remove resource PKSoft.Resources.Messages.CurrentZone as it is not used any more.
 
             // Update UI based on current firewall mode
             string FirewallModeName = PKSoft.Resources.Messages.FirewallModeUnknown;
@@ -731,74 +731,6 @@ namespace PKSoft
         private void MainForm_Shown(object sender, EventArgs e)
         {
             Hide();
-
-            TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.Zero, TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
-
-            // We will load our database parallel to other things to improve startup performance
-            using (ThreadBarrier barrier = new ThreadBarrier(2))
-            {
-                ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
-                {
-                    try
-                    {
-                        LoadDatabase();
-                    }
-                    catch { }
-                    finally
-                    {
-                        barrier.Wait();
-                    }
-                });
-
-                // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
-                // BEGIN
-                mnuElevate.Visible = !Utils.RunningAsAdmin();
-                mnuModeDisabled.Image = Resources.Icons.shield_grey_small.ToBitmap();
-                mnuModeAllowOutgoing.Image = Resources.Icons.shield_red_small.ToBitmap();
-                mnuModeBlockAll.Image = Resources.Icons.shield_yellow_small.ToBitmap();
-                mnuModeNormal.Image = Resources.Icons.shield_green_small.ToBitmap();
-                mnuModeLearn.Image = Resources.Icons.shield_blue_small.ToBitmap();
-
-                GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
-
-                barrier.Wait();
-                // END
-                // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
-                // --- THREAD BARRIER ---
-            }
-
-            bool comError;
-            LoadSettingsFromServer(out comError, true);
-#if !DEBUG
-            if (comError)
-            {
-                if (TinyWallDoctor.EnsureServiceInstalledAndRunning())
-                {
-                    LoadSettingsFromServer(out comError, true);
-                    UpdateDisplay();
-                }
-                else
-                {
-                    MessageBox.Show(PKSoft.Resources.Messages.TheTinyWallServiceIsUnavailable, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-#endif
-
-            // Enable opening the tray menu
-            Tray.ContextMenuStrip = TrayMenu;
-
-            if (StartupOpts.autowhitelist)
-            {
-                AutoWhitelist();
-            }
-
-            ApplyControllerSettings();
-
-            if (StartupOpts.updatenow)
-            {
-                StartUpdate(null, null);
-            }
-
             Utils.MinimizeMemory();
         }
 
@@ -942,7 +874,6 @@ namespace PKSoft
             if (WM_NOTIFY_BY_SERVICE == 0)
                 WM_NOTIFY_BY_SERVICE = NativeMethods.RegisterWindowMessage("WM_NOTIFY_BY_SERVICE");
 
-            //if the window message id equals the QueryCancelAutoPlay message id
             if ((uint)m.Msg == WM_NOTIFY_BY_SERVICE)
             {
                 switch (m.WParam.ToInt32())
@@ -983,6 +914,76 @@ namespace PKSoft
 
             SetMode(FirewallMode.Learning);
             UpdateDisplay();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.Zero, TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
+
+            // We will load our database parallel to other things to improve startup performance
+            using (ThreadBarrier barrier = new ThreadBarrier(2))
+            {
+                ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
+                {
+                    try
+                    {
+                        LoadDatabase();
+                    }
+                    catch { }
+                    finally
+                    {
+                        barrier.Wait();
+                    }
+                });
+
+                // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
+                // BEGIN
+                mnuElevate.Visible = !Utils.RunningAsAdmin();
+                mnuModeDisabled.Image = Resources.Icons.shield_grey_small.ToBitmap();
+                mnuModeAllowOutgoing.Image = Resources.Icons.shield_red_small.ToBitmap();
+                mnuModeBlockAll.Image = Resources.Icons.shield_yellow_small.ToBitmap();
+                mnuModeNormal.Image = Resources.Icons.shield_green_small.ToBitmap();
+                mnuModeLearn.Image = Resources.Icons.shield_blue_small.ToBitmap();
+
+                GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
+
+                barrier.Wait();
+                // END
+                // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
+                // --- THREAD BARRIER ---
+            }
+
+            bool comError;
+            LoadSettingsFromServer(out comError, true);
+#if !DEBUG
+            if (comError)
+            {
+                if (TinyWallDoctor.EnsureServiceInstalledAndRunning())
+                {
+                    LoadSettingsFromServer(out comError, true);
+                    UpdateDisplay();
+                }
+                else
+                {
+                    MessageBox.Show(PKSoft.Resources.Messages.TheTinyWallServiceIsUnavailable, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+#endif
+
+            // Enable opening the tray menu
+            Tray.ContextMenuStrip = TrayMenu;
+
+            if (StartupOpts.autowhitelist)
+            {
+                AutoWhitelist();
+            }
+
+            ApplyControllerSettings();
+
+            if (StartupOpts.updatenow)
+            {
+                StartUpdate(null, null);
+            }
         }
     }
 

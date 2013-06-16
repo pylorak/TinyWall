@@ -48,26 +48,20 @@ namespace PKSoft
             }
         }
 
-        internal void Save()
+        internal void Save(string zoneFile)
         {
-            // Construct file path
-            string SettingsFile = Path.Combine(SettingsManager.AppDataPath, "Zone"+ZoneName);
-
             // Construct key
             string key = ENC_SALT + MachineFingerprint.Fingerprint();
             key = Hasher.HashString(key).Substring(0, 16);
 
-            SerializationHelper.SaveToEncryptedXMLFile<ZoneSettings>(this, SettingsFile, key, ENC_IV);
+            SerializationHelper.SaveToEncryptedXMLFile<ZoneSettings>(this, zoneFile, key, ENC_IV);
         }
 
-        internal static ZoneSettings Load(string zoneName)
+        internal static ZoneSettings Load(string zoneFile)
         {
             ZoneSettings zone = null;
 
-            // Construct file path
-            string SettingsFile = Path.Combine(SettingsManager.AppDataPath, "Zone" + zoneName);
-
-            if (File.Exists(SettingsFile))
+            if (File.Exists(zoneFile))
             {
                 try
                 {
@@ -75,7 +69,7 @@ namespace PKSoft
                     string key = ENC_SALT + MachineFingerprint.Fingerprint();
                     key = Hasher.HashString(key).Substring(0, 16);
 
-                    zone = SerializationHelper.LoadFromEncryptedXMLFile<ZoneSettings>(SettingsFile, key, ENC_IV);
+                    zone = SerializationHelper.LoadFromEncryptedXMLFile<ZoneSettings>(zoneFile, key, ENC_IV);
                     List<string> distinctSpecialEx = new List<string>();
                     distinctSpecialEx.AddRange(zone.SpecialExceptions.Distinct());
                     zone.SpecialExceptions = distinctSpecialEx;
@@ -88,7 +82,7 @@ namespace PKSoft
             if (zone == null)
             {
                 zone = new ZoneSettings(true);
-                zone.ZoneName = zoneName;
+                zone.ZoneName = "All Zones";
             }
             return zone;
         }
