@@ -40,27 +40,28 @@ namespace PKSoft
                 }
             }
 
-            // ImagePath often contains command line arguments. Try to get only the executable path.
-            // ------------------------
-
             // Remove quotes
             ImagePath = ImagePath.Replace("\"", string.Empty);
 
-            // Remove args if the begin with "/"
-            if (ImagePath.Contains(".exe -"))
+            // ImagePath often contains command line arguments.
+            // Try to get only the executable path.
+            // We use a heuristic approach where we strip off 
+            // parts of the string (each delimited by spaces) 
+            // one-by-one, each time checking if we have a valid file path.
+            while (true)
             {
-                int argpos = ImagePath.IndexOf(".exe -", StringComparison.OrdinalIgnoreCase);
-                ImagePath = ImagePath.Substring(0, argpos + 4);
+                if (System.IO.File.Exists(ImagePath))
+                    return ImagePath;
+
+                int i = ImagePath.LastIndexOf(' ');
+                if (i == -1)
+                    break;
+
+                ImagePath = ImagePath.Substring(0, i);
             }
 
-            // Remove args if the begin with "-"
-            if (ImagePath.Contains(".exe /"))
-            {
-                int argpos = ImagePath.IndexOf(".exe /", StringComparison.OrdinalIgnoreCase);
-                ImagePath = ImagePath.Substring(0, argpos + 4);
-            }
-
-            return ImagePath;
+            // Could not find executable path
+            return string.Empty;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
