@@ -158,7 +158,7 @@ namespace PKSoft
         
         private void UpdateOKButtonEnabled()
         {
-            btnOK.Enabled = System.IO.File.Exists(TmpExceptionSettings.ExecutablePath);
+            btnOK.Enabled = System.IO.File.Exists(TmpExceptionSettings.ExecutablePath) || (0==string.Compare(TmpExceptionSettings.ExecutablePath, "System", StringComparison.OrdinalIgnoreCase));
         }
 
         private void btnOK_Click(object sender, EventArgs e)
