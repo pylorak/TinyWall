@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Abbrechen</value>
@@ -177,9 +177,6 @@
   </data>
   <data name="chkEnableBlocklists.Text" xml:space="preserve">
     <value>Aktiviere die Sperrliste</value>
-  </data>
-  <data name="chkLockHostsFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>104, 94</value>
   </data>
   <data name="chkLockHostsFile.Size" type="System.Drawing.Size, System.Drawing">
     <value>224, 17</value>
