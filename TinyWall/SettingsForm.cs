@@ -247,16 +247,20 @@ namespace PKSoft
 
         private void listApplications_SelectedIndexChanged(object sender, EventArgs e)
         {
-            bool IsItemSelected = listApplications.SelectedItems.Count != 0;
-            btnAppModify.Enabled = IsItemSelected;
-            btnAppRemove.Enabled = IsItemSelected;
-            btnSubmitAssoc.Enabled = IsItemSelected;
+            bool AnyItemSelected = listApplications.SelectedItems.Count != 0;
+            bool SingleItemSelected = listApplications.SelectedItems.Count == 1;
+            btnAppModify.Enabled = SingleItemSelected;
+            btnAppRemove.Enabled = AnyItemSelected;
+            btnSubmitAssoc.Enabled = AnyItemSelected;
         }
 
         private void btnAppRemove_Click(object sender, EventArgs e)
         {
-            ListViewItem li = listApplications.SelectedItems[0];
-            TmpZoneConfig.AppExceptions.Remove((FirewallException)li.Tag);
+            for (int i = listApplications.SelectedItems.Count - 1; i >= 0; --i)
+            {
+                ListViewItem li = listApplications.SelectedItems[i];
+                TmpZoneConfig.AppExceptions.Remove((FirewallException)li.Tag);
+            }
             RebuildExceptionsList();
         }
 

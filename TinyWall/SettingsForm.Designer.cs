@@ -197,7 +197,6 @@
             resources.ApplyResources(this.listApplications, "listApplications");
             this.listApplications.Name = "listApplications";
             this.listApplications.SmallImageList = this.IconList;
-            this.listApplications.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listApplications.UseCompatibleStateImageBehavior = false;
             this.listApplications.View = System.Windows.Forms.View.Details;
             this.listApplications.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listApplications_ColumnClick);

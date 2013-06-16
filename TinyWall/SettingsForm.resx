@@ -1129,7 +1129,7 @@
     <value>100</value>
   </data>
   <data name="btnImport.Text" xml:space="preserve">
-    <value>Import</value>
+    <value>Import Settings</value>
   </data>
   <data name="&gt;&gt;btnImport.Name" xml:space="preserve">
     <value>btnImport</value>
@@ -1159,7 +1159,7 @@
     <value>105</value>
   </data>
   <data name="btnExport.Text" xml:space="preserve">
-    <value>Export</value>
+    <value>Export Settings</value>
   </data>
   <data name="&gt;&gt;btnExport.Name" xml:space="preserve">
     <value>btnExport</value>
