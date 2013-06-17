@@ -6,6 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
+#if DEBUG
+//using Microsoft.VisualStudio.Profiler;
+#endif
+
 namespace PKSoft
 {
     internal partial class SettingsForm : Form
@@ -448,8 +452,11 @@ namespace PKSoft
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            ReferencedBool loadingDone = MarqueeForm.ShowProgress();
-           
+//            ReferencedBool loadingDone = MarqueeForm.ShowProgress();
+
+#if DEBUG
+//            DataCollection.StartProfile(ProfileLevel.Global, DataCollection.CurrentId);
+#endif
             listApplications.ListViewItemSorter = new ListViewItemComparer(0);
             tabControl1.SelectedIndex = TmpControllerConfig.ManageTabIndex;
 
@@ -470,11 +477,15 @@ namespace PKSoft
 
             InitSettingsUI();
 
+#if DEBUG
+//          DataCollection.StopProfile(ProfileLevel.Global, DataCollection.CurrentId);
+#endif
+
 #if !DEBUG
             // TODO: Make submissions work
             btnSubmitAssoc.Visible = false;
 #endif
-            loadingDone.Value = true;
+//            loadingDone.Value = true;
         }
 
         private void txtExceptionListFilter_TextChanged(object sender, EventArgs e)
