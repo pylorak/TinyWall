@@ -292,4 +292,7 @@
   <data name="$this.Text" xml:space="preserve">
     <value>TinyWall Firewall Einstellungen</value>
   </data>
+  <data name="chkEnableHotkeys.Text" xml:space="preserve">
+    <value>Schnelltasten aktivieren</value>
+  </data>
 </root>

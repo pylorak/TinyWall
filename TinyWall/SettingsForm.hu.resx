@@ -267,4 +267,7 @@
   <data name="$this.Text" xml:space="preserve">
     <value>TinyWall Firewall Beállítások</value>
   </data>
+  <data name="chkEnableHotkeys.Text" xml:space="preserve">
+    <value>Gyorsbillentyűk használata</value>
+  </data>
 </root>
