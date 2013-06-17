@@ -364,4 +364,8 @@ A kiválasztott fájl a következő része: {0}. Ahhoz hogy az alkalmazás korl�
   <data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
     <value>Csak a kiválasztott fájlok feloldása</value>
   </data>
+  <data name="CompromisedApplication" xml:space="preserve">
+    <value>{0}, talán kompromittált</value>
+    <comment>Exception details window banner text. Param0 is name of application.</comment>
+  </data>
 </root>

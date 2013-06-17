@@ -457,4 +457,17 @@ namespace PKSoft
             });
         }
     }
+
+    [Serializable]
+    internal class GenericTuple<T1, T2>
+    {
+        internal T1 obj1;
+        internal T2 obj2;
+
+        internal GenericTuple(T1 o1, T2 o2)
+        {
+            obj1 = o1;
+            obj2 = o2;
+        }
+    }
 }

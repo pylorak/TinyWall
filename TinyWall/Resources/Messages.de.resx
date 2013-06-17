@@ -323,4 +323,8 @@ Sie können eine oder mehrere Nummern im Bereich von 1-65535, getrennt durch Kom
   <data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
     <value>Erlaube nur die ausgewählte Datei</value>
   </data>
+  <data name="CompromisedApplication" xml:space="preserve">
+    <value>{0}, mögl. kompromittiert</value>
+    <comment>Exception details window banner text. Param0 is name of application.</comment>
+  </data>
 </root>

@@ -8,8 +8,9 @@ namespace PKSoft
 {
     internal partial class ApplicationExceptionForm : Form
     {
-        private FirewallException TmpExceptionSettings;
-        private string AppName = string.Empty;
+        private FirewallException TmpExceptionSettings = null;
+        private AppExceptionAssoc RecognizedTargetFile = null;
+        private Application RecognizedTargetApp = null;
 
         internal FirewallException ExceptionSettings
         {
@@ -64,8 +65,7 @@ namespace PKSoft
             cmbTimer.ValueMember = "Value";
             cmbTimer.ResumeLayout(true);
 
-            if (!TmpExceptionSettings.Recognized.HasValue)
-                AppName = TmpExceptionSettings.TryRecognizeApp(true);
+            TmpExceptionSettings.TryRecognizeApp(true, out RecognizedTargetApp, out RecognizedTargetFile);
         }
 
         private void ApplicationExceptionForm_Load(object sender, EventArgs e)
@@ -85,11 +85,17 @@ namespace PKSoft
                 }
             }
 
-            if (TmpExceptionSettings.Recognized.Value)
+            if ((RecognizedTargetFile != null) && (!RecognizedTargetFile.IsSigned || RecognizedTargetFile.IsSignatureValid))
             {
                 // Recognized app
                 panel1.BackgroundImage = Resources.Icons.green_banner;
-                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.RecognizedApplication, AppName);
+                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.RecognizedApplication, RecognizedTargetApp.Name);
+            }
+            else if ((RecognizedTargetFile != null) && RecognizedTargetFile.IsSigned && !RecognizedTargetFile.IsSignatureValid)
+            {
+                // Recognized, but compromised app
+                panel1.BackgroundImage = Resources.Icons.red_banner;
+                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.CompromisedApplication, RecognizedTargetApp.Name);
             }
             else
             {
@@ -202,7 +208,7 @@ namespace PKSoft
             if (proc == null) return;
 
             TmpExceptionSettings = proc;
-            AppName = TmpExceptionSettings.TryRecognizeApp(true);
+            TmpExceptionSettings.TryRecognizeApp(true, out RecognizedTargetApp, out RecognizedTargetFile);
             UpdateUI();
         }
 
@@ -213,7 +219,7 @@ namespace PKSoft
 
             TmpExceptionSettings.ExecutablePath = ofd.FileName;
             TmpExceptionSettings.ServiceName = string.Empty;
-            AppName = TmpExceptionSettings.TryRecognizeApp(true);
+            TmpExceptionSettings.TryRecognizeApp(true, out RecognizedTargetApp, out RecognizedTargetFile);
             UpdateUI();
         }
 
@@ -223,7 +229,7 @@ namespace PKSoft
             if (serv == null) return;
 
             TmpExceptionSettings = serv;
-            AppName = TmpExceptionSettings.TryRecognizeApp(true);
+            TmpExceptionSettings.TryRecognizeApp(true, out RecognizedTargetApp, out RecognizedTargetFile);
             UpdateUI(); 
         }
 

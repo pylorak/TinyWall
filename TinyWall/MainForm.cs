@@ -174,7 +174,6 @@ namespace PKSoft
 
         private void UpdateDisplay()
         {
-            // Update string showing current network profile
             // TODO: Remove resource PKSoft.Resources.Messages.CurrentZone as it is not used any more.
 
             // Update UI based on current firewall mode
@@ -218,8 +217,8 @@ namespace PKSoft
                     break;
             }
 
-            Tray.Text = string.Format(CultureInfo.CurrentCulture, "TinyWall\r\n{0}: {1}\r\n{2}: {3}",
-                PKSoft.Resources.Messages.Zone, SettingsManager.CurrentZone.ZoneName,
+            // TODO: Remove resource PKSoft.Resources.Messages.Zone as it is not used any more.
+            Tray.Text = string.Format(CultureInfo.CurrentCulture, "TinyWall\r\n{0}: {1}",
                 PKSoft.Resources.Messages.Mode, FirewallModeName);
 
             // Find out if we are locked and if we have a password
@@ -380,7 +379,9 @@ namespace PKSoft
             FirewallException ex = new FirewallException(ofd.FileName, null);
             ex.ServiceName = string.Empty;
 
-            ex.TryRecognizeApp(true);
+            Application app;
+            AppExceptionAssoc appFile;
+            ex.TryRecognizeApp(true, out app, out appFile);
             if (SettingsManager.ControllerConfig.AskForExceptionDetails)
             {
                 using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
@@ -392,7 +393,7 @@ namespace PKSoft
                 }
             }
 
-            AddNewException(ex); 
+            AddNewException(ex, appFile); 
         }
 
         private void mnuWhitelistByProcess_Click(object sender, EventArgs e)
@@ -400,7 +401,9 @@ namespace PKSoft
             FirewallException ex = ProcessesForm.ChooseProcess(this);
             if (ex == null) return;
 
-            ex.TryRecognizeApp(true);
+            Application app;
+            AppExceptionAssoc appFile;
+            ex.TryRecognizeApp(true, out app, out appFile);
             if (SettingsManager.ControllerConfig.AskForExceptionDetails)
             {
                 using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
@@ -412,7 +415,7 @@ namespace PKSoft
                 }
             }
 
-            AddNewException(ex); 
+            AddNewException(ex, appFile); 
         }
         
         internal TWControllerMessages ApplyFirewallSettings(MachineSettings machine, ZoneSettings zone, bool showUI = true)
@@ -592,7 +595,9 @@ namespace PKSoft
                     }
 
                     FirewallException ex = new FirewallException(AppPath, null);
-                    ex.TryRecognizeApp(true);
+                    Application app;
+                    AppExceptionAssoc appFile;
+                    ex.TryRecognizeApp(true, out app, out appFile);
                     if (SettingsManager.ControllerConfig.AskForExceptionDetails)
                     {
                         using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
@@ -604,14 +609,16 @@ namespace PKSoft
                         }
                     }
 
-                    AddNewException(ex);
+                    AddNewException(ex, appFile);
                 });
             });
         }
 
         private void EditRecentException(object sender, AnyEventArgs e)
         {
-            FirewallException ex = e.Arg as FirewallException;
+            GenericTuple<FirewallException, AppExceptionAssoc> tuple = e.Arg as GenericTuple<FirewallException, AppExceptionAssoc>;
+            FirewallException ex = tuple.obj1;
+            AppExceptionAssoc exFile = tuple.obj2;
             using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
             {
                 if (f.ShowDialog(this) == DialogResult.Cancel)
@@ -620,10 +627,10 @@ namespace PKSoft
                 ex = f.ExceptionSettings;
             }
 
-            AddNewException(ex);
+            AddNewException(ex, exFile);
         }
 
-        private void AddNewException(FirewallException ex)
+        private void AddNewException(FirewallException ex, AppExceptionAssoc exFile)
         {
             List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(ex, true, true, this);
             if (exceptions.Count == 0)
@@ -636,10 +643,11 @@ namespace PKSoft
             switch (resp)
             {
                 case TWControllerMessages.RESPONSE_OK:
-                    if (ex.Recognized.HasValue && ex.Recognized.Value)
-                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForRecognizedChanged, ex.ExecutableName), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(ex));
+                    GenericTuple<FirewallException, AppExceptionAssoc> tuple = new GenericTuple<FirewallException, AppExceptionAssoc>(ex, exFile);
+                    if ((exFile != null) && (!exFile.IsSigned || exFile.IsSignatureValid))
+                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForRecognizedChanged, ex.ExecutableName), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(tuple));
                     else
-                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForUnrecognizedChanged, ex.ExecutableName), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(ex));
+                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForUnrecognizedChanged, ex.ExecutableName), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(tuple));
 
                     break;
                 default:
@@ -918,7 +926,6 @@ namespace PKSoft
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.Zero, TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
 
             // We will load our database parallel to other things to improve startup performance
             using (ThreadBarrier barrier = new ThreadBarrier(2))
@@ -938,12 +945,14 @@ namespace PKSoft
 
                 // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
                 // BEGIN
+                TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.Zero, TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
                 mnuElevate.Visible = !Utils.RunningAsAdmin();
                 mnuModeDisabled.Image = Resources.Icons.shield_grey_small.ToBitmap();
                 mnuModeAllowOutgoing.Image = Resources.Icons.shield_red_small.ToBitmap();
                 mnuModeBlockAll.Image = Resources.Icons.shield_yellow_small.ToBitmap();
                 mnuModeNormal.Image = Resources.Icons.shield_green_small.ToBitmap();
                 mnuModeLearn.Image = Resources.Icons.shield_blue_small.ToBitmap();
+                ApplyControllerSettings();
 
                 GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
 
@@ -969,7 +978,6 @@ namespace PKSoft
                 }
             }
 #endif
-
             // Enable opening the tray menu
             Tray.ContextMenuStrip = TrayMenu;
 
@@ -977,8 +985,6 @@ namespace PKSoft
             {
                 AutoWhitelist();
             }
-
-            ApplyControllerSettings();
 
             if (StartupOpts.updatenow)
             {

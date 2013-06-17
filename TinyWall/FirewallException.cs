@@ -32,12 +32,6 @@ namespace PKSoft
             return Template;
         }
 
-        public bool? Recognized = null;
-        public bool ShouldSerializeRecognized()
-        {
-            return (Recognized.HasValue);
-        }
-
         public string ServiceName = null;
         public bool ShouldSerializeServiceName()
         {
@@ -173,15 +167,13 @@ namespace PKSoft
             return true;
         }
 
-        internal string TryRecognizeApp(bool allowModify)
+        internal void TryRecognizeApp(bool allowModify, out Application app, out AppExceptionAssoc appFile)
         {
-            Application app = null;
-            AppExceptionAssoc appFile = null;
+            app = null;
+            appFile = null;
 
             if (File.Exists(ExecutablePath))
                 app = GlobalInstances.ProfileMan.KnownApplications.TryGetRecognizedApp(ExecutablePath, ServiceName, out appFile);
-
-            this.Recognized = (app != null) && (!app.Special);
 
             if (allowModify)
             {
@@ -189,17 +181,12 @@ namespace PKSoft
                 MakeUnrestrictTcpUdp();
 
                 // Apply recognized settings, if available
-                if (Recognized.Value)
+                if ((app != null) && (!app.Special))
                 {
                     ProfileCollection profiles = GlobalInstances.ProfileMan.GetProfilesFor(appFile);
                     appFile.ExceptionTemplate.CopyRulesTo(this);
                 }
             }
-
-            if (Recognized.Value)
-                return app.Name;
-            else
-                return null;
         }
 
         internal void CopyRulesTo(FirewallException o)
@@ -284,7 +271,7 @@ namespace PKSoft
                 allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
 
             Application app = allApps.TryGetRecognizedApp(ex.ExecutablePath, ex.ServiceName, out appFile);
-            if (app != null)
+            if ((app != null) && (!appFile.IsSigned || appFile.IsSignatureValid))
             {
                 if (!specialAllowed && app.Special)
                     return exceptions;

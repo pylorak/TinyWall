@@ -13,7 +13,7 @@ using PKSoft.Parser;
 namespace PKSoft
 {
     [Serializable]  // Needed for cloning
-    public class AppExceptionAssoc
+    public sealed class AppExceptionAssoc
     {
         public AppExceptionAssoc()
         {
@@ -278,6 +278,27 @@ namespace PKSoft
             
             // None of the above checks failed. So let us accept it.
             return true;
+        }
+
+        private bool? m_IsSignatureValid;
+        public bool IsSignatureValid
+        {
+            get
+            {
+                if (!m_IsSignatureValid.HasValue)
+                    m_IsSignatureValid = WinTrust.VerifyFileAuthenticode(Executable);
+
+                return m_IsSignatureValid.Value;
+            }
+        }
+
+        public bool IsSigned
+        {
+            get
+            {
+                string[] keys = this.PublicKeys;
+                return (keys != null) && (keys.Length > 0);
+            }
         }
 
         public override string ToString()

@@ -371,4 +371,8 @@ The selected executable is part of {0}. To ensure that this application can be u
   <data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
     <value>Unblock only selected file</value>
   </data>
+  <data name="CompromisedApplication" xml:space="preserve">
+    <value>{0}, possibly compromised</value>
+    <comment>Exception details window banner text. Param0 is name of application.</comment>
+  </data>
 </root>

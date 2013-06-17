@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace PKSoft
 {
-    internal partial class AppFinderForm : Form
+    internal sealed partial class AppFinderForm : Form
     {
         private Thread SearcherThread;
         private bool RunSearch;
@@ -131,7 +131,7 @@ namespace PKSoft
                         // Try to match file
                         AppExceptionAssoc appFile;
                         Application app = allApps.TryGetRecognizedApp(file, null, out appFile);
-                        if ((app != null) && (!app.Special))
+                        if ((app != null) && (!app.Special) && (!appFile.IsSigned || appFile.IsSignatureValid))
                         {
                             foreach (AppExceptionAssoc template in app.FileTemplates)
                             {

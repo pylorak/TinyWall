@@ -94,6 +94,7 @@
     <Compile Include="ApplicationExceptionForm.Designer.cs">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="WinTrust.cs" />
     <Compile Include="CmdLineArgs.cs" />
     <Compile Include="ConnectionsForm.cs">
       <SubType>Form</SubType>
@@ -622,6 +623,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\img\shield_blue_small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\img\red_banner.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
