@@ -37,9 +37,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
@@ -67,6 +65,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <SGenToolPath>C:\Program Files (x86)\Microsoft SDKs\Windows\v8.0A\bin\NETFX 4.0 Tools</SGenToolPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -255,6 +256,12 @@
     <EmbeddedResource Include="AppFinderForm.pt-BR.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="AppFinderForm.es.resx">
+      <DependentUpon>AppFinderForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AppFinderForm.hu.resx">
+      <DependentUpon>AppFinderForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AppFinderForm.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -263,6 +270,12 @@
       <DependentUpon>AppFinderForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ApplicationExceptionForm.de.resx">
+      <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationExceptionForm.es.resx">
+      <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationExceptionForm.hu.resx">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ApplicationExceptionForm.fr.resx">
@@ -283,6 +296,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ApplicationExceptionForm.ru.resx">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConnectionsForm.es.resx">
+      <DependentUpon>ConnectionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConnectionsForm.hu.resx">
+      <DependentUpon>ConnectionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionsForm.de.resx">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
@@ -310,6 +329,12 @@
       <DependentUpon>DevelToolForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.es.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.hu.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.de.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -332,6 +357,12 @@
     <EmbeddedResource Include="MarqueeForm.resx">
       <DependentUpon>MarqueeForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PasswordForm.es.resx">
+      <DependentUpon>PasswordForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PasswordForm.hu.resx">
+      <DependentUpon>PasswordForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PasswordForm.de.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -349,6 +380,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PasswordForm.ru.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Processes.es.resx">
+      <DependentUpon>Processes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Processes.hu.resx">
+      <DependentUpon>Processes.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Processes.de.resx">
       <DependentUpon>Processes.cs</DependentUpon>
@@ -368,6 +405,8 @@
     <EmbeddedResource Include="Processes.ru.resx">
       <DependentUpon>Processes.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Exceptions.es.resx" />
+    <EmbeddedResource Include="Resources\Exceptions.hu.resx" />
     <EmbeddedResource Include="Resources\Exceptions.de.resx" />
     <EmbeddedResource Include="Resources\Exceptions.fr.resx" />
     <EmbeddedResource Include="Resources\Exceptions.ja.resx" />
@@ -386,6 +425,8 @@
     <EmbeddedResource Include="PasswordForm.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Messages.es.resx" />
+    <EmbeddedResource Include="Resources\Messages.hu.resx" />
     <EmbeddedResource Include="Resources\Messages.de.resx" />
     <EmbeddedResource Include="Resources\Messages.fr.resx" />
     <EmbeddedResource Include="Resources\Messages.ja.resx" />
@@ -397,6 +438,12 @@
       <LastGenOutput>Messages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Messages.ru.resx" />
+    <EmbeddedResource Include="Services.es.resx">
+      <DependentUpon>Services.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Services.hu.resx">
+      <DependentUpon>Services.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Services.de.resx">
       <DependentUpon>Services.cs</DependentUpon>
     </EmbeddedResource>
@@ -425,6 +472,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Services.ru.resx">
       <DependentUpon>Services.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsForm.es.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsForm.hu.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.de.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>

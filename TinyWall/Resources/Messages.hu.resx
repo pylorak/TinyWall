@@ -1,0 +1,367 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
+    <value>Nincs megfelelő jogosultságom a frissítéshez :/</value>
+  </data>
+  <data name="TinyWallUpdater" xml:space="preserve">
+    <value>TinyWall Frissítés</value>
+  </data>
+  <data name="ErrorCheckingForUpdates" xml:space="preserve">
+    <value>A frissítő szerver nem elérhető. Győződj meg róla, hogy a TinyWall rendelkezik-e engedélyezett internetkapcsolattal és próbáld meg újra.</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>A TinyWall egy újabb verziója {0} elérhető. Szeretnéd most frissíteni?</value>
+  </data>
+  <data name="DownloadingUpdate" xml:space="preserve">
+    <value>Frissítés letöltése...</value>
+  </data>
+  <data name="NoUpdateAvailable" xml:space="preserve">
+    <value>A legújabb verziót használod. A frissítés nem szükséges.</value>
+  </data>
+  <data name="DownloadInterrupted" xml:space="preserve">
+    <value>A letöltés megszakadt.</value>
+  </data>
+  <data name="StartingUpdate" xml:space="preserve">
+    <value>Frissítés indul...</value>
+  </data>
+  <data name="PleaseWaitWhileTinyWallChecksForUpdates" xml:space="preserve">
+    <value>A TinyWall frissítéseket keres...</value>
+  </data>
+  <data name="CouldNotWhitelistProcess" xml:space="preserve">
+    <value>Nem sikerült kizárólistához adni a következő folyamatot {0}.</value>
+    <comment>Param0 is a file path.</comment>
+  </data>
+  <data name="CouldNotCloseProcess" xml:space="preserve">
+    <value>Nem sikerült bezárni a következő folyamatot {0}({1}).</value>
+    <comment>Param0 is name, param1 is pid of process.</comment>
+  </data>
+  <data name="PasswordFieldsDoNotMatch" xml:space="preserve">
+    <value>A jelszómezők nem egyeznek. Ellenőrizd!</value>
+  </data>
+  <data name="AreYouSureYouWantToRemoveAllExceptions" xml:space="preserve">
+    <value>Biztosan elakarsz távolítani minden tűzfal kivételt?</value>
+  </data>
+  <data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
+    <value>Ezt a feladatot csak Adminisztrátor módban lehet végrehajtani. A tálcán lévő menüben választhatod ki.</value>
+  </data>
+  <data name="TinyWallSettingsFileFilter" xml:space="preserve">
+    <value>TinyWall Beállítások</value>
+    <comment>File filter description</comment>
+  </data>
+  <data name="AllFilesFileFilter" xml:space="preserve">
+    <value>Minden fájl</value>
+    <comment>File filter description</comment>
+  </data>
+  <data name="ConfigurationHasBeenImported" xml:space="preserve">
+    <value>A konfigurációs fájl sikeresen importálva lett. Kattints az Alkalmaz gombra a Kezelés/beállítás ablakban a mentéshez.</value>
+  </data>
+  <data name="ConfigurationHasBeenExported" xml:space="preserve">
+    <value>A konfigurációs fájl sikeresen exportálva lett.</value>
+  </data>
+  <data name="CurrentZone" xml:space="preserve">
+    <value>Jelenlegi zóna: {0}</value>
+    <comment>Param0 is name of zone</comment>
+  </data>
+  <data name="Zone" xml:space="preserve">
+    <value>Zóna</value>
+    <comment>Tray text</comment>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Mód</value>
+    <comment>Tray text</comment>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>Felold</value>
+    <comment>Tray menu text</comment>
+  </data>
+  <data name="Lock" xml:space="preserve">
+    <value>Lezár</value>
+    <comment>Tray menu text</comment>
+  </data>
+  <data name="UpdateAvailableBubble" xml:space="preserve">
+    <value>A TinyWall egy újabb verziója {0} elérhető. Kattints erre a buborékra a frissítéshez.</value>
+    <comment>Param0 is version number of new version</comment>
+  </data>
+  <data name="TheFirewallIsNowOperatingAsRecommended" xml:space="preserve">
+    <value>A tűzfal jelenleg az ajánlott módban működik.</value>
+  </data>
+  <data name="TheFirewallIsNowAllowsOutgoingConnections" xml:space="preserve">
+    <value>A tűzfal jelenleg engedélyezi a kimenő és blokkolja a bejövő forgalmat.</value>
+  </data>
+  <data name="TheFirewallIsNowBlockingAllInAndOut" xml:space="preserve">
+    <value>A tűzfal jelenleg a kimenő és bejövő forgalmat is blokkolja.</value>
+  </data>
+  <data name="TheFirewallIsNowDisabled" xml:space="preserve">
+    <value>A tűzfal jelenleg ki van kapcsolva.</value>
+  </data>
+  <data name="TheTinyWallServiceIsUnavailable" xml:space="preserve">
+    <value>A TinyWall szolgáltatás nem elérhető.</value>
+  </data>
+  <data name="TrafficIn" xml:space="preserve">
+    <value>Be</value>
+    <comment>Tray menu text</comment>
+  </data>
+  <data name="TrafficOut" xml:space="preserve">
+    <value>Ki</value>
+    <comment>Tray menu text</comment>
+  </data>
+  <data name="SettingHaveChangedRetry" xml:space="preserve">
+    <value>A hálózati profil megváltozott miközben a beállításokat módosítottad. A beállítások elvesztésének elkerülése érdekében hajtsd végre a módosításokat újra.</value>
+  </data>
+  <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
+    <value>A tűzfal beállítások sikeresen frissítve.</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Sikeresen végrehajtva.</value>
+  </data>
+  <data name="OtherSettingsPreventEffect" xml:space="preserve">
+    <value>A művelet sikerült, de más beállítások akadályozzák a teljes hatást.</value>
+  </data>
+  <data name="OperationFailed" xml:space="preserve">
+    <value>Végrehajtás sikertelen..</value>
+  </data>
+  <data name="CommunicationWithTheServiceError" xml:space="preserve">
+    <value>Hiba történt a TinyWall szolgáltatással való kommunikáció során.</value>
+  </data>
+  <data name="ClickOnAWindowWhitelisting" xml:space="preserve">
+    <value>Kattints bármely ablakra, az alkalmazás kizáró-listához adásához.</value>
+  </data>
+  <data name="WhitelistingCancelled" xml:space="preserve">
+    <value>Kizáró-listázás megszakítva.</value>
+  </data>
+  <data name="CannotGetExecutablePathWhitelisting" xml:space="preserve">
+    <value>Indítófájl útvonal nem található. A kizáró-listázás nem sikerült.</value>
+  </data>
+  <data name="FirewallRulesForRecognizedChanged" xml:space="preserve">
+    <value>A következő tűzfal szabályozása megváltozott: {0} . Kattints ide a kivétel szerkesztéséhez.</value>
+  </data>
+  <data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
+    <value>A következő tűzfal szabályozása megváltozott: {0} . Kattints ide a kivétel szerkesztéséhez.</value>
+  </data>
+  <data name="TinyWallHasBeenUnlocked" xml:space="preserve">
+    <value>TinyWall feloldva. Módosíthatod a konfigurációt.</value>
+  </data>
+  <data name="UnlockFailed" xml:space="preserve">
+    <value>Feloldás sikertelen. Próbáld másik jelszóval.</value>
+  </data>
+  <data name="CouldNotElevatePrivileges" xml:space="preserve">
+    <value>Rendszergazdai jog szükséges.</value>
+  </data>
+  <data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
+    <value>Az adatbázis megsérült, vagy hibás.</value>
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value>Leállít</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Indít</value>
+  </data>
+  <data name="SearchingPath" xml:space="preserve">
+    <value>Keresés: {0}</value>
+    <comment>Param0 is a path which is being searched</comment>
+  </data>
+  <data name="SearchResults" xml:space="preserve">
+    <value>Találati lista:</value>
+  </data>
+  <data name="RecognizedApplication" xml:space="preserve">
+    <value>Felismert {0}</value>
+    <comment>Exception details window banner text. Param0 is name of application.</comment>
+  </data>
+  <data name="UnknownApplication" xml:space="preserve">
+    <value>Ismeretlen alkalmazás</value>
+    <comment>Exception details window banner text</comment>
+  </data>
+  <data name="Permanent" xml:space="preserve">
+    <value>Végleges</value>
+  </data>
+  <data name="UntilReboot" xml:space="preserve">
+    <value>Újraindításig</value>
+  </data>
+  <data name="XMinutes" xml:space="preserve">
+    <value>{0} percig</value>
+    <comment>Param0 is &gt; 1</comment>
+  </data>
+  <data name="XHour" xml:space="preserve">
+    <value>{0} óráig</value>
+    <comment>Param0 is &lt;=1</comment>
+  </data>
+  <data name="XHours" xml:space="preserve">
+    <value>{0} óráig</value>
+    <comment>Param0 is &gt; 1</comment>
+  </data>
+  <data name="FirewallModeAllowOut" xml:space="preserve">
+    <value>Kimenő engedélyezése</value>
+  </data>
+  <data name="FirewallModeBlockAll" xml:space="preserve">
+    <value>Mindent blokkol</value>
+  </data>
+  <data name="FirewallModeDisabled" xml:space="preserve">
+    <value>Letiltva</value>
+  </data>
+  <data name="FirewallModeNormal" xml:space="preserve">
+    <value>Normál</value>
+  </data>
+  <data name="FirewallModeUnknown" xml:space="preserve">
+    <value>Ismeretlen</value>
+  </data>
+  <data name="CannotGetPathOfProcess" xml:space="preserve">
+    <value>Nem található a folyamat elérési útvonala.</value>
+  </data>
+  <data name="TheFirewallIsNowLearning" xml:space="preserve">
+    <value>A tűzfal most tanul, miközben minden folyamatot átenged.</value>
+  </data>
+  <data name="FirewallModeLearn" xml:space="preserve">
+    <value>Tanuló mód</value>
+  </data>
+  <data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
+    <value>Biztosan engedélyezed az automatikus tanuló módot?
+
+Az automatikus tanulás során a tűzfal átenged minden forgalmat és közben megjegyzi milyen alkalmazásokat használtál a hálózaton. Amikor kilépsz a tanuló módból, a tűzfal automatikusan létrehozza  a kivételeket. Figyelem, a különleges kivételeket nem lehet így megtaníttatni a programmal!
+
+Mielőtt bekapcsolod a tanuló módot, győződj meg róla, hogy a rendszered malware-mentes. Érdemes egy frissen telepített rendszeren futtatni ezt a funkciót, és/vagy egy alapos vírusellenőrzést is végrehajtani előtte.
+
+Engedélyezed az automatikus tanuló módot?</value>
+  </data>
+  <data name="DidYouInitiateTheUninstall" xml:space="preserve">
+    <value>Te kezdeményezted a TinyWall eltávolítását?</value>
+  </data>
+  <data name="PortListInvalid" xml:space="preserve">
+    <value>A post lista formázása helytelen.
+1-65535 ig használhatsz számokat vesszővel elválasztva. A csillag (*) karakter használható az összes lehetséges portra való hivatkozáshoz.</value>
+    <comment>First line is dialog main text. Rest are further information in smaller letters.</comment>
+  </data>
+  <data name="UnblockAppCancel" xml:space="preserve">
+    <value>Kizáró-listázás megszakítása</value>
+  </data>
+  <data name="UnblockApp" xml:space="preserve">
+    <value>Kapcsolódó fájlok találhatóak
+A kiválasztott fájl a következő része: {0}. Ahhoz hogy az alkalmazás korlátozások nélkül működhessen, ajánlott a többi fájlt is feloldani.</value>
+    <comment>First line is dialog main text. Rest are further information in smaller letters. Param0 is name of the app.</comment>
+  </data>
+  <data name="UnblockAppShowRelated" xml:space="preserve">
+    <value>Kapcsolódó fájlok mutatása/rejtése</value>
+  </data>
+  <data name="UnblockAppUnblockAllRecommended" xml:space="preserve">
+    <value>Minden javasolt fájl feloldása</value>
+  </data>
+  <data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
+    <value>Csak a kiválasztott fájlok feloldása</value>
+  </data>
+</root>

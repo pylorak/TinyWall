@@ -456,7 +456,9 @@ namespace PKSoft
             comboLanguages.Items.Add(new IdWithName("auto", "Automatic"));
             comboLanguages.Items.Add(new IdWithName("de", "Deutsch"));
             comboLanguages.Items.Add(new IdWithName("en", "English"));
+            comboLanguages.Items.Add(new IdWithName("es", "Español"));
             comboLanguages.Items.Add(new IdWithName("fr", "Français"));
+            comboLanguages.Items.Add(new IdWithName("hu", "Magyar"));
             comboLanguages.Items.Add(new IdWithName("nl", "Nederlands"));
             comboLanguages.Items.Add(new IdWithName("pt-BR", "Português Brasileiro"));
             comboLanguages.Items.Add(new IdWithName("ru", "Русский"));
