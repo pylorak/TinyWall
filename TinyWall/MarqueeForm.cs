@@ -28,7 +28,6 @@ namespace PKSoft
                     splashForm.BringToFront();
                     while (!bLoadingDone.Value)
                         System.Windows.Forms.Application.DoEvents();
-                    splashForm.Close();
                 }
             });
 
