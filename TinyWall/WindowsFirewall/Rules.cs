@@ -8,7 +8,7 @@ namespace PKSoft.WindowsFirewall
     /// <summary>
     /// The Read only list of  <see cref="Rule"/> objects.
     /// </summary>
-    internal class Rules : Collection<Rule>
+    internal sealed class Rules : Collection<Rule>
     {
         private INetFwRules FwRules;
 

@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 namespace PKSoft
 {
     [Serializable]  // Needed for ICloneable implementation 
-    public class Application
+    public sealed class Application
     {
         // Application name
         [XmlAttributeAttribute()]

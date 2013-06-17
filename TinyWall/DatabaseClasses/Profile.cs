@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 namespace PKSoft
 {
     [Serializable]
-    public class Profile
+    public sealed class Profile
     {
         [XmlAttributeAttribute()]
         public string Name;

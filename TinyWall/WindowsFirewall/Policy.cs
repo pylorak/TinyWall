@@ -11,7 +11,7 @@ namespace PKSoft.WindowsFirewall
     /// The Windows Firewall/Internet Connection Sharing service must be running to access this class.
     /// This class requires Windows Vista.
     /// </remarks>
-    internal partial class Policy
+    internal sealed class Policy
     {
         /// <summary>
         /// Contains an instance of the "HNetCfg.FwPolicy2" object.

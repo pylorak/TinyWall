@@ -5,7 +5,7 @@ using Microsoft.Win32;
 
 namespace PKSoft.Parser
 {
-    internal class ParserRegistryVariable : ParserVariable
+    internal sealed class ParserRegistryVariable : ParserVariable
     {
         internal const string OPENING_TAG = "{reg:";
 

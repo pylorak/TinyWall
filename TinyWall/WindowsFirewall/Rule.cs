@@ -7,7 +7,7 @@ namespace PKSoft.WindowsFirewall
     /// <summary>
     /// Represents a single firewall Rule.
     /// </summary>
-    internal class Rule
+    internal sealed class Rule
     {
         private static readonly Type tNetFwRule = Type.GetTypeFromProgID("HNetCfg.FwRule");
         private INetFwRule fwRule;

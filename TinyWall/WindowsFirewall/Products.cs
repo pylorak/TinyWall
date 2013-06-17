@@ -5,7 +5,7 @@ using NetFwTypeLib;
 
 namespace PKSoft.WindowsFirewall
 {
-    internal class Products : Collection<Product>
+    internal sealed class Products : Collection<Product>
     {
         private INetFwProducts fwProducts;
 

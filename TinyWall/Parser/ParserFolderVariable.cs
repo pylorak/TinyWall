@@ -5,7 +5,7 @@ using Microsoft.Win32;
 
 namespace PKSoft.Parser
 {
-    internal class ParserFolderVariable : ParserVariable
+    internal sealed class ParserFolderVariable : ParserVariable
     {
         internal const string OPENING_TAG = "{folder:";
 

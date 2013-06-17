@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 namespace PKSoft
 {
     [Serializable]
-    public class AppExceptionAssocCollection : Collection<AppExceptionAssoc>
+    public sealed class AppExceptionAssocCollection : Collection<AppExceptionAssoc>
     {
     }
 }

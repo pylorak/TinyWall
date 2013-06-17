@@ -3,7 +3,7 @@ using NetFwTypeLib;
 
 namespace PKSoft.WindowsFirewall
 {
-    internal class ServiceRestriction
+    internal sealed class ServiceRestriction
     {
         INetFwServiceRestriction fwServiceRestriction;
 

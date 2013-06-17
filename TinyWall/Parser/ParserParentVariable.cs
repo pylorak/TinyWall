@@ -4,7 +4,7 @@ using System.IO;
 
 namespace PKSoft.Parser
 {
-    internal class ParserParentVariable : ParserVariable
+    internal sealed class ParserParentVariable : ParserVariable
     {
         internal const string OPENING_TAG = "{parent:";
 
