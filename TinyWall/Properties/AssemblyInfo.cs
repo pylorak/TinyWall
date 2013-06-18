@@ -11,7 +11,7 @@ using System.Resources;
 [assembly: AssemblyDescription("An application to control and secure the built-in firewall of Windows.")]
 [assembly: AssemblyCompany("Károly Pados")]
 [assembly: AssemblyProduct("TinyWall")]
-[assembly: AssemblyCopyright("Copyright © Károly Pados 2011-2012")]
+[assembly: AssemblyCopyright("Copyright © Károly Pados 2011-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,9 +33,9 @@ using System.Resources;
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.0")]                  // used by the CLR
-[assembly: AssemblyFileVersion("2.0.0")]              // full assembly version
-[assembly: AssemblyInformationalVersion("2.0.0")]     // informal version for customers
+[assembly: AssemblyVersion("2.0.2")]                  // used by the CLR
+[assembly: AssemblyFileVersion("2.0.2")]              // full assembly version
+[assembly: AssemblyInformationalVersion("2.0.2")]     // informal version for customers
 [assembly: NeutralResourcesLanguageAttribute("en")]
 
 [assembly: CLSCompliant(true)]

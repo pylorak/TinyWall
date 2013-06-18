@@ -413,7 +413,7 @@ namespace PKSoft
         {
             if (RndGenerator == null)
                 RndGenerator = new Random();
-            return RndGenerator.Next(int.MaxValue);
+            return RndGenerator.Next(0, int.MaxValue);
         }
 
         private static object logLocker = new object();
