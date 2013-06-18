@@ -214,9 +214,6 @@ El servidor no responde. TinyWall podría tener bloqueado el acceso a internet, 
   <data name="TrafficOut" xml:space="preserve">
     <value>Salida</value>
   </data>
-  <data name="SettingHaveChangedRetry" xml:space="preserve">
-    <value>El perfil de red actual ha cambiado mientras se modificaban las preferencias. Para no perder los ajustes, realizar las modificaciones de nuevo.</value>
-  </data>
   <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
     <value>Los ajustes de cortafuegos han sido actualizados con éxito.</value>
   </data>

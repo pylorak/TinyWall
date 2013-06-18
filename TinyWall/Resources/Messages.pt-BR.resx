@@ -225,9 +225,6 @@
     <value>Saída</value>
     <comment>Tray menu text</comment>
   </data>
-  <data name="SettingHaveChangedRetry" xml:space="preserve">
-    <value>A config de rede atual foi modificada enquanto você alterava a config do programa. Para evitar a perda da config do TWall, favor fazer as modificações de novo.</value>
-  </data>
   <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
     <value>A config do firewall foi atualizada.</value>
   </data>

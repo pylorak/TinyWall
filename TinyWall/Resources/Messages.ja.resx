@@ -227,9 +227,6 @@
     <value>送信</value>
     <comment>Tray menu text</comment>
   </data>
-  <data name="SettingHaveChangedRetry" xml:space="preserve">
-    <value>あなたが設定を変更している間に現在のネットワークプロファイルは変更されています。この設定を失わないようにするには、再度変更を行ってください</value>
-  </data>
   <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
     <value>ファイアウォール設定は正常にアップデートされました</value>
   </data>

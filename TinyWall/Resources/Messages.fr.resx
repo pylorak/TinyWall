@@ -219,9 +219,6 @@ Sélectionnez Elever dans le menu et réessayez.</value>
     <value>Sortie</value>
     <comment>Tray menu text</comment>
   </data>
-  <data name="SettingHaveChangedRetry" xml:space="preserve">
-    <value>Le profil réseau actuel a été modifié lorsque vous avez modifié les réglages. Afin d'éviter de perdre les paramètres recommencez vos modifications.</value>
-  </data>
   <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
     <value>Le pare-feu a été mis à jour avec succès.</value>
   </data>

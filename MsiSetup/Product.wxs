@@ -17,11 +17,13 @@
     <?define Win64 = "yes" ?>
     <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
     <?define NgenBitness = "64bit" ?>
+    <?define System32Dir = "System64Folder" ?>
   <?else ?>
     <?define BuildArch="x86" ?>
     <?define Win64 = "no" ?>
     <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
     <?define NgenBitness = "32bit" ?>
+    <?define System32Dir = "SystemFolder" ?>
   <?endif ?>
 
   <Product Id="*" Codepage="1250" Name="$(var.ProductName)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="{0D009F71-BB22-4962-AEE0-6D42FA952B84}">
@@ -259,10 +261,14 @@
             <RemoveFolder Id='ProgramMenuDir' On='uninstall' />
             <RegistryValue Root='HKCU' Key='Software\[ProductName]' Type='string' Value='' KeyPath='yes' />
             <Shortcut Id="ControllerShortcut" Icon="TinyWallIcon.exe" Directory="ProgramMenuDir" Name="TinyWall Controller" Arguments="/desktop" Target="[INSTALLDIR]TinyWall.exe"/>
-            <Shortcut Id="DevelToolShortcut" Icon="TinyWallIcon.exe" Directory="ProgramMenuDir" Name="DevelTool" Arguments="/develtool" Target="[INSTALLDIR]TinyWall.exe"/>
+            <Shortcut Id="DevelToolShortcut" Icon="TinyWallIcon.exe" Directory="ProgramMenuDir" Name="TinyWall Dev Helper" Arguments="/develtool" Target="[INSTALLDIR]TinyWall.exe"/>
             <Shortcut Id="FAQShortcut" Directory="ProgramMenuDir" Name="FAQ" Target="[INSTALLDIR]doc\faq.html"/>
             <Shortcut Id="WhatsNewShortcut" Directory="ProgramMenuDir" Name="What's new" Target="[INSTALLDIR]doc\whatsnew.html"/>
             <util:InternetShortcut Id="WebsiteShortcut" Name="Website" Target="$(var.ProductURL)"/>
+            <!-- <Shortcut Id="UninstallProduct"
+                      Name="Uninstall TinyWall"
+                      Target="[$(var.System32Dir)]msiexec.exe"
+                      Arguments="/x [ProductCode]" /> -->
           </Component>
         </Directory>
       </Directory>

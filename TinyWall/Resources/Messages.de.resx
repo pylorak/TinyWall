@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
     <value>Konnte die Rechte für die Aktuaklisierung nicht anheben.</value>
@@ -208,7 +208,7 @@
     <value>Ausgehend</value>
   </data>
   <data name="SettingHaveChangedRetry" xml:space="preserve">
-    <value>Das aktuelle Netzwerkprofil hat sich geändert während Sie die Einstellungen geändert haben. Um zu verhindern, dass Sie die Einstellungen verlieren, sollten Sie die Einstellungen erneut vornehmen.</value>
+    <value>Das aktuelle Konfiguration hat sich geändert während Sie die Einstellungen geändert haben. Um zu verhindern, dass Sie die Einstellungen verlieren, sollten Sie die Einstellungen erneut vornehmen.</value>
   </data>
   <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
     <value>Die Firewall-Einstellungen wurde erfolgreich aktualisiert.</value>

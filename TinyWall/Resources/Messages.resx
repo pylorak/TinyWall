@@ -231,7 +231,7 @@ Select Elevate from the tray menu and try again.</value>
     <comment>Tray menu text</comment>
   </data>
   <data name="SettingHaveChangedRetry" xml:space="preserve">
-    <value>The current network profile has changed while you modified the preferences. To prevent losing settings, please make your changes again.</value>
+    <value>The configuration has changed while you modified the preferences. To prevent losing settings, please make your changes again.</value>
   </data>
   <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
     <value>The firewall settings have been successfully updated.</value>

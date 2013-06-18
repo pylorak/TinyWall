@@ -189,7 +189,7 @@ namespace PKSoft
             return
                 string.IsNullOrEmpty(path)  // All files
                 || path.Equals("System", StringComparison.OrdinalIgnoreCase)    // System-process
-                || (File.Exists(path) && Path.IsPathRooted(path));  // File path on filesystem
+                || Path.IsPathRooted(path) && (File.Exists(path));  // File path on filesystem
         }
         
         public static AppExceptionAssoc FromExecutable(string filePath, string service)
@@ -256,9 +256,9 @@ namespace PKSoft
             }
 
             // Do we have a public key match? Either one of the listed keys in this instance is sufficient.
-            if ((this.PublicKeys != null) && (this.PublicKeys.Length > 0))
+            if (this.IsSigned)
             {
-                if ((exe.PublicKeys == null) || (exe.PublicKeys.Length < 1))
+                if (!exe.IsSigned)
                     // We need a public key, but the executable doesn't have one.
                     return false;
 

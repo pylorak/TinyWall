@@ -205,9 +205,6 @@ Kies verhoogde rechten vanuit het tray menu en probeer opnieuw.</value>
     <value>Uit</value>
     <comment>Tray menu text</comment>
   </data>
-  <data name="SettingHaveChangedRetry" xml:space="preserve">
-    <value>Het huidige netwerkprofiel is gewijzigd tijdens het aanpassen van de voorkeuren. Maak uw wijzigingen opnieuw om te vermijden dat instellingen verloren gaan.</value>
-  </data>
   <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
     <value>De firewall instellingen zijn met succes bijgewerkt.</value>
   </data>

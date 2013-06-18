@@ -414,7 +414,7 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The current network profile has changed while you modified the preferences. To prevent losing settings, please make your changes again..
+        ///   Looks up a localized string similar to The configuration has changed while you modified the preferences. To prevent losing settings, please make your changes again..
         /// </summary>
         internal static string SettingHaveChangedRetry {
             get {

@@ -213,9 +213,6 @@
   <data name="TrafficOut" xml:space="preserve">
     <value>Исходящий</value>
   </data>
-  <data name="SettingHaveChangedRetry" xml:space="preserve">
-    <value>Пока вы меняли настройки, текущий профиль сети был изменен. Чтобы избежать потерю настроек, измените их снова.</value>
-  </data>
   <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
     <value>Настройки фаервола были успешно обновлены.</value>
   </data>
