@@ -2,6 +2,7 @@
 using System.IO.Pipes;
 using System.Security.Principal;
 using System.Threading;
+using System.Diagnostics;
 
 namespace PKSoft
 {
@@ -9,11 +10,8 @@ namespace PKSoft
 
     internal class PipeCom : DisposableObject
     {
-        private const string CLIENT_PUBLIC_KEY = "A036E6F1E41F224B33F498535F7DF9B9382BA82AB3E028ABEDC4A6C13D701B73";
-        private const string SERVER_PUBLIC_KEY = "9B046814B7CF7EF8CA7D9142C09E9F4943F458F67C1598CEE6A9BB473828DA2A";
-        private readonly string PipeName;
+        private static readonly string PipeName = "TinyWallController";
 
-        private bool m_RunThreads = true;
         private PipeStream m_Pipe;
         private Thread m_PipeWorkerThread;
         private RequestQueue m_ReqQueue;
@@ -24,11 +22,10 @@ namespace PKSoft
             if (disposing)
             {
                 // Release managed resources
-
+                m_PipeWorkerThread.Abort();
+                m_PipeWorkerThread.Join(TimeSpan.FromMilliseconds(500));
                 if (m_ReqQueue != null)
                     m_ReqQueue.Dispose();
-                if (m_Pipe != null)
-                    m_Pipe.Dispose();
             }
 
             // Release unmanaged resources.
@@ -42,18 +39,8 @@ namespace PKSoft
             base.Dispose(disposing);
         }
 
-        internal PipeCom(string serverPipeName, PipeDataReceived recvCallback)
+        internal PipeCom(PipeDataReceived recvCallback)
         {
-            PipeName = serverPipeName;
-
-            // Allow authenticated users access to the pipe
-            SecurityIdentifier AuthenticatedSID = new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null);
-            PipeAccessRule par = new PipeAccessRule(AuthenticatedSID, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
-            PipeSecurity ps = new PipeSecurity();
-            ps.AddAccessRule(par);            
-
-            // Create pipe server
-            m_Pipe = new NamedPipeServerStream(serverPipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.None, 2048, 2048, ps);
             m_RcvCallback = recvCallback;
 
             // Start thread that is going to do the actual communication
@@ -64,7 +51,6 @@ namespace PKSoft
 
         internal PipeCom(string clientPipeName)
         {
-            PipeName = clientPipeName;
             m_ReqQueue = new RequestQueue();
 
             // Start thread that is going to do the actual communication
@@ -75,81 +61,99 @@ namespace PKSoft
 
         private void PipeServerWorker()
         {
-            NamedPipeServerStream pipeServer = m_Pipe as NamedPipeServerStream;
-            while (m_RunThreads)
+            // Allow authenticated users access to the pipe
+            SecurityIdentifier AuthenticatedSID = new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null);
+            PipeAccessRule par = new PipeAccessRule(AuthenticatedSID, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
+            PipeSecurity ps = new PipeSecurity();
+            ps.AddAccessRule(par);
+
+            bool abort = false;
+            while (!abort)
             {
                 try
                 {
-                    if (!pipeServer.IsConnected)
+                    // Create pipe server
+                    using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(PipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.None, 2048, 2048, ps))
                     {
-                        pipeServer.WaitForConnection();
-                        if (!AuthAsServer())
-                            throw new InvalidOperationException("Client authentication failed.");
-                    }
+                        m_Pipe = pipeServer;
 
-                    // Read msg
-                    Message msg = ReadMsg();
-                    Message resp = m_RcvCallback(msg);
-                    WriteMsg(resp);
+                        if (!pipeServer.IsConnected)
+                        {
+                            pipeServer.WaitForConnection();
+                            if (!AuthAsServer())
+                                throw new InvalidOperationException("Client authentication failed.");
+                        }
+
+                        while (true)
+                        {
+                            // Read msg
+                            Message msg = ReadMsg();
+                            Message resp = m_RcvCallback(msg);
+                            WriteMsg(resp);
+                        }
+                    } //using
                 }
-                catch
+                catch (ThreadAbortException)
                 {
-                    pipeServer.Disconnect();
+                    abort = true;
                 }
-            } // while
+                catch { }
+                finally 
+                {
+                    m_Pipe = null;
+                }
+            } //while
         }
 
         private Message SenderProcessor(Message msg)
         {
             try
             {
-                if (m_Pipe == null)
+                using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(PipeName))
                 {
-                    // Create pipe client
-                    m_Pipe = new NamedPipeClientStream(PipeName);
+                    m_Pipe = pipeClient;
+
+                    if (!pipeClient.IsConnected)
+                    {
+                        pipeClient.Connect(500);
+                        if (!pipeClient.IsConnected)
+                            return new Message(TWControllerMessages.COM_ERROR);
+                        else if (!AuthAsClient())
+                            return new Message(TWControllerMessages.COM_ERROR);
+                    }
+
+                    // Send command
+                    WriteMsg(msg);
+
+                    // Get response
+                    return ReadMsg();
                 }
-
-                NamedPipeClientStream PipeClient = m_Pipe as NamedPipeClientStream;
-
-                if (!PipeClient.IsConnected)
-                {
-                    PipeClient.Connect(200);
-                    if (!PipeClient.IsConnected)
-                        return new Message(TWControllerMessages.COM_ERROR);
-                    else if (!AuthAsClient())
-                        return new Message(TWControllerMessages.COM_ERROR);
-                }
-
-                // Send command
-                WriteMsg(msg);
-
-                // Get response
-                return ReadMsg();
             }
             catch
             {
-                if (m_Pipe != null)
-                {
-                    m_Pipe.Dispose();
-                    m_Pipe = null;
-                }
                 return new Message(TWControllerMessages.COM_ERROR);
+            }
+            finally
+            {
+                m_Pipe = null;
             }
         }
 
         private void PipeClientWorker()
         {
-            while (m_RunThreads)
+            while (true)
             {
                 ReqResp req = m_ReqQueue.Dequeue();
 
                 // In case of a communication error,
                 // retry a small number of times.
-                for (int i = 0; i < 2; ++i)
+                for (int i = 0; i < 3; ++i)
                 {
                     req.Response = SenderProcessor(req.Request);
                     if (req.Request.Command != TWControllerMessages.COM_ERROR)
                         break;
+
+                    System.Threading.Thread.Sleep(200);
                 }
 
                 req.SignalResponse();
@@ -181,23 +185,29 @@ namespace PKSoft
 
         private bool AuthAsServer()
         {
-            Message cli = ReadMsg();
-            if ((cli.Command != TWControllerMessages.VERIFY_KEYS) || ((string)cli.Arguments[0] != CLIENT_PUBLIC_KEY))
+            long clientPid;
+            if (!NativeMethods.GetNamedPipeClientProcessId(m_Pipe.SafePipeHandle.DangerousGetHandle(), out clientPid))
                 return false;
 
-            WriteMsg(new Message(TWControllerMessages.VERIFY_KEYS, SERVER_PUBLIC_KEY));
-            return true;
+            using (Process client = Process.GetProcessById((int)clientPid))
+            {
+                using (Process server = Process.GetCurrentProcess())
+                {
+                    if (client.MainModule.FileName.Equals(server.MainModule.FileName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        WriteMsg(new Message(TWControllerMessages.RESPONSE_OK));
+                        return true;
+                    }
+                    else
+                        return false;
+                }
+            }
         }
 
         private bool AuthAsClient()
         {
-            WriteMsg(new Message(TWControllerMessages.VERIFY_KEYS, CLIENT_PUBLIC_KEY));
-
             Message srv = ReadMsg();
-            if ((srv.Command != TWControllerMessages.VERIFY_KEYS) || ((string)srv.Arguments[0] != SERVER_PUBLIC_KEY))
-                return false;
-
-            return true;
+            return (srv.Command == TWControllerMessages.RESPONSE_OK);
         }
 
     }

@@ -32,5 +32,9 @@ namespace PKSoft
             string pwzExeName,
             [MarshalAs(UnmanagedType.Bool)]
             bool bAllUsers);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool GetNamedPipeClientProcessId(IntPtr Pipe, out long ClientProcessId);
     }
 }

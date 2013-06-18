@@ -15,7 +15,7 @@ namespace PKSoft
             return 0;
         }
         
-        private static int StartService()
+        private static int StartService(TinyWallService tw)
         {
             bool mutexok;
             using (Mutex SingleInstanceMutex = new Mutex(true, @"Global\TinyWallService", out mutexok))
@@ -25,12 +25,10 @@ namespace PKSoft
                     return -1;
                 }
 
-                TinyWallService tw = new TinyWallService();
                 tw.ServiceName = TinyWallService.SERVICE_NAME;
                 if (!EventLog.SourceExists("TinyWallService"))
                     EventLog.CreateEventSource("TinyWallService", null);
                 tw.EventLog.Source = "TinyWallService";
-
 
 #if DEBUG
                 tw.Start(null);
@@ -115,15 +113,22 @@ namespace PKSoft
                 case StartUpMode.DevelTool:
                     return StartDevelTool();
                 case StartUpMode.SelfHosted:
-                    StartService();
-                    Thread.Sleep(500);
-                    return StartController(opts);
+                    using (TinyWallService srv = new TinyWallService())
+                    {
+                        StartService(srv);
+                        int ret = StartController(opts);
+                        srv.Stop();
+                        return ret;
+                    }
                 case StartUpMode.Service:
-                    StartService();
+                    using (TinyWallService srv = new TinyWallService())
+                    {
+                        StartService(srv);
 #if DEBUG
-                    while (true)
-                        Thread.Sleep(500);
+                        while (true)
+                            Thread.Sleep(1000);
 #endif
+                    }
                     return 0;
                 default:
                     return -1;

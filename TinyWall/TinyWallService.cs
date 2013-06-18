@@ -687,13 +687,15 @@ namespace PKSoft
             }
         }
 
-        private void CommitLearnedRules()
+        private bool CommitLearnedRules()
         {
+            bool needsSave = false;
+
             if (LogWatcher == null)
-                return;
+                return needsSave;
 
             if (LearningNewExceptions == null)
-                return;
+                return needsSave;
 
             if (LearningNewExceptions.Count > 0)
             {
@@ -701,21 +703,19 @@ namespace PKSoft
                 {
                     foreach (FirewallException ex in LearningNewExceptions)
                     {
+                        needsSave = true;
                         SettingsManager.CurrentZone.AppExceptions.Add(ex);
                     }
 
                     LearningKnownApplication = null;
                     LearningNewExceptions = null;
                 }
-                SettingsManager.CurrentZone.Normalize();
-                SettingsManager.CurrentZone.Save(ZoneFilePath);
-                RebuildApplicationRuleDefs();
 
                 VisibleState.SettingsChangeset = Utils.GetRandomNumber();
                 NotifyController(TWServiceMessages.SETTINGS_CHANGED);
             }
 
-            return;
+            return needsSave;
         }
 
         private Message ProcessCmd(Message req)
@@ -735,7 +735,10 @@ namespace PKSoft
                         VisibleState.Mode = (FirewallMode)req.Arguments[0];
 
                         Policy Firewall = new Policy();
-                        CommitLearnedRules();
+                        if (CommitLearnedRules())
+                            SettingsManager.CurrentZone.Save(ZoneFilePath);
+
+                        RebuildApplicationRuleDefs();
                         AssembleActiveRules();
                         MergeActiveRulesIntoWinFirewall(Firewall.GetRules(false));
 
@@ -761,15 +764,10 @@ namespace PKSoft
                             SettingsManager.GlobalConfig.Save();
                         }
 
-                        ZoneSettings oldZone = SettingsManager.CurrentZone;
-                        ZoneSettings newZone = SettingsManager.CurrentZone;
                         if (req.Arguments[1] != null)
                         {
-                            // This roundabout way is to prevent overwriting the wrong zone if the controller is sending us
-                            // data from a zone that is not the current one.
-                            newZone = (ZoneSettings)req.Arguments[1];
-                            newZone.Save(ZoneFilePath);
-                            SettingsManager.CurrentZone = newZone;
+                            SettingsManager.CurrentZone = (ZoneSettings)req.Arguments[1];
+                            SettingsManager.CurrentZone.Save(ZoneFilePath);
                         }
 
                         Policy Firewall = new Policy();
@@ -805,7 +803,8 @@ namespace PKSoft
                     }
                 case TWControllerMessages.REINIT:
                     {
-                        CommitLearnedRules();
+                        if (CommitLearnedRules())
+                            SettingsManager.CurrentZone.Save(ZoneFilePath);
                         InitFirewall();
                         return new Message(TWControllerMessages.RESPONSE_OK);
                     }
@@ -850,21 +849,8 @@ namespace PKSoft
                 case TWControllerMessages.STOP_DISABLE:
                     {
                         UninstallRequested = true;
-
-                        // Disable automatic re-start of service
-                        try
-                        {
-                            using (ScmWrapper.ServiceControlManager scm = new ScmWrapper.ServiceControlManager())
-                            {
-                                scm.SetStartupMode(TinyWallService.SERVICE_NAME, ServiceStartMode.Automatic);
-                                scm.SetRestartOnFailure(TinyWallService.SERVICE_NAME, false);
-                            }
-                        }
-                        catch { }
-
-                        // Stop service execution
+                        Shutdown();
                         Environment.Exit(0);
-
                         return new Message(TWControllerMessages.RESPONSE_OK);
                     }
                 case TWControllerMessages.MINUTE_TIMER:
@@ -1105,7 +1091,7 @@ namespace PKSoft
                 FirewallWorkerThread.Start();
 
                 // Fire up pipe
-                GlobalInstances.CommunicationMan = new PipeCom("TinyWallController", new PipeDataReceived(PipeServerDataReceived));
+                GlobalInstances.CommunicationMan = new PipeCom(new PipeDataReceived(PipeServerDataReceived));
 
 #if !DEBUG
                 // Messing with the SCM in this method would hang us, so start it parallel
@@ -1134,17 +1120,14 @@ namespace PKSoft
 
         private void Shutdown()
         {
-            bool needsSave = false;
+            FirewallWorkerThread.Abort();
 
             // Check all exceptions if any one has expired
+            bool needsSave = false;
             {
                 List<FirewallException> exs = SettingsManager.CurrentZone.AppExceptions;
                 for (int i = exs.Count-1; i >= 0; --i)
                 {
-                    // "Permanent" exceptions do not expire, skip them
-                    if (exs[i].Timer == AppExceptionTimer.Permanent)
-                        continue;
-
                     // Did this one expire?
                     if (exs[i].Timer == AppExceptionTimer.Until_Reboot)
                     {
@@ -1153,20 +1136,14 @@ namespace PKSoft
                         needsSave = true;
                     }
                 }
-
-                if (needsSave)
-                {
-                    SettingsManager.CurrentZone.AppExceptions = exs;
-                    SettingsManager.CurrentZone.Save(ZoneFilePath);
-                }
+                SettingsManager.CurrentZone.AppExceptions = exs;
             }
 
-            FirewallWorkerThread.Abort();
+            needsSave = needsSave || CommitLearnedRules();
+            if (needsSave)
+                SettingsManager.CurrentZone.Save(ZoneFilePath);
 
-            CommitLearnedRules();
             SettingsManager.GlobalConfig.Save();
-            SettingsManager.CurrentZone.Save(ZoneFilePath);
-            FileLocker.UnlockAll();
 
             if (LogWatcher != null)
             {
@@ -1174,14 +1151,25 @@ namespace PKSoft
                 LogWatcher = null;
             }
 
-            if (!UninstallRequested)
+            try
             {
-                try
+                if (!UninstallRequested)
                 {
                     TinyWallDoctor.EnsureHealth();
                 }
-                catch { }
+                else
+                {
+                    // Disable automatic re-start of service
+                    using (ScmWrapper.ServiceControlManager scm = new ScmWrapper.ServiceControlManager())
+                    {
+                        scm.SetStartupMode(TinyWallService.SERVICE_NAME, ServiceStartMode.Automatic);
+                        scm.SetRestartOnFailure(TinyWallService.SERVICE_NAME, false);
+                    }
+                }
             }
+            catch { }
+
+            Environment.Exit(0);
         }
 
         // Executed on computer shutdown.

@@ -93,6 +93,18 @@ namespace PKSoft
             // Disable automatic re-start of service
             for (int i = 0; i < 5; ++i)
             {
+                // Try to stop service
+                try
+                {
+                    using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
+                    {
+                        sc.Stop();
+                        sc.WaitForStatus(ServiceControllerStatus.Stopped, System.TimeSpan.FromSeconds(10));
+                    }
+                }
+                catch { }
+
+                // Disable automatic recovery
                 try
                 {
                     using (ScmWrapper.ServiceControlManager scm = new ScmWrapper.ServiceControlManager())
@@ -109,28 +121,25 @@ namespace PKSoft
                     Process[] procs = Process.GetProcesses();
                     foreach (Process p in procs)
                     {
-                        if (p.Id != ownPid)
+                        try
                         {
-                            try
+                            if (p.ProcessName.Contains("TinyWall") && (p.Id != ownPid))
                             {
-                                if (p.ProcessName.Contains("TinyWall"))
-                                {
-                                    if (!p.CloseMainWindow())
-                                        p.Kill();
-                                    else if (!p.WaitForExit(5000))
-                                        p.Kill();
-                                }
+                                if (!p.CloseMainWindow())
+                                    p.Kill();
+                                else if (!p.WaitForExit(5000))
+                                    p.Kill();
                             }
-                            catch
-                            {
-                            }
+                        }
+                        catch
+                        {
                         }
                     }
                 }
             }
 
             // Give some additional time for process shutdown
-            System.Threading.Thread.Sleep(1000);
+            System.Threading.Thread.Sleep(5000);
 
             // Disable automatic start of controller
             Utils.RunAtStartup("TinyWall Controller", null);

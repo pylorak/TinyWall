@@ -50,6 +50,8 @@ namespace PKSoft
 
         internal void Save(string zoneFile)
         {
+            Normalize();
+
             // Construct key
             string key = ENC_SALT + MachineFingerprint.Fingerprint();
             key = Hasher.HashString(key).Substring(0, 16);
