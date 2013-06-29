@@ -9,7 +9,7 @@ namespace PKSoft
     {
         internal string SelectedPath;
 
-        internal static FirewallException ChooseProcess(IWin32Window parent)
+        internal static FirewallException ChooseProcess(IWin32Window parent = null)
         {
             using (ProcessesForm pf = new ProcessesForm())
             {

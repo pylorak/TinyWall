@@ -72,7 +72,16 @@ namespace PKSoft.WindowsFirewall
                 }
                 catch
                 {
-                    failedRules.Add(ruleset[i]);
+                    try
+                    {   // Windows Firewall does not like short path names, so we
+                        // try to expand the path to a long name (just in case it is a short one).
+                        ruleset[i].ApplicationName = Utils.GetLongPathName(ruleset[i].ApplicationName);
+                        Add(ruleset[i]);
+                    }
+                    catch
+                    {
+                        failedRules.Add(ruleset[i]);
+                    }
                 }
             }
         }

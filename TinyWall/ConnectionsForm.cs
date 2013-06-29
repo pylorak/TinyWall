@@ -19,13 +19,13 @@ namespace PKSoft
         }
 
         private List<FirewallLogEntry> FwLogEntries = new List<FirewallLogEntry>();
-        private MainForm MainForm = null;
+        private TinyWallController Controller = null;
 
-        internal ConnectionsForm(MainForm form)
+        internal ConnectionsForm(TinyWallController ctrl)
         {
             InitializeComponent();
             this.Icon = Resources.Icons.firewall;
-            this.MainForm = form;
+            this.Controller = ctrl;
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -323,7 +323,7 @@ namespace PKSoft
                 {
                     FirewallException ex = new FirewallException(path, null);
                     ex.MakeUnrestrictTcpUdp();
-                    List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(ex, true, true, this);
+                    List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(ex, true, true, true);
                     if (exceptions.Count == 0)
                         return;
 
@@ -331,7 +331,7 @@ namespace PKSoft
                         ActiveConfig.Service.AppExceptions.Add(exceptions[i]);
 
                     ActiveConfig.Service.Normalize();
-                    MainForm.ApplyFirewallSettings(ActiveConfig.Service, true);
+                    Controller.ApplyFirewallSettings(ActiveConfig.Service, true);
                 }
                 catch
                 {

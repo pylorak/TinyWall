@@ -44,7 +44,7 @@ namespace PKSoft
             // Start controller application
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-            System.Windows.Forms.Application.Run(new MainForm(opts));
+            System.Windows.Forms.Application.Run(new TinyWallController(opts));
             return 0;
         }
 

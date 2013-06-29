@@ -12,5 +12,6 @@ namespace PKSoft
         internal bool Locked = false;
         internal UpdateDescriptor Update = null;
         internal FirewallMode Mode = FirewallMode.Unknown;
+        internal List<TWServiceMessages> ClientNotifs = new List<TWServiceMessages>();
     }
 }

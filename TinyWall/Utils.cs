@@ -29,6 +29,16 @@ namespace PKSoft
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool SetProcessWorkingSetSize(IntPtr process,
                 UIntPtr minimumWorkingSetSize, UIntPtr maximumWorkingSetSize);
+
+            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+            [return: MarshalAs(UnmanagedType.U4)]
+            internal static extern int GetLongPathName(
+                [MarshalAs(UnmanagedType.LPTStr)]
+                string lpszShortPath,
+                [MarshalAs(UnmanagedType.LPTStr)]
+                StringBuilder lpszLongPath,
+                [MarshalAs(UnmanagedType.U4)]
+                int cchBuffer);
         }
 
         private static readonly Random _rng = new Random();
@@ -123,7 +133,7 @@ namespace PKSoft
 
             try
             {
-                return p.MainModule.FileName;
+                return GetLongPathName(p.MainModule.FileName);
             }
             catch
             {
@@ -145,6 +155,40 @@ namespace PKSoft
             using (Process p = Process.GetProcessById(ProcId))
             {
                 return Utils.GetProcessMainModulePath(p);
+            }
+        }
+
+        /// <summary>
+        /// Converts a short path to a long path.
+        /// </summary>
+        /// <param name="shortPath">A path that may contain short path elements (~1).</param>
+        /// <returns>The long path. Null or empty if the input is null or empty. Returns the input path in case of error.</returns>
+        internal static string GetLongPathName(string shortPath)
+        {
+            if (String.IsNullOrEmpty(shortPath))
+            {
+                return shortPath;
+            }
+
+            StringBuilder builder = new StringBuilder(255);
+            int result = NativeMethods.GetLongPathName(shortPath, builder, builder.Capacity);
+            if ((result > 0) && (result < builder.Capacity))
+            {
+                return builder.ToString(0, result);
+            }
+            else
+            {
+                if (result > 0)
+                {
+                    builder = new StringBuilder(result);
+                    result = NativeMethods.GetLongPathName(shortPath, builder, builder.Capacity);
+                    return builder.ToString(0, result);
+                }
+                else
+                {
+                    // Path not found or other error
+                    return shortPath;
+                }
             }
         }
 
@@ -358,6 +402,12 @@ namespace PKSoft
                 method();
         }
 
+        internal static void Invoke(SynchronizationContext syncCtx, SendOrPostCallback method)
+        {
+            if (syncCtx != null)
+                syncCtx.Send(method, null);
+        }
+
         internal static string ProgramFilesx86()
         {
             if ((8 == IntPtr.Size) || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
@@ -381,7 +431,7 @@ namespace PKSoft
             }
         }
 
-        internal static DialogResult ShowMessageBox(IWin32Window owner, string msg, string title, TaskDialogCommonButtons buttons, TaskDialogIcon icon)
+        internal static DialogResult ShowMessageBox(string msg, string title, TaskDialogCommonButtons buttons, TaskDialogIcon icon, IWin32Window parent = null)
         {
             string firstLine, contentLines;
             Utils.SplitFirstLine(msg, out firstLine, out contentLines);
@@ -392,7 +442,10 @@ namespace PKSoft
             taskDialog.CommonButtons = buttons;
             taskDialog.MainIcon = icon;
             taskDialog.Content = contentLines;
-            return (DialogResult)taskDialog.Show(owner);
+            if (parent==null)
+                return (DialogResult)taskDialog.Show();
+            else
+                return (DialogResult)taskDialog.Show(parent);
         }
 
         private static string _ExecutablePath = null;
@@ -444,17 +497,6 @@ namespace PKSoft
                     sw.WriteLine();
                 }
             }
-        }
-
-        internal static void MinimizeMemory()
-        {
-            System.Threading.ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object dummy)
-            {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                NativeMethods.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle,
-                    (UIntPtr)0xFFFFFFFF, (UIntPtr)0xFFFFFFFF);
-            });
         }
     }
 

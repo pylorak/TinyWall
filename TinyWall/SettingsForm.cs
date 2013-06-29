@@ -302,7 +302,7 @@ namespace PKSoft
             {
                 if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {
-                    List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(f.ExceptionSettings, true, true, this);
+                    List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(f.ExceptionSettings, true, true, true);
                     for (int i = 0; i < exceptions.Count; ++i)
                         TmpConfig.Service.AppExceptions.Add(exceptions[i]);
                     TmpConfig.Service.Normalize();
@@ -362,7 +362,7 @@ namespace PKSoft
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            Updater.StartUpdate(this);
+            Updater.StartUpdate();
         }
 
         private void btnAppAutoDetect_Click(object sender, EventArgs e)

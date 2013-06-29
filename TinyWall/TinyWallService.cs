@@ -29,8 +29,6 @@ namespace PKSoft
         private DateTime LastControllerCommandTime = DateTime.Now;
         private DateTime LastFwLogReadTime = DateTime.Now;
         private FirewallLogWatcher LogWatcher;
-        private IntPtr ControllerHwnd = IntPtr.Zero;
-        private uint WM_NOTIFY_BY_SERVICE = 0;
         private ServiceSettings ServiceLocker = null;
 
         // Context needed for learning mode
@@ -451,17 +449,6 @@ namespace PKSoft
             }
         }
 
-        private void NotifyController(TWServiceMessages msg)
-        {
-            if (ControllerHwnd == IntPtr.Zero)
-                return;
-
-            if (WM_NOTIFY_BY_SERVICE == 0)
-                WM_NOTIFY_BY_SERVICE = NativeMethods.RegisterWindowMessage("WM_NOTIFY_BY_SERVICE");
-
-            NativeMethods.PostMessage(ControllerHwnd, WM_NOTIFY_BY_SERVICE, new IntPtr((int)msg), IntPtr.Zero);
-        }
-
         private void UpdaterMethod(object state)
         {
             try
@@ -544,6 +531,12 @@ namespace PKSoft
             Q.Enqueue(new ReqResp(new Message(TWControllerMessages.REINIT)));
         }
 
+        private void NotifyController(TWServiceMessages msg)
+        {
+            VisibleState.ClientNotifs.Add(msg);
+            ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
+        }
+
         internal void TimerCallback(Object state)
         {
             // This timer is called every minute.
@@ -578,7 +571,7 @@ namespace PKSoft
             {
                 using (Process p = Process.GetProcessById(pid))
                 {
-                    return p.MainModule.FileName;
+                    return Utils.GetLongPathName(p.MainModule.FileName);
                 }
             }
             catch
@@ -655,7 +648,7 @@ namespace PKSoft
                         ex.OpenPortOutboundRemoteTCP = "*";
                         ex.OpenPortOutboundRemoteUDP = "*";
                     }
-                    List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(ex, false, false, null, LearningKnownApplication);
+                    List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(ex, false, false, false, LearningKnownApplication);
                     LearningNewExceptions.AddRange(exceptions);
                 }
             }
@@ -686,7 +679,6 @@ namespace PKSoft
                 }
 
                 ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
-                NotifyController(TWServiceMessages.SETTINGS_CHANGED);
             }
 
             return needsSave;
@@ -755,20 +747,20 @@ namespace PKSoft
                         // Get changeset of client
                         int changeset = (int)req.Arguments[0];
 
-                        // TODO Get Hwnd of client
-                        ControllerHwnd = (IntPtr)req.Arguments[1];
-
                         // If our changeset is different, send new settings to client
                         if (changeset != ActiveConfig.Service.SequenceNumber)
                         {
                             VisibleState.HasPassword = ServiceLocker.HasPassword;
                             VisibleState.Locked = ServiceLocker.Locked;
 
-                            return new Message(TWControllerMessages.RESPONSE_OK,
+                            Message ret = new Message(TWControllerMessages.RESPONSE_OK,
                                 ActiveConfig.Service.SequenceNumber,
                                 ActiveConfig.Service,
-                                VisibleState
+                                Utils.DeepClone(VisibleState)
                                 );
+
+                            VisibleState.ClientNotifs.Clear();
+                            return ret;
                         }
                         else
                         {
@@ -880,7 +872,6 @@ namespace PKSoft
                             ActiveConfig.Service.AppExceptions = exs;
                             ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
                             ActiveConfig.Service.Save();
-                            NotifyController(TWServiceMessages.SETTINGS_CHANGED);
                         }
 
                         return new Message(TWControllerMessages.RESPONSE_OK);

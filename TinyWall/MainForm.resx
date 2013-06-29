@@ -117,112 +117,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="Tray.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
   <data name="Tray.Text" xml:space="preserve">
     <value>TinyWall</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Tray.Visible" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <metadata name="TrayMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>92, 17</value>
-  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="mnuTrafficRate.Size" type="System.Drawing.Size, System.Drawing">
-    <value>267, 22</value>
-  </data>
   <data name="mnuTrafficRate.Text" xml:space="preserve">
     <value>&lt;Traffic rate&gt;</value>
-  </data>
-  <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>264, 6</value>
-  </data>
-  <data name="mnuModeNormal.Size" type="System.Drawing.Size, System.Drawing">
-    <value>172, 22</value>
   </data>
   <data name="mnuModeNormal.Text" xml:space="preserve">
     <value>Normal protection</value>
   </data>
-  <data name="mnuModeBlockAll.Size" type="System.Drawing.Size, System.Drawing">
-    <value>172, 22</value>
-  </data>
   <data name="mnuModeBlockAll.Text" xml:space="preserve">
     <value>Block all</value>
-  </data>
-  <data name="mnuModeAllowOutgoing.Size" type="System.Drawing.Size, System.Drawing">
-    <value>172, 22</value>
   </data>
   <data name="mnuModeAllowOutgoing.Text" xml:space="preserve">
     <value>Allow outgoing</value>
   </data>
-  <data name="mnuModeDisabled.Size" type="System.Drawing.Size, System.Drawing">
-    <value>172, 22</value>
-  </data>
   <data name="mnuModeDisabled.Text" xml:space="preserve">
     <value>Disable firewall</value>
-  </data>
-  <data name="mnuModeLearn.Size" type="System.Drawing.Size, System.Drawing">
-    <value>172, 22</value>
   </data>
   <data name="mnuModeLearn.Text" xml:space="preserve">
     <value>Autolearn</value>
   </data>
-  <data name="mnuMode.Size" type="System.Drawing.Size, System.Drawing">
-    <value>267, 22</value>
-  </data>
   <data name="mnuMode.Text" xml:space="preserve">
     <value>Change mode</value>
-  </data>
-  <data name="mnuManage.Size" type="System.Drawing.Size, System.Drawing">
-    <value>267, 22</value>
   </data>
   <data name="mnuManage.Text" xml:space="preserve">
     <value>Manage</value>
   </data>
-  <data name="mnuConnections.Size" type="System.Drawing.Size, System.Drawing">
-    <value>267, 22</value>
-  </data>
   <data name="mnuConnections.Text" xml:space="preserve">
     <value>Show connections</value>
-  </data>
-  <data name="mnuLock.Size" type="System.Drawing.Size, System.Drawing">
-    <value>267, 22</value>
   </data>
   <data name="mnuLock.Text" xml:space="preserve">
     <value>Lock</value>
   </data>
-  <data name="mnuElevate.Size" type="System.Drawing.Size, System.Drawing">
-    <value>267, 22</value>
-  </data>
   <data name="mnuElevate.Text" xml:space="preserve">
     <value>Elevate</value>
-  </data>
-  <data name="toolStripMenuItem2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>264, 6</value>
-  </data>
-  <data name="mnuAllowLocalSubnet.Size" type="System.Drawing.Size, System.Drawing">
-    <value>267, 22</value>
   </data>
   <data name="mnuAllowLocalSubnet.Text" xml:space="preserve">
     <value>Unblock LAN traffic</value>
   </data>
-  <data name="mnuEnableHostsBlocklist.Size" type="System.Drawing.Size, System.Drawing">
-    <value>267, 22</value>
-  </data>
   <data name="mnuEnableHostsBlocklist.Text" xml:space="preserve">
     <value>Enable blocklists</value>
   </data>
-  <data name="toolStripMenuItem3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>264, 6</value>
-  </data>
   <data name="mnuWhitelistByExecutable.ShortcutKeyDisplayString" xml:space="preserve">
     <value>Ctrl+Shift+E</value>
-  </data>
-  <data name="mnuWhitelistByExecutable.Size" type="System.Drawing.Size, System.Drawing">
-    <value>267, 22</value>
   </data>
   <data name="mnuWhitelistByExecutable.Text" xml:space="preserve">
     <value>Whitelist by executable</value>
@@ -230,32 +170,17 @@
   <data name="mnuWhitelistByProcess.ShortcutKeyDisplayString" xml:space="preserve">
     <value>Ctrl+Shift+P</value>
   </data>
-  <data name="mnuWhitelistByProcess.Size" type="System.Drawing.Size, System.Drawing">
-    <value>267, 22</value>
-  </data>
   <data name="mnuWhitelistByProcess.Text" xml:space="preserve">
     <value>Whitelist by process</value>
   </data>
   <data name="mnuWhitelistByWindow.ShortcutKeyDisplayString" xml:space="preserve">
     <value>Ctrl+Shift+W</value>
   </data>
-  <data name="mnuWhitelistByWindow.Size" type="System.Drawing.Size, System.Drawing">
-    <value>267, 22</value>
-  </data>
   <data name="mnuWhitelistByWindow.Text" xml:space="preserve">
     <value>Whitelist by window</value>
   </data>
-  <data name="toolStripMenuItem5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>264, 6</value>
-  </data>
-  <data name="mnuQuit.Size" type="System.Drawing.Size, System.Drawing">
-    <value>267, 22</value>
-  </data>
   <data name="mnuQuit.Text" xml:space="preserve">
     <value>Quit</value>
-  </data>
-  <data name="TrayMenu.Size" type="System.Drawing.Size, System.Drawing">
-    <value>268, 292</value>
   </data>
   <data name="&gt;&gt;TrayMenu.Name" xml:space="preserve">
     <value>TrayMenu</value>
@@ -263,21 +188,12 @@
   <data name="&gt;&gt;TrayMenu.Type" xml:space="preserve">
     <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <metadata name="ofd.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>198, 17</value>
-  </metadata>
   <data name="ofd.Filter" xml:space="preserve">
     <value>All files|*.*</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 13</value>
-  </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>224, 25</value>
-  </data>
   <data name="$this.Text" xml:space="preserve">
     <value>TinyWall Controller</value>
   </data>
@@ -418,11 +334,5 @@
   </data>
   <data name="&gt;&gt;ofd.Type" xml:space="preserve">
     <value>System.Windows.Forms.OpenFileDialog, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>MainForm</value>
-  </data>
-  <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

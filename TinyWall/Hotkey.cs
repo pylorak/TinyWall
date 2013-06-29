@@ -35,7 +35,6 @@ namespace PKSoft
 
 		private int id;
 		private bool registered;
-		private Control windowControl;
 
         internal event HandledEventHandler Pressed;
 
@@ -73,7 +72,7 @@ namespace PKSoft
 			System.Windows.Forms.Application.AddMessageFilter(this);
 		}
 
-        internal bool Register(Control control)
+        internal bool Register()
         {
             // Check that we have not registered
 			if (this.registered)
@@ -92,7 +91,7 @@ namespace PKSoft
                             (this.Shift ? NativeMethods.MOD_SHIFT : 0) | (this.Windows ? NativeMethods.MOD_WIN : 0);
 
 			// Register the hotkey
-            if (NativeMethods.RegisterHotKey(control.Handle, this.id, modifiers, keyCode) == 0)
+            if (NativeMethods.RegisterHotKey(IntPtr.Zero, this.id, modifiers, keyCode) == 0)
 			{ 
 				// Is the error that the hotkey is registered?
                 if (Marshal.GetLastWin32Error() == NativeMethods.ERROR_HOTKEY_ALREADY_REGISTERED)
@@ -103,7 +102,6 @@ namespace PKSoft
 
 			// Save the control reference and register state
 			this.registered = true;
-			this.windowControl = control;
 
 			// We successfully registered
 			return true;
@@ -116,17 +114,12 @@ namespace PKSoft
 //            { throw new NotSupportedException("You cannot unregister a hotkey that is not registered"); }
             { return; }
 
-            // It's possible that the control itself has died: in that case, no need to unregister!
-			if (!this.windowControl.IsDisposed)
-			{
-				// Clean up after ourselves
-                if (NativeMethods.UnregisterHotKey(this.windowControl.Handle, this.id) == 0)
-				{ throw new Win32Exception(); }
-			}
+			// Clean up after ourselves
+            if (NativeMethods.UnregisterHotKey(IntPtr.Zero, this.id) == 0)
+			{ throw new Win32Exception(); }
 
 			// Clear the control reference and register state
 			this.registered = false;
-			this.windowControl = null;
 		}
 
 		private void Reregister()
@@ -135,12 +128,9 @@ namespace PKSoft
 			if (!this.registered)
 			{ return; }
 
-			// Save control reference
-			Control control = this.windowControl;
-
 			// Unregister and then reregister again
 			this.Unregister();
-			this.Register(control);
+			this.Register();
 		}
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]

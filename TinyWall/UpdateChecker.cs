@@ -35,17 +35,15 @@ namespace PKSoft
             UpdateDownloadReady
         }
 
-        private Control ParentControl;
         private TaskDialog TDialog;
         private UpdaterState State;
         private UpdateDescriptor Descriptor;
         private string ErrorMsg;
         private volatile int DownloadProgress;
 
-        internal static void StartUpdate(Control parent)
+        internal static void StartUpdate()
         {
             Updater updater = new Updater();
-            updater.ParentControl = parent;
             updater.State = UpdaterState.GettingDescriptor;
 
             updater.TDialog = new TaskDialog();
@@ -74,7 +72,7 @@ namespace PKSoft
                 });
             UpdateThread.Start();
 
-            switch (updater.TDialog.Show(parent))
+            switch (updater.TDialog.Show())
             {
                 case (int)DialogResult.Cancel:
                     UpdateThread.Interrupt();
@@ -85,7 +83,7 @@ namespace PKSoft
                     updater.CheckVersion();
                     break;
                 case (int)DialogResult.Abort:
-                    Utils.ShowMessageBox(parent, updater.ErrorMsg, PKSoft.Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
+                    Utils.ShowMessageBox(updater.ErrorMsg, PKSoft.Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
                     break;
             }
         }
@@ -98,13 +96,13 @@ namespace PKSoft
             if (newVersion > oldVersion)
             {
                 string prompt = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.UpdateAvailable, UpdateModule.ComponentVersion);
-                if (Utils.ShowMessageBox(ParentControl, prompt, PKSoft.Resources.Messages.TinyWallUpdater, TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No, TaskDialogIcon.Warning) == DialogResult.Yes)
+                if (Utils.ShowMessageBox(prompt, PKSoft.Resources.Messages.TinyWallUpdater, TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No, TaskDialogIcon.Warning) == DialogResult.Yes)
                     DownloadUpdate(UpdateModule);
             }
             else
             {
                 string prompt = PKSoft.Resources.Messages.NoUpdateAvailable;
-                Utils.ShowMessageBox(ParentControl, prompt, PKSoft.Resources.Messages.TinyWallUpdater, TaskDialogCommonButtons.Ok, TaskDialogIcon.Information);
+                Utils.ShowMessageBox(prompt, PKSoft.Resources.Messages.TinyWallUpdater, TaskDialogCommonButtons.Ok, TaskDialogIcon.Information);
             }
         }
 
@@ -135,7 +133,7 @@ namespace PKSoft
                 HTTPClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(Updater_DownloadProgressChanged);
                 HTTPClient.DownloadFileAsync(UpdateURL, tmpFile, tmpFile);
 
-                switch (updater.TDialog.Show(updater.ParentControl))
+                switch (updater.TDialog.Show())
                 {
                     case (int)DialogResult.Cancel:
                         HTTPClient.CancelAsync();
@@ -144,7 +142,7 @@ namespace PKSoft
                         InstallUpdate(tmpFile);
                         break;
                     case (int)DialogResult.Abort:
-                        Utils.ShowMessageBox(updater.ParentControl, updater.ErrorMsg, PKSoft.Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
+                        Utils.ShowMessageBox(updater.ErrorMsg, PKSoft.Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
                         break;
                 }
             }

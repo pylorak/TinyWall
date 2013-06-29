@@ -261,10 +261,9 @@ namespace PKSoft
             return "[TW" + Utils.RandomString(12) + "]";
         }
 
-        internal static List<FirewallException> CheckForAppDependencies(FirewallException ex, bool useExOnRecognized, bool specialAllowed, System.Windows.Forms.IWin32Window parent = null, ApplicationCollection allApps = null)
+        internal static List<FirewallException> CheckForAppDependencies(FirewallException ex, bool useExOnRecognized, bool specialAllowed, bool promptUI, ApplicationCollection allApps = null)
         {
             List<FirewallException> exceptions = new List<FirewallException>();
-            bool promptUI = (parent != null);
 
             AppExceptionAssoc appFile = null;
             if (allApps == null)
@@ -323,7 +322,7 @@ namespace PKSoft
                     fileListStr += filePath.ExecutablePath + Environment.NewLine;
                 dialog.ExpandedInformation = fileListStr.Trim();
 
-                switch (dialog.Show(parent))
+                switch (dialog.Show())
                 {
                     case 101:
                         break;

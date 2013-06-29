@@ -38,8 +38,7 @@ namespace PKSoft
     // Possible message types from service to controller
     internal enum TWServiceMessages
     {
-        DATABASE_UPDATED,
-        SETTINGS_CHANGED
+        DATABASE_UPDATED
     }
 
     // Encapsulates a message tye and its parameters

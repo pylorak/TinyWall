@@ -9,26 +9,267 @@ using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Samples;
 
+
 namespace PKSoft
 {
-    internal partial class MainForm : Form
+    internal sealed class TinyWallController : ApplicationContext, IMessageFilter
     {
+        #region Vom Windows Form-Designer generierter Code
+
+        private System.ComponentModel.IContainer components = new System.ComponentModel.Container();
+
+        /// <summary>
+        /// Erforderliche Methode für die Designerunterstützung.
+        /// Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TinyWallController));
+            this.Tray = new System.Windows.Forms.NotifyIcon(this.components);
+            this.TrayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnuTrafficRate = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuMode = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuModeNormal = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuModeBlockAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuModeAllowOutgoing = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuModeDisabled = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuModeLearn = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuManage = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuConnections = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuLock = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuElevate = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuAllowLocalSubnet = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuEnableHostsBlocklist = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuWhitelistByExecutable = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuWhitelistByProcess = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuWhitelistByWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuQuit = new System.Windows.Forms.ToolStripMenuItem();
+            this.ofd = new System.Windows.Forms.OpenFileDialog();
+            this.TrayMenu.SuspendLayout();
+            // 
+            // Tray
+            // 
+            resources.ApplyResources(this.Tray, "Tray");
+            this.Tray.Icon = global::PKSoft.Resources.Icons.firewall;
+            this.Tray.Visible = false;
+            this.Tray.BalloonTipClicked += new System.EventHandler(this.Tray_BalloonTipClicked);
+            this.Tray.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Tray_MouseClick);
+            // 
+            // TrayMenu
+            // 
+            this.TrayMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuTrafficRate,
+            this.toolStripMenuItem1,
+            this.mnuMode,
+            this.mnuManage,
+            this.mnuConnections,
+            this.mnuLock,
+            this.mnuElevate,
+            this.toolStripMenuItem2,
+            this.mnuAllowLocalSubnet,
+            this.mnuEnableHostsBlocklist,
+            this.toolStripMenuItem3,
+            this.mnuWhitelistByExecutable,
+            this.mnuWhitelistByProcess,
+            this.mnuWhitelistByWindow,
+            this.toolStripMenuItem5,
+            this.mnuQuit});
+            this.TrayMenu.Name = "TrayMenu";
+            resources.ApplyResources(this.TrayMenu, "TrayMenu");
+            this.TrayMenu.Opening += new System.ComponentModel.CancelEventHandler(this.TrayMenu_Opening);
+            // 
+            // mnuTrafficRate
+            // 
+            this.mnuTrafficRate.AccessibleRole = System.Windows.Forms.AccessibleRole.StaticText;
+            this.mnuTrafficRate.Image = global::PKSoft.Resources.Icons.info;
+            this.mnuTrafficRate.Name = "mnuTrafficRate";
+            resources.ApplyResources(this.mnuTrafficRate, "mnuTrafficRate");
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            resources.ApplyResources(this.toolStripMenuItem1, "toolStripMenuItem1");
+            // 
+            // mnuMode
+            // 
+            this.mnuMode.AccessibleRole = System.Windows.Forms.AccessibleRole.ButtonMenu;
+            this.mnuMode.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuModeNormal,
+            this.mnuModeBlockAll,
+            this.mnuModeAllowOutgoing,
+            this.mnuModeDisabled,
+            this.mnuModeLearn});
+            this.mnuMode.Name = "mnuMode";
+            resources.ApplyResources(this.mnuMode, "mnuMode");
+            // 
+            // mnuModeNormal
+            // 
+            this.mnuModeNormal.Name = "mnuModeNormal";
+            resources.ApplyResources(this.mnuModeNormal, "mnuModeNormal");
+            this.mnuModeNormal.Click += new System.EventHandler(this.mnuModeNormal_Click);
+            // 
+            // mnuModeBlockAll
+            // 
+            this.mnuModeBlockAll.Name = "mnuModeBlockAll";
+            resources.ApplyResources(this.mnuModeBlockAll, "mnuModeBlockAll");
+            this.mnuModeBlockAll.Click += new System.EventHandler(this.mnuModeBlockAll_Click);
+            // 
+            // mnuModeAllowOutgoing
+            // 
+            this.mnuModeAllowOutgoing.Name = "mnuModeAllowOutgoing";
+            resources.ApplyResources(this.mnuModeAllowOutgoing, "mnuModeAllowOutgoing");
+            this.mnuModeAllowOutgoing.Click += new System.EventHandler(this.mnuAllowOutgoing_Click);
+            // 
+            // mnuModeDisabled
+            // 
+            this.mnuModeDisabled.Name = "mnuModeDisabled";
+            resources.ApplyResources(this.mnuModeDisabled, "mnuModeDisabled");
+            this.mnuModeDisabled.Click += new System.EventHandler(this.mnuModeDisabled_Click);
+            // 
+            // mnuModeLearn
+            // 
+            this.mnuModeLearn.Name = "mnuModeLearn";
+            resources.ApplyResources(this.mnuModeLearn, "mnuModeLearn");
+            this.mnuModeLearn.Click += new System.EventHandler(this.mnuModeLearn_Click);
+            // 
+            // mnuManage
+            // 
+            this.mnuManage.Image = global::PKSoft.Resources.Icons.manage;
+            this.mnuManage.Name = "mnuManage";
+            resources.ApplyResources(this.mnuManage, "mnuManage");
+            this.mnuManage.Click += new System.EventHandler(this.mnuManage_Click);
+            // 
+            // mnuConnections
+            // 
+            this.mnuConnections.Image = global::PKSoft.Resources.Icons.connections;
+            this.mnuConnections.Name = "mnuConnections";
+            resources.ApplyResources(this.mnuConnections, "mnuConnections");
+            this.mnuConnections.Click += new System.EventHandler(this.mnuConnections_Click);
+            // 
+            // mnuLock
+            // 
+            this.mnuLock.Image = global::PKSoft.Resources.Icons.lock_small;
+            this.mnuLock.Name = "mnuLock";
+            resources.ApplyResources(this.mnuLock, "mnuLock");
+            this.mnuLock.Click += new System.EventHandler(this.mnuLock_Click);
+            // 
+            // mnuElevate
+            // 
+            this.mnuElevate.Image = global::PKSoft.Resources.Icons.w7uacshield;
+            this.mnuElevate.Name = "mnuElevate";
+            resources.ApplyResources(this.mnuElevate, "mnuElevate");
+            this.mnuElevate.Click += new System.EventHandler(this.mnuElevate_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            resources.ApplyResources(this.toolStripMenuItem2, "toolStripMenuItem2");
+            // 
+            // mnuAllowLocalSubnet
+            // 
+            this.mnuAllowLocalSubnet.Name = "mnuAllowLocalSubnet";
+            resources.ApplyResources(this.mnuAllowLocalSubnet, "mnuAllowLocalSubnet");
+            this.mnuAllowLocalSubnet.Click += new System.EventHandler(this.mnuAllowLocalSubnet_Click);
+            // 
+            // mnuEnableHostsBlocklist
+            // 
+            this.mnuEnableHostsBlocklist.Name = "mnuEnableHostsBlocklist";
+            resources.ApplyResources(this.mnuEnableHostsBlocklist, "mnuEnableHostsBlocklist");
+            this.mnuEnableHostsBlocklist.Click += new System.EventHandler(this.mnuEnableHostsBlocklist_Click);
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            resources.ApplyResources(this.toolStripMenuItem3, "toolStripMenuItem3");
+            // 
+            // mnuWhitelistByExecutable
+            // 
+            this.mnuWhitelistByExecutable.Image = global::PKSoft.Resources.Icons.executable;
+            this.mnuWhitelistByExecutable.Name = "mnuWhitelistByExecutable";
+            resources.ApplyResources(this.mnuWhitelistByExecutable, "mnuWhitelistByExecutable");
+            this.mnuWhitelistByExecutable.Click += new System.EventHandler(this.mnuWhitelistByExecutable_Click);
+            // 
+            // mnuWhitelistByProcess
+            // 
+            this.mnuWhitelistByProcess.Image = global::PKSoft.Resources.Icons.process;
+            this.mnuWhitelistByProcess.Name = "mnuWhitelistByProcess";
+            resources.ApplyResources(this.mnuWhitelistByProcess, "mnuWhitelistByProcess");
+            this.mnuWhitelistByProcess.Click += new System.EventHandler(this.mnuWhitelistByProcess_Click);
+            // 
+            // mnuWhitelistByWindow
+            // 
+            this.mnuWhitelistByWindow.Image = global::PKSoft.Resources.Icons.window;
+            this.mnuWhitelistByWindow.Name = "mnuWhitelistByWindow";
+            resources.ApplyResources(this.mnuWhitelistByWindow, "mnuWhitelistByWindow");
+            this.mnuWhitelistByWindow.Click += new System.EventHandler(this.mnuWhitelistByWindow_Click);
+            // 
+            // toolStripMenuItem5
+            // 
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            resources.ApplyResources(this.toolStripMenuItem5, "toolStripMenuItem5");
+            // 
+            // mnuQuit
+            // 
+            this.mnuQuit.Image = global::PKSoft.Resources.Icons.exit;
+            this.mnuQuit.Name = "mnuQuit";
+            resources.ApplyResources(this.mnuQuit, "mnuQuit");
+            this.mnuQuit.Click += new System.EventHandler(this.mnuQuit_Click);
+            // 
+            // ofd
+            // 
+            resources.ApplyResources(this.ofd, "ofd");
+            this.TrayMenu.ResumeLayout(false);
+        }
+
+        private System.Windows.Forms.NotifyIcon Tray;
+        private System.Windows.Forms.ContextMenuStrip TrayMenu;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem mnuQuit;
+        private System.Windows.Forms.ToolStripMenuItem mnuMode;
+        private System.Windows.Forms.ToolStripMenuItem mnuModeNormal;
+        private System.Windows.Forms.ToolStripMenuItem mnuModeBlockAll;
+        private System.Windows.Forms.ToolStripMenuItem mnuModeDisabled;
+        private System.Windows.Forms.ToolStripMenuItem mnuManage;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
+        private System.Windows.Forms.ToolStripMenuItem mnuWhitelistByExecutable;
+        private System.Windows.Forms.ToolStripMenuItem mnuWhitelistByProcess;
+        private System.Windows.Forms.ToolStripMenuItem mnuWhitelistByWindow;
+        private System.Windows.Forms.ToolStripMenuItem mnuLock;
+        private System.Windows.Forms.ToolStripMenuItem mnuElevate;
+        private System.Windows.Forms.ToolStripMenuItem mnuConnections;
+        private System.Windows.Forms.ToolStripMenuItem mnuModeAllowOutgoing;
+        private System.Windows.Forms.OpenFileDialog ofd;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem mnuAllowLocalSubnet;
+        private System.Windows.Forms.ToolStripMenuItem mnuEnableHostsBlocklist;
+        private System.Windows.Forms.ToolStripMenuItem mnuTrafficRate;
+        private System.Windows.Forms.ToolStripMenuItem mnuModeLearn;
+
+        #endregion
+
         private MouseInterceptor MouseInterceptor;
         private SettingsForm ShownSettings;
         private ServiceState FirewallState;
         private DateTime LastUpdateNotification = DateTime.MinValue;
-        private uint WM_NOTIFY_BY_SERVICE;
 
         // Traffic rate monitoring
         private System.Threading.Timer TrafficTimer = null;
-        private const int TRAFFIC_TIMER_INTERVAL = 3;
+        private const int TRAFFIC_TIMER_INTERVAL = 2;
         private ulong bytesRxTotal = 0;
         private ulong bytesTxTotal = 0;
+        private ulong WmiTsSys100Ns = 0;
         private string rxDisplay = string.Empty;
         private string txDisplay = string.Empty;
 
         private EventHandler<AnyEventArgs> BalloonClickedCallback;
         private object BalloonClickedCallbackArgument;
+        private SynchronizationContext SyncCtx;
 
         private Hotkey HotKeyWhitelistExecutable;
         private Hotkey HotKeyWhitelistProcess;
@@ -54,7 +295,7 @@ namespace PKSoft
             }
         }
 
-        internal MainForm(CmdLineArgs opts)
+        public TinyWallController(CmdLineArgs opts)
         {
             this.StartupOpts = opts;
 
@@ -62,14 +303,45 @@ namespace PKSoft
             try
             {
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo(ActiveConfig.Controller.Language);
+                System.Windows.Forms.Application.CurrentCulture = Thread.CurrentThread.CurrentUICulture;
             }
             catch { }
 
+            System.Windows.Forms.Application.AddMessageFilter(this);
             InitializeComponent();
-            this.Icon = Resources.Icons.firewall;
-            this.Tray.Icon = Resources.Icons.firewall;
+            InitController();
+
+            Tray.ContextMenuStrip = TrayMenu;
+            Tray.Visible = true;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                // Manually added
+                if (HotKeyWhitelistExecutable != null) HotKeyWhitelistExecutable.Dispose();
+                if (HotKeyWhitelistProcess != null) HotKeyWhitelistProcess.Dispose();
+                if (HotKeyWhitelistWindow != null) HotKeyWhitelistWindow.Dispose();
+                if (MouseInterceptor != null) MouseInterceptor.Dispose();
+
+                using (WaitHandle wh = new AutoResetEvent(false))
+                {
+                    TrafficTimer.Dispose(wh);
+                    wh.WaitOne();
+                }
+
+                components.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
+        protected override void ExitThreadCore()
+        {
+            Tray.Visible = false; // should remove lingering tray icon!
+            base.ExitThreadCore();
+        }
         private void VerifyUpdates()
         {
             try
@@ -80,7 +352,7 @@ namespace PKSoft
                     UpdateModule MainAppModule = UpdateChecker.GetMainAppModule(descriptor);
                     if (new Version(MainAppModule.ComponentVersion) > new Version(System.Windows.Forms.Application.ProductVersion))
                     {
-                        Utils.Invoke(this, (MethodInvoker)delegate()
+                        Utils.Invoke(SyncCtx, (SendOrPostCallback)delegate(object o)
                         {
                             string prompt = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.UpdateAvailableBubble, MainAppModule.ComponentVersion);
                             ShowBalloonTip(prompt, ToolTipIcon.Info, 5000, StartUpdate, MainAppModule.UpdateURL);
@@ -100,15 +372,17 @@ namespace PKSoft
         {
             try
             {
-                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(@"select BytesReceivedPersec, BytesSentPersec from Win32_PerfRawData_Tcpip_NetworkInterface"))
+                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(@"select BytesReceivedPersec, BytesSentPersec, Timestamp_Sys100NS from Win32_PerfRawData_Tcpip_NetworkInterface"))
                 {
                     ulong bytesRxNewTotal = 0;
                     ulong bytesTxNewTotal = 0;
+                    ulong newWmiTsSys100Ns = 0;
                     ManagementObjectCollection moc = searcher.Get();
                     foreach (ManagementObject adapterObject in moc)
                     {
                         bytesRxNewTotal += (ulong)adapterObject["BytesReceivedPersec"];
                         bytesTxNewTotal += (ulong)adapterObject["BytesSentPersec"];
+                        newWmiTsSys100Ns = (ulong)adapterObject["Timestamp_Sys100NS"];
                     }
 
                     // If this is the first time we are running.
@@ -118,10 +392,12 @@ namespace PKSoft
                         bytesTxTotal = bytesTxNewTotal;
                     }
 
-                    float RxDiff = (bytesRxNewTotal - bytesRxTotal) / (float)TRAFFIC_TIMER_INTERVAL;
-                    float TxDiff = (bytesTxNewTotal - bytesTxTotal) / (float)TRAFFIC_TIMER_INTERVAL;
+                    float timeDiff = (newWmiTsSys100Ns - WmiTsSys100Ns) / 10000000.0f;
+                    float RxDiff = (bytesRxNewTotal - bytesRxTotal) / timeDiff;
+                    float TxDiff = (bytesTxNewTotal - bytesTxTotal) / timeDiff;
                     bytesRxTotal = bytesRxNewTotal;
                     bytesTxTotal = bytesTxNewTotal;
+                    WmiTsSys100Ns = newWmiTsSys100Ns;
 
                     float KBytesRxPerSec = RxDiff / 1024;
                     float KBytesTxPerSec = TxDiff / 1024;
@@ -143,13 +419,14 @@ namespace PKSoft
             {
                 // On some systems the WMI query fails. We disable traffic monitoring on those systems.
                 mnuTrafficRate.Visible = false;
+                toolStripMenuItem1.Visible = false;
                 TrafficTimer.Change(Timeout.Infinite, Timeout.Infinite);
             }
         }
-        
+
         private void StartUpdate(object sender, AnyEventArgs e)
         {
-            Updater.StartUpdate(this);
+            Updater.StartUpdate();
         }
 
         void HotKeyWhitelistProcess_Pressed(object sender, HandledEventArgs e)
@@ -169,7 +446,7 @@ namespace PKSoft
 
         private void mnuQuit_Click(object sender, EventArgs e)
         {
-            System.Windows.Forms.Application.Exit();
+            ExitThread();
         }
 
         private void UpdateDisplay()
@@ -318,8 +595,7 @@ namespace PKSoft
 
             int clientChangeset = (ActiveConfig.Service == null) ? -1 : ActiveConfig.Service.SequenceNumber;
             int serverChangeset = -2;
-            //TODO: do we still need to send over our Handle?
-            Message req = new Message(TWControllerMessages.GET_SETTINGS, force ? int.MinValue : ActiveConfig.Service.SequenceNumber, this.Handle);
+            Message req = new Message(TWControllerMessages.GET_SETTINGS, force ? int.MinValue : ActiveConfig.Service.SequenceNumber);
             Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
             comError = (resp.Command == TWControllerMessages.COM_ERROR);
             if (resp.Command == TWControllerMessages.RESPONSE_OK)
@@ -344,6 +620,16 @@ namespace PKSoft
 
             if (SettingsUpdated)
             {
+                for (int i = 0; i < FirewallState.ClientNotifs.Count; ++i)
+                {
+                    switch (FirewallState.ClientNotifs[i])
+                    {
+                        case TWServiceMessages.DATABASE_UPDATED:
+                            LoadDatabase();
+                            break;
+                    }
+                }
+                FirewallState.ClientNotifs.Clear();
                 UpdateDisplay();
             }
 
@@ -361,6 +647,7 @@ namespace PKSoft
 
         private void TrayMenu_Opening(object sender, CancelEventArgs e)
         {
+            e.Cancel = false;
             if (FirewallState.Mode == FirewallMode.Unknown)
             {
                 if (!TinyWallDoctor.IsServiceRunning())
@@ -370,12 +657,12 @@ namespace PKSoft
                 }
             }
 
-           mnuTrafficRate.Text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", PKSoft.Resources.Messages.TrafficIn, rxDisplay, PKSoft.Resources.Messages.TrafficOut, txDisplay);
+            mnuTrafficRate.Text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", PKSoft.Resources.Messages.TrafficIn, rxDisplay, PKSoft.Resources.Messages.TrafficOut, txDisplay);
         }
 
         private void mnuWhitelistByExecutable_Click(object sender, EventArgs e)
         {
-            if (ofd.ShowDialog(this) != System.Windows.Forms.DialogResult.OK)
+            if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 return;
 
             FirewallException ex = new FirewallException(ofd.FileName, null);
@@ -388,19 +675,19 @@ namespace PKSoft
             {
                 using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
                 {
-                    if (f.ShowDialog(this) == DialogResult.Cancel)
+                    if (f.ShowDialog() == DialogResult.Cancel)
                         return;
 
                     ex = f.ExceptionSettings;
                 }
             }
 
-            AddNewException(ex, appFile); 
+            AddNewException(ex, appFile);
         }
 
         private void mnuWhitelistByProcess_Click(object sender, EventArgs e)
         {
-            FirewallException ex = ProcessesForm.ChooseProcess(this);
+            FirewallException ex = ProcessesForm.ChooseProcess();
             if (ex == null) return;
 
             Application app;
@@ -410,16 +697,16 @@ namespace PKSoft
             {
                 using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
                 {
-                    if (f.ShowDialog(this) == DialogResult.Cancel)
+                    if (f.ShowDialog() == DialogResult.Cancel)
                         return;
 
                     ex = f.ExceptionSettings;
                 }
             }
 
-            AddNewException(ex, appFile); 
+            AddNewException(ex, appFile);
         }
-        
+
         internal TWControllerMessages ApplyFirewallSettings(ServiceSettings21 srvConfig, bool showUI = true)
         {
             Message req = new Message(TWControllerMessages.PUT_SETTINGS, srvConfig);
@@ -499,7 +786,7 @@ namespace PKSoft
                 {
                     SettingsForm sf = this.ShownSettings;
 
-                    if (sf.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                    if (sf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
                         // Handle password change request
                         string passwd = sf.NewPassword;
@@ -568,7 +855,7 @@ namespace PKSoft
 
             ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
             {
-                Utils.Invoke(this, (MethodInvoker)delegate()
+                Utils.Invoke(SyncCtx, (SendOrPostCallback)delegate(object o)
                 {
                     MouseInterceptor.Dispose();
                     MouseInterceptor = null;
@@ -588,7 +875,7 @@ namespace PKSoft
                     {
                         using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
                         {
-                            if (f.ShowDialog(this) == DialogResult.Cancel)
+                            if (f.ShowDialog() == DialogResult.Cancel)
                                 return;
 
                             ex = f.ExceptionSettings;
@@ -607,7 +894,7 @@ namespace PKSoft
             AppExceptionAssoc exFile = tuple.obj2;
             using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
             {
-                if (f.ShowDialog(this) == DialogResult.Cancel)
+                if (f.ShowDialog() == DialogResult.Cancel)
                     return;
 
                 ex = f.ExceptionSettings;
@@ -618,7 +905,7 @@ namespace PKSoft
 
         private void AddNewException(FirewallException ex, AppExceptionAssoc exFile)
         {
-            List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(ex, true, true, this);
+            List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(ex, true, true, true);
             if (exceptions.Count == 0)
                 return;
 
@@ -655,7 +942,7 @@ namespace PKSoft
                 {
                     pf.BringToFront();
                     pf.Activate();
-                    if (pf.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                    if (pf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
                         Message req = new Message(TWControllerMessages.UNLOCK, pf.PassHash);
                         Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
@@ -688,12 +975,6 @@ namespace PKSoft
             UpdateDisplay();
         }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (MouseInterceptor != null)
-                MouseInterceptor.Dispose();
-        }
-
         private void mnuAllowLocalSubnet_Click(object sender, EventArgs e)
         {
             // Copy, so that settings are not changed if they cannot be saved
@@ -714,25 +995,11 @@ namespace PKSoft
             mnuEnableHostsBlocklist.Checked = ActiveConfig.Service.Blocklists.EnableBlocklists;
         }
 
-        private void MainForm_Resize(object sender, EventArgs e)
-        {
-            if (FormWindowState.Minimized == WindowState)
-                Hide();
-            else
-                WindowState = FormWindowState.Minimized;
-        }
-
         private void ShowBalloonTip(string msg, ToolTipIcon icon, int period_ms = 5000, EventHandler<AnyEventArgs> balloonClicked = null, object handlerArg = null)
         {
             BalloonClickedCallback = balloonClicked;
             BalloonClickedCallbackArgument = handlerArg;
             Tray.ShowBalloonTip(period_ms, ServiceSettings21.APP_NAME, msg, icon);
-        }
-
-        private void MainForm_Shown(object sender, EventArgs e)
-        {
-            Hide();
-            Utils.MinimizeMemory();
         }
 
         private void SetHotkey(System.ComponentModel.ComponentResourceManager resman, ref Hotkey hk, HandledEventHandler hkCallback, Keys keyCode, ToolStripMenuItem menu, string mnuName)
@@ -743,7 +1010,7 @@ namespace PKSoft
                 {
                     hk = new Hotkey(keyCode, true, true, false, false);
                     hk.Pressed += hkCallback;
-                    hk.Register(this);
+                    hk.Register();
                     resman.ApplyResources(menu, mnuName);
                 }
             }
@@ -760,7 +1027,7 @@ namespace PKSoft
 
         private void ApplyControllerSettings()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TinyWallController));
             SetHotkey(resources, ref HotKeyWhitelistWindow, new HandledEventHandler(HotKeyWhitelistWindow_Pressed), Keys.W, mnuWhitelistByWindow, "mnuWhitelistByWindow");
             SetHotkey(resources, ref HotKeyWhitelistExecutable, new HandledEventHandler(HotKeyWhitelistExecutable_Pressed), Keys.E, mnuWhitelistByExecutable, "mnuWhitelistByExecutable");
             SetHotkey(resources, ref HotKeyWhitelistProcess, new HandledEventHandler(HotKeyWhitelistProcess_Pressed), Keys.P, mnuWhitelistByProcess, "mnuWhitelistByProcess");
@@ -783,7 +1050,7 @@ namespace PKSoft
         {
             using (ConnectionsForm cf = new ConnectionsForm(this))
             {
-                cf.ShowDialog(this);
+                cf.ShowDialog();
             }
         }
 
@@ -814,7 +1081,7 @@ namespace PKSoft
                 GlobalInstances.ProfileMan = new ProfileManager();
                 ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
                 {
-                    Utils.Invoke(this, (MethodInvoker)delegate()
+                    Utils.Invoke(SyncCtx, (SendOrPostCallback)delegate(object o)
                     {
                         ShowBalloonTip(PKSoft.Resources.Messages.DatabaseIsMissingOrCorrupt, ToolTipIcon.Warning);
                     });
@@ -847,33 +1114,6 @@ namespace PKSoft
             ApplyFirewallSettings(ActiveConfig.Service);
         }
 
-        protected override void WndProc(ref System.Windows.Forms.Message m)
-        {
-            if (WM_NOTIFY_BY_SERVICE == 0)
-                WM_NOTIFY_BY_SERVICE = NativeMethods.RegisterWindowMessage("WM_NOTIFY_BY_SERVICE");
-
-            if ((uint)m.Msg == WM_NOTIFY_BY_SERVICE)
-            {
-                switch (m.WParam.ToInt32())
-                {
-                    case (int)TWServiceMessages.DATABASE_UPDATED:
-                        try
-                        {
-                            LoadDatabase();
-                        }
-                        catch { }
-                        break;
-                    case (int)TWServiceMessages.SETTINGS_CHANGED:
-                        LoadSettingsFromServer();
-                        break;
-                }
-                m.Result = (IntPtr)1;
-            }
-
-            //calling the base first is important, otherwise the values you set later will be lost
-            base.WndProc(ref m);
-        }
-
         private void mnuModeLearn_Click(object sender, EventArgs e)
         {
             string firstLine, contentLines;
@@ -887,14 +1127,14 @@ namespace PKSoft
             dialog.AllowDialogCancellation = false;
             dialog.CommonButtons = TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No;
 
-            if (dialog.Show(this)  != (int)DialogResult.Yes)
+            if (dialog.Show() != (int)DialogResult.Yes)
                 return;
 
             SetMode(FirewallMode.Learning);
             UpdateDisplay();
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private void InitController()
         {
 
             // We will load our database parallel to other things to improve startup performance
@@ -948,9 +1188,6 @@ namespace PKSoft
                 }
             }
 #endif
-            // Enable opening the tray menu
-            Tray.ContextMenuStrip = TrayMenu;
-
             if (StartupOpts.autowhitelist)
             {
                 AutoWhitelist();
@@ -960,6 +1197,12 @@ namespace PKSoft
             {
                 StartUpdate(null, null);
             }
+        }
+
+        public bool PreFilterMessage(ref System.Windows.Forms.Message m)
+        {
+            SyncCtx = SynchronizationContext.Current;
+            return false;
         }
     }
 

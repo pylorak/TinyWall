@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Runtime.InteropServices;
 
 namespace PKSoft
@@ -18,13 +19,6 @@ namespace PKSoft
             uint Y = (uint)System.Windows.Forms.Cursor.Position.Y;
             mouse_event(MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP, X, Y, 0, IntPtr.Zero);
         }
-
-        [return: MarshalAs(UnmanagedType.Bool)]
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        internal static extern uint RegisterWindowMessage(string lpString);
 
         [DllImport("Wer.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
         internal static extern void WerAddExcludedApplication(

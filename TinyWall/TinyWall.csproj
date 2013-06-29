@@ -94,6 +94,7 @@
     <Compile Include="ApplicationExceptionForm.Designer.cs">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="TinyWallController.cs" />
     <Compile Include="WinTrust.cs" />
     <Compile Include="CmdLineArgs.cs" />
     <Compile Include="ConnectionsForm.cs">
@@ -181,12 +182,6 @@
     </Compile>
     <Compile Include="Services.Designer.cs">
       <DependentUpon>Services.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ServiceState.cs" />
     <Compile Include="ThreadBarrier.cs" />
@@ -325,29 +320,28 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.es.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+      <DependentUpon>TinyWallController.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.hu.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+      <DependentUpon>TinyWallController.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.de.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+      <DependentUpon>TinyWallController.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.fr.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
+      <DependentUpon>TinyWallController.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.ja.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+      <DependentUpon>TinyWallController.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.nl.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+      <DependentUpon>TinyWallController.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.pt-BR.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+      <DependentUpon>TinyWallController.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.ru.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+      <DependentUpon>TinyWallController.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PasswordForm.es.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
@@ -455,8 +449,7 @@
       <DependentUpon>Services.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
+      <DependentUpon>TinyWallController.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Processes.resx">
       <DependentUpon>Processes.cs</DependentUpon>
