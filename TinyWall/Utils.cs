@@ -15,7 +15,7 @@ using Microsoft.Samples;
 
 namespace PKSoft
 {
-    internal class Utils
+    internal static class Utils
     {
         private static class NativeMethods
         {
@@ -425,7 +425,7 @@ namespace PKSoft
         {
             lock (logLocker)
             {
-                string logfile = Path.Combine(SettingsManager.AppDataPath, "errorlog");
+                string logfile = Path.Combine(ServiceSettings21.AppDataPath, "errorlog");
 
                 // Only log if log file has not yet reached a certain size
                 if (File.Exists(logfile))
