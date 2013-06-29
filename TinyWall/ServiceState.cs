@@ -8,7 +8,6 @@ namespace PKSoft
     [Serializable]
     internal class ServiceState
     {
-        internal int SettingsChangeset = Utils.GetRandomNumber();
         internal bool HasPassword = false;
         internal bool Locked = false;
         internal UpdateDescriptor Update = null;

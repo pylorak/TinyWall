@@ -172,6 +172,9 @@
   <data name="ConfigurationHasBeenImported" xml:space="preserve">
     <value>A konfigurációs fájl sikeresen importálva lett. Kattints az Alkalmaz gombra a Kezelés/beállítás ablakban a mentéshez.</value>
   </data>
+  <data name="ConfigurationImportError" xml:space="preserve">
+    <value>Hiba a konfigurációs fájl importálása közben.</value>
+  </data>
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>A konfigurációs fájl sikeresen exportálva lett.</value>
   </data>

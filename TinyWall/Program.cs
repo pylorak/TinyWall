@@ -135,6 +135,7 @@ namespace PKSoft
             } // switch
         } // Main
 
+#if DEBUG
         static System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
             string assembly = args.Name;
@@ -145,6 +146,7 @@ namespace PKSoft
         {
             string assembly = args.LoadedAssembly.FullName;
         }
+#endif
 
     } // class
 } //namespace

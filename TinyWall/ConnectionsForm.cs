@@ -236,34 +236,34 @@ namespace PKSoft
 
         private void ConnectionsForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SettingsManager.ControllerConfig.ConnFormWindowState = this.WindowState;
+            ActiveConfig.Controller.ConnFormWindowState = this.WindowState;
             if (this.WindowState == FormWindowState.Normal)
             {
-                SettingsManager.ControllerConfig.ConnFormWindowSize = this.Size;
-                SettingsManager.ControllerConfig.ConnFormWindowLoc = this.Location;
+                ActiveConfig.Controller.ConnFormWindowSize = this.Size;
+                ActiveConfig.Controller.ConnFormWindowLoc = this.Location;
             }
             else
             {
-                SettingsManager.ControllerConfig.ConnFormWindowSize = this.RestoreBounds.Size;
-                SettingsManager.ControllerConfig.ConnFormWindowLoc = this.RestoreBounds.Location;
+                ActiveConfig.Controller.ConnFormWindowSize = this.RestoreBounds.Size;
+                ActiveConfig.Controller.ConnFormWindowLoc = this.RestoreBounds.Location;
             }
 
-            SettingsManager.ControllerConfig.ConnFormShowConnections = this.chkShowActive.Checked;
-            SettingsManager.ControllerConfig.ConnFormShowOpenPorts = this.chkShowListen.Checked;
-            SettingsManager.ControllerConfig.ConnFormShowBlocked = this.chkShowBlocked.Checked;
+            ActiveConfig.Controller.ConnFormShowConnections = this.chkShowActive.Checked;
+            ActiveConfig.Controller.ConnFormShowOpenPorts = this.chkShowListen.Checked;
+            ActiveConfig.Controller.ConnFormShowBlocked = this.chkShowBlocked.Checked;
 
-            SettingsManager.ControllerConfig.Save();
+            ActiveConfig.Controller.Save();
         }
 
         private void ConnectionsForm_Load(object sender, EventArgs e)
         {
             list.ListViewItemSorter = new ListViewItemComparer(0);
-            this.Size = SettingsManager.ControllerConfig.ConnFormWindowSize;
-            this.Location = SettingsManager.ControllerConfig.ConnFormWindowLoc;
-            this.WindowState = SettingsManager.ControllerConfig.ConnFormWindowState;
-            this.chkShowActive.Checked = SettingsManager.ControllerConfig.ConnFormShowConnections;
-            this.chkShowListen.Checked = SettingsManager.ControllerConfig.ConnFormShowOpenPorts;
-            this.chkShowBlocked.Checked = SettingsManager.ControllerConfig.ConnFormShowBlocked;
+            this.Size = ActiveConfig.Controller.ConnFormWindowSize;
+            this.Location = ActiveConfig.Controller.ConnFormWindowLoc;
+            this.WindowState = ActiveConfig.Controller.ConnFormWindowState;
+            this.chkShowActive.Checked = ActiveConfig.Controller.ConnFormShowConnections;
+            this.chkShowListen.Checked = ActiveConfig.Controller.ConnFormShowOpenPorts;
+            this.chkShowBlocked.Checked = ActiveConfig.Controller.ConnFormShowBlocked;
             UpdateList();
         }
 
@@ -328,10 +328,10 @@ namespace PKSoft
                         return;
 
                     for (int i = 0; i < exceptions.Count; ++i)
-                        SettingsManager.CurrentZone.AppExceptions.Add(exceptions[i]);
+                        ActiveConfig.Service.AppExceptions.Add(exceptions[i]);
 
-                    SettingsManager.CurrentZone.Normalize();
-                    MainForm.ApplyFirewallSettings(null, SettingsManager.CurrentZone, true);
+                    ActiveConfig.Service.Normalize();
+                    MainForm.ApplyFirewallSettings(ActiveConfig.Service, true);
                 }
                 catch
                 {

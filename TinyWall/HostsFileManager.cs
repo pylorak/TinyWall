@@ -8,9 +8,9 @@ namespace PKSoft
         // Active system hosts file
         private static string HOSTS_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"drivers\etc\hosts");
         // Local copy of active hosts file
-        private static string HOSTS_BACKUP = Path.Combine(SettingsManager.AppDataPath, "hosts.bck");
+        private static string HOSTS_BACKUP = Path.Combine(ServiceSettings21.AppDataPath, "hosts.bck");
         // User's original hosts file
-        private static string HOSTS_ORIGINAL = Path.Combine(SettingsManager.AppDataPath, "hosts.orig");
+        private static string HOSTS_ORIGINAL = Path.Combine(ServiceSettings21.AppDataPath, "hosts.orig");
         // Should we lock the system's hosts file
         private static bool _ProtectHostsFile = false;
 

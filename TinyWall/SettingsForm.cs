@@ -31,23 +31,19 @@ namespace PKSoft
             }
         }
 
-        internal ZoneSettings TmpZoneConfig;
-        internal MachineSettings TmpMachineConfig;
-        internal ControllerSettings TmpControllerConfig;
+        internal ConfigContainer TmpConfig;
 
         private List<ListViewItem> ExceptionItems = new List<ListViewItem>();
         private bool LoadingSettings;
         private string m_NewPassword;
 
-        internal SettingsForm(ControllerSettings controller, MachineSettings machine, ZoneSettings zone)
+        internal SettingsForm(ConfigContainer config)
         {
             InitializeComponent();
             this.Icon = Resources.Icons.firewall;
 
-            TmpZoneConfig = zone;
-            TmpMachineConfig = machine;
-            TmpControllerConfig = controller;
-            TmpZoneConfig.Normalize();
+            TmpConfig = config;
+            TmpConfig.Service.Normalize();
         }
 
         internal string NewPassword
@@ -61,14 +57,14 @@ namespace PKSoft
             try
             {
                 // General page
-                chkAutoUpdateCheck.Checked = TmpMachineConfig.AutoUpdateCheck;
-                chkAskForExceptionDetails.Checked = TmpControllerConfig.AskForExceptionDetails;
-                chkEnableHotkeys.Checked = TmpControllerConfig.EnableGlobalHotkeys;
+                chkAutoUpdateCheck.Checked = TmpConfig.Service.AutoUpdateCheck;
+                chkAskForExceptionDetails.Checked = TmpConfig.Controller.AskForExceptionDetails;
+                chkEnableHotkeys.Checked = TmpConfig.Controller.EnableGlobalHotkeys;
                 comboLanguages.SelectedIndex = 0;
                 for(int i = 0; i < comboLanguages.Items.Count; ++i)
                 {
                     IdWithName item = comboLanguages.Items[i] as IdWithName;
-                    if (item.Id.Equals(TmpControllerConfig.Language, StringComparison.OrdinalIgnoreCase))
+                    if (item.Id.Equals(TmpConfig.Controller.Language, StringComparison.OrdinalIgnoreCase))
                     {
                         comboLanguages.SelectedIndex = i;
                         break;
@@ -76,10 +72,10 @@ namespace PKSoft
                 }
 
                 // Fill Machine Settings tab
-                chkLockHostsFile.Checked = TmpMachineConfig.LockHostsFile;
-                chkHostsBlocklist.Checked = TmpMachineConfig.Blocklists.EnableHostsBlocklist;
-                chkBlockMalwarePorts.Checked = TmpMachineConfig.Blocklists.EnablePortBlocklist;
-                chkEnableBlocklists.Checked = TmpMachineConfig.Blocklists.EnableBlocklists;
+                chkLockHostsFile.Checked = TmpConfig.Service.LockHostsFile;
+                chkHostsBlocklist.Checked = TmpConfig.Service.Blocklists.EnableHostsBlocklist;
+                chkBlockMalwarePorts.Checked = TmpConfig.Service.Blocklists.EnablePortBlocklist;
+                chkEnableBlocklists.Checked = TmpConfig.Service.Blocklists.EnableBlocklists;
                 chkEnableBlocklists_CheckedChanged(null, null);
 
                 // These will be reused multiple times
@@ -104,12 +100,12 @@ namespace PKSoft
                         if (app.Recommended)
                         {
                             int itemIdx = listRecommendedGlobalProfiles.Items.Add(item);
-                            listRecommendedGlobalProfiles.SetItemChecked(itemIdx, TmpZoneConfig.SpecialExceptions.Contains(item.Id));
+                            listRecommendedGlobalProfiles.SetItemChecked(itemIdx, TmpConfig.Service.SpecialExceptions.Contains(item.Id));
                         }
                         else
                         {
                             int itemIdx = listOptionalGlobalProfiles.Items.Add(item);
-                            listOptionalGlobalProfiles.SetItemChecked(itemIdx, TmpZoneConfig.SpecialExceptions.Contains(item.Id));
+                            listOptionalGlobalProfiles.SetItemChecked(itemIdx, TmpConfig.Service.SpecialExceptions.Contains(item.Id));
                         }
                     }
                 }
@@ -129,9 +125,9 @@ namespace PKSoft
         private void RebuildExceptionsList()
         {
             ExceptionItems.Clear();
-            for (int i = 0; i < TmpZoneConfig.AppExceptions.Count; ++i)
+            for (int i = 0; i < TmpConfig.Service.AppExceptions.Count; ++i)
             {
-                FirewallException ex = TmpZoneConfig.AppExceptions[i];
+                FirewallException ex = TmpConfig.Service.AppExceptions[i];
                 ExceptionItems.Add(ListItemFromAppException(ex));
             }
             ApplyExceptionFilter();
@@ -208,16 +204,16 @@ namespace PKSoft
             m_NewPassword = chkChangePassword.Checked ? txtPassword.Text : null;
 
             // Save settings
-            TmpControllerConfig.AskForExceptionDetails = chkAskForExceptionDetails.Checked;
-            TmpControllerConfig.EnableGlobalHotkeys = chkEnableHotkeys.Checked;
-            TmpMachineConfig.AutoUpdateCheck = chkAutoUpdateCheck.Checked;
-            TmpControllerConfig.ManageTabIndex = tabControl1.SelectedIndex;
-            TmpMachineConfig.LockHostsFile = chkLockHostsFile.Checked;
-            TmpMachineConfig.Blocklists.EnablePortBlocklist = chkBlockMalwarePorts.Checked;
-            TmpMachineConfig.Blocklists.EnableHostsBlocklist = chkHostsBlocklist.Checked;
-            TmpMachineConfig.Blocklists.EnableBlocklists = chkEnableBlocklists.Checked;
+            TmpConfig.Controller.AskForExceptionDetails = chkAskForExceptionDetails.Checked;
+            TmpConfig.Controller.EnableGlobalHotkeys = chkEnableHotkeys.Checked;
+            TmpConfig.Service.AutoUpdateCheck = chkAutoUpdateCheck.Checked;
+            TmpConfig.Controller.ManageTabIndex = tabControl1.SelectedIndex;
+            TmpConfig.Service.LockHostsFile = chkLockHostsFile.Checked;
+            TmpConfig.Service.Blocklists.EnablePortBlocklist = chkBlockMalwarePorts.Checked;
+            TmpConfig.Service.Blocklists.EnableHostsBlocklist = chkHostsBlocklist.Checked;
+            TmpConfig.Service.Blocklists.EnableBlocklists = chkEnableBlocklists.Checked;
 
-            TmpControllerConfig.Language = (comboLanguages.SelectedItem as IdWithName).Id;
+            TmpConfig.Controller.Language = (comboLanguages.SelectedItem as IdWithName).Id;
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
@@ -235,11 +231,11 @@ namespace PKSoft
             IdWithName item = clb.Items[e.Index] as IdWithName;
             if (e.NewValue == CheckState.Checked)
             {
-                TmpZoneConfig.SpecialExceptions.Add(item.Id);
+                TmpConfig.Service.SpecialExceptions.Add(item.Id);
             }
             else
             {
-                TmpZoneConfig.SpecialExceptions.Remove(item.Id);
+                TmpConfig.Service.SpecialExceptions.Remove(item.Id);
             }
         }
 
@@ -263,7 +259,7 @@ namespace PKSoft
             for (int i = listApplications.SelectedItems.Count - 1; i >= 0; --i)
             {
                 ListViewItem li = listApplications.SelectedItems[i];
-                TmpZoneConfig.AppExceptions.Remove((FirewallException)li.Tag);
+                TmpConfig.Service.AppExceptions.Remove((FirewallException)li.Tag);
             }
             RebuildExceptionsList();
         }
@@ -273,7 +269,7 @@ namespace PKSoft
             if (MessageBox.Show(this, PKSoft.Resources.Messages.AreYouSureYouWantToRemoveAllExceptions, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.No)
                 return;
 
-            TmpZoneConfig.AppExceptions.Clear();
+            TmpConfig.Service.AppExceptions.Clear();
             RebuildExceptionsList();
         }
         
@@ -288,10 +284,10 @@ namespace PKSoft
                 if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {
                     // Remove old rule
-                    TmpZoneConfig.AppExceptions.Remove(oldEx);
+                    TmpConfig.Service.AppExceptions.Remove(oldEx);
                     // Add new rule
-                    TmpZoneConfig.AppExceptions.Add(f.ExceptionSettings);
-                    TmpZoneConfig.Normalize();
+                    TmpConfig.Service.AppExceptions.Add(f.ExceptionSettings);
+                    TmpConfig.Service.Normalize();
                     RebuildExceptionsList();
                 }
             }
@@ -308,8 +304,8 @@ namespace PKSoft
                 {
                     List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(f.ExceptionSettings, true, true, this);
                     for (int i = 0; i < exceptions.Count; ++i)
-                        TmpZoneConfig.AppExceptions.Add(exceptions[i]);
-                    TmpZoneConfig.Normalize();
+                        TmpConfig.Service.AppExceptions.Add(exceptions[i]);
+                    TmpConfig.Service.Normalize();
                     RebuildExceptionsList();
                 }
             }
@@ -371,12 +367,12 @@ namespace PKSoft
 
         private void btnAppAutoDetect_Click(object sender, EventArgs e)
         {
-            using (AppFinderForm aff = new AppFinderForm(TmpZoneConfig.Clone() as ZoneSettings))
+            using (AppFinderForm aff = new AppFinderForm(Utils.DeepClone(TmpConfig.Service)))
             {
                 if (aff.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {
-                    TmpZoneConfig = aff.TmpZoneSettings;
-                    TmpZoneConfig.Normalize();
+                    TmpConfig.Service = aff.TmpSettings;
+                    TmpConfig.Service.Normalize();
                     RebuildExceptionsList();
                 }
             }
@@ -424,12 +420,34 @@ namespace PKSoft
             ofd.Filter = string.Format(CultureInfo.CurrentCulture, "{0} (*.tws)|*.tws|{1} (*)|*", PKSoft.Resources.Messages.TinyWallSettingsFileFilter, PKSoft.Resources.Messages.AllFilesFileFilter);
             if (ofd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
-                SettingsContainer sc = SerializationHelper.LoadFromXMLFile<SettingsContainer>(ofd.FileName);
-                sc.CurrentZone.ZoneName = TmpZoneConfig.ZoneName;
+                try
+                {
+                    TmpConfig = SerializationHelper.LoadFromXMLFile<ConfigContainer>(ofd.FileName);
+                }
+                catch
+                {
+                    // Try loading from older export file format.
+                    try
+                    {
+                        SettingsContainer sc = SerializationHelper.LoadFromXMLFile<SettingsContainer>(ofd.FileName);
+                        TmpConfig.Controller = sc.ControllerConfig;
+                        TmpConfig.Service.AllowLocalSubnet = sc.CurrentZone.AllowLocalSubnet;
+                        TmpConfig.Service.AppExceptions = sc.CurrentZone.AppExceptions;
+                        TmpConfig.Service.AutoUpdateCheck = sc.GlobalConfig.AutoUpdateCheck;
+                        TmpConfig.Service.Blocklists = sc.GlobalConfig.Blocklists;
+                        TmpConfig.Service.LastUpdateCheck = sc.GlobalConfig.LastUpdateCheck;
+                        TmpConfig.Service.LockHostsFile = sc.GlobalConfig.LockHostsFile;
+                        TmpConfig.Service.SpecialExceptions = sc.CurrentZone.SpecialExceptions;
+                        TmpConfig.Service.StartupMode = sc.GlobalConfig.StartupMode;
+                    }
+                    catch
+                    {
+                        // Fail import.
+                        MessageBox.Show(this, PKSoft.Resources.Messages.ConfigurationImportError, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
 
-                TmpControllerConfig = sc.ControllerConfig;
-                TmpZoneConfig = sc.CurrentZone;
-                TmpMachineConfig = sc.GlobalConfig;
                 InitSettingsUI();
                 MessageBox.Show(this, PKSoft.Resources.Messages.ConfigurationHasBeenImported, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -441,11 +459,7 @@ namespace PKSoft
             sfd.DefaultExt = "tws";
             if (sfd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
-                SettingsContainer sc = new SettingsContainer();
-                sc.ControllerConfig = TmpControllerConfig;
-                sc.CurrentZone = TmpZoneConfig;
-                sc.GlobalConfig = TmpMachineConfig;
-                SerializationHelper.SaveToXMLFile(sc, sfd.FileName);
+                SerializationHelper.SaveToXMLFile(this.TmpConfig, sfd.FileName);
                 MessageBox.Show(this, PKSoft.Resources.Messages.ConfigurationHasBeenExported, PKSoft.Resources.Messages.TinyWallSettingsFileFilter, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -458,7 +472,7 @@ namespace PKSoft
 //            DataCollection.StartProfile(ProfileLevel.Global, DataCollection.CurrentId);
 #endif
             listApplications.ListViewItemSorter = new ListViewItemComparer(0);
-            tabControl1.SelectedIndex = TmpControllerConfig.ManageTabIndex;
+            tabControl1.SelectedIndex = TmpConfig.Controller.ManageTabIndex;
 
             comboLanguages.Items.Add(new IdWithName("auto", "Automatic"));
             comboLanguages.Items.Add(new IdWithName("de", "Deutsch"));

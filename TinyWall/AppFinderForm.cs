@@ -14,13 +14,13 @@ namespace PKSoft
         private bool RunSearch;
         private ManualResetEvent ThreadEndedEvent = new ManualResetEvent(true);
 
-        internal ZoneSettings TmpZoneSettings;
+        internal ServiceSettings21 TmpSettings;
 
-        internal AppFinderForm(ZoneSettings zoneSettings)
+        internal AppFinderForm(ServiceSettings21 zoneSettings)
         {
             InitializeComponent();
             this.Icon = Resources.Icons.firewall;
-            TmpZoneSettings = zoneSettings;
+            TmpSettings = zoneSettings;
         }
 
         private void btnStartDetection_Click(object sender, EventArgs e)
@@ -248,7 +248,7 @@ namespace PKSoft
                             {
                                 if (AppExceptionAssoc.IsValidExecutablePath(execPath))
                                 {
-                                    TmpZoneSettings.AppExceptions.Add(template.CreateException(execPath));
+                                    TmpSettings.AppExceptions.Add(template.CreateException(execPath));
                                 }
                             }
                             catch (ArgumentException) { }

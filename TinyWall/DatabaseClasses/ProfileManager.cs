@@ -10,7 +10,7 @@ namespace PKSoft
 
         public static string DBPath
         {
-            get { return Path.Combine(SettingsManager.AppDataPath, "profiles.xml"); }
+            get { return Path.Combine(ServiceSettings21.AppDataPath, "profiles.xml"); }
         }
 
         public static ProfileManager Load(string filePath)

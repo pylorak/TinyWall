@@ -58,10 +58,10 @@ namespace PKSoft
         {
             this.StartupOpts = opts;
 
-            SettingsManager.ControllerConfig = ControllerSettings.Load();
+            ActiveConfig.Controller = ControllerSettings.Load();
             try
             {
-                Thread.CurrentThread.CurrentUICulture = new CultureInfo(SettingsManager.ControllerConfig.Language);
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo(ActiveConfig.Controller.Language);
             }
             catch { }
 
@@ -227,8 +227,8 @@ namespace PKSoft
             // Do we have a passord at all?
             mnuLock.Visible = FirewallState.HasPassword;
 
-            mnuAllowLocalSubnet.Checked = SettingsManager.CurrentZone.AllowLocalSubnet;
-            mnuEnableHostsBlocklist.Checked = SettingsManager.GlobalConfig.Blocklists.EnableBlocklists;
+            mnuAllowLocalSubnet.Checked = ActiveConfig.Service.AllowLocalSubnet;
+            mnuEnableHostsBlocklist.Checked = ActiveConfig.Service.Blocklists.EnableBlocklists;
         }
 
         private void SetMode(FirewallMode mode)
@@ -316,17 +316,19 @@ namespace PKSoft
             if (FirewallState == null)
                 FirewallState = new ServiceState();
 
-            Message req = new Message(TWControllerMessages.GET_SETTINGS, force ? int.MinValue : FirewallState.SettingsChangeset, this.Handle );
+            int clientChangeset = (ActiveConfig.Service == null) ? -1 : ActiveConfig.Service.SequenceNumber;
+            int serverChangeset = -2;
+            //TODO: do we still need to send over our Handle?
+            Message req = new Message(TWControllerMessages.GET_SETTINGS, force ? int.MinValue : ActiveConfig.Service.SequenceNumber, this.Handle);
             Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
             comError = (resp.Command == TWControllerMessages.COM_ERROR);
             if (resp.Command == TWControllerMessages.RESPONSE_OK)
             {
-                int ServerChangeSet = (int)resp.Arguments[0];
-                if (force || (ServerChangeSet != FirewallState.SettingsChangeset))
+                serverChangeset = (int)resp.Arguments[0];
+                if (force || (serverChangeset != clientChangeset))
                 {
-                    SettingsManager.GlobalConfig = (MachineSettings)resp.Arguments[1];
-                    SettingsManager.CurrentZone = (ZoneSettings)resp.Arguments[2];
-                    FirewallState = (ServiceState)resp.Arguments[3];
+                    ActiveConfig.Service = (ServiceSettings21)resp.Arguments[1];
+                    FirewallState = (ServiceState)resp.Arguments[2];
                     SettingsUpdated = true;
                 }
                 else
@@ -334,8 +336,8 @@ namespace PKSoft
             }
             else
             {
-                SettingsManager.GlobalConfig = new MachineSettings();
-                SettingsManager.CurrentZone = new ZoneSettings(true);
+                ActiveConfig.Controller = new ControllerSettings();
+                ActiveConfig.Service = new ServiceSettings21(true);
                 FirewallState = new ServiceState();
                 SettingsUpdated = true;
             }
@@ -382,7 +384,7 @@ namespace PKSoft
             Application app;
             AppExceptionAssoc appFile;
             ex.TryRecognizeApp(true, out app, out appFile);
-            if (SettingsManager.ControllerConfig.AskForExceptionDetails)
+            if (ActiveConfig.Controller.AskForExceptionDetails)
             {
                 using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
                 {
@@ -404,7 +406,7 @@ namespace PKSoft
             Application app;
             AppExceptionAssoc appFile;
             ex.TryRecognizeApp(true, out app, out appFile);
-            if (SettingsManager.ControllerConfig.AskForExceptionDetails)
+            if (ActiveConfig.Controller.AskForExceptionDetails)
             {
                 using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
                 {
@@ -418,45 +420,32 @@ namespace PKSoft
             AddNewException(ex, appFile); 
         }
         
-        internal TWControllerMessages ApplyFirewallSettings(MachineSettings machine, ZoneSettings zone, bool showUI = true)
+        internal TWControllerMessages ApplyFirewallSettings(ServiceSettings21 srvConfig, bool showUI = true)
         {
-            Message resp;
-            if (LoadSettingsFromServer())
+            Message req = new Message(TWControllerMessages.PUT_SETTINGS, srvConfig);
+            Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
+
+            switch (resp.Command)
             {
-                // From LoadSettingsFromServer we cannot tell if there was a communication error or if no settings were reloaded.
-                // We ping to determine if there was a communication error.
-                resp = GlobalInstances.CommunicationMan.QueueMessageSimple(TWControllerMessages.PING);
-                if (resp.Command != TWControllerMessages.RESPONSE_OK)
-                {
-                    DefaultPopups(resp.Command);
-                    return resp.Command;
-                }
-                    
-                // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
-                ShowBalloonTip(PKSoft.Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
-
-                return TWControllerMessages.RESPONSE_ERROR;
-            }
-
-            Message req = new Message(TWControllerMessages.PUT_SETTINGS, machine, zone);
-            resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
-
-            if (showUI)
-            {
-                switch (resp.Command)
-                {
-                    case TWControllerMessages.RESPONSE_OK:
+                case TWControllerMessages.RESPONSE_OK:
+                    if (showUI)
                         ShowBalloonTip(PKSoft.Resources.Messages.TheFirewallSettingsHaveBeenUpdated, ToolTipIcon.Info);
-                        if (machine != null) 
-                            SettingsManager.GlobalConfig = machine;
-                        if (zone != null)
-                            SettingsManager.CurrentZone = zone;
-                        break;
-                    default:
+                    ActiveConfig.Service = srvConfig;
+                    ActiveConfig.Service.SequenceNumber = (int)resp.Arguments[0];
+                    break;
+                case TWControllerMessages.RESPONSE_ERROR:
+                    ActiveConfig.Service = (ServiceSettings21)resp.Arguments[0];
+                    FirewallState = (ServiceState)resp.Arguments[1];
+
+                    // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
+                    if (showUI)
+                        ShowBalloonTip(PKSoft.Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
+                    break;
+                default:
+                    if (showUI)
                         DefaultPopups(resp.Command);
-                        LoadSettingsFromServer();
-                        break;
-                }
+                    LoadSettingsFromServer();
+                    break;
             }
 
             return resp.Command;
@@ -506,10 +495,7 @@ namespace PKSoft
             {
                 LoadSettingsFromServer();
 
-                using (this.ShownSettings = new SettingsForm(
-                    SettingsManager.ControllerConfig.Clone() as ControllerSettings,
-                    SettingsManager.GlobalConfig.Clone() as MachineSettings,
-                    SettingsManager.CurrentZone.Clone() as ZoneSettings))
+                using (this.ShownSettings = new SettingsForm(ActiveConfig.ToContainer()))
                 {
                     SettingsForm sf = this.ShownSettings;
 
@@ -535,9 +521,9 @@ namespace PKSoft
                         }
 
                         // Save settings
-                        SettingsManager.ControllerConfig = sf.TmpControllerConfig;
-                        SettingsManager.ControllerConfig.Save();
-                        ApplyFirewallSettings(sf.TmpMachineConfig, sf.TmpZoneConfig);
+                        ActiveConfig.FromContainer(sf.TmpConfig);
+                        ActiveConfig.Controller.Save();
+                        ApplyFirewallSettings(ActiveConfig.Service);
                     }
                 }
             }
@@ -598,7 +584,7 @@ namespace PKSoft
                     Application app;
                     AppExceptionAssoc appFile;
                     ex.TryRecognizeApp(true, out app, out appFile);
-                    if (SettingsManager.ControllerConfig.AskForExceptionDetails)
+                    if (ActiveConfig.Controller.AskForExceptionDetails)
                     {
                         using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
                         {
@@ -636,10 +622,10 @@ namespace PKSoft
             if (exceptions.Count == 0)
                 return;
 
-            SettingsManager.CurrentZone.AppExceptions.AddRange(exceptions);
-            SettingsManager.CurrentZone.Normalize();
+            ActiveConfig.Service.AppExceptions.AddRange(exceptions);
+            ActiveConfig.Service.Normalize();
 
-            TWControllerMessages resp = ApplyFirewallSettings(null, SettingsManager.CurrentZone, false);
+            TWControllerMessages resp = ApplyFirewallSettings(ActiveConfig.Service, false);
             switch (resp)
             {
                 case TWControllerMessages.RESPONSE_OK:
@@ -649,6 +635,10 @@ namespace PKSoft
                     else
                         ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForUnrecognizedChanged, ex.ExecutableName), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(tuple));
 
+                    break;
+                case TWControllerMessages.RESPONSE_ERROR:
+                    // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
+                    ShowBalloonTip(PKSoft.Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
                     break;
                 default:
                     DefaultPopups(resp);
@@ -706,19 +696,22 @@ namespace PKSoft
 
         private void mnuAllowLocalSubnet_Click(object sender, EventArgs e)
         {
-            mnuAllowLocalSubnet.Checked = !mnuAllowLocalSubnet.Checked;
-
             // Copy, so that settings are not changed if they cannot be saved
-            ZoneSettings zoneCopy = SettingsManager.CurrentZone.Clone() as ZoneSettings;
-            zoneCopy.AllowLocalSubnet = mnuAllowLocalSubnet.Checked;
-            ApplyFirewallSettings(null, zoneCopy);
+            ServiceSettings21 confCopy = Utils.DeepClone(ActiveConfig.Service);
+            confCopy.AllowLocalSubnet = !mnuAllowLocalSubnet.Checked;
+            ApplyFirewallSettings(confCopy);
+
+            mnuAllowLocalSubnet.Checked = ActiveConfig.Service.AllowLocalSubnet;
         }
 
         private void mnuEnableHostsBlocklist_Click(object sender, EventArgs e)
         {
-            mnuEnableHostsBlocklist.Checked = !mnuEnableHostsBlocklist.Checked;
-            SettingsManager.GlobalConfig.Blocklists.EnableBlocklists = mnuEnableHostsBlocklist.Checked;
-            ApplyFirewallSettings(SettingsManager.GlobalConfig, null);
+            // Copy, so that settings are not changed if they cannot be saved
+            ServiceSettings21 confCopy = Utils.DeepClone(ActiveConfig.Service);
+            confCopy.Blocklists.EnableBlocklists = !mnuEnableHostsBlocklist.Checked;
+            ApplyFirewallSettings(confCopy);
+
+            mnuEnableHostsBlocklist.Checked = ActiveConfig.Service.Blocklists.EnableBlocklists;
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -733,7 +726,7 @@ namespace PKSoft
         {
             BalloonClickedCallback = balloonClicked;
             BalloonClickedCallbackArgument = handlerArg;
-            Tray.ShowBalloonTip(period_ms, SettingsManager.APP_NAME, msg, icon);
+            Tray.ShowBalloonTip(period_ms, ServiceSettings21.APP_NAME, msg, icon);
         }
 
         private void MainForm_Shown(object sender, EventArgs e)
@@ -742,58 +735,35 @@ namespace PKSoft
             Utils.MinimizeMemory();
         }
 
-        private void ApplyControllerSettings()
+        private void SetHotkey(System.ComponentModel.ComponentResourceManager resman, ref Hotkey hk, HandledEventHandler hkCallback, Keys keyCode, ToolStripMenuItem menu, string mnuName)
         {
-            if (SettingsManager.ControllerConfig.EnableGlobalHotkeys)
-            {
-                System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-                if (HotKeyWhitelistWindow == null)
+            if (ActiveConfig.Controller.EnableGlobalHotkeys)
+            {   // enable hotkey
+                if (hk == null)
                 {
-                    HotKeyWhitelistWindow = new Hotkey(Keys.W, true, true, false, false);
-                    HotKeyWhitelistWindow.Pressed += new HandledEventHandler(HotKeyWhitelistWindow_Pressed);
-                    HotKeyWhitelistWindow.Register(this);
-                    resources.ApplyResources(this.mnuWhitelistByExecutable, "mnuWhitelistByExecutable");
-                }
-
-                if (HotKeyWhitelistExecutable == null)
-                {
-                    HotKeyWhitelistExecutable = new Hotkey(Keys.E, true, true, false, false);
-                    HotKeyWhitelistExecutable.Pressed += new HandledEventHandler(HotKeyWhitelistExecutable_Pressed);
-                    HotKeyWhitelistExecutable.Register(this);
-                    resources.ApplyResources(this.mnuWhitelistByProcess, "mnuWhitelistByProcess");
-                }
-
-                if (HotKeyWhitelistProcess == null)
-                {
-                    HotKeyWhitelistProcess = new Hotkey(Keys.P, true, true, false, false);
-                    HotKeyWhitelistProcess.Pressed += new HandledEventHandler(HotKeyWhitelistProcess_Pressed);
-                    HotKeyWhitelistProcess.Register(this);
-                    resources.ApplyResources(this.mnuWhitelistByWindow, "mnuWhitelistByWindow");
+                    hk = new Hotkey(keyCode, true, true, false, false);
+                    hk.Pressed += hkCallback;
+                    hk.Register(this);
+                    resman.ApplyResources(menu, mnuName);
                 }
             }
             else
-            {
-                if (HotKeyWhitelistExecutable != null)
+            {   // disable hotkey
+                if (hk != null)
                 {
-                    HotKeyWhitelistExecutable.Dispose();
-                    HotKeyWhitelistExecutable = null;
+                    hk.Dispose();
+                    hk = null;
                 }
-                mnuWhitelistByExecutable.ShortcutKeyDisplayString = string.Empty;
-
-                if (HotKeyWhitelistProcess != null)
-                {
-                    HotKeyWhitelistProcess.Dispose();
-                    HotKeyWhitelistProcess = null;
-                }
-                mnuWhitelistByProcess.ShortcutKeyDisplayString = string.Empty;
-
-                if (HotKeyWhitelistWindow != null)
-                {
-                    HotKeyWhitelistWindow.Dispose();
-                    HotKeyWhitelistWindow = null;
-                }
-                mnuWhitelistByWindow.ShortcutKeyDisplayString = string.Empty;
+                menu.ShortcutKeyDisplayString = string.Empty;
             }
+        }
+
+        private void ApplyControllerSettings()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            SetHotkey(resources, ref HotKeyWhitelistWindow, new HandledEventHandler(HotKeyWhitelistWindow_Pressed), Keys.W, mnuWhitelistByWindow, "mnuWhitelistByWindow");
+            SetHotkey(resources, ref HotKeyWhitelistExecutable, new HandledEventHandler(HotKeyWhitelistExecutable_Pressed), Keys.E, mnuWhitelistByExecutable, "mnuWhitelistByExecutable");
+            SetHotkey(resources, ref HotKeyWhitelistProcess, new HandledEventHandler(HotKeyWhitelistProcess_Pressed), Keys.P, mnuWhitelistByProcess, "mnuWhitelistByProcess");
         }
 
         private void mnuElevate_Click(object sender, EventArgs e)
@@ -868,13 +838,13 @@ namespace PKSoft
                     {
                         foreach (string execPath in template.ExecutableRealizations)
                         {
-                            SettingsManager.CurrentZone.AppExceptions.Add(template.CreateException(execPath));
+                            ActiveConfig.Service.AppExceptions.Add(template.CreateException(execPath));
                         }
                     }
                 }
             }
-            SettingsManager.CurrentZone.Normalize();
-            ApplyFirewallSettings(null, SettingsManager.CurrentZone);
+            ActiveConfig.Service.Normalize();
+            ApplyFirewallSettings(ActiveConfig.Service);
         }
 
         protected override void WndProc(ref System.Windows.Forms.Message m)

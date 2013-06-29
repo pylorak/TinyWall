@@ -180,6 +180,9 @@ Select Elevate from the tray menu and try again.</value>
   <data name="ConfigurationHasBeenImported" xml:space="preserve">
     <value>The configuration file has been successfully imported. Press Apply in the Manage window to make the new settings permanent.</value>
   </data>
+  <data name="ConfigurationImportError" xml:space="preserve">
+    <value>Could not import configuration file.</value>
+  </data>
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>The configuration file has been successfully exported.</value>
   </data>

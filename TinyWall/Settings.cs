@@ -6,35 +6,85 @@ using System.Linq;
 namespace PKSoft
 {
     [Serializable]
-    public abstract class SettingsBase : ICloneable
+    public class ZoneSettings
     {
-        public object Clone()
-        {
-            return Utils.DeepClone(this);
-        }
-    }
-
-    // Zone settings are specific to network zones (public, domain, private..)
-    // Applied by: Service
-    // Controlled by: Controller
-    // Visible by: Service, Controller
-    [Serializable]
-    public class ZoneSettings : SettingsBase
-    {
-        private const string ENC_SALT = "O?2E/)YFq~e:w@a,";
-        private const string ENC_IV = "X0@!H93!Y=8&/M/T";   // must be 16/24/32 bytes
-
         public string ZoneName = "Unknown";
         public List<string> SpecialExceptions = new List<string>();
         public bool AllowLocalSubnet = false;
         public List<FirewallException> AppExceptions = new List<FirewallException>();
+    }
+
+    [Serializable]
+    public class MachineSettings
+    {
+        public BlockListSettings Blocklists = new BlockListSettings();
+        public bool LockHostsFile = true;
+        public DateTime LastUpdateCheck;
+        public bool AutoUpdateCheck = true;
+        public FirewallMode StartupMode = FirewallMode.Normal;
+    }
+
+    public class SettingsContainer
+    {
+        public ZoneSettings CurrentZone;
+        public MachineSettings GlobalConfig;
+        public ServiceSettings ServiceConfig;   // this doesn't need to be exported to .tws
+        public ControllerSettings ControllerConfig;
+    }
 
 
-        internal ZoneSettings()
+    // --------------------------------------------------------------------------------------------------------------------------------
+
+
+
+    [Serializable]
+    public sealed class BlockListSettings
+    {
+        public bool EnableBlocklists = false;
+        public bool EnablePortBlocklist = true;
+        public bool EnableHostsBlocklist = false;
+    }
+    
+    [Serializable]
+    public sealed class ServiceSettings21
+    {
+        internal const string APP_NAME = "TinyWall";
+        private const string ENC_SALT = @";U~2+i=wV;eE3Q@f";
+        private const string ENC_IV = @"0!#&9x=GGu%>$g&5";   // must be 16/24/32 bytes
+        private readonly object locker = new object();
+
+        public int SequenceNumber = -1;
+
+        // Machine settings
+        public BlockListSettings Blocklists = new BlockListSettings();
+        public bool LockHostsFile = true;
+        public DateTime LastUpdateCheck;
+        public bool AutoUpdateCheck = true;
+        public FirewallMode StartupMode = FirewallMode.Normal;
+
+        // Zone settings
+        public List<string> SpecialExceptions = new List<string>();
+        public bool AllowLocalSubnet = false;
+        public List<FirewallException> AppExceptions = new List<FirewallException>();
+
+        internal static string AppDataPath
         {
+            get
+            {
+#if DEBUG
+                return Path.GetDirectoryName(Utils.ExecutablePath);
+#else
+                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), ServiceSettings21.APP_NAME);
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+                return dir;
+#endif
+            }
         }
+        
+        internal ServiceSettings21() { }
 
-        internal ZoneSettings(bool enableRecommendedExceptions)
+        internal ServiceSettings21(bool enableRecommendedExceptions)
         {
             if (enableRecommendedExceptions)
             {
@@ -48,45 +98,55 @@ namespace PKSoft
             }
         }
 
-        internal void Save(string zoneFile)
+        internal void Save()
         {
             Normalize();
+
+            // Construct file path
+            string SettingsFile = Path.Combine(ServiceSettings21.AppDataPath, "config");
 
             // Construct key
             string key = ENC_SALT + MachineFingerprint.Fingerprint();
             key = Hasher.HashString(key).Substring(0, 16);
 
-            SerializationHelper.SaveToEncryptedXMLFile<ZoneSettings>(this, zoneFile, key, ENC_IV);
+            lock (locker)
+            {
+                SerializationHelper.SaveToEncryptedXMLFile<ServiceSettings21>(this, SettingsFile, key, ENC_IV);
+            }
         }
 
-        internal static ZoneSettings Load(string zoneFile)
+        internal static ServiceSettings21 Load()
         {
-            ZoneSettings zone = null;
+            ServiceSettings21 ret = null;
 
-            if (File.Exists(zoneFile))
+            // Construct file path
+            string SettingsFile = Path.Combine(ServiceSettings21.AppDataPath, "config");
+
+            if (File.Exists(SettingsFile))
             {
                 try
                 {
+
                     // Construct key
                     string key = ENC_SALT + MachineFingerprint.Fingerprint();
                     key = Hasher.HashString(key).Substring(0, 16);
 
-                    zone = SerializationHelper.LoadFromEncryptedXMLFile<ZoneSettings>(zoneFile, key, ENC_IV);
+                    ret = SerializationHelper.LoadFromEncryptedXMLFile<ServiceSettings21>(SettingsFile, key, ENC_IV);
                     List<string> distinctSpecialEx = new List<string>();
-                    distinctSpecialEx.AddRange(zone.SpecialExceptions.Distinct());
-                    zone.SpecialExceptions = distinctSpecialEx;
+                    distinctSpecialEx.AddRange(ret.SpecialExceptions.Distinct());
+                    ret.SpecialExceptions = distinctSpecialEx;
                 }
                 catch
                 {
                 }
             }
 
-            if (zone == null)
+            if (ret == null)
             {
-                zone = new ZoneSettings(true);
-                zone.ZoneName = "All Zones";
+                ret = new ServiceSettings21(true);
             }
-            return zone;
+
+            return ret;
         }
 
         internal void Normalize()
@@ -134,67 +194,63 @@ namespace PKSoft
                     app1.OpenPortOutboundRemoteTCP = null;
                     app1.OpenPortOutboundRemoteUDP = null;
                 }
+            } // for all exceptions
+        } // method
+    } // class
+
+    [Serializable]
+    public sealed class ControllerSettings
+    {
+        // UI Localization
+        public string Language = "auto";
+
+        // Connections window
+        public System.Windows.Forms.FormWindowState ConnFormWindowState = System.Windows.Forms.FormWindowState.Normal;
+        public System.Drawing.Point ConnFormWindowLoc = new System.Drawing.Point(150, 150);
+        public System.Drawing.Size ConnFormWindowSize = new System.Drawing.Size(827, 386);
+        public bool ConnFormShowConnections = true;
+        public bool ConnFormShowOpenPorts = false;
+        public bool ConnFormShowBlocked = false;
+
+        // Manage window
+        public bool AskForExceptionDetails = false;
+        public int ManageTabIndex;
+
+        // Hotkeys
+        public bool EnableGlobalHotkeys = true;
+
+        internal static string UserDataPath
+        {
+            get
+            {
+                string dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                dir = System.IO.Path.Combine(dir, ServiceSettings21.APP_NAME);
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+                return dir;
             }
         }
-    }
-
-    [Serializable]
-    public class BlockListSettings
-    {
-        public bool EnableBlocklists = false;
-        public bool EnablePortBlocklist = true;
-        public bool EnableHostsBlocklist = false;
-    }
-
-    // Machine settings are global for the current computer
-    // Applied by: Service
-    // Controlled by: Controller
-    // Visible by: Service, Controller
-    [Serializable]
-    public class MachineSettings : SettingsBase
-    {
-        private const string ENC_SALT = @"O?2E/)YFq~e:w@a,";
-        private const string ENC_IV = @"X0@!H93!Y=8&/M/T";   // must be 16/24/32 bytes
-        private readonly object locker = new object();
-
-        public BlockListSettings Blocklists = new BlockListSettings();
-        public bool LockHostsFile = true;
-        public DateTime LastUpdateCheck;
-        public bool AutoUpdateCheck = true;
-        public FirewallMode StartupMode = FirewallMode.Normal;
 
         internal void Save()
         {
             // Construct file path
-            string SettingsFile = Path.Combine(SettingsManager.AppDataPath, "MachineConfig");
+            string SettingsFile = Path.Combine(UserDataPath, "ControllerConfig");
 
-            // Construct key
-            string key = ENC_SALT + MachineFingerprint.Fingerprint();
-            key = Hasher.HashString(key).Substring(0, 16);
-
-            lock (locker)
-            {
-                SerializationHelper.SaveToEncryptedXMLFile<MachineSettings>(this, SettingsFile, key, ENC_IV);
-            }
+            SerializationHelper.SaveToXMLFile(this, SettingsFile);
         }
 
-        internal static MachineSettings Load()
+        internal static ControllerSettings Load()
         {
-            MachineSettings ret = null;
+            ControllerSettings ret = null;
 
             // Construct file path
-            string SettingsFile = Path.Combine(SettingsManager.AppDataPath, "MachineConfig");
+            string SettingsFile = Path.Combine(UserDataPath, "ControllerConfig");
 
             if (File.Exists(SettingsFile))
             {
                 try
                 {
-
-                    // Construct key
-                    string key = ENC_SALT + MachineFingerprint.Fingerprint();
-                    key = Hasher.HashString(key).Substring(0, 16);
-
-                    ret = SerializationHelper.LoadFromEncryptedXMLFile<MachineSettings>(SettingsFile, key, ENC_IV);
+                    ret = SerializationHelper.LoadFromXMLFile<ControllerSettings>(SettingsFile);
                 }
                 catch
                 {
@@ -203,29 +259,24 @@ namespace PKSoft
 
             if (ret == null)
             {
-                ret = new MachineSettings();
+                ret = new ControllerSettings();
             }
 
             return ret;
         }
     }
 
-    // Operational settings for the service
-    // Applied by: Service
-    // Controlled by: Service
-    // Visible by: Service
     [Serializable]
-    public class ServiceSettings : SettingsBase
+    public sealed class ServiceSettings
     {
         private const string ENC_SALT = "O?2E/)YFq~e:w@a,";
         private const string ENC_IV = "X0@!H93!Y=8&/M/T";   // must be 16/24/32 bytes
 
         internal static string PasswordFilePath
         {
-            get { return Path.Combine(SettingsManager.AppDataPath, "pwd"); }
-
+            get { return Path.Combine(ServiceSettings21.AppDataPath, "pwd"); }
         }
-            
+
         private bool _Locked;
 
         internal bool Locked
@@ -294,110 +345,30 @@ namespace PKSoft
         }
     }
 
-    // Operational settings for the controller
-    // Applied by: Controller
-    // Controlled by: Controller
-    // Visible by: Controller
     [Serializable]
-    public class ControllerSettings : SettingsBase
+    public sealed class ConfigContainer
     {
-        // UI Localization
-        public string Language = "auto";
-
-        // Connections window
-        public System.Windows.Forms.FormWindowState ConnFormWindowState = System.Windows.Forms.FormWindowState.Normal;
-        public System.Drawing.Point ConnFormWindowLoc = new System.Drawing.Point(150, 150);
-        public System.Drawing.Size ConnFormWindowSize = new System.Drawing.Size(827, 386);
-        public bool ConnFormShowConnections = true;
-        public bool ConnFormShowOpenPorts = false;
-        public bool ConnFormShowBlocked = false;
-
-        // Manage window
-        public bool AskForExceptionDetails = false;
-        public int ManageTabIndex;
-
-        // Hotkeys
-        public bool EnableGlobalHotkeys = true;
-
-        public static string UserDataPath
-        {
-            get
-            {
-                string dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                dir = System.IO.Path.Combine(dir, SettingsManager.APP_NAME);
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-                return dir;
-            }
-        }
-
-        public void Save()
-        {
-            // Construct file path
-            string SettingsFile = Path.Combine(UserDataPath, "ControllerConfig");
-
-            SerializationHelper.SaveToXMLFile(this, SettingsFile);
-        }
-
-        public static ControllerSettings Load()
-        {
-            ControllerSettings ret = null;
-
-            // Construct file path
-            string SettingsFile = Path.Combine(UserDataPath, "ControllerConfig");
-
-            if (File.Exists(SettingsFile))
-            {
-                try
-                {
-                    ret = SerializationHelper.LoadFromXMLFile<ControllerSettings>(SettingsFile);
-                }
-                catch
-                {
-                }
-            }
-
-            if (ret == null)
-            {
-                ret = new ControllerSettings();
-            }
-
-            return ret;
-        }
-    }
-    
-    [Serializable]
-    internal static class SettingsManager
-    {
-        public const string APP_NAME = "TinyWall";
-
-        internal static ZoneSettings CurrentZone;
-        internal static MachineSettings GlobalConfig;
-        internal static ServiceSettings ServiceConfig;
-        internal static ControllerSettings ControllerConfig;
-
-        internal static string AppDataPath
-        {
-            get
-            {
-#if DEBUG
-                return Path.GetDirectoryName(Utils.ExecutablePath);
-#else
-                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), SettingsManager.APP_NAME);
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-                return dir;
-#endif
-            }
-        }
+        public ServiceSettings21 Service = null;
+        public ControllerSettings Controller = null;
     }
 
-    public class SettingsContainer
+    internal static class ActiveConfig
     {
-        public ZoneSettings CurrentZone;
-        public MachineSettings GlobalConfig;
-        public ServiceSettings ServiceConfig;
-        public ControllerSettings ControllerConfig;
+        internal static ServiceSettings21 Service = null;
+        internal static ControllerSettings Controller = null;
+
+        internal static ConfigContainer ToContainer()
+        {
+            ConfigContainer c = new ConfigContainer();
+            c.Controller = ActiveConfig.Controller;
+            c.Service = ActiveConfig.Service;
+            return c;
+        }
+        internal static void FromContainer(ConfigContainer c)
+        {
+            ActiveConfig.Controller = c.Controller;
+            ActiveConfig.Service = c.Service;
+        }
     }
 }
 

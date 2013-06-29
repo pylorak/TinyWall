@@ -31,6 +31,7 @@ namespace PKSoft
         private FirewallLogWatcher LogWatcher;
         private IntPtr ControllerHwnd = IntPtr.Zero;
         private uint WM_NOTIFY_BY_SERVICE = 0;
+        private ServiceSettings ServiceLocker = null;
 
         // Context needed for learning mode
         ApplicationCollection LearningKnownApplication;
@@ -40,8 +41,6 @@ namespace PKSoft
         private List<RuleDef> AppExRules;
         private List<RuleDef> SpecialRules;
 
-        private ProfileType Profile;
-        private string ZoneFilePath = null;
         private bool UninstallRequested = false;
 
         private ServiceState VisibleState = null;
@@ -55,7 +54,7 @@ namespace PKSoft
             string ModeId = FirewallException.GenerateID();
 
             // Do we want to let local traffic through?
-            if (SettingsManager.CurrentZone.AllowLocalSubnet)
+            if (ActiveConfig.Service.AllowLocalSubnet)
             {
                 RuleDef def = new RuleDef(ModeId, "Allow local subnet", PacketAction.Allow, RuleDirection.InOut, Protocol.Any);
                 def.RemoteAddresses = "LocalSubnet";
@@ -63,8 +62,8 @@ namespace PKSoft
             }
 
             // Do we want to block known malware ports?
-            if (SettingsManager.GlobalConfig.Blocklists.EnableBlocklists
-                && SettingsManager.GlobalConfig.Blocklists.EnablePortBlocklist)
+            if (ActiveConfig.Service.Blocklists.EnableBlocklists
+                && ActiveConfig.Service.Blocklists.EnablePortBlocklist)
             {
                 Profile profileMalwarePortBlock = GlobalInstances.ProfileMan.GetProfile("Malware port block");
                 if (profileMalwarePortBlock != null)
@@ -222,11 +221,11 @@ namespace PKSoft
             SpecialRules.Clear();
 
             ApplicationCollection allApps = GlobalInstances.ProfileMan.KnownApplications;
-            for (int i = 0; i < SettingsManager.CurrentZone.SpecialExceptions.Count; ++i)
+            for (int i = 0; i < ActiveConfig.Service.SpecialExceptions.Count; ++i)
             {
                 try
                 {   //This try-catch will prevent errors if an exception profile string is invalid
-                    Application app = allApps.GetApplicationByName(SettingsManager.CurrentZone.SpecialExceptions[i]);
+                    Application app = allApps.GetApplicationByName(ActiveConfig.Service.SpecialExceptions[i]);
                     app.ResolveFilePaths();
                     foreach (AppExceptionAssoc template in app.FileTemplates)
                     {
@@ -249,11 +248,11 @@ namespace PKSoft
             // We will collect all our rules into this list
             AppExRules.Clear();
 
-            for (int i = 0; i < SettingsManager.CurrentZone.AppExceptions.Count; ++i)
+            for (int i = 0; i < ActiveConfig.Service.AppExceptions.Count; ++i)
             {
                 try
                 {   //This try-catch will prevent errors if an exception profile string is invalid
-                    FirewallException ex = SettingsManager.CurrentZone.AppExceptions[i];
+                    FirewallException ex = ActiveConfig.Service.AppExceptions[i];
                     GetRulesForException(ex, AppExRules);
                 }
                 catch (Exception e)
@@ -277,7 +276,7 @@ namespace PKSoft
                 throw new InvalidOperationException("Firewall exception specification must have an ID.");
 #else
                 ex.RegenerateID();
-                VisibleState.SettingsChangeset = Utils.GetRandomNumber();
+                ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
 #endif
             }
 
@@ -404,39 +403,13 @@ namespace PKSoft
                 // --- THREAD BARRIER ---
             }
 
-            LoadProfile(Firewall);
+            ActiveConfig.Service = ServiceSettings21.Load();
+            ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
+            VisibleState.Mode = ActiveConfig.Service.StartupMode;
+
             ReapplySettings(FwRules);
         }
 
-        private void LoadProfile(Policy firewallPolicy)
-        {
-            ZoneFilePath = Path.Combine(SettingsManager.AppDataPath, "AllZones21");
-
-            if (!File.Exists(ZoneFilePath))
-            {
-                // ZoneFile not found. In this case, before creating an empty one,
-                // we first try to migrate an old zone file from pre-2.1 TW versions.
-
-                Profile = firewallPolicy.CurrentProfileTypes;
-                string ProfileDisplayName;
-                if ((int)(Profile & ProfileType.Private) != 0)
-                    ProfileDisplayName = "Private";
-                else if ((int)(Profile & ProfileType.Domain) != 0)
-                    ProfileDisplayName = "Domain";
-                else if ((int)(Profile & ProfileType.Public) != 0)
-                    ProfileDisplayName = "Public";
-                else
-                    throw new InvalidOperationException("Unexpected network profile value.");
-
-                string OldZoneFile = Path.Combine(SettingsManager.AppDataPath, "Zone" + ProfileDisplayName);
-                if (File.Exists(OldZoneFile))
-                    File.Copy(OldZoneFile, ZoneFilePath, true);
-            }
-
-            SettingsManager.GlobalConfig = MachineSettings.Load();
-            SettingsManager.CurrentZone = ZoneSettings.Load(ZoneFilePath);
-            VisibleState.Mode = SettingsManager.GlobalConfig.StartupMode;
-        }
 
         // This method reapplies all firewall settings.
         private void ReapplySettings(WindowsFirewall.Rules FwRules)
@@ -446,9 +419,9 @@ namespace PKSoft
             AssembleActiveRules();
             MergeActiveRulesIntoWinFirewall(FwRules);
 
-            HostsFileManager.EnableProtection(SettingsManager.GlobalConfig.LockHostsFile);
-            if (SettingsManager.GlobalConfig.Blocklists.EnableBlocklists
-                && SettingsManager.GlobalConfig.Blocklists.EnableHostsBlocklist)
+            HostsFileManager.EnableProtection(ActiveConfig.Service.LockHostsFile);
+            if (ActiveConfig.Service.Blocklists.EnableBlocklists
+                && ActiveConfig.Service.Blocklists.EnableHostsBlocklist)
                 HostsFileManager.EnableHostsFile();
             else
                 HostsFileManager.DisableHostsFile();
@@ -503,8 +476,9 @@ namespace PKSoft
             }
             finally
             {
-                SettingsManager.GlobalConfig.LastUpdateCheck = DateTime.Now;
-                SettingsManager.GlobalConfig.Save();
+                ActiveConfig.Service.LastUpdateCheck = DateTime.Now;
+                ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
+                ActiveConfig.Service.Save();
             }
 
             if (VisibleState.Update == null)
@@ -553,8 +527,8 @@ namespace PKSoft
             string tmpHostsPath = (string)file;
             HostsFileManager.UpdateHostsFile(tmpHostsPath);
 
-            if (SettingsManager.GlobalConfig.Blocklists.EnableBlocklists
-                && SettingsManager.GlobalConfig.Blocklists.EnableHostsBlocklist)
+            if (ActiveConfig.Service.Blocklists.EnableBlocklists
+                && ActiveConfig.Service.Blocklists.EnableHostsBlocklist)
             {
                 HostsFileManager.EnableHostsFile();
             }
@@ -585,9 +559,9 @@ namespace PKSoft
             }
 
             // Check for updates once every week
-            if (SettingsManager.GlobalConfig.AutoUpdateCheck)
+            if (ActiveConfig.Service.AutoUpdateCheck)
             {
-                if (DateTime.Now - SettingsManager.GlobalConfig.LastUpdateCheck >= TimeSpan.FromDays(2))
+                if (DateTime.Now - ActiveConfig.Service.LastUpdateCheck >= TimeSpan.FromDays(2))
                 {
                     ThreadPool.QueueUserWorkItem(UpdaterMethod);
                 }
@@ -704,14 +678,14 @@ namespace PKSoft
                     foreach (FirewallException ex in LearningNewExceptions)
                     {
                         needsSave = true;
-                        SettingsManager.CurrentZone.AppExceptions.Add(ex);
+                        ActiveConfig.Service.AppExceptions.Add(ex);
                     }
 
                     LearningKnownApplication = null;
                     LearningNewExceptions = null;
                 }
 
-                VisibleState.SettingsChangeset = Utils.GetRandomNumber();
+                ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
                 NotifyController(TWServiceMessages.SETTINGS_CHANGED);
             }
 
@@ -736,7 +710,7 @@ namespace PKSoft
 
                         Policy Firewall = new Policy();
                         if (CommitLearnedRules())
-                            SettingsManager.CurrentZone.Save(ZoneFilePath);
+                            ActiveConfig.Service.Save();
 
                         RebuildApplicationRuleDefs();
                         AssembleActiveRules();
@@ -747,8 +721,8 @@ namespace PKSoft
                             && (VisibleState.Mode != FirewallMode.Learning)
                            )
                         {
-                            SettingsManager.GlobalConfig.StartupMode = VisibleState.Mode;
-                            SettingsManager.GlobalConfig.Save();
+                            ActiveConfig.Service.StartupMode = VisibleState.Mode;
+                            ActiveConfig.Service.Save();
                         }
 
                         if (Firewall.LocalPolicyModifyState == LocalPolicyState.GP_OVERRRIDE)
@@ -758,66 +732,67 @@ namespace PKSoft
                     }
                 case TWControllerMessages.PUT_SETTINGS:
                     {
-                        if (req.Arguments[0] != null)
+                        ServiceSettings21 newConf = (ServiceSettings21)req.Arguments[0];
+                        if (newConf.SequenceNumber == ActiveConfig.Service.SequenceNumber)
                         {
-                            SettingsManager.GlobalConfig = (MachineSettings)req.Arguments[0];
-                            SettingsManager.GlobalConfig.Save();
+                            ActiveConfig.Service = newConf;
+                            ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
+                            ActiveConfig.Service.Save();
+                            Policy Firewall = new Policy();
+                            ReapplySettings(Firewall.GetRules(false));
+                            return new Message(TWControllerMessages.RESPONSE_OK, ActiveConfig.Service.SequenceNumber);
                         }
-
-                        if (req.Arguments[1] != null)
+                        else
                         {
-                            SettingsManager.CurrentZone = (ZoneSettings)req.Arguments[1];
-                            SettingsManager.CurrentZone.Save(ZoneFilePath);
+                            return new Message(TWControllerMessages.RESPONSE_ERROR,
+                                ActiveConfig.Service,
+                                VisibleState
+                                );
                         }
-
-                        Policy Firewall = new Policy();
-                        ReapplySettings(Firewall.GetRules(false));
-                        return new Message(TWControllerMessages.RESPONSE_OK);
                     }
                 case TWControllerMessages.GET_SETTINGS:
                     {
                         // Get changeset of client
                         int changeset = (int)req.Arguments[0];
 
-                        // Get Hwnd of client
+                        // TODO Get Hwnd of client
                         ControllerHwnd = (IntPtr)req.Arguments[1];
 
                         // If our changeset is different, send new settings to client
-                        if (changeset != VisibleState.SettingsChangeset)
+                        if (changeset != ActiveConfig.Service.SequenceNumber)
                         {
-                            VisibleState.HasPassword = SettingsManager.ServiceConfig.HasPassword;
-                            VisibleState.Locked = SettingsManager.ServiceConfig.Locked;
+                            VisibleState.HasPassword = ServiceLocker.HasPassword;
+                            VisibleState.Locked = ServiceLocker.Locked;
 
                             return new Message(TWControllerMessages.RESPONSE_OK,
-                                VisibleState.SettingsChangeset,
-                                SettingsManager.GlobalConfig,
-                                SettingsManager.CurrentZone,
+                                ActiveConfig.Service.SequenceNumber,
+                                ActiveConfig.Service,
                                 VisibleState
                                 );
                         }
                         else
                         {
                             // Our changeset is the same, so do not send settings again
-                            return new Message(TWControllerMessages.RESPONSE_OK, VisibleState.SettingsChangeset);
+                            return new Message(TWControllerMessages.RESPONSE_OK, ActiveConfig.Service.SequenceNumber);
                         }
                     }
                 case TWControllerMessages.REINIT:
                     {
                         if (CommitLearnedRules())
-                            SettingsManager.CurrentZone.Save(ZoneFilePath);
+                            ActiveConfig.Service.Save();
                         InitFirewall();
                         return new Message(TWControllerMessages.RESPONSE_OK);
                     }
                 case TWControllerMessages.UNLOCK:
                     {
-                        if (SettingsManager.ServiceConfig.Unlock((string)req.Arguments[0]))
+                        if (ServiceLocker.Unlock((string)req.Arguments[0]))
                             return new Message(TWControllerMessages.RESPONSE_OK);
                         else
                             return new Message(TWControllerMessages.RESPONSE_ERROR);
                     }
                 case TWControllerMessages.LOCK:
                     {
-                        SettingsManager.ServiceConfig.Locked = true;
+                        ServiceLocker.Locked = true;
                         return new Message(TWControllerMessages.RESPONSE_OK);
                     }
                 case TWControllerMessages.GET_PROCESS_PATH:
@@ -834,7 +809,7 @@ namespace PKSoft
                         FileLocker.UnlockFile(ServiceSettings.PasswordFilePath);
                         try
                         {
-                            SettingsManager.ServiceConfig.SetPass((string)req.Arguments[0]);
+                            ServiceLocker.SetPass((string)req.Arguments[0]);
                             return new Message(TWControllerMessages.RESPONSE_OK);
                         }
                         catch
@@ -873,7 +848,7 @@ namespace PKSoft
                         // Check all exceptions if any one has expired
                         Policy Firewall = new Policy();
                         WindowsFirewall.Rules FwRules = Firewall.GetRules(false);
-                        List<FirewallException> exs = SettingsManager.CurrentZone.AppExceptions;
+                        List<FirewallException> exs = ActiveConfig.Service.AppExceptions;
                         for (int i = exs.Count-1; i >= 0; --i)
                         {
                             // Timer values above zero are the number of minutes to stay active
@@ -902,9 +877,9 @@ namespace PKSoft
 
                         if (needsSave)
                         {
-                            SettingsManager.CurrentZone.AppExceptions = exs;
-                            SettingsManager.CurrentZone.Save(ZoneFilePath);
-                            VisibleState.SettingsChangeset = Utils.GetRandomNumber();
+                            ActiveConfig.Service.AppExceptions = exs;
+                            ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
+                            ActiveConfig.Service.Save();
                             NotifyController(TWServiceMessages.SETTINGS_CHANGED);
                         }
 
@@ -956,7 +931,7 @@ namespace PKSoft
         // Entry point for thread that listens to commands from the controller application.
         private Message PipeServerDataReceived(Message req)
         {
-            if (((int)req.Command > 2047) && SettingsManager.ServiceConfig.Locked)
+            if (((int)req.Command > 2047) && ServiceLocker.Locked)
             {
                 // Notify that we need to be unlocked first
                 return new Message(TWControllerMessages.RESPONSE_LOCKED, 1);
@@ -1020,6 +995,7 @@ namespace PKSoft
                     }
                 case 2010:     // network interface changed profile
                     {
+                        cmd = TWControllerMessages.REINIT;
                         break;
                     }
                 case 2032:     // firewall has been reset
@@ -1063,8 +1039,10 @@ namespace PKSoft
         // Entry point for Windows service.
         protected override void OnStart(string[] args)
         {
+#if !DEBUG
             // Register an unhandled exception handler
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+#endif
             
             // Continue initialization on a new thread to prevent stalling the SCM
             ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object dummy)
@@ -1076,10 +1054,9 @@ namespace PKSoft
                 FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
 
                 // Lock configuration if we have a password
-                VisibleState.SettingsChangeset = Utils.GetRandomNumber();
-                SettingsManager.ServiceConfig = new ServiceSettings();
-                if (SettingsManager.ServiceConfig.HasPassword)
-                    SettingsManager.ServiceConfig.Locked = true;
+                ServiceLocker = new ServiceSettings();
+                if (ServiceLocker.HasPassword)
+                    ServiceLocker.Locked = true;
 
                 // Issue load command
                 Q = new RequestQueue();
@@ -1123,9 +1100,8 @@ namespace PKSoft
             FirewallWorkerThread.Abort();
 
             // Check all exceptions if any one has expired
-            bool needsSave = false;
             {
-                List<FirewallException> exs = SettingsManager.CurrentZone.AppExceptions;
+                List<FirewallException> exs = ActiveConfig.Service.AppExceptions;
                 for (int i = exs.Count-1; i >= 0; --i)
                 {
                     // Did this one expire?
@@ -1133,17 +1109,13 @@ namespace PKSoft
                     {
                         // Remove exception
                         exs.RemoveAt(i);
-                        needsSave = true;
                     }
                 }
-                SettingsManager.CurrentZone.AppExceptions = exs;
+                ActiveConfig.Service.AppExceptions = exs;
             }
 
-            needsSave = needsSave || CommitLearnedRules();
-            if (needsSave)
-                SettingsManager.CurrentZone.Save(ZoneFilePath);
-
-            SettingsManager.GlobalConfig.Save();
+            CommitLearnedRules();
+            ActiveConfig.Service.Save();
 
             if (LogWatcher != null)
             {

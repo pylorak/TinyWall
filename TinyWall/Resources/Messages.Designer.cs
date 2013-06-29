@@ -142,6 +142,15 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not import configuration file..
+        /// </summary>
+        internal static string ConfigurationImportError {
+            get {
+                return ResourceManager.GetString("ConfigurationImportError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not close process {0}({1})..
         /// </summary>
         internal static string CouldNotCloseProcess {

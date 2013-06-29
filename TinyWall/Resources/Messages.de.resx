@@ -168,6 +168,9 @@
   <data name="ConfigurationHasBeenImported" xml:space="preserve">
     <value>Die Konfigurationsdatei wurde erfolgreich importiert. Drücke Anwenden im Verwaltungsfenster um die neuen Einstellungen zu aktivieren.</value>
   </data>
+  <data name="ConfigurationImportError" xml:space="preserve">
+    <value>Die Konfigurationsdatei konnte nicht importiert werden.</value>
+  </data>
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>Die Konfigurationsdatei wurde erfolgreich exportiert.</value>
   </data>

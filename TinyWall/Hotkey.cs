@@ -113,9 +113,10 @@ namespace PKSoft
 		{
 			// Check that we have registered
 			if (!this.registered)
-			{ throw new NotSupportedException("You cannot unregister a hotkey that is not registered"); }
-        
-			// It's possible that the control itself has died: in that case, no need to unregister!
+//            { throw new NotSupportedException("You cannot unregister a hotkey that is not registered"); }
+            { return; }
+
+            // It's possible that the control itself has died: in that case, no need to unregister!
 			if (!this.windowControl.IsDisposed)
 			{
 				// Clean up after ourselves
