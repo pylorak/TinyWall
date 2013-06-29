@@ -132,12 +132,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ListViewItemComprarer.cs" />
-    <Compile Include="MarqueeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MarqueeForm.Designer.cs">
-      <DependentUpon>MarqueeForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Resources\Exceptions.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -354,9 +348,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.ru.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MarqueeForm.resx">
-      <DependentUpon>MarqueeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PasswordForm.es.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
