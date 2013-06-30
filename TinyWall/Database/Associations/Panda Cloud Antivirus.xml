@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application Name="Panda Cloud Antivirus" Recommended="true">
+	<Files>
+    <AppExceptionAssoc Executable="PSANHost.exe">
+      <ExceptionTemplate Template="true">
+        <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+      </ExceptionTemplate>
+      <PublicKeys>
+        <string>3082010A0282010100D03FE1FA94A65ACC7FA6D219319D62134EA9E3E68AA82D2482541EFFB61F77B59BDEB22DE98401441540EC46010B4DCB32BED009C35262FCCB9C133193E141E2EA788D9A06DF60CB2696066D9B1B7084CC834C37418845FE446B3392102FCF77E5079EC2CFA314DF1E5817F645CF45440A7FE714A4AE0B254FBE95E68A39400F5A40ACF52B1DF6C7931D4D7F32D794B5E51BA0E789D6B929D9109D22BE40396CADD9E2F2AD1FB613B9002B3B43574E40C67B5A4B1FF4BDE57B5051F9975F4F13B4ACFC4A67AA09F4A901C42F3AF27E78343878A44E1BD4B0A5AF6E34494BF15EFF910FE4D6C8A2FF2186878DD233F3FF92EBEB7A3A96B2D398963B65951C73D70203010001</string>
+      </PublicKeys>
+      <SearchPaths>
+        <string>{reg:SOFTWARE\Wow6432Node\Panda Security\Nano Av\Setup:Path}</string>
+        <string>{reg:SOFTWARE\Wow6432Node\Panda Software\Setup:Path}</string>
+        <string>{reg:SOFTWARE\Panda Security\Nano Av\Setup:Path}</string>
+        <string>{reg:SOFTWARE\Panda Software\Setup:Path}</string>
+      </SearchPaths>
+    </AppExceptionAssoc>
+	</Files>
+</Application>

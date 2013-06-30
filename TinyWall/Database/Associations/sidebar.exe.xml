@@ -6,6 +6,7 @@
         <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
       </ExceptionTemplate>
       <Hashes>
+        <string>E513DD19714559226CD52169FBB4489CA5740E88</string>
         <string>12a602b86fc394b1c88348fb099685eabb876495</string>
       </Hashes>
     </AppExceptionAssoc>

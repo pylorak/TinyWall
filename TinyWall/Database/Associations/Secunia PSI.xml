@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Name="Secunia PSI">
+<Application Name="Secunia PSI" Recommended="true">
 	<Files>
     <AppExceptionAssoc Executable="psi.exe">
       <ExceptionTemplate Template="true">
