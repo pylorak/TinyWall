@@ -125,7 +125,7 @@ namespace PKSoft
             }
         }
 
-        internal static string GetProcessMainModulePath(Process p)
+        internal static string GetPathOfProcessUseTwService(Process p)
         {
             // Shortcut for special case
             if ((p.Id == 0) || (p.Id == 4))
@@ -144,6 +144,25 @@ namespace PKSoft
                     return string.Empty;
             }
         }
+
+        internal static string GetPathOfProcess(int pid)
+        {
+            // Shortcut for special case
+            if ((pid == 0) || (pid == 4))
+                return "System";
+
+            try
+            {
+                using (Process p = Process.GetProcessById(pid))
+                {
+                    return Utils.GetLongPathName(p.MainModule.FileName);
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
         
         internal static string GetExecutableUnderCursor(int x, int y)
         {
@@ -154,7 +173,7 @@ namespace PKSoft
             // Get executable of process
             using (Process p = Process.GetProcessById(ProcId))
             {
-                return Utils.GetProcessMainModulePath(p);
+                return Utils.GetPathOfProcessUseTwService(p);
             }
         }
 

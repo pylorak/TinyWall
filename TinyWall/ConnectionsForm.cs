@@ -47,14 +47,14 @@ namespace PKSoft
             {
                 if ( (chkShowListen.Checked && (tcpRow.State == TcpState.Listen))
                   || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
-                    ConstructListItem(itemColl, procCache, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString());
+                    ConstructListItem(itemColl, null, procCache, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString());
             }
             tcpTable = NetStat.GetExtendedTcp6Table(false);
             foreach (TcpRow tcpRow in tcpTable)
             {
                 if ((chkShowListen.Checked && (tcpRow.State == TcpState.Listen))
                  || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
-                    ConstructListItem(itemColl, procCache, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString());
+                    ConstructListItem(itemColl, null, procCache, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString());
             }
 
             if (chkShowListen.Checked)
@@ -63,12 +63,12 @@ namespace PKSoft
                 UdpTable udpTable = NetStat.GetExtendedUdp4Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
-                    ConstructListItem(itemColl, procCache, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen");
+                    ConstructListItem(itemColl, null, procCache, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen");
                 }
                 udpTable = NetStat.GetExtendedUdp6Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
-                    ConstructListItem(itemColl, procCache, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen");
+                    ConstructListItem(itemColl, null, procCache, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen");
                 }
             }
 
@@ -131,7 +131,7 @@ namespace PKSoft
                 for (int i = 0; i < FwLogEntries.Count; ++i)
                 {
                     FirewallLogEntry entry = FwLogEntries[i];
-                    ConstructListItem(itemColl, procCache, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked", entry.Direction);
+                    ConstructListItem(itemColl, entry.AppPath, procCache, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked", entry.Direction);
                 }
             }
 
@@ -142,7 +142,7 @@ namespace PKSoft
             list.ResumeLayout(false);
         }
 
-        private void ConstructListItem(List<ListViewItem> itemColl, Dictionary<int, ProcInfo> procCache, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, PKSoft.WindowsFirewall.RuleDirection dir = WindowsFirewall.RuleDirection.Invalid)
+        private void ConstructListItem(List<ListViewItem> itemColl, string appName, Dictionary<int, ProcInfo> procCache, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, PKSoft.WindowsFirewall.RuleDirection dir = WindowsFirewall.RuleDirection.Invalid)
         {
             try
             {
@@ -152,12 +152,18 @@ namespace PKSoft
                     pi = procCache[procId];
                 else
                 {
-                    using (Process proc = Process.GetProcessById(procId))
+                    if (appName == null)
                     {
-                        pi.pid = procId;
-                        pi.name = proc.ProcessName;
-                        pi.path = Utils.GetProcessMainModulePath(proc);
+                        using (Process proc = Process.GetProcessById(procId))
+                        {
+                            pi.path = Utils.GetPathOfProcessUseTwService(proc);
+                        }
                     }
+                    else
+                        pi.path = appName;
+
+                    pi.pid = procId;
+                    pi.name = System.IO.Path.GetFileName(pi.path);
                     procCache.Add(procId, pi);
                 }
 

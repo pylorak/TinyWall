@@ -31,6 +31,7 @@ namespace PKSoft
         internal string DestinationIP;
         internal int SourcePort;
         internal int DestinationPort;
+        internal string AppPath;
 
         public override bool Equals(object obj)
         {
@@ -46,7 +47,8 @@ namespace PKSoft
             return Timestamp.GetHashCode() ^ Event.GetHashCode() ^ 
                 ProcessID.GetHashCode() ^ Protocol.GetHashCode() ^ 
                 SourceIP.GetHashCode() ^ DestinationIP.GetHashCode() ^ 
-                SourcePort.GetHashCode() ^ DestinationPort.GetHashCode();
+                SourcePort.GetHashCode() ^ DestinationPort.GetHashCode() ^
+                AppPath.GetHashCode();
         }
 
         internal bool Equals(FirewallLogEntry obj, bool timestampMustMatch)
@@ -64,6 +66,7 @@ namespace PKSoft
                 (this.Protocol == obj.Protocol) &&
                 (this.Direction == obj.Direction) &&
                 this.SourceIP.Equals(obj.SourceIP) &&
+                this.AppPath.Equals(obj.AppPath) &&
                 (this.SourcePort == obj.SourcePort);
 
             if (timestampMustMatch)
@@ -124,6 +127,7 @@ namespace PKSoft
                 case 5158:
                 case 5159:
                     entry.ProcessID = (UInt64)e.EventRecord.Properties[0].Value;
+                    entry.AppPath = Utils.GetPathOfProcess((int)entry.ProcessID);
                     entry.SourceIP = (string)e.EventRecord.Properties[2].Value;
                     entry.SourcePort = int.Parse((string)e.EventRecord.Properties[3].Value);
                     entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[4].Value;
@@ -135,6 +139,7 @@ namespace PKSoft
                 case 5157:
                 default:
                     entry.ProcessID = (UInt64)e.EventRecord.Properties[0].Value;
+                    entry.AppPath = Utils.GetPathOfProcess((int)entry.ProcessID);
                     entry.SourceIP = (string)e.EventRecord.Properties[3].Value;
                     entry.SourcePort = int.Parse((string)e.EventRecord.Properties[4].Value);
                     entry.DestinationIP = (string)e.EventRecord.Properties[5].Value;

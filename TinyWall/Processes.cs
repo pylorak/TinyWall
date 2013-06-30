@@ -64,7 +64,7 @@ namespace PKSoft
                 {
                     try
                     {
-                        string ProcPath = Utils.GetProcessMainModulePath(p);
+                        string ProcPath = Utils.GetPathOfProcessUseTwService(p);
                         if (string.IsNullOrEmpty(ProcPath))
                             continue;
 

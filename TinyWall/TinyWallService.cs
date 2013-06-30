@@ -561,25 +561,6 @@ namespace PKSoft
             }
         }
 
-        private string GetPathOfProcess(int pid)
-        {
-            // Shortcut for special case
-            if ((pid == 0) || (pid == 4))
-                return null;
-
-            try
-            {
-                using (Process p = Process.GetProcessById(pid))
-                {
-                    return Utils.GetLongPathName(p.MainModule.FileName);
-                }
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
         private List<FirewallLogEntry> GetFwLog()
         {
             if (LogWatcher == null)
@@ -614,8 +595,7 @@ namespace PKSoft
                         continue;
                     }
 
-                    string exec = GetPathOfProcess((int)entry.ProcessID);
-                    if (exec == null)
+                    if (entry.AppPath == null)
                         continue;
 
                     if (LearningNewExceptions == null)
@@ -624,7 +604,7 @@ namespace PKSoft
                     bool alreadyExists = false;
                     for (int j = 0; j < LearningNewExceptions.Count; ++j)
                     {
-                        if (LearningNewExceptions[j].ExecutablePath.Equals(exec, StringComparison.OrdinalIgnoreCase))
+                        if (LearningNewExceptions[j].ExecutablePath.Equals(entry.AppPath, StringComparison.OrdinalIgnoreCase))
                         {
                             alreadyExists = true;
                             break;
@@ -636,7 +616,7 @@ namespace PKSoft
                     if (LearningKnownApplication == null)
                         LearningKnownApplication = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
 
-                    FirewallException ex = new FirewallException(exec, null);
+                    FirewallException ex = new FirewallException(entry.AppPath, null);
                     if (((entry.Direction == RuleDirection.In) && (entry.Event == EventLogEvent.ALLOWED_CONNECTION))
                         || entry.Event == EventLogEvent.ALLOWED_LISTEN)
                     {
@@ -790,7 +770,7 @@ namespace PKSoft
                 case TWControllerMessages.GET_PROCESS_PATH:
                     {
                         int pid = (int)req.Arguments[0];
-                        string path = GetPathOfProcess(pid);
+                        string path = Utils.GetPathOfProcess(pid);
                         if (path == null)
                             return new Message(TWControllerMessages.RESPONSE_OK, path);
                         else
