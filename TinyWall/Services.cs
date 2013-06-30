@@ -11,7 +11,7 @@ namespace PKSoft
         internal string SelectedServiceName;
         internal string SelectedServiceExec;
 
-        internal static FirewallException ChooseService(IWin32Window parent)
+        internal static FirewallException ChooseService(IWin32Window parent = null)
         {
             using (ServicesForm sf = new ServicesForm())
             {
