@@ -27,6 +27,8 @@ namespace PKSoft.Parser
                         return Path.GetDirectoryName(Utils.ExecutablePath);
                     case "LocalAppData":
                         return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                    case "windows":
+                        return Environment.GetEnvironmentVariable("windir");
                     default:
                         return str;
                 }

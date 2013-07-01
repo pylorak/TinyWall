@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="File_and_Printer_Sharing" xml:space="preserve">
     <value>Fájl- és nyomtatómegosztás</value>
@@ -125,5 +125,8 @@
   </data>
   <data name="Pingable_local_machine" xml:space="preserve">
     <value>Pingelhető helyi gép</value>
+  </data>
+  <data name="Windows_Store_And_Apps" xml:space="preserve">
+    <value>Windows Store és App-ok</value>
   </data>
 </root>

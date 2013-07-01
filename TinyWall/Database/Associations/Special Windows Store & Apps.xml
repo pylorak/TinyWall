@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application Name="Windows_Store_And_Apps" Recommended="true" Special="true">
+	<Files>
+	<AppExceptionAssoc Executable="{folder:sys32}\WWAHost.exe">
+      <ExceptionTemplate Template="true">
+        <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+        <OpenPortListenLocalTCP>*</OpenPortListenLocalTCP>
+        <OpenPortOutboundRemoteUDP>*</OpenPortOutboundRemoteUDP>
+        <OpenPortListenLocalUDP>*</OpenPortListenLocalUDP>
+      </ExceptionTemplate>
+	</AppExceptionAssoc>
+	<AppExceptionAssoc Executable="{folder:windows}\SysWOW64\WWAHost.exe">
+      <ExceptionTemplate Template="true">
+        <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+        <OpenPortListenLocalTCP>*</OpenPortListenLocalTCP>
+        <OpenPortOutboundRemoteUDP>*</OpenPortOutboundRemoteUDP>
+        <OpenPortListenLocalUDP>*</OpenPortListenLocalUDP>
+      </ExceptionTemplate>
+	</AppExceptionAssoc>
+	<AppExceptionAssoc Executable="{folder:windows}\WinStore\WSHost.exe">
+      <ExceptionTemplate Template="true">
+        <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+        <OpenPortListenLocalTCP>*</OpenPortListenLocalTCP>
+        <OpenPortOutboundRemoteUDP>*</OpenPortOutboundRemoteUDP>
+        <OpenPortListenLocalUDP>*</OpenPortListenLocalUDP>
+      </ExceptionTemplate>
+	</AppExceptionAssoc>
+	</Files>
+</Application>
