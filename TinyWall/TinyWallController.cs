@@ -909,6 +909,7 @@ namespace PKSoft
             if (exceptions.Count == 0)
                 return;
 
+            LoadSettingsFromServer();
             ActiveConfig.Service.AppExceptions.AddRange(exceptions);
             ActiveConfig.Service.Normalize();
 
