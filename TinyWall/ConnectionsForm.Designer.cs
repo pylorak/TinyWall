@@ -54,6 +54,7 @@
             this.chkShowListen = new System.Windows.Forms.CheckBox();
             this.chkShowActive = new System.Windows.Forms.CheckBox();
             this.chkShowBlocked = new System.Windows.Forms.CheckBox();
+            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -75,7 +76,8 @@
             this.columnHeader5,
             this.columnHeader6,
             this.columnHeader7,
-            this.columnHeader8});
+            this.columnHeader8,
+            this.columnHeader9});
             this.list.ContextMenuStrip = this.contextMenuStrip1;
             this.list.FullRowSelect = true;
             this.list.GridLines = true;
@@ -121,32 +123,31 @@
             // 
             // contextMenuStrip1
             // 
-            resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuUnblock,
             this.mnuCloseProcess,
             this.mnuSearch,
             this.mnuCopyRemoteAddress});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
+            resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // mnuUnblock
             // 
-            resources.ApplyResources(this.mnuUnblock, "mnuUnblock");
             this.mnuUnblock.Image = global::PKSoft.Resources.Icons.executable;
             this.mnuUnblock.Name = "mnuUnblock";
+            resources.ApplyResources(this.mnuUnblock, "mnuUnblock");
             this.mnuUnblock.Click += new System.EventHandler(this.mnuUnblock_Click);
             // 
             // mnuCloseProcess
             // 
-            resources.ApplyResources(this.mnuCloseProcess, "mnuCloseProcess");
             this.mnuCloseProcess.Image = global::PKSoft.Resources.Icons.exit;
             this.mnuCloseProcess.Name = "mnuCloseProcess";
+            resources.ApplyResources(this.mnuCloseProcess, "mnuCloseProcess");
             this.mnuCloseProcess.Click += new System.EventHandler(this.mnuCloseProcess_Click);
             // 
             // mnuSearch
             // 
-            resources.ApplyResources(this.mnuSearch, "mnuSearch");
             this.mnuSearch.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuVirusTotal,
             this.mnuProcessLibrary,
@@ -154,35 +155,36 @@
             this.mnuRemoteAddressOnTheWeb});
             this.mnuSearch.Image = global::PKSoft.Resources.Icons.search;
             this.mnuSearch.Name = "mnuSearch";
+            resources.ApplyResources(this.mnuSearch, "mnuSearch");
             // 
             // mnuVirusTotal
             // 
-            resources.ApplyResources(this.mnuVirusTotal, "mnuVirusTotal");
             this.mnuVirusTotal.Name = "mnuVirusTotal";
+            resources.ApplyResources(this.mnuVirusTotal, "mnuVirusTotal");
             this.mnuVirusTotal.Click += new System.EventHandler(this.mnuVirusTotal_Click);
             // 
             // mnuProcessLibrary
             // 
-            resources.ApplyResources(this.mnuProcessLibrary, "mnuProcessLibrary");
             this.mnuProcessLibrary.Name = "mnuProcessLibrary";
+            resources.ApplyResources(this.mnuProcessLibrary, "mnuProcessLibrary");
             this.mnuProcessLibrary.Click += new System.EventHandler(this.mnuProcessLibrary_Click);
             // 
             // mnuFileNameOnTheWeb
             // 
-            resources.ApplyResources(this.mnuFileNameOnTheWeb, "mnuFileNameOnTheWeb");
             this.mnuFileNameOnTheWeb.Name = "mnuFileNameOnTheWeb";
+            resources.ApplyResources(this.mnuFileNameOnTheWeb, "mnuFileNameOnTheWeb");
             this.mnuFileNameOnTheWeb.Click += new System.EventHandler(this.mnuFileNameOnTheWeb_Click);
             // 
             // mnuRemoteAddressOnTheWeb
             // 
-            resources.ApplyResources(this.mnuRemoteAddressOnTheWeb, "mnuRemoteAddressOnTheWeb");
             this.mnuRemoteAddressOnTheWeb.Name = "mnuRemoteAddressOnTheWeb";
+            resources.ApplyResources(this.mnuRemoteAddressOnTheWeb, "mnuRemoteAddressOnTheWeb");
             this.mnuRemoteAddressOnTheWeb.Click += new System.EventHandler(this.mnuRemoteAddressOnTheWeb_Click);
             // 
             // mnuCopyRemoteAddress
             // 
-            resources.ApplyResources(this.mnuCopyRemoteAddress, "mnuCopyRemoteAddress");
             this.mnuCopyRemoteAddress.Name = "mnuCopyRemoteAddress";
+            resources.ApplyResources(this.mnuCopyRemoteAddress, "mnuCopyRemoteAddress");
             this.mnuCopyRemoteAddress.Click += new System.EventHandler(this.mnuCopyRemoteAddress_Click);
             // 
             // IconList
@@ -220,6 +222,10 @@
             this.chkShowBlocked.Name = "chkShowBlocked";
             this.chkShowBlocked.UseVisualStyleBackColor = true;
             this.chkShowBlocked.CheckedChanged += new System.EventHandler(this.chkShowBlocked_CheckedChanged);
+            // 
+            // columnHeader9
+            // 
+            resources.ApplyResources(this.columnHeader9, "columnHeader9");
             // 
             // ConnectionsForm
             // 
@@ -266,5 +272,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuFileNameOnTheWeb;
         private System.Windows.Forms.ToolStripMenuItem mnuRemoteAddressOnTheWeb;
         private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.ColumnHeader columnHeader9;
     }
 }

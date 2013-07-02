@@ -144,6 +144,9 @@
   <data name="columnHeader8.Text" xml:space="preserve">
     <value>Irány</value>
   </data>
+  <data name="columnHeader9.Text" xml:space="preserve">
+    <value>Időpont</value>
+  </data>
   <data name="columnHeader2.Text" xml:space="preserve">
     <value>Protokoll</value>
   </data>

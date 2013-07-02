@@ -148,6 +148,9 @@
   <data name="columnHeader8.Text" xml:space="preserve">
     <value>Richtung</value>
   </data>
+  <data name="columnHeader9.Text" xml:space="preserve">
+    <value>Zeitstempel</value>
+  </data>
   <data name="columnHeader2.Text" xml:space="preserve">
     <value>Protokoll</value>
   </data>

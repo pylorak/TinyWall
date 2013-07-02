@@ -42,19 +42,20 @@ namespace PKSoft
 
             // Retrieve IP tables while waiting for log entries
 
+            DateTime now = DateTime.Now;
             TcpTable tcpTable = NetStat.GetExtendedTcp4Table(false);
             foreach (TcpRow tcpRow in tcpTable)
             {
                 if ( (chkShowListen.Checked && (tcpRow.State == TcpState.Listen))
                   || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
-                    ConstructListItem(itemColl, null, procCache, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString());
+                    ConstructListItem(itemColl, null, procCache, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now);
             }
             tcpTable = NetStat.GetExtendedTcp6Table(false);
             foreach (TcpRow tcpRow in tcpTable)
             {
                 if ((chkShowListen.Checked && (tcpRow.State == TcpState.Listen))
                  || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
-                    ConstructListItem(itemColl, null, procCache, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString());
+                    ConstructListItem(itemColl, null, procCache, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now);
             }
 
             if (chkShowListen.Checked)
@@ -63,19 +64,19 @@ namespace PKSoft
                 UdpTable udpTable = NetStat.GetExtendedUdp4Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
-                    ConstructListItem(itemColl, null, procCache, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen");
+                    ConstructListItem(itemColl, null, procCache, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now);
                 }
                 udpTable = NetStat.GetExtendedUdp6Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
-                    ConstructListItem(itemColl, null, procCache, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen");
+                    ConstructListItem(itemColl, null, procCache, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now);
                 }
             }
 
             // Finished reading tables, continues with log processing
 
             // Remove log entries older than 2 minutes
-            DateTime now = DateTime.Now;
+            now = DateTime.Now;
             TimeSpan refSpan = TimeSpan.FromMinutes(2);
             for (int i = FwLogEntries.Count - 1; i >= 0; --i)
             {
@@ -131,7 +132,7 @@ namespace PKSoft
                 for (int i = 0; i < FwLogEntries.Count; ++i)
                 {
                     FirewallLogEntry entry = FwLogEntries[i];
-                    ConstructListItem(itemColl, entry.AppPath, procCache, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked", entry.Direction);
+                    ConstructListItem(itemColl, entry.AppPath, procCache, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked", entry.Timestamp, entry.Direction);
                 }
             }
 
@@ -142,7 +143,7 @@ namespace PKSoft
             list.ResumeLayout(false);
         }
 
-        private void ConstructListItem(List<ListViewItem> itemColl, string appName, Dictionary<int, ProcInfo> procCache, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, PKSoft.WindowsFirewall.RuleDirection dir = WindowsFirewall.RuleDirection.Invalid)
+        private void ConstructListItem(List<ListViewItem> itemColl, string appName, Dictionary<int, ProcInfo> procCache, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, PKSoft.WindowsFirewall.RuleDirection dir = WindowsFirewall.RuleDirection.Invalid)
         {
             try
             {
@@ -197,8 +198,10 @@ namespace PKSoft
                         li.SubItems.Add(PKSoft.Resources.Messages.TrafficOut);
                         break;
                     default:
+                        li.SubItems.Add(string.Empty);
                         break;
                 }
+                li.SubItems.Add(ts.ToString(CultureInfo.InvariantCulture));
                 itemColl.Add(li);
             }
             catch
