@@ -11,6 +11,20 @@ namespace PKSoft
         // Application name
         [XmlAttributeAttribute()]
         public string Name;
+        public string LocalizedName
+        {
+            get
+            {
+                try
+                {
+                    return PKSoft.Resources.Exceptions.ResourceManager.GetString(Name, PKSoft.Resources.Exceptions.Culture);
+                }
+                catch
+                {
+                    return Name;
+                }
+            }
+        }
 
         // If Recommended is set to true, this profile will be recommended
         // (and enabled) by default to the user.

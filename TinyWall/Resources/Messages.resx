@@ -362,7 +362,7 @@ You can use one or more numbers in the range of 1-65535, separated by commas. An
   </data>
   <data name="UnblockApp" xml:space="preserve">
     <value>Related files found
-The selected executable is part of {0}. To ensure that this application can be used without limitations, it is recommended to also unblock some other files.</value>
+The selected executable could be part of {0}. To ensure that this application can be used without limitations, it is recommended to also unblock some other files.</value>
     <comment>First line is dialog main text. Rest are further information in smaller letters. Param0 is name of the app.</comment>
   </data>
   <data name="UnblockAppShowRelated" xml:space="preserve">
@@ -377,5 +377,19 @@ The selected executable is part of {0}. To ensure that this application can be u
   <data name="CompromisedApplication" xml:space="preserve">
     <value>{0}, possibly compromised</value>
     <comment>Exception details window banner text. Param0 is name of application.</comment>
+  </data>
+  <data name="ToastInputNeeded" xml:space="preserve">
+    <value>Your input is needed
+to continue firewall whitelisting.</value>
+    <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
+  </data>
+  <data name="ToastAppWhitelisted" xml:space="preserve">
+    <value>Added to firewall whitelist</value>
+    <comment>Keep line short because words do not wrap.</comment>
+  </data>
+  <data name="ToastWhitelistFailed" xml:space="preserve">
+    <value>Firewall whitelisting failed.
+You might succeed if you try again.</value>
+    <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
   </data>
 </root>

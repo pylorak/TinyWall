@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -266,6 +267,7 @@ namespace PKSoft
         private ulong WmiTsSys100Ns = 0;
         private string rxDisplay = string.Empty;
         private string txDisplay = string.Empty;
+        private readonly bool RunningOnWin8;
 
         private EventHandler<AnyEventArgs> BalloonClickedCallback;
         private object BalloonClickedCallbackArgument;
@@ -275,7 +277,7 @@ namespace PKSoft
         private Hotkey HotKeyWhitelistProcess;
         private Hotkey HotKeyWhitelistWindow;
 
-        private CmdLineArgs StartupOpts;
+        private readonly CmdLineArgs StartupOpts;
 
         private bool m_Locked;
         private bool Locked
@@ -297,6 +299,9 @@ namespace PKSoft
 
         public TinyWallController(CmdLineArgs opts)
         {
+            Version OsVer = Environment.OSVersion.Version;
+            Version Win8Version = new Version(6, 2, 0, 0);
+            this.RunningOnWin8 = (OsVer >= Win8Version);
             this.StartupOpts = opts;
 
             ActiveConfig.Controller = ControllerSettings.Load();
@@ -667,22 +672,7 @@ namespace PKSoft
 
             FirewallException ex = new FirewallException(ofd.FileName, null);
             ex.ServiceName = string.Empty;
-
-            Application app;
-            AppExceptionAssoc appFile;
-            ex.TryRecognizeApp(true, out app, out appFile);
-            if (ActiveConfig.Controller.AskForExceptionDetails)
-            {
-                using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
-                {
-                    if (f.ShowDialog() == DialogResult.Cancel)
-                        return;
-
-                    ex = f.ExceptionSettings;
-                }
-            }
-
-            AddNewException(ex, appFile);
+            RecognizeAskAddException(ex);
         }
 
         private void mnuWhitelistByProcess_Click(object sender, EventArgs e)
@@ -690,21 +680,7 @@ namespace PKSoft
             FirewallException ex = ProcessesForm.ChooseProcess();
             if (ex == null) return;
 
-            Application app;
-            AppExceptionAssoc appFile;
-            ex.TryRecognizeApp(true, out app, out appFile);
-            if (ActiveConfig.Controller.AskForExceptionDetails)
-            {
-                using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
-                {
-                    if (f.ShowDialog() == DialogResult.Cancel)
-                        return;
-
-                    ex = f.ExceptionSettings;
-                }
-            }
-
-            AddNewException(ex, appFile);
+            RecognizeAskAddException(ex);
         }
 
         internal TWControllerMessages ApplyFirewallSettings(ServiceSettings21 srvConfig, bool showUI = true)
@@ -824,17 +800,32 @@ namespace PKSoft
 
         private void mnuWhitelistByWindow_Click(object sender, EventArgs e)
         {
-            if (MouseInterceptor == null)
+            bool success;
+            bool foregroundIsMetro = RunningOnWin8 && Utils.IsMetroActive(out success);
+
+            if (foregroundIsMetro)
             {
-                MouseInterceptor = new MouseInterceptor();
-                MouseInterceptor.MouseLButtonDown += new PKSoft.MouseInterceptor.MouseHookLButtonDown(MouseInterceptor_MouseLButtonDown);
-                ShowBalloonTip(PKSoft.Resources.Messages.ClickOnAWindowWhitelisting, ToolTipIcon.Info);
+                using (Process p = Utils.GetForegroundProcess())
+                {
+                    string AppPath = p.MainModule.FileName;
+                    FirewallException ex = new FirewallException(AppPath, null);
+                    RecognizeAskAddException(ex);
+                }
             }
             else
             {
-                MouseInterceptor.Dispose();
-                MouseInterceptor = null;
-                ShowBalloonTip(PKSoft.Resources.Messages.WhitelistingCancelled, ToolTipIcon.Info);
+                if (MouseInterceptor == null)
+                {
+                    MouseInterceptor = new MouseInterceptor();
+                    MouseInterceptor.MouseLButtonDown += new PKSoft.MouseInterceptor.MouseHookLButtonDown(MouseInterceptor_MouseLButtonDown);
+                    ShowBalloonTip(PKSoft.Resources.Messages.ClickOnAWindowWhitelisting, ToolTipIcon.Info);
+                }
+                else
+                {
+                    MouseInterceptor.Dispose();
+                    MouseInterceptor = null;
+                    ShowBalloonTip(PKSoft.Resources.Messages.WhitelistingCancelled, ToolTipIcon.Info);
+                }
             }
         }
 
@@ -868,23 +859,32 @@ namespace PKSoft
                     }
 
                     FirewallException ex = new FirewallException(AppPath, null);
-                    Application app;
-                    AppExceptionAssoc appFile;
-                    ex.TryRecognizeApp(true, out app, out appFile);
-                    if (ActiveConfig.Controller.AskForExceptionDetails)
-                    {
-                        using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
-                        {
-                            if (f.ShowDialog() == DialogResult.Cancel)
-                                return;
-
-                            ex = f.ExceptionSettings;
-                        }
-                    }
-
-                    AddNewException(ex, appFile);
+                    RecognizeAskAddException(ex);
                 });
             });
+        }
+
+        internal void RecognizeAskAddException(FirewallException ex)
+        {
+            Application app;
+            AppExceptionAssoc appFile;
+            ex.TryRecognizeApp(true, out app, out appFile);
+            if (ActiveConfig.Controller.AskForExceptionDetails)
+            {
+                using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
+                {
+                    bool success;
+                    if (Utils.IsMetroActive(out success))
+                        Utils.ShowToastNotif(Resources.Messages.ToastInputNeeded);
+
+                    if (f.ShowDialog() == DialogResult.Cancel)
+                        return;
+
+                    ex = f.ExceptionSettings;
+                }
+            }
+
+            AddNewException(ex, appFile);
         }
 
         private void EditRecentException(object sender, AnyEventArgs e)
@@ -914,24 +914,54 @@ namespace PKSoft
             ActiveConfig.Service.Normalize();
 
             TWControllerMessages resp = ApplyFirewallSettings(ActiveConfig.Service, false);
-            switch (resp)
-            {
-                case TWControllerMessages.RESPONSE_OK:
-                    GenericTuple<FirewallException, AppExceptionAssoc> tuple = new GenericTuple<FirewallException, AppExceptionAssoc>(ex, exFile);
-                    if ((exFile != null) && (!exFile.IsSigned || exFile.IsSignatureValid))
-                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForRecognizedChanged, ex.ExecutableName), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(tuple));
-                    else
-                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForUnrecognizedChanged, ex.ExecutableName), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(tuple));
 
-                    break;
-                case TWControllerMessages.RESPONSE_ERROR:
-                    // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
-                    ShowBalloonTip(PKSoft.Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
-                    break;
-                default:
-                    DefaultPopups(resp);
-                    LoadSettingsFromServer();
-                    break;
+            bool success;
+            bool metroActive = Utils.IsMetroActive(out success);
+            if (!metroActive)
+            {
+                switch (resp)
+                {
+                    case TWControllerMessages.RESPONSE_OK:
+                        GenericTuple<FirewallException, AppExceptionAssoc> tuple = new GenericTuple<FirewallException, AppExceptionAssoc>(ex, exFile);
+                        if ((exFile != null) && (!exFile.IsSigned || exFile.IsSignatureValid))
+                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForRecognizedChanged, ex.ExecutableName), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(tuple));
+                        else
+                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForUnrecognizedChanged, ex.ExecutableName), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(tuple));
+                        break;
+                    case TWControllerMessages.RESPONSE_ERROR:
+                        // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
+                        ShowBalloonTip(PKSoft.Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
+                        break;
+                    default:
+                        DefaultPopups(resp);
+                        LoadSettingsFromServer();
+                        break;
+                }
+            }
+            else
+            {
+                switch (resp)
+                {
+                    case TWControllerMessages.RESPONSE_OK:
+                        string exeList = string.Empty;
+                        switch (exceptions.Count)
+                        {
+                            case 1:
+                                exeList = Path.GetFileName(exceptions[0].ExecutableName);
+                                break;
+                            case 2:
+                                exeList = Path.GetFileName(exceptions[0].ExecutableName) + ", " + Path.GetFileName(exceptions[1].ExecutableName);
+                                break;
+                            default:
+                                exeList = Path.GetFileName(exceptions[0].ExecutableName) + ", " + Path.GetFileName(exceptions[1].ExecutableName) + ", ...";
+                                break;
+                        }
+                        Utils.ShowToastNotif(string.Format(Resources.Messages.ToastAppWhitelisted+"\n{0}", exeList));
+                        break;
+                    default:
+                        Utils.ShowToastNotif(Resources.Messages.ToastWhitelistFailed);
+                        break;
+                }
             }
         }
 
@@ -1137,7 +1167,6 @@ namespace PKSoft
 
         private void InitController()
         {
-
             // We will load our database parallel to other things to improve startup performance
             using (ThreadBarrier barrier = new ThreadBarrier(2))
             {

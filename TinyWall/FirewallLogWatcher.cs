@@ -53,10 +53,6 @@ namespace PKSoft
 
         internal bool Equals(FirewallLogEntry obj, bool timestampMustMatch)
         {
-            // If parameter cannot be cast to Point return false.
-            if ((object)obj == null)
-                return false;
-
             // Return true if the fields match.
             bool eventMatch =
                 this.DestinationIP.Equals(obj.DestinationIP) &&

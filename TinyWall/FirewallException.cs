@@ -175,6 +175,12 @@ namespace PKSoft
             if (File.Exists(ExecutablePath))
                 app = GlobalInstances.ProfileMan.KnownApplications.TryGetRecognizedApp(ExecutablePath, ServiceName, out appFile);
 
+            if ((app != null) && (app.Special))
+            {   // We do not want to recognize special apps
+                app = null;
+                appFile = null;
+            }
+
             if (allowModify)
             {
                 // Apply default settings
@@ -299,7 +305,7 @@ namespace PKSoft
             if ((exceptions.Count > 1) && promptUI)
             {
                 string firstLine, contentLines;
-                Utils.SplitFirstLine(string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.UnblockApp, app.Name), out firstLine, out contentLines);
+                Utils.SplitFirstLine(string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.UnblockApp, app.LocalizedName), out firstLine, out contentLines);
 
                 TaskDialog dialog = new TaskDialog();
                 dialog.CustomMainIcon = PKSoft.Resources.Icons.firewall;
@@ -321,6 +327,12 @@ namespace PKSoft
                 foreach (FirewallException filePath in exceptions)
                     fileListStr += filePath.ExecutablePath + Environment.NewLine;
                 dialog.ExpandedInformation = fileListStr.Trim();
+
+                bool success;
+                if (Utils.IsMetroActive(out success))
+                {
+                    Utils.ShowToastNotif(Resources.Messages.ToastInputNeeded);
+                }
 
                 switch (dialog.Show())
                 {

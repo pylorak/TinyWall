@@ -25,11 +25,6 @@ namespace PKSoft
             [DllImport("user32.dll", SetLastError = true)]
             internal static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
-            [DllImport("kernel32.dll")]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            internal static extern bool SetProcessWorkingSetSize(IntPtr process,
-                UIntPtr minimumWorkingSetSize, UIntPtr maximumWorkingSetSize);
-
             [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
             [return: MarshalAs(UnmanagedType.U4)]
             internal static extern int GetLongPathName(
@@ -39,6 +34,48 @@ namespace PKSoft
                 StringBuilder lpszLongPath,
                 [MarshalAs(UnmanagedType.U4)]
                 int cchBuffer);
+
+            [DllImport("user32.dll")]
+            internal static extern IntPtr GetForegroundWindow();
+
+            [DllImport("user32.dll", SetLastError=true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool IsImmersiveProcess(IntPtr hProcess);
+
+
+
+            [ComImport, Guid("2246EA2D-CAEA-4444-A3C4-6DE827E44313"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+            internal interface IAppVisibility
+            {
+                HRESULT GetAppVisibilityOnMonitor([In] IntPtr hMonitor, [Out] out MONITOR_APP_VISIBILITY pMode);
+                HRESULT IsLauncherVisible([Out] out bool pfVisible);
+                HRESULT Advise([In] IAppVisibilityEvents pCallback, [Out] out int pdwCookie);
+                HRESULT Unadvise([In] int dwCookie);
+            }
+            //...
+            internal enum HRESULT : long
+            {
+                S_FALSE = 0x0001,
+                S_OK = 0x0000,
+                E_INVALIDARG = 0x80070057,
+                E_OUTOFMEMORY = 0x8007000E
+            }
+            internal enum MONITOR_APP_VISIBILITY
+            {
+                MAV_UNKNOWN = 0,         // The mode for the monitor is unknown
+                MAV_NO_APP_VISIBLE = 1,
+                MAV_APP_VISIBLE = 2
+            }
+            [ComImport, Guid("6584CE6B-7D82-49C2-89C9-C6BC02BA8C38"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+            internal interface IAppVisibilityEvents
+            {
+                HRESULT AppVisibilityOnMonitorChanged(
+                    [In] IntPtr hMonitor,
+                    [In] MONITOR_APP_VISIBILITY previousMode,
+                    [In] MONITOR_APP_VISIBILITY currentMode);
+
+                HRESULT LauncherVisibilityChange([In] bool currentVisibleState);
+            }
         }
 
         private static readonly Random _rng = new Random();
@@ -60,6 +97,54 @@ namespace PKSoft
             return servers;
         }
         */
+
+        internal static bool IsMetroActive(out bool success)
+        { // http://stackoverflow.com/questions/12009999/imetromodeislaunchervisible-in-c-sharp-via-pinvoke
+
+            success = false;
+            try
+            {
+                Type tIAppVisibility = Type.GetTypeFromCLSID(new Guid("7E5FE3D9-985F-4908-91F9-EE19F9FD1514"));
+                NativeMethods.IAppVisibility appVisibility = (NativeMethods.IAppVisibility)Activator.CreateInstance(tIAppVisibility);
+                bool launcherVisible;
+                if (NativeMethods.HRESULT.S_OK == appVisibility.IsLauncherVisible(out launcherVisible))
+                {
+                    // launcherVisible flag is valid
+                    success = true;
+
+                    using (Process p = Utils.GetForegroundProcess())
+                    {
+                        return launcherVisible || Utils.IsImmersiveProcess(p);
+                    }
+                }
+                else
+                    return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        internal static void ShowToastNotif(string msg)
+        {
+            msg = msg.Replace("\n", "|");
+            string args = string.Format(CultureInfo.InvariantCulture, "KPados.TinyWall.Controller \"{0}\"", msg);
+            Utils.StartProcess(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "Toaster.exe"), args, false, true);
+        }
+
+        internal static Process GetForegroundProcess()
+        {
+            IntPtr hwnd = NativeMethods.GetForegroundWindow();
+            int pid;
+            NativeMethods.GetWindowThreadProcessId(hwnd, out pid);
+            return Process.GetProcessById((int)pid);
+        }
+
+        internal static bool IsImmersiveProcess(Process p)
+        {
+            return NativeMethods.IsImmersiveProcess(p.Handle);
+        }
 
         internal static void CompressDeflate(string inputFile, string outputFile)
         {
@@ -160,7 +245,7 @@ namespace PKSoft
             }
             catch
             {
-                return null;
+                return string.Empty;
             }
         }
         

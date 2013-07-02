@@ -8,6 +8,8 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "MsiSetup", "MsiSetup\MsiSet
 		{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2} = {16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Toaster", "Toaster\Toaster.csproj", "{1289F709-BC70-41F7-940C-FCACFA461F91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,12 @@ Global
 		{E864E1F9-3383-454F-BB6F-D89EE97C518B}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{E864E1F9-3383-454F-BB6F-D89EE97C518B}.Release|Any CPU.ActiveCfg = Release|x86
 		{E864E1F9-3383-454F-BB6F-D89EE97C518B}.RelWithDebug|Any CPU.ActiveCfg = Debug|x86
+		{1289F709-BC70-41F7-940C-FCACFA461F91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1289F709-BC70-41F7-940C-FCACFA461F91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1289F709-BC70-41F7-940C-FCACFA461F91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1289F709-BC70-41F7-940C-FCACFA461F91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1289F709-BC70-41F7-940C-FCACFA461F91}.RelWithDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1289F709-BC70-41F7-940C-FCACFA461F91}.RelWithDebug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -315,7 +315,8 @@ Sie können eine oder mehrere Nummern im Bereich von 1-65535, getrennt durch Kom
     <value>Whitelisting abbrechen</value>
   </data>
   <data name="UnblockApp" xml:space="preserve">
-    <value>Zugehörige Dateien gefunden. Die ausgewählte Anwendung gehört zu {0}. Um sicherzustellen, dass die Anwendung ohne Einschränkungen genutzt werden kann, wird empfohlen, die zugehörigen Dateien zu erlauben.</value>
+    <value>Zugehörige Dateien gefunden.
+Die ausgewählte Datei kann zu {0} gehören. Um sicherzustellen, dass die Anwendung ohne Einschränkungen genutzt werden kann, wird empfohlen, die zugehörigen Dateien zu erlauben.</value>
   </data>
   <data name="UnblockAppShowRelated" xml:space="preserve">
     <value>Zeige/Verstecke dazugehörige Anwendungen</value>
@@ -329,5 +330,19 @@ Sie können eine oder mehrere Nummern im Bereich von 1-65535, getrennt durch Kom
   <data name="CompromisedApplication" xml:space="preserve">
     <value>{0}, mögl. kompromittiert</value>
     <comment>Exception details window banner text. Param0 is name of application.</comment>
+  </data>
+  <data name="ToastInputNeeded" xml:space="preserve">
+    <value>Ihre Eingabe ist gefragt
+um das App in der Firewall zu erlauben.</value>
+    <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
+  </data>
+  <data name="ToastAppWhitelisted" xml:space="preserve">
+    <value>Zu den Firewallausnahmen hinzugefügt</value>
+    <comment>Keep line short because words do not wrap.</comment>
+  </data>
+  <data name="ToastWhitelistFailed" xml:space="preserve">
+    <value>Whitelist fehlgeschlagen.
+Versuchen Sie es nocheinmal.</value>
+    <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
   </data>
 </root>

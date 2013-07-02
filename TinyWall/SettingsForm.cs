@@ -91,7 +91,7 @@ namespace PKSoft
                     if (app.Special && app.ResolveFilePaths())
                     {
                         // Get localized name
-                        IdWithName item = new IdWithName(app.Name, PKSoft.Resources.Exceptions.ResourceManager.GetString(app.Name, PKSoft.Resources.Exceptions.Culture));
+                        IdWithName item = new IdWithName(app.Name, app.LocalizedName);
 
                         // Construct default name in case no localization exists
                         if (string.IsNullOrEmpty(item.Name))

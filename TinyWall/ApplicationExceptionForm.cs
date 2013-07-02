@@ -89,13 +89,13 @@ namespace PKSoft
             {
                 // Recognized app
                 panel1.BackgroundImage = Resources.Icons.green_banner;
-                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.RecognizedApplication, RecognizedTargetApp.Name);
+                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.RecognizedApplication, RecognizedTargetApp.LocalizedName);
             }
             else if ((RecognizedTargetFile != null) && RecognizedTargetFile.IsSigned && !RecognizedTargetFile.IsSignatureValid)
             {
                 // Recognized, but compromised app
                 panel1.BackgroundImage = Resources.Icons.red_banner;
-                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.CompromisedApplication, RecognizedTargetApp.Name);
+                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.CompromisedApplication, RecognizedTargetApp.LocalizedName);
             }
             else
             {

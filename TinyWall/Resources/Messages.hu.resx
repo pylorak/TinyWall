@@ -355,7 +355,7 @@ Engedélyezed az automatikus tanuló módot?</value>
   </data>
   <data name="UnblockApp" xml:space="preserve">
     <value>Kapcsolódó fájlok találhatóak
-A kiválasztott fájl a következő része: {0}. Ahhoz hogy az alkalmazás korlátozások nélkül működhessen, ajánlott a többi fájlt is feloldani.</value>
+A kiválasztott fájl a következő része lehet: {0}. Ahhoz hogy az alkalmazás korlátozások nélkül működhessen, ajánlott a többi fájlt is feloldani.</value>
     <comment>First line is dialog main text. Rest are further information in smaller letters. Param0 is name of the app.</comment>
   </data>
   <data name="UnblockAppShowRelated" xml:space="preserve">
@@ -370,5 +370,19 @@ A kiválasztott fájl a következő része: {0}. Ahhoz hogy az alkalmazás korl�
   <data name="CompromisedApplication" xml:space="preserve">
     <value>{0}, talán kompromittált</value>
     <comment>Exception details window banner text. Param0 is name of application.</comment>
+  </data>
+  <data name="ToastInputNeeded" xml:space="preserve">
+    <value>További bevitel szükséges
+az új tűzfalkivétel hozzáadásához.</value>
+    <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
+  </data>
+  <data name="ToastAppWhitelisted" xml:space="preserve">
+    <value>Új tűzfalkivételek hozzáadva.</value>
+    <comment>Keep line short because words do not wrap.</comment>
+  </data>
+  <data name="ToastWhitelistFailed" xml:space="preserve">
+    <value>A tűzfalkivétel hozzáadása nem sikerült.
+Egy újbóli probálkozás sikerhez vezethet.</value>
+    <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
   </data>
 </root>

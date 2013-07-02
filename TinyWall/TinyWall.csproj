@@ -292,9 +292,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionsForm.hu.resx">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionsForm.de.resx">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionsForm.fr.resx">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
@@ -393,7 +395,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Exceptions.es.resx" />
     <EmbeddedResource Include="Resources\Exceptions.hu.resx" />
-    <EmbeddedResource Include="Resources\Exceptions.de.resx" />
+    <EmbeddedResource Include="Resources\Exceptions.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Exceptions.fr.resx" />
     <EmbeddedResource Include="Resources\Exceptions.ja.resx" />
     <EmbeddedResource Include="Resources\Exceptions.nl.resx" />
@@ -412,8 +416,12 @@
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Messages.es.resx" />
-    <EmbeddedResource Include="Resources\Messages.hu.resx" />
-    <EmbeddedResource Include="Resources\Messages.de.resx" />
+    <EmbeddedResource Include="Resources\Messages.hu.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Messages.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Messages.fr.resx" />
     <EmbeddedResource Include="Resources\Messages.ja.resx" />
     <EmbeddedResource Include="Resources\Messages.nl.resx" />

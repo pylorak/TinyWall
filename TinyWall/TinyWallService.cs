@@ -771,10 +771,10 @@ namespace PKSoft
                     {
                         int pid = (int)req.Arguments[0];
                         string path = Utils.GetPathOfProcess(pid);
-                        if (path == null)
-                            return new Message(TWControllerMessages.RESPONSE_OK, path);
-                        else
+                        if (string.IsNullOrEmpty(path))
                             return new Message(TWControllerMessages.RESPONSE_ERROR);
+                        else
+                            return new Message(TWControllerMessages.RESPONSE_OK, path);
                     }
                 case TWControllerMessages.SET_PASSPHRASE:
                     {

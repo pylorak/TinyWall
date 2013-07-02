@@ -576,6 +576,35 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Added to firewall whitelist.
+        /// </summary>
+        internal static string ToastAppWhitelisted {
+            get {
+                return ResourceManager.GetString("ToastAppWhitelisted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your input is needed
+        ///to continue firewall whitelisting..
+        /// </summary>
+        internal static string ToastInputNeeded {
+            get {
+                return ResourceManager.GetString("ToastInputNeeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firewall whitelisting failed.
+        ///You might succeed if you try again..
+        /// </summary>
+        internal static string ToastWhitelistFailed {
+            get {
+                return ResourceManager.GetString("ToastWhitelistFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to In.
         /// </summary>
         internal static string TrafficIn {
@@ -595,7 +624,7 @@ namespace PKSoft.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to Related files found
-        ///The selected executable is part of {0}. To ensure that this application can be used without limitations, it is recommended to also unblock some other files..
+        ///The selected executable could be part of {0}. To ensure that this application can be used without limitations, it is recommended to also unblock some other files..
         /// </summary>
         internal static string UnblockApp {
             get {
