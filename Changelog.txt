@@ -1,7 +1,7 @@
 TinyWall Changelog
 ---------------------
 
-2.1.0 - Major release (03.07.2013.)
+2.1.0 - Major release (04.07.2013.)
 - Proper and official Windows 8 support
 - Add ability to disable global hotkeys
 - Properly validate binary certificate of whitelisted applications

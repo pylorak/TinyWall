@@ -266,10 +266,14 @@
             <RemoveFolder Id='ProgramMenuDir' On='uninstall' />
             <RegistryValue Root='HKCU' Key='Software\[ProductName]' Type='string' Value='' KeyPath='yes' />
             <Shortcut Id="ControllerShortcut" Icon="TinyWallIcon.exe" Directory="ProgramMenuDir" Name="TinyWall Controller" Arguments="/desktop" Target="[INSTALLDIR]TinyWall.exe">
-              <ShortcutProperty Key="System.AppUserModel.ID" Value="KPados.TinyWall.Controller" />
+              <ShortcutProperty Key="{9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3}, 5" Value="KPados.TinyWall.Controller" /> <!-- System.AppUserModel.ID -->
+              <ShortcutProperty Key="{9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3}, 12" Value="1" />                         <!-- System.AppUserModel.StartPinOption, http://support.microsoft.com/kb/2745126/en-us -->
+              <ShortcutProperty Key="{9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3}, 8" Value="1" />                          <!-- System.AppUserModel.ExcludeFromShowInNewInstall -->
             </Shortcut>
             <Shortcut Id="DevelToolShortcut" Icon="TinyWallIcon.exe" Directory="ProgramMenuDir" Name="TinyWall Dev Helper" Arguments="/develtool" Target="[INSTALLDIR]TinyWall.exe">
-              <ShortcutProperty Key="System.AppUserModel.ID" Value="KPados.TinyWall.DevelTool" />
+              <ShortcutProperty Key="{9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3}, 5" Value="KPados.TinyWall.DevelTool" />  <!-- System.AppUserModel.ID -->
+              <ShortcutProperty Key="{9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3}, 12" Value="1" />                         <!-- System.AppUserModel.StartPinOption, http://support.microsoft.com/kb/2745126/en-us -->
+              <ShortcutProperty Key="{9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3}, 8" Value="1" />                          <!-- System.AppUserModel.ExcludeFromShowInNewInstall -->
             </Shortcut>
             <Shortcut Id="FAQShortcut" Directory="ProgramMenuDir" Name="FAQ" Target="[INSTALLDIR]doc\faq.html"/>
             <Shortcut Id="WhatsNewShortcut" Directory="ProgramMenuDir" Name="What's new" Target="[INSTALLDIR]doc\whatsnew.html"/>
