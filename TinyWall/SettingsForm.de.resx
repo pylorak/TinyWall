@@ -274,12 +274,6 @@
   <data name="lblVersion.Size" type="System.Drawing.Size, System.Drawing">
     <value>48, 13</value>
   </data>
-  <data name="lblVersion.Text" xml:space="preserve">
-    <value>TinyWall</value>
-  </data>
-  <data name="label12.Text" xml:space="preserve">
-    <value>Copyright © 2012 Károly Pados</value>
-  </data>
   <data name="groupBox2.Text" xml:space="preserve">
     <value>Über</value>
   </data>

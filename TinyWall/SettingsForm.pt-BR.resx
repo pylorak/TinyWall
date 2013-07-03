@@ -235,9 +235,6 @@
   <data name="lblLinkLicense.Text" xml:space="preserve">
     <value>Licença</value>
   </data>
-  <data name="label10.Location" type="System.Drawing.Point, System.Drawing">
-    <value>188, 30</value>
-  </data>
   <data name="label10.Size" type="System.Drawing.Size, System.Drawing">
     <value>279, 39</value>
   </data>

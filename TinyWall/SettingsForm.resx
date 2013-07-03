@@ -1173,6 +1173,36 @@
   <data name="&gt;&gt;btnExport.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
+  <data name="lblLinkAttributions.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblLinkAttributions.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="lblLinkAttributions.Location" type="System.Drawing.Point, System.Drawing">
+    <value>18, 107</value>
+  </data>
+  <data name="lblLinkAttributions.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 13</value>
+  </data>
+  <data name="lblLinkAttributions.TabIndex" type="System.Int32, mscorlib">
+    <value>131</value>
+  </data>
+  <data name="lblLinkAttributions.Text" xml:space="preserve">
+    <value>Attributions</value>
+  </data>
+  <data name="&gt;&gt;lblLinkAttributions.Name" xml:space="preserve">
+    <value>lblLinkAttributions</value>
+  </data>
+  <data name="&gt;&gt;lblLinkAttributions.Type" xml:space="preserve">
+    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblLinkAttributions.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;lblLinkAttributions.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="btnDonate.AccessibleDescription" xml:space="preserve">
     <value>Donate</value>
   </data>
@@ -1201,7 +1231,7 @@
     <value>groupBox2</value>
   </data>
   <data name="&gt;&gt;btnDonate.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="lblLinkLicense.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1210,13 +1240,13 @@
     <value>18, 92</value>
   </data>
   <data name="lblLinkLicense.Size" type="System.Drawing.Size, System.Drawing">
-    <value>44, 13</value>
+    <value>45, 13</value>
   </data>
   <data name="lblLinkLicense.TabIndex" type="System.Int32, mscorlib">
     <value>130</value>
   </data>
   <data name="lblLinkLicense.Text" xml:space="preserve">
-    <value>License</value>
+    <value>Licence</value>
   </data>
   <data name="&gt;&gt;lblLinkLicense.Name" xml:space="preserve">
     <value>lblLinkLicense</value>
@@ -1228,10 +1258,10 @@
     <value>groupBox2</value>
   </data>
   <data name="&gt;&gt;lblLinkLicense.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="label10.Location" type="System.Drawing.Point, System.Drawing">
-    <value>188, 32</value>
+    <value>222, 32</value>
   </data>
   <data name="label10.Size" type="System.Drawing.Size, System.Drawing">
     <value>279, 37</value>
@@ -1252,7 +1282,7 @@
     <value>groupBox2</value>
   </data>
   <data name="&gt;&gt;label10.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="lblAboutHomepageLink.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1279,7 +1309,7 @@
     <value>groupBox2</value>
   </data>
   <data name="&gt;&gt;lblAboutHomepageLink.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="label6.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1306,7 +1336,7 @@
     <value>groupBox2</value>
   </data>
   <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="lblVersion.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1333,7 +1363,7 @@
     <value>groupBox2</value>
   </data>
   <data name="&gt;&gt;lblVersion.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="label12.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1342,13 +1372,13 @@
     <value>18, 47</value>
   </data>
   <data name="label12.Size" type="System.Drawing.Size, System.Drawing">
-    <value>155, 13</value>
+    <value>182, 13</value>
   </data>
   <data name="label12.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
   </data>
   <data name="label12.Text" xml:space="preserve">
-    <value>Copyright © 2011 Károly Pados</value>
+    <value>Copyright © 2011-2013 Károly Pados</value>
   </data>
   <data name="&gt;&gt;label12.Name" xml:space="preserve">
     <value>label12</value>
@@ -1360,13 +1390,13 @@
     <value>groupBox2</value>
   </data>
   <data name="&gt;&gt;label12.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
     <value>104, 154</value>
   </data>
   <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>508, 125</value>
+    <value>508, 138</value>
   </data>
   <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
     <value>120</value>

@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Windows 8 support application for TinyWall.")]
 [assembly: AssemblyCompany("Károly Pados")]
 [assembly: AssemblyProduct("TinyWall")]
-[assembly: AssemblyCopyright("Copyright © Károly Pados 2011-2013")]
+[assembly: AssemblyCopyright("Copyright © 2013 Károly Pados")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

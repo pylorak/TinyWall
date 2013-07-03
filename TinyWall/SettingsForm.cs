@@ -522,5 +522,16 @@ namespace PKSoft
             chkHostsBlocklist.Enabled = chkEnableBlocklists.Checked;
             chkBlockMalwarePorts.Enabled = chkEnableBlocklists.Checked;
         }
+
+        private void lblLinkAttributions_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            try
+            {
+                ProcessStartInfo psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "Attributions.txt"));
+                psi.UseShellExecute = true;
+                Process.Start(psi);
+            }
+            catch { }
+        }
     }
 }

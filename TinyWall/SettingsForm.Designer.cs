@@ -74,6 +74,7 @@
             this.btnImport = new System.Windows.Forms.Button();
             this.btnExport = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.lblLinkAttributions = new System.Windows.Forms.LinkLabel();
             this.btnDonate = new System.Windows.Forms.PictureBox();
             this.lblLinkLicense = new System.Windows.Forms.LinkLabel();
             this.label10 = new System.Windows.Forms.Label();
@@ -420,6 +421,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.lblLinkAttributions);
             this.groupBox2.Controls.Add(this.btnDonate);
             this.groupBox2.Controls.Add(this.lblLinkLicense);
             this.groupBox2.Controls.Add(this.label10);
@@ -430,6 +432,13 @@
             resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
+            // 
+            // lblLinkAttributions
+            // 
+            resources.ApplyResources(this.lblLinkAttributions, "lblLinkAttributions");
+            this.lblLinkAttributions.Name = "lblLinkAttributions";
+            this.lblLinkAttributions.TabStop = true;
+            this.lblLinkAttributions.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblLinkAttributions_LinkClicked);
             // 
             // btnDonate
             // 
@@ -585,5 +594,6 @@
         private System.Windows.Forms.ComboBox comboLanguages;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox chkEnableHotkeys;
+        private System.Windows.Forms.LinkLabel lblLinkAttributions;
     }
 }

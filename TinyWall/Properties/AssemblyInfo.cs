@@ -11,7 +11,7 @@ using System.Resources;
 [assembly: AssemblyDescription("An application to control and secure the built-in firewall of Windows.")]
 [assembly: AssemblyCompany("Károly Pados")]
 [assembly: AssemblyProduct("TinyWall")]
-[assembly: AssemblyCopyright("Copyright © Károly Pados 2011-2013")]
+[assembly: AssemblyCopyright("Copyright © 2011-2013 Károly Pados")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

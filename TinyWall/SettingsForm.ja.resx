@@ -274,9 +274,6 @@
   <data name="label10.Text" xml:space="preserve">
     <value>このフリーウェアプログラムに対して寄付することで、今後の開発の継続にご協力ください</value>
   </data>
-  <data name="label12.Text" xml:space="preserve">
-    <value>著作権 © 2011 Károly Pados</value>
-  </data>
   <data name="groupBox2.Text" xml:space="preserve">
     <value>情報</value>
   </data>
