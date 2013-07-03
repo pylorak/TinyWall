@@ -135,10 +135,11 @@ namespace PKSoft
             CreationDate = DateTime.Now;
         }
 
-        public FirewallException(string execPath, string service)
+        public FirewallException(string execPath, string service, bool template)
         {
             this.ExecutablePath = execPath;
             this.ServiceName = service;
+            this.Template = template;
         }
 
         public bool IsService
@@ -167,7 +168,7 @@ namespace PKSoft
             return true;
         }
 
-        internal void TryRecognizeApp(bool allowModify, out Application app, out AppExceptionAssoc appFile)
+        internal void TryRecognizeApp(out Application app, out AppExceptionAssoc appFile)
         {
             app = null;
             appFile = null;
@@ -181,8 +182,10 @@ namespace PKSoft
                 appFile = null;
             }
 
-            if (allowModify)
+            if (this.Template)
             {
+                this.Template = false;
+
                 // Apply default settings
                 MakeUnrestrictTcpUdp();
 

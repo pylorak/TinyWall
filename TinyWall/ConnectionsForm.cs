@@ -330,7 +330,7 @@ namespace PKSoft
 
                 try
                 {
-                    FirewallException ex = new FirewallException(path, null);
+                    FirewallException ex = new FirewallException(path, null, false);
                     ex.MakeUnrestrictTcpUdp();
                     List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(ex, true, true, true);
                     if (exceptions.Count == 0)

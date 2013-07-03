@@ -248,6 +248,8 @@ namespace PKSoft
 
             for (int i = 0; i < ActiveConfig.Service.AppExceptions.Count; ++i)
             {
+                System.Diagnostics.Debug.Assert(ActiveConfig.Service.AppExceptions[i].Template == false);
+
                 try
                 {   //This try-catch will prevent errors if an exception profile string is invalid
                     FirewallException ex = ActiveConfig.Service.AppExceptions[i];
@@ -502,10 +504,17 @@ namespace PKSoft
             catch { }
             finally
             {
-                if (File.Exists(tmpCompressedPath))
+                try
+                {
                     File.Delete(tmpCompressedPath);
-                if (File.Exists(tmpFile))
+                }
+                catch { }
+
+                try
+                {
                     File.Delete(tmpFile);
+                }
+                catch { }
             }
         }
 
@@ -616,7 +625,7 @@ namespace PKSoft
                     if (LearningKnownApplication == null)
                         LearningKnownApplication = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
 
-                    FirewallException ex = new FirewallException(entry.AppPath, null);
+                    FirewallException ex = new FirewallException(entry.AppPath, null, false);
                     if (((entry.Direction == RuleDirection.In) && (entry.Event == EventLogEvent.ALLOWED_CONNECTION))
                         || entry.Event == EventLogEvent.ALLOWED_LISTEN)
                     {
@@ -650,6 +659,7 @@ namespace PKSoft
                 {
                     foreach (FirewallException ex in LearningNewExceptions)
                     {
+                        System.Diagnostics.Debug.Assert(ex.Template == false);
                         needsSave = true;
                         ActiveConfig.Service.AppExceptions.Add(ex);
                     }

@@ -65,7 +65,7 @@ namespace PKSoft
             cmbTimer.ValueMember = "Value";
             cmbTimer.ResumeLayout(true);
 
-            TmpExceptionSettings.TryRecognizeApp(true, out RecognizedTargetApp, out RecognizedTargetFile);
+            TmpExceptionSettings.TryRecognizeApp(out RecognizedTargetApp, out RecognizedTargetFile);
         }
 
         private void ApplicationExceptionForm_Load(object sender, EventArgs e)
@@ -141,10 +141,10 @@ namespace PKSoft
             radRestriction_CheckedChanged(null, null);
 
             // Display ports list
-            txtOutboundPortTCP.Text = TmpExceptionSettings.OpenPortOutboundRemoteTCP.Replace(",", ", ");
-            txtOutboundPortUDP.Text = TmpExceptionSettings.OpenPortOutboundRemoteUDP.Replace(",", ", ");
-            txtListenPortTCP.Text = TmpExceptionSettings.OpenPortListenLocalTCP.Replace(",", ", ");
-            txtListenPortUDP.Text = TmpExceptionSettings.OpenPortListenLocalUDP.Replace(",", ", ");
+            txtOutboundPortTCP.Text = string.IsNullOrEmpty(TmpExceptionSettings.OpenPortOutboundRemoteTCP) ? string.Empty : TmpExceptionSettings.OpenPortOutboundRemoteTCP.Replace(",", ", ");
+            txtOutboundPortUDP.Text = string.IsNullOrEmpty(TmpExceptionSettings.OpenPortOutboundRemoteUDP) ? string.Empty : TmpExceptionSettings.OpenPortOutboundRemoteUDP.Replace(",", ", ");
+            txtListenPortTCP.Text = string.IsNullOrEmpty(TmpExceptionSettings.OpenPortListenLocalTCP) ? string.Empty : TmpExceptionSettings.OpenPortListenLocalTCP.Replace(",", ", ");
+            txtListenPortUDP.Text = string.IsNullOrEmpty(TmpExceptionSettings.OpenPortListenLocalUDP) ? string.Empty : TmpExceptionSettings.OpenPortListenLocalUDP.Replace(",", ", ");
 
             UpdateOKButtonEnabled();
         }
@@ -193,8 +193,8 @@ namespace PKSoft
             this.TmpExceptionSettings.CreationDate = DateTime.Now;
             this.TmpExceptionSettings.AlwaysBlockTraffic = radBlock.Checked;
             this.TmpExceptionSettings.UnrestricedTraffic = radUnrestricted.Checked;
+            this.TmpExceptionSettings.Template = false;
             
-
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
@@ -209,7 +209,7 @@ namespace PKSoft
             if (proc == null) return;
 
             TmpExceptionSettings = proc;
-            TmpExceptionSettings.TryRecognizeApp(true, out RecognizedTargetApp, out RecognizedTargetFile);
+            TmpExceptionSettings.TryRecognizeApp(out RecognizedTargetApp, out RecognizedTargetFile);
             UpdateUI();
         }
 
@@ -218,9 +218,8 @@ namespace PKSoft
             if (ofd.ShowDialog(this) != System.Windows.Forms.DialogResult.OK)
                 return;
 
-            TmpExceptionSettings.ExecutablePath = ofd.FileName;
-            TmpExceptionSettings.ServiceName = string.Empty;
-            TmpExceptionSettings.TryRecognizeApp(true, out RecognizedTargetApp, out RecognizedTargetFile);
+            TmpExceptionSettings = new FirewallException(ofd.FileName, null, true);
+            TmpExceptionSettings.TryRecognizeApp(out RecognizedTargetApp, out RecognizedTargetFile);
             UpdateUI();
         }
 
@@ -230,7 +229,7 @@ namespace PKSoft
             if (serv == null) return;
 
             TmpExceptionSettings = serv;
-            TmpExceptionSettings.TryRecognizeApp(true, out RecognizedTargetApp, out RecognizedTargetFile);
+            TmpExceptionSettings.TryRecognizeApp(out RecognizedTargetApp, out RecognizedTargetFile);
             UpdateUI(); 
         }
 

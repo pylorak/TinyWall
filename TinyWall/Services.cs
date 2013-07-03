@@ -18,7 +18,7 @@ namespace PKSoft
                 if (sf.ShowDialog(parent) == DialogResult.Cancel)
                     return null;
 
-                FirewallException ex = new FirewallException(sf.SelectedServiceExec, sf.SelectedServiceName);
+                FirewallException ex = new FirewallException(sf.SelectedServiceExec, sf.SelectedServiceName, true);
                 return ex;
             }
         }

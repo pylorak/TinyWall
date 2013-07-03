@@ -16,7 +16,7 @@ namespace PKSoft
                 if (pf.ShowDialog(parent) == DialogResult.Cancel)
                     return null;
 
-                FirewallException ex = new FirewallException(pf.SelectedPath, null);
+                FirewallException ex = new FirewallException(pf.SelectedPath, null, true);
                 return ex;
             }
         }

@@ -670,7 +670,7 @@ namespace PKSoft
             if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 return;
 
-            FirewallException ex = new FirewallException(ofd.FileName, null);
+            FirewallException ex = new FirewallException(ofd.FileName, null, true);
             ex.ServiceName = string.Empty;
             RecognizeAskAddException(ex);
         }
@@ -808,7 +808,7 @@ namespace PKSoft
                 using (Process p = Utils.GetForegroundProcess())
                 {
                     string AppPath = p.MainModule.FileName;
-                    FirewallException ex = new FirewallException(AppPath, null);
+                    FirewallException ex = new FirewallException(AppPath, null, true);
                     RecognizeAskAddException(ex);
                 }
             }
@@ -858,7 +858,7 @@ namespace PKSoft
                         return;
                     }
 
-                    FirewallException ex = new FirewallException(AppPath, null);
+                    FirewallException ex = new FirewallException(AppPath, null, true);
                     RecognizeAskAddException(ex);
                 });
             });
@@ -868,7 +868,7 @@ namespace PKSoft
         {
             Application app;
             AppExceptionAssoc appFile;
-            ex.TryRecognizeApp(true, out app, out appFile);
+            ex.TryRecognizeApp(out app, out appFile);
             if (ActiveConfig.Controller.AskForExceptionDetails)
             {
                 using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
