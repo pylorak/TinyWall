@@ -1,5 +1,18 @@
-Icon resource attributions:
+﻿Localizations:
+-----------------------------------------------
+German - Harald Klausner, Caner Merten
+Spanish - Toño Puente Garcia
+French - Vincent Queuille
+Hungarian - Gál Gergely, Robert Cartman
+Japanese - Misato Okaneya
+Dutch - Dirk N
+Portuguese - Milton Chaves de Almeida
+Russian - Дмитрий Вожегов
 
+
+
+Icon resources:
+-----------------------------------------------
 executable - deviantdark (http://deviantdark.deviantart.com/)
 add - http://www.icons-land.com/
 accept  (as above)
@@ -23,4 +36,4 @@ export  (as above)
 update - Oliver Twardowski (http://www.addictedtocoffee.de/)
 web - 19eighty7.com (http://19eighty7.com/)
 connections - Sarfraz Shoukat (http://www.greepit.com/)
-clock - Dawghouse Design Studio (http://www.dawghousedesignstudio.com/) 
+clock - Dawghouse Design Studio (http://www.dawghousedesignstudio.com/)

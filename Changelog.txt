@@ -1,29 +1,53 @@
 TinyWall Changelog
 ---------------------
 
-2.0.0 - Major release (xx.xx.xxxx.)
-- Windows 8 CTP support
-- .Net Framework 4 support
-- Connections window shows blocked applications
-- Auto-learning mode
-- Domain blocklist support
-- Hosts file protection
-- Settings update without breaking existing connections
-- XML-based updater system
-- Integrated traffic rate monitor
-- Lightning-fast search for some recognized applications
-- Increased startup performance
-- Better support for Windows Networking, Remote Desktop and Remote Assistance
-- Remember last used firewall mode (except disabled mode)
-- Offer user to whitelist additional files that belong to the same application
-- Signed by a digital certificate
-- Ability to whitelist apps with higher privileges
-- Better adherence to Vista/Win7 UI style
-- Better installer experience
-- Localizability
-- Fix: Controller update issues with password lock
-- Fix: Custom ports are not applied to services
-- Fix: Don't lose settings in a virtual machine
+2.1.0 - Major release (03.07.2013.)
+- Proper and official Windows 8 support
+- Add ability to disable global hotkeys
+- Properly validate binary certificate of whitelisted applications
+- Remove network zone support, it mainly caused confusion
+- Don't show half-constructed Manage window while loading it
+- Make list in Processes and Services windows sortable
+- Allow batch Remove of application exceptions in GUI
+- Fix: Add Firewall Exception window now allows rules for "System" to be saved
+- Fix: If cannot add a firewall rule, log details and keep service running instead of crashing
+- Fix: Crash when trying to merge rules where at least one is not fully specified
+- Fix: Crash when Modifying exception that has "No restrictions" set
+- Fix: Connections window for open/listening ports might miss entries
+- Fix: Unable to whitelist some services due to bad parsing of ImagePath property
+- Fix: Wrong installation of Portuguese localization
+- Fix: Failed to get file path of privileged window due to inverted condition
+- Fix: Avoid double-shutdown of service on machine shutdown
+- Fix: Unable to add rule in service due to short path notation
+- Add Dutch, German, Hungarian, Spanish and Russian translations. Update Portuguese.
+- Reduce disk space used by localizations by appr. 41%, for icons by 30%
+- Controller app and Connections window load faster
+- Improve security of communication between service and controller
+- More robust communication between service and controller
+- Show timestamps in Connections dialog
+- Support for multiple controller instances
+- All binaries are now cryptographically timestamped
+- Precision traffic meter
+- Updated application database
+
+---------------------
+
+2.0.1 - Maintenance release (22.06.2012.)
+- Added Brazilian Portuguese and Japanese translations, fixes to French translation.
+- Fix: Sporadic communication errors between TinyWall's controller and service.
+- Fix: License file does not open from the settings window.
+- Updated application database
+
+---------------------
+
+2.0.0 - Major release (11.06.2012.)
+A detailed list of all enhacements of 2.0 can be found in:
+http://tinywall.pados.hu/docs/whatsnew.html
+
+---------------------
+
+1.0.4 - Maintenance (03.04.2012.)
+- Give appropriate instructions to the user when upgrading to future major (>=2.0) releases.
 
 ---------------------
 
