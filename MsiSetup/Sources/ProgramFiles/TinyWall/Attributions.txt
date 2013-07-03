@@ -1,10 +1,10 @@
 ﻿Localizations:
 -----------------------------------------------
-German - Harald Klausner, Caner Merten
+German - Mirko Rolfes, Harald Klausner, Caner Merten
 Spanish - Toño Puente Garcia
 French - Vincent Queuille
 Hungarian - Gál Gergely, Robert Cartman
-Japanese - Misato Okaneya
+Japanese - Misato Okaneya, Tilt
 Dutch - Dirk N
 Portuguese - Milton Chaves de Almeida
 Russian - Дмитрий Вожегов
