@@ -126,7 +126,7 @@
   <data name="Pingable_local_machine" xml:space="preserve">
     <value>Pingelhető helyi gép</value>
   </data>
-  <data name="Windows_Store_And_Apps" xml:space="preserve">
+  <data name="Windows_Store_and_Apps" xml:space="preserve">
     <value>Windows Store és App-ok</value>
   </data>
 </root>

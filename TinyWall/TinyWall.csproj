@@ -394,7 +394,9 @@
       <DependentUpon>Processes.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Exceptions.es.resx" />
-    <EmbeddedResource Include="Resources\Exceptions.hu.resx" />
+    <EmbeddedResource Include="Resources\Exceptions.hu.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Exceptions.de.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -405,6 +407,7 @@
     <EmbeddedResource Include="Resources\Exceptions.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Exceptions.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Exceptions.ru.resx" />
     <EmbeddedResource Include="Resources\Icons.resx">

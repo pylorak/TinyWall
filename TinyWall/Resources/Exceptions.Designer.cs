@@ -162,9 +162,9 @@ namespace PKSoft.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Windows Store &amp; Apps.
         /// </summary>
-        internal static string Windows_Store_And_Apps {
+        internal static string Windows_Store_and_Apps {
             get {
-                return ResourceManager.GetString("Windows_Store_And_Apps", resourceCulture);
+                return ResourceManager.GetString("Windows_Store_and_Apps", resourceCulture);
             }
         }
         
