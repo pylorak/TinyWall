@@ -1,16 +1,18 @@
+*.exe
+*.dll
+*.msi
+*.zip
 
-/Installer/Output
-/TinyWall/obj
-/TinyWall/bin
-/Toaster/obj
-/Toaster/bin
-/TransparentLabel/obj
-/TransparentLabel/bin
 /Temp
 /SortRESX
-
 /TinyWall.suo
 /TinyWall.v11.suo
+
+/TinyWall/obj
+/TinyWall/bin
+
+/Toaster/obj
+/Toaster/bin
+
 /MsiSetup/obj
 /MsiSetup/bin
-/MsiSetup/Sources
