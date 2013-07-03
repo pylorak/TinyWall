@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Name="Windows_Store_And_Apps" Recommended="true" Special="true">
+<Application Name="Windows_Store_and_Apps">
 	<Files>
 	<AppExceptionAssoc Executable="{folder:sys32}\WWAHost.exe">
       <ExceptionTemplate Template="true">
