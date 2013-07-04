@@ -37,6 +37,7 @@
     <Property Id="ARPCOMMENTS" Value="$(var.Description)" />
     <Property Id="ARPCONTACT" Value="$(var.Manufacturer)" />
     <Property Id="ARPURLINFOABOUT" Value="$(var.ProductURL)" />
+    <Property Id="ARPNOREPAIR" Value="yes" Secure="yes" /> 
     <CustomAction Id="SetARPINSTALLLOCATION" Property="ARPINSTALLLOCATION" Value="[INSTALLDIR]" />
 
     <!-- Disable use of "Files in Use" dialogs, we manage that ourself over custom actions -->

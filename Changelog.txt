@@ -1,6 +1,11 @@
 TinyWall Changelog
 ---------------------
 
+2.1.1 - Maintenance release (04.07.2013.)
+- Fix: When asking for permission to whitelist related files, app name is left out
+
+---------------------
+
 2.1.0 - Major release (04.07.2013.)
 - Proper and official Windows 8 support
 - Add ability to disable global hotkeys

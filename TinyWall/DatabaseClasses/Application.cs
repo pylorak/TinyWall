@@ -17,7 +17,8 @@ namespace PKSoft
             {
                 try
                 {
-                    return PKSoft.Resources.Exceptions.ResourceManager.GetString(Name, PKSoft.Resources.Exceptions.Culture);
+                    string ret = PKSoft.Resources.Exceptions.ResourceManager.GetString(Name);
+                    return string.IsNullOrEmpty(ret) ? Name : ret;
                 }
                 catch
                 {
