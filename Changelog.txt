@@ -1,6 +1,11 @@
 TinyWall Changelog
 ---------------------
 
+2.1.2 - Maintenance release (06.07.2013.)
+- Fix: Could not install TinyWall.XmlSerializers.dll on some systems
+
+---------------------
+
 2.1.1 - Maintenance release (04.07.2013.)
 - Fix: When asking for permission to whitelist related files, app name is left out
 
