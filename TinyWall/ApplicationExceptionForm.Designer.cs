@@ -61,6 +61,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.radOnlySpecifiedPorts = new System.Windows.Forms.RadioButton();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.transparentLabel1 = new PKSoft.TransparentLabel();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
