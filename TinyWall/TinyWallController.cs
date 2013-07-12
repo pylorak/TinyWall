@@ -784,7 +784,7 @@ namespace PKSoft
                         }
 
                         // Save settings
-                        ActiveConfig.FromContainer(sf.TmpConfig);
+                        ActiveConfig.Controller = sf.TmpConfig.Controller;
                         ActiveConfig.Controller.Save();
                         ApplyFirewallSettings(ActiveConfig.Service);
                     }

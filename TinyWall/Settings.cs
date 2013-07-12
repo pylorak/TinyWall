@@ -364,11 +364,6 @@ namespace PKSoft
             c.Service = ActiveConfig.Service;
             return c;
         }
-        internal static void FromContainer(ConfigContainer c)
-        {
-            ActiveConfig.Controller = c.Controller;
-            ActiveConfig.Service = c.Service;
-        }
     }
 }
 
