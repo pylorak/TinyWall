@@ -560,7 +560,7 @@ namespace PKSoft
                 Q.Enqueue(new ReqResp(new Message(TWControllerMessages.LOCK)));
             }
 
-            // Check for updates once every week
+            // Check for updates once every 2 days
             if (ActiveConfig.Service.AutoUpdateCheck)
             {
                 if (DateTime.Now - ActiveConfig.Service.LastUpdateCheck >= TimeSpan.FromDays(2))
@@ -947,7 +947,7 @@ namespace PKSoft
                 return;
 
             int propidx = -1;
-            TWControllerMessages cmd = TWControllerMessages.REINIT;
+            TWControllerMessages cmd = TWControllerMessages.INVALID_COMMAND;
             switch (e.EventRecord.Id)
             {
                 case 2003:     // firewall setting changed
@@ -989,9 +989,9 @@ namespace PKSoft
                     break;
             }
 
-            if (propidx != -1)
+            if ((cmd != TWControllerMessages.INVALID_COMMAND) && (!Q.HasRequest(cmd)))
             {
-                if (!Q.HasRequest(cmd))
+                if (propidx != -1)
                 {
                     // If the rules were changed by an allowed app, do nothing
                     string EVpath = (string)e.EventRecord.Properties[propidx].Value;
@@ -1002,8 +1002,9 @@ namespace PKSoft
                     }
 
                     EventLog.WriteEntry("Reloading firewall configuration because " + EVpath + " has modified it.");
-                    Q.Enqueue(new ReqResp(new Message(cmd)));
                 }
+
+                Q.Enqueue(new ReqResp(new Message(cmd)));
             }
         }
 
