@@ -172,10 +172,10 @@
     <value>MiddleLeft</value>
   </data>
   <data name="btnOK.Location" type="System.Drawing.Point, System.Drawing">
-    <value>420, 258</value>
+    <value>390, 258</value>
   </data>
   <data name="btnOK.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 33</value>
+    <value>90, 33</value>
   </data>
   <data name="btnOK.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -202,10 +202,10 @@
     <value>MiddleLeft</value>
   </data>
   <data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>501, 258</value>
+    <value>486, 258</value>
   </data>
   <data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 33</value>
+    <value>90, 33</value>
   </data>
   <data name="btnCancel.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>

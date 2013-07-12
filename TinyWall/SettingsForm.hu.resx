@@ -145,7 +145,7 @@
     <value>Módosít</value>
   </data>
   <data name="btnAppAdd.Text" xml:space="preserve">
-    <value>Alkalmazás hozzáadás</value>
+    <value>Új alkalmazás</value>
   </data>
   <data name="columnHeader1.Text" xml:space="preserve">
     <value>Indítófájl</value>

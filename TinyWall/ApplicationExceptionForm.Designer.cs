@@ -41,7 +41,6 @@
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.label6 = new System.Windows.Forms.Label();
             this.cmbTimer = new System.Windows.Forms.ComboBox();
-            this.transparentLabel1 = new PKSoft.TransparentLabel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.chkRestrictToLocalNetwork = new System.Windows.Forms.CheckBox();

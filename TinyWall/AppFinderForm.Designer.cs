@@ -54,18 +54,18 @@
             // 
             // btnStartDetection
             // 
-            this.btnStartDetection.Image = global::PKSoft.Resources.Icons.accept;
             resources.ApplyResources(this.btnStartDetection, "btnStartDetection");
+            this.btnStartDetection.Image = global::PKSoft.Resources.Icons.accept;
             this.btnStartDetection.Name = "btnStartDetection";
             this.btnStartDetection.UseVisualStyleBackColor = true;
             this.btnStartDetection.Click += new System.EventHandler(this.btnStartDetection_Click);
             // 
             // list
             // 
+            resources.ApplyResources(this.list, "list");
             this.list.CheckBoxes = true;
             this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
-            resources.ApplyResources(this.list, "list");
             this.list.Name = "list";
             this.list.SmallImageList = this.IconList;
             this.list.Sorting = System.Windows.Forms.SortOrder.Ascending;

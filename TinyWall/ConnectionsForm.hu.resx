@@ -124,10 +124,10 @@
     <value>Fájl neve a weben</value>
   </data>
   <data name="chkShowListen.Text" xml:space="preserve">
-    <value>Nyitott portok mutatása</value>
+    <value>Nyitott portok</value>
   </data>
   <data name="chkShowActive.Text" xml:space="preserve">
-    <value>Aktív kapcsolatok mutatása</value>
+    <value>Aktív kapcsolatok</value>
   </data>
   <data name="columnHeader3.Text" xml:space="preserve">
     <value>Forrás port</value>
@@ -151,7 +151,7 @@
     <value>Protokoll</value>
   </data>
   <data name="chkShowBlocked.Text" xml:space="preserve">
-    <value>Blokkolt alkalmazások mutatása (elmúlt 2 percben)</value>
+    <value>Blokkolt alkalmazások (max. elmúlt 2 percben)</value>
   </data>
   <data name="mnuCloseProcess.Text" xml:space="preserve">
     <value>Folyamat leállítása</value>

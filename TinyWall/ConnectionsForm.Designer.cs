@@ -40,6 +40,7 @@
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuUnblock = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCloseProcess = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,7 +55,6 @@
             this.chkShowListen = new System.Windows.Forms.CheckBox();
             this.chkShowActive = new System.Windows.Forms.CheckBox();
             this.chkShowBlocked = new System.Windows.Forms.CheckBox();
-            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -120,6 +120,10 @@
             // columnHeader8
             // 
             resources.ApplyResources(this.columnHeader8, "columnHeader8");
+            // 
+            // columnHeader9
+            // 
+            resources.ApplyResources(this.columnHeader9, "columnHeader9");
             // 
             // contextMenuStrip1
             // 
@@ -222,10 +226,6 @@
             this.chkShowBlocked.Name = "chkShowBlocked";
             this.chkShowBlocked.UseVisualStyleBackColor = true;
             this.chkShowBlocked.CheckedChanged += new System.EventHandler(this.chkShowBlocked_CheckedChanged);
-            // 
-            // columnHeader9
-            // 
-            resources.ApplyResources(this.columnHeader9, "columnHeader9");
             // 
             // ConnectionsForm
             // 

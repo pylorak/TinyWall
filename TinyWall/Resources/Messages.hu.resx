@@ -229,7 +229,7 @@
     <value>A konfiguráció megváltozott miközben a beállításokat módosítottad. A beállítások elvesztésének elkerülése érdekében hajtsd végre a módosításokat újra.</value>
   </data>
   <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
-    <value>A tűzfal beállítások sikeresen frissítve.</value>
+    <value>A tűzfalbeállítások sikeresen frissítve.</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>Sikeresen végrehajtva.</value>
