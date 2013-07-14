@@ -33,9 +33,9 @@ using System.Resources;
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.1.3")]                  // used by the CLR
-[assembly: AssemblyFileVersion("2.1.3")]              // full assembly version
-[assembly: AssemblyInformationalVersion("2.1.3")]     // informal version for customers
+[assembly: AssemblyVersion("2.1.4")]                  // used by the CLR
+[assembly: AssemblyFileVersion("2.1.4")]              // full assembly version
+[assembly: AssemblyInformationalVersion("2.1.4")]     // informal version for customers
 [assembly: NeutralResourcesLanguageAttribute("en")]
 
 [assembly: CLSCompliant(true)]

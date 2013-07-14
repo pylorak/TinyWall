@@ -685,6 +685,7 @@ namespace PKSoft
 
         internal TWControllerMessages ApplyFirewallSettings(ServiceSettings21 srvConfig, bool showUI = true)
         {
+            srvConfig.SequenceNumber = ActiveConfig.Service.SequenceNumber;
             Message req = new Message(TWControllerMessages.PUT_SETTINGS, srvConfig);
             Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
 
@@ -786,7 +787,7 @@ namespace PKSoft
                         // Save settings
                         ActiveConfig.Controller = sf.TmpConfig.Controller;
                         ActiveConfig.Controller.Save();
-                        ApplyFirewallSettings(ActiveConfig.Service);
+                        ApplyFirewallSettings(sf.TmpConfig.Service);
                     }
                 }
             }

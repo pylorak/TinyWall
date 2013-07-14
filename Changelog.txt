@@ -1,6 +1,11 @@
 TinyWall Changelog
 ---------------------
 
+2.1.4 - Maintenance release (14.07.2013.)
+- Fix: Cannot save settings after upgrade to 2.1.3
+
+---------------------
+
 2.1.3 - Maintenance release (12.07.2013.)
 - Fix: A network zone change left outgoing connections unfiltered (2.1 regression)
 - Various Hungarian, Japanese, and general localization updates
