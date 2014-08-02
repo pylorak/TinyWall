@@ -991,6 +991,11 @@ namespace PKSoft
 
             if ((cmd != TWControllerMessages.INVALID_COMMAND) && (!Q.HasRequest(cmd)))
             {
+              /* EVpath has bogus empty value when run inside the IDE, so triggered by itself,
+               * it brings the TW service into an infinite REINIT loop.
+               * Hence we only allow the REINIT in release builds.
+               * */
+#if !DEBUG
                 if (propidx != -1)
                 {
                     // If the rules were changed by an allowed app, do nothing
@@ -1000,11 +1005,16 @@ namespace PKSoft
                         if (string.Compare(WhitelistedApps[i], EVpath, StringComparison.OrdinalIgnoreCase) == 0)
                             return;
                     }
+                    
+                    if (string.IsNullOrEmpty(EVpath))
+                      EventLog.WriteEntry("Reloading firewall configuration because an external process has modified it.");
+                    else
+                      EventLog.WriteEntry("Reloading firewall configuration because " + EVpath + " has modified it.");
 
-                    EventLog.WriteEntry("Reloading firewall configuration because " + EVpath + " has modified it.");
                 }
 
                 Q.Enqueue(new ReqResp(new Message(cmd)));
+#endif
             }
         }
 
