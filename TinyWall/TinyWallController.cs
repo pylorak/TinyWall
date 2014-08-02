@@ -997,7 +997,8 @@ namespace PKSoft
             }
             else
             {
-                if (GlobalInstances.CommunicationMan.QueueMessageSimple(TWControllerMessages.LOCK).Command == TWControllerMessages.RESPONSE_OK)
+                TWControllerMessages lockResp = GlobalInstances.CommunicationMan.QueueMessageSimple(TWControllerMessages.LOCK).Command;
+                if ((lockResp == TWControllerMessages.RESPONSE_OK) || (lockResp==TWControllerMessages.RESPONSE_LOCKED))
                 {
                     this.Locked = true;
                     FirewallState.Locked = true;
