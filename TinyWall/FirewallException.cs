@@ -245,8 +245,25 @@ namespace PKSoft
             if (str2 == null)
                 return str1;
 
+            // We allow the union of the two rules.
+            // If any of the two rules allowed all ports (*), we just put 
+            // a wildcard into the new merged rule too.
+            // Otherwise, we just join the two port lists.
+
             string[] list1 = str1.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string elem in list1)
+            {
+              if (elem.Equals("*"))
+                return "*";
+            }  
+
             string[] list2 = str2.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string elem in list2)
+            {
+              if (elem.Equals("*"))
+                return "*";
+            }
+
             List<string> mergedList = new List<string>();
             mergedList.AddRange(list1);
             mergedList.AddRange(list2);
