@@ -21,6 +21,7 @@ namespace PKSoft
         GET_PROCESS_PATH,
         VERIFY_KEYS,
         READ_FW_LOG,
+        IS_LOCKED,
 
         // Unprivileged write commands (>1023)
         UNLOCK = 1024,

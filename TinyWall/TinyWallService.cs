@@ -682,6 +682,10 @@ namespace PKSoft
                     {
                         return new Message(TWControllerMessages.RESPONSE_OK, GetFwLog());
                     }
+                case TWControllerMessages.IS_LOCKED:
+                    {
+                      return new Message(TWControllerMessages.RESPONSE_OK, ServiceLocker.Locked);
+                    }
                 case TWControllerMessages.PING:
                     {
                         return new Message(TWControllerMessages.RESPONSE_OK);

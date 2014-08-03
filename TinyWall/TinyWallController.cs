@@ -652,6 +652,8 @@ namespace PKSoft
 
         private void TrayMenu_Opening(object sender, CancelEventArgs e)
         {
+            ReqResp lockedReq = GlobalInstances.CommunicationMan.QueueMessage(new Message(TWControllerMessages.IS_LOCKED));
+
             e.Cancel = false;
             if (FirewallState.Mode == FirewallMode.Unknown)
             {
@@ -663,6 +665,15 @@ namespace PKSoft
             }
 
             mnuTrafficRate.Text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", PKSoft.Resources.Messages.TrafficIn, rxDisplay, PKSoft.Resources.Messages.TrafficOut, txDisplay);
+
+            Message lockedResp = lockedReq.GetResponse();
+            if (lockedResp.Command == TWControllerMessages.RESPONSE_OK)
+            {
+              bool locked = (bool)lockedResp.Arguments[0];
+              this.Locked = locked;
+              FirewallState.Locked = locked;
+              UpdateDisplay();
+            }
         }
 
         private void mnuWhitelistByExecutable_Click(object sender, EventArgs e)
