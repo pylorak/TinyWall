@@ -702,10 +702,7 @@ namespace PKSoft
                         AssembleActiveRules();
                         MergeActiveRulesIntoWinFirewall(Firewall.GetRules(false));
 
-                        if (
-                               (VisibleState.Mode != FirewallMode.Disabled)
-                            && (VisibleState.Mode != FirewallMode.Learning)
-                           )
+                        if (VisibleState.Mode != FirewallMode.Disabled)
                         {
                             ActiveConfig.Service.StartupMode = VisibleState.Mode;
                             ActiveConfig.Service.Save();
