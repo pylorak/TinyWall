@@ -498,7 +498,7 @@ namespace PKSoft
                 }
                 Utils.DecompressDeflate(tmpCompressedPath, tmpFile);
 
-                if (Utils.HexEncode(Hasher.HashFile(tmpFile)).Equals(module.DownloadHash))
+                if (Utils.HexEncode(Hasher.HashFile(tmpFile)).Equals(module.DownloadHash, StringComparison.OrdinalIgnoreCase))
                     installMethod(tmpFile);
             }
             catch { }
