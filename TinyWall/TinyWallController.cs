@@ -515,7 +515,6 @@ namespace PKSoft
 
         private void SetMode(FirewallMode mode)
         {
-            TWControllerMessages opret = TWControllerMessages.RESPONSE_ERROR;
             Message req = new Message(TWControllerMessages.MODE_SWITCH, mode);
             Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
 
@@ -550,7 +549,7 @@ namespace PKSoft
                     ShowBalloonTip(usermsg, ToolTipIcon.Info);
                     break;
                 default:
-                    DefaultPopups(opret);
+                    DefaultPopups(resp.Command);
                     break;
             }
         }
