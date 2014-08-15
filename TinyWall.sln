@@ -9,22 +9,28 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Toaster", "Toaster\Toaster.
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
+		Debug - Desktop|Any CPU = Debug - Desktop|Any CPU
+		Debug - Service|Any CPU = Debug - Service|Any CPU
 		Release|Any CPU = Release|Any CPU
 		RelWithDebug|Any CPU = RelWithDebug|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}.Debug - Desktop|Any CPU.ActiveCfg = Debug - Desktop|Any CPU
+		{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}.Debug - Desktop|Any CPU.Build.0 = Debug - Desktop|Any CPU
+		{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}.Debug - Service|Any CPU.ActiveCfg = Debug - Service|Any CPU
+		{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}.Debug - Service|Any CPU.Build.0 = Debug - Service|Any CPU
 		{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}.RelWithDebug|Any CPU.ActiveCfg = RelWithDebug|Any CPU
 		{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}.RelWithDebug|Any CPU.Build.0 = RelWithDebug|Any CPU
-		{E864E1F9-3383-454F-BB6F-D89EE97C518B}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{E864E1F9-3383-454F-BB6F-D89EE97C518B}.Debug - Desktop|Any CPU.ActiveCfg = Debug|x86
+		{E864E1F9-3383-454F-BB6F-D89EE97C518B}.Debug - Service|Any CPU.ActiveCfg = Debug|x86
 		{E864E1F9-3383-454F-BB6F-D89EE97C518B}.Release|Any CPU.ActiveCfg = Release|x86
 		{E864E1F9-3383-454F-BB6F-D89EE97C518B}.RelWithDebug|Any CPU.ActiveCfg = Debug|x86
-		{1289F709-BC70-41F7-940C-FCACFA461F91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1289F709-BC70-41F7-940C-FCACFA461F91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1289F709-BC70-41F7-940C-FCACFA461F91}.Debug - Desktop|Any CPU.ActiveCfg = Debug|Any CPU
+		{1289F709-BC70-41F7-940C-FCACFA461F91}.Debug - Desktop|Any CPU.Build.0 = Debug|Any CPU
+		{1289F709-BC70-41F7-940C-FCACFA461F91}.Debug - Service|Any CPU.ActiveCfg = Debug|Any CPU
+		{1289F709-BC70-41F7-940C-FCACFA461F91}.Debug - Service|Any CPU.Build.0 = Debug|Any CPU
 		{1289F709-BC70-41F7-940C-FCACFA461F91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1289F709-BC70-41F7-940C-FCACFA461F91}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1289F709-BC70-41F7-940C-FCACFA461F91}.RelWithDebug|Any CPU.ActiveCfg = Debug|Any CPU

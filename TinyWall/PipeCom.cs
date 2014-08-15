@@ -185,6 +185,7 @@ namespace PKSoft
 
         private bool AuthAsServer()
         {
+#if !DEBUG
             long clientPid;
             if (!NativeMethods.GetNamedPipeClientProcessId(m_Pipe.SafePipeHandle.DangerousGetHandle(), out clientPid))
                 return false;
@@ -202,6 +203,10 @@ namespace PKSoft
                         return false;
                 }
             }
+#else
+            WriteMsg(new Message(TWControllerMessages.RESPONSE_OK));
+            return true;
+#endif
         }
 
         private bool AuthAsClient()
