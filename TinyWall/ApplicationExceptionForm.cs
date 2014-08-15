@@ -205,10 +205,10 @@ namespace PKSoft
 
         private void btnProcess_Click(object sender, EventArgs e)
         {
-            FirewallException proc = ProcessesForm.ChooseProcess(this);
-            if (proc == null) return;
+            List<FirewallException> procList = ProcessesForm.ChooseProcess(this, false);
+            if (procList.Count == 0) return;
 
-            TmpExceptionSettings = proc;
+            TmpExceptionSettings = procList[0];
             TmpExceptionSettings.TryRecognizeApp(out RecognizedTargetApp, out RecognizedTargetFile);
             UpdateUI();
         }

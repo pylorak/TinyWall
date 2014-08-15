@@ -7,23 +7,28 @@ namespace PKSoft
 {
     internal partial class ProcessesForm : Form
     {
-        internal string SelectedPath;
+        internal List<string> SelectedPaths = new List<string>();
 
-        internal static FirewallException ChooseProcess(IWin32Window parent = null)
+        internal static List<FirewallException> ChooseProcess(IWin32Window parent, bool multiSelect)
         {
-            using (ProcessesForm pf = new ProcessesForm())
+            using (ProcessesForm pf = new ProcessesForm(multiSelect))
             {
                 if (pf.ShowDialog(parent) == DialogResult.Cancel)
                     return null;
 
-                FirewallException ex = new FirewallException(pf.SelectedPath, null, true);
-                return ex;
+                List<FirewallException> exList = new List<FirewallException>();
+                foreach (string path in pf.SelectedPaths)
+                {
+                    exList.Add(new FirewallException(path, null, true));
+                }
+                return exList;
             }
         }
 
-        internal ProcessesForm()
+        internal ProcessesForm(bool multiSelect)
         {
             InitializeComponent();
+            this.listView.MultiSelect = multiSelect;
             this.Icon = Resources.Icons.firewall;
         }
 
@@ -34,7 +39,10 @@ namespace PKSoft
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            this.SelectedPath = listView.SelectedItems[0].Tag as string;
+            for (int i = 0; i < listView.SelectedItems.Count; ++i)
+            {
+                this.SelectedPaths.Add(listView.SelectedItems[i].Tag as string);
+            }
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 

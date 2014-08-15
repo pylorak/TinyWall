@@ -687,10 +687,13 @@ namespace PKSoft
 
         private void mnuWhitelistByProcess_Click(object sender, EventArgs e)
         {
-            FirewallException ex = ProcessesForm.ChooseProcess();
-            if (ex == null) return;
+            List<FirewallException> exList = ProcessesForm.ChooseProcess(null, true);
+            if (exList.Count == 0) return;
 
-            RecognizeAskAddException(ex);
+            foreach (FirewallException ex in exList)
+            {
+                RecognizeAskAddException(ex);
+            }
         }
 
         internal TWControllerMessages ApplyFirewallSettings(ServiceSettings21 srvConfig, bool showUI = true)
@@ -1043,6 +1046,7 @@ namespace PKSoft
             BalloonClickedCallback = balloonClicked;
             BalloonClickedCallbackArgument = handlerArg;
             Tray.ShowBalloonTip(period_ms, ServiceSettings21.APP_NAME, msg, icon);
+            Thread.Sleep(500);
         }
 
         private void SetHotkey(System.ComponentModel.ComponentResourceManager resman, ref Hotkey hk, HandledEventHandler hkCallback, Keys keyCode, ToolStripMenuItem menu, string mnuName)
