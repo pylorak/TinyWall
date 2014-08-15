@@ -6,5 +6,10 @@
         <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
       </ExceptionTemplate>
 	</AppExceptionAssoc>
+	<AppExceptionAssoc Executable="{folder:sys32}\svchost.exe">
+      <ExceptionTemplate Template="true">
+        <OpenPortOutboundRemoteTCP>443,80</OpenPortOutboundRemoteTCP>
+      </ExceptionTemplate>
+	</AppExceptionAssoc>
 	</Files>
 </Application>
