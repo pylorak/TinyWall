@@ -387,9 +387,12 @@ to continue firewall whitelisting.</value>
     <value>Added to firewall whitelist</value>
     <comment>Keep line short because words do not wrap.</comment>
   </data>
-  <data name="ToastWhitelistFailed" xml:space="preserve">
+    <data name="ToastWhitelistFailed" xml:space="preserve">
     <value>Firewall whitelisting failed.
 You might succeed if you try again.</value>
     <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
+  </data>
+    <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
+    <value>Could not apply firewall settings due to an internal error.</value>
   </data>
 </root>

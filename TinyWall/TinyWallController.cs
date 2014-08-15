@@ -710,13 +710,17 @@ namespace PKSoft
                     ActiveConfig.Service = srvConfig;
                     ActiveConfig.Service.SequenceNumber = (int)resp.Arguments[0];
                     break;
-                case TWControllerMessages.RESPONSE_ERROR:
+                case TWControllerMessages.RESPONSE_WARNING:
                     ActiveConfig.Service = (ServiceSettings21)resp.Arguments[0];
                     FirewallState = (ServiceState)resp.Arguments[1];
 
                     // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
                     if (showUI)
                         ShowBalloonTip(PKSoft.Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
+                    break;
+                case TWControllerMessages.RESPONSE_ERROR:
+                    if (showUI)
+                        ShowBalloonTip(PKSoft.Resources.Messages.CouldNotApplySettingsInternalError, ToolTipIcon.Warning);
                     break;
                 default:
                     if (showUI)
@@ -772,7 +776,7 @@ namespace PKSoft
             {
                 LoadSettingsFromServer();
 
-                using (this.ShownSettings = new SettingsForm(ActiveConfig.ToContainer()))
+                using (this.ShownSettings = new SettingsForm(Utils.DeepClone(ActiveConfig.Service), Utils.DeepClone(ActiveConfig.Controller)))
                 {
                     SettingsForm sf = this.ShownSettings;
 
@@ -923,11 +927,21 @@ namespace PKSoft
             if (exceptions.Count == 0)
                 return;
 
-            LoadSettingsFromServer();
-            ActiveConfig.Service.AppExceptions.AddRange(exceptions);
-            ActiveConfig.Service.Normalize();
+            // Test rules for syntactic correctness
+            Message testRes = GlobalInstances.CommunicationMan.QueueMessage(new Message(TWControllerMessages.TEST_EXCEPTION, exceptions)).GetResponse();
+            if (testRes.Command != TWControllerMessages.RESPONSE_OK)
+            {
+                ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CouldNotWhitelistProcess, ex.ExecutablePath), ToolTipIcon.Warning);
+                return;
+            }
 
-            TWControllerMessages resp = ApplyFirewallSettings(ActiveConfig.Service, false);
+
+            LoadSettingsFromServer();
+            ServiceSettings21 confCopy = Utils.DeepClone(ActiveConfig.Service);
+            confCopy.AppExceptions.AddRange(exceptions);
+            confCopy.Normalize();
+
+            TWControllerMessages resp = ApplyFirewallSettings(confCopy, false);
 
             bool success;
             bool metroActive = Utils.IsMetroActive(out success);
@@ -1140,6 +1154,9 @@ namespace PKSoft
 
         private void AutoWhitelist()
         {
+            // Copy, so that settings are not changed if they cannot be saved
+            ServiceSettings21 confCopy = Utils.DeepClone(ActiveConfig.Service);
+
             ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
             for (int i = 0; i < allApps.Count; ++i)
             {
@@ -1152,13 +1169,13 @@ namespace PKSoft
                     {
                         foreach (string execPath in template.ExecutableRealizations)
                         {
-                            ActiveConfig.Service.AppExceptions.Add(template.CreateException(execPath));
+                            confCopy.AppExceptions.Add(template.CreateException(execPath));
                         }
                     }
                 }
             }
-            ActiveConfig.Service.Normalize();
-            ApplyFirewallSettings(ActiveConfig.Service);
+            confCopy.Normalize();
+            ApplyFirewallSettings(confCopy);
         }
 
         private void mnuModeLearn_Click(object sender, EventArgs e)

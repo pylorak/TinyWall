@@ -674,6 +674,30 @@ namespace PKSoft
             return needsSave;
         }
 
+        private bool TestExceptionList(List<FirewallException> testList)
+        {
+            try
+            {
+                List<RuleDef> defs = new List<RuleDef>();
+                foreach (FirewallException ex in testList)
+                {
+                    GetRulesForException(ex, defs);
+                }
+
+                List<Rule> ruleList = new List<Rule>();
+                foreach (RuleDef def in defs)
+                {
+                    def.ConstructRule(ruleList);
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         private Message ProcessCmd(Message req)
         {
             switch (req.Command)
@@ -689,6 +713,14 @@ namespace PKSoft
                 case TWControllerMessages.PING:
                     {
                         return new Message(TWControllerMessages.RESPONSE_OK);
+                    }
+                case TWControllerMessages.TEST_EXCEPTION:
+                    {
+                        List<FirewallException> testList = req.Arguments[0] as List<FirewallException>;
+                        if (TestExceptionList(testList))
+                            return new Message(TWControllerMessages.RESPONSE_OK);
+                        else
+                            return new Message(TWControllerMessages.RESPONSE_ERROR);
                     }
                 case TWControllerMessages.MODE_SWITCH:
                     {
@@ -718,6 +750,9 @@ namespace PKSoft
                         ServiceSettings21 newConf = (ServiceSettings21)req.Arguments[0];
                         if (newConf.SequenceNumber == ActiveConfig.Service.SequenceNumber)
                         {
+                            if (!TestExceptionList(newConf.AppExceptions))
+                                return new Message(TWControllerMessages.RESPONSE_ERROR);
+
                             ActiveConfig.Service = newConf;
                             ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
                             ActiveConfig.Service.Save();
@@ -727,7 +762,7 @@ namespace PKSoft
                         }
                         else
                         {
-                            return new Message(TWControllerMessages.RESPONSE_ERROR,
+                            return new Message(TWControllerMessages.RESPONSE_WARNING,
                                 ActiveConfig.Service,
                                 VisibleState
                                 );

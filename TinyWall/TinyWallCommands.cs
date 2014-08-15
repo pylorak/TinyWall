@@ -33,7 +33,8 @@ namespace PKSoft
         LOCK,
         SET_PASSPHRASE,
         STOP_DISABLE,
-        MINUTE_TIMER
+        MINUTE_TIMER,
+        TEST_EXCEPTION
     }
 
     // Possible message types from service to controller

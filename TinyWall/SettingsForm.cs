@@ -37,12 +37,15 @@ namespace PKSoft
         private bool LoadingSettings;
         private string m_NewPassword;
 
-        internal SettingsForm(ConfigContainer config)
+        internal SettingsForm(ServiceSettings21 service, ControllerSettings controller)
         {
             InitializeComponent();
             this.Icon = Resources.Icons.firewall;
 
-            TmpConfig = config;
+            TmpConfig = new ConfigContainer();
+            TmpConfig.Service = service;
+            TmpConfig.Controller = controller;
+
             TmpConfig.Service.Normalize();
         }
 

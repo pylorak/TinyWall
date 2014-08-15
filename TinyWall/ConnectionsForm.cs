@@ -330,6 +330,9 @@ namespace PKSoft
 
                 try
                 {
+                    // Copy, so that settings are not changed if they cannot be saved
+                    ServiceSettings21 confCopy = Utils.DeepClone(ActiveConfig.Service);
+
                     FirewallException ex = new FirewallException(path, null, false);
                     ex.MakeUnrestrictTcpUdp();
                     List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(ex, true, true, true);
@@ -337,10 +340,10 @@ namespace PKSoft
                         return;
 
                     for (int i = 0; i < exceptions.Count; ++i)
-                        ActiveConfig.Service.AppExceptions.Add(exceptions[i]);
+                        confCopy.AppExceptions.Add(exceptions[i]);
 
-                    ActiveConfig.Service.Normalize();
-                    Controller.ApplyFirewallSettings(ActiveConfig.Service, true);
+                    confCopy.Normalize();
+                    Controller.ApplyFirewallSettings(confCopy, true);
                 }
                 catch
                 {
