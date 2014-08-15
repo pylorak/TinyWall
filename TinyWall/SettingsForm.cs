@@ -179,7 +179,16 @@ namespace PKSoft
             li.SubItems.Add(ex.ExecutablePath);
             li.Tag = ex;
 
-            if (File.Exists(ex.ExecutablePath))
+            if (Utils.IsNetworkPath(ex.ExecutablePath))
+            {
+                /* We do not load icons from network drives, to avoid 30s timeout if the drive is unavailable.
+                 * If this is ever changed in the future, also remember that .Net's Icon.ExtractAssociatedIcon() 
+                 * does not work with UNC paths. For workaround see:
+                 * http://stackoverflow.com/questions/1842226/how-to-get-the-associated-icon-from-a-network-share-file
+                 */
+                li.ImageKey = "network-drive";
+            }
+            else if (File.Exists(ex.ExecutablePath))
             {
                 if (!IconList.Images.ContainsKey(ex.ExecutablePath))
                     IconList.Images.Add(ex.ExecutablePath, Utils.GetIcon(ex.ExecutablePath, 16, 16));
@@ -489,6 +498,7 @@ namespace PKSoft
             comboLanguages.Items.Add(new IdWithName("ja", "日本語"));
 
             IconList.Images.Add("deleted", Resources.Icons.delete);
+            IconList.Images.Add("network-drive", Resources.Icons.network_drive_small);
 
             lblVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0} {1}", lblVersion.Text, System.Windows.Forms.Application.ProductVersion.ToString());
 

@@ -98,6 +98,17 @@ namespace PKSoft
             set
             {
                 _ExecutablePath = PKSoft.Parser.RecursiveParser.ResolveString(value);
+                if (Utils.IsNetworkPath(_ExecutablePath))
+                {
+                    if (!Utils.IsUncPath(_ExecutablePath))
+                    {
+                        try
+                        {
+                            _ExecutablePath = Utils.GetUncPath(_ExecutablePath);
+                        }
+                        catch { }
+                    }
+                }
             }
         }
         public bool ShouldSerializeExecutablePath()
