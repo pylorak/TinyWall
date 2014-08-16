@@ -8,7 +8,7 @@ Japanese - Misato Okaneya, Tilt
 Dutch - Dirk N
 Portuguese - Milton Chaves de Almeida
 Russian - Дмитрий Вожегов
-
+Italian - Stefano Scotti
 
 
 Icon resources:
@@ -37,3 +37,4 @@ update - Oliver Twardowski (http://www.addictedtocoffee.de/)
 web - 19eighty7.com (http://19eighty7.com/)
 connections - Sarfraz Shoukat (http://www.greepit.com/)
 clock - Dawghouse Design Studio (http://www.dawghousedesignstudio.com/)
+network_dirve -  https://www.tpdkdesign.net/
