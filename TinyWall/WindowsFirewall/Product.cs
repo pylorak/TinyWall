@@ -29,6 +29,11 @@ namespace PKSoft.WindowsFirewall
             set { fwProduct.DisplayName = value; }
         }
 
+        internal string PathToSignedProductExe
+        {
+            get { return fwProduct.PathToSignedProductExe; }
+        }
+
         internal object[] RuleCategories
         {
             get { return (object[])fwProduct.RuleCategories; }

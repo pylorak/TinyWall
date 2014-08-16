@@ -10,6 +10,7 @@ namespace PKSoft
     {
         internal static bool IsServiceRunning()
         {
+#if !DEBUG
             try
             {
                 using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
@@ -21,6 +22,9 @@ namespace PKSoft
             {
                 return false;
             }
+#else
+            return true;
+#endif
         }
 
         internal static bool EnsureServiceInstalledAndRunning()
