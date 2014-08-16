@@ -345,4 +345,7 @@ um das App in der Firewall zu erlauben.</value>
 Versuchen Sie es nocheinmal.</value>
     <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
   </data>
+  <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
+    <value>Wegen eines internen Fehlers konnten die Einstellungen nicht übernommen werden.</value>
+  </data>
 </root>

@@ -385,4 +385,7 @@ az új tűzfalkivétel hozzáadásához.</value>
 Egy újbóli probálkozás sikerhez vezethet.</value>
     <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
   </data>
+  <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
+    <value>A tűzfalbeállítások módosítása egy belső hiba miatt nem sikerült.</value>
+  </data>
 </root>
