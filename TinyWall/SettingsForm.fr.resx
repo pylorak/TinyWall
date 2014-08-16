@@ -121,17 +121,11 @@
   <data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
     <value>659, 393</value>
   </data>
-  <data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>90, 33</value>
-  </data>
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Annuler</value>
   </data>
   <data name="btnOK.Location" type="System.Drawing.Point, System.Drawing">
     <value>553, 393</value>
-  </data>
-  <data name="btnOK.Size" type="System.Drawing.Size, System.Drawing">
-    <value>90, 33</value>
   </data>
   <data name="btnOK.Text" xml:space="preserve">
     <value>Appliquer</value>
@@ -309,9 +303,6 @@
   </data>
   <data name="btnDonate.AccessibleName" xml:space="preserve">
     <value>Don</value>
-  </data>
-  <data name="lblLinkLicense.Text" xml:space="preserve">
-    <value>Licence</value>
   </data>
   <data name="label10.Text" xml:space="preserve">
     <value>Si vous aimez ce programme, faites un don pour couvrir les frais de développement.</value>

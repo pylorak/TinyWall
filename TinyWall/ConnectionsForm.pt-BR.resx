@@ -117,11 +117,63 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="btnClose.Text" xml:space="preserve">
+    <value>Fechar</value>
+  </data>
   <data name="columnHeader1.Text" xml:space="preserve">
     <value>ID do Executável</value>
   </data>
+  <data name="columnHeader2.Text" xml:space="preserve">
+    <value>Protocolo</value>
+  </data>
+  <data name="columnHeader3.Text" xml:space="preserve">
+    <value>Porta local</value>
+  </data>
+  <data name="columnHeader4.Text" xml:space="preserve">
+    <value>Endereço local/origem</value>
+  </data>
+  <data name="columnHeader5.Text" xml:space="preserve">
+    <value>Porta remota</value>
+  </data>
+  <data name="columnHeader6.Text" xml:space="preserve">
+    <value>Endereço remoto/destino</value>
+  </data>
+  <data name="columnHeader7.Text" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="columnHeader8.Text" xml:space="preserve">
+    <value>Direção</value>
+  </data>
+  <data name="mnuUnblock.Text" xml:space="preserve">
+    <value>Desbloquear</value>
+  </data>
+  <data name="mnuCloseProcess.Text" xml:space="preserve">
+    <value>Fechar o executável</value>
+  </data>
+  <data name="mnuVirusTotal.Text" xml:space="preserve">
+    <value>No VirusTotal</value>
+  </data>
+  <data name="mnuProcessLibrary.Text" xml:space="preserve">
+    <value>Na ProcessLibrary</value>
+  </data>
   <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
     <value>O nome do arquivo na web</value>
+  </data>
+  <data name="mnuRemoteAddressOnTheWeb.Text" xml:space="preserve">
+    <value>O endereço remoto na web</value>
+  </data>
+  <data name="mnuSearch.Text" xml:space="preserve">
+    <value>Procurar...</value>
+  </data>
+  <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
+    <value>Copiar o endereço remoto</value>
+  </data>
+  <data name="btnRefresh.Text" xml:space="preserve">
+    <value>Atualizar</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="chkShowListen.Location" type="System.Drawing.Point, System.Drawing">
+    <value>185, 315</value>
   </data>
   <data name="chkShowListen.Text" xml:space="preserve">
     <value>Exibir só as portas abertas</value>
@@ -129,65 +181,13 @@
   <data name="chkShowActive.Text" xml:space="preserve">
     <value>Só exibir as conexões ativas</value>
   </data>
-  <data name="columnHeader3.Text" xml:space="preserve">
-    <value>Porta local</value>
-  </data>
-  <data name="mnuProcessLibrary.Text" xml:space="preserve">
-    <value>Na ProcessLibrary</value>
-  </data>
-  <data name="mnuVirusTotal.Text" xml:space="preserve">
-    <value>No VirusTotal</value>
-  </data>
-  <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
-    <value>Copiar o endereço remoto</value>
-  </data>
-  <data name="columnHeader8.Text" xml:space="preserve">
-    <value>Direção</value>
-  </data>
-  <data name="columnHeader2.Text" xml:space="preserve">
-    <value>Protocolo</value>
+  <data name="chkShowBlocked.Location" type="System.Drawing.Point, System.Drawing">
+    <value>352, 315</value>
   </data>
   <data name="chkShowBlocked.Text" xml:space="preserve">
     <value>Exibir os aplicativos bloqueados (nos últimos 2 minutos)</value>
   </data>
-  <data name="mnuCloseProcess.Text" xml:space="preserve">
-    <value>Fechar o executável</value>
-  </data>
-  <data name="mnuUnblock.Text" xml:space="preserve">
-    <value>Desbloquear</value>
-  </data>
-  <data name="columnHeader5.Text" xml:space="preserve">
-    <value>Porta remota</value>
-  </data>
-  <data name="columnHeader7.Text" xml:space="preserve">
-    <value>Status</value>
-  </data>
-  <data name="btnClose.Text" xml:space="preserve">
-    <value>Fechar</value>
-  </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="chkShowListen.Location" type="System.Drawing.Point, System.Drawing">
-    <value>185, 315</value>
-  </data>
-  <data name="btnRefresh.Text" xml:space="preserve">
-    <value>Atualizar</value>
-  </data>
-  <data name="columnHeader6.Text" xml:space="preserve">
-    <value>Endereço remoto/destino</value>
-  </data>
-  <data name="mnuSearch.Text" xml:space="preserve">
-    <value>Procurar...</value>
-  </data>
-  <data name="columnHeader4.Text" xml:space="preserve">
-    <value>Endereço local/origem</value>
-  </data>
-  <data name="mnuRemoteAddressOnTheWeb.Text" xml:space="preserve">
-    <value>O endereço remoto na web</value>
-  </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Conexões - TinyWall</value>
-  </data>
-  <data name="chkShowBlocked.Location" type="System.Drawing.Point, System.Drawing">
-    <value>352, 315</value>
   </data>
 </root>

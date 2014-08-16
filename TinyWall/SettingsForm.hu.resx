@@ -171,6 +171,9 @@
   <data name="tabPage2.Text" xml:space="preserve">
     <value>Speciális kivételek</value>
   </data>
+  <data name="chkEnableHotkeys.Text" xml:space="preserve">
+    <value>Gyorsbillentyűk használata</value>
+  </data>
   <data name="&gt;&gt;comboLanguages.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
@@ -266,8 +269,5 @@
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>TinyWall Firewall Beállítások</value>
-  </data>
-  <data name="chkEnableHotkeys.Text" xml:space="preserve">
-    <value>Gyorsbillentyűk használata</value>
   </data>
 </root>

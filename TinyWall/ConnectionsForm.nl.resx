@@ -117,74 +117,74 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="btnClose.Text" xml:space="preserve">
+    <value>Sluiten</value>
+  </data>
   <data name="columnHeader1.Text" xml:space="preserve">
     <value>Proces (id)</value>
-  </data>
-  <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
-    <value>bestandsnaam op het web</value>
-  </data>
-  <data name="chkShowListen.Text" xml:space="preserve">
-    <value>Toon open poorten</value>
-  </data>
-  <data name="chkShowActive.Text" xml:space="preserve">
-    <value>Toon actieve verbindingen</value>
-  </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="chkShowActive.Size" type="System.Drawing.Size, System.Drawing">
-    <value>153, 17</value>
   </data>
   <data name="columnHeader3.Text" xml:space="preserve">
     <value>Bron poort</value>
   </data>
-  <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
-    <value>Kopieer remote adres</value>
-  </data>
-  <data name="columnHeader8.Text" xml:space="preserve">
-    <value>Richting</value>
-  </data>
-  <data name="chkShowListen.Size" type="System.Drawing.Size, System.Drawing">
-    <value>117, 17</value>
-  </data>
-  <data name="chkShowBlocked.Text" xml:space="preserve">
-    <value>Toon geblokkeerde toepassingen (laatste 2 minuten)</value>
-  </data>
-  <data name="chkShowBlocked.Size" type="System.Drawing.Size, System.Drawing">
-    <value>274, 17</value>
-  </data>
-  <data name="mnuUnblock.Text" xml:space="preserve">
-    <value>deblokkeer</value>
+  <data name="columnHeader4.Text" xml:space="preserve">
+    <value>Local/Bronadres</value>
   </data>
   <data name="columnHeader5.Text" xml:space="preserve">
     <value>doelpoort</value>
   </data>
-  <data name="columnHeader7.Text" xml:space="preserve">
-    <value>Toestand</value>
-  </data>
-  <data name="btnClose.Text" xml:space="preserve">
-    <value>Sluiten</value>
-  </data>
-  <data name="btnRefresh.Text" xml:space="preserve">
-    <value>Vernieuw</value>
-  </data>
   <data name="columnHeader6.Text" xml:space="preserve">
     <value>Remote/doeladres</value>
   </data>
-  <data name="mnuSearch.Text" xml:space="preserve">
-    <value>Zoek...</value>
+  <data name="columnHeader7.Text" xml:space="preserve">
+    <value>Toestand</value>
   </data>
-  <data name="columnHeader4.Text" xml:space="preserve">
-    <value>Local/Bronadres</value>
+  <data name="columnHeader8.Text" xml:space="preserve">
+    <value>Richting</value>
+  </data>
+  <data name="mnuUnblock.Text" xml:space="preserve">
+    <value>deblokkeer</value>
+  </data>
+  <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
+    <value>bestandsnaam op het web</value>
   </data>
   <data name="mnuRemoteAddressOnTheWeb.Text" xml:space="preserve">
     <value>Remote webadres</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Verbindingen - TinyWall</value>
+  <data name="mnuSearch.Text" xml:space="preserve">
+    <value>Zoek...</value>
+  </data>
+  <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
+    <value>Kopieer remote adres</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>61, 4</value>
+  </data>
+  <data name="btnRefresh.Text" xml:space="preserve">
+    <value>Vernieuw</value>
+  </data>
+  <data name="chkShowListen.Size" type="System.Drawing.Size, System.Drawing">
+    <value>117, 17</value>
+  </data>
+  <data name="chkShowListen.Text" xml:space="preserve">
+    <value>Toon open poorten</value>
+  </data>
+  <data name="chkShowActive.Size" type="System.Drawing.Size, System.Drawing">
+    <value>153, 17</value>
+  </data>
+  <data name="chkShowActive.Text" xml:space="preserve">
+    <value>Toon actieve verbindingen</value>
   </data>
   <data name="chkShowBlocked.Location" type="System.Drawing.Point, System.Drawing">
     <value>287, 315</value>
   </data>
-  <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>61, 4</value>
+  <data name="chkShowBlocked.Size" type="System.Drawing.Size, System.Drawing">
+    <value>274, 17</value>
+  </data>
+  <data name="chkShowBlocked.Text" xml:space="preserve">
+    <value>Toon geblokkeerde toepassingen (laatste 2 minuten)</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Verbindingen - TinyWall</value>
   </data>
 </root>

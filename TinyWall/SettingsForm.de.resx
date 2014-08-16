@@ -166,6 +166,9 @@
   <data name="tabPage2.Text" xml:space="preserve">
     <value>Spezielle Ausnahmen</value>
   </data>
+  <data name="chkEnableHotkeys.Text" xml:space="preserve">
+    <value>Schnelltasten aktivieren</value>
+  </data>
   <data name="label11.Size" type="System.Drawing.Size, System.Drawing">
     <value>50, 13</value>
   </data>
@@ -285,8 +288,5 @@
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>TinyWall Firewall Einstellungen</value>
-  </data>
-  <data name="chkEnableHotkeys.Text" xml:space="preserve">
-    <value>Schnelltasten aktivieren</value>
   </data>
 </root>

@@ -117,29 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="btnClose.Text" xml:space="preserve">
+    <value>Bezár</value>
+  </data>
   <data name="columnHeader1.Text" xml:space="preserve">
     <value>Folyamat (id)</value>
   </data>
-  <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
-    <value>Fájl neve a weben</value>
-  </data>
-  <data name="chkShowListen.Text" xml:space="preserve">
-    <value>Nyitott portok</value>
-  </data>
-  <data name="chkShowActive.Text" xml:space="preserve">
-    <value>Aktív kapcsolatok</value>
+  <data name="columnHeader2.Text" xml:space="preserve">
+    <value>Protokoll</value>
   </data>
   <data name="columnHeader3.Text" xml:space="preserve">
     <value>Forrás port</value>
   </data>
-  <data name="mnuProcessLibrary.Text" xml:space="preserve">
-    <value>A ProcessLibrary-n</value>
+  <data name="columnHeader4.Text" xml:space="preserve">
+    <value>Helyi/Forrás cím</value>
   </data>
-  <data name="mnuVirusTotal.Text" xml:space="preserve">
-    <value>A VirusTotal-on</value>
+  <data name="columnHeader5.Text" xml:space="preserve">
+    <value>Cél port</value>
   </data>
-  <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
-    <value>Távoli cím másolása</value>
+  <data name="columnHeader6.Text" xml:space="preserve">
+    <value>Távoli/Cél cím</value>
+  </data>
+  <data name="columnHeader7.Text" xml:space="preserve">
+    <value>Állapot</value>
   </data>
   <data name="columnHeader8.Text" xml:space="preserve">
     <value>Irány</value>
@@ -147,41 +147,41 @@
   <data name="columnHeader9.Text" xml:space="preserve">
     <value>Időpont</value>
   </data>
-  <data name="columnHeader2.Text" xml:space="preserve">
-    <value>Protokoll</value>
-  </data>
-  <data name="chkShowBlocked.Text" xml:space="preserve">
-    <value>Blokkolt alkalmazások (max. elmúlt 2 percben)</value>
+  <data name="mnuUnblock.Text" xml:space="preserve">
+    <value>Feloldás</value>
   </data>
   <data name="mnuCloseProcess.Text" xml:space="preserve">
     <value>Folyamat leállítása</value>
   </data>
-  <data name="mnuUnblock.Text" xml:space="preserve">
-    <value>Feloldás</value>
+  <data name="mnuVirusTotal.Text" xml:space="preserve">
+    <value>A VirusTotal-on</value>
   </data>
-  <data name="columnHeader5.Text" xml:space="preserve">
-    <value>Cél port</value>
+  <data name="mnuProcessLibrary.Text" xml:space="preserve">
+    <value>A ProcessLibrary-n</value>
   </data>
-  <data name="columnHeader7.Text" xml:space="preserve">
-    <value>Állapot</value>
+  <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
+    <value>Fájl neve a weben</value>
   </data>
-  <data name="btnClose.Text" xml:space="preserve">
-    <value>Bezár</value>
-  </data>
-  <data name="btnRefresh.Text" xml:space="preserve">
-    <value>Frissítés</value>
-  </data>
-  <data name="columnHeader6.Text" xml:space="preserve">
-    <value>Távoli/Cél cím</value>
+  <data name="mnuRemoteAddressOnTheWeb.Text" xml:space="preserve">
+    <value>Távoli cím a weben</value>
   </data>
   <data name="mnuSearch.Text" xml:space="preserve">
     <value>Keresés...</value>
   </data>
-  <data name="columnHeader4.Text" xml:space="preserve">
-    <value>Helyi/Forrás cím</value>
+  <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
+    <value>Távoli cím másolása</value>
   </data>
-  <data name="mnuRemoteAddressOnTheWeb.Text" xml:space="preserve">
-    <value>Távoli cím a weben</value>
+  <data name="btnRefresh.Text" xml:space="preserve">
+    <value>Frissítés</value>
+  </data>
+  <data name="chkShowListen.Text" xml:space="preserve">
+    <value>Nyitott portok</value>
+  </data>
+  <data name="chkShowActive.Text" xml:space="preserve">
+    <value>Aktív kapcsolatok</value>
+  </data>
+  <data name="chkShowBlocked.Text" xml:space="preserve">
+    <value>Blokkolt alkalmazások (max. elmúlt 2 percben)</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Kapcsolatok - TinyWall</value>

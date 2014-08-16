@@ -165,10 +165,6 @@
   <data name="mnuQuit.Text" xml:space="preserve">
     <value>Verlaten</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="TrayMenu.Size" type="System.Drawing.Size, System.Drawing">
-    <value>268, 336</value>
-  </data>
   <data name="ofd.Filter" xml:space="preserve">
     <value>Alle bestanden|*.*</value>
   </data>

@@ -117,11 +117,59 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="btnClose.Text" xml:space="preserve">
+    <value>Cerrar</value>
+  </data>
   <data name="columnHeader1.Text" xml:space="preserve">
     <value>Proceso</value>
   </data>
+  <data name="columnHeader2.Text" xml:space="preserve">
+    <value>Protocolo</value>
+  </data>
+  <data name="columnHeader3.Text" xml:space="preserve">
+    <value>Puerto origen</value>
+  </data>
+  <data name="columnHeader4.Text" xml:space="preserve">
+    <value>Dirección local/origen</value>
+  </data>
+  <data name="columnHeader5.Text" xml:space="preserve">
+    <value>Puerto destino</value>
+  </data>
+  <data name="columnHeader6.Text" xml:space="preserve">
+    <value>Dirección remota/destino</value>
+  </data>
+  <data name="columnHeader7.Text" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="columnHeader8.Text" xml:space="preserve">
+    <value>Dirección</value>
+  </data>
+  <data name="mnuUnblock.Text" xml:space="preserve">
+    <value>Desbloquear</value>
+  </data>
+  <data name="mnuCloseProcess.Text" xml:space="preserve">
+    <value>Cerrar Proceso</value>
+  </data>
+  <data name="mnuVirusTotal.Text" xml:space="preserve">
+    <value>Sobre Virus Total</value>
+  </data>
+  <data name="mnuProcessLibrary.Text" xml:space="preserve">
+    <value>Sobre Biblioteca de Procesos</value>
+  </data>
   <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
     <value>Nombre en la Web</value>
+  </data>
+  <data name="mnuRemoteAddressOnTheWeb.Text" xml:space="preserve">
+    <value>Dirección remota en la Web</value>
+  </data>
+  <data name="mnuSearch.Text" xml:space="preserve">
+    <value>Buscando....</value>
+  </data>
+  <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
+    <value>Copiar dirección remota</value>
+  </data>
+  <data name="btnRefresh.Text" xml:space="preserve">
+    <value>Actualizar</value>
   </data>
   <data name="chkShowListen.Text" xml:space="preserve">
     <value>Mostrar puertos abiertos</value>
@@ -129,56 +177,8 @@
   <data name="chkShowActive.Text" xml:space="preserve">
     <value>Mostrar conexiones activas</value>
   </data>
-  <data name="columnHeader3.Text" xml:space="preserve">
-    <value>Puerto origen</value>
-  </data>
-  <data name="mnuProcessLibrary.Text" xml:space="preserve">
-    <value>Sobre Biblioteca de Procesos</value>
-  </data>
-  <data name="mnuVirusTotal.Text" xml:space="preserve">
-    <value>Sobre Virus Total</value>
-  </data>
-  <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
-    <value>Copiar dirección remota</value>
-  </data>
-  <data name="columnHeader8.Text" xml:space="preserve">
-    <value>Dirección</value>
-  </data>
-  <data name="columnHeader2.Text" xml:space="preserve">
-    <value>Protocolo</value>
-  </data>
   <data name="chkShowBlocked.Text" xml:space="preserve">
     <value>Mostrar programas bloqueados (en los útlimos 2 mints)</value>
-  </data>
-  <data name="mnuCloseProcess.Text" xml:space="preserve">
-    <value>Cerrar Proceso</value>
-  </data>
-  <data name="mnuUnblock.Text" xml:space="preserve">
-    <value>Desbloquear</value>
-  </data>
-  <data name="columnHeader5.Text" xml:space="preserve">
-    <value>Puerto destino</value>
-  </data>
-  <data name="columnHeader7.Text" xml:space="preserve">
-    <value>Estado</value>
-  </data>
-  <data name="btnClose.Text" xml:space="preserve">
-    <value>Cerrar</value>
-  </data>
-  <data name="btnRefresh.Text" xml:space="preserve">
-    <value>Actualizar</value>
-  </data>
-  <data name="columnHeader6.Text" xml:space="preserve">
-    <value>Dirección remota/destino</value>
-  </data>
-  <data name="mnuSearch.Text" xml:space="preserve">
-    <value>Buscando....</value>
-  </data>
-  <data name="columnHeader4.Text" xml:space="preserve">
-    <value>Dirección local/origen</value>
-  </data>
-  <data name="mnuRemoteAddressOnTheWeb.Text" xml:space="preserve">
-    <value>Dirección remota en la Web</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Conexiones - TinyWall</value>

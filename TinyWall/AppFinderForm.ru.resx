@@ -120,34 +120,34 @@
   <data name="label1.Text" xml:space="preserve">
     <value>TinyWall может автоматически определить программы, установленные на вашем компьютере, и разблокировать некоторые из них. Это намного проще, чем добавлять приложения по одному. Программа ознакомит вас с результатами до того, как они вступят в силу.</value>
   </data>
+  <data name="columnHeader1.Text" xml:space="preserve">
+    <value>Имя</value>
+  </data>
   <data name="btnStartDetection.Text" xml:space="preserve">
     <value>Запустить</value>
   </data>
-  <data name="columnHeader1.Text" xml:space="preserve">
-    <value>Имя</value>
+  <data name="btnSelectImportant.Text" xml:space="preserve">
+    <value>Важные</value>
   </data>
   <data name="lblStatus.Text" xml:space="preserve">
     <value>Поиск:</value>
   </data>
-  <data name="btnCancel.Text" xml:space="preserve">
-    <value>Отменить</value>
-  </data>
   <data name="btnOK.Text" xml:space="preserve">
     <value>Применить</value>
   </data>
-  <data name="btnSelectImportant.Text" xml:space="preserve">
-    <value>Важные</value>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Чтобы разблокировать приложение в результате поиска, выберите его, установив флажок рядом с ним.</value>
+  </data>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Отменить</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Поиск приложений - TinyWall</value>
   </data>
   <data name="btnSelectAll.Text" xml:space="preserve">
     <value>Выбрать все</value>
   </data>
   <data name="btnDeselectAll.Text" xml:space="preserve">
     <value>Убрать все</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Чтобы разблокировать приложение в результате поиска, выберите его, установив флажок рядом с ним.</value>
-  </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Поиск приложений - TinyWall</value>
   </data>
 </root>
