@@ -491,6 +491,7 @@ namespace PKSoft
             comboLanguages.Items.Add(new IdWithName("en", "English"));
             comboLanguages.Items.Add(new IdWithName("es", "Español"));
             comboLanguages.Items.Add(new IdWithName("fr", "Français"));
+            comboLanguages.Items.Add(new IdWithName("it", "Italiano"));
             comboLanguages.Items.Add(new IdWithName("hu", "Magyar"));
             comboLanguages.Items.Add(new IdWithName("nl", "Nederlands"));
             comboLanguages.Items.Add(new IdWithName("pt-BR", "Português Brasileiro"));
