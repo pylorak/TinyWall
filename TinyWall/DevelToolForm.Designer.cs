@@ -116,7 +116,7 @@
             this.txtAssocOutputPath.Name = "txtAssocOutputPath";
             this.txtAssocOutputPath.Size = new System.Drawing.Size(423, 20);
             this.txtAssocOutputPath.TabIndex = 8;
-            this.txtAssocOutputPath.Text = "D:\\Projects\\TinyWall\\TinyWall\\bin\\Debug";
+            this.txtAssocOutputPath.Text = "D:\\archive\\d0\\projects\\TinyWall\\TinyWall\\bin";
             // 
             // btnAssocOutputBrowse
             // 
@@ -143,7 +143,7 @@
             this.txtDBFolderPath.Name = "txtDBFolderPath";
             this.txtDBFolderPath.Size = new System.Drawing.Size(423, 20);
             this.txtDBFolderPath.TabIndex = 3;
-            this.txtDBFolderPath.Text = "D:\\Projects\\TinyWall\\TinyWall\\Database";
+            this.txtDBFolderPath.Text = "D:\\archive\\d0\\projects\\TinyWall\\TinyWall\\Database";
             // 
             // btnCollectionsCreate
             // 
@@ -324,7 +324,7 @@
             this.txtUpdateURL.Name = "txtUpdateURL";
             this.txtUpdateURL.Size = new System.Drawing.Size(423, 20);
             this.txtUpdateURL.TabIndex = 23;
-            this.txtUpdateURL.Text = "http://tinywall.pados.hu/updates/UpdVer2/";
+            this.txtUpdateURL.Text = "http://tinywall.pados.hu/updates/UpdVer3/";
             // 
             // label8
             // 
@@ -474,6 +474,7 @@
             this.listPrimaries.Name = "listPrimaries";
             this.listPrimaries.Size = new System.Drawing.Size(212, 264);
             this.listPrimaries.TabIndex = 8;
+            this.listPrimaries.SelectedIndexChanged += new System.EventHandler(this.listPrimaries_SelectedIndexChanged);
             // 
             // txtOutputPath
             // 
@@ -481,7 +482,7 @@
             this.txtOutputPath.Name = "txtOutputPath";
             this.txtOutputPath.Size = new System.Drawing.Size(349, 20);
             this.txtOutputPath.TabIndex = 12;
-            this.txtOutputPath.Text = "D:\\Projects\\TinyWall\\Temp";
+            this.txtOutputPath.Text = "D:\\archive\\d0\\projects\\TinyWall";
             // 
             // label9
             // 
@@ -624,7 +625,7 @@
             this.txtSignDir.Name = "txtSignDir";
             this.txtSignDir.Size = new System.Drawing.Size(329, 20);
             this.txtSignDir.TabIndex = 6;
-            this.txtSignDir.Text = "D:\\Projects\\TinyWall\\MsiSetup\\";
+            this.txtSignDir.Text = "D:\\archive\\d0\\projects\\TinyWall\\MsiSetup\\";
             // 
             // label12
             // 
@@ -667,7 +668,7 @@
             this.txtCert.Name = "txtCert";
             this.txtCert.Size = new System.Drawing.Size(329, 20);
             this.txtCert.TabIndex = 1;
-            this.txtCert.Text = "D:\\Projects\\TinyWall\\MsiSetup\\";
+            this.txtCert.Text = "D:\\archive\\d0\\projects\\TinyWall\\MsiSetup\\";
             // 
             // label10
             // 
