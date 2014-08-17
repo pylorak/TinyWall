@@ -659,9 +659,6 @@
     <None Include="Resources\img\delete.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\img\donate.gif" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\img\shield_blue_small.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -681,6 +678,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\img\network_drive_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\img\donate.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
