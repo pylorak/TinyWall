@@ -57,6 +57,10 @@ namespace PKSoft
                 RuleDef def = new RuleDef(ModeId, "Allow local subnet", PacketAction.Allow, RuleDirection.InOut, Protocol.Any);
                 def.RemoteAddresses = "LocalSubnet";
                 ActiveRules.Add(def);
+                
+                def = new RuleDef(ModeId, "Allow local subnet (broadcast)", PacketAction.Allow, RuleDirection.Out, Protocol.TcpUdp);
+                def.RemoteAddresses = "255.255.255.255";
+                ActiveRules.Add(def);
             }
 
             // Do we want to block known malware ports?
