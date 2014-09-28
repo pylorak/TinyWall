@@ -156,6 +156,12 @@ namespace PKSoft
                     break;
             }
 
+            // Replace invalid IP strings with the "unspecified address" IPv6 specifier
+            if (string.IsNullOrEmpty(entry.DestinationIP))
+                entry.DestinationIP = "::";
+            if (string.IsNullOrEmpty(entry.SourceIP))
+                entry.SourceIP = "::";
+
             return entry;
         }
 
