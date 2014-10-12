@@ -84,13 +84,28 @@ namespace PKSoft
 
         internal static int Uninstall()
         {
-            if (System.Windows.Forms.MessageBox.Show(
-                PKSoft.Resources.Messages.DidYouInitiateTheUninstall,
-                PKSoft.Resources.Messages.TinyWall,
-                System.Windows.Forms.MessageBoxButtons.YesNo,
-                System.Windows.Forms.MessageBoxIcon.Exclamation) != System.Windows.Forms.DialogResult.Yes)
+            using (System.Windows.Forms.Form frm = new System.Windows.Forms.Form())
             {
-                return -1;
+                // See http://www.codeproject.com/Articles/18612/TopMost-MessageBox
+                // for an explanation as for why this is needed.
+                frm.Size = new System.Drawing.Size(1, 1);
+                frm.ShowInTaskbar = false;
+                frm.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+                System.Drawing.Rectangle rect = System.Windows.Forms.SystemInformation.VirtualScreen;
+                frm.Location = new System.Drawing.Point(rect.Bottom + 10, rect.Right + 10);
+                frm.Show();
+                frm.Focus();
+                frm.BringToFront(); 
+                frm.TopMost = true;
+
+                if (System.Windows.Forms.MessageBox.Show(frm,
+                    PKSoft.Resources.Messages.DidYouInitiateTheUninstall,
+                    PKSoft.Resources.Messages.TinyWall,
+                    System.Windows.Forms.MessageBoxButtons.YesNo,
+                    System.Windows.Forms.MessageBoxIcon.Exclamation) != System.Windows.Forms.DialogResult.Yes)
+                {
+                    return -1;
+                }
             }
 
             // Disable automatic re-start of service
