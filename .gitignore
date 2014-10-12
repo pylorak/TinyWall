@@ -16,3 +16,5 @@
 
 /MsiSetup/obj
 /MsiSetup/bin
+
+/TinyWall/TaskService

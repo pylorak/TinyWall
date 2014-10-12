@@ -668,7 +668,7 @@
             this.txtCert.Name = "txtCert";
             this.txtCert.Size = new System.Drawing.Size(329, 20);
             this.txtCert.TabIndex = 1;
-            this.txtCert.Text = "D:\\archive\\d0\\projects\\TinyWall\\MsiSetup\\";
+            this.txtCert.Text = "D:\\archive\\d0\\projects\\TinyWall\\Cert\\KarolyPadosCodeSign.pfx";
             // 
             // label10
             // 
