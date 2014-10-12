@@ -1,6 +1,26 @@
 TinyWall Changelog
 ---------------------
 
+2.1.5 - Maintenance release (12.10.2014.)
+- Support for Window Update in Windows 8.1
+- Add support for whitelisting executables on remote network shares
+- Increase service robustness by dry-run testing new rules before save
+- Allow selecting multiple processes when initiated over tray menu
+- Add uninstallation protection
+- Fix: Service crashes if backup of hosts cannot be found
+- Fix: If local network traffic is allowed, local broadcasts are still blocked
+- Fix: Connections window crashes if endpoint IP cannot be determined
+- Fix: Under some circumstances, controller commits new settings even if rejected by service
+- Fix: Wrong error message is shown if user tries to change mode while locked
+- Fix: Tray shows out-of-date lock status after service locks due to timeout
+- Fix: Tray GUI needs restart after service locks due to timeout
+- Fix: Service crash after merging a wildcard and a non-wildcard port rule
+- Fix: Hosts file not automatically updating
+- Preliminary Italian translation and other localization updates
+- Updated application database
+
+---------------------
+
 2.1.4 - Maintenance release (14.07.2013.)
 - Fix: Cannot save settings after upgrade to 2.1.3
 
