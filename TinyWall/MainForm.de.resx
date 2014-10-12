@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -148,7 +148,7 @@
     <value>Als Administrator ausführen</value>
   </data>
   <data name="mnuAllowLocalSubnet.Text" xml:space="preserve">
-    <value>Erlaube den Netzwerk Datenverkehr</value>
+    <value>Datenverkehr im LAN zulassen</value>
   </data>
   <data name="mnuEnableHostsBlocklist.Text" xml:space="preserve">
     <value>Aktivieren der Blocklist</value>
