@@ -50,7 +50,10 @@ namespace PKSoft
 
         internal static string GetHostsHash()
         {
-            return Utils.HexEncode(Hasher.HashFile(HOSTS_BACKUP));
+            if (File.Exists(HOSTS_BACKUP))
+                return Utils.HexEncode(Hasher.HashFile(HOSTS_BACKUP));
+            else
+                return string.Empty;
         }
 
         internal static bool EnableHostsFile()
