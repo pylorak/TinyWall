@@ -1,6 +1,13 @@
 TinyWall Changelog
 ---------------------
 
+2.x.x - Maintenance release (xx.xx.2015.)
+- Fix: GUI crashes when process list is cancelled
+- Fix: Printer sharing doesn't create rule for spoolsv.exe
+- Fix: Two rules can get incorrectly merged
+
+---------------------
+
 2.1.5 - Maintenance release (12.10.2014.)
 - Support for Window Update in Windows 8.1
 - Add support for whitelisting executables on remote network shares
