@@ -106,7 +106,7 @@ namespace PKSoft
             string SettingsFile = Path.Combine(ServiceSettings21.AppDataPath, "config");
 
             // Construct key
-            string key = ENC_SALT + MachineFingerprint.Fingerprint();
+            string key = ENC_SALT;
             key = Hasher.HashString(key).Substring(0, 16);
 
             lock (locker)
@@ -128,7 +128,7 @@ namespace PKSoft
                 {
 
                     // Construct key
-                    string key = ENC_SALT + MachineFingerprint.Fingerprint();
+                    string key = ENC_SALT;
                     key = Hasher.HashString(key).Substring(0, 16);
 
                     ret = SerializationHelper.LoadFromEncryptedXMLFile<ServiceSettings21>(SettingsFile, key, ENC_IV);
@@ -138,6 +138,25 @@ namespace PKSoft
                 }
                 catch
                 {
+                }
+
+                if (ret == null)
+                {
+                    // Try again by loading config file from older versions, which uses a different encryption key
+                    try
+                    {
+                        // Construct key
+                        string key = ENC_SALT + MachineFingerprint.Fingerprint();
+                        key = Hasher.HashString(key).Substring(0, 16);
+
+                        ret = SerializationHelper.LoadFromEncryptedXMLFile<ServiceSettings21>(SettingsFile, key, ENC_IV);
+                        List<string> distinctSpecialEx = new List<string>();
+                        distinctSpecialEx.AddRange(ret.SpecialExceptions.Distinct());
+                        ret.SpecialExceptions = distinctSpecialEx;
+                    }
+                    catch
+                    {
+                    }
                 }
             }
 
