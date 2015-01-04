@@ -7,6 +7,7 @@ TinyWall Changelog
 - Fix: Two rules can get incorrectly merged
 - Fix: TinyWall loses its settings under specific circumstances
 - Updated Brazilian Portuguese translation
+- Add Chinese translation
 
 ---------------------
 

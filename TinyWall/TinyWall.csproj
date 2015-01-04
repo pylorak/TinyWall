@@ -105,6 +105,7 @@
     <Compile Include="ApplicationExceptionForm.Designer.cs">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="IconTools.cs" />
     <Compile Include="TinyWallController.cs" />
     <Compile Include="WinTrust.cs" />
     <Compile Include="CmdLineArgs.cs" />
@@ -273,6 +274,9 @@
     <EmbeddedResource Include="AppFinderForm.ru.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="AppFinderForm.zh.resx">
+      <DependentUpon>AppFinderForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ApplicationExceptionForm.de.resx">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -302,6 +306,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ApplicationExceptionForm.ru.resx">
+      <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationExceptionForm.zh.resx">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionsForm.es.resx">
@@ -337,6 +344,9 @@
     <EmbeddedResource Include="ConnectionsForm.ru.resx">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ConnectionsForm.zh.resx">
+      <DependentUpon>ConnectionsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DevelToolForm.resx">
       <DependentUpon>DevelToolForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -368,6 +378,9 @@
     <EmbeddedResource Include="MainForm.ru.resx">
       <DependentUpon>TinyWallController.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.zh.resx">
+      <DependentUpon>TinyWallController.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PasswordForm.es.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -393,6 +406,9 @@
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PasswordForm.ru.resx">
+      <DependentUpon>PasswordForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PasswordForm.zh.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Processes.es.resx">
@@ -422,6 +438,9 @@
     <EmbeddedResource Include="Processes.ru.resx">
       <DependentUpon>Processes.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Processes.zh.resx">
+      <DependentUpon>Processes.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Exceptions.es.resx" />
     <EmbeddedResource Include="Resources\Exceptions.hu.resx">
       <SubType>Designer</SubType>
@@ -440,6 +459,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Exceptions.ru.resx" />
+    <EmbeddedResource Include="Resources\Exceptions.zh.resx" />
     <EmbeddedResource Include="Resources\Icons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Icons.Designer.cs</LastGenOutput>
@@ -466,6 +486,7 @@
       <LastGenOutput>Messages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Messages.ru.resx" />
+    <EmbeddedResource Include="Resources\Messages.zh.resx" />
     <EmbeddedResource Include="Services.es.resx">
       <DependentUpon>Services.cs</DependentUpon>
     </EmbeddedResource>
@@ -501,6 +522,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Services.ru.resx">
+      <DependentUpon>Services.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Services.zh.resx">
       <DependentUpon>Services.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.es.resx">
@@ -543,6 +567,10 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.ru.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsForm.zh.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
