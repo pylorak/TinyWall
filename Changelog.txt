@@ -6,6 +6,7 @@ TinyWall Changelog
 - Fix: Printer sharing doesn't create rule for spoolsv.exe
 - Fix: Two rules can get incorrectly merged
 - Fix: TinyWall loses its settings under specific circumstances
+- Updated Brazilian Portuguese translation
 
 ---------------------
 
