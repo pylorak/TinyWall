@@ -30,6 +30,8 @@ public static class IconTools {
         LargeIcon = IconTools.SHGFI_ICON | IconTools.SHGFI_LARGEICON
     }
 
+    private const uint FILE_ATTRIBUTE_NORMAL = 0x80;
+
 	#region Win32
 
 	/// <summary>
@@ -127,8 +129,8 @@ public static class IconTools {
 	/// <param name="size">The desired size of the icon.</param>
 	/// <returns>An icon that represents the file.</returns>
 	public static Icon GetIconForFile(string filename, ShellIconSize size) {
-		SHFILEINFO shinfo = new SHFILEINFO();		
-		NativeMethods.SHGetFileInfo(filename, 0, ref shinfo, (uint)Marshal.SizeOf(shinfo), size);
+		SHFILEINFO shinfo = new SHFILEINFO();
+        NativeMethods.SHGetFileInfo(filename, FILE_ATTRIBUTE_NORMAL, ref shinfo, (uint)Marshal.SizeOf(shinfo), size);
 
 		Icon icon = null;
 

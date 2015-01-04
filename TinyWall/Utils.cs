@@ -551,10 +551,22 @@ namespace PKSoft
 
         internal static Bitmap GetIcon(string filePath, int maxWidth, int maxHeight)
         {
-            using (Icon icn = Icon.ExtractAssociatedIcon(filePath))
-            using (Bitmap bmp = icn.ToBitmap())
+            IconTools.ShellIconSize icnSize = IconTools.ShellIconSize.LargeIcon;
+            if ((maxHeight == 16) && (maxWidth == 16))
+                icnSize = IconTools.ShellIconSize.SmallIcon;
+
+            using (Icon icon = IconTools.GetIconForExtension(filePath, icnSize))
             {
-                return Utils.ResizeImage(bmp, maxWidth, maxHeight);
+                if ((icon.Height > maxHeight) || (icon.Width > maxWidth))
+                {
+                    using (Bitmap bmp = icon.ToBitmap())
+                    {
+                        return Utils.ResizeImage(bmp, maxWidth, maxHeight);
+                    }
+
+                }
+                else
+                    return icon.ToBitmap();
             }
         }
 
