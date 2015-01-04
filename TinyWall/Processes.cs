@@ -13,10 +13,11 @@ namespace PKSoft
         {
             using (ProcessesForm pf = new ProcessesForm(multiSelect))
             {
-                if (pf.ShowDialog(parent) == DialogResult.Cancel)
-                    return null;
-
                 List<FirewallException> exList = new List<FirewallException>();
+
+                if (pf.ShowDialog(parent) == DialogResult.Cancel)
+                    return exList;
+
                 foreach (string path in pf.SelectedPaths)
                 {
                     exList.Add(new FirewallException(path, null, true));
