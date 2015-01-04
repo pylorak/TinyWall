@@ -1251,6 +1251,15 @@
             </Profiles>
           </ExceptionTemplate>
         </AppExceptionAssoc>
+        <AppExceptionAssoc Executable="{folder:sys32}\spoolsv.exe">
+          <ExceptionTemplate Template="true">
+            <LocalNetworkOnly>true</LocalNetworkOnly>
+            <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+            <OpenPortListenLocalTCP>*</OpenPortListenLocalTCP>
+            <OpenPortOutboundRemoteUDP>*</OpenPortOutboundRemoteUDP>
+            <OpenPortListenLocalUDP>*</OpenPortListenLocalUDP>
+          </ExceptionTemplate>
+        </AppExceptionAssoc>
       </Files>
     </Application>
     <Application Name="Filtered_ICMP_Traffic" Recommended="true" Special="true">
