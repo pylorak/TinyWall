@@ -179,6 +179,11 @@ namespace PKSoft
             li.SubItems.Add(ex.ExecutablePath);
             li.Tag = ex;
 
+            if (ex.AlwaysBlockTraffic)
+            {
+                li.BackColor = System.Drawing.Color.LightPink;
+            }
+
             if (Utils.IsNetworkPath(ex.ExecutablePath))
             {
                 /* We do not load icons from network drives, to avoid 30s timeout if the drive is unavailable.
@@ -195,7 +200,10 @@ namespace PKSoft
                 li.ImageKey = ex.ExecutablePath;
             }
             else
+            {
                 li.ImageKey = "deleted";
+                li.BackColor = System.Drawing.Color.LightGray;
+            }
 
             return li;
         }

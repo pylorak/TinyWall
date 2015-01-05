@@ -6,7 +6,8 @@ TinyWall Changelog
 - Fix: Printer sharing doesn't create rule for spoolsv.exe
 - Fix: Two rules can get incorrectly merged
 - Fix: TinyWall loses its settings under specific circumstances
-- Faster loading of Manage and Process selection forms
+- Add color-coding to Application Exceptions list
+- Faster loading of Manage and Processes windows
 - Updated Brazilian Portuguese translation
 - Add Chinese translation
 
