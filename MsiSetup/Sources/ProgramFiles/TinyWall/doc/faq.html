@@ -45,7 +45,7 @@
     <div class="row">
       <div class="twelvecol last">
         <h3>What are the system requirements to run TinyWall?</h3>
-        <p>TinyWall runs on all versions (including all editions and languages, 32bit and 64bit) of Windows Vista, Windows 7 and Windows 8. However, firewall tampering protection is not active on Windows Vista. Also, Windows Vista users need to install <a href="http://go.microsoft.com/fwlink/?linkid=262043">Microsoft .Net Framework 3.5 SP1 or newer</a> before installing TinyWall.</p>
+        <p>TinyWall runs on all versions (including all editions and languages, 32bit and 64bit) of Windows Vista, Windows 7, Windows 8, 8.1, and Windows 10. However, firewall tampering protection is not active on Windows Vista. Also, Windows Vista users need to install <a href="http://go.microsoft.com/fwlink/?linkid=262043">Microsoft .Net Framework 3.5 SP1 or newer</a> before installing TinyWall.</p>
       </div>
       <div class="twelvecol last">
         <h3>How does TinyWall compare to other firewall products?</h3>
@@ -89,7 +89,11 @@
         <p>TinyWall can only whitelist other applications by window if they aren't using higher privileges. If you want to whitelist an admin app using the window method, make sure TinyWall's tray is running as admin too. You can easily achieve this by selecting "Elevate" from the tray's context menu.</p>
       </div>
       <div class="twelvecol last">
-        <h3>Why block applications if TinyWall blocks all applications by default anyway?</h3>
+        <h3>Why does Tinywall keep disabling File and Printer Sharing?</h3>
+        <p>TinyWall does not. It is a design deficiency in Windows File and Printer Sharing to check for specific rules, instead of actually trying to access the network. TinyWall creates the rules correctly if enabled in its settings. First, make sure you have File and Printer Sharing enabled in TinyWall. Then, instead of trying to browse the local network, map your remote folder/drive to a local drive letter (enable it to reconnect every time you log on. This will work flawlessly and comfortably, and in fact is also proof that TinyWall enables file sharing correctly. Other computers can also access shares on your PC, of course. To use network printers, you might need to whitelist manufacturer-specific executables too, depending on your printer drivers.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>Why the option to block applications if TinyWall blocks all applications by default anyway?</h3>
         <p>TinyWall blocks all applications by default in some of its operation modes, including the "Normal" mode which is the standard mode of operation. Explicitly blocking is useful to deny network access for an application even when the firewall mode is set to allow all outgoing communication.</p>
       </div>
       <div class="twelvecol last">
@@ -109,8 +113,7 @@
         <h3>Whitelisting does not seem to take effect.<br/>
         or: Some programs can access the internet even when they shouldn't be able to.</h3>
         <p>You probably have Avast! Antivirus, AdMuncher, Mailwasher or similar security software installed. In the following passages we use Avast! as an example, but it goes for any software that works similarly.</p>
-        <p>Some shields of avast! work by redirecting other applications to the local computer, then making the internet connection themselves instead of the original program. As a result, avast! needs to be unblocked instead of your browser, for example, to be able to access the internet. The recommended solution is to unblock the "avast! Antivirus" service in TinyWall. However, now that avast! is unblocked, all applications that are redirected to avast! are also unblocked. It is not possible to control those applications one-by-one any more, because they never access the internet, they only communicate locally with your antivirus.</p>
-        <p>A second solution is to disable the corresponding avast! shield (for example, the Web Shield), but this is not recommended because you'd loose that protection of avast!. However, if you want to be able to block/unblock each and every application separately using TinyWall, this is your only choice.</p>
+        <p>Some shields of avast! work by redirecting other applications to the local computer, then making the internet connection themselves instead of the original program. As a result, avast! needs to be unblocked instead of your browser, for example, to be able to access the internet. If you are using avast!, the recommended solution is configure its webshield to only operate on browser traffic, and unblock the "avast! Antivirus" service in TinyWall.</p>
       </div>
       <div class="twelvecol last">
         <h3>Why can some Windows Store apps access the internet even though they haven't been whitelisted?</h3>
@@ -144,7 +147,7 @@
     <div class="row">
       <div class="twelvecol last centertext">
       <br/>
-      <p>Copyright (c) 2011-2013 Károly Pados</p>
+      <p>Copyright (c) 2011-2015 Károly Pados</p>
     </div>
     </div>
   </div>

@@ -1,7 +1,8 @@
 TinyWall Changelog
 ---------------------
 
-2.x.x - Maintenance release (xx.xx.2015.)
+2.1.6 - Maintenance release (xx.xx.2015.)
+- Windows 10 (TP) compatibility
 - Fix: GUI crashes when process list is cancelled
 - Fix: Printer sharing doesn't create rule for spoolsv.exe
 - Fix: Two rules can get incorrectly merged
