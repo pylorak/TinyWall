@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<!-- 
+  <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,1517 +59,200 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-		<xsd:element name="root" msdata:IsDataSet="true">
-			<xsd:complexType>
-				<xsd:choice maxOccurs="unbounded">
-					<xsd:element name="metadata">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" />
-							</xsd:sequence>
-							<xsd:attribute name="name" use="required" type="xsd:string" />
-							<xsd:attribute name="type" type="xsd:string" />
-							<xsd:attribute name="mimetype" type="xsd:string" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="assembly">
-						<xsd:complexType>
-							<xsd:attribute name="alias" type="xsd:string" />
-							<xsd:attribute name="name" type="xsd:string" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="data">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="resheader">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" />
-						</xsd:complexType>
-					</xsd:element>
-				</xsd:choice>
-			</xsd:complexType>
-		</xsd:element>
-	</xsd:schema>
-	<resheader name="resmimetype">
-		<value>text/microsoft-resx</value>
-	</resheader>
-	<resheader name="version">
-		<value>2.0</value>
-	</resheader>
-	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-	<data name="btnCancel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-		<value>Bottom, Right</value>
-	</data>
-	<assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-	<data name="btnCancel.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-		<value>MiddleLeft</value>
-	</data>
-	<data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
-		<value>646, 393</value>
-	</data>
-	<data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
-		<value>90, 33</value>
-	</data>
-	<assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-	<data name="btnCancel.TabIndex" type="System.Int32, mscorlib">
-		<value>1000</value>
-	</data>
-	<data name="&gt;&gt;btnCancel.Name" xml:space="preserve">
-    <value>btnCancel</value>
-  </data>
-	<data name="&gt;&gt;btnCancel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;btnCancel.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-	<data name="&gt;&gt;btnCancel.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-	<data name="btnOK.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-		<value>Bottom, Right</value>
-	</data>
-	<data name="btnOK.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-		<value>MiddleLeft</value>
-	</data>
-	<data name="btnOK.Location" type="System.Drawing.Point, System.Drawing">
-		<value>550, 393</value>
-	</data>
-	<data name="btnOK.Size" type="System.Drawing.Size, System.Drawing">
-		<value>90, 33</value>
-	</data>
-	<data name="btnOK.TabIndex" type="System.Int32, mscorlib">
-		<value>900</value>
-	</data>
-	<data name="&gt;&gt;btnOK.Name" xml:space="preserve">
-    <value>btnOK</value>
-  </data>
-	<data name="&gt;&gt;btnOK.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;btnOK.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-	<data name="&gt;&gt;btnOK.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-	<data name="txtExceptionListFilter.Location" type="System.Drawing.Point, System.Drawing">
-		<value>61, 75</value>
-	</data>
-	<data name="txtExceptionListFilter.Size" type="System.Drawing.Size, System.Drawing">
-		<value>480, 20</value>
-	</data>
-	<data name="txtExceptionListFilter.TabIndex" type="System.Int32, mscorlib">
-		<value>50</value>
-	</data>
-	<data name="&gt;&gt;txtExceptionListFilter.Name" xml:space="preserve">
-    <value>txtExceptionListFilter</value>
-  </data>
-	<data name="&gt;&gt;txtExceptionListFilter.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;txtExceptionListFilter.Parent" xml:space="preserve">
-    <value>tabPage3</value>
-  </data>
-	<data name="&gt;&gt;txtExceptionListFilter.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-	<data name="btnAppRemoveAll.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
-		<value>Flat</value>
-	</data>
-	<data name="btnAppRemoveAll.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-		<value>MiddleLeft</value>
-	</data>
-	<data name="btnAppRemoveAll.Location" type="System.Drawing.Point, System.Drawing">
-		<value>566, 223</value>
-	</data>
-	<data name="btnAppRemoveAll.Size" type="System.Drawing.Size, System.Drawing">
-		<value>127, 36</value>
-	</data>
-	<data name="btnAppRemoveAll.TabIndex" type="System.Int32, mscorlib">
-		<value>80</value>
-	</data>
-	<data name="&gt;&gt;btnAppRemoveAll.Name" xml:space="preserve">
-    <value>btnAppRemoveAll</value>
-  </data>
-	<data name="&gt;&gt;btnAppRemoveAll.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;btnAppRemoveAll.Parent" xml:space="preserve">
-    <value>tabPage3</value>
-  </data>
-	<data name="&gt;&gt;btnAppRemoveAll.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-	<data name="btnAppAutoDetect.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
-		<value>Flat</value>
-	</data>
-	<data name="btnAppAutoDetect.Font" type="System.Drawing.Font, System.Drawing">
-		<value>Microsoft Sans Serif, 8.25pt, style=Bold</value>
-	</data>
-	<data name="btnAppAutoDetect.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-		<value>MiddleLeft</value>
-	</data>
-	<data name="btnAppAutoDetect.Location" type="System.Drawing.Point, System.Drawing">
-		<value>566, 30</value>
-	</data>
-	<data name="btnAppAutoDetect.Size" type="System.Drawing.Size, System.Drawing">
-		<value>127, 36</value>
-	</data>
-	<data name="btnAppAutoDetect.TabIndex" type="System.Int32, mscorlib">
-		<value>60</value>
-	</data>
-	<data name="&gt;&gt;btnAppAutoDetect.Name" xml:space="preserve">
-    <value>btnAppAutoDetect</value>
-  </data>
-	<data name="&gt;&gt;btnAppAutoDetect.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;btnAppAutoDetect.Parent" xml:space="preserve">
-    <value>tabPage3</value>
-  </data>
-	<data name="&gt;&gt;btnAppAutoDetect.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-	<data name="btnSubmitAssoc.Enabled" type="System.Boolean, mscorlib">
-		<value>False</value>
-	</data>
-	<data name="btnSubmitAssoc.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
-		<value>Flat</value>
-	</data>
-	<data name="btnSubmitAssoc.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-		<value>MiddleLeft</value>
-	</data>
-	<data name="btnSubmitAssoc.Location" type="System.Drawing.Point, System.Drawing">
-		<value>566, 290</value>
-	</data>
-	<data name="btnSubmitAssoc.Size" type="System.Drawing.Size, System.Drawing">
-		<value>127, 36</value>
-	</data>
-	<data name="btnSubmitAssoc.TabIndex" type="System.Int32, mscorlib">
-		<value>85</value>
-	</data>
-	<data name="&gt;&gt;btnSubmitAssoc.Name" xml:space="preserve">
-    <value>btnSubmitAssoc</value>
-  </data>
-	<data name="&gt;&gt;btnSubmitAssoc.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;btnSubmitAssoc.Parent" xml:space="preserve">
-    <value>tabPage3</value>
-  </data>
-	<data name="&gt;&gt;btnSubmitAssoc.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-	<data name="label3.Location" type="System.Drawing.Point, System.Drawing">
-		<value>23, 30</value>
-	</data>
-	<data name="label3.Size" type="System.Drawing.Size, System.Drawing">
-		<value>518, 48</value>
-	</data>
-	<data name="label3.TabIndex" type="System.Int32, mscorlib">
-		<value>16</value>
-	</data>
-	<data name="&gt;&gt;label3.Name" xml:space="preserve">
-    <value>label3</value>
-  </data>
-	<data name="&gt;&gt;label3.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;label3.Parent" xml:space="preserve">
-    <value>tabPage3</value>
-  </data>
-	<data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-	<data name="btnAppRemove.Enabled" type="System.Boolean, mscorlib">
-		<value>False</value>
-	</data>
-	<data name="btnAppRemove.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
-		<value>Flat</value>
-	</data>
-	<data name="btnAppRemove.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-		<value>MiddleLeft</value>
-	</data>
-	<data name="btnAppRemove.Location" type="System.Drawing.Point, System.Drawing">
-		<value>566, 181</value>
-	</data>
-	<data name="btnAppRemove.Size" type="System.Drawing.Size, System.Drawing">
-		<value>127, 36</value>
-	</data>
-	<data name="btnAppRemove.TabIndex" type="System.Int32, mscorlib">
-		<value>75</value>
-	</data>
-	<data name="&gt;&gt;btnAppRemove.Name" xml:space="preserve">
-    <value>btnAppRemove</value>
-  </data>
-	<data name="&gt;&gt;btnAppRemove.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;btnAppRemove.Parent" xml:space="preserve">
-    <value>tabPage3</value>
-  </data>
-	<data name="&gt;&gt;btnAppRemove.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-	<data name="btnAppModify.Enabled" type="System.Boolean, mscorlib">
-		<value>False</value>
-	</data>
-	<data name="btnAppModify.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
-		<value>Flat</value>
-	</data>
-	<data name="btnAppModify.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-		<value>MiddleLeft</value>
-	</data>
-	<data name="btnAppModify.Location" type="System.Drawing.Point, System.Drawing">
-		<value>566, 139</value>
-	</data>
-	<data name="btnAppModify.Size" type="System.Drawing.Size, System.Drawing">
-		<value>127, 36</value>
-	</data>
-	<data name="btnAppModify.TabIndex" type="System.Int32, mscorlib">
-		<value>70</value>
-	</data>
-	<data name="&gt;&gt;btnAppModify.Name" xml:space="preserve">
-    <value>btnAppModify</value>
-  </data>
-	<data name="&gt;&gt;btnAppModify.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;btnAppModify.Parent" xml:space="preserve">
-    <value>tabPage3</value>
-  </data>
-	<data name="&gt;&gt;btnAppModify.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-	<data name="btnAppAdd.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
-		<value>Flat</value>
-	</data>
-	<data name="btnAppAdd.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-		<value>MiddleLeft</value>
-	</data>
-	<data name="btnAppAdd.Location" type="System.Drawing.Point, System.Drawing">
-		<value>566, 97</value>
-	</data>
-	<data name="btnAppAdd.Size" type="System.Drawing.Size, System.Drawing">
-		<value>127, 36</value>
-	</data>
-	<data name="btnAppAdd.TabIndex" type="System.Int32, mscorlib">
-		<value>65</value>
-	</data>
-	<data name="&gt;&gt;btnAppAdd.Name" xml:space="preserve">
-    <value>btnAppAdd</value>
-  </data>
-	<data name="&gt;&gt;btnAppAdd.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;btnAppAdd.Parent" xml:space="preserve">
-    <value>tabPage3</value>
-  </data>
-	<data name="&gt;&gt;btnAppAdd.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-	<data name="columnHeader1.Width" type="System.Int32, mscorlib">
-		<value>132</value>
-	</data>
-	<data name="columnHeader2.Width" type="System.Int32, mscorlib">
-		<value>356</value>
-	</data>
-	<data name="listApplications.Location" type="System.Drawing.Point, System.Drawing">
-		<value>26, 97</value>
-	</data>
-	<data name="listApplications.Size" type="System.Drawing.Size, System.Drawing">
-		<value>515, 229</value>
-	</data>
-	<metadata name="IconList.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-		<value>85, 17</value>
-	</metadata>
-	<data name="IconList.ImageSize" type="System.Drawing.Size, System.Drawing">
-		<value>16, 16</value>
-	</data>
-	<data name="listApplications.TabIndex" type="System.Int32, mscorlib">
-		<value>55</value>
-	</data>
-	<data name="&gt;&gt;listApplications.Name" xml:space="preserve">
-    <value>listApplications</value>
-  </data>
-	<data name="&gt;&gt;listApplications.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ListView, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;listApplications.Parent" xml:space="preserve">
-    <value>tabPage3</value>
-  </data>
-	<data name="&gt;&gt;listApplications.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-	<data name="label4.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-		<value>23, 78</value>
-	</data>
-	<data name="label4.Size" type="System.Drawing.Size, System.Drawing">
-		<value>32, 13</value>
-	</data>
-	<data name="label4.TabIndex" type="System.Int32, mscorlib">
-		<value>9</value>
-	</data>
-	<data name="&gt;&gt;label4.Name" xml:space="preserve">
-    <value>label4</value>
-  </data>
-	<data name="&gt;&gt;label4.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;label4.Parent" xml:space="preserve">
-    <value>tabPage3</value>
-  </data>
-	<data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
-    <value>9</value>
-  </data>
-	<data name="tabPage3.Location" type="System.Drawing.Point, System.Drawing">
-		<value>4, 22</value>
-	</data>
-	<data name="tabPage3.Size" type="System.Drawing.Size, System.Drawing">
-		<value>716, 349</value>
-	</data>
-	<data name="tabPage3.TabIndex" type="System.Int32, mscorlib">
-		<value>2</value>
-	</data>
-	<data name="&gt;&gt;tabPage3.Name" xml:space="preserve">
-    <value>tabPage3</value>
-  </data>
-	<data name="&gt;&gt;tabPage3.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;tabPage3.Parent" xml:space="preserve">
-    <value>tabControl1</value>
-  </data>
-	<data name="&gt;&gt;tabPage3.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-	<data name="label5.Location" type="System.Drawing.Point, System.Drawing">
-		<value>26, 30</value>
-	</data>
-	<data name="label5.Size" type="System.Drawing.Size, System.Drawing">
-		<value>670, 40</value>
-	</data>
-	<data name="label5.TabIndex" type="System.Int32, mscorlib">
-		<value>6</value>
-	</data>
-	<data name="&gt;&gt;label5.Name" xml:space="preserve">
-    <value>label5</value>
-  </data>
-	<data name="&gt;&gt;label5.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;label5.Parent" xml:space="preserve">
-    <value>tabPage2</value>
-  </data>
-	<data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-	<data name="label2.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-		<value>369, 72</value>
-	</data>
-	<data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-		<value>46, 13</value>
-	</data>
-	<data name="label2.TabIndex" type="System.Int32, mscorlib">
-		<value>5</value>
-	</data>
-	<data name="&gt;&gt;label2.Name" xml:space="preserve">
-    <value>label2</value>
-  </data>
-	<data name="&gt;&gt;label2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;label2.Parent" xml:space="preserve">
-    <value>tabPage2</value>
-  </data>
-	<data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-	<data name="label1.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-		<value>106, 72</value>
-	</data>
-	<data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-		<value>79, 13</value>
-	</data>
-	<data name="label1.TabIndex" type="System.Int32, mscorlib">
-		<value>4</value>
-	</data>
-	<data name="&gt;&gt;label1.Name" xml:space="preserve">
-    <value>label1</value>
-  </data>
-	<data name="&gt;&gt;label1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;label1.Parent" xml:space="preserve">
-    <value>tabPage2</value>
-  </data>
-	<data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-	<data name="listOptionalGlobalProfiles.Location" type="System.Drawing.Point, System.Drawing">
-		<value>372, 91</value>
-	</data>
-	<data name="listOptionalGlobalProfiles.Size" type="System.Drawing.Size, System.Drawing">
-		<value>238, 229</value>
-	</data>
-	<data name="listOptionalGlobalProfiles.TabIndex" type="System.Int32, mscorlib">
-		<value>95</value>
-	</data>
-	<data name="&gt;&gt;listOptionalGlobalProfiles.Name" xml:space="preserve">
-    <value>listOptionalGlobalProfiles</value>
-  </data>
-	<data name="&gt;&gt;listOptionalGlobalProfiles.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckedListBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;listOptionalGlobalProfiles.Parent" xml:space="preserve">
-    <value>tabPage2</value>
-  </data>
-	<data name="&gt;&gt;listOptionalGlobalProfiles.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-	<data name="listRecommendedGlobalProfiles.Location" type="System.Drawing.Point, System.Drawing">
-		<value>109, 91</value>
-	</data>
-	<data name="listRecommendedGlobalProfiles.Size" type="System.Drawing.Size, System.Drawing">
-		<value>238, 229</value>
-	</data>
-	<data name="listRecommendedGlobalProfiles.TabIndex" type="System.Int32, mscorlib">
-		<value>90</value>
-	</data>
-	<data name="&gt;&gt;listRecommendedGlobalProfiles.Name" xml:space="preserve">
-    <value>listRecommendedGlobalProfiles</value>
-  </data>
-	<data name="&gt;&gt;listRecommendedGlobalProfiles.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckedListBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;listRecommendedGlobalProfiles.Parent" xml:space="preserve">
-    <value>tabPage2</value>
-  </data>
-	<data name="&gt;&gt;listRecommendedGlobalProfiles.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-	<data name="tabPage2.Location" type="System.Drawing.Point, System.Drawing">
-		<value>4, 22</value>
-	</data>
-	<data name="tabPage2.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-		<value>3, 3, 3, 3</value>
-	</data>
-	<data name="tabPage2.Size" type="System.Drawing.Size, System.Drawing">
-		<value>716, 349</value>
-	</data>
-	<data name="tabPage2.TabIndex" type="System.Int32, mscorlib">
-		<value>1</value>
-	</data>
-	<data name="&gt;&gt;tabPage2.Name" xml:space="preserve">
-    <value>tabPage2</value>
-  </data>
-	<data name="&gt;&gt;tabPage2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;tabPage2.Parent" xml:space="preserve">
-    <value>tabControl1</value>
-  </data>
-	<data name="&gt;&gt;tabPage2.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-	<data name="chkEnableHotkeys.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="chkEnableHotkeys.Location" type="System.Drawing.Point, System.Drawing">
-		<value>104, 117</value>
-	</data>
-	<data name="chkEnableHotkeys.Size" type="System.Drawing.Size, System.Drawing">
-		<value>130, 17</value>
-	</data>
-	<data name="chkEnableHotkeys.TabIndex" type="System.Int32, mscorlib">
-		<value>35</value>
-	</data>
-	<data name="&gt;&gt;chkEnableHotkeys.Name" xml:space="preserve">
-    <value>chkEnableHotkeys</value>
-  </data>
-	<data name="&gt;&gt;chkEnableHotkeys.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;chkEnableHotkeys.Parent" xml:space="preserve">
-    <value>tabPage1</value>
-  </data>
-	<data name="&gt;&gt;chkEnableHotkeys.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-	<data name="comboLanguages.Location" type="System.Drawing.Point, System.Drawing">
-		<value>589, 6</value>
-	</data>
-	<data name="comboLanguages.Size" type="System.Drawing.Size, System.Drawing">
-		<value>121, 21</value>
-	</data>
-	<data name="comboLanguages.TabIndex" type="System.Int32, mscorlib">
-		<value>0</value>
-	</data>
-	<data name="&gt;&gt;comboLanguages.Name" xml:space="preserve">
-    <value>comboLanguages</value>
-  </data>
-	<data name="&gt;&gt;comboLanguages.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;comboLanguages.Parent" xml:space="preserve">
-    <value>tabPage1</value>
-  </data>
-	<data name="&gt;&gt;comboLanguages.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-	<data name="label11.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="label11.Location" type="System.Drawing.Point, System.Drawing">
-		<value>525, 9</value>
-	</data>
-	<data name="label11.Size" type="System.Drawing.Size, System.Drawing">
-		<value>58, 13</value>
-	</data>
-	<data name="label11.TabIndex" type="System.Int32, mscorlib">
-		<value>12</value>
-	</data>
-	<data name="&gt;&gt;label11.Name" xml:space="preserve">
-    <value>label11</value>
-  </data>
-	<data name="&gt;&gt;label11.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;label11.Parent" xml:space="preserve">
-    <value>tabPage1</value>
-  </data>
-	<data name="&gt;&gt;label11.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-	<data name="chkEnableBlocklists.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="chkEnableBlocklists.Location" type="System.Drawing.Point, System.Drawing">
-		<value>369, 48</value>
-	</data>
-	<data name="chkEnableBlocklists.Size" type="System.Drawing.Size, System.Drawing">
-		<value>105, 17</value>
-	</data>
-	<data name="chkEnableBlocklists.TabIndex" type="System.Int32, mscorlib">
-		<value>20</value>
-	</data>
-	<data name="&gt;&gt;chkEnableBlocklists.Name" xml:space="preserve">
-    <value>chkEnableBlocklists</value>
-  </data>
-	<data name="&gt;&gt;chkEnableBlocklists.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;chkEnableBlocklists.Parent" xml:space="preserve">
-    <value>tabPage1</value>
-  </data>
-	<data name="&gt;&gt;chkEnableBlocklists.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-	<data name="chkLockHostsFile.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="chkLockHostsFile.Location" type="System.Drawing.Point, System.Drawing">
-		<value>104, 94</value>
-	</data>
-	<data name="chkLockHostsFile.Size" type="System.Drawing.Size, System.Drawing">
-		<value>183, 17</value>
-	</data>
-	<data name="chkLockHostsFile.TabIndex" type="System.Int32, mscorlib">
-		<value>15</value>
-	</data>
-	<data name="&gt;&gt;chkLockHostsFile.Name" xml:space="preserve">
-    <value>chkLockHostsFile</value>
-  </data>
-	<data name="&gt;&gt;chkLockHostsFile.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;chkLockHostsFile.Parent" xml:space="preserve">
-    <value>tabPage1</value>
-  </data>
-	<data name="&gt;&gt;chkLockHostsFile.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-	<data name="chkHostsBlocklist.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="chkHostsBlocklist.Location" type="System.Drawing.Point, System.Drawing">
-		<value>388, 94</value>
-	</data>
-	<data name="chkHostsBlocklist.Size" type="System.Drawing.Size, System.Drawing">
-		<value>213, 17</value>
-	</data>
-	<data name="chkHostsBlocklist.TabIndex" type="System.Int32, mscorlib">
-		<value>30</value>
-	</data>
-	<data name="&gt;&gt;chkHostsBlocklist.Name" xml:space="preserve">
-    <value>chkHostsBlocklist</value>
-  </data>
-	<data name="&gt;&gt;chkHostsBlocklist.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;chkHostsBlocklist.Parent" xml:space="preserve">
-    <value>tabPage1</value>
-  </data>
-	<data name="&gt;&gt;chkHostsBlocklist.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-	<data name="chkAutoUpdateCheck.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="chkAutoUpdateCheck.Location" type="System.Drawing.Point, System.Drawing">
-		<value>104, 48</value>
-	</data>
-	<data name="chkAutoUpdateCheck.Size" type="System.Drawing.Size, System.Drawing">
-		<value>177, 17</value>
-	</data>
-	<data name="chkAutoUpdateCheck.TabIndex" type="System.Int32, mscorlib">
-		<value>5</value>
-	</data>
-	<data name="&gt;&gt;chkAutoUpdateCheck.Name" xml:space="preserve">
-    <value>chkAutoUpdateCheck</value>
-  </data>
-	<data name="&gt;&gt;chkAutoUpdateCheck.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;chkAutoUpdateCheck.Parent" xml:space="preserve">
-    <value>tabPage1</value>
-  </data>
-	<data name="&gt;&gt;chkAutoUpdateCheck.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-	<data name="chkBlockMalwarePorts.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="chkBlockMalwarePorts.Location" type="System.Drawing.Point, System.Drawing">
-		<value>388, 71</value>
-	</data>
-	<data name="chkBlockMalwarePorts.Size" type="System.Drawing.Size, System.Drawing">
-		<value>160, 17</value>
-	</data>
-	<data name="chkBlockMalwarePorts.TabIndex" type="System.Int32, mscorlib">
-		<value>25</value>
-	</data>
-	<data name="&gt;&gt;chkBlockMalwarePorts.Name" xml:space="preserve">
-    <value>chkBlockMalwarePorts</value>
-  </data>
-	<data name="&gt;&gt;chkBlockMalwarePorts.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;chkBlockMalwarePorts.Parent" xml:space="preserve">
-    <value>tabPage1</value>
-  </data>
-	<data name="&gt;&gt;chkBlockMalwarePorts.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-	<data name="label9.Location" type="System.Drawing.Point, System.Drawing">
-		<value>249, 60</value>
-	</data>
-	<data name="label9.Size" type="System.Drawing.Size, System.Drawing">
-		<value>253, 31</value>
-	</data>
-	<data name="label9.TabIndex" type="System.Int32, mscorlib">
-		<value>5</value>
-	</data>
-	<data name="&gt;&gt;label9.Name" xml:space="preserve">
-    <value>label9</value>
-  </data>
-	<data name="&gt;&gt;label9.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;label9.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-	<data name="&gt;&gt;label9.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-	<data name="label8.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="label8.Location" type="System.Drawing.Point, System.Drawing">
-		<value>48, 83</value>
-	</data>
-	<data name="label8.Size" type="System.Drawing.Size, System.Drawing">
-		<value>44, 13</value>
-	</data>
-	<data name="label8.TabIndex" type="System.Int32, mscorlib">
-		<value>4</value>
-	</data>
-	<data name="&gt;&gt;label8.Name" xml:space="preserve">
-    <value>label8</value>
-  </data>
-	<data name="&gt;&gt;label8.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;label8.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-	<data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-	<data name="label7.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="label7.Location" type="System.Drawing.Point, System.Drawing">
-		<value>36, 60</value>
-	</data>
-	<data name="label7.Size" type="System.Drawing.Size, System.Drawing">
-		<value>56, 13</value>
-	</data>
-	<data name="label7.TabIndex" type="System.Int32, mscorlib">
-		<value>3</value>
-	</data>
-	<data name="&gt;&gt;label7.Name" xml:space="preserve">
-    <value>label7</value>
-  </data>
-	<data name="&gt;&gt;label7.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;label7.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-	<data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-	<data name="chkChangePassword.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="chkChangePassword.Location" type="System.Drawing.Point, System.Drawing">
-		<value>16, 30</value>
-	</data>
-	<data name="chkChangePassword.Size" type="System.Drawing.Size, System.Drawing">
-		<value>111, 17</value>
-	</data>
-	<data name="chkChangePassword.TabIndex" type="System.Int32, mscorlib">
-		<value>35</value>
-	</data>
-	<data name="&gt;&gt;chkChangePassword.Name" xml:space="preserve">
-    <value>chkChangePassword</value>
-  </data>
-	<data name="&gt;&gt;chkChangePassword.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;chkChangePassword.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-	<data name="&gt;&gt;chkChangePassword.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-	<data name="txtPasswordAgain.Enabled" type="System.Boolean, mscorlib">
-		<value>False</value>
-	</data>
-	<data name="txtPasswordAgain.Location" type="System.Drawing.Point, System.Drawing">
-		<value>98, 80</value>
-	</data>
-	<data name="txtPasswordAgain.MaxLength" type="System.Int32, mscorlib">
-		<value>16</value>
-	</data>
-	<data name="txtPasswordAgain.PasswordChar" type="System.Char, mscorlib" xml:space="preserve">
-    <value>*</value>
-  </data>
-	<data name="txtPasswordAgain.Size" type="System.Drawing.Size, System.Drawing">
-		<value>138, 20</value>
-	</data>
-	<data name="txtPasswordAgain.TabIndex" type="System.Int32, mscorlib">
-		<value>45</value>
-	</data>
-	<data name="&gt;&gt;txtPasswordAgain.Name" xml:space="preserve">
-    <value>txtPasswordAgain</value>
-  </data>
-	<data name="&gt;&gt;txtPasswordAgain.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;txtPasswordAgain.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-	<data name="&gt;&gt;txtPasswordAgain.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-	<data name="txtPassword.Enabled" type="System.Boolean, mscorlib">
-		<value>False</value>
-	</data>
-	<data name="txtPassword.Location" type="System.Drawing.Point, System.Drawing">
-		<value>98, 57</value>
-	</data>
-	<data name="txtPassword.MaxLength" type="System.Int32, mscorlib">
-		<value>16</value>
-	</data>
-	<data name="txtPassword.PasswordChar" type="System.Char, mscorlib" xml:space="preserve">
-    <value>*</value>
-  </data>
-	<data name="txtPassword.Size" type="System.Drawing.Size, System.Drawing">
-		<value>138, 20</value>
-	</data>
-	<data name="txtPassword.TabIndex" type="System.Int32, mscorlib">
-		<value>40</value>
-	</data>
-	<data name="&gt;&gt;txtPassword.Name" xml:space="preserve">
-    <value>txtPassword</value>
-  </data>
-	<data name="&gt;&gt;txtPassword.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;txtPassword.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-	<data name="&gt;&gt;txtPassword.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-	<data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
-		<value>104, 154</value>
-	</data>
-	<data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
-		<value>508, 125</value>
-	</data>
-	<data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
-		<value>34</value>
-	</data>
-	<data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-	<data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
-    <value>tabPage1</value>
-  </data>
-	<data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-	<data name="chkAskForExceptionDetails.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="chkAskForExceptionDetails.Location" type="System.Drawing.Point, System.Drawing">
-		<value>104, 71</value>
-	</data>
-	<data name="chkAskForExceptionDetails.Size" type="System.Drawing.Size, System.Drawing">
-		<value>156, 17</value>
-	</data>
-	<data name="chkAskForExceptionDetails.TabIndex" type="System.Int32, mscorlib">
-		<value>10</value>
-	</data>
-	<data name="&gt;&gt;chkAskForExceptionDetails.Name" xml:space="preserve">
-    <value>chkAskForExceptionDetails</value>
-  </data>
-	<data name="&gt;&gt;chkAskForExceptionDetails.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;chkAskForExceptionDetails.Parent" xml:space="preserve">
-    <value>tabPage1</value>
-  </data>
-	<data name="&gt;&gt;chkAskForExceptionDetails.ZOrder" xml:space="preserve">
-    <value>9</value>
-  </data>
-	<data name="tabPage1.Location" type="System.Drawing.Point, System.Drawing">
-		<value>4, 22</value>
-	</data>
-	<data name="tabPage1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-		<value>3, 3, 3, 3</value>
-	</data>
-	<data name="tabPage1.Size" type="System.Drawing.Size, System.Drawing">
-		<value>716, 349</value>
-	</data>
-	<data name="tabPage1.TabIndex" type="System.Int32, mscorlib">
-		<value>0</value>
-	</data>
-	<data name="&gt;&gt;tabPage1.Name" xml:space="preserve">
-    <value>tabPage1</value>
-  </data>
-	<data name="&gt;&gt;tabPage1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;tabPage1.Parent" xml:space="preserve">
-    <value>tabControl1</value>
-  </data>
-	<data name="&gt;&gt;tabPage1.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-	<data name="tabControl1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-		<value>Top, Bottom, Left, Right</value>
-	</data>
-	<data name="btnImport.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
-		<value>Flat</value>
-	</data>
-	<data name="btnImport.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-		<value>MiddleLeft</value>
-	</data>
-	<data name="btnImport.Location" type="System.Drawing.Point, System.Drawing">
-		<value>104, 47</value>
-	</data>
-	<data name="btnImport.Size" type="System.Drawing.Size, System.Drawing">
-		<value>127, 36</value>
-	</data>
-	<data name="btnImport.TabIndex" type="System.Int32, mscorlib">
-		<value>100</value>
-	</data>
-	<data name="&gt;&gt;btnImport.Name" xml:space="preserve">
-    <value>btnImport</value>
-  </data>
-	<data name="&gt;&gt;btnImport.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;btnImport.Parent" xml:space="preserve">
-    <value>tabPage4</value>
-  </data>
-	<data name="&gt;&gt;btnImport.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-	<data name="btnExport.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
-		<value>Flat</value>
-	</data>
-	<data name="btnExport.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-		<value>MiddleLeft</value>
-	</data>
-	<data name="btnExport.Location" type="System.Drawing.Point, System.Drawing">
-		<value>104, 89</value>
-	</data>
-	<data name="btnExport.Size" type="System.Drawing.Size, System.Drawing">
-		<value>127, 36</value>
-	</data>
-	<data name="btnExport.TabIndex" type="System.Int32, mscorlib">
-		<value>105</value>
-	</data>
-	<data name="&gt;&gt;btnExport.Name" xml:space="preserve">
-    <value>btnExport</value>
-  </data>
-	<data name="&gt;&gt;btnExport.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;btnExport.Parent" xml:space="preserve">
-    <value>tabPage4</value>
-  </data>
-	<data name="&gt;&gt;btnExport.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-	<data name="lblLinkAttributions.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="lblLinkAttributions.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-		<value>NoControl</value>
-	</data>
-	<data name="lblLinkAttributions.Location" type="System.Drawing.Point, System.Drawing">
-		<value>18, 107</value>
-	</data>
-	<data name="lblLinkAttributions.Size" type="System.Drawing.Size, System.Drawing">
-		<value>59, 13</value>
-	</data>
-	<data name="lblLinkAttributions.TabIndex" type="System.Int32, mscorlib">
-		<value>131</value>
-	</data>
-	<data name="&gt;&gt;lblLinkAttributions.Name" xml:space="preserve">
-    <value>lblLinkAttributions</value>
-  </data>
-	<data name="&gt;&gt;lblLinkAttributions.Type" xml:space="preserve">
-    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;lblLinkAttributions.Parent" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-	<data name="&gt;&gt;lblLinkAttributions.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-	<data name="btnDonate.Location" type="System.Drawing.Point, System.Drawing">
-		<value>375, 79</value>
-	</data>
-	<data name="btnDonate.Size" type="System.Drawing.Size, System.Drawing">
-		<value>92, 26</value>
-	</data>
-	<data name="btnDonate.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
-		<value>AutoSize</value>
-	</data>
-	<data name="btnDonate.TabIndex" type="System.Int32, mscorlib">
-		<value>8</value>
-	</data>
-	<data name="&gt;&gt;btnDonate.Name" xml:space="preserve">
-    <value>btnDonate</value>
-  </data>
-	<data name="&gt;&gt;btnDonate.Type" xml:space="preserve">
-    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;btnDonate.Parent" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-	<data name="&gt;&gt;btnDonate.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-	<data name="lblLinkLicense.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="lblLinkLicense.Location" type="System.Drawing.Point, System.Drawing">
-		<value>18, 92</value>
-	</data>
-	<data name="lblLinkLicense.Size" type="System.Drawing.Size, System.Drawing">
-		<value>45, 13</value>
-	</data>
-	<data name="lblLinkLicense.TabIndex" type="System.Int32, mscorlib">
-		<value>130</value>
-	</data>
-	<data name="&gt;&gt;lblLinkLicense.Name" xml:space="preserve">
-    <value>lblLinkLicense</value>
-  </data>
-	<data name="&gt;&gt;lblLinkLicense.Type" xml:space="preserve">
-    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;lblLinkLicense.Parent" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-	<data name="&gt;&gt;lblLinkLicense.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-	<data name="label10.Location" type="System.Drawing.Point, System.Drawing">
-		<value>222, 32</value>
-	</data>
-	<data name="label10.Size" type="System.Drawing.Size, System.Drawing">
-		<value>279, 37</value>
-	</data>
-	<data name="label10.TabIndex" type="System.Int32, mscorlib">
-		<value>8</value>
-	</data>
-	<data name="&gt;&gt;label10.Name" xml:space="preserve">
-    <value>label10</value>
-  </data>
-	<data name="&gt;&gt;label10.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;label10.Parent" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-	<data name="&gt;&gt;label10.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-	<data name="lblAboutHomepageLink.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="lblAboutHomepageLink.Location" type="System.Drawing.Point, System.Drawing">
-		<value>18, 77</value>
-	</data>
-	<data name="lblAboutHomepageLink.Size" type="System.Drawing.Size, System.Drawing">
-		<value>119, 13</value>
-	</data>
-	<data name="lblAboutHomepageLink.TabIndex" type="System.Int32, mscorlib">
-		<value>125</value>
-	</data>
-	<data name="&gt;&gt;lblAboutHomepageLink.Name" xml:space="preserve">
-    <value>lblAboutHomepageLink</value>
-  </data>
-	<data name="&gt;&gt;lblAboutHomepageLink.Type" xml:space="preserve">
-    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;lblAboutHomepageLink.Parent" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-	<data name="&gt;&gt;lblAboutHomepageLink.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-	<data name="label6.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="label6.Location" type="System.Drawing.Point, System.Drawing">
-		<value>18, 62</value>
-	</data>
-	<data name="label6.Size" type="System.Drawing.Size, System.Drawing">
-		<value>93, 13</value>
-	</data>
-	<data name="label6.TabIndex" type="System.Int32, mscorlib">
-		<value>6</value>
-	</data>
-	<data name="&gt;&gt;label6.Name" xml:space="preserve">
-    <value>label6</value>
-  </data>
-	<data name="&gt;&gt;label6.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;label6.Parent" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-	<data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-	<data name="lblVersion.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="lblVersion.Location" type="System.Drawing.Point, System.Drawing">
-		<value>18, 32</value>
-	</data>
-	<data name="lblVersion.Size" type="System.Drawing.Size, System.Drawing">
-		<value>51, 13</value>
-	</data>
-	<data name="lblVersion.TabIndex" type="System.Int32, mscorlib">
-		<value>1</value>
-	</data>
-	<data name="&gt;&gt;lblVersion.Name" xml:space="preserve">
-    <value>lblVersion</value>
-  </data>
-	<data name="&gt;&gt;lblVersion.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;lblVersion.Parent" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-	<data name="&gt;&gt;lblVersion.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-	<data name="label12.AutoSize" type="System.Boolean, mscorlib">
-		<value>True</value>
-	</data>
-	<data name="label12.Location" type="System.Drawing.Point, System.Drawing">
-		<value>18, 47</value>
-	</data>
-	<data name="label12.Size" type="System.Drawing.Size, System.Drawing">
-		<value>182, 13</value>
-	</data>
-	<data name="label12.TabIndex" type="System.Int32, mscorlib">
-		<value>5</value>
-	</data>
-	<data name="&gt;&gt;label12.Name" xml:space="preserve">
-    <value>label12</value>
-  </data>
-	<data name="&gt;&gt;label12.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;label12.Parent" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-	<data name="&gt;&gt;label12.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-	<data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
-		<value>104, 154</value>
-	</data>
-	<data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
-		<value>508, 138</value>
-	</data>
-	<data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
-		<value>120</value>
-	</data>
-	<data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-	<data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;groupBox2.Parent" xml:space="preserve">
-    <value>tabPage4</value>
-  </data>
-	<data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-	<data name="btnUpdate.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
-		<value>Flat</value>
-	</data>
-	<data name="btnUpdate.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-		<value>MiddleLeft</value>
-	</data>
-	<data name="btnUpdate.Location" type="System.Drawing.Point, System.Drawing">
-		<value>274, 47</value>
-	</data>
-	<data name="btnUpdate.Size" type="System.Drawing.Size, System.Drawing">
-		<value>127, 36</value>
-	</data>
-	<data name="btnUpdate.TabIndex" type="System.Int32, mscorlib">
-		<value>110</value>
-	</data>
-	<data name="&gt;&gt;btnUpdate.Name" xml:space="preserve">
-    <value>btnUpdate</value>
-  </data>
-	<data name="&gt;&gt;btnUpdate.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;btnUpdate.Parent" xml:space="preserve">
-    <value>tabPage4</value>
-  </data>
-	<data name="&gt;&gt;btnUpdate.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-	<data name="btnWeb.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
-		<value>Flat</value>
-	</data>
-	<data name="btnWeb.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-		<value>MiddleLeft</value>
-	</data>
-	<data name="btnWeb.Location" type="System.Drawing.Point, System.Drawing">
-		<value>444, 47</value>
-	</data>
-	<data name="btnWeb.Size" type="System.Drawing.Size, System.Drawing">
-		<value>127, 36</value>
-	</data>
-	<data name="btnWeb.TabIndex" type="System.Int32, mscorlib">
-		<value>115</value>
-	</data>
-	<data name="&gt;&gt;btnWeb.Name" xml:space="preserve">
-    <value>btnWeb</value>
-  </data>
-	<data name="&gt;&gt;btnWeb.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;btnWeb.Parent" xml:space="preserve">
-    <value>tabPage4</value>
-  </data>
-	<data name="&gt;&gt;btnWeb.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-	<data name="tabPage4.Location" type="System.Drawing.Point, System.Drawing">
-		<value>4, 22</value>
-	</data>
-	<data name="tabPage4.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-		<value>3, 3, 3, 3</value>
-	</data>
-	<data name="tabPage4.Size" type="System.Drawing.Size, System.Drawing">
-		<value>716, 349</value>
-	</data>
-	<data name="tabPage4.TabIndex" type="System.Int32, mscorlib">
-		<value>3</value>
-	</data>
-	<data name="&gt;&gt;tabPage4.Name" xml:space="preserve">
-    <value>tabPage4</value>
-  </data>
-	<data name="&gt;&gt;tabPage4.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;tabPage4.Parent" xml:space="preserve">
-    <value>tabControl1</value>
-  </data>
-	<data name="&gt;&gt;tabPage4.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-	<data name="tabControl1.Location" type="System.Drawing.Point, System.Drawing">
-		<value>12, 12</value>
-	</data>
-	<data name="tabControl1.Size" type="System.Drawing.Size, System.Drawing">
-		<value>724, 375</value>
-	</data>
-	<data name="tabControl1.TabIndex" type="System.Int32, mscorlib">
-		<value>6</value>
-	</data>
-	<data name="&gt;&gt;tabControl1.Name" xml:space="preserve">
-    <value>tabControl1</value>
-  </data>
-	<data name="&gt;&gt;tabControl1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;tabControl1.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-	<data name="&gt;&gt;tabControl1.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-	<metadata name="sfd.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-		<value>17, 17</value>
-	</metadata>
-	<metadata name="ofd.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-		<value>178, 17</value>
-	</metadata>
-	<metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-		<value>True</value>
-	</metadata>
-	<data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-		<value>6, 13</value>
-	</data>
-	<data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-		<value>748, 438</value>
-	</data>
-	<data name="&gt;&gt;columnHeader1.Name" xml:space="preserve">
-    <value>columnHeader1</value>
-  </data>
-	<data name="&gt;&gt;columnHeader1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;columnHeader2.Name" xml:space="preserve">
-    <value>columnHeader2</value>
-  </data>
-	<data name="&gt;&gt;columnHeader2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;IconList.Name" xml:space="preserve">
-    <value>IconList</value>
-  </data>
-	<data name="&gt;&gt;IconList.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ImageList, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;sfd.Name" xml:space="preserve">
-    <value>sfd</value>
-  </data>
-	<data name="&gt;&gt;sfd.Type" xml:space="preserve">
-    <value>System.Windows.Forms.SaveFileDialog, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;ofd.Name" xml:space="preserve">
-    <value>ofd</value>
-  </data>
-	<data name="&gt;&gt;ofd.Type" xml:space="preserve">
-    <value>System.Windows.Forms.OpenFileDialog, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>SettingsForm</value>
-  </data>
-	<data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-	<data name="btnCancel.Text" xml:space="preserve">
-		<value>取消</value>
-	</data>
-	<data name="btnOK.Text" xml:space="preserve">
-		<value>应用</value>
-	</data>
-	<data name="txtExceptionListFilter.AccessibleName" xml:space="preserve">
-		<value>过滤</value>
-	</data>
-	<data name="btnAppRemoveAll.Text" xml:space="preserve">
-		<value>全部删除</value>
-	</data>
-	<data name="btnAppAutoDetect.Text" xml:space="preserve">
-		<value>检测</value>
-	</data>
-	<data name="btnSubmitAssoc.Text" xml:space="preserve">
-		<value>提交</value>
-	</data>
-	<data name="label3.Text" xml:space="preserve">
-		<value>编辑您希望对其授予网络使用权限的应用程序列表。只有该列表中的应用程序能够进行网络通信。使用检测按钮让TinyWall进行软件检测或手动添加应用程序。</value>
-	</data>
-	<data name="btnAppRemove.Text" xml:space="preserve">
-		<value>删除</value>
-	</data>
-	<data name="btnAppModify.Text" xml:space="preserve">
-		<value>更改</value>
-	</data>
-	<data name="btnAppAdd.Text" xml:space="preserve">
-		<value>添加应用程序</value>
-	</data>
-	<data name="columnHeader1.Text" xml:space="preserve">
-		<value>可执行文件</value>
-	</data>
-	<data name="columnHeader2.Text" xml:space="preserve">
-		<value>路名</value>
-	</data>
-	<data name="label4.Text" xml:space="preserve">
-		<value>过滤：</value>
-	</data>
-	<data name="tabPage3.Text" xml:space="preserve">
-		<value>应用程序例外</value>
-	</data>
-	<data name="label5.Text" xml:space="preserve">
-		<value>选择您希望在此机器上启用的特殊任务或应用程序。请注意，禁用推荐的例外可能会对系统的可用性和安全性造成严重的限制。</value>
-	</data>
-	<data name="label2.Text" xml:space="preserve">
-		<value>可选</value>
-	</data>
-	<data name="label1.Text" xml:space="preserve">
-		<value>推荐</value>
-	</data>
-	<data name="tabPage2.Text" xml:space="preserve">
-		<value>特殊例外</value>
-	</data>
-	<data name="chkEnableHotkeys.Text" xml:space="preserve">
-		<value>启用全局热键</value>
-	</data>
-	<data name="label11.Text" xml:space="preserve">
-		<value>语言：</value>
-	</data>
-	<data name="chkEnableBlocklists.Text" xml:space="preserve">
-		<value>启用黑名单</value>
-	</data>
-	<data name="chkLockHostsFile.Text" xml:space="preserve">
-		<value>阻止对host文件的更改</value>
-	</data>
-	<data name="chkHostsBlocklist.Text" xml:space="preserve">
-		<value>基于域的恶意软件和广告黑名单</value>
-	</data>
-	<data name="chkAutoUpdateCheck.Text" xml:space="preserve">
-		<value>自动检测更新</value>
-	</data>
-	<data name="chkBlockMalwarePorts.Text" xml:space="preserve">
-		<value>基于端口的恶意软件黑名单</value>
-	</data>
-	<data name="label9.Text" xml:space="preserve">
-		<value>要删除已启用的密码保护，请检查“更改密码”并留空文本域。</value>
-	</data>
-	<data name="label8.Text" xml:space="preserve">
-		<value>重新输入：</value>
-	</data>
-	<data name="label7.Text" xml:space="preserve">
-		<value>密码：</value>
-	</data>
-	<data name="chkChangePassword.Text" xml:space="preserve">
-		<value>更改密码</value>
-	</data>
-	<data name="groupBox1.Text" xml:space="preserve">
-		<value>密码保护</value>
-	</data>
-	<data name="chkAskForExceptionDetails.Text" xml:space="preserve">
-		<value>例外详情提示</value>
-	</data>
-	<data name="tabPage1.Text" xml:space="preserve">
-		<value>通用</value>
-	</data>
-	<data name="btnImport.Text" xml:space="preserve">
-		<value>导入设置</value>
-	</data>
-	<data name="btnExport.Text" xml:space="preserve">
-		<value>导出设置</value>
-	</data>
-	<data name="lblLinkAttributions.Text" xml:space="preserve">
-		<value>属性</value>
-	</data>
-	<data name="btnDonate.AccessibleDescription" xml:space="preserve">
-		<value>捐助</value>
-	</data>
-	<data name="btnDonate.AccessibleName" xml:space="preserve">
-		<value>捐助</value>
-	</data>
-	<data name="lblLinkLicense.Text" xml:space="preserve">
-		<value>许可</value>
-	</data>
-	<data name="label10.Text" xml:space="preserve">
-		<value>如果您喜欢并且使用了该免费程序，请考虑为我们的虚拟主机、硬件和软件支出作出捐助。</value>
-	</data>
-	<data name="label6.Text" xml:space="preserve">
-		<value>版权所有。</value>
-	</data>
-	<data name="label12.Text" xml:space="preserve">
-		<value>© 2011-2013 Károly Pados</value>
-	</data>
-	<data name="groupBox2.Text" xml:space="preserve">
-		<value>关于</value>
-	</data>
-	<data name="btnUpdate.Text" xml:space="preserve">
-		<value>更新</value>
-	</data>
-	<data name="btnWeb.Text" xml:space="preserve">
-		<value>访问网页</value>
-	</data>
-	<data name="tabPage4.Text" xml:space="preserve">
-		<value>维护</value>
-	</data>
-	<data name="$this.Text" xml:space="preserve">
-		<value>TinyWall防火墙设置</value>
-	</data>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="btnOK.Text" xml:space="preserve">
+    <value>应用</value>
+  </data>
+  <data name="txtExceptionListFilter.AccessibleName" xml:space="preserve">
+    <value>过滤</value>
+  </data>
+  <data name="btnAppRemoveAll.Text" xml:space="preserve">
+    <value>全部删除</value>
+  </data>
+  <data name="btnAppAutoDetect.Text" xml:space="preserve">
+    <value>检测</value>
+  </data>
+  <data name="btnSubmitAssoc.Text" xml:space="preserve">
+    <value>提交</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>编辑您希望对其授予网络使用权限的应用程序列表。只有该列表中的应用程序能够进行网络通信。使用检测按钮让TinyWall进行软件检测或手动添加应用程序。</value>
+  </data>
+  <data name="btnAppRemove.Text" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="btnAppModify.Text" xml:space="preserve">
+    <value>更改</value>
+  </data>
+  <data name="btnAppAdd.Text" xml:space="preserve">
+    <value>添加应用程序</value>
+  </data>
+  <data name="columnHeader1.Text" xml:space="preserve">
+    <value>可执行文件</value>
+  </data>
+  <data name="columnHeader2.Text" xml:space="preserve">
+    <value>路名</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>过滤：</value>
+  </data>
+  <data name="tabPage3.Text" xml:space="preserve">
+    <value>应用程序例外</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>选择您希望在此机器上启用的特殊任务或应用程序。请注意，禁用推荐的例外可能会对系统的可用性和安全性造成严重的限制。</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>可选</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>推荐</value>
+  </data>
+  <data name="tabPage2.Text" xml:space="preserve">
+    <value>特殊例外</value>
+  </data>
+  <data name="chkEnableHotkeys.Text" xml:space="preserve">
+    <value>启用全局热键</value>
+  </data>
+  <data name="label11.Text" xml:space="preserve">
+    <value>语言：</value>
+  </data>
+  <data name="chkEnableBlocklists.Text" xml:space="preserve">
+    <value>启用黑名单</value>
+  </data>
+  <data name="chkLockHostsFile.Text" xml:space="preserve">
+    <value>阻止对host文件的更改</value>
+  </data>
+  <data name="chkHostsBlocklist.Text" xml:space="preserve">
+    <value>基于域的恶意软件和广告黑名单</value>
+  </data>
+  <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
+    <value>自动检测更新</value>
+  </data>
+  <data name="chkBlockMalwarePorts.Text" xml:space="preserve">
+    <value>基于端口的恶意软件黑名单</value>
+  </data>
+  <data name="label9.Text" xml:space="preserve">
+    <value>要删除已启用的密码保护，请检查“更改密码”并留空文本域。</value>
+  </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value>重新输入：</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value>密码：</value>
+  </data>
+  <data name="chkChangePassword.Text" xml:space="preserve">
+    <value>更改密码</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>密码保护</value>
+  </data>
+  <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
+    <value>例外详情提示</value>
+  </data>
+  <data name="tabPage1.Text" xml:space="preserve">
+    <value>通用</value>
+  </data>
+  <data name="btnImport.Text" xml:space="preserve">
+    <value>导入设置</value>
+  </data>
+  <data name="btnExport.Text" xml:space="preserve">
+    <value>导出设置</value>
+  </data>
+  <data name="lblLinkAttributions.Text" xml:space="preserve">
+    <value>属性</value>
+  </data>
+  <data name="btnDonate.AccessibleDescription" xml:space="preserve">
+    <value>捐助</value>
+  </data>
+  <data name="btnDonate.AccessibleName" xml:space="preserve">
+    <value>捐助</value>
+  </data>
+  <data name="lblLinkLicense.Text" xml:space="preserve">
+    <value>许可</value>
+  </data>
+  <data name="label10.Text" xml:space="preserve">
+    <value>如果您喜欢并且使用了该免费程序，请考虑为我们的虚拟主机、硬件和软件支出作出捐助。</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>版权所有。</value>
+  </data>
+  <data name="label12.Text" xml:space="preserve">
+    <value>© 2011-2013 Károly Pados</value>
+  </data>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>关于</value>
+  </data>
+  <data name="btnUpdate.Text" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="btnWeb.Text" xml:space="preserve">
+    <value>访问网页</value>
+  </data>
+  <data name="tabPage4.Text" xml:space="preserve">
+    <value>维护</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>TinyWall防火墙设置</value>
+  </data>
 </root>

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<!-- 
+  <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,308 +59,308 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-		<xsd:element name="root" msdata:IsDataSet="true">
-			<xsd:complexType>
-				<xsd:choice maxOccurs="unbounded">
-					<xsd:element name="metadata">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" />
-							</xsd:sequence>
-							<xsd:attribute name="name" use="required" type="xsd:string" />
-							<xsd:attribute name="type" type="xsd:string" />
-							<xsd:attribute name="mimetype" type="xsd:string" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="assembly">
-						<xsd:complexType>
-							<xsd:attribute name="alias" type="xsd:string" />
-							<xsd:attribute name="name" type="xsd:string" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="data">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="resheader">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" />
-						</xsd:complexType>
-					</xsd:element>
-				</xsd:choice>
-			</xsd:complexType>
-		</xsd:element>
-	</xsd:schema>
-	<resheader name="resmimetype">
-		<value>text/microsoft-resx</value>
-	</resheader>
-	<resheader name="version">
-		<value>2.0</value>
-	</resheader>
-	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
-		<value>无法提升更新所需的权限。</value>
-	</data>
-	<data name="TinyWallUpdater" xml:space="preserve">
-		<value>TinyWall更新程序</value>
-	</data>
-	<data name="ErrorCheckingForUpdates" xml:space="preserve">
-		<value>无法连接更新服务器。服务器可能停止服务器，请确保TinyWall已获得网络使用权，然后重试。</value>
-	</data>
-	<data name="UpdateAvailable" xml:space="preserve">
-		<value>有可用的TinyWall更新版本{0}。您希望立即更新吗？</value>
-	</data>
-	<data name="DownloadingUpdate" xml:space="preserve">
-		<value>正在下载更新...</value>
-	</data>
-	<data name="NoUpdateAvailable" xml:space="preserve">
-		<value>您获得了最新版本的TinyWall。无需进行更新。</value>
-	</data>
-	<data name="DownloadInterrupted" xml:space="preserve">
-		<value>下载已中断。</value>
-	</data>
-	<data name="StartingUpdate" xml:space="preserve">
-		<value>开始更新...</value>
-	</data>
-	<data name="TinyWallIsCurrentlyLocked" xml:space="preserve">
-		<value>TinyWall已被锁定。请解锁并重试。</value>
-	</data>
-	<data name="PleaseWaitWhileTinyWallChecksForUpdates" xml:space="preserve">
-		<value>TinyWall正在检测可用更新，请稍等。</value>
-	</data>
-	<data name="CouldNotWhitelistProcess" xml:space="preserve">
-		<value>无法把进程{0}添加至白名单。</value>
-	</data>
-	<data name="CouldNotCloseProcess" xml:space="preserve">
-		<value>无法关闭进程{0}({1})。</value>
-	</data>
-	<data name="PasswordFieldsDoNotMatch" xml:space="preserve">
-		<value>密码域不匹配。请验证您的输入。</value>
-	</data>
-	<data name="AreYouSureYouWantToRemoveAllExceptions" xml:space="preserve">
-		<value>您确定要删除所有防火墙例外吗？</value>
-	</data>
-	<data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
-		<value>您不具备进行此操作所需的管理员权限。请从托盘菜单中选择提升并重试。</value>
-	</data>
-	<data name="TinyWallSettingsFileFilter" xml:space="preserve">
-		<value>TinyWall设置</value>
-	</data>
-	<data name="AllFilesFileFilter" xml:space="preserve">
-		<value>全部文件</value>
-	</data>
-	<data name="ConfigurationHasBeenImported" xml:space="preserve">
-		<value>配置文件已被成功导入。按下管理窗口中的应用让新设置永久有效。</value>
-	</data>
-	<data name="ConfigurationImportError" xml:space="preserve">
-		<value>无法导入配置文件。</value>
-	</data>
-	<data name="ConfigurationHasBeenExported" xml:space="preserve">
-		<value>配置文件已被成功导出。</value>
-	</data>
-	<data name="CurrentZone" xml:space="preserve">
-		<value>当前区域：{0}</value>
-	</data>
-	<data name="Zone" xml:space="preserve">
-		<value>区域</value>
-	</data>
-	<data name="Mode" xml:space="preserve">
-		<value>模式</value>
-	</data>
-	<data name="Unlock" xml:space="preserve">
-		<value>取消锁定</value>
-	</data>
-	<data name="Lock" xml:space="preserve">
-		<value>锁定</value>
-	</data>
-	<data name="UpdateAvailableBubble" xml:space="preserve">
-		<value>有可用的TinyWall更新版本{0}。点击泡泡开始更新进程。</value>
-	</data>
-	<data name="TheFirewallIsNowOperatingAsRecommended" xml:space="preserve">
-		<value>防火墙正以推荐的模式运行。</value>
-	</data>
-	<data name="TheFirewallIsNowAllowsOutgoingConnections" xml:space="preserve">
-		<value>防火墙允许发送连接，但禁止接收连接。</value>
-	</data>
-	<data name="TheFirewallIsNowBlockingAllInAndOut" xml:space="preserve">
-		<value>防火墙拦截了所有发送和接收连接。</value>
-	</data>
-	<data name="TheFirewallIsNowDisabled" xml:space="preserve">
-		<value>防火墙已被禁用。</value>
-	</data>
-	<data name="TheTinyWallServiceIsUnavailable" xml:space="preserve">
-		<value>TinyWall服务不可用。请确保已安装并启用后再试。</value>
-	</data>
-	<data name="TrafficIn" xml:space="preserve">
-		<value>接收</value>
-	</data>
-	<data name="TrafficOut" xml:space="preserve">
-		<value>发送</value>
-	</data>
-	<data name="SettingHaveChangedRetry" xml:space="preserve">
-		<value>配置已随着您对首选项的更改而变更。要避免丢失设置，请再次作出更改。</value>
-	</data>
-	<data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
-		<value>防火墙设置已成功更新。</value>
-	</data>
-	<data name="Success" xml:space="preserve">
-		<value>成功。</value>
-	</data>
-	<data name="OtherSettingsPreventEffect" xml:space="preserve">
-		<value>操作成功，但其他设置阻止了该操作的全面生效。</value>
-	</data>
-	<data name="OperationFailed" xml:space="preserve">
-		<value>操作失败。</value>
-	</data>
-	<data name="CommunicationWithTheServiceError" xml:space="preserve">
-		<value>TinyWall服务在通信时遇到错误。</value>
-	</data>
-	<data name="ClickOnAWindowWhitelisting" xml:space="preserve">
-		<value>点击任何打开窗口的内部添加该应用程序至白名单。</value>
-	</data>
-	<data name="WhitelistingCancelled" xml:space="preserve">
-		<value>白名单设置已取消。</value>
-	</data>
-	<data name="CannotGetExecutablePathWhitelisting" xml:space="preserve">
-		<value>无法获得可执行文件路径。白名单设置失败。</value>
-	</data>
-	<data name="FirewallRulesForRecognizedChanged" xml:space="preserve">
-		<value>受认可的{0}防火墙规则已被更改。点击弹出窗口编辑例外。</value>
-	</data>
-	<data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
-		<value>受认可的{0}防火墙规则已被更改。点击弹出窗口编辑例外。</value>
-	</data>
-	<data name="TinyWallHasBeenUnlocked" xml:space="preserve">
-		<value>TinyWall已被取消拦截。您现在可以使用命令对配置进行更改。</value>
-	</data>
-	<data name="UnlockFailed" xml:space="preserve">
-		<value>取消拦截失败。请使用另一个密码重试。</value>
-	</data>
-	<data name="CouldNotElevatePrivileges" xml:space="preserve">
-		<value>无法提升权限。</value>
-	</data>
-	<data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
-		<value>数据库丢失或损坏。</value>
-	</data>
-	<data name="Stop" xml:space="preserve">
-		<value>停止</value>
-	</data>
-	<data name="Start" xml:space="preserve">
-		<value>开始</value>
-	</data>
-	<data name="SearchingPath" xml:space="preserve">
-		<value>正在搜索：{0}</value>
-	</data>
-	<data name="SearchResults" xml:space="preserve">
-		<value>搜索结果：</value>
-	</data>
-	<data name="RecognizedApplication" xml:space="preserve">
-		<value>经验证的{0}</value>
-	</data>
-	<data name="UnknownApplication" xml:space="preserve">
-		<value>未知应用</value>
-	</data>
-	<data name="Permanent" xml:space="preserve">
-		<value>永久</value>
-	</data>
-	<data name="UntilReboot" xml:space="preserve">
-		<value>直至重启</value>
-	</data>
-	<data name="XMinutes" xml:space="preserve">
-		<value>{0}分钟</value>
-	</data>
-	<data name="XHour" xml:space="preserve">
-		<value>{0}小时</value>
-	</data>
-	<data name="XHours" xml:space="preserve">
-		<value>{0}小时</value>
-	</data>
-	<data name="FirewallModeAllowOut" xml:space="preserve">
-		<value>允许发送</value>
-	</data>
-	<data name="FirewallModeBlockAll" xml:space="preserve">
-		<value>全部拦截</value>
-	</data>
-	<data name="FirewallModeDisabled" xml:space="preserve">
-		<value>禁用</value>
-	</data>
-	<data name="FirewallModeNormal" xml:space="preserve">
-		<value>正常</value>
-	</data>
-	<data name="FirewallModeUnknown" xml:space="preserve">
-		<value>未知</value>
-	</data>
-	<data name="CannotGetPathOfProcess" xml:space="preserve">
-		<value>无法获得进程路径。</value>
-	</data>
-	<data name="TheFirewallIsNowLearning" xml:space="preserve">
-		<value>防火墙在允许流量通过的同时进行学习。</value>
-	</data>
-	<data name="FirewallModeLearn" xml:space="preserve">
-		<value>自动学习</value>
-	</data>
-	<data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
-		<value>您确定要开始自动学习吗？
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
+    <value>无法提升更新所需的权限。</value>
+  </data>
+  <data name="TinyWallUpdater" xml:space="preserve">
+    <value>TinyWall更新程序</value>
+  </data>
+  <data name="ErrorCheckingForUpdates" xml:space="preserve">
+    <value>无法连接更新服务器。服务器可能停止服务器，请确保TinyWall已获得网络使用权，然后重试。</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>有可用的TinyWall更新版本{0}。您希望立即更新吗？</value>
+  </data>
+  <data name="DownloadingUpdate" xml:space="preserve">
+    <value>正在下载更新...</value>
+  </data>
+  <data name="NoUpdateAvailable" xml:space="preserve">
+    <value>您获得了最新版本的TinyWall。无需进行更新。</value>
+  </data>
+  <data name="DownloadInterrupted" xml:space="preserve">
+    <value>下载已中断。</value>
+  </data>
+  <data name="StartingUpdate" xml:space="preserve">
+    <value>开始更新...</value>
+  </data>
+  <data name="TinyWallIsCurrentlyLocked" xml:space="preserve">
+    <value>TinyWall已被锁定。请解锁并重试。</value>
+  </data>
+  <data name="PleaseWaitWhileTinyWallChecksForUpdates" xml:space="preserve">
+    <value>TinyWall正在检测可用更新，请稍等。</value>
+  </data>
+  <data name="CouldNotWhitelistProcess" xml:space="preserve">
+    <value>无法把进程{0}添加至白名单。</value>
+  </data>
+  <data name="CouldNotCloseProcess" xml:space="preserve">
+    <value>无法关闭进程{0}({1})。</value>
+  </data>
+  <data name="PasswordFieldsDoNotMatch" xml:space="preserve">
+    <value>密码域不匹配。请验证您的输入。</value>
+  </data>
+  <data name="AreYouSureYouWantToRemoveAllExceptions" xml:space="preserve">
+    <value>您确定要删除所有防火墙例外吗？</value>
+  </data>
+  <data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
+    <value>您不具备进行此操作所需的管理员权限。请从托盘菜单中选择提升并重试。</value>
+  </data>
+  <data name="TinyWallSettingsFileFilter" xml:space="preserve">
+    <value>TinyWall设置</value>
+  </data>
+  <data name="AllFilesFileFilter" xml:space="preserve">
+    <value>全部文件</value>
+  </data>
+  <data name="ConfigurationHasBeenImported" xml:space="preserve">
+    <value>配置文件已被成功导入。按下管理窗口中的应用让新设置永久有效。</value>
+  </data>
+  <data name="ConfigurationImportError" xml:space="preserve">
+    <value>无法导入配置文件。</value>
+  </data>
+  <data name="ConfigurationHasBeenExported" xml:space="preserve">
+    <value>配置文件已被成功导出。</value>
+  </data>
+  <data name="CurrentZone" xml:space="preserve">
+    <value>当前区域：{0}</value>
+  </data>
+  <data name="Zone" xml:space="preserve">
+    <value>区域</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>模式</value>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>取消锁定</value>
+  </data>
+  <data name="Lock" xml:space="preserve">
+    <value>锁定</value>
+  </data>
+  <data name="UpdateAvailableBubble" xml:space="preserve">
+    <value>有可用的TinyWall更新版本{0}。点击泡泡开始更新进程。</value>
+  </data>
+  <data name="TheFirewallIsNowOperatingAsRecommended" xml:space="preserve">
+    <value>防火墙正以推荐的模式运行。</value>
+  </data>
+  <data name="TheFirewallIsNowAllowsOutgoingConnections" xml:space="preserve">
+    <value>防火墙允许发送连接，但禁止接收连接。</value>
+  </data>
+  <data name="TheFirewallIsNowBlockingAllInAndOut" xml:space="preserve">
+    <value>防火墙拦截了所有发送和接收连接。</value>
+  </data>
+  <data name="TheFirewallIsNowDisabled" xml:space="preserve">
+    <value>防火墙已被禁用。</value>
+  </data>
+  <data name="TheTinyWallServiceIsUnavailable" xml:space="preserve">
+    <value>TinyWall服务不可用。请确保已安装并启用后再试。</value>
+  </data>
+  <data name="TrafficIn" xml:space="preserve">
+    <value>接收</value>
+  </data>
+  <data name="TrafficOut" xml:space="preserve">
+    <value>发送</value>
+  </data>
+  <data name="SettingHaveChangedRetry" xml:space="preserve">
+    <value>配置已随着您对首选项的更改而变更。要避免丢失设置，请再次作出更改。</value>
+  </data>
+  <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
+    <value>防火墙设置已成功更新。</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>成功。</value>
+  </data>
+  <data name="OtherSettingsPreventEffect" xml:space="preserve">
+    <value>操作成功，但其他设置阻止了该操作的全面生效。</value>
+  </data>
+  <data name="OperationFailed" xml:space="preserve">
+    <value>操作失败。</value>
+  </data>
+  <data name="CommunicationWithTheServiceError" xml:space="preserve">
+    <value>TinyWall服务在通信时遇到错误。</value>
+  </data>
+  <data name="ClickOnAWindowWhitelisting" xml:space="preserve">
+    <value>点击任何打开窗口的内部添加该应用程序至白名单。</value>
+  </data>
+  <data name="WhitelistingCancelled" xml:space="preserve">
+    <value>白名单设置已取消。</value>
+  </data>
+  <data name="CannotGetExecutablePathWhitelisting" xml:space="preserve">
+    <value>无法获得可执行文件路径。白名单设置失败。</value>
+  </data>
+  <data name="FirewallRulesForRecognizedChanged" xml:space="preserve">
+    <value>受认可的{0}防火墙规则已被更改。点击弹出窗口编辑例外。</value>
+  </data>
+  <data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
+    <value>受认可的{0}防火墙规则已被更改。点击弹出窗口编辑例外。</value>
+  </data>
+  <data name="TinyWallHasBeenUnlocked" xml:space="preserve">
+    <value>TinyWall已被取消拦截。您现在可以使用命令对配置进行更改。</value>
+  </data>
+  <data name="UnlockFailed" xml:space="preserve">
+    <value>取消拦截失败。请使用另一个密码重试。</value>
+  </data>
+  <data name="CouldNotElevatePrivileges" xml:space="preserve">
+    <value>无法提升权限。</value>
+  </data>
+  <data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
+    <value>数据库丢失或损坏。</value>
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value>停止</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>开始</value>
+  </data>
+  <data name="SearchingPath" xml:space="preserve">
+    <value>正在搜索：{0}</value>
+  </data>
+  <data name="SearchResults" xml:space="preserve">
+    <value>搜索结果：</value>
+  </data>
+  <data name="RecognizedApplication" xml:space="preserve">
+    <value>经验证的{0}</value>
+  </data>
+  <data name="UnknownApplication" xml:space="preserve">
+    <value>未知应用</value>
+  </data>
+  <data name="Permanent" xml:space="preserve">
+    <value>永久</value>
+  </data>
+  <data name="UntilReboot" xml:space="preserve">
+    <value>直至重启</value>
+  </data>
+  <data name="XMinutes" xml:space="preserve">
+    <value>{0}分钟</value>
+  </data>
+  <data name="XHour" xml:space="preserve">
+    <value>{0}小时</value>
+  </data>
+  <data name="XHours" xml:space="preserve">
+    <value>{0}小时</value>
+  </data>
+  <data name="FirewallModeAllowOut" xml:space="preserve">
+    <value>允许发送</value>
+  </data>
+  <data name="FirewallModeBlockAll" xml:space="preserve">
+    <value>全部拦截</value>
+  </data>
+  <data name="FirewallModeDisabled" xml:space="preserve">
+    <value>禁用</value>
+  </data>
+  <data name="FirewallModeNormal" xml:space="preserve">
+    <value>正常</value>
+  </data>
+  <data name="FirewallModeUnknown" xml:space="preserve">
+    <value>未知</value>
+  </data>
+  <data name="CannotGetPathOfProcess" xml:space="preserve">
+    <value>无法获得进程路径。</value>
+  </data>
+  <data name="TheFirewallIsNowLearning" xml:space="preserve">
+    <value>防火墙在允许流量通过的同时进行学习。</value>
+  </data>
+  <data name="FirewallModeLearn" xml:space="preserve">
+    <value>自动学习</value>
+  </data>
+  <data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
+    <value>您确定要开始自动学习吗？
 在自动学习模式中，TinyWall将允许所有流量的通过并记住哪些应用程序使用了网络。当您退出学习模式时，TinyWall将自动为您添加例外。但是，请注意，针对配置的“特殊例外”的规则是无法被学习的。
 
 在进入学习模式前，请确保您的系统不存在任何恶意软件。最好的做法是在全新安装的系统上运行学习模式，我们建议您在使用该模式前先对系统进行病毒扫描。
 
 您希望立即进入学习模式吗？</value>
-	</data>
-	<data name="DidYouInitiateTheUninstall" xml:space="preserve">
-		<value>您希望卸载TinyWall吗？</value>
-	</data>
-	<data name="PortListInvalid" xml:space="preserve">
-		<value>端口列表格式无效。
+  </data>
+  <data name="DidYouInitiateTheUninstall" xml:space="preserve">
+    <value>您希望卸载TinyWall吗？</value>
+  </data>
+  <data name="PortListInvalid" xml:space="preserve">
+    <value>端口列表格式无效。
 您可以使用1-65535范围内的数字并使用逗号进行分隔。星号（*）可用于表示所有可能的端口。</value>
-	</data>
-	<data name="UnblockAppCancel" xml:space="preserve">
-		<value>取消设置白名单</value>
-	</data>
-	<data name="UnblockApp" xml:space="preserve">
-		<value>已找到相关文件。选中的可执行文件可以作为{0}的一部分。要确保该应用程序的无限制使用，建议同时对其他文件取消拦截。</value>
-	</data>
-	<data name="UnblockAppShowRelated" xml:space="preserve">
-		<value>显示/隐藏相关的可执行文件</value>
-	</data>
-	<data name="UnblockAppUnblockAllRecommended" xml:space="preserve">
-		<value>对所有建议的文件取消拦截</value>
-	</data>
-	<data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
-		<value>只对选中的文件取消拦截</value>
-	</data>
-	<data name="CompromisedApplication" xml:space="preserve">
-		<value>{0}，可能受到感染</value>
-	</data>
-	<data name="ToastInputNeeded" xml:space="preserve">
-		<value>您需要进行输入以便继续对防火墙白名单进行设置。</value>
-	</data>
-	<data name="ToastAppWhitelisted" xml:space="preserve">
-		<value>已添加至防火墙白名单</value>
-	</data>
-	<data name="ToastWhitelistFailed" xml:space="preserve">
-		<value>防火墙白名单设置失败。如果您再次尝试，仍然有可能成功完成设置。</value>
-	</data>
-	<data name="CouldNotApplySettingsInternalError" xml:space="preserve">
-		<value>由于内部错误而无法应用防火墙设置。</value>
-	</data>
+  </data>
+  <data name="UnblockAppCancel" xml:space="preserve">
+    <value>取消设置白名单</value>
+  </data>
+  <data name="UnblockApp" xml:space="preserve">
+    <value>已找到相关文件。选中的可执行文件可以作为{0}的一部分。要确保该应用程序的无限制使用，建议同时对其他文件取消拦截。</value>
+  </data>
+  <data name="UnblockAppShowRelated" xml:space="preserve">
+    <value>显示/隐藏相关的可执行文件</value>
+  </data>
+  <data name="UnblockAppUnblockAllRecommended" xml:space="preserve">
+    <value>对所有建议的文件取消拦截</value>
+  </data>
+  <data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
+    <value>只对选中的文件取消拦截</value>
+  </data>
+  <data name="CompromisedApplication" xml:space="preserve">
+    <value>{0}，可能受到感染</value>
+  </data>
+  <data name="ToastInputNeeded" xml:space="preserve">
+    <value>您需要进行输入以便继续对防火墙白名单进行设置。</value>
+  </data>
+  <data name="ToastAppWhitelisted" xml:space="preserve">
+    <value>已添加至防火墙白名单</value>
+  </data>
+  <data name="ToastWhitelistFailed" xml:space="preserve">
+    <value>防火墙白名单设置失败。如果您再次尝试，仍然有可能成功完成设置。</value>
+  </data>
+  <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
+    <value>由于内部错误而无法应用防火墙设置。</value>
+  </data>
 </root>
