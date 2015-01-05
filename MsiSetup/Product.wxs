@@ -27,7 +27,7 @@
   <?endif ?>
 
   <Product Id="*" Codepage="1250" Name="$(var.ProductName)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="{0D009F71-BB22-4962-AEE0-6D42FA952B84}">
-    <Package Id="*" InstallerVersion="301" Compressed="yes" InstallScope="perMachine" SummaryCodepage="1250" Description="$(var.Description)" Manufacturer="$(var.Manufacturer)" />
+    <Package InstallerVersion="301" Compressed="yes" InstallScope="perMachine" SummaryCodepage="1250" Description="$(var.Description)" Manufacturer="$(var.Manufacturer)" />
 
     <!-- Automatic media generation and assignment -->
     <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
@@ -204,7 +204,12 @@
               <File Id="LocSatelliteDLL_it" Source="Sources\ProgramFiles\TinyWall\it\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
             </Component>
           </Directory>
-            <Directory Id="DOCDIR" Name="doc">
+          <Directory Id="LOCDIR_zh" Name="zh">
+            <Component Id="LocSatelliteLib_zh" Guid="{E6D09715-2015-413F-A78B-2D409B7993D3}" Win64="$(var.Win64)">
+              <File Id="LocSatelliteDLL_zh" Source="Sources\ProgramFiles\TinyWall\zh\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+            </Component>
+          </Directory>
+          <Directory Id="DOCDIR" Name="doc">
             <Component Id="DocWhatsNewComp" Win64="$(var.Win64)">
               <File Id="DocWhatsNewFile" Source="Sources\ProgramFiles\TinyWall\doc\whatsnew.html" Vital="yes" KeyPath="yes" Checksum="yes" />
             </Component>
@@ -314,6 +319,7 @@
       <ComponentRef Id="LocSatelliteLib_nl"/>
       <ComponentRef Id="LocSatelliteLib_ru"/>
       <ComponentRef Id="LocSatelliteLib_it"/>
+      <ComponentRef Id="LocSatelliteLib_zh"/>
       <ComponentRef Id="LocSatelliteLib_ptBR"/>
     </ComponentGroup>
 
