@@ -9,6 +9,7 @@ Dutch - Dirk N
 Portuguese - Milton Chaves de Almeida
 Russian - Дмитрий Вожегов
 Italian - Stefano Scotti
+Chinese - Ruiming Xu
 
 
 Icon resources:
