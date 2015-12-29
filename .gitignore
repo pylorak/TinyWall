@@ -3,6 +3,9 @@
 *.msi
 *.zip
 
+/LocalizationPack/**/*.resx
+/LocalizationPack/**/*.pdf
+
 /Temp
 /SortRESX
 /TinyWall.suo
