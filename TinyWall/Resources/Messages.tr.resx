@@ -1,0 +1,367 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
+    <value>Güncelleme için gereken özel hakka terfi edilemedi.</value>
+  </data>
+  <data name="TinyWallUpdater" xml:space="preserve">
+    <value>TinyWall Güncelleyici</value>
+  </data>
+  <data name="ErrorCheckingForUpdates" xml:space="preserve">
+    <value>Güncelleme sunucusuna erişilemedi.
+Sunucu kapalı olabilir yada TinyWall'ın kendine internet erişimi verdiğinden emin olun, sonra tekrar deneyin.</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>TinyWall'ın {0} sürümü çıktı. Şimdi güncellemek istiyormusunuz ?</value>
+  </data>
+  <data name="DownloadingUpdate" xml:space="preserve">
+    <value>Güncelleme indiriliyor...</value>
+  </data>
+  <data name="NoUpdateAvailable" xml:space="preserve">
+    <value>TinyWall'ın en son sürümüne sahipsiniz. Şu an güncelleştirme yok.</value>
+  </data>
+  <data name="DownloadInterrupted" xml:space="preserve">
+    <value>İndirme koptu.</value>
+  </data>
+  <data name="StartingUpdate" xml:space="preserve">
+    <value>Güncelleme başlıyor...</value>
+  </data>
+  <data name="TinyWallIsCurrentlyLocked" xml:space="preserve">
+    <value>TinyWall şu an kilitli. Kilidi açıp tekrar deneyin.</value>
+  </data>
+  <data name="PleaseWaitWhileTinyWallChecksForUpdates" xml:space="preserve">
+    <value>TinyWall güncelleme varmı diye kontrol ederken lütfen bekleyin.</value>
+  </data>
+  <data name="CouldNotWhitelistProcess" xml:space="preserve">
+    <value>{0} beyazliste işlemi yapılamadı.</value>
+  </data>
+  <data name="CouldNotCloseProcess" xml:space="preserve">
+    <value>{0}({1}) işlemi kapatılamadı.</value>
+  </data>
+  <data name="PasswordFieldsDoNotMatch" xml:space="preserve">
+    <value>Parolalar eşleşmiyor. Lütfen girdinizi kontrol edin.</value>
+  </data>
+  <data name="AreYouSureYouWantToRemoveAllExceptions" xml:space="preserve">
+    <value>Bütün firewall istisnalarını kaldırmak istediğinizden eminmisiniz ?</value>
+  </data>
+  <data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
+    <value>Bu işlemi gerçekleştrimek için gereken yönetim haklarına sahip değilsiniz.
+Sistem menüsünden Yönetici olarak çalıştır'ı seçin ve tekrar deneyin.</value>
+  </data>
+  <data name="TinyWallSettingsFileFilter" xml:space="preserve">
+    <value>TinyWall Ayarları</value>
+  </data>
+  <data name="AllFilesFileFilter" xml:space="preserve">
+    <value>Bütün dosyalar</value>
+  </data>
+  <data name="ConfigurationHasBeenImported" xml:space="preserve">
+    <value>Konfigürasyon dosyası başarılı şekilde içe aktarıldı. Yeni ayarları kalıcı yapmak için yönet penceresindeki uygula'ya basın.</value>
+  </data>
+  <data name="ConfigurationImportError" xml:space="preserve">
+    <value>Konfigürasyon dosyası içe aktarılamadı.</value>
+  </data>
+  <data name="ConfigurationHasBeenExported" xml:space="preserve">
+    <value>Konfigürasyon dosyası başarılı şekilde dışa aktarıldı.</value>
+  </data>
+  <data name="CurrentZone" xml:space="preserve">
+    <value>Geçerli bölge: {0}</value>
+  </data>
+  <data name="Zone" xml:space="preserve">
+    <value>Bölge</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Kip</value>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>Kilidi aç</value>
+  </data>
+  <data name="Lock" xml:space="preserve">
+    <value>Kilit</value>
+  </data>
+  <data name="UpdateAvailableBubble" xml:space="preserve">
+    <value>TinyWall'ın {0} sürümü çıktı. Güncelleme işlemini başlatmak için burayı tıklayın.</value>
+  </data>
+  <data name="TheFirewallIsNowOperatingAsRecommended" xml:space="preserve">
+    <value>Firewall şuan tavsiye modunda çalışıyor.</value>
+  </data>
+  <data name="TheFirewallIsNowAllowsOutgoingConnections" xml:space="preserve">
+    <value>Firewall şuan giden bağlantılara izin veriyor ama gelenleri engelliyor.</value>
+  </data>
+  <data name="TheFirewallIsNowBlockingAllInAndOut" xml:space="preserve">
+    <value>Firewall şimdi bütün gelen ve giden trafiği engelliyor.</value>
+  </data>
+  <data name="TheFirewallIsNowDisabled" xml:space="preserve">
+    <value>Firewall şuan aktif değil.</value>
+  </data>
+  <data name="TheTinyWallServiceIsUnavailable" xml:space="preserve">
+    <value>TinyWall servisi mevcut değil. TinyWall'ın kurulmuş ve servisin başlamış olduğundan emin olun.</value>
+  </data>
+  <data name="TrafficIn" xml:space="preserve">
+    <value>İç</value>
+  </data>
+  <data name="TrafficOut" xml:space="preserve">
+    <value>Dış</value>
+  </data>
+  <data name="SettingHaveChangedRetry" xml:space="preserve">
+    <value>Tercihleri düzenlerken konfigürasyonu değiştirdiniz. Ayarları kaybetmemek için lütfen düzenlemenizi tekrar yapın.</value>
+  </data>
+  <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
+    <value>Firewall ayarları başarılı şekilde güncellendi.</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Başarılı</value>
+  </data>
+  <data name="OtherSettingsPreventEffect" xml:space="preserve">
+    <value>İşlem başarılı, ama diğer ayarlar işlemin tam olarak uygulanmasına mani oluyor.</value>
+  </data>
+  <data name="OperationFailed" xml:space="preserve">
+    <value>İşlem başarısız</value>
+  </data>
+  <data name="CommunicationWithTheServiceError" xml:space="preserve">
+    <value>TinyWall hizmetiyle iletişim bir hatayla karşılaştı.</value>
+  </data>
+  <data name="ClickOnAWindowWhitelisting" xml:space="preserve">
+    <value>Beyazlisteye almak istediğiniz uygulamanın açık penceresinin üstüne tıklayın.</value>
+  </data>
+  <data name="WhitelistingCancelled" xml:space="preserve">
+    <value>Beyaz liste iptal edildi.</value>
+  </data>
+  <data name="CannotGetExecutablePathWhitelisting" xml:space="preserve">
+    <value>Uygulama dosyası yolu alınamadı. Beyazlisteye alma başarısız.</value>
+  </data>
+  <data name="FirewallRulesForRecognizedChanged" xml:space="preserve">
+    <value>Onaylanmış firewall kuralı {0} değiştirildi. İstisnayı düzenlemek için bu pencereye tıklayın.</value>
+  </data>
+  <data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
+    <value>Onaylanmamış firewall kuralı {0} değiştirildi. İstisnayı düzenlemek için bu pencereye tıklayın.</value>
+  </data>
+  <data name="TinyWallHasBeenUnlocked" xml:space="preserve">
+    <value>TinyWall'ın kilidi açıldı. Şimdi konfigürasyonu düzenleyebilirsiniz.</value>
+  </data>
+  <data name="UnlockFailed" xml:space="preserve">
+    <value>Açma başarısız. Parolayı tekrar girmeyi deneyin.</value>
+  </data>
+  <data name="CouldNotElevatePrivileges" xml:space="preserve">
+    <value>Özel hak terfisi yapılamadı.</value>
+  </data>
+  <data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
+    <value>Veritabanı kayıp yada bozulmuş.</value>
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value>Durdur</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Başlat</value>
+  </data>
+  <data name="SearchingPath" xml:space="preserve">
+    <value>Aranıyor: {0}</value>
+  </data>
+  <data name="SearchResults" xml:space="preserve">
+    <value>Arama Sonuçları:</value>
+  </data>
+  <data name="RecognizedApplication" xml:space="preserve">
+    <value>Onaylı {0}</value>
+  </data>
+  <data name="UnknownApplication" xml:space="preserve">
+    <value>Bilinmeyen uygulama</value>
+  </data>
+  <data name="Permanent" xml:space="preserve">
+    <value>Kalıcı</value>
+  </data>
+  <data name="UntilReboot" xml:space="preserve">
+    <value>Yeniden başlatıncaya kadar</value>
+  </data>
+  <data name="XMinutes" xml:space="preserve">
+    <value>{0} dakika</value>
+  </data>
+  <data name="XHour" xml:space="preserve">
+    <value>{0} saat</value>
+  </data>
+  <data name="XHours" xml:space="preserve">
+    <value>{0} saat</value>
+  </data>
+  <data name="FirewallModeAllowOut" xml:space="preserve">
+    <value>Gidenlere izin ver</value>
+  </data>
+  <data name="FirewallModeBlockAll" xml:space="preserve">
+    <value>Tümünü engelle</value>
+  </data>
+  <data name="FirewallModeDisabled" xml:space="preserve">
+    <value>Hizmet dışı</value>
+  </data>
+  <data name="FirewallModeUnknown" xml:space="preserve">
+    <value>Bilinmeyen</value>
+  </data>
+  <data name="CannotGetPathOfProcess" xml:space="preserve">
+    <value>İşlemin yolu alınamadı.</value>
+  </data>
+  <data name="TheFirewallIsNowLearning" xml:space="preserve">
+    <value>Firewall artık verilen bütün trafik izinlerini kayıt altına alacak.</value>
+  </data>
+  <data name="FirewallModeLearn" xml:space="preserve">
+    <value>Otomatik Öğren</value>
+  </data>
+  <data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
+    <value>Otomatik öğrenme modunu başlatmak istediğinizden emin misiniz ?
+Otomatik öğrenme modunda TinyWall bütün trafiğe izin verecek ve hangi uygulamaların ağı kullandığını kayıt altına alacak. Öğrenme modundan çıktığınız zaman, TinyWall sizin için uygulamaları otomatik olarak kayıt edecektir. Ancak dikkat, kurallar konfigürasyona özel istisnalar içermez.
+
+Öğrenme moduna girmeden önce, bilgisayarınızda virüs yada zararlı yazılım olmadığından emin olmalısınız. Öğrenme modunu en iyi şekilde kullanma yöntemi, yeni kurulmuş bir Windows ve bir virüs programıyla komple taranmış bilgisayarda çalıştırmaktır.
+
+Şimdi öğrenme modunu başlatmak istiyormusunuz ?</value>
+  </data>
+  <data name="DidYouInitiateTheUninstall" xml:space="preserve">
+    <value>TinyWall'ın kaldırılıp güncellenmesi başlasın mı?</value>
+  </data>
+  <data name="PortListInvalid" xml:space="preserve">
+    <value>Port listesi biçimi geçersiz.
+Virgülle ayrılmış 1-65535 aralığında bir yada daha fazla sayı kullanabilirsiniz. Bir yıldız işareti (*) olası bütün portlar anlamında kullanılabilir.</value>
+  </data>
+  <data name="UnblockAppCancel" xml:space="preserve">
+    <value>Beyazlistelemeyi iptal et</value>
+  </data>
+  <data name="UnblockApp" xml:space="preserve">
+    <value>İlgili dosyalar bulundu
+Seçili uygulama dosyası {0} nın parçası olabilir. İşi sağlama almak için bu uygulama sınırlama olmaksızın kullanılabilir.</value>
+  </data>
+  <data name="UnblockAppShowRelated" xml:space="preserve">
+    <value>İlgili uygulama dosyalarını Göster/Gizle</value>
+  </data>
+  <data name="UnblockAppUnblockAllRecommended" xml:space="preserve">
+    <value>Bütün tavsiye edilen dosyaların engelini kaldır</value>
+  </data>
+  <data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
+    <value>Sadece seçili dosyanın engelini kaldır</value>
+  </data>
+  <data name="CompromisedApplication" xml:space="preserve">
+    <value>{0}, tehlikeli olabilir</value>
+  </data>
+  <data name="ToastInputNeeded" xml:space="preserve">
+    <value>Girdi yapmanız gereklidir
+firewall beyazlistelemeye devam etmek için.</value>
+  </data>
+  <data name="ToastAppWhitelisted" xml:space="preserve">
+    <value>Firewall beyaz listeye eklendi</value>
+  </data>
+  <data name="ToastWhitelistFailed" xml:space="preserve">
+    <value>Firewall beyazlisteleme başarısız. Tekrar deneyebilirsiniz.</value>
+  </data>
+  <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
+    <value>Firewall ayarları dahili bir hatadan dolayı uygulanamadı.</value>
+  </data>
+</root>

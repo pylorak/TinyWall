@@ -67,6 +67,7 @@ Viele Grüße</globalSetting>
       <file filePath="Forms\AppFinderForm.pl.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\AppFinderForm.pl.resx" uniqueID="83742de6-948a-406e-8ea8-12289102b865" />
       <file filePath="Forms\AppFinderForm.pt-BR.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\AppFinderForm.pt-BR.resx" uniqueID="935608ee-35a6-4a12-ab26-29e6d406119a" />
       <file filePath="Forms\AppFinderForm.ru.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\AppFinderForm.ru.resx" uniqueID="0ab5dfd4-caa8-4a63-ac4f-97af5984b3cd" />
+      <file filePath="Forms\AppFinderForm.tr.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\AppFinderForm.tr.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <file filePath="Forms\AppFinderForm.zh.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\AppFinderForm.zh.resx" uniqueID="83c35ab9-ff73-4cbf-bf3c-fc90e995bebd" />
       <remarks>
       </remarks>
@@ -83,6 +84,7 @@ Viele Grüße</globalSetting>
       <file filePath="Forms\ApplicationExceptionForm.pl.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\ApplicationExceptionForm.pl.resx" uniqueID="fd9c09aa-fb2b-4e67-a0d1-4723f052aeae" />
       <file filePath="Forms\ApplicationExceptionForm.pt-BR.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\ApplicationExceptionForm.pt-BR.resx" uniqueID="9334e718-b2d5-4d4f-aef5-733ee3b3482f" />
       <file filePath="Forms\ApplicationExceptionForm.ru.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\ApplicationExceptionForm.ru.resx" uniqueID="f8e39917-a09f-4d41-9a94-f75fedb8a330" />
+      <file filePath="Forms\ApplicationExceptionForm.tr.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\ApplicationExceptionForm.tr.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <file filePath="Forms\ApplicationExceptionForm.zh.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\ApplicationExceptionForm.zh.resx" uniqueID="858817cf-d168-4eb9-8547-41a28021b5b3" />
       <remarks>
       </remarks>
@@ -99,6 +101,7 @@ Viele Grüße</globalSetting>
       <file filePath="Forms\ConnectionsForm.pl.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\ConnectionsForm.pl.resx" uniqueID="8c6f6b03-b7ff-4db2-8fc4-844603c0b045" />
       <file filePath="Forms\ConnectionsForm.pt-BR.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\ConnectionsForm.pt-BR.resx" uniqueID="76bf9e6f-e4e2-4246-96ee-f4f5157b3535" />
       <file filePath="Forms\ConnectionsForm.ru.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\ConnectionsForm.ru.resx" uniqueID="66cf2435-44b1-40aa-87e1-b7c343fd4460" />
+      <file filePath="Forms\ConnectionsForm.tr.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\ConnectionsForm.tr.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <file filePath="Forms\ConnectionsForm.zh.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\ConnectionsForm.zh.resx" uniqueID="dd0f902f-4fc5-4ac9-beb6-2d9ab0bc59ee" />
       <remarks>
       </remarks>
@@ -115,6 +118,7 @@ Viele Grüße</globalSetting>
       <file filePath="Exceptions.pl.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Exceptions.pl.resx" uniqueID="54a4eaff-d986-4154-acfa-1ee93efbcfc7" />
       <file filePath="Exceptions.pt-BR.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Exceptions.pt-BR.resx" uniqueID="c8deac9d-7c59-47c1-bf47-401bce2e3123" />
       <file filePath="Exceptions.ru.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Exceptions.ru.resx" uniqueID="fe513537-27d3-4415-bd40-bd817b1de588" />
+      <file filePath="Exceptions.tr.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Exceptions.tr.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <file filePath="Exceptions.zh.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Exceptions.zh.resx" uniqueID="f9d44c3e-058c-4993-a19e-2ce7dd050655" />
       <remarks>
       </remarks>
@@ -131,6 +135,7 @@ Viele Grüße</globalSetting>
       <file filePath="Forms\MainForm.pl.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\MainForm.pl.resx" uniqueID="eba3fd06-8085-4783-a78f-3ec528ffc417" />
       <file filePath="Forms\MainForm.pt-BR.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\MainForm.pt-BR.resx" uniqueID="11f54ce3-2a6a-4887-b284-dbf808d31df4" />
       <file filePath="Forms\MainForm.ru.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\MainForm.ru.resx" uniqueID="a0324399-caba-467a-a7e8-76b7004b57e6" />
+      <file filePath="Forms\MainForm.tr.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\MainForm.tr.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <file filePath="Forms\MainForm.zh.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\MainForm.zh.resx" uniqueID="0bb8302d-0d60-4edb-bf70-d368a0291f8f" />
       <remarks>
       </remarks>
@@ -147,6 +152,7 @@ Viele Grüße</globalSetting>
       <file filePath="Messages.pl.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Messages.pl.resx" uniqueID="e250045b-78aa-4e98-81e7-2dedad54c56b" />
       <file filePath="Messages.pt-BR.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Messages.pt-BR.resx" uniqueID="69fce6ba-175f-43d0-baa0-f89efdac1eb2" />
       <file filePath="Messages.ru.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Messages.ru.resx" uniqueID="043dd953-43bb-400c-8fa3-a799eb2d720f" />
+      <file filePath="Messages.tr.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Messages.tr.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <file filePath="Messages.zh.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Messages.zh.resx" uniqueID="da93b0a0-9de2-46c0-86b3-d5a7d22fd25c" />
       <remarks>
       </remarks>
@@ -163,6 +169,7 @@ Viele Grüße</globalSetting>
       <file filePath="Forms\PasswordForm.pl.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\PasswordForm.pl.resx" uniqueID="6023c5dc-8423-4de8-8f63-586be8c7f79a" />
       <file filePath="Forms\PasswordForm.pt-BR.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\PasswordForm.pt-BR.resx" uniqueID="8c221787-2cb7-4326-ac92-8b02c5ad6f73" />
       <file filePath="Forms\PasswordForm.ru.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\PasswordForm.ru.resx" uniqueID="4414ec24-b71e-436d-961c-9b5338f0f62d" />
+      <file filePath="Forms\PasswordForm.tr.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\PasswordForm.tr.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <file filePath="Forms\PasswordForm.zh.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\PasswordForm.zh.resx" uniqueID="8ad4058e-2c15-48e9-a593-e4dd4e5e4cb9" />
       <remarks>
       </remarks>
@@ -179,6 +186,7 @@ Viele Grüße</globalSetting>
       <file filePath="Forms\Processes.pl.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\Processes.pl.resx" uniqueID="60240798-50e6-4573-b004-3673f6960725" />
       <file filePath="Forms\Processes.pt-BR.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\Processes.pt-BR.resx" uniqueID="632cde2d-13e1-40da-a3f2-f83ab958f783" />
       <file filePath="Forms\Processes.ru.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\Processes.ru.resx" uniqueID="2ca8fa36-1161-4260-9213-466480625069" />
+      <file filePath="Forms\Processes.tr.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\Processes.tr.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <file filePath="Forms\Processes.zh.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\Processes.zh.resx" uniqueID="c03d9e24-9698-4a1a-9c03-e00094b148ba" />
       <remarks>
       </remarks>
@@ -195,6 +203,7 @@ Viele Grüße</globalSetting>
       <file filePath="Forms\Services.pl.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\Services.pl.resx" uniqueID="85c227f3-0e79-40c5-a47b-d9c21a256a0f" />
       <file filePath="Forms\Services.pt-BR.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\Services.pt-BR.resx" uniqueID="3dc2a901-cb22-4827-ad71-f6a63bd3675d" />
       <file filePath="Forms\Services.ru.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\Services.ru.resx" uniqueID="6aad88d9-f182-4722-bc33-59751bf6ba0e" />
+      <file filePath="Forms\Services.tr.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\Services.tr.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <file filePath="Forms\Services.zh.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\Services.zh.resx" uniqueID="126a9132-858a-459d-8dd0-f2b989b4403f" />
       <remarks>
       </remarks>
@@ -211,6 +220,7 @@ Viele Grüße</globalSetting>
       <file filePath="Forms\SettingsForm.pl.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\SettingsForm.pl.resx" uniqueID="65acd0e5-bd2f-4da3-b37c-a309ab372b92" />
       <file filePath="Forms\SettingsForm.pt-BR.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\SettingsForm.pt-BR.resx" uniqueID="a62ff0a2-d30c-434f-8505-aeaae2d410f9" />
       <file filePath="Forms\SettingsForm.ru.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\SettingsForm.ru.resx" uniqueID="1d0b7ff9-dbba-422f-a423-4bef8dd92ed4" />
+      <file filePath="Forms\SettingsForm.tr.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\SettingsForm.tr.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
       <file filePath="Forms\SettingsForm.zh.resx" absoluteFilePath="D:\owncloud\TinyWall\TinyWall2\LocalizationPack\Resources\Forms\SettingsForm.zh.resx" uniqueID="12c52efb-b3c0-4d6e-9d0f-46ca65570af6" />
       <remarks>
       </remarks>
