@@ -416,7 +416,10 @@ namespace PKSoft
                     System.Threading.Thread.Sleep(1000);
                 }
                 if (!signed)
+                {
                     MessageBox.Show(this, "Failed to sign: " + files[i]);
+                    break;
+                }
             }
         }
 
