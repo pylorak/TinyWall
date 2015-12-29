@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
-    <value>Para poder actualizar se necesitan mas privilegios</value>
+    <value>No se pudieron obtener los privilegios necesarios para realizar la actualización.</value>
   </data>
   <data name="TinyWallUpdater" xml:space="preserve">
     <value>Actualizador de TinyWall</value>
@@ -134,7 +134,7 @@ El servidor no responde. TinyWall podría tener bloqueado el acceso a internet, 
     <value>Descargando actualización...</value>
   </data>
   <data name="NoUpdateAvailable" xml:space="preserve">
-    <value>Esta es la última versión de TinyWall. No hay mas acualizaciones.</value>
+    <value>Esta es la última versión de TinyWall. No hay más acualizaciones.</value>
   </data>
   <data name="DownloadInterrupted" xml:space="preserve">
     <value>Descarga interrumpida.</value>
@@ -171,6 +171,9 @@ El servidor no responde. TinyWall podría tener bloqueado el acceso a internet, 
   </data>
   <data name="ConfigurationHasBeenImported" xml:space="preserve">
     <value>El archivo de configuración ha sido importado con éxito. Pulsar Aplicar en la Consola para guardar los nuevos ajustes.</value>
+  </data>
+  <data name="ConfigurationImportError" xml:space="preserve">
+    <value>No se pudo importar el archivo de configuración.</value>
   </data>
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>El archivo de configuración ha sido exportado con éxito.</value>
@@ -214,6 +217,9 @@ El servidor no responde. TinyWall podría tener bloqueado el acceso a internet, 
   <data name="TrafficOut" xml:space="preserve">
     <value>Salida</value>
   </data>
+  <data name="SettingHaveChangedRetry" xml:space="preserve">
+    <value>El fichero de configuración ha sido modificado mientras modificaba las preferencias. Para evitar que éstas se pierdan, por favor, vuelva a introducirlas.</value>
+  </data>
   <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
     <value>Los ajustes de cortafuegos han sido actualizados con éxito.</value>
   </data>
@@ -245,13 +251,13 @@ El servidor no responde. TinyWall podría tener bloqueado el acceso a internet, 
     <value>Las reglas del cortafuegos no reconocidas para {0} han cambiado. Pinchar en este popup para modificar la excepción.</value>
   </data>
   <data name="TinyWallHasBeenUnlocked" xml:space="preserve">
-    <value>TinyWall está desbloqueado. Se puede desbloquear mediante comandos.</value>
+    <value>TinyWall está desbloqueado. Se pueden ejecutar comandos que modifiquen la configuración.</value>
   </data>
   <data name="UnlockFailed" xml:space="preserve">
     <value>Falla la apertura. Intentarlo con otra contraseña.</value>
   </data>
   <data name="CouldNotElevatePrivileges" xml:space="preserve">
-    <value>Se necesitan mas privilegios.</value>
+    <value>Se necesitan más privilegios.</value>
   </data>
   <data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
     <value>La base de datos falta o está corrupta.</value>
@@ -340,5 +346,20 @@ El archivo selecionado es parte de {0}. Para asegurarse que esta aplicación pue
   </data>
   <data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
     <value>Desbloquear solo los archivos seleccionados</value>
+  </data>
+  <data name="CompromisedApplication" xml:space="preserve">
+    <value>{0}, posiblemente comprometido</value>
+  </data>
+  <data name="ToastInputNeeded" xml:space="preserve">
+    <value>Es necesaria su intervención para continuar con la lista blanca.</value>
+  </data>
+  <data name="ToastAppWhitelisted" xml:space="preserve">
+    <value>Añadido a la lista blanca del cortafuegos</value>
+  </data>
+  <data name="ToastWhitelistFailed" xml:space="preserve">
+    <value>Ha fallado la inserción en la lista blanca. Si lo desea puede intentarlo de nuevo.</value>
+  </data>
+  <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
+    <value>No ha sido posible aplicar la configuración del cortafuegos debido a un error interno.</value>
   </data>
 </root>

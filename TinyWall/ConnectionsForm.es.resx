@@ -178,7 +178,7 @@
     <value>Mostrar conexiones activas</value>
   </data>
   <data name="chkShowBlocked.Text" xml:space="preserve">
-    <value>Mostrar programas bloqueados (en los útlimos 2 mints)</value>
+    <value>Mostrar programas bloqueados (en los útlimos 2 mins)</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Conexiones - TinyWall</value>

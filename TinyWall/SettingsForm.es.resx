@@ -136,7 +136,7 @@
     <value>Suspender</value>
   </data>
   <data name="label3.Text" xml:space="preserve">
-    <value>Editar la lista de aplicaciones que tendrán acceso a la red. Solo tendrán acceso a la red esta lista de aplicaciones. Utilizar el botón de detectar para dejar a TinyWall elegir el software o añadirlo manualmente.</value>
+    <value>Editar la lista de aplicaciones que tendrán acceso a la red. Solo tendrán acceso a la red las aplicaciones de esta lista. Utilizar el botón Detectar para dejar a TinyWall elegir el software o añadirlo manualmente.</value>
   </data>
   <data name="btnAppRemove.Text" xml:space="preserve">
     <value>Eliminar</value>
@@ -163,13 +163,16 @@
     <value>Seleccionar los servicios y aplicaciones que se permitirán en este equipo. Cuidado al desactivar excepciones recomendadas ya que puede limitar la seguridad del equipo.</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
-    <value>Occional</value>
+    <value>Opcional</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
     <value>Recomendado</value>
   </data>
   <data name="tabPage2.Text" xml:space="preserve">
     <value>Excepciones especiales</value>
+  </data>
+  <data name="chkEnableHotkeys.Text" xml:space="preserve">
+    <value>Activar teclas rápidas globales</value>
   </data>
   <data name="&gt;&gt;comboLanguages.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -239,6 +242,9 @@
   </data>
   <data name="btnExport.Text" xml:space="preserve">
     <value>Exportar</value>
+  </data>
+  <data name="lblLinkAttributions.Text" xml:space="preserve">
+    <value>Créditos</value>
   </data>
   <data name="btnDonate.AccessibleDescription" xml:space="preserve">
     <value>Donar</value>

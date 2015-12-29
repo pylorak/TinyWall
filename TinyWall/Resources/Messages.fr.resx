@@ -150,11 +150,11 @@ Le serveur ne répond pas, veuillez vérifier que TinyWall peut accéder à inte
   </data>
   <data name="CouldNotWhitelistProcess" xml:space="preserve">
     <value>Impossible d'autoriser le processus {0}.</value>
-    <comment>Param0 is a file path.</comment>
+    <comment>Param0 est un chemin d'accès.</comment>
   </data>
   <data name="CouldNotCloseProcess" xml:space="preserve">
     <value>Impossible de terminer le processus {0}({1}).</value>
-    <comment>Param0 is name, param1 is pid of process.</comment>
+    <comment>Param0 est le nom, param1 est le pid du processus.</comment>
   </data>
   <data name="PasswordFieldsDoNotMatch" xml:space="preserve">
     <value>Le mot de passe est erroné, veuillez recommencer.</value>
@@ -185,11 +185,11 @@ Sélectionnez Elever dans le menu et réessayez.</value>
     <comment>Param0 is name of zone</comment>
   </data>
   <data name="Unlock" xml:space="preserve">
-    <value>Déverouiller</value>
+    <value>Déverrouiller</value>
     <comment>Tray menu text</comment>
   </data>
   <data name="Lock" xml:space="preserve">
-    <value>Verouiller</value>
+    <value>Verrouiller</value>
     <comment>Tray menu text</comment>
   </data>
   <data name="UpdateAvailableBubble" xml:space="preserve">
@@ -209,7 +209,7 @@ Sélectionnez Elever dans le menu et réessayez.</value>
     <value>Le pare-feu est désactivé</value>
   </data>
   <data name="TheTinyWallServiceIsUnavailable" xml:space="preserve">
-    <value>Le service de TinuWall est indisponible, vérifiez qu'il est installé et démarré et ensuite réessayez.</value>
+    <value>Le service de TinyWall est indisponible, vérifiez qu'il est installé et démarré et ensuite réessayez.</value>
   </data>
   <data name="TrafficIn" xml:space="preserve">
     <value>Entrée</value>
@@ -229,10 +229,10 @@ Sélectionnez Elever dans le menu et réessayez.</value>
     <value>L'opération a fonctionné mais d'autres paramètres empêchent qu'elle prenne effet.</value>
   </data>
   <data name="OperationFailed" xml:space="preserve">
-    <value>Operation échouée.</value>
+    <value>L'opération a échoué.</value>
   </data>
   <data name="CommunicationWithTheServiceError" xml:space="preserve">
-    <value>La communication avec le service de TinyWall ne focntionne pas.</value>
+    <value>La communication avec le service de TinyWall ne fonctionne pas.</value>
   </data>
   <data name="ClickOnAWindowWhitelisting" xml:space="preserve">
     <value>Cliquez sur la zone intérieure de n'importe quelle fenêtre ouverte pour placer le programme en liste blanche.</value>
@@ -259,13 +259,13 @@ Sélectionnez Elever dans le menu et réessayez.</value>
     <value>Impossible d'élever les droits.</value>
   </data>
   <data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
-    <value>La base de donnée est manquante ou corrompue.</value>
+    <value>La base de données est manquante ou corrompue.</value>
   </data>
   <data name="Stop" xml:space="preserve">
     <value>Arrêter</value>
   </data>
   <data name="Start" xml:space="preserve">
-    <value>Déamrrer</value>
+    <value>Démarrer</value>
   </data>
   <data name="SearchingPath" xml:space="preserve">
     <value>Recherche : {0}</value>
@@ -316,9 +316,9 @@ Sélectionnez Elever dans le menu et réessayez.</value>
   </data>
   <data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
     <value>Etes-vous sûr de vouloir démarrer l'auto-apprentissage ?
-En mode d'auto-apprentissage TinyWall va autoriser tout le trafic et se souvenir des applications ayant utilisé le réseau. Quand vous quittez le mode d'auto-apprentissage, TinyWall ajoute les exceptions automaitquement. Notez cependant que les règles pour les exceptions spéciales ne sont pas concernées.
+En mode d'auto-apprentissage TinyWall va autoriser tout le trafic et se souvenir des applications ayant utilisé le réseau. Quand vous quittez le mode d'auto-apprentissage, TinyWall ajoute les exceptions automatiquement. Notez cependant que les règles pour les exceptions spéciales ne sont pas concernées.
 
-Avant d'entrer en mode d'auto-apprentissage assurez vous qu'il n'y a pas de malware sur votre ordinateur. Il est recommandé de lancer l'auto-apprentissage après une installation récente du système et il est recommandé de vérifier qu'il n'y a pas de virus auparavant.
+Avant d'entrer en mode d'auto-apprentissage assurez-vous qu'il n'y a pas de malware sur votre ordinateur. Il est recommandé de lancer l'auto-apprentissage après une installation récente du système et il est recommandé de vérifier qu'il n'y a pas de virus auparavant.
 
 Voulez-vous entrer en mode d'auto-apprentissage maintenant ?</value>
   </data>
@@ -327,7 +327,7 @@ Voulez-vous entrer en mode d'auto-apprentissage maintenant ?</value>
   </data>
   <data name="PortListInvalid" xml:space="preserve">
     <value>Le format de la liste de ports est invalide.
-Vous pouvez utiliser une plage de 1 à 65535, séparés par une virgule. Un asterix (*) peut aussi renvoyer à toute la liste de ports.</value>
+Vous pouvez utiliser une plage de 1 à 65535, séparés par une virgule. Un astérisque (*) peut aussi renvoyer à toute la liste de ports.</value>
     <comment>First line is dialog main text. Rest are further information in smaller letters.</comment>
   </data>
   <data name="UnblockAppCancel" xml:space="preserve">
@@ -345,6 +345,6 @@ L'exécutable trouvé est une partie de {0}. Afin d'être sûr que cette applica
     <value>Déverrouiller tous les fichiers recommandés</value>
   </data>
   <data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
-    <value>Déverrouiller suelement les fichiers sélectionnés</value>
+    <value>Déverrouiller seulement les fichiers sélectionnés</value>
   </data>
 </root>

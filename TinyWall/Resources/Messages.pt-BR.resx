@@ -152,7 +152,7 @@
     <comment>Param0 is a file path.</comment>
   </data>
   <data name="CouldNotCloseProcess" xml:space="preserve">
-    <value>Não foi possível processar {0{({1}).</value>
+    <value>Não foi possível processar {0}({1}).</value>
     <comment>Param0 is name, param1 is pid of process.</comment>
   </data>
   <data name="PasswordFieldsDoNotMatch" xml:space="preserve">
@@ -259,7 +259,7 @@
     <value>As regras de controle do reconhecido {0} foram alteradas. Clique neste balão para editar a exceção.</value>
   </data>
   <data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
-    <value>Regras de controle de desconhecidos {)} foram modificadas. Clique neste balão para editar as exceções.</value>
+    <value>Regras de controle de desconhecidos {0} foram modificadas. Clique neste balão para editar as exceções.</value>
   </data>
   <data name="TinyWallHasBeenUnlocked" xml:space="preserve">
     <value>O TinyWall foi desbloqueado. Agora você pode efetuar comandos que modifiquem sua configuração.</value>

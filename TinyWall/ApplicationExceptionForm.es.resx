@@ -163,7 +163,7 @@
     <value>Sin restrinciones</value>
   </data>
   <data name="label5.Text" xml:space="preserve">
-    <value>Abrir los siguientes puertos, además de las restrinciones de arriba. (lista separada por comas)</value>
+    <value>Abrir los siguientes puertos, además de las restrinciones de arriba. (Lista separada por comas)</value>
   </data>
   <data name="txtListenPortUDP.AccessibleName" xml:space="preserve">
     <value>UDP entrante</value>
