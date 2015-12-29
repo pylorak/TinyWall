@@ -258,6 +258,9 @@
     <EmbeddedResource Include="AppFinderForm.nl.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="AppFinderForm.pl.resx">
+      <DependentUpon>AppFinderForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AppFinderForm.pt-BR.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -298,6 +301,9 @@
     <EmbeddedResource Include="ApplicationExceptionForm.nl.resx">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationExceptionForm.pl.resx">
+      <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ApplicationExceptionForm.pt-BR.resx">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -316,11 +322,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionsForm.hu.resx">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionsForm.de.resx">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionsForm.fr.resx">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
@@ -332,6 +336,9 @@
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionsForm.nl.resx">
+      <DependentUpon>ConnectionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConnectionsForm.pl.resx">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionsForm.pt-BR.resx">
@@ -372,6 +379,9 @@
     <EmbeddedResource Include="MainForm.nl.resx">
       <DependentUpon>TinyWallController.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.pl.resx">
+      <DependentUpon>TinyWallController.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.pt-BR.resx">
       <DependentUpon>TinyWallController.cs</DependentUpon>
     </EmbeddedResource>
@@ -400,6 +410,9 @@
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PasswordForm.nl.resx">
+      <DependentUpon>PasswordForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PasswordForm.pl.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PasswordForm.pt-BR.resx">
@@ -432,6 +445,9 @@
     <EmbeddedResource Include="Processes.nl.resx">
       <DependentUpon>Processes.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Processes.pl.resx">
+      <DependentUpon>Processes.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Processes.pt-BR.resx">
       <DependentUpon>Processes.cs</DependentUpon>
     </EmbeddedResource>
@@ -442,16 +458,13 @@
       <DependentUpon>Processes.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Exceptions.es.resx" />
-    <EmbeddedResource Include="Resources\Exceptions.hu.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Exceptions.de.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Exceptions.hu.resx" />
+    <EmbeddedResource Include="Resources\Exceptions.de.resx" />
     <EmbeddedResource Include="Resources\Exceptions.fr.resx" />
     <EmbeddedResource Include="Resources\Exceptions.it.resx" />
     <EmbeddedResource Include="Resources\Exceptions.ja.resx" />
     <EmbeddedResource Include="Resources\Exceptions.nl.resx" />
+    <EmbeddedResource Include="Resources\Exceptions.pl.resx" />
     <EmbeddedResource Include="Resources\Exceptions.pt-BR.resx" />
     <EmbeddedResource Include="Resources\Exceptions.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -469,16 +482,13 @@
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Messages.es.resx" />
-    <EmbeddedResource Include="Resources\Messages.hu.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Messages.de.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Messages.hu.resx" />
+    <EmbeddedResource Include="Resources\Messages.de.resx" />
     <EmbeddedResource Include="Resources\Messages.fr.resx" />
     <EmbeddedResource Include="Resources\Messages.it.resx" />
     <EmbeddedResource Include="Resources\Messages.ja.resx" />
     <EmbeddedResource Include="Resources\Messages.nl.resx" />
+    <EmbeddedResource Include="Resources\Messages.pl.resx" />
     <EmbeddedResource Include="Resources\Messages.pt-BR.resx" />
     <EmbeddedResource Include="Resources\Messages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -506,6 +516,9 @@
       <DependentUpon>Services.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Services.nl.resx">
+      <DependentUpon>Services.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Services.pl.resx">
       <DependentUpon>Services.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Services.pt-BR.resx">
@@ -551,6 +564,10 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.nl.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsForm.pl.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
