@@ -15,6 +15,8 @@ namespace PKSoft
         internal PasswordForm()
         {
             InitializeComponent();
+            this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
+            this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
         }
 
         private void btnOK_Click(object sender, EventArgs e)

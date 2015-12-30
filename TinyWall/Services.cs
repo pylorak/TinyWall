@@ -27,6 +27,8 @@ namespace PKSoft
         {
             InitializeComponent();
             this.Icon = Resources.Icons.firewall;
+            this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
+            this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
         }
 
         private static string GetServiceExecutable(string serviceName)

@@ -42,6 +42,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.cmbTimer = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.transparentLabel1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.chkRestrictToLocalNetwork = new System.Windows.Forms.CheckBox();
             this.radBlock = new System.Windows.Forms.RadioButton();
@@ -61,7 +62,6 @@
             this.label10 = new System.Windows.Forms.Label();
             this.radOnlySpecifiedPorts = new System.Windows.Forms.RadioButton();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.transparentLabel1 = new PKSoft.TransparentLabel();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -98,40 +98,40 @@
             // 
             // txtSrvName
             // 
-            this.txtSrvName.BackColor = System.Drawing.SystemColors.Window;
             resources.ApplyResources(this.txtSrvName, "txtSrvName");
+            this.txtSrvName.BackColor = System.Drawing.SystemColors.Window;
             this.txtSrvName.Name = "txtSrvName";
             this.txtSrvName.ReadOnly = true;
             this.txtSrvName.TextChanged += new System.EventHandler(this.txtSrvName_TextChanged);
             // 
             // txtAppPath
             // 
-            this.txtAppPath.BackColor = System.Drawing.SystemColors.Window;
             resources.ApplyResources(this.txtAppPath, "txtAppPath");
+            this.txtAppPath.BackColor = System.Drawing.SystemColors.Window;
             this.txtAppPath.Name = "txtAppPath";
             this.txtAppPath.ReadOnly = true;
             this.txtAppPath.TextChanged += new System.EventHandler(this.txtAppPath_TextChanged);
             // 
             // btnBrowse
             // 
-            this.btnBrowse.BackColor = System.Drawing.Color.AliceBlue;
             resources.ApplyResources(this.btnBrowse, "btnBrowse");
+            this.btnBrowse.BackColor = System.Drawing.Color.AliceBlue;
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.UseVisualStyleBackColor = false;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
             // 
             // btnProcess
             // 
-            this.btnProcess.BackColor = System.Drawing.Color.AliceBlue;
             resources.ApplyResources(this.btnProcess, "btnProcess");
+            this.btnProcess.BackColor = System.Drawing.Color.AliceBlue;
             this.btnProcess.Name = "btnProcess";
             this.btnProcess.UseVisualStyleBackColor = false;
             this.btnProcess.Click += new System.EventHandler(this.btnProcess_Click);
             // 
             // btnChooseService
             // 
-            this.btnChooseService.BackColor = System.Drawing.Color.AliceBlue;
             resources.ApplyResources(this.btnChooseService, "btnChooseService");
+            this.btnChooseService.BackColor = System.Drawing.Color.AliceBlue;
             this.btnChooseService.Name = "btnChooseService";
             this.btnChooseService.UseVisualStyleBackColor = false;
             this.btnChooseService.Click += new System.EventHandler(this.btnChooseService_Click);
@@ -148,19 +148,12 @@
             // 
             // cmbTimer
             // 
+            resources.ApplyResources(this.cmbTimer, "cmbTimer");
             this.cmbTimer.BackColor = System.Drawing.SystemColors.Window;
             this.cmbTimer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbTimer.FormattingEnabled = true;
-            resources.ApplyResources(this.cmbTimer, "cmbTimer");
             this.cmbTimer.Name = "cmbTimer";
             this.cmbTimer.SelectedIndexChanged += new System.EventHandler(this.cmbTimer_SelectedIndexChanged);
-            // 
-            // transparentLabel1
-            // 
-            resources.ApplyResources(this.transparentLabel1, "transparentLabel1");
-            this.transparentLabel1.BackColor = System.Drawing.Color.Transparent;
-            this.transparentLabel1.ForeColor = System.Drawing.Color.White;
-            this.transparentLabel1.Name = "transparentLabel1";
             // 
             // panel1
             // 
@@ -169,8 +162,16 @@
             this.panel1.Controls.Add(this.transparentLabel1);
             this.panel1.Name = "panel1";
             // 
+            // transparentLabel1
+            // 
+            resources.ApplyResources(this.transparentLabel1, "transparentLabel1");
+            this.transparentLabel1.BackColor = System.Drawing.Color.Transparent;
+            this.transparentLabel1.ForeColor = System.Drawing.Color.White;
+            this.transparentLabel1.Name = "transparentLabel1";
+            // 
             // panel2
             // 
+            resources.ApplyResources(this.panel2, "panel2");
             this.panel2.BackColor = System.Drawing.SystemColors.Window;
             this.panel2.Controls.Add(this.cmbTimer);
             this.panel2.Controls.Add(this.label6);
@@ -181,7 +182,6 @@
             this.panel2.Controls.Add(this.btnBrowse);
             this.panel2.Controls.Add(this.btnProcess);
             this.panel2.Controls.Add(this.btnChooseService);
-            resources.ApplyResources(this.panel2, "panel2");
             this.panel2.Name = "panel2";
             // 
             // chkRestrictToLocalNetwork
@@ -270,14 +270,14 @@
             // 
             // label9
             // 
-            this.label9.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             resources.ApplyResources(this.label9, "label9");
+            this.label9.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label9.Name = "label9";
             // 
             // label10
             // 
-            this.label10.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             resources.ApplyResources(this.label10, "label10");
+            this.label10.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label10.Name = "label10";
             // 
             // radOnlySpecifiedPorts
@@ -290,6 +290,7 @@
             // 
             // panel3
             // 
+            resources.ApplyResources(this.panel3, "panel3");
             this.panel3.Controls.Add(this.label5);
             this.panel3.Controls.Add(this.label10);
             this.panel3.Controls.Add(this.label7);
@@ -301,7 +302,6 @@
             this.panel3.Controls.Add(this.label3);
             this.panel3.Controls.Add(this.txtListenPortTCP);
             this.panel3.Controls.Add(this.label9);
-            resources.ApplyResources(this.panel3, "panel3");
             this.panel3.Name = "panel3";
             // 
             // ApplicationExceptionForm
@@ -354,7 +354,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox cmbTimer;
         private System.Windows.Forms.Panel panel1;
-        private TransparentLabel transparentLabel1;
+        private System.Windows.Forms.Label transparentLabel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.CheckBox chkRestrictToLocalNetwork;
         private System.Windows.Forms.RadioButton radBlock;

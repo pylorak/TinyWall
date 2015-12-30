@@ -39,17 +39,17 @@
             // 
             // btnCancel
             // 
+            resources.ApplyResources(this.btnCancel, "btnCancel");
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Image = global::PKSoft.Resources.Icons.cancel;
-            resources.ApplyResources(this.btnCancel, "btnCancel");
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnOK
             // 
-            this.btnOK.Image = global::PKSoft.Resources.Icons.accept;
             resources.ApplyResources(this.btnOK, "btnOK");
+            this.btnOK.Image = global::PKSoft.Resources.Icons.accept;
             this.btnOK.Name = "btnOK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -67,8 +67,8 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::PKSoft.Resources.Icons._lock;
             resources.ApplyResources(this.pictureBox1, "pictureBox1");
+            this.pictureBox1.Image = global::PKSoft.Resources.Icons._lock;
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.TabStop = false;
             // 

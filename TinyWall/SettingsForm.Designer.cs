@@ -190,12 +190,12 @@
             // 
             // listApplications
             // 
+            resources.ApplyResources(this.listApplications, "listApplications");
             this.listApplications.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
             this.listApplications.FullRowSelect = true;
             this.listApplications.GridLines = true;
-            resources.ApplyResources(this.listApplications, "listApplications");
             this.listApplications.Name = "listApplications";
             this.listApplications.SmallImageList = this.IconList;
             this.listApplications.UseCompatibleStateImageBehavior = false;
@@ -251,16 +251,16 @@
             // 
             // listOptionalGlobalProfiles
             // 
-            this.listOptionalGlobalProfiles.FormattingEnabled = true;
             resources.ApplyResources(this.listOptionalGlobalProfiles, "listOptionalGlobalProfiles");
+            this.listOptionalGlobalProfiles.FormattingEnabled = true;
             this.listOptionalGlobalProfiles.Name = "listOptionalGlobalProfiles";
             this.listOptionalGlobalProfiles.Sorted = true;
             this.listOptionalGlobalProfiles.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listOptionalGlobalProfiles_ItemCheck);
             // 
             // listRecommendedGlobalProfiles
             // 
-            this.listRecommendedGlobalProfiles.FormattingEnabled = true;
             resources.ApplyResources(this.listRecommendedGlobalProfiles, "listRecommendedGlobalProfiles");
+            this.listRecommendedGlobalProfiles.FormattingEnabled = true;
             this.listRecommendedGlobalProfiles.Name = "listRecommendedGlobalProfiles";
             this.listRecommendedGlobalProfiles.Sorted = true;
             this.listRecommendedGlobalProfiles.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listRecommendedGlobalProfiles_ItemCheck);
@@ -446,7 +446,6 @@
             this.btnDonate.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btnDonate.BackColor = System.Drawing.Color.Transparent;
             this.btnDonate.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnDonate.Image = global::PKSoft.Resources.Icons.donate;
             this.btnDonate.Name = "btnDonate";
             this.btnDonate.TabStop = false;
             this.btnDonate.Click += new System.EventHandler(this.btnDonate_Click);

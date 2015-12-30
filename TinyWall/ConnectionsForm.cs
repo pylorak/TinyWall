@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Windows.Forms;
+using System.Drawing;
 using PKSoft.netstat;
 
 namespace PKSoft
@@ -20,10 +21,12 @@ namespace PKSoft
 
         private List<FirewallLogEntry> FwLogEntries = new List<FirewallLogEntry>();
         private TinyWallController Controller = null;
+        private Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
         internal ConnectionsForm(TinyWallController ctrl)
         {
             InitializeComponent();
+            this.IconList.ImageSize = IconSize;
             this.Icon = Resources.Icons.firewall;
             this.Controller = ctrl;
         }
@@ -178,7 +181,7 @@ namespace PKSoft
                     if (!IconList.Images.ContainsKey(pi.path))
                     {
                         // Get icon
-                        IconList.Images.Add(pi.path, Utils.GetIcon(pi.path, 16, 16));
+                        IconList.Images.Add(pi.path, Utils.GetIconContained(pi.path, IconSize.Width, IconSize.Height));
                     }
                     li.ImageKey = pi.path;
                 }

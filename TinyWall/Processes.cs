@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -8,6 +9,7 @@ namespace PKSoft
     internal partial class ProcessesForm : Form
     {
         internal List<string> SelectedPaths = new List<string>();
+        private Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
         internal static List<FirewallException> ChooseProcess(IWin32Window parent, bool multiSelect)
         {
@@ -29,8 +31,11 @@ namespace PKSoft
         internal ProcessesForm(bool multiSelect)
         {
             InitializeComponent();
+            this.IconList.ImageSize = IconSize;
             this.listView.MultiSelect = multiSelect;
             this.Icon = Resources.Icons.firewall;
+            this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
+            this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -96,7 +101,7 @@ namespace PKSoft
                         if (System.IO.Path.IsPathRooted(ProcPath) && System.IO.File.Exists(ProcPath))
                         {
                             if (!IconList.Images.ContainsKey(ProcPath))
-                                IconList.Images.Add(ProcPath, Utils.GetIcon(ProcPath, 16, 16));
+                                IconList.Images.Add(ProcPath, Utils.GetIconContained(ProcPath, IconSize.Width, IconSize.Height));
                         }
 
                         // Add list item

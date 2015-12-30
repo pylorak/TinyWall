@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -13,13 +14,18 @@ namespace PKSoft
         private Thread SearcherThread;
         private bool RunSearch;
         private ManualResetEvent ThreadEndedEvent = new ManualResetEvent(true);
+        private Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
         internal ServiceSettings21 TmpSettings;
 
         internal AppFinderForm(ServiceSettings21 zoneSettings)
         {
             InitializeComponent();
+            this.IconList.ImageSize = IconSize;
             this.Icon = Resources.Icons.firewall;
+            this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
+            this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
+            this.btnStartDetection.Image = GlobalInstances.ApplyBtnIcon;
             TmpSettings = zoneSettings;
         }
 
@@ -33,13 +39,13 @@ namespace PKSoft
                 SearcherThread = new Thread(SearcherWorkerMethod);
                 SearcherThread.IsBackground = true;
                 SearcherThread.Start();
-                btnStartDetection.Image = Resources.Icons.cancel;
+                this.btnStartDetection.Image = GlobalInstances.CancelBtnIcon;
             }
             else
             {
                 btnStartDetection.Text = PKSoft.Resources.Messages.Start;
                 RunSearch = false;
-                btnStartDetection.Image = Resources.Icons.accept;
+                this.btnStartDetection.Image = GlobalInstances.ApplyBtnIcon;
             }
         }
 
@@ -94,7 +100,7 @@ namespace PKSoft
                 {
                     lblStatus.Text = PKSoft.Resources.Messages.SearchResults;
                     btnStartDetection.Text = PKSoft.Resources.Messages.Start;
-                    btnStartDetection.Image = Resources.Icons.accept;
+                    btnStartDetection.Image = GlobalInstances.ApplyBtnIcon;
                 });
             }
             catch (ThreadInterruptedException)
@@ -178,7 +184,7 @@ namespace PKSoft
                 if (!File.Exists(iconPath))
                     IconList.Images.Add(app.Name, Resources.Icons.window);
                 else
-                    IconList.Images.Add(app.Name, Utils.GetIcon(iconPath, 16, 16));
+                    IconList.Images.Add(app.Name, Utils.GetIconContained(iconPath, IconSize.Width, IconSize.Height));
             }
 
             ListViewItem li = new ListViewItem(app.Name);

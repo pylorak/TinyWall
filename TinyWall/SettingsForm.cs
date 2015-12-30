@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
+using System.Drawing;
 using System.Windows.Forms;
 
 #if DEBUG
@@ -36,11 +36,26 @@ namespace PKSoft
         private List<ListViewItem> ExceptionItems = new List<ListViewItem>();
         private bool LoadingSettings;
         private string m_NewPassword;
+        private Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
         internal SettingsForm(ServiceSettings21 service, ControllerSettings controller)
         {
             InitializeComponent();
+            this.IconList.ImageSize = IconSize;
             this.Icon = Resources.Icons.firewall;
+            this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
+            this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
+            this.btnAppAutoDetect.Image = GlobalInstances.UninstallBtnIcon;
+            this.btnAppAdd.Image = GlobalInstances.AddBtnIcon;
+            this.btnAppModify.Image = GlobalInstances.ModifyBtnIcon;
+            this.btnAppRemove.Image = GlobalInstances.RemoveBtnIcon;
+            this.btnAppRemoveAll.Image = GlobalInstances.RemoveBtnIcon;
+            this.btnSubmitAssoc.Image = GlobalInstances.SubmitBtnIcon;
+            this.btnImport.Image = GlobalInstances.ImportBtnIcon;
+            this.btnExport.Image = GlobalInstances.ExportBtnIcon;
+            this.btnUpdate.Image = GlobalInstances.UpdateBtnIcon;
+            this.btnWeb.Image = GlobalInstances.WebBtnIcon;
+            this.btnDonate.BackgroundImage = Resources.Icons.donate;
 
             TmpConfig = new ConfigContainer();
             TmpConfig.Service = service;
@@ -85,8 +100,8 @@ namespace PKSoft
                 ApplicationCollection allApps = GlobalInstances.ProfileMan.KnownApplications;
 
                 // Fill lists of special exceptions
-                listRecommendedGlobalProfiles.SuspendLayout();
-                listOptionalGlobalProfiles.SuspendLayout();
+                listRecommendedGlobalProfiles.BeginUpdate();
+                listOptionalGlobalProfiles.BeginUpdate();
                 listRecommendedGlobalProfiles.Items.Clear();
                 listOptionalGlobalProfiles.Items.Clear();
                 foreach (Application app in allApps)
@@ -112,9 +127,8 @@ namespace PKSoft
                         }
                     }
                 }
-                listRecommendedGlobalProfiles.ResumeLayout(true);
-                listOptionalGlobalProfiles.ResumeLayout(true);
-
+                listRecommendedGlobalProfiles.EndUpdate();
+                listOptionalGlobalProfiles.EndUpdate();
 
                 // Fill list of applications
                 RebuildExceptionsList();
@@ -162,10 +176,10 @@ namespace PKSoft
             }
 
             // Update visible list
-            listApplications.SuspendLayout();
+            listApplications.BeginUpdate();
             listApplications.Items.Clear();
             listApplications.Items.AddRange(icoll.ToArray());
-            listApplications.ResumeLayout();
+            listApplications.EndUpdate();
 
             // Update buttons
             listApplications_SelectedIndexChanged(listApplications, null);
@@ -196,7 +210,7 @@ namespace PKSoft
             else if (File.Exists(ex.ExecutablePath))
             {
                 if (!IconList.Images.ContainsKey(ex.ExecutablePath))
-                    IconList.Images.Add(ex.ExecutablePath, Utils.GetIcon(ex.ExecutablePath, 16, 16));
+                    IconList.Images.Add(ex.ExecutablePath, Utils.GetIconContained(ex.ExecutablePath, IconSize.Width, IconSize.Height));
                 li.ImageKey = ex.ExecutablePath;
             }
             else

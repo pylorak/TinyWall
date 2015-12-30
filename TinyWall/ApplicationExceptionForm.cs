@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
+using System.Reflection;
 using PKSoft.WindowsFirewall;
 
 namespace PKSoft
@@ -19,8 +20,30 @@ namespace PKSoft
 
         internal ApplicationExceptionForm(FirewallException AppEx)
         {
+            try
+            {
+                // Prevent flickering, only if our assembly 
+                // has reflection permission. 
+                Type type = transparentLabel1.GetType();
+                BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
+                MethodInfo method = type.GetMethod("SetStyle", flags);
+
+                if (method != null)
+                {
+                    object[] param = { ControlStyles.SupportsTransparentBackColor, true };
+                    method.Invoke(transparentLabel1, param);
+                }
+            }
+            catch
+            {
+                // Don't do anything, we are running in a trusted contex.
+            }
+
             InitializeComponent();
+
             this.Icon = Resources.Icons.firewall;
+            this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
+            this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
 
             this.TmpExceptionSettings = AppEx;
 

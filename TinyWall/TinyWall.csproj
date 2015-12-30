@@ -198,12 +198,6 @@
     <Compile Include="ServiceState.cs" />
     <Compile Include="ThreadBarrier.cs" />
     <Compile Include="TinyWallDoctor.cs" />
-    <Compile Include="Controls\TransparentLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\TransparentLabel.Designer.cs">
-      <DependentUpon>TransparentLabel.cs</DependentUpon>
-    </Compile>
     <Compile Include="UpdateChecker.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="FirewallException.cs" />
@@ -603,10 +597,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\TransparentLabel.resx">
-      <DependentUpon>TransparentLabel.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.ru.resx">

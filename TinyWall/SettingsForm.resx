@@ -183,6 +183,9 @@
   <data name="txtExceptionListFilter.AccessibleName" xml:space="preserve">
     <value>Filter</value>
   </data>
+  <data name="txtExceptionListFilter.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
   <data name="txtExceptionListFilter.Location" type="System.Drawing.Point, System.Drawing">
     <value>61, 75</value>
   </data>
@@ -203,6 +206,9 @@
   </data>
   <data name="&gt;&gt;txtExceptionListFilter.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <data name="btnAppRemoveAll.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
   </data>
   <data name="btnAppRemoveAll.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
@@ -233,6 +239,9 @@
   </data>
   <data name="&gt;&gt;btnAppRemoveAll.ZOrder" xml:space="preserve">
     <value>1</value>
+  </data>
+  <data name="btnAppAutoDetect.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
   </data>
   <data name="btnAppAutoDetect.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
@@ -267,6 +276,9 @@
   <data name="&gt;&gt;btnAppAutoDetect.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
+  <data name="btnSubmitAssoc.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
   <data name="btnSubmitAssoc.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
@@ -300,6 +312,9 @@
   <data name="&gt;&gt;btnSubmitAssoc.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
+  <data name="label3.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
   <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
     <value>23, 30</value>
   </data>
@@ -323,6 +338,9 @@
   </data>
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
     <value>4</value>
+  </data>
+  <data name="btnAppRemove.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
   </data>
   <data name="btnAppRemove.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -357,6 +375,9 @@
   <data name="&gt;&gt;btnAppRemove.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
+  <data name="btnAppModify.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
   <data name="btnAppModify.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
@@ -390,6 +411,9 @@
   <data name="&gt;&gt;btnAppModify.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
+  <data name="btnAppAdd.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
   <data name="btnAppAdd.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
   </data>
@@ -419,6 +443,9 @@
   </data>
   <data name="&gt;&gt;btnAppAdd.ZOrder" xml:space="preserve">
     <value>7</value>
+  </data>
+  <data name="listApplications.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
   </data>
   <data name="columnHeader1.Text" xml:space="preserve">
     <value>Executable</value>
@@ -510,6 +537,9 @@
   <data name="&gt;&gt;tabPage3.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
+  <data name="label5.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
   <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
     <value>26, 30</value>
   </data>
@@ -588,6 +618,9 @@
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
+  <data name="listOptionalGlobalProfiles.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left</value>
+  </data>
   <data name="listOptionalGlobalProfiles.Location" type="System.Drawing.Point, System.Drawing">
     <value>372, 91</value>
   </data>
@@ -608,6 +641,9 @@
   </data>
   <data name="&gt;&gt;listOptionalGlobalProfiles.ZOrder" xml:space="preserve">
     <value>3</value>
+  </data>
+  <data name="listRecommendedGlobalProfiles.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left</value>
   </data>
   <data name="listRecommendedGlobalProfiles.Location" type="System.Drawing.Point, System.Drawing">
     <value>109, 91</value>
@@ -1209,6 +1245,12 @@
   <data name="btnDonate.AccessibleName" xml:space="preserve">
     <value>Donation</value>
   </data>
+  <data name="btnDonate.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="btnDonate.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
+    <value>Zoom</value>
+  </data>
   <data name="btnDonate.Location" type="System.Drawing.Point, System.Drawing">
     <value>375, 79</value>
   </data>
@@ -1216,7 +1258,7 @@
     <value>92, 26</value>
   </data>
   <data name="btnDonate.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
-    <value>AutoSize</value>
+    <value>Zoom</value>
   </data>
   <data name="btnDonate.TabIndex" type="System.Int32, mscorlib">
     <value>8</value>
@@ -1259,6 +1301,9 @@
   </data>
   <data name="&gt;&gt;lblLinkLicense.ZOrder" xml:space="preserve">
     <value>2</value>
+  </data>
+  <data name="label10.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
   </data>
   <data name="label10.Location" type="System.Drawing.Point, System.Drawing">
     <value>222, 32</value>

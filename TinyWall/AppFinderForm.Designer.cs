@@ -145,7 +145,7 @@
             this.Controls.Add(this.list);
             this.Controls.Add(this.btnStartDetection);
             this.Controls.Add(this.label1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "AppFinderForm";
             this.TopMost = true;
             this.Shown += new System.EventHandler(this.AppFinderForm_Shown);

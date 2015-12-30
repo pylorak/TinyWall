@@ -514,6 +514,29 @@ namespace PKSoft
             return wp.IsInRole(WindowsBuiltInRole.Administrator);
         }
 
+        internal static Bitmap ScaleImage(Bitmap originalImage, float scaleX, float scaleY)
+        {
+            int newWidth = (int)Math.Round(originalImage.Width * scaleX);
+            int newHeight = (int)Math.Round(originalImage.Height * scaleY);
+
+            Bitmap newImage = new Bitmap(originalImage, newWidth, newHeight);
+            try
+            {
+                using (Graphics g = Graphics.FromImage(newImage))
+                {
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(originalImage, 0, 0, newImage.Width, newImage.Height);
+                }
+
+                return newImage;
+            }
+            catch
+            {
+                newImage.Dispose();
+                throw;
+            }
+        }
+
         internal static Bitmap ResizeImage(Bitmap originalImage, int maxWidth, int maxHeight)
         {
             int newWidth = originalImage.Width;
@@ -549,24 +572,52 @@ namespace PKSoft
             }
         }
 
-        internal static Bitmap GetIcon(string filePath, int maxWidth, int maxHeight)
+        internal static Bitmap GetIconContained(string filePath, int targetWidth, int targetHeight)
         {
             IconTools.ShellIconSize icnSize = IconTools.ShellIconSize.LargeIcon;
-            if ((maxHeight == 16) && (maxWidth == 16))
+            if ((targetHeight == 16) && (targetWidth == 16))
                 icnSize = IconTools.ShellIconSize.SmallIcon;
 
             using (Icon icon = IconTools.GetIconForExtension(filePath, icnSize))
             {
-                if ((icon.Height > maxHeight) || (icon.Width > maxWidth))
+                if ((icon.Width == targetWidth) && (icon.Height == targetHeight))
+                {
+                    return icon.ToBitmap();
+                }
+                if ((icon.Height > targetHeight) || (icon.Width > targetWidth))
                 {
                     using (Bitmap bmp = icon.ToBitmap())
                     {
-                        return Utils.ResizeImage(bmp, maxWidth, maxHeight);
+                        return Utils.ResizeImage(bmp, targetWidth, targetHeight);
                     }
-
                 }
                 else
-                    return icon.ToBitmap();
+                {
+                    float scale = Math.Min((float)targetWidth / icon.Width, (float)targetHeight / icon.Height);
+                    using (Bitmap bmp = icon.ToBitmap())
+                    {
+                        return Utils.ScaleImage(bmp, (int)Math.Round(scale*icon.Width), (int)Math.Round(scale * icon.Height));
+                    }
+                }
+            }
+        }
+
+        private static float? _DpiScalingFactor;
+        internal static float DpiScalingFactor
+        {
+            get
+            {
+                if (!_DpiScalingFactor.HasValue)
+                {
+                    using (System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(IntPtr.Zero))
+                    {
+                        float dpiX = graphics.DpiX;
+                        float dpiY = graphics.DpiY;
+                        _DpiScalingFactor = dpiX / 96.0f;
+                    }
+                }
+
+                return _DpiScalingFactor.Value;
             }
         }
 

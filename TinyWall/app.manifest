@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<asmv1:assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <assemblyIdentity version="2.1.0.0" name="KPados.TinyWall.TinyWall" type="win32"/>
   <trustInfo xmlns="urn:schemas-microsoft-com:asm.v2">
     <security>
@@ -20,6 +20,13 @@
       </requestedPrivileges>
     </security>
   </trustInfo>
+
+  <!-- Enable DPI-awareness -->
+  <asmv3:application>
+    <asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">
+      <dpiAware>true</dpiAware>
+    </asmv3:windowsSettings>
+  </asmv3:application>
   
   <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
     <application>
@@ -58,4 +65,4 @@
     </dependentAssembly>
   </dependency>
 
-</asmv1:assembly>
+</assembly>

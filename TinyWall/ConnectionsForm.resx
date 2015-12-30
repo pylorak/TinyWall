@@ -123,7 +123,7 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="btnClose.Location" type="System.Drawing.Point, System.Drawing">
-    <value>759, 306</value>
+    <value>758, 388</value>
   </data>
   <data name="btnClose.Size" type="System.Drawing.Size, System.Drawing">
     <value>90, 33</value>
@@ -262,7 +262,7 @@
     <value>12, 12</value>
   </data>
   <data name="list.Size" type="System.Drawing.Size, System.Drawing">
-    <value>837, 288</value>
+    <value>836, 337</value>
   </data>
   <metadata name="IconList.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
@@ -289,7 +289,7 @@
     <value>Bottom, Right</value>
   </data>
   <data name="btnRefresh.Location" type="System.Drawing.Point, System.Drawing">
-    <value>663, 306</value>
+    <value>662, 388</value>
   </data>
   <data name="btnRefresh.Size" type="System.Drawing.Size, System.Drawing">
     <value>90, 33</value>
@@ -319,7 +319,7 @@
     <value>True</value>
   </data>
   <data name="chkShowListen.Location" type="System.Drawing.Point, System.Drawing">
-    <value>164, 315</value>
+    <value>175, 364</value>
   </data>
   <data name="chkShowListen.Size" type="System.Drawing.Size, System.Drawing">
     <value>106, 17</value>
@@ -349,7 +349,7 @@
     <value>True</value>
   </data>
   <data name="chkShowActive.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 315</value>
+    <value>12, 364</value>
   </data>
   <data name="chkShowActive.Size" type="System.Drawing.Size, System.Drawing">
     <value>146, 17</value>
@@ -379,7 +379,7 @@
     <value>True</value>
   </data>
   <data name="chkShowBlocked.Location" type="System.Drawing.Point, System.Drawing">
-    <value>276, 315</value>
+    <value>12, 397</value>
   </data>
   <data name="chkShowBlocked.Size" type="System.Drawing.Size, System.Drawing">
     <value>189, 17</value>
@@ -409,7 +409,7 @@
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>861, 351</value>
+    <value>860, 433</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Connections - TinyWall</value>
