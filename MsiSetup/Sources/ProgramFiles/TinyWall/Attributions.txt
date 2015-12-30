@@ -1,8 +1,8 @@
 ﻿Localizations:
 -----------------------------------------------
 German - Mirko Rolfes, Harald Klausner, Caner Merten
-Spanish - Toño Puente Garcia
-French - Vincent Queuille
+Spanish - Toño Puente Garcia, David Acevedo
+French - Vincent Queuille, Oliver C.
 Hungarian - Gál Gergely, Robert Cartman
 Japanese - Misato Okaneya, Tilt
 Dutch - Dirk N
@@ -10,6 +10,8 @@ Portuguese - Milton Chaves de Almeida
 Russian - Дмитрий Вожегов
 Italian - Stefano Scotti
 Chinese - Ruiming Xu
+Polish - Kamil Nęcek
+Turkish - Hakan Ateş
 
 
 Icon resources:
