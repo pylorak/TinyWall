@@ -16,9 +16,6 @@
             if (disposing && (components != null))
             {
                 components.Dispose();
-
-                // Manually added
-                ThreadEndedEvent.Close();
             }
             base.Dispose(disposing);
         }

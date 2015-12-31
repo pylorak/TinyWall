@@ -13,7 +13,6 @@ namespace PKSoft
     {
         private Thread SearcherThread;
         private bool RunSearch;
-        private ManualResetEvent ThreadEndedEvent = new ManualResetEvent(true);
         private Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
         internal ServiceSettings21 TmpSettings;
@@ -33,7 +32,6 @@ namespace PKSoft
         {
             if (!RunSearch)
             {
-                ThreadEndedEvent.Reset();
                 btnStartDetection.Text = PKSoft.Resources.Messages.Stop;
                 RunSearch = true;
                 SearcherThread = new Thread(SearcherWorkerMethod);
@@ -43,9 +41,8 @@ namespace PKSoft
             }
             else
             {
-                btnStartDetection.Text = PKSoft.Resources.Messages.Start;
+                btnStartDetection.Enabled = false;
                 RunSearch = false;
-                this.btnStartDetection.Image = GlobalInstances.ApplyBtnIcon;
             }
         }
 
@@ -94,13 +91,19 @@ namespace PKSoft
             try
             {
                 // Update status
-                ThreadEndedEvent.Set();
                 RunSearch = false;
-                Utils.Invoke(list, (MethodInvoker)delegate()
+                this.BeginInvoke((MethodInvoker)delegate()
                 {
-                    lblStatus.Text = PKSoft.Resources.Messages.SearchResults;
-                    btnStartDetection.Text = PKSoft.Resources.Messages.Start;
-                    btnStartDetection.Image = GlobalInstances.ApplyBtnIcon;
+                    try
+                    {
+                        lblStatus.Text = PKSoft.Resources.Messages.SearchResults;
+                        btnStartDetection.Text = PKSoft.Resources.Messages.Start;
+                        btnStartDetection.Image = GlobalInstances.ApplyBtnIcon;
+                        btnStartDetection.Enabled = true;
+                    }
+                    catch {
+                        // Ignore if the form was already disposed
+                    }
                 });
             }
             catch (ThreadInterruptedException)
@@ -199,9 +202,8 @@ namespace PKSoft
         private void WaitForThread()
         {
             RunSearch = false;
-            ThreadEndedEvent.WaitOne();
-            if (SearcherThread != null)
-                SearcherThread.Interrupt();
+            if (null != SearcherThread)
+                SearcherThread.Join();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
