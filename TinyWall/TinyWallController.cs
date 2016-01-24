@@ -823,11 +823,18 @@ namespace PKSoft
 
             if (foregroundIsMetro)
             {
-                using (Process p = Utils.GetForegroundProcess())
+                try
                 {
-                    string AppPath = p.MainModule.FileName;
-                    FirewallException ex = new FirewallException(AppPath, null, true);
-                    RecognizeAskAddException(ex);
+                    using (Process p = Utils.GetForegroundProcess())
+                    {
+                        string AppPath = p.MainModule.FileName;
+                        FirewallException ex = new FirewallException(AppPath, null, true);
+                        RecognizeAskAddException(ex);
+                    }
+                }
+                catch
+                {
+                    ShowBalloonTip(PKSoft.Resources.Messages.CannotGetExecutablePathWhitelisting, ToolTipIcon.Error);
                 }
             }
             else
