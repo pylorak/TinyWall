@@ -42,6 +42,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AtomicFileUpdater.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="ExceptionPolicy.cs" />
     <Compile Include="FirewallException.cs" />

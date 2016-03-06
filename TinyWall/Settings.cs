@@ -124,7 +124,6 @@ namespace PKSoft
             {
                 try
                 {
-
                     // Construct key
                     string key = ENC_SALT;
                     key = Hasher.HashString(key).Substring(0, 16);
@@ -198,10 +197,16 @@ namespace PKSoft
 
         internal void Save()
         {
-            // Construct file path
             string SettingsFile = Path.Combine(UserDataPath, "ControllerConfig");
-
-            SerializationHelper.SaveToXMLFile(this, SettingsFile);
+            try
+            {
+                using (AtomicFileUpdater fileUpdater = new AtomicFileUpdater(SettingsFile))
+                {
+                    SerializationHelper.SaveToXMLFile(this, fileUpdater.TemporaryFilePath);
+                    fileUpdater.Commit();
+                }
+            }
+            catch { }
         }
 
         internal static ControllerSettings Load()
@@ -266,9 +271,13 @@ namespace PKSoft
                 File.Delete(SettingsFile);
             else
             {
-                string salt = Utils.RandomString(8);
-                string hash = TinyWall.Pbkdf2.GetHashForStorage(password, salt, 150000, 16);
-                File.WriteAllText(PasswordFilePath, hash, Encoding.UTF8);
+                using (AtomicFileUpdater fileUpdater = new AtomicFileUpdater(PasswordFilePath))
+                {
+                    string salt = Utils.RandomString(8);
+                    string hash = TinyWall.Pbkdf2.GetHashForStorage(password, salt, 150000, 16);
+                    File.WriteAllText(fileUpdater.TemporaryFilePath, hash, Encoding.UTF8);
+                    fileUpdater.Commit();
+                }
             }
         }
 
@@ -375,3 +384,4 @@ private void SaveRegistryValueBool(string path, string valueName, bool value)
         key.SetValue(valueName, value ? 1 : 0);
     }
 }*/
+
