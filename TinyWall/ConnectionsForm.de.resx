@@ -175,26 +175,11 @@
   <data name="btnRefresh.Text" xml:space="preserve">
     <value>Aktualisieren</value>
   </data>
-  <data name="chkShowListen.Location" type="System.Drawing.Point, System.Drawing">
-    <value>171, 315</value>
-  </data>
-  <data name="chkShowListen.Size" type="System.Drawing.Size, System.Drawing">
-    <value>136, 17</value>
-  </data>
   <data name="chkShowListen.Text" xml:space="preserve">
     <value>Zeige die offenen Ports</value>
   </data>
-  <data name="chkShowActive.Size" type="System.Drawing.Size, System.Drawing">
-    <value>154, 17</value>
-  </data>
   <data name="chkShowActive.Text" xml:space="preserve">
     <value>Zeige aktive Verbindungen</value>
-  </data>
-  <data name="chkShowBlocked.Location" type="System.Drawing.Point, System.Drawing">
-    <value>313, 315</value>
-  </data>
-  <data name="chkShowBlocked.Size" type="System.Drawing.Size, System.Drawing">
-    <value>280, 17</value>
   </data>
   <data name="chkShowBlocked.Text" xml:space="preserve">
     <value>Zeige gesperrte Anwendungen (der letzten 2 Minuten)</value>
