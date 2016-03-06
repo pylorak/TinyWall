@@ -4,21 +4,20 @@ using System.Globalization;
 using System.Windows.Forms;
 using System.Reflection;
 using PKSoft.WindowsFirewall;
+using TinyWall.Interface;
 
 namespace PKSoft
 {
     internal partial class ApplicationExceptionForm : Form
     {
-        private FirewallException TmpExceptionSettings = null;
-        private AppExceptionAssoc RecognizedTargetFile = null;
-        private Application RecognizedTargetApp = null;
+        private List<FirewallExceptionV3> TmpExceptionSettings = new List<FirewallExceptionV3>();
 
-        internal FirewallException ExceptionSettings
+        internal List<FirewallExceptionV3> ExceptionSettings
         {
             get { return TmpExceptionSettings; }
         }
 
-        internal ApplicationExceptionForm(FirewallException AppEx)
+        internal ApplicationExceptionForm(FirewallExceptionV3 fwex)
         {
             try
             {
@@ -45,7 +44,7 @@ namespace PKSoft
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
 
-            this.TmpExceptionSettings = AppEx;
+            this.TmpExceptionSettings.Add(fwex ?? new FirewallExceptionV3(GlobalSubject.Instance, new UnrestrictedPolicy()));
 
             panel1.Location = new System.Drawing.Point(0, 0);
             panel1.Width = this.Width;
@@ -87,8 +86,6 @@ namespace PKSoft
             cmbTimer.DisplayMember = "Key";
             cmbTimer.ValueMember = "Value";
             cmbTimer.ResumeLayout(true);
-
-            TmpExceptionSettings.TryRecognizeApp(out RecognizedTargetApp, out RecognizedTargetFile);
         }
 
         private void ApplicationExceptionForm_Load(object sender, EventArgs e)
@@ -101,24 +98,34 @@ namespace PKSoft
             // Display timer
             for (int i = 0; i < cmbTimer.Items.Count; ++i)
             {
-                if (((KeyValuePair<string, AppExceptionTimer>)cmbTimer.Items[i]).Value == TmpExceptionSettings.Timer)
+                if (((KeyValuePair<string, AppExceptionTimer>)cmbTimer.Items[i]).Value == TmpExceptionSettings[0].Timer)
                 {
                     cmbTimer.SelectedIndex = i;
                     break;
                 }
             }
 
-            if ((RecognizedTargetFile != null) && (!RecognizedTargetFile.IsSigned || RecognizedTargetFile.IsSignatureValid))
+            // Update top colored banner
+            bool hasSignature = false;
+            bool validSignature = false;
+            ExecutableSubject exesub = TmpExceptionSettings[0].Subject as ExecutableSubject;
+            if (null != exesub)
+            {
+                hasSignature = exesub.IsSigned;
+                validSignature = exesub.CertValid;
+            }
+
+            if (hasSignature && validSignature)
             {
                 // Recognized app
                 panel1.BackgroundImage = Resources.Icons.green_banner;
-                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.RecognizedApplication, RecognizedTargetApp.LocalizedName);
+                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.RecognizedApplication, exesub.ExecutableName);
             }
-            else if ((RecognizedTargetFile != null) && RecognizedTargetFile.IsSigned && !RecognizedTargetFile.IsSignatureValid)
+            else if (hasSignature && !validSignature)
             {
                 // Recognized, but compromised app
                 panel1.BackgroundImage = Resources.Icons.red_banner;
-                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.CompromisedApplication, RecognizedTargetApp.LocalizedName);
+                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.CompromisedApplication, exesub.ExecutableName);
             }
             else
             {
@@ -128,46 +135,78 @@ namespace PKSoft
             }
 
             Utils.CenterControlInParent(transparentLabel1);
-            txtAppPath.Text = TmpExceptionSettings.ExecutablePath;
-            txtSrvName.Text = TmpExceptionSettings.ServiceName;
-            chkRestrictToLocalNetwork.Checked = TmpExceptionSettings.LocalNetworkOnly;
 
-            // Select the right radio button
-            if (TmpExceptionSettings.AlwaysBlockTraffic)
+            // Update subject fields
+            switch (TmpExceptionSettings[0].Subject.SubjectType)
             {
-                radBlock.Checked = true;
+                case SubjectType.Global:
+                    txtAppPath.Text = "*";
+                    txtSrvName.Text = string.Empty;
+                    break;
+                case SubjectType.Executable:
+                    txtAppPath.Text = (TmpExceptionSettings[0].Subject as ExecutableSubject).ExecutablePath;
+                    txtSrvName.Text = string.Empty;
+                    break;
+                case SubjectType.Service:
+                    txtAppPath.Text = (TmpExceptionSettings[0].Subject as ServiceSubject).ExecutablePath;
+                    txtSrvName.Text = (TmpExceptionSettings[0].Subject as ServiceSubject).ServiceName;
+                    break;
+                default:
+                    throw new NotImplementedException();
             }
-            else if (TmpExceptionSettings.UnrestricedTraffic)
+
+            // Update rule/poolicy fields
+            switch (TmpExceptionSettings[0].Policy.PolicyType)
             {
-                radUnrestricted.Checked = true;
-            }
-            else if (
-                string.Equals(TmpExceptionSettings.OpenPortListenLocalTCP, "*")
-                && string.Equals(TmpExceptionSettings.OpenPortListenLocalUDP, "*")
-                && string.Equals(TmpExceptionSettings.OpenPortOutboundRemoteTCP, "*")
-                && string.Equals(TmpExceptionSettings.OpenPortOutboundRemoteUDP, "*")
-                )
-            {
-                radTcpUdpUnrestricted.Checked = true;
-            }
-            else if (
-                string.Equals(TmpExceptionSettings.OpenPortOutboundRemoteTCP, "*")
-                && string.Equals(TmpExceptionSettings.OpenPortOutboundRemoteUDP, "*")
-                )
-            {
-                radTcpUdpOut.Checked = true;
-            }
-            else
-            {
-                radOnlySpecifiedPorts.Checked = true;
+                case PolicyType.HardBlock:
+                    radBlock.Checked = true;
+                    chkRestrictToLocalNetwork.Enabled = false;
+                    break;
+                case PolicyType.RuleList:
+                    radBlock.Enabled = false;
+                    radUnrestricted.Enabled = false;
+                    radTcpUdpUnrestricted.Enabled = false;
+                    radTcpUdpOut.Enabled = false;
+                    radOnlySpecifiedPorts.Enabled = false;
+                    chkRestrictToLocalNetwork.Enabled = false;
+                    break;
+                case PolicyType.TcpUdpOnly:
+                    TcpUdpPolicy pol = TmpExceptionSettings[0].Policy as TcpUdpPolicy;
+                    chkRestrictToLocalNetwork.Checked = pol.LocalNetworkOnly;
+                    if (
+                        string.Equals(pol.AllowedLocalTcpListenerPorts, "*")
+                        && string.Equals(pol.AllowedLocalUdpListenerPorts, "*")
+                        && string.Equals(pol.AllowedRemoteTcpConnectPorts, "*")
+                        && string.Equals(pol.AllowedRemoteUdpConnectPorts, "*")
+                    )
+                    {
+                        radTcpUdpUnrestricted.Checked = true;
+                    }
+                    else if (
+                        string.Equals(pol.AllowedRemoteTcpConnectPorts, "*")
+                        && string.Equals(pol.AllowedRemoteUdpConnectPorts, "*")
+                        )
+                    {
+                        radTcpUdpOut.Checked = true;
+                    }
+                    else
+                    {
+                        radOnlySpecifiedPorts.Checked = true;
+                    }
+                    // Display ports list
+                    txtOutboundPortTCP.Text = string.IsNullOrEmpty(pol.AllowedRemoteTcpConnectPorts) ? string.Empty : pol.AllowedRemoteTcpConnectPorts.Replace(",", ", ");
+                    txtOutboundPortUDP.Text = string.IsNullOrEmpty(pol.AllowedRemoteUdpConnectPorts) ? string.Empty : pol.AllowedRemoteUdpConnectPorts.Replace(",", ", ");
+                    txtListenPortTCP.Text = string.IsNullOrEmpty(pol.AllowedLocalTcpListenerPorts) ? string.Empty : pol.AllowedLocalTcpListenerPorts.Replace(",", ", ");
+                    txtListenPortUDP.Text = string.IsNullOrEmpty(pol.AllowedLocalUdpListenerPorts) ? string.Empty : pol.AllowedLocalUdpListenerPorts.Replace(",", ", ");
+                    break;
+                case PolicyType.Unrestricted:
+                    radUnrestricted.Checked = true;
+                    chkRestrictToLocalNetwork.Enabled = false;
+                    break;
+                default:
+                    throw new NotImplementedException();
             }
             radRestriction_CheckedChanged(null, null);
-
-            // Display ports list
-            txtOutboundPortTCP.Text = string.IsNullOrEmpty(TmpExceptionSettings.OpenPortOutboundRemoteTCP) ? string.Empty : TmpExceptionSettings.OpenPortOutboundRemoteTCP.Replace(",", ", ");
-            txtOutboundPortUDP.Text = string.IsNullOrEmpty(TmpExceptionSettings.OpenPortOutboundRemoteUDP) ? string.Empty : TmpExceptionSettings.OpenPortOutboundRemoteUDP.Replace(",", ", ");
-            txtListenPortTCP.Text = string.IsNullOrEmpty(TmpExceptionSettings.OpenPortListenLocalTCP) ? string.Empty : TmpExceptionSettings.OpenPortListenLocalTCP.Replace(",", ", ");
-            txtListenPortUDP.Text = string.IsNullOrEmpty(TmpExceptionSettings.OpenPortListenLocalUDP) ? string.Empty : TmpExceptionSettings.OpenPortListenLocalUDP.Replace(",", ", ");
 
             UpdateOKButtonEnabled();
         }
@@ -179,7 +218,7 @@ namespace PKSoft
             res = res.Replace(';', ',');
 
             // Check validity
-            Rule r = new Rule("", "", ProfileType.Private, RuleDirection.In, PacketAction.Allow, Protocol.TCP);
+            Rule r = new Rule("", "", ProfileType.Private, RuleDirection.In, RuleAction.Allow, Protocol.TCP);
             r.LocalPorts = res;
 
             return res;
@@ -187,36 +226,59 @@ namespace PKSoft
         
         private void UpdateOKButtonEnabled()
         {
-            btnOK.Enabled = System.IO.File.Exists(TmpExceptionSettings.ExecutablePath) || (0==string.Compare(TmpExceptionSettings.ExecutablePath, "System", StringComparison.OrdinalIgnoreCase));
+            switch (TmpExceptionSettings[0].Subject.SubjectType)
+            {
+                case SubjectType.Executable:
+                case SubjectType.Service:
+                    btnOK.Enabled = DatabaseClasses.SubjectIdentity.IsValidExecutablePath((TmpExceptionSettings[0].Subject as ExecutableSubject).ExecutablePath);
+                    break;
+                case SubjectType.Global:
+                    btnOK.Enabled = true;
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            // Validate port lists
-            try
+            if (radBlock.Checked)
             {
-                TmpExceptionSettings.OpenPortOutboundRemoteTCP = CleanupPortsList(txtOutboundPortTCP.Text);
-                TmpExceptionSettings.OpenPortOutboundRemoteUDP = CleanupPortsList(txtOutboundPortUDP.Text);
-                TmpExceptionSettings.OpenPortListenLocalTCP = CleanupPortsList(txtListenPortTCP.Text);
-                TmpExceptionSettings.OpenPortListenLocalUDP = CleanupPortsList(txtListenPortUDP.Text);
+                TmpExceptionSettings[0].Policy = HardBlockPolicy.Instance;
             }
-            catch
+            else if (radOnlySpecifiedPorts.Checked || radTcpUdpOut.Checked || radTcpUdpUnrestricted.Checked)
             {
-                Utils.ShowMessageBox(
-                    PKSoft.Resources.Messages.PortListInvalid,
-                    PKSoft.Resources.Messages.TinyWall,
-                    Microsoft.Samples.TaskDialogCommonButtons.Ok,
-                    Microsoft.Samples.TaskDialogIcon.Warning,
-                    this);
+                TcpUdpPolicy pol = new TcpUdpPolicy();
 
-                return;
+                try
+                {
+                    pol.LocalNetworkOnly = chkRestrictToLocalNetwork.Checked;
+                    pol.AllowedRemoteTcpConnectPorts = CleanupPortsList(txtOutboundPortTCP.Text);
+                    pol.AllowedRemoteUdpConnectPorts = CleanupPortsList(txtOutboundPortUDP.Text);
+                    pol.AllowedLocalTcpListenerPorts = CleanupPortsList(txtListenPortTCP.Text);
+                    pol.AllowedLocalUdpListenerPorts = CleanupPortsList(txtListenPortUDP.Text);
+                    TmpExceptionSettings[0].Policy = pol;
+                }
+                catch
+                {
+                    Utils.ShowMessageBox(
+                        PKSoft.Resources.Messages.PortListInvalid,
+                        PKSoft.Resources.Messages.TinyWall,
+                        Microsoft.Samples.TaskDialogCommonButtons.Ok,
+                        Microsoft.Samples.TaskDialogIcon.Warning,
+                        this);
+
+                    return;
+                }
+            }
+            else if (radUnrestricted.Checked)
+            {
+                UnrestrictedPolicy pol = new UnrestrictedPolicy();
+                pol.LocalNetworkOnly = chkRestrictToLocalNetwork.Checked;
+                TmpExceptionSettings[0].Policy = pol;
             }
 
-            this.TmpExceptionSettings.LocalNetworkOnly = chkRestrictToLocalNetwork.Checked;
-            this.TmpExceptionSettings.CreationDate = DateTime.Now;
-            this.TmpExceptionSettings.AlwaysBlockTraffic = radBlock.Checked;
-            this.TmpExceptionSettings.UnrestricedTraffic = radUnrestricted.Checked;
-            this.TmpExceptionSettings.Template = false;
+            this.TmpExceptionSettings[0].CreationDate = DateTime.Now;
             
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
@@ -228,12 +290,10 @@ namespace PKSoft
 
         private void btnProcess_Click(object sender, EventArgs e)
         {
-            List<FirewallException> procList = ProcessesForm.ChooseProcess(this, false);
+            List<string> procList = ProcessesForm.ChooseProcess(this, false);
             if (procList.Count == 0) return;
 
-            TmpExceptionSettings = procList[0];
-            TmpExceptionSettings.TryRecognizeApp(out RecognizedTargetApp, out RecognizedTargetFile);
-            UpdateUI();
+            ReinitFormFromSubject(new ExecutableSubject(procList[0]));
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -241,19 +301,41 @@ namespace PKSoft
             if (ofd.ShowDialog(this) != System.Windows.Forms.DialogResult.OK)
                 return;
 
-            TmpExceptionSettings = new FirewallException(ofd.FileName, null, true);
-            TmpExceptionSettings.TryRecognizeApp(out RecognizedTargetApp, out RecognizedTargetFile);
-            UpdateUI();
+            ReinitFormFromSubject(new ExecutableSubject(ofd.FileName));
         }
 
         private void btnChooseService_Click(object sender, EventArgs e)
         {
-            FirewallException serv = ServicesForm.ChooseService(this);
-            if (serv == null) return;
+            ServiceSubject subject = ServicesForm.ChooseService(this);
+            if (subject == null) return;
 
-            TmpExceptionSettings = serv;
-            TmpExceptionSettings.TryRecognizeApp(out RecognizedTargetApp, out RecognizedTargetFile);
-            UpdateUI(); 
+            ReinitFormFromSubject(subject);
+        }
+
+        private void ReinitFormFromSubject(ExecutableSubject subject)
+        {
+            List<FirewallExceptionV3> knownExceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true);
+            if (0 == knownExceptions.Count)
+            {
+                // Unknown file, add with unrestricted policy
+                TmpExceptionSettings[0].Subject = subject;
+                TmpExceptionSettings[0].Policy = new UnrestrictedPolicy();
+            }
+            if (1 == knownExceptions.Count)
+            {
+                // Known file
+                TmpExceptionSettings[0] = knownExceptions[0];
+            }
+            else
+            {
+                // Multiple known files
+                TmpExceptionSettings = knownExceptions;
+
+                btnOK_Click(null, null);
+                return;
+            }
+
+            UpdateUI();
         }
 
         private void txtAppPath_TextChanged(object sender, EventArgs e)
@@ -268,7 +350,7 @@ namespace PKSoft
 
         private void cmbTimer_SelectedIndexChanged(object sender, EventArgs e)
         {
-            TmpExceptionSettings.Timer = ((KeyValuePair<string, AppExceptionTimer>)cmbTimer.SelectedItem).Value;
+            TmpExceptionSettings[0].Timer = ((KeyValuePair<string, AppExceptionTimer>)cmbTimer.SelectedItem).Value;
         }
 
         private void radRestriction_CheckedChanged(object sender, EventArgs e)

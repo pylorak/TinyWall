@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using System.ServiceProcess;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using TinyWall.Interface;
 
 namespace PKSoft
 {
     internal partial class ServicesForm : Form
     {
-        internal string SelectedServiceName;
-        internal string SelectedServiceExec;
+        private string SelectedServiceName;
+        private string SelectedServiceExec;
 
-        internal static FirewallException ChooseService(IWin32Window parent = null)
+        internal static ServiceSubject ChooseService(IWin32Window parent = null)
         {
             using (ServicesForm sf = new ServicesForm())
             {
                 if (sf.ShowDialog(parent) == DialogResult.Cancel)
                     return null;
 
-                FirewallException ex = new FirewallException(sf.SelectedServiceExec, sf.SelectedServiceName, true);
-                return ex;
+                return new ServiceSubject(sf.SelectedServiceExec, sf.SelectedServiceName);
             }
         }
 

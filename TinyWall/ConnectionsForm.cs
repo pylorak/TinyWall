@@ -8,6 +8,9 @@ using System.Windows.Forms;
 using System.Drawing;
 using PKSoft.netstat;
 
+using TinyWall.Interface;
+using TinyWall.Interface.Internal;
+
 namespace PKSoft
 {
     internal partial class ConnectionsForm : Form
@@ -41,7 +44,7 @@ namespace PKSoft
             List<ListViewItem> itemColl = new List<ListViewItem>();
             Dictionary<int, ProcInfo> procCache = new Dictionary<int, ProcInfo>();
 
-            ReqResp fwLogRequest = GlobalInstances.CommunicationMan.QueueMessage(new Message(TWControllerMessages.READ_FW_LOG));
+            Future<TinyWall.Interface.Internal.TwMessage> fwLogRequest = GlobalInstances.Controller.BeginReadFwLog();
 
             // Retrieve IP tables while waiting for log entries
 
@@ -89,8 +92,7 @@ namespace PKSoft
             }
 
             // Add new log entries
-            Message resp = fwLogRequest.GetResponse();
-            List<FirewallLogEntry> fwLogEntry = resp.Arguments[0] as List<FirewallLogEntry>;
+            List<FirewallLogEntry> fwLogEntry = GlobalInstances.Controller.EndReadFwLog(fwLogRequest);
             for (int i = 0; i < fwLogEntry.Count; ++i)
             {
                 FirewallLogEntry newEntry = fwLogEntry[i];
@@ -146,7 +148,7 @@ namespace PKSoft
             list.ResumeLayout(false);
         }
 
-        private void ConstructListItem(List<ListViewItem> itemColl, string appName, Dictionary<int, ProcInfo> procCache, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, PKSoft.WindowsFirewall.RuleDirection dir = WindowsFirewall.RuleDirection.Invalid)
+        private void ConstructListItem(List<ListViewItem> itemColl, string appName, Dictionary<int, ProcInfo> procCache, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, RuleDirection dir = RuleDirection.Invalid)
         {
             try
             {
@@ -160,7 +162,7 @@ namespace PKSoft
                     {
                         using (Process proc = Process.GetProcessById(procId))
                         {
-                            pi.path = Utils.GetPathOfProcessUseTwService(proc);
+                            pi.path = Utils.GetPathOfProcessUseTwService(proc, GlobalInstances.Controller);
                         }
                     }
                     else
@@ -194,10 +196,10 @@ namespace PKSoft
                 li.SubItems.Add(state);
                 switch (dir)
                 {
-                    case WindowsFirewall.RuleDirection.In:
+                    case RuleDirection.In:
                         li.SubItems.Add(PKSoft.Resources.Messages.TrafficIn);
                         break;
-                    case WindowsFirewall.RuleDirection.Out:
+                    case RuleDirection.Out:
                         li.SubItems.Add(PKSoft.Resources.Messages.TrafficOut);
                         break;
                     default:
@@ -334,16 +336,24 @@ namespace PKSoft
                 try
                 {
                     // Copy, so that settings are not changed if they cannot be saved
-                    ServiceSettings21 confCopy = Utils.DeepClone(ActiveConfig.Service);
+                    ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
 
-                    FirewallException ex = new FirewallException(path, null, false);
-                    ex.MakeUnrestrictTcpUdp();
-                    List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(ex, true, true, true);
-                    if (exceptions.Count == 0)
-                        return;
+                    // Try to recognize app based on this file
+                    ExecutableSubject subject = ExceptionSubject.Construct(path, null) as ExecutableSubject;
+                    List<FirewallExceptionV3> knownExceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true);
 
-                    for (int i = 0; i < exceptions.Count; ++i)
-                        confCopy.AppExceptions.Add(exceptions[i]);
+                    // Did we find any related files?
+                    if (0 == knownExceptions.Count)
+                    {
+                        // Unknown file, add with unrestricted policy
+                        FirewallExceptionV3 fwex = new FirewallExceptionV3(subject, new UnrestrictedPolicy());
+                        confCopy.ActiveProfile.AppExceptions.Add(fwex);
+                    }
+                    else
+                    {
+                        // Known file, add its exceptions, along with other files that belong to this app
+                        confCopy.ActiveProfile.AppExceptions.AddRange(knownExceptions);
+                    }
 
                     confCopy.Normalize();
                     Controller.ApplyFirewallSettings(confCopy, true);
@@ -368,7 +378,7 @@ namespace PKSoft
                 ListViewItem li = list.SelectedItems[0];
 
                 const string urlTemplate = @"https://www.virustotal.com/latest-scan/{0}";
-                string hash = Utils.HexEncode(Hasher.HashFile(li.ToolTipText));
+                string hash = Hasher.HashFile(li.ToolTipText);
                 string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, hash);
                 Utils.StartProcess(url, string.Empty, false);
             }

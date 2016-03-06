@@ -7,6 +7,8 @@ using System.Net;
 using System.ServiceProcess;
 using System.Threading;
 using PKSoft.WindowsFirewall;
+using TinyWall.Interface;
+using TinyWall.Interface.Internal;
 
 namespace PKSoft
 {
@@ -22,7 +24,7 @@ namespace PKSoft
         internal const string SERVICE_NAME = "TinyWall";
         internal const string SERVICE_DISPLAY_NAME = "TinyWall Service";
 
-        private RequestQueue Q;
+        private BoundedMessageQueue Q;
 
         private Thread FirewallWorkerThread;
         private Timer MinuteTimer;
@@ -32,16 +34,16 @@ namespace PKSoft
         private ServiceSettings ServiceLocker = null;
 
         // Context needed for learning mode
-        ApplicationCollection LearningKnownApplication;
-        List<FirewallException> LearningNewExceptions;
+        List<FirewallExceptionV3> LearningNewExceptions;
         
         private List<RuleDef> ActiveRules;
         private List<RuleDef> AppExRules;
         private List<RuleDef> SpecialRules;
 
         private bool UninstallRequested = false;
+        private bool RunService = false;
 
-        private ServiceState VisibleState = null;
+        private ServerState VisibleState = null;
 
         private void AssembleActiveRules()
         {
@@ -49,16 +51,16 @@ namespace PKSoft
             ActiveRules.AddRange(AppExRules);
             ActiveRules.AddRange(SpecialRules);
 
-            string ModeId = FirewallException.GenerateID();
+            Guid ModeId = Guid.NewGuid();
 
             // Do we want to let local traffic through?
-            if (ActiveConfig.Service.AllowLocalSubnet)
+            if (ActiveConfig.Service.ActiveProfile.AllowLocalSubnet)
             {
-                RuleDef def = new RuleDef(ModeId, "Allow local subnet", PacketAction.Allow, RuleDirection.InOut, Protocol.Any);
+                RuleDef def = new RuleDef(ModeId, "Allow local subnet", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any);
                 def.RemoteAddresses = "LocalSubnet";
                 ActiveRules.Add(def);
                 
-                def = new RuleDef(ModeId, "Allow local subnet (broadcast)", PacketAction.Allow, RuleDirection.Out, Protocol.TcpUdp);
+                def = new RuleDef(ModeId, "Allow local subnet (broadcast)", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.Out, Protocol.TcpUdp);
                 def.RemoteAddresses = "255.255.255.255";
                 ActiveRules.Add(def);
             }
@@ -67,59 +69,61 @@ namespace PKSoft
             if (ActiveConfig.Service.Blocklists.EnableBlocklists
                 && ActiveConfig.Service.Blocklists.EnablePortBlocklist)
             {
-                Profile profileMalwarePortBlock = GlobalInstances.ProfileMan.GetProfile("Malware port block");
+                // TODO 
+                /* Obsolete.Profile profileMalwarePortBlock = GlobalInstances.ProfileMan.GetProfile("Malware port block");
                 if (profileMalwarePortBlock != null)
                 {
                     foreach (RuleDef rule in profileMalwarePortBlock.Rules)
                         rule.ExceptionId = ModeId;
                     ActiveRules.AddRange(profileMalwarePortBlock.Rules);
                 }
+                */
             }
 
             // This switch should be executed last, as it might modify existing elements in ActiveRules
             switch (VisibleState.Mode)
             {
-                case FirewallMode.AllowOutgoing:
+                case TinyWall.Interface.FirewallMode.AllowOutgoing:
                     {
                         // Add rule to explicitly allow outgoing connections
-                        RuleDef def = new RuleDef(ModeId, "Allow outbound", PacketAction.Allow, RuleDirection.Out, Protocol.Any);
+                        RuleDef def = new RuleDef(ModeId, "Allow outbound", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.Out, Protocol.Any);
                         ActiveRules.Add(def);
                         break;
                     }
-                case FirewallMode.BlockAll:
+                case TinyWall.Interface.FirewallMode.BlockAll:
                     {
                         // Remove all rules
                         ActiveRules.Clear();
 
                         // Add a rule to deny all traffic. Denial rules have priority, so this will disable all traffic.
-                        RuleDef def = new RuleDef(ModeId, "Block all traffic", PacketAction.Block, RuleDirection.InOut, Protocol.Any);
+                        RuleDef def = new RuleDef(ModeId, "Block all traffic", GlobalSubject.Instance, RuleAction.Block, RuleDirection.InOut, Protocol.Any);
                         ActiveRules.Add(def);
                         break;
                     }
-                case FirewallMode.Disabled:
+                case TinyWall.Interface.FirewallMode.Disabled:
                     {
                         // Remove all rules
                         ActiveRules.Clear();
 
                         // Add rule to explicitly allow everything
-                        RuleDef def = new RuleDef(ModeId, "Allow everything", PacketAction.Allow, RuleDirection.InOut, Protocol.Any);
+                        RuleDef def = new RuleDef(ModeId, "Allow everything", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any);
                         ActiveRules.Add(def);
                         break;
                     }
-                case FirewallMode.Learning:
+                case TinyWall.Interface.FirewallMode.Learning:
                     {
                         // Remove all rules
                         ActiveRules.Clear();
 
                         // Add rule to explicitly allow everything
-                        RuleDef def = new RuleDef(ModeId, "Allow everything", PacketAction.Allow, RuleDirection.InOut, Protocol.Any);
+                        RuleDef def = new RuleDef(ModeId, "Allow everything", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any);
                         ActiveRules.Add(def);
 
                         // Start up firewall logging
-                        Q.Enqueue(new ReqResp(new Message(TWControllerMessages.READ_FW_LOG)));
+                        Q.Enqueue(new TwMessage(MessageType.READ_FW_LOG), null);
                         break;
                     }
-                case FirewallMode.Normal:
+                case TinyWall.Interface.FirewallMode.Normal:
                     {
                         // Nothing to do here
                         break;
@@ -131,7 +135,7 @@ namespace PKSoft
 
         private void MergeActiveRulesIntoWinFirewall(WindowsFirewall.Rules FwRules)
         {
-            int lenId = FirewallException.GenerateID().Length;
+            int lenId = Guid.NewGuid().ToString().Length;
             List<Rule> rules = new List<Rule>();
 
             // We cache rule names locally to lighten on string creation.
@@ -146,7 +150,7 @@ namespace PKSoft
             for (int i = ActiveRules.Count - 1; i >= 0; --i)          // for each TW firewall rule
             {
                 RuleDef rule_i = ActiveRules[i];
-                string id_i = rule_i.ExceptionId.Substring(0, lenId);
+                string id_i = rule_i.ExceptionId.ToString();
 
                 bool found = false;
                 for (int j = rule_names.Count - 1; j >= 0; --j)    // for each Win firewall rule
@@ -154,12 +158,10 @@ namespace PKSoft
                     string name_j = rule_names[j];
 
                     // Skip if this is not a TinyWall rule
-                    if (!name_j.StartsWith("[TW", StringComparison.Ordinal))
-                        continue;
+                    //if (!name_j.StartsWith("[TW", StringComparison.Ordinal))
+                    //    continue;
 
-                    string id_j = name_j.Substring(0, lenId);
-
-                    if (string.Compare(id_i, id_j, StringComparison.Ordinal) == 0)
+                    if (name_j.StartsWith(id_i, StringComparison.Ordinal))
                     {
                         found = true;
                         break;
@@ -168,7 +170,7 @@ namespace PKSoft
 
                 // Rule is not yet active, add it to the Windows firewall
                 if (!found)
-                    rule_i.ConstructRule(rules);
+                    Rule.ConstructRule(rules, rule_i);
             }
 
             // We add new rules before removing invalid ones, 
@@ -194,18 +196,16 @@ namespace PKSoft
                 string name_i = rule_names[i];
 
                 // Skip if this is not a TinyWall rule
-                if (!name_i.StartsWith("[TW", StringComparison.Ordinal))
-                    continue;
-
-                string id_i = name_i.Substring(0, lenId);
+                //if (!name_i.StartsWith("[TW", StringComparison.Ordinal))
+                //    continue;
 
                 bool found = false;
                 for (int j = ActiveRules.Count - 1; j >= 0; --j)          // for each TW firewall rule
                 {
                     RuleDef rule_j = ActiveRules[j];
-                    string id_j = rule_j.ExceptionId.Substring(0, lenId);
+                    string id_j = rule_j.ExceptionId.ToString();
 
-                    if (string.Compare(id_i, id_j, StringComparison.Ordinal) == 0)
+                    if (name_i.StartsWith(id_j, StringComparison.Ordinal))
                     {
                         found = true;
                         break;
@@ -222,26 +222,27 @@ namespace PKSoft
             // We will collect all our rules into this list
             SpecialRules.Clear();
 
-            ApplicationCollection allApps = GlobalInstances.ProfileMan.KnownApplications;
-            for (int i = 0; i < ActiveConfig.Service.SpecialExceptions.Count; ++i)
+            /* TODO
+            Obsolete.ApplicationCollection allApps = GlobalInstances.ProfileMan.KnownApplications;
+            for (int i = 0; i < ActiveConfig.Service.ActiveProfile.SpecialExceptions.Count; ++i)
             {
                 try
                 {   //This try-catch will prevent errors if an exception profile string is invalid
-                    Application app = allApps.GetApplicationByName(ActiveConfig.Service.SpecialExceptions[i]);
+                    Obsolete.Application app = allApps.GetApplicationByName(ActiveConfig.Service.ActiveProfile.SpecialExceptions[i]);
                     app.ResolveFilePaths();
-                    foreach (AppExceptionAssoc template in app.FileTemplates)
+                    foreach (Obsolete.AppExceptionAssoc template in app.FileTemplates)
                     {
                         foreach (string execPath in template.ExecutableRealizations)
                         {
-                            FirewallException ex = template.CreateException(execPath);
-                            ex.AppID = FirewallException.GenerateID();
+                            FirewallExceptionV3 ex = template.CreateException(execPath).ToNewFormat();
+                            ex.RegenerateId();
                             GetRulesForException(ex, SpecialRules);
                         }
                     }
                 }
                 catch { }
             }
-
+*/
             SpecialRules.TrimExcess();
         }
 
@@ -250,13 +251,11 @@ namespace PKSoft
             // We will collect all our rules into this list
             AppExRules.Clear();
 
-            for (int i = 0; i < ActiveConfig.Service.AppExceptions.Count; ++i)
+            for (int i = 0; i < ActiveConfig.Service.ActiveProfile.AppExceptions.Count; ++i)
             {
-                System.Diagnostics.Debug.Assert(ActiveConfig.Service.AppExceptions[i].Template == false);
-
                 try
                 {   //This try-catch will prevent errors if an exception profile string is invalid
-                    FirewallException ex = ActiveConfig.Service.AppExceptions[i];
+                    FirewallExceptionV3 ex = ActiveConfig.Service.ActiveProfile.AppExceptions[i];
                     GetRulesForException(ex, AppExRules);
                 }
                 catch (Exception e)
@@ -271,104 +270,82 @@ namespace PKSoft
             AppExRules.TrimExcess();
         }
 
-        private void GetRulesForException(FirewallException ex, List<RuleDef> ruleset)
+        private void GetRulesForException(FirewallExceptionV3 ex, List<RuleDef> ruleset)
         {
-            if (string.IsNullOrEmpty(ex.AppID))
+            if (ex.Id == Guid.Empty)
             {
 // Do not let the service crash if a rule cannot be constructed 
 #if DEBUG
                 throw new InvalidOperationException("Firewall exception specification must have an ID.");
 #else
-                ex.RegenerateID();
-                ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
+                ex.RegenerateId();
+                GlobalInstances.ConfigChangeset = Guid.NewGuid();
 #endif
             }
 
-            if (ex.AlwaysBlockTraffic)
+            switch (ex.Policy.PolicyType)
             {
-                RuleDef def = new RuleDef(ex.AppID, "Block", PacketAction.Block, RuleDirection.InOut, Protocol.Any);
-                def.Application = ex.ExecutablePath;
-                def.ServiceName = ex.ServiceName;
-                ruleset.Add(def);
-                return;
-            }
-            if (ex.UnrestricedTraffic)
-            {
-                RuleDef def = new RuleDef(ex.AppID, "Full access", PacketAction.Allow, RuleDirection.InOut, Protocol.Any);
-                def.Application = ex.ExecutablePath;
-                def.ServiceName = ex.ServiceName;
-                if (ex.LocalNetworkOnly)
-                    def.RemoteAddresses = "LocalSubnet";
-                ruleset.Add(def);
-                return;
-            }
-
-            if (ex.Profiles != null)
-            {
-                for (int i = 0; i < ex.Profiles.Count; ++i)    // for each profile
-                {
-                    // Get the rules for this profile
-                    Profile p = GlobalInstances.ProfileMan.GetProfile(ex.Profiles[i]);
-                    if (p == null)
-                        continue;
-
-                    for (int j = 0; j < p.Rules.Length; ++j)    // for each rule in profile
+                case PolicyType.HardBlock:
                     {
-                        RuleDef def = p.Rules[j];
-                        def.ExceptionId = ex.AppID;
-                        def.Application = ex.ExecutablePath;
-                        def.ServiceName = ex.ServiceName;
-                        if (ex.LocalNetworkOnly)
+                        RuleDef def = new RuleDef(ex.Id, "Block", ex.Subject, RuleAction.Block, RuleDirection.InOut, Protocol.Any);
+                        ruleset.Add(def);
+                        break;
+                    }
+                case PolicyType.Unrestricted:
+                    {
+                        RuleDef def = new RuleDef(ex.Id, "Full access", ex.Subject, RuleAction.Allow, RuleDirection.InOut, Protocol.Any);
+                        if ((ex.Policy as UnrestrictedPolicy).LocalNetworkOnly)
                             def.RemoteAddresses = "LocalSubnet";
                         ruleset.Add(def);
+                        break;
                     }
-                }
-            }
-
-            // Add extra ports
-            if (!string.IsNullOrEmpty(ex.OpenPortListenLocalTCP))
-            {
-                RuleDef def = new RuleDef(ex.AppID, "TCP Listen Ports", PacketAction.Allow, RuleDirection.In,  Protocol.TCP);
-                def.Application = ex.ExecutablePath;
-                def.ServiceName = ex.ServiceName;
-                if (!ex.OpenPortListenLocalTCP.Equals("*"))
-                    def.LocalPorts = ex.OpenPortListenLocalTCP;
-                if (ex.LocalNetworkOnly)
-                    def.RemoteAddresses = "LocalSubnet";
-                ruleset.Add(def);
-            }
-            if (!string.IsNullOrEmpty(ex.OpenPortListenLocalUDP))
-            {
-                RuleDef def = new RuleDef(ex.AppID, "UDP Listen Ports", PacketAction.Allow, RuleDirection.In, Protocol.UDP);
-                def.Application = ex.ExecutablePath;
-                def.ServiceName = ex.ServiceName;
-                if (!ex.OpenPortListenLocalUDP.Equals("*"))
-                    def.LocalPorts = ex.OpenPortListenLocalUDP;
-                if (ex.LocalNetworkOnly)
-                    def.RemoteAddresses = "LocalSubnet";
-                ruleset.Add(def);
-            }
-            if (!string.IsNullOrEmpty(ex.OpenPortOutboundRemoteTCP))
-            {
-                RuleDef def = new RuleDef(ex.AppID, "TCP Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.TCP);
-                def.Application = ex.ExecutablePath;
-                def.ServiceName = ex.ServiceName;
-                if (!ex.OpenPortOutboundRemoteTCP.Equals("*"))
-                    def.RemotePorts = ex.OpenPortOutboundRemoteTCP;
-                if (ex.LocalNetworkOnly)
-                    def.RemoteAddresses = "LocalSubnet";
-                ruleset.Add(def);
-            }
-            if (!string.IsNullOrEmpty(ex.OpenPortOutboundRemoteUDP))
-            {
-                RuleDef def = new RuleDef(ex.AppID, "UDP Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.UDP);
-                def.Application = ex.ExecutablePath;
-                def.ServiceName = ex.ServiceName;
-                if (!ex.OpenPortOutboundRemoteUDP.Equals("*"))
-                    def.RemotePorts = ex.OpenPortOutboundRemoteUDP;
-                if (ex.LocalNetworkOnly)
-                    def.RemoteAddresses = "LocalSubnet";
-                ruleset.Add(def);
+                case PolicyType.TcpUdpOnly:
+                    {
+                        TcpUdpPolicy pol = ex.Policy as TcpUdpPolicy;
+                        if (!string.IsNullOrEmpty(pol.AllowedLocalTcpListenerPorts))
+                        {
+                            RuleDef def = new RuleDef(ex.Id, "TCP Listen Ports", ex.Subject, RuleAction.Allow, RuleDirection.In, Protocol.TCP);
+                            if (!pol.AllowedLocalTcpListenerPorts.Equals("*"))
+                                def.LocalPorts = pol.AllowedLocalTcpListenerPorts;
+                            if (pol.LocalNetworkOnly)
+                                def.RemoteAddresses = "LocalSubnet";
+                            ruleset.Add(def);
+                        }
+                        if (!string.IsNullOrEmpty(pol.AllowedLocalUdpListenerPorts))
+                        {
+                            RuleDef def = new RuleDef(ex.Id, "UDP Listen Ports", ex.Subject, RuleAction.Allow, RuleDirection.In, Protocol.UDP);
+                            if (!pol.AllowedLocalUdpListenerPorts.Equals("*"))
+                                def.LocalPorts = pol.AllowedLocalUdpListenerPorts;
+                            if (pol.LocalNetworkOnly)
+                                def.RemoteAddresses = "LocalSubnet";
+                            ruleset.Add(def);
+                        }
+                        if (!string.IsNullOrEmpty(pol.AllowedRemoteTcpConnectPorts))
+                        {
+                            RuleDef def = new RuleDef(ex.Id, "TCP Outbound Ports", ex.Subject, RuleAction.Allow, RuleDirection.Out, Protocol.TCP);
+                            if (!pol.AllowedRemoteTcpConnectPorts.Equals("*"))
+                                def.RemotePorts = pol.AllowedRemoteTcpConnectPorts;
+                            if (pol.LocalNetworkOnly)
+                                def.RemoteAddresses = "LocalSubnet";
+                            ruleset.Add(def);
+                        }
+                        if (!string.IsNullOrEmpty(pol.AllowedRemoteUdpConnectPorts))
+                        {
+                            RuleDef def = new RuleDef(ex.Id, "UDP Outbound Ports", ex.Subject, RuleAction.Allow, RuleDirection.Out, Protocol.UDP);
+                            if (!pol.AllowedRemoteUdpConnectPorts.Equals("*"))
+                                def.RemotePorts = pol.AllowedRemoteUdpConnectPorts;
+                            if (pol.LocalNetworkOnly)
+                                def.RemoteAddresses = "LocalSubnet";
+                            ruleset.Add(def);
+                        }
+                        break;
+                    }
+                case PolicyType.RuleList:
+                    {
+                        RuleListPolicy pol = ex.Policy as RuleListPolicy;
+                        ruleset.AddRange(pol.Rules);
+                        break;
+                    }
             }
         }
 
@@ -394,8 +371,8 @@ namespace PKSoft
 
                 Firewall.ResetFirewall();
                 Firewall.Enabled = true;
-                Firewall.DefaultInboundAction = PacketAction.Block;
-                Firewall.DefaultOutboundAction = PacketAction.Block;
+                Firewall.DefaultInboundAction = RuleAction.Block;
+                Firewall.DefaultOutboundAction = RuleAction.Block;
                 Firewall.BlockAllInboundTraffic = false;
                 Firewall.NotificationsDisabled = true;
 
@@ -407,8 +384,8 @@ namespace PKSoft
                 // --- THREAD BARRIER ---
             }
 
-            ActiveConfig.Service = ServiceSettings21.Load();
-            ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
+            ActiveConfig.Service = ConfigManager.LoadServerConfig();
+            GlobalInstances.ConfigChangeset = Guid.NewGuid();
             VisibleState.Mode = ActiveConfig.Service.StartupMode;
 
             ReapplySettings(FwRules);
@@ -440,18 +417,19 @@ namespace PKSoft
                 MinuteTimer = null;
             }
 
-            MinuteTimer = new Timer(new TimerCallback(TimerCallback), null, 60000, 60000);
+            // TODO: re-enable for release
+            //MinuteTimer = new Timer(new TimerCallback(TimerCallback), null, 60000, 60000);
         }
 
         private void LoadDatabase()
         {
             try
             {
-                GlobalInstances.ProfileMan = ProfileManager.Load(ProfileManager.DBPath);
+                GlobalInstances.AppDatabase = DatabaseClasses.AppDatabase.Load(Obsolete.ProfileManager.DBPath);
             }
             catch
             {
-                GlobalInstances.ProfileMan = new ProfileManager();
+                GlobalInstances.AppDatabase = new DatabaseClasses.AppDatabase();
             }
         }
 
@@ -469,8 +447,8 @@ namespace PKSoft
             }
             finally
             {
-                ActiveConfig.Service.LastUpdateCheck = DateTime.Now;
-                ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
+                ActiveConfig.Service.LastUpdateCheck = DateTime.Now;    // TODO do not invalidate client config just because LastUpdateCheck
+                GlobalInstances.ConfigChangeset = Guid.NewGuid();
                 ActiveConfig.Service.Save();
             }
 
@@ -478,7 +456,7 @@ namespace PKSoft
                 return;
 
             UpdateModule module = UpdateChecker.GetDatabaseFileModule(VisibleState.Update);
-            if (!module.DownloadHash.Equals(Utils.HexEncode(Hasher.HashFile(ProfileManager.DBPath)), StringComparison.OrdinalIgnoreCase))
+            if (!module.DownloadHash.Equals(Hasher.HashFile(Obsolete.ProfileManager.DBPath), StringComparison.OrdinalIgnoreCase))
             {
                 GetCompressedUpdate(module, DatabaseUpdateInstall);
             }
@@ -502,7 +480,7 @@ namespace PKSoft
                 }
                 Utils.DecompressDeflate(tmpCompressedPath, tmpFile);
 
-                if (Utils.HexEncode(Hasher.HashFile(tmpFile)).Equals(module.DownloadHash, StringComparison.OrdinalIgnoreCase))
+                if (Hasher.HashFile(tmpFile).Equals(module.DownloadHash, StringComparison.OrdinalIgnoreCase))
                     installMethod(tmpFile);
             }
             catch { }
@@ -537,31 +515,30 @@ namespace PKSoft
         {
             string tmpFilePath = (string)file;
 
-            FileLocker.UnlockFile(ProfileManager.DBPath);
-            File.Copy(tmpFilePath, ProfileManager.DBPath, true);
-            FileLocker.LockFile(ProfileManager.DBPath, FileAccess.Read, FileShare.Read);
-            NotifyController(TWServiceMessages.DATABASE_UPDATED);
-            Q.Enqueue(new ReqResp(new Message(TWControllerMessages.REINIT)));
+            FileLocker.UnlockFile(Obsolete.ProfileManager.DBPath);
+            File.Copy(tmpFilePath, Obsolete.ProfileManager.DBPath, true);
+            FileLocker.LockFile(Obsolete.ProfileManager.DBPath, FileAccess.Read, FileShare.Read);
+            NotifyController(MessageType.DATABASE_UPDATED);
+            Q.Enqueue(new TwMessage(MessageType.REINIT), null);
         }
 
-        private void NotifyController(TWServiceMessages msg)
+        private void NotifyController(MessageType msg)
         {
             VisibleState.ClientNotifs.Add(msg);
-            ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
-        }
+            GlobalInstances.ConfigChangeset = Guid.NewGuid();        }
 
         internal void TimerCallback(Object state)
         {
             // This timer is called every minute.
 
             // Check if a timed exception has expired
-            if (!Q.HasRequest(TWControllerMessages.MINUTE_TIMER))
-                Q.Enqueue(new ReqResp(new Message(TWControllerMessages.MINUTE_TIMER)));
+            if (!Q.HasMessageType(MessageType.MINUTE_TIMER))
+                Q.Enqueue(new TwMessage(MessageType.MINUTE_TIMER), null);
 
             // Check for inactivity and lock if necessary
             if (DateTime.Now - LastControllerCommandTime > TimeSpan.FromMinutes(10))
             {
-                Q.Enqueue(new ReqResp(new Message(TWControllerMessages.LOCK)));
+                Q.Enqueue(new TwMessage(MessageType.LOCK), null);
             }
 
             // Check for updates once every 2 days
@@ -588,7 +565,7 @@ namespace PKSoft
 
         private void LogWatcher_NewLogEntry(object sender, EventArgs e)
         {
-            if (VisibleState.Mode != FirewallMode.Learning)
+            if (VisibleState.Mode != TinyWall.Interface.FirewallMode.Learning)
                 return;
 
             lock (LogWatcher)
@@ -612,12 +589,14 @@ namespace PKSoft
                         continue;
 
                     if (LearningNewExceptions == null)
-                        LearningNewExceptions = new List<FirewallException>();
+                        LearningNewExceptions = new List<FirewallExceptionV3>();
+
+                    ExecutableSubject newSubject = new ExecutableSubject(entry.AppPath);
 
                     bool alreadyExists = false;
                     for (int j = 0; j < LearningNewExceptions.Count; ++j)
                     {
-                        if (LearningNewExceptions[j].ExecutablePath.Equals(entry.AppPath, StringComparison.OrdinalIgnoreCase))
+                        if (LearningNewExceptions[j].Subject.Equals(newSubject))
                         {
                             alreadyExists = true;
                             break;
@@ -626,23 +605,31 @@ namespace PKSoft
                     if (alreadyExists)
                         continue;
 
-                    if (LearningKnownApplication == null)
-                        LearningKnownApplication = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
-
-                    FirewallException ex = new FirewallException(entry.AppPath, null, false);
-                    if (((entry.Direction == RuleDirection.In) && (entry.Event == EventLogEvent.ALLOWED_CONNECTION))
-                        || entry.Event == EventLogEvent.ALLOWED_LISTEN)
+                    List<FirewallExceptionV3> knownExceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(newSubject, false);
+                    if (0 == knownExceptions.Count)
                     {
-                        ex.OpenPortListenLocalTCP = "*";
-                        ex.OpenPortListenLocalUDP = "*";
+                        // Unknown file, add with unrestricted policy
+                        FirewallExceptionV3 fwex = new FirewallExceptionV3(newSubject, null);
+                        TcpUdpPolicy policy = new TcpUdpPolicy();
+                        if (((entry.Direction == RuleDirection.In) && (entry.Event == EventLogEvent.ALLOWED_CONNECTION))
+                            || entry.Event == EventLogEvent.ALLOWED_LISTEN)
+                        {
+                            policy.AllowedLocalTcpListenerPorts = "*";
+                            policy.AllowedLocalUdpListenerPorts = "*";
+                        }
+                        else
+                        {
+                            policy.AllowedRemoteTcpConnectPorts = "*";
+                            policy.AllowedRemoteUdpConnectPorts = "*";
+                        }
+                        fwex.Policy = policy;
+                        LearningNewExceptions.Add(fwex);
                     }
                     else
                     {
-                        ex.OpenPortOutboundRemoteTCP = "*";
-                        ex.OpenPortOutboundRemoteUDP = "*";
+                        // Known file, add its exceptions, along with other files that belong to this app
+                        LearningNewExceptions.AddRange(knownExceptions);
                     }
-                    List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(ex, false, false, false, LearningKnownApplication);
-                    LearningNewExceptions.AddRange(exceptions);
                 }
             }
         }
@@ -661,29 +648,27 @@ namespace PKSoft
             {
                 lock (LogWatcher)
                 {
-                    foreach (FirewallException ex in LearningNewExceptions)
+                    foreach (FirewallExceptionV3 ex in LearningNewExceptions)
                     {
-                        System.Diagnostics.Debug.Assert(ex.Template == false);
                         needsSave = true;
-                        ActiveConfig.Service.AppExceptions.Add(ex);
+                        ActiveConfig.Service.ActiveProfile.AppExceptions.Add(ex);
                     }
 
-                    LearningKnownApplication = null;
                     LearningNewExceptions = null;
                 }
 
-                ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
+                GlobalInstances.ConfigChangeset = Guid.NewGuid();
             }
 
             return needsSave;
         }
 
-        private bool TestExceptionList(List<FirewallException> testList)
+        private bool TestExceptionList(List<FirewallExceptionV3> testList)
         {
             try
             {
                 List<RuleDef> defs = new List<RuleDef>();
-                foreach (FirewallException ex in testList)
+                foreach (FirewallExceptionV3 ex in testList)
                 {
                     GetRulesForException(ex, defs);
                 }
@@ -691,7 +676,7 @@ namespace PKSoft
                 List<Rule> ruleList = new List<Rule>();
                 foreach (RuleDef def in defs)
                 {
-                    def.ConstructRule(ruleList);
+                    Rule.ConstructRule(ruleList, def);
                 }
 
                 return true;
@@ -702,33 +687,33 @@ namespace PKSoft
             }
         }
 
-        private Message ProcessCmd(Message req)
+        private TwMessage ProcessCmd(TwMessage req)
         {
-            switch (req.Command)
+            switch (req.Type)
             {
-                case TWControllerMessages.READ_FW_LOG:
+                case MessageType.READ_FW_LOG:
                     {
-                        return new Message(TWControllerMessages.RESPONSE_OK, GetFwLog());
+                        return new TwMessage(MessageType.RESPONSE_OK, GetFwLog());
                     }
-                case TWControllerMessages.IS_LOCKED:
+                case MessageType.IS_LOCKED:
                     {
-                      return new Message(TWControllerMessages.RESPONSE_OK, ServiceLocker.Locked);
+                      return new TwMessage(MessageType.RESPONSE_OK, ServiceLocker.Locked);
                     }
-                case TWControllerMessages.PING:
+                case MessageType.PING:
                     {
-                        return new Message(TWControllerMessages.RESPONSE_OK);
+                        return new TwMessage(MessageType.RESPONSE_OK);
                     }
-                case TWControllerMessages.TEST_EXCEPTION:
+                case MessageType.TEST_EXCEPTION:
                     {
-                        List<FirewallException> testList = req.Arguments[0] as List<FirewallException>;
+                        List<FirewallExceptionV3> testList = req.Arguments[0] as List<FirewallExceptionV3>;
                         if (TestExceptionList(testList))
-                            return new Message(TWControllerMessages.RESPONSE_OK);
+                            return new TwMessage(MessageType.RESPONSE_OK);
                         else
-                            return new Message(TWControllerMessages.RESPONSE_ERROR);
+                            return new TwMessage(MessageType.RESPONSE_ERROR);
                     }
-                case TWControllerMessages.MODE_SWITCH:
+                case MessageType.MODE_SWITCH:
                     {
-                        VisibleState.Mode = (FirewallMode)req.Arguments[0];
+                        VisibleState.Mode = (TinyWall.Interface.FirewallMode)req.Arguments[0];
 
                         Policy Firewall = new Policy();
                         if (CommitLearnedRules())
@@ -739,8 +724,8 @@ namespace PKSoft
                         MergeActiveRulesIntoWinFirewall(Firewall.GetRules(false));
 
                         if (
-                               (VisibleState.Mode != FirewallMode.Disabled)
-                            && (VisibleState.Mode != FirewallMode.Learning)
+                               (VisibleState.Mode != TinyWall.Interface.FirewallMode.Disabled)
+                            && (VisibleState.Mode != TinyWall.Interface.FirewallMode.Learning)
                            )
                         {
                             ActiveConfig.Service.StartupMode = VisibleState.Mode;
@@ -748,46 +733,41 @@ namespace PKSoft
                         }
 
                         if (Firewall.LocalPolicyModifyState == LocalPolicyState.GP_OVERRRIDE)
-                            return new Message(TWControllerMessages.RESPONSE_WARNING);
+                            return new TwMessage(MessageType.RESPONSE_WARNING);
                         else
-                            return new Message(TWControllerMessages.RESPONSE_OK);
+                            return new TwMessage(MessageType.RESPONSE_OK);
                     }
-                case TWControllerMessages.PUT_SETTINGS:
+                case MessageType.PUT_SETTINGS:
                     {
-                        ServiceSettings21 newConf = (ServiceSettings21)req.Arguments[0];
-                        if (newConf.SequenceNumber == ActiveConfig.Service.SequenceNumber)
+                        ServerConfiguration newConf = (ServerConfiguration)req.Arguments[0];
+                        Guid clientChangeset = (Guid)req.Arguments[1];
+                        MessageType resp = (clientChangeset == GlobalInstances.ConfigChangeset) ? MessageType.RESPONSE_OK : MessageType.RESPONSE_WARNING;
+                        if (MessageType.RESPONSE_OK == resp)
                         {
-                            if (!TestExceptionList(newConf.AppExceptions))
-                                return new Message(TWControllerMessages.RESPONSE_ERROR);
+                            if (!TestExceptionList(newConf.ActiveProfile.AppExceptions))
+                                return new TwMessage(MessageType.RESPONSE_ERROR);
 
                             ActiveConfig.Service = newConf;
-                            ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
+                            GlobalInstances.ConfigChangeset = Guid.NewGuid();
                             ActiveConfig.Service.Save();
                             Policy Firewall = new Policy();
                             ReapplySettings(Firewall.GetRules(false));
-                            return new Message(TWControllerMessages.RESPONSE_OK, ActiveConfig.Service.SequenceNumber);
                         }
-                        else
-                        {
-                            return new Message(TWControllerMessages.RESPONSE_WARNING,
-                                ActiveConfig.Service,
-                                VisibleState
-                                );
-                        }
+                        return new TwMessage(resp, ActiveConfig.Service, GlobalInstances.ConfigChangeset, VisibleState);
                     }
-                case TWControllerMessages.GET_SETTINGS:
+                case MessageType.GET_SETTINGS:
                     {
                         // Get changeset of client
-                        int changeset = (int)req.Arguments[0];
+                        Guid changeset = (Guid)req.Arguments[0];
 
                         // If our changeset is different, send new settings to client
-                        if (changeset != ActiveConfig.Service.SequenceNumber)
+                        if (changeset != GlobalInstances.ConfigChangeset)
                         {
                             VisibleState.HasPassword = ServiceLocker.HasPassword;
                             VisibleState.Locked = ServiceLocker.Locked;
 
-                            Message ret = new Message(TWControllerMessages.RESPONSE_OK,
-                                ActiveConfig.Service.SequenceNumber,
+                            TwMessage ret = new TwMessage(MessageType.RESPONSE_OK,
+                                GlobalInstances.ConfigChangeset,
                                 ActiveConfig.Service,
                                 Utils.DeepClone(VisibleState)
                                 );
@@ -798,64 +778,68 @@ namespace PKSoft
                         else
                         {
                             // Our changeset is the same, so do not send settings again
-                            return new Message(TWControllerMessages.RESPONSE_OK, ActiveConfig.Service.SequenceNumber);
+                            return new TwMessage(MessageType.RESPONSE_OK, GlobalInstances.ConfigChangeset);
                         }
                     }
-                case TWControllerMessages.REINIT:
+                case MessageType.REINIT:
                     {
                         if (CommitLearnedRules())
                             ActiveConfig.Service.Save();
                         InitFirewall();
-                        return new Message(TWControllerMessages.RESPONSE_OK);
+                        return new TwMessage(MessageType.RESPONSE_OK);
                     }
-                case TWControllerMessages.UNLOCK:
+                case MessageType.UNLOCK:
                     {
                         if (ServiceLocker.Unlock((string)req.Arguments[0]))
-                            return new Message(TWControllerMessages.RESPONSE_OK);
+                            return new TwMessage(MessageType.RESPONSE_OK);
                         else
-                            return new Message(TWControllerMessages.RESPONSE_ERROR);
+                            return new TwMessage(MessageType.RESPONSE_ERROR);
                     }
-                case TWControllerMessages.LOCK:
+                case MessageType.LOCK:
                     {
                         ServiceLocker.Locked = true;
-                        return new Message(TWControllerMessages.RESPONSE_OK);
+                        return new TwMessage(MessageType.RESPONSE_OK);
                     }
-                case TWControllerMessages.GET_PROCESS_PATH:
+                case MessageType.GET_PROCESS_PATH:
                     {
                         int pid = (int)req.Arguments[0];
                         string path = Utils.GetPathOfProcess(pid);
                         if (string.IsNullOrEmpty(path))
-                            return new Message(TWControllerMessages.RESPONSE_ERROR);
+                            return new TwMessage(MessageType.RESPONSE_ERROR);
                         else
-                            return new Message(TWControllerMessages.RESPONSE_OK, path);
+                            return new TwMessage(MessageType.RESPONSE_OK, path);
                     }
-                case TWControllerMessages.SET_PASSPHRASE:
+                case MessageType.SET_PASSPHRASE:
                     {
                         FileLocker.UnlockFile(ServiceSettings.PasswordFilePath);
                         try
                         {
                             ServiceLocker.SetPass((string)req.Arguments[0]);
-                            return new Message(TWControllerMessages.RESPONSE_OK);
+                            return new TwMessage(MessageType.RESPONSE_OK);
                         }
                         catch
                         {
-                            return new Message(TWControllerMessages.RESPONSE_ERROR);
+                            return new TwMessage(MessageType.RESPONSE_ERROR);
                         }
                         finally
                         {
                             FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
                         }
                     }
-                case TWControllerMessages.STOP_DISABLE:
+                case MessageType.STOP_SERVICE:
+                    {
+                        RunService = false;
+                        return new TwMessage(MessageType.RESPONSE_OK);
+                    }
+                case MessageType.STOP_DISABLE:
                     {
                         UninstallRequested = true;
-                        Shutdown();
-                        Environment.Exit(0);
-                        return new Message(TWControllerMessages.RESPONSE_OK);
+                        RunService = false;
+                        return new TwMessage(MessageType.RESPONSE_OK);
                     }
-                case TWControllerMessages.MINUTE_TIMER:
+                case MessageType.MINUTE_TIMER:
                     {
-                        if (VisibleState.Mode != FirewallMode.Learning)
+                        if (VisibleState.Mode != TinyWall.Interface.FirewallMode.Learning)
                         {
                             // Disable firewall logging if its log has not been read recently
                             if (DateTime.Now - LastFwLogReadTime > TimeSpan.FromMinutes(2))
@@ -873,7 +857,7 @@ namespace PKSoft
                         // Check all exceptions if any one has expired
                         Policy Firewall = new Policy();
                         WindowsFirewall.Rules FwRules = Firewall.GetRules(false);
-                        List<FirewallException> exs = ActiveConfig.Service.AppExceptions;
+                        List<FirewallExceptionV3> exs = ActiveConfig.Service.ActiveProfile.AppExceptions;
                         for (int i = exs.Count-1; i >= 0; --i)
                         {
                             // Timer values above zero are the number of minutes to stay active
@@ -884,7 +868,7 @@ namespace PKSoft
                             if (exs[i].CreationDate.AddMinutes((double)exs[i].Timer) <= DateTime.Now)
                             {
                                 // Remove rule
-                                string appid = exs[i].AppID;
+                                string appid = exs[i].Id.ToString();
 
                                 // Search for the exception identifier in the rule name.
                                 // Remove rules with a match.
@@ -902,16 +886,16 @@ namespace PKSoft
 
                         if (needsSave)
                         {
-                            ActiveConfig.Service.AppExceptions = exs;
-                            ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
+                            ActiveConfig.Service.ActiveProfile.AppExceptions = exs;
+                            GlobalInstances.ConfigChangeset = Guid.NewGuid();
                             ActiveConfig.Service.Save();
                         }
 
-                        return new Message(TWControllerMessages.RESPONSE_OK);
+                        return new TwMessage(MessageType.RESPONSE_OK);
                     }
                 default:
                     {
-                        return new Message(TWControllerMessages.RESPONSE_ERROR);
+                        return new TwMessage(MessageType.RESPONSE_ERROR);
                     }
             }
         }
@@ -935,39 +919,49 @@ namespace PKSoft
                 }
                 catch
                 {
+                    // TODO: deprecated, only need to handle this on Vista
                     EventLog.WriteEntry("Unable to listen for firewall events. Windows Firewall monitoring will be turned off.");
                 }
 
-                while (true)
+                RunService = true;
+                while (RunService)
                 {
-                    ReqResp req = Q.Dequeue();
-                    req.Response = ProcessCmd(req.Request);
-                    req.SignalResponse();
+                    TwMessage msg;
+                    Future<TwMessage> future;
+                    Q.Dequeue(out msg, out future);
+
+                    TwMessage resp;
+                    resp = ProcessCmd(msg);
+                    if (null != future)
+                        future.Value = resp;
                 }
             }
             finally
             {
                 if (WFEventWatcher != null)
                     WFEventWatcher.Dispose();
+
+                Cleanup();
+                Environment.Exit(0);
             }
         }
 
         // Entry point for thread that listens to commands from the controller application.
-        private Message PipeServerDataReceived(Message req)
+        private TwMessage PipeServerDataReceived(TwMessage req)
         {
-            if (((int)req.Command > 2047) && ServiceLocker.Locked)
+            if (((int)req.Type > 2047) && ServiceLocker.Locked)
             {
                 // Notify that we need to be unlocked first
-                return new Message(TWControllerMessages.RESPONSE_LOCKED, 1);
+                return new TwMessage(MessageType.RESPONSE_LOCKED, 1);
             }
             else
             {
                 LastControllerCommandTime = DateTime.Now;
 
                 // Process and wait for response
-                ReqResp qItem = new ReqResp(req);
-                Q.Enqueue(qItem);
-                Message resp = qItem.GetResponse();
+                Future<TwMessage> future = new Future<TwMessage>();
+                Q.Enqueue(req, future);
+                TwMessage resp = future.Value;
 
                 // Send response back to pipe
                 return resp;
@@ -978,61 +972,61 @@ namespace PKSoft
         private readonly string[] WhitelistedApps = new string[]
                 {
 #if DEBUG
-                    Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "TinyWall.vshost.exe"),
+                    Path.Combine(Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath), "TinyWall.vshost.exe"),
 #endif
-                    Utils.ExecutablePath,
+                    TinyWall.Interface.Internal.Utils.ExecutablePath,
                     Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "dllhost.exe")
                 };
         private void WFEventWatcher_EventRecordWritten(object sender, EventRecordWrittenEventArgs e)
         {
             // Do nothing if the firewall is in disabled mode
-            if (VisibleState.Mode == FirewallMode.Disabled)
+            if (VisibleState.Mode == TinyWall.Interface.FirewallMode.Disabled)
                 return;
 
             int propidx = -1;
-            TWControllerMessages cmd = TWControllerMessages.INVALID_COMMAND;
+            MessageType cmd = MessageType.INVALID_COMMAND;
             switch (e.EventRecord.Id)
             {
                 case 2003:     // firewall setting changed
                     {
                         propidx = 7;
-                        cmd = TWControllerMessages.REINIT;
+                        cmd = MessageType.REINIT;
                         break;
                     }
                 case 2004:     // rule added
                     {
                         propidx = 22;
-                        cmd = TWControllerMessages.REINIT;
+                        cmd = MessageType.REINIT;
                         break;
                     }
                 case 2005:     // rule changed
                     {
                         propidx = 22;
-                        cmd = TWControllerMessages.REINIT;
+                        cmd = MessageType.REINIT;
                         break;
                     }
                 case 2006:     // rule deleted
                     {
                         propidx = 3;
-                        cmd = TWControllerMessages.REINIT;
+                        cmd = MessageType.REINIT;
                         break;
                     }
                 case 2010:     // network interface changed profile
                     {
-                        cmd = TWControllerMessages.REINIT;
+                        cmd = MessageType.REINIT;
                         break;
                     }
                 case 2032:     // firewall has been reset
                     {
                         propidx = 1;
-                        cmd = TWControllerMessages.REINIT;
+                        cmd = MessageType.REINIT;
                         break;
                     }
                 default:
                     break;
             }
 
-            if ((cmd != TWControllerMessages.INVALID_COMMAND) && (!Q.HasRequest(cmd)))
+            if ((cmd != MessageType.INVALID_COMMAND) && (!Q.HasMessageType(cmd)))
             {
               /* EVpath has bogus empty value when run inside the IDE, so triggered by itself,
                * it brings the TW service into an infinite REINIT loop.
@@ -1056,7 +1050,7 @@ namespace PKSoft
 
                 }
 
-                Q.Enqueue(new ReqResp(new Message(cmd)));
+                Q.Enqueue(new TwMessage(cmd), null);
 #endif
             }
         }
@@ -1083,9 +1077,9 @@ namespace PKSoft
             ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object dummy)
             {
                 EventLog.WriteEntry("TinyWall service starting up.");
-                VisibleState = new ServiceState();
+                VisibleState = new ServerState();
 
-                FileLocker.LockFile(ProfileManager.DBPath, FileAccess.Read, FileShare.Read);
+                FileLocker.LockFile(Obsolete.ProfileManager.DBPath, FileAccess.Read, FileShare.Read);
                 FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
 
                 // Lock configuration if we have a password
@@ -1094,8 +1088,8 @@ namespace PKSoft
                     ServiceLocker.Locked = true;
 
                 // Issue load command
-                Q = new RequestQueue();
-                Q.Enqueue(new ReqResp(new Message(TWControllerMessages.REINIT)));
+                Q = new BoundedMessageQueue();
+                Q.Enqueue(new TwMessage(MessageType.REINIT), null);
 
                 // Start thread that is going to control Windows Firewall
                 FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod));
@@ -1103,7 +1097,7 @@ namespace PKSoft
                 FirewallWorkerThread.Start();
 
                 // Fire up pipe
-                GlobalInstances.CommunicationMan = new PipeCom(new PipeDataReceived(PipeServerDataReceived));
+                GlobalInstances.ServerPipe = new PipeServerEndpoint(new PipeDataReceived(PipeServerDataReceived));
 
 #if !DEBUG
                 // Messing with the SCM in this method would hang us, so start it parallel
@@ -1127,16 +1121,22 @@ namespace PKSoft
         // Executed when service is stopped manually.
         protected override void OnStop()
         {
-            Shutdown();
+            RequestStop();
         }
 
-        private void Shutdown()
+        private void RequestStop()
         {
-            FirewallWorkerThread.Abort();
+            TwMessage req = new TwMessage(MessageType.STOP_SERVICE);
+            Future<TwMessage> future = new Future<TwMessage>();
+            Q.Enqueue(req, future);
+            TwMessage resp = future.Value;
+        }
 
+        private void Cleanup()
+        {
             // Check all exceptions if any one has expired
             {
-                List<FirewallException> exs = ActiveConfig.Service.AppExceptions;
+                List<FirewallExceptionV3> exs = ActiveConfig.Service.ActiveProfile.AppExceptions;
                 for (int i = exs.Count-1; i >= 0; --i)
                 {
                     // Did this one expire?
@@ -1146,7 +1146,7 @@ namespace PKSoft
                         exs.RemoveAt(i);
                     }
                 }
-                ActiveConfig.Service.AppExceptions = exs;
+                ActiveConfig.Service.ActiveProfile.AppExceptions = exs;
             }
 
             CommitLearnedRules();
@@ -1175,14 +1175,12 @@ namespace PKSoft
                 }
             }
             catch { }
-
-            Environment.Exit(0);
         }
 
         // Executed on computer shutdown.
         protected override void OnShutdown()
         {
-            Shutdown();
+            RequestStop();
         }
 
 #if DEBUG

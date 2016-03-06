@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using TinyWall.Interface.Internal;
 
 namespace PKSoft
 {
@@ -51,7 +52,7 @@ namespace PKSoft
         internal static string GetHostsHash()
         {
             if (File.Exists(HOSTS_BACKUP))
-                return Utils.HexEncode(Hasher.HashFile(HOSTS_BACKUP));
+                return Hasher.HashFile(HOSTS_BACKUP);
             else
                 return string.Empty;
         }

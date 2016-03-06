@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using TinyWall.Interface;
 
-namespace PKSoft
+namespace PKSoft.DatabaseClasses
 {
-    [Serializable]  // Needed for ICloneable implementation 
-    public sealed class Application
+    [DataContract(Namespace = "TinyWall")]
+    internal class Application
     {
         // Application name
-        [XmlAttributeAttribute()]
-        public string Name;
-        public string LocalizedName
+        [DataMember(EmitDefaultValue = false)]
+        internal string Name { get; set; }
+
+        internal string LocalizedName
         {
             get
             {
@@ -27,43 +28,49 @@ namespace PKSoft
             }
         }
 
-        // If Recommended is set to true, this profile will be recommended
-        // (and enabled) by default to the user.
-        [XmlAttributeAttribute()]
-        public bool Recommended;
-
-        // Specifies whether this application should show up
-        // in the "special exceptions" list.
-        [XmlAttributeAttribute()]
-        public bool Special;
-
         // Executables that belong to this application
-        [XmlArray("Files")]
-        public AppExceptionAssocCollection FileTemplates = new AppExceptionAssocCollection();
-
-        public bool ShouldSerializeRecommended()
-        {
-            return Recommended;
-        }
-
-        public bool ShouldSerializeSpecial()
-        {
-            return Special;
-        }
+        [DataMember(EmitDefaultValue = false)]
+        internal List<SubjectIdentity> Components { get; set; } = new List<SubjectIdentity>();
 
         public override string ToString()
         {
             return this.Name;
         }
 
-        internal bool ResolveFilePaths(string pathHint = null)
+        [DataMember(Name = "Flags", EmitDefaultValue = false)]
+        private Dictionary<string, string> Flags = null;
+
+        public void SetFlag(string flag, string value = null)
         {
-            bool foundFiles = false;
-            for (int i = 0; i < FileTemplates.Count; ++i)
+            if (Flags == null)
+                Flags = new Dictionary<string, string>();
+
+            Flags[flag.ToUpperInvariant()] = value;
+        }
+        public bool HasFlag(string flag)
+        {
+            if (Flags == null)
+                return false;
+
+            return Flags.ContainsKey(flag.ToUpperInvariant());
+        }
+        public string GetFlagValue(string flag)
+        {
+            if (Flags == null)
+                throw new KeyNotFoundException();
+
+            return Flags[flag];
+        }
+
+        public List<ExecutableSubject> FindComponents(string pathHint = null)
+        {
+            List<ExecutableSubject> ret = new List<ExecutableSubject>();
+            foreach (SubjectIdentity id in Components)
             {
-                foundFiles |= FileTemplates[i].SearchForFile(pathHint);
+                ret.AddRange(id.SearchForFile(pathHint));
             }
-            return foundFiles;
+
+            return ret;
         }
     }
 }

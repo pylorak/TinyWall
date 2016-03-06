@@ -5,11 +5,14 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Diagnostics;
 using System.Management;
-using System.ServiceProcess;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Samples;
 
+using TinyWall.Interface;
+using TinyWall.Interface.Internal;
+
+using PKSoft.DatabaseClasses;
 
 namespace PKSoft
 {
@@ -256,7 +259,7 @@ namespace PKSoft
 
         private MouseInterceptor MouseInterceptor;
         private SettingsForm ShownSettings;
-        private ServiceState FirewallState;
+        private ServerState FirewallState;
         private DateTime LastUpdateNotification = DateTime.MinValue;
 
         // Traffic rate monitoring
@@ -462,37 +465,37 @@ namespace PKSoft
             string FirewallModeName = PKSoft.Resources.Messages.FirewallModeUnknown;
             switch (FirewallState.Mode)
             {
-                case FirewallMode.Normal:
+                case TinyWall.Interface.FirewallMode.Normal:
                     Tray.Icon = PKSoft.Resources.Icons.firewall;
                     mnuMode.Image = mnuModeNormal.Image;
                     FirewallModeName = PKSoft.Resources.Messages.FirewallModeNormal;
                     break;
 
-                case FirewallMode.AllowOutgoing:
+                case TinyWall.Interface.FirewallMode.AllowOutgoing:
                     Tray.Icon = PKSoft.Resources.Icons.shield_red_small;
                     mnuMode.Image = mnuModeAllowOutgoing.Image;
                     FirewallModeName = PKSoft.Resources.Messages.FirewallModeAllowOut;
                     break;
 
-                case FirewallMode.BlockAll:
+                case TinyWall.Interface.FirewallMode.BlockAll:
                     Tray.Icon = PKSoft.Resources.Icons.shield_yellow_small;
                     mnuMode.Image = mnuModeBlockAll.Image;
                     FirewallModeName = PKSoft.Resources.Messages.FirewallModeBlockAll;
                     break;
 
-                case FirewallMode.Disabled:
+                case TinyWall.Interface.FirewallMode.Disabled:
                     Tray.Icon = PKSoft.Resources.Icons.shield_grey_small;
                     mnuMode.Image = mnuModeDisabled.Image;
                     FirewallModeName = PKSoft.Resources.Messages.FirewallModeDisabled;
                     break;
 
-                case FirewallMode.Learning:
+                case TinyWall.Interface.FirewallMode.Learning:
                     Tray.Icon = PKSoft.Resources.Icons.shield_blue_small;
                     mnuMode.Image = mnuModeLearn.Image;
                     FirewallModeName = PKSoft.Resources.Messages.FirewallModeLearn;
                     break;
 
-                case FirewallMode.Unknown:
+                case TinyWall.Interface.FirewallMode.Unknown:
                     Tray.Icon = PKSoft.Resources.Icons.shield_grey_small;
                     mnuMode.Image = PKSoft.Resources.Icons.shield_grey_small.ToBitmap();
                     FirewallModeName = PKSoft.Resources.Messages.FirewallModeUnknown;
@@ -509,72 +512,71 @@ namespace PKSoft
             // Do we have a passord at all?
             mnuLock.Visible = FirewallState.HasPassword;
 
-            mnuAllowLocalSubnet.Checked = ActiveConfig.Service.AllowLocalSubnet;
+            mnuAllowLocalSubnet.Checked = ActiveConfig.Service.ActiveProfile.AllowLocalSubnet;
             mnuEnableHostsBlocklist.Checked = ActiveConfig.Service.Blocklists.EnableBlocklists;
         }
 
-        private void SetMode(FirewallMode mode)
+        private void SetMode(TinyWall.Interface.FirewallMode mode)
         {
-            Message req = new Message(TWControllerMessages.MODE_SWITCH, mode);
-            Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
+            MessageType resp = GlobalInstances.Controller.SwitchFirewallMode(mode);
 
             string usermsg = string.Empty;
             switch (mode)
             {
-                case FirewallMode.Normal:
+                case TinyWall.Interface.FirewallMode.Normal:
                     usermsg = PKSoft.Resources.Messages.TheFirewallIsNowOperatingAsRecommended;
                     break;
 
-                case FirewallMode.AllowOutgoing:
+                case TinyWall.Interface.FirewallMode.AllowOutgoing:
                     usermsg = PKSoft.Resources.Messages.TheFirewallIsNowAllowsOutgoingConnections;
                     break;
 
-                case FirewallMode.BlockAll:
+                case TinyWall.Interface.FirewallMode.BlockAll:
                     usermsg = PKSoft.Resources.Messages.TheFirewallIsNowBlockingAllInAndOut;
                     break;
 
-                case FirewallMode.Disabled:
+                case TinyWall.Interface.FirewallMode.Disabled:
                     usermsg = PKSoft.Resources.Messages.TheFirewallIsNowDisabled;
                     break;
 
-                case FirewallMode.Learning:
+                case TinyWall.Interface.FirewallMode.Learning:
                     usermsg = PKSoft.Resources.Messages.TheFirewallIsNowLearning;
                     break;
             }
 
-            switch (resp.Command)
+            switch (resp)
             {
-                case TWControllerMessages.RESPONSE_OK:
+                case MessageType.RESPONSE_OK:
                     FirewallState.Mode = mode;
                     ShowBalloonTip(usermsg, ToolTipIcon.Info);
                     break;
                 default:
-                    DefaultPopups(resp.Command);
+                    DefaultPopups(resp);
                     break;
             }
         }
 
         private void mnuModeDisabled_Click(object sender, EventArgs e)
         {
-            SetMode(FirewallMode.Disabled);
+            SetMode(TinyWall.Interface.FirewallMode.Disabled);
             UpdateDisplay();
         }
 
         private void mnuModeNormal_Click(object sender, EventArgs e)
         {
-            SetMode(FirewallMode.Normal);
+            SetMode(TinyWall.Interface.FirewallMode.Normal);
             UpdateDisplay();
         }
 
         private void mnuModeBlockAll_Click(object sender, EventArgs e)
         {
-            SetMode(FirewallMode.BlockAll);
+            SetMode(TinyWall.Interface.FirewallMode.BlockAll);
             UpdateDisplay();
         }
 
         private void mnuAllowOutgoing_Click(object sender, EventArgs e)
         {
-            SetMode(FirewallMode.AllowOutgoing);
+            SetMode(TinyWall.Interface.FirewallMode.AllowOutgoing);
             UpdateDisplay();
         }
 
@@ -588,47 +590,42 @@ namespace PKSoft
         // Returns true if the local copy of the settings have been updated.
         private bool LoadSettingsFromServer(out bool comError, bool force = false)
         {
-            // Detect if server settings have changed in comparison to ours and download
-            // settings only if we need them. Settings are "version numbered" using the "changeset"
-            // property. We send our changeset number to the service and if it differs from his,
-            // the service will send back the settings.
+            ServerConfiguration config;
+            ServerState state = FirewallState;
 
-            bool SettingsUpdated = false;
-            if (FirewallState == null)
-                FirewallState = new ServiceState();
+            Guid inChangeset = force ? Guid.Empty : GlobalInstances.ConfigChangeset;
+            Guid outChangeset = inChangeset;
+            MessageType ret = GlobalInstances.Controller.GetServerConfig(out config, out state, ref outChangeset);
 
-            int clientChangeset = (ActiveConfig.Service == null) ? -1 : ActiveConfig.Service.SequenceNumber;
-            int serverChangeset = -2;
-            Message req = new Message(TWControllerMessages.GET_SETTINGS, force ? int.MinValue : ActiveConfig.Service.SequenceNumber);
-            Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
-            comError = (resp.Command == TWControllerMessages.COM_ERROR);
-            if (resp.Command == TWControllerMessages.RESPONSE_OK)
+            comError = (MessageType.COM_ERROR == ret);
+            bool SettingsUpdated = force || (inChangeset != outChangeset);
+
+            if (MessageType.RESPONSE_OK == ret)
             {
-                serverChangeset = (int)resp.Arguments[0];
-                if (force || (serverChangeset != clientChangeset))
+                // Update our config based on what we received
+                if (SettingsUpdated)
                 {
-                    ActiveConfig.Service = (ServiceSettings21)resp.Arguments[1];
-                    FirewallState = (ServiceState)resp.Arguments[2];
-                    SettingsUpdated = true;
+                    GlobalInstances.ConfigChangeset = outChangeset;
+                    ActiveConfig.Service = config;
+                    FirewallState = state;
                 }
-                else
-                    SettingsUpdated = false;
             }
             else
             {
                 ActiveConfig.Controller = new ControllerSettings();
-                ActiveConfig.Service = new ServiceSettings21(true);
-                FirewallState = new ServiceState();
+                ActiveConfig.Service = new ServerConfiguration();
+                FirewallState = new ServerState();
                 SettingsUpdated = true;
             }
 
+            // See if there is a new notifaction for the client
             if (SettingsUpdated)
             {
                 for (int i = 0; i < FirewallState.ClientNotifs.Count; ++i)
                 {
                     switch (FirewallState.ClientNotifs[i])
                     {
-                        case TWServiceMessages.DATABASE_UPDATED:
+                        case MessageType.DATABASE_UPDATED:
                             LoadDatabase();
                             break;
                     }
@@ -637,9 +634,10 @@ namespace PKSoft
                 UpdateDisplay();
             }
 
+            // Check for updates after time interval
             if (DateTime.Now - LastUpdateNotification > TimeSpan.FromHours(4))
             {
-                ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
+                ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object objState)
                 {
                     VerifyUpdates();
                 });
@@ -651,10 +649,8 @@ namespace PKSoft
 
         private void TrayMenu_Opening(object sender, CancelEventArgs e)
         {
-            ReqResp lockedReq = GlobalInstances.CommunicationMan.QueueMessage(new Message(TWControllerMessages.IS_LOCKED));
-
             e.Cancel = false;
-            if (FirewallState.Mode == FirewallMode.Unknown)
+            if (FirewallState.Mode == TinyWall.Interface.FirewallMode.Unknown)
             {
                 if (!TinyWallDoctor.IsServiceRunning())
                 {
@@ -665,14 +661,10 @@ namespace PKSoft
 
             mnuTrafficRate.Text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", PKSoft.Resources.Messages.TrafficIn, rxDisplay, PKSoft.Resources.Messages.TrafficOut, txDisplay);
 
-            Message lockedResp = lockedReq.GetResponse();
-            if (lockedResp.Command == TWControllerMessages.RESPONSE_OK)
-            {
-              bool locked = (bool)lockedResp.Arguments[0];
-              this.Locked = locked;
-              FirewallState.Locked = locked;
-              UpdateDisplay();
-            }
+            bool locked = GlobalInstances.Controller.IsServerLocked;
+            this.Locked = locked;
+            FirewallState.Locked = locked;
+            UpdateDisplay();
         }
 
         private void mnuWhitelistByExecutable_Click(object sender, EventArgs e)
@@ -680,76 +672,72 @@ namespace PKSoft
             if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 return;
 
-            FirewallException ex = new FirewallException(ofd.FileName, null, true);
-            ex.ServiceName = string.Empty;
-            RecognizeAskAddException(ex);
+            WhitelistSubject(new ExecutableSubject(ofd.FileName));
         }
 
         private void mnuWhitelistByProcess_Click(object sender, EventArgs e)
         {
-            List<FirewallException> exList = ProcessesForm.ChooseProcess(null, true);
-            if (exList.Count == 0) return;
+            List<string> pathList = ProcessesForm.ChooseProcess(null, true);
+            if (pathList.Count == 0) return;
 
-            foreach (FirewallException ex in exList)
+            foreach (string path in pathList)
             {
-                RecognizeAskAddException(ex);
+                WhitelistSubject(new ExecutableSubject(path));
             }
         }
 
-        internal TWControllerMessages ApplyFirewallSettings(ServiceSettings21 srvConfig, bool showUI = true)
+        internal MessageType ApplyFirewallSettings(ServerConfiguration srvConfig, bool showUI = true)
         {
-            srvConfig.SequenceNumber = ActiveConfig.Service.SequenceNumber;
-            Message req = new Message(TWControllerMessages.PUT_SETTINGS, srvConfig);
-            Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
+            ServerState state;
+            MessageType resp = GlobalInstances.Controller.SetServerConfig(ref srvConfig, ref GlobalInstances.ConfigChangeset, out state);
 
-            switch (resp.Command)
+            switch (resp)
             {
-                case TWControllerMessages.RESPONSE_OK:
+                case MessageType.RESPONSE_OK:
+                    FirewallState = state;
+                    ActiveConfig.Service = srvConfig;
                     if (showUI)
                         ShowBalloonTip(PKSoft.Resources.Messages.TheFirewallSettingsHaveBeenUpdated, ToolTipIcon.Info);
-                    ActiveConfig.Service = srvConfig;
-                    ActiveConfig.Service.SequenceNumber = (int)resp.Arguments[0];
                     break;
-                case TWControllerMessages.RESPONSE_WARNING:
-                    ActiveConfig.Service = (ServiceSettings21)resp.Arguments[0];
-                    FirewallState = (ServiceState)resp.Arguments[1];
+                case MessageType.RESPONSE_WARNING:
+                    FirewallState = state;
 
                     // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
                     if (showUI)
                         ShowBalloonTip(PKSoft.Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
                     break;
-                case TWControllerMessages.RESPONSE_ERROR:
+                case MessageType.RESPONSE_ERROR:
                     if (showUI)
                         ShowBalloonTip(PKSoft.Resources.Messages.CouldNotApplySettingsInternalError, ToolTipIcon.Warning);
                     break;
                 default:
                     if (showUI)
-                        DefaultPopups(resp.Command);
+                        DefaultPopups(resp);
                     LoadSettingsFromServer();
                     break;
             }
 
-            return resp.Command;
+            return resp;
         }
 
-        private void DefaultPopups(TWControllerMessages op)
+        private void DefaultPopups(MessageType op)
         {
             switch (op)
             {
-                case TWControllerMessages.RESPONSE_OK:
+                case MessageType.RESPONSE_OK:
                     ShowBalloonTip(PKSoft.Resources.Messages.Success, ToolTipIcon.Info);
                     break;
-                case TWControllerMessages.RESPONSE_WARNING:
+                case MessageType.RESPONSE_WARNING:
                     ShowBalloonTip(PKSoft.Resources.Messages.OtherSettingsPreventEffect, ToolTipIcon.Warning);
                     break;
-                case TWControllerMessages.RESPONSE_ERROR:
+                case MessageType.RESPONSE_ERROR:
                     ShowBalloonTip(PKSoft.Resources.Messages.OperationFailed, ToolTipIcon.Error);
                     break;
-                case TWControllerMessages.RESPONSE_LOCKED:
+                case MessageType.RESPONSE_LOCKED:
                     ShowBalloonTip(PKSoft.Resources.Messages.TinyWallIsCurrentlyLocked, ToolTipIcon.Warning);
                     Locked = true;
                     break;
-                case TWControllerMessages.COM_ERROR:
+                case MessageType.COM_ERROR:
                 default:
                     ShowBalloonTip(PKSoft.Resources.Messages.CommunicationWithTheServiceError, ToolTipIcon.Error);
                     break;
@@ -760,7 +748,7 @@ namespace PKSoft
         {
             if (Locked)
             {
-                DefaultPopups(TWControllerMessages.RESPONSE_LOCKED);
+                DefaultPopups(MessageType.RESPONSE_LOCKED);
                 return;
             }
 
@@ -788,11 +776,10 @@ namespace PKSoft
                         {
                             // Set the password. If the operation is successfull, do not report anything as we will be setting 
                             // the other settings too and we want to avoid multiple popups.
-                            Message req = new Message(TWControllerMessages.SET_PASSPHRASE, Hasher.HashString(passwd));
-                            Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
-                            if (resp.Command != TWControllerMessages.RESPONSE_OK)  // Only display a popup for setting the password if it did not succeed
+                            MessageType resp = GlobalInstances.Controller.SetPassphrase(Hasher.HashString(passwd));
+                            if (resp != MessageType.RESPONSE_OK)  // Only display a popup for setting the password if it did not succeed
                             {
-                                DefaultPopups(resp.Command);
+                                DefaultPopups(resp);
                                 return;
                             }
                             else
@@ -827,9 +814,8 @@ namespace PKSoft
                 {
                     using (Process p = Utils.GetForegroundProcess())
                     {
-                        string AppPath = p.MainModule.FileName;
-                        FirewallException ex = new FirewallException(AppPath, null, true);
-                        RecognizeAskAddException(ex);
+                        string filePath = p.MainModule.FileName;
+                        WhitelistSubject(new ExecutableSubject(filePath));
                     }
                 }
                 catch
@@ -876,79 +862,86 @@ namespace PKSoft
                     MouseInterceptor.Dispose();
                     MouseInterceptor = null;
 
-                    string AppPath = Utils.GetExecutableUnderCursor(x, y);
-                    if (string.IsNullOrEmpty(AppPath))
+                    string filePath = Utils.GetExecutableUnderCursor(x, y, GlobalInstances.Controller);
+                    if (string.IsNullOrEmpty(filePath))
                     {
                         ShowBalloonTip(PKSoft.Resources.Messages.CannotGetExecutablePathWhitelisting, ToolTipIcon.Error);
                         return;
                     }
 
-                    FirewallException ex = new FirewallException(AppPath, null, true);
-                    RecognizeAskAddException(ex);
+                    WhitelistSubject(new ExecutableSubject(filePath));
                 });
             });
         }
 
-        internal void RecognizeAskAddException(FirewallException ex)
+        internal void WhitelistSubject(ExecutableSubject subject)
         {
-            Application app;
-            AppExceptionAssoc appFile;
-            ex.TryRecognizeApp(out app, out appFile);
-            if (ActiveConfig.Controller.AskForExceptionDetails)
+            List<FirewallExceptionV3> knownExceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true);
+
+            // Did we find any related files?
+            if (knownExceptions.Count <= 1)
             {
-                using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
+                FirewallExceptionV3 fwex = null;
+                if (1 == knownExceptions.Count)
+                    fwex = knownExceptions[0];
+                else
+                    fwex = new FirewallExceptionV3(subject, new UnrestrictedPolicy());
+
+                if (ActiveConfig.Controller.AskForExceptionDetails)
                 {
-                    bool success;
-                    if (Utils.IsMetroActive(out success))
-                        Utils.ShowToastNotif(Resources.Messages.ToastInputNeeded);
+                    using (ApplicationExceptionForm f = new ApplicationExceptionForm(fwex))
+                    {
+                        bool success;
+                        if (Utils.IsMetroActive(out success))
+                            Utils.ShowToastNotif(Resources.Messages.ToastInputNeeded);
 
-                    if (f.ShowDialog() == DialogResult.Cancel)
-                        return;
+                        if (f.ShowDialog() == DialogResult.Cancel)
+                            return;
 
-                    ex = f.ExceptionSettings;
+                        knownExceptions = f.ExceptionSettings;
+                    }
                 }
             }
 
-            AddNewException(ex, appFile);
+            // Known file, add its exceptions, along with other files that belong to this app
+            foreach(FirewallExceptionV3 fwex in knownExceptions)
+                AddNewException(fwex);
         }
 
+        // Called when a user double-clicks on a popup to edit the most recent exception
         private void EditRecentException(object sender, AnyEventArgs e)
         {
-            GenericTuple<FirewallException, AppExceptionAssoc> tuple = e.Arg as GenericTuple<FirewallException, AppExceptionAssoc>;
-            FirewallException ex = tuple.obj1;
-            AppExceptionAssoc exFile = tuple.obj2;
-            using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
+            List<FirewallExceptionV3> exceptions = null;
+
+            using (ApplicationExceptionForm f = new ApplicationExceptionForm(e.Arg as FirewallExceptionV3))
             {
                 if (f.ShowDialog() == DialogResult.Cancel)
                     return;
 
-                ex = f.ExceptionSettings;
+                exceptions = f.ExceptionSettings;
             }
 
-            AddNewException(ex, exFile);
+            foreach (FirewallExceptionV3 fwex in exceptions)
+                AddNewException(fwex);
         }
 
-        private void AddNewException(FirewallException ex, AppExceptionAssoc exFile)
+        private void AddNewException(FirewallExceptionV3 fwex)
         {
-            List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(ex, true, true, true);
-            if (exceptions.Count == 0)
-                return;
-
             // Test rules for syntactic correctness
-            Message testRes = GlobalInstances.CommunicationMan.QueueMessage(new Message(TWControllerMessages.TEST_EXCEPTION, exceptions)).GetResponse();
-            if (testRes.Command != TWControllerMessages.RESPONSE_OK)
+            MessageType resp = GlobalInstances.Controller.TestExceptions(new List<FirewallExceptionV3>() { fwex });
+            if (MessageType.RESPONSE_OK != resp)
             {
-                ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CouldNotWhitelistProcess, ex.ExecutablePath), ToolTipIcon.Warning);
+                ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CouldNotWhitelistProcess, fwex.Subject.ToString()), ToolTipIcon.Warning);
                 return;
             }
 
 
             LoadSettingsFromServer();
-            ServiceSettings21 confCopy = Utils.DeepClone(ActiveConfig.Service);
-            confCopy.AppExceptions.AddRange(exceptions);
-            confCopy.Normalize();
+            ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
+            confCopy.ActiveProfile.AppExceptions.Add(fwex);
+            confCopy.ActiveProfile.Normalize();
 
-            TWControllerMessages resp = ApplyFirewallSettings(confCopy, false);
+            resp = ApplyFirewallSettings(confCopy, false);
 
             bool success;
             bool metroActive = Utils.IsMetroActive(out success);
@@ -956,14 +949,18 @@ namespace PKSoft
             {
                 switch (resp)
                 {
-                    case TWControllerMessages.RESPONSE_OK:
-                        GenericTuple<FirewallException, AppExceptionAssoc> tuple = new GenericTuple<FirewallException, AppExceptionAssoc>(ex, exFile);
-                        if ((exFile != null) && (!exFile.IsSigned || exFile.IsSignatureValid))
-                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForRecognizedChanged, ex.ExecutableName), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(tuple));
+                    case MessageType.RESPONSE_OK:
+                        bool signedAndValid = false;
+                        ExecutableSubject exesub = fwex.Subject as ExecutableSubject;
+                        if (null != exesub)
+                            signedAndValid = exesub.IsSigned && exesub.CertValid;
+
+                        if (signedAndValid)
+                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForRecognizedChanged, fwex.Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(fwex));
                         else
-                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForUnrecognizedChanged, ex.ExecutableName), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(tuple));
+                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForUnrecognizedChanged, fwex.Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(fwex));
                         break;
-                    case TWControllerMessages.RESPONSE_ERROR:
+                    case MessageType.RESPONSE_ERROR:
                         // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
                         ShowBalloonTip(PKSoft.Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
                         break;
@@ -977,20 +974,8 @@ namespace PKSoft
             {
                 switch (resp)
                 {
-                    case TWControllerMessages.RESPONSE_OK:
-                        string exeList = string.Empty;
-                        switch (exceptions.Count)
-                        {
-                            case 1:
-                                exeList = Path.GetFileName(exceptions[0].ExecutableName);
-                                break;
-                            case 2:
-                                exeList = Path.GetFileName(exceptions[0].ExecutableName) + ", " + Path.GetFileName(exceptions[1].ExecutableName);
-                                break;
-                            default:
-                                exeList = Path.GetFileName(exceptions[0].ExecutableName) + ", " + Path.GetFileName(exceptions[1].ExecutableName) + ", ...";
-                                break;
-                        }
+                    case MessageType.RESPONSE_OK:
+                        string exeList = fwex.Subject.ToString();
                         Utils.ShowToastNotif(string.Format(Resources.Messages.ToastAppWhitelisted+"\n{0}", exeList));
                         break;
                     default:
@@ -1010,20 +995,19 @@ namespace PKSoft
                     pf.Activate();
                     if (pf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
-                        Message req = new Message(TWControllerMessages.UNLOCK, pf.PassHash);
-                        Message resp = GlobalInstances.CommunicationMan.QueueMessage(req).GetResponse();
-                        switch (resp.Command)
+                        MessageType resp = GlobalInstances.Controller.TryUnlockServer(pf.PassHash);
+                        switch (resp)
                         {
-                            case TWControllerMessages.RESPONSE_OK:
+                            case MessageType.RESPONSE_OK:
                                 this.Locked = false;
                                 FirewallState.Locked = false;
                                 ShowBalloonTip(PKSoft.Resources.Messages.TinyWallHasBeenUnlocked, ToolTipIcon.Info);
                                 break;
-                            case TWControllerMessages.RESPONSE_ERROR:
+                            case MessageType.RESPONSE_ERROR:
                                 ShowBalloonTip(PKSoft.Resources.Messages.UnlockFailed, ToolTipIcon.Error);
                                 break;
                             default:
-                                DefaultPopups(resp.Command);
+                                DefaultPopups(resp);
                                 break;
                         }
                     }
@@ -1031,8 +1015,8 @@ namespace PKSoft
             }
             else
             {
-                TWControllerMessages lockResp = GlobalInstances.CommunicationMan.QueueMessageSimple(TWControllerMessages.LOCK).Command;
-                if ((lockResp == TWControllerMessages.RESPONSE_OK) || (lockResp==TWControllerMessages.RESPONSE_LOCKED))
+                MessageType lockResp = GlobalInstances.Controller.LockServer();
+                if ((lockResp == MessageType.RESPONSE_OK) || (lockResp== MessageType.RESPONSE_LOCKED))
                 {
                     this.Locked = true;
                     FirewallState.Locked = true;
@@ -1045,17 +1029,17 @@ namespace PKSoft
         private void mnuAllowLocalSubnet_Click(object sender, EventArgs e)
         {
             // Copy, so that settings are not changed if they cannot be saved
-            ServiceSettings21 confCopy = Utils.DeepClone(ActiveConfig.Service);
-            confCopy.AllowLocalSubnet = !mnuAllowLocalSubnet.Checked;
+            ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
+            confCopy.ActiveProfile.AllowLocalSubnet = !mnuAllowLocalSubnet.Checked;
             ApplyFirewallSettings(confCopy);
 
-            mnuAllowLocalSubnet.Checked = ActiveConfig.Service.AllowLocalSubnet;
+            mnuAllowLocalSubnet.Checked = ActiveConfig.Service.ActiveProfile.AllowLocalSubnet;
         }
 
         private void mnuEnableHostsBlocklist_Click(object sender, EventArgs e)
         {
             // Copy, so that settings are not changed if they cannot be saved
-            ServiceSettings21 confCopy = Utils.DeepClone(ActiveConfig.Service);
+            ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
             confCopy.Blocklists.EnableBlocklists = !mnuEnableHostsBlocklist.Checked;
             ApplyFirewallSettings(confCopy);
 
@@ -1105,7 +1089,7 @@ namespace PKSoft
         {
             try
             {
-                Utils.StartProcess(Utils.ExecutablePath, "/desktop", true);
+                Utils.StartProcess(TinyWall.Interface.Internal.Utils.ExecutablePath, "/desktop", true);
                 System.Windows.Forms.Application.Exit();
             }
             catch (Win32Exception)
@@ -1142,11 +1126,11 @@ namespace PKSoft
         {
             try
             {
-                GlobalInstances.ProfileMan = ProfileManager.Load(ProfileManager.DBPath);
+                GlobalInstances.AppDatabase = AppDatabase.Load(AppDatabase.DBPath);
             }
             catch
             {
-                GlobalInstances.ProfileMan = new ProfileManager();
+                GlobalInstances.AppDatabase = new AppDatabase();
                 ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
                 {
                     Utils.Invoke(SyncCtx, (SendOrPostCallback)delegate(object o)
@@ -1162,25 +1146,20 @@ namespace PKSoft
         private void AutoWhitelist()
         {
             // Copy, so that settings are not changed if they cannot be saved
-            ServiceSettings21 confCopy = Utils.DeepClone(ActiveConfig.Service);
+            ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
 
-            ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
-            for (int i = 0; i < allApps.Count; ++i)
+            foreach (DatabaseClasses.Application app in GlobalInstances.AppDatabase.KnownApplications)
             {
-                Application app = allApps[i];
-
-                // If we've found at least one file, add the app to the list
-                if (!app.Special && app.ResolveFilePaths())
+                foreach (SubjectIdentity id in app.Components)
                 {
-                    foreach (AppExceptionAssoc template in app.FileTemplates)
+                    List<ExecutableSubject> subjects = id.SearchForFile();
+                    foreach (ExecutableSubject subject in subjects)
                     {
-                        foreach (string execPath in template.ExecutableRealizations)
-                        {
-                            confCopy.AppExceptions.Add(template.CreateException(execPath));
-                        }
+                        confCopy.ActiveProfile.AppExceptions.Add(id.InstantiateException(subject));
                     }
                 }
             }
+
             confCopy.Normalize();
             ApplyFirewallSettings(confCopy);
         }
@@ -1201,7 +1180,7 @@ namespace PKSoft
             if (dialog.Show() != (int)DialogResult.Yes)
                 return;
 
-            SetMode(FirewallMode.Learning);
+            SetMode(TinyWall.Interface.FirewallMode.Learning);
             UpdateDisplay();
         }
 
@@ -1234,7 +1213,7 @@ namespace PKSoft
                 mnuModeLearn.Image = Resources.Icons.shield_blue_small.ToBitmap();
                 ApplyControllerSettings();
 
-                GlobalInstances.CommunicationMan = new PipeCom("TinyWallController");
+                GlobalInstances.Controller = new Controller("TinyWallController");
 
                 barrier.Wait();
                 // END

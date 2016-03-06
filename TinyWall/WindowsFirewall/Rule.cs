@@ -1,5 +1,7 @@
 using System;
-
+using System.Collections.Generic;
+using System.ServiceProcess;
+using TinyWall.Interface;
 using NetFwTypeLib;
 
 namespace PKSoft.WindowsFirewall
@@ -10,6 +12,9 @@ namespace PKSoft.WindowsFirewall
     internal sealed class Rule
     {
         private static readonly Type tNetFwRule = Type.GetTypeFromProgID("HNetCfg.FwRule");
+        private const string EPHEMERAL_PORT_RANGE = "1025-65535";
+        private const string EPHEMERAL_TOKEN = "EPHEMERAL";
+
         private INetFwRule fwRule;
 
         internal INetFwRule Handle
@@ -31,7 +36,7 @@ namespace PKSoft.WindowsFirewall
             fwRule = (INetFwRule)Activator.CreateInstance(tNetFwRule);
         }
 
-        internal Rule(string name, string desc, ProfileType profile, RuleDirection dir, PKSoft.WindowsFirewall.PacketAction action, Protocol protocol)
+        internal Rule(string name, string desc, ProfileType profile, RuleDirection dir, RuleAction action, Protocol protocol)
             : this()
         {
             this.Name = name;
@@ -47,10 +52,10 @@ namespace PKSoft.WindowsFirewall
         /// <summary>
         /// Accesses the Action property of this rule. 
         /// </summary>
-        internal PacketAction Action
+        internal RuleAction Action
         {
-            get { return (PacketAction)fwRule.Action; }
-            set { fwRule.Action = (NET_FW_ACTION_)value; }
+            get { return ActionFw2Tw(fwRule.Action); }
+            set { fwRule.Action = ActionTw2Fw(value); }
         }
         /// <summary>
         ///  Accesses the ApplicationName property for this rule. 
@@ -78,9 +83,62 @@ namespace PKSoft.WindowsFirewall
         /// </summary>
         internal RuleDirection Direction
         {
-            get { return (RuleDirection)fwRule.Direction; }
-            set { fwRule.Direction = (NET_FW_RULE_DIRECTION_)value; }
+            get { return DirectionFw2Tw(fwRule.Direction); }
+            set { fwRule.Direction = DirectionTw2Fw(value); }
         }
+
+        internal static NET_FW_RULE_DIRECTION_ DirectionTw2Fw(RuleDirection v)
+        {
+            switch (v)
+            {
+                case RuleDirection.In:
+                    return NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN;
+                case RuleDirection.Out:
+                    return NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT;
+                default:
+                    throw new ArgumentException();
+            }
+        }
+
+        internal static RuleDirection DirectionFw2Tw(NET_FW_RULE_DIRECTION_ v)
+        {
+            switch (v)
+            {
+                case NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN:
+                    return RuleDirection.In;
+                case NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT:
+                    return RuleDirection.Out;
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
+        internal static NET_FW_ACTION_ ActionTw2Fw(RuleAction v)
+        {
+            switch (v)
+            {
+                case RuleAction.Allow:
+                    return NET_FW_ACTION_.NET_FW_ACTION_ALLOW;
+                case RuleAction.Block:
+                    return NET_FW_ACTION_.NET_FW_ACTION_BLOCK;
+                default:
+                    throw new ArgumentException();
+            }
+        }
+
+        internal static RuleAction ActionFw2Tw(NET_FW_ACTION_ v)
+        {
+            switch (v)
+            {
+                case NET_FW_ACTION_.NET_FW_ACTION_ALLOW:
+                    return RuleAction.Allow;
+                case NET_FW_ACTION_.NET_FW_ACTION_BLOCK:
+                    return RuleAction.Block;
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
         /// <summary>
         /// Accesses the EdgeTraversal property for this rule. 
         /// </summary>
@@ -195,6 +253,97 @@ namespace PKSoft.WindowsFirewall
         {
             get { return fwRule.serviceName; }
             set { fwRule.serviceName = value; }
+        }
+
+        internal static void ConstructRule(List<Rule> ruleset, RuleDef rd)
+        {
+            if (!string.IsNullOrEmpty(rd.ServiceName))
+            {
+                // Check if service exists
+                using (ServiceController sc = new ServiceController(rd.ServiceName))
+                { }
+            }
+
+            if (rd.Protocol == Protocol.TcpUdp)
+            {
+                RuleDef pProt;
+
+                // For TCP
+                pProt = rd.DeepCopy();
+                pProt.Name = "[TCP]"+ pProt.Name;
+                pProt.Protocol = Protocol.TCP;
+                ConstructRule(ruleset, pProt);
+
+                // For UDP
+                pProt = rd.DeepCopy();
+                pProt.Name = "[UDP]" + pProt.Name;
+                pProt.Protocol = Protocol.UDP;
+                ConstructRule(ruleset, pProt);
+            }
+            else if (rd.Protocol == Protocol.ICMP)
+            {
+                RuleDef pProt;
+
+                // For ICMPv4
+                pProt = rd.DeepCopy();
+                pProt.Name = "[ICMPv4]" + pProt.Name;
+                pProt.Protocol = Protocol.ICMPv4;
+                ConstructRule(ruleset, pProt);
+
+                // For ICMPv6
+                pProt = rd.DeepCopy();
+                pProt.Name = "[ICMPv6]" + pProt.Name;
+                pProt.Protocol = Protocol.ICMPv6;
+                ConstructRule(ruleset, pProt);
+            }
+            else if (rd.Direction == RuleDirection.InOut)
+            {
+                RuleDef pDir;
+
+                // For IN
+                pDir = rd.DeepCopy();
+                pDir.Name = "[in]" + pDir.Name;
+                pDir.Direction = RuleDirection.In;
+                ConstructRule(ruleset, pDir);
+
+                // For OUT
+                pDir = rd.DeepCopy();
+                pDir.Name = "[out]" + pDir.Name;
+                pDir.Direction = RuleDirection.Out;
+                ConstructRule(ruleset, pDir);
+            }
+            else
+            {
+                Rule r = new Rule(rd.ExceptionId + " " + rd.Name, string.Empty, ProfileType.All, rd.Direction, rd.Action, rd.Protocol);
+                if (!string.IsNullOrEmpty(rd.Application))
+                    r.ApplicationName = rd.Application;
+                if (!string.IsNullOrEmpty(rd.ServiceName))
+                    r.ServiceName = rd.ServiceName;
+                if (!string.IsNullOrEmpty(rd.LocalAddresses))
+                    r.LocalAddresses = rd.LocalAddresses;
+                if (!string.IsNullOrEmpty(rd.RemoteAddresses))
+                    r.RemoteAddresses = rd.RemoteAddresses;
+                if (!string.IsNullOrEmpty(rd.IcmpTypesAndCodes))
+                    r.IcmpTypesAndCodes = rd.IcmpTypesAndCodes;
+
+                if (!string.IsNullOrEmpty(rd.LocalPorts))
+                {
+                    rd.LocalPorts = rd.LocalPorts.Replace(EPHEMERAL_TOKEN, EPHEMERAL_PORT_RANGE);
+                    r.LocalPorts = rd.LocalPorts;
+                }
+                if (!string.IsNullOrEmpty(rd.RemotePorts))
+                {
+                    // Windows Vista does not support port ranges. On Vista, we replace EPHEMERAL with no port restriction.
+                    Version Win7Version = new Version(6, 1, 0, 0);
+                    if (!rd.RemotePorts.Contains(EPHEMERAL_TOKEN) || (Environment.OSVersion.Version >= Win7Version))
+                    {
+                        rd.RemotePorts = rd.RemotePorts.Replace(EPHEMERAL_TOKEN, EPHEMERAL_PORT_RANGE);
+                        r.RemotePorts = rd.RemotePorts;
+                    }
+                }
+
+                ruleset.Add(r);
+            }
         }
     }
 }

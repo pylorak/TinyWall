@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Name="Flashget3.exe">
+<Application Name="Flashget3et">
 	<Files>
-    <AppExceptionAssoc Executable="">
+    <AppExceptionAssoc Executable="Flashget3.exe">
       <ExceptionTemplate Template="true">
         <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
         <OpenPortListenLocalTCP>*</OpenPortListenLocalTCP>

@@ -10,6 +10,9 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
+using TinyWall.Interface;
+using TinyWall.Interface.Internal;
+
 namespace PKSoft
 {
     internal partial class DevelToolForm : Form
@@ -43,7 +46,7 @@ namespace PKSoft
         {
             if (File.Exists(txtAssocExePath.Text))
             {
-                AppExceptionAssoc pa = AppExceptionAssoc.FromExecutable(txtAssocExePath.Text, string.Empty);
+                Obsolete.AppExceptionAssoc pa = Obsolete.AppExceptionAssoc.FromExecutable(txtAssocExePath.Text, string.Empty);
                 string tmpfile = Path.GetTempFileName();
                 SerializationHelper.SaveToXMLFile(pa, tmpfile);
                 using (StreamReader sr = new StreamReader(tmpfile))
@@ -67,7 +70,7 @@ namespace PKSoft
         private void btnCollectionsCreate_Click(object sender, EventArgs e)
         {
             // Common init
-            ProfileManager Manager = new ProfileManager();
+            Obsolete.ProfileManager Manager = new Obsolete.ProfileManager();
             Manager.AvailableProfiles.Clear();
             Manager.KnownApplications.Clear();
 
@@ -79,12 +82,12 @@ namespace PKSoft
                 MessageBox.Show(this, "Profile or Associations folder not found.", "Directory not found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
-
+            /*
             // Merge profiles
             string[] files = Directory.GetFiles(profilesFolder);
             foreach (string fpath in files)
             {
-                Profile p = SerializationHelper.LoadFromXMLFile<Profile>(fpath);
+                Obsolete.Profile p = Deprecated.SerializationHelper.LoadFromXMLFile<Obsolete.Profile>(fpath);
                 Manager.AvailableProfiles.Add(p);
             }
 
@@ -92,11 +95,20 @@ namespace PKSoft
             files = Directory.GetFiles(assocFolder);
             foreach (string fpath in files)
             {
-                Application app = SerializationHelper.LoadFromXMLFile<PKSoft.Application>(fpath);
+                Obsolete.Application app = Deprecated.SerializationHelper.LoadFromXMLFile<PKSoft.Obsolete.Application>(fpath);
                 Manager.KnownApplications.Add(app);
+            }*/
+
+            // Merge special associations
+            string[] files = Directory.GetFiles(Path.Combine(txtDBFolderPath.Text, "Special"));
+            foreach (string fpath in files)
+            {
+                Obsolete.Application app = Deprecated.SerializationHelper.LoadFromXMLFile<PKSoft.Obsolete.Application>(fpath);
+                SerializationHelper.SaveToXMLFile(app.ToNewFormat(), fpath + "2");
+//                Manager.KnownApplications.Add(app);
             }
 
-            Manager.Save(Path.Combine(outputPath, Path.GetFileName(ProfileManager.DBPath)));
+ //           Manager.ToNewFormat().Save(Path.Combine(outputPath, Path.GetFileName(DatabaseClasses.AppDatabase.DBPath)));
             MessageBox.Show(this, "Creation of collections finished.", "Success.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -194,19 +206,19 @@ namespace PKSoft
             {
                 update.Modules[0].ComponentVersion = "0.0.0";
             }
-            update.Modules[0].DownloadHash = Utils.HexEncode(Hasher.HashFile(txtUpdateTWInstaller.Text));
+            update.Modules[0].DownloadHash = Hasher.HashFile(txtUpdateTWInstaller.Text);
             update.Modules[0].UpdateURL = txtUpdateURL.Text + installerFilename;
 
             update.Modules[1] = new UpdateModule();
             update.Modules[1].Component = "Database";
             update.Modules[1].ComponentVersion = PLACEHOLDER;
-            update.Modules[1].DownloadHash = Utils.HexEncode(Hasher.HashFile(txtUpdateDatabase.Text));
+            update.Modules[1].DownloadHash = Hasher.HashFile(txtUpdateDatabase.Text);
             update.Modules[1].UpdateURL = txtUpdateURL.Text + DB_OUT_NAME;
 
             update.Modules[2] = new UpdateModule();
             update.Modules[2].Component = "HostsFile";
             update.Modules[2].ComponentVersion = PLACEHOLDER;
-            update.Modules[2].DownloadHash = Utils.HexEncode(Hasher.HashFile(txtUpdateHosts.Text));
+            update.Modules[2].DownloadHash = Hasher.HashFile(txtUpdateHosts.Text);
             update.Modules[2].UpdateURL = txtUpdateURL.Text + HOSTS_OUT_NAME;
 
             File.Copy(txtUpdateTWInstaller.Text, Path.Combine(txtUpdateOutput.Text, installerFilename), true);
@@ -392,7 +404,8 @@ namespace PKSoft
             string[] files = Directory.GetFiles(dirPath, filePattern, SearchOption.AllDirectories);
             for (int i = 0; i < files.Length; ++i)
             {
-                string signParams = string.Format("sign /ph /f \"{0}\" /p \"{1}\" /d TinyWall /du \"http://tinywall.pados.hu\" /tr \"{2}\" \"{3}\"",
+//                string signParams = string.Format("sign /ac C:/Users/Dev/Desktop/scca.crt /ph /f \"{0}\" /p \"{1}\" /d TinyWall /du \"http://tinywall.pados.hu\" /tr \"{2}\" \"{3}\"",
+                string signParams = string.Format("sign /ac C:/Users/Dev/Desktop/scca.crt /ph /f \"{0}\" /p \"{1}\" /d TinyWall /du \"http://tinywall.pados.hu\" /tr \"{2}\" \"{3}\"",
                         txtCert.Text,
                         txtCertPass.Text,
                         txtTimestampingServ.Text,

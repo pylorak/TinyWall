@@ -13,7 +13,7 @@ namespace PKSoft
         public TinyWallInstaller()
         {
             List<string> files = new List<string>();
-            string installDir = Path.GetDirectoryName(Utils.ExecutablePath);
+            string installDir = Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath);
             files.AddRange(GetFiles(installDir, "*.exe"));
             files.AddRange(GetFiles(installDir, "*.dll"));
 

@@ -1,7 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using TinyWall.Interface.Internal;
+using TinyWall.Interface;
+using TinyWall;
 
 namespace PKSoft
 {
@@ -11,7 +15,7 @@ namespace PKSoft
         public string ZoneName = "Unknown";
         public List<string> SpecialExceptions = new List<string>();
         public bool AllowLocalSubnet = false;
-        public List<FirewallException> AppExceptions = new List<FirewallException>();
+        public List<FirewallExceptionV3> AppExceptions = new List<FirewallExceptionV3>();
     }
 
     [Serializable]
@@ -24,28 +28,12 @@ namespace PKSoft
         public FirewallMode StartupMode = FirewallMode.Normal;
     }
 
-    public class SettingsContainer
-    {
-        public ZoneSettings CurrentZone;
-        public MachineSettings GlobalConfig;
-        public ServiceSettings ServiceConfig;   // this doesn't need to be exported to .tws
-        public ControllerSettings ControllerConfig;
-    }
-
 
     // --------------------------------------------------------------------------------------------------------------------------------
 
 
-
-    [Serializable]
-    public sealed class BlockListSettings
-    {
-        public bool EnableBlocklists = false;
-        public bool EnablePortBlocklist = true;
-        public bool EnableHostsBlocklist = false;
-    }
     
-    [Serializable]
+    [Obsolete]
     public sealed class ServiceSettings21
     {
         internal const string APP_NAME = "TinyWall";
@@ -65,14 +53,14 @@ namespace PKSoft
         // Zone settings
         public List<string> SpecialExceptions = new List<string>();
         public bool AllowLocalSubnet = false;
-        public List<FirewallException> AppExceptions = new List<FirewallException>();
+        public List<Obsolete.FirewallException> AppExceptions = new List<Obsolete.FirewallException>();
 
         internal static string AppDataPath
         {
             get
             {
 #if DEBUG
-                return Path.GetDirectoryName(Utils.ExecutablePath);
+                return Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath);
 #else
                 string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), ServiceSettings21.APP_NAME);
                 if (!Directory.Exists(dir))
@@ -84,35 +72,45 @@ namespace PKSoft
         
         internal ServiceSettings21() { }
 
+        /*
         internal ServiceSettings21(bool enableRecommendedExceptions)
         {
             if (enableRecommendedExceptions)
             {
                 // Add recommended profiles as standard
-                ApplicationCollection allKnownApps = GlobalInstances.ProfileMan.KnownApplications;
-                foreach (Application app in allKnownApps)
+                Obsolete.ApplicationCollection allKnownApps = GlobalInstances.ProfileMan.KnownApplications;
+                foreach (Obsolete.Application app in allKnownApps)
                 {
                     if (app.Recommended && app.Special)
                         SpecialExceptions.Add(app.Name);
                 }
             }
         }
+        */
 
         internal void Save()
         {
-            Normalize();
+            throw new InvalidOperationException();
+        }
 
-            // Construct file path
-            string SettingsFile = Path.Combine(ServiceSettings21.AppDataPath, "config");
+        internal ServerConfiguration ToNewFormat()
+        {
+            ServerConfiguration ret = new ServerConfiguration();
+            ret.SetActiveProfile(string.Empty);
+            ret.AutoUpdateCheck = this.AutoUpdateCheck;
+            ret.Blocklists.EnableBlocklists = this.Blocklists.EnableBlocklists;
+            ret.Blocklists.EnableHostsBlocklist = this.Blocklists.EnableHostsBlocklist;
+            ret.Blocklists.EnablePortBlocklist = this.Blocklists.EnablePortBlocklist;
+            ret.LastUpdateCheck = this.LastUpdateCheck;
+            ret.LockHostsFile = this.LockHostsFile;
+            ret.StartupMode = this.StartupMode;
+            ret.Profiles.Add(new ServerProfileConfiguration(string.Empty));
+            ret.Profiles[0].AllowLocalSubnet = this.AllowLocalSubnet;
+            ret.Profiles[0].SpecialExceptions = this.SpecialExceptions;
+            foreach (Obsolete.FirewallException ex in this.AppExceptions)
+                ret.Profiles[0].AppExceptions.Add(ex.ToNewFormat2());
 
-            // Construct key
-            string key = ENC_SALT;
-            key = Hasher.HashString(key).Substring(0, 16);
-
-            lock (locker)
-            {
-                SerializationHelper.SaveToEncryptedXMLFile<ServiceSettings21>(this, SettingsFile, key, ENC_IV);
-            }
+            return ret;
         }
 
         internal static ServiceSettings21 Load()
@@ -131,7 +129,7 @@ namespace PKSoft
                     string key = ENC_SALT;
                     key = Hasher.HashString(key).Substring(0, 16);
 
-                    ret = SerializationHelper.LoadFromEncryptedXMLFile<ServiceSettings21>(SettingsFile, key, ENC_IV);
+                    ret = Deprecated.SerializationHelper.LoadFromEncryptedXMLFile<ServiceSettings21>(SettingsFile, key, ENC_IV);
                     List<string> distinctSpecialEx = new List<string>();
                     distinctSpecialEx.AddRange(ret.SpecialExceptions.Distinct());
                     ret.SpecialExceptions = distinctSpecialEx;
@@ -146,10 +144,10 @@ namespace PKSoft
                     try
                     {
                         // Construct key
-                        string key = ENC_SALT + MachineFingerprint.Fingerprint();
+                        string key = ENC_SALT + Deprecated.MachineFingerprint.Fingerprint();
                         key = Hasher.HashString(key).Substring(0, 16);
 
-                        ret = SerializationHelper.LoadFromEncryptedXMLFile<ServiceSettings21>(SettingsFile, key, ENC_IV);
+                        ret = Deprecated.SerializationHelper.LoadFromEncryptedXMLFile<ServiceSettings21>(SettingsFile, key, ENC_IV);
                         List<string> distinctSpecialEx = new List<string>();
                         distinctSpecialEx.AddRange(ret.SpecialExceptions.Distinct());
                         ret.SpecialExceptions = distinctSpecialEx;
@@ -160,64 +158,9 @@ namespace PKSoft
                 }
             }
 
-            if (ret == null)
-            {
-                ret = new ServiceSettings21(true);
-            }
-
             return ret;
         }
 
-        internal void Normalize()
-        {
-            for (int i = 0; i < AppExceptions.Count; ++i)
-            {
-                FirewallException app1 = AppExceptions[i];
-
-                for (int j = AppExceptions.Count - 1; j > i; --j)
-                {
-                    FirewallException app2 = AppExceptions[j];
-
-                    if (app1.AppID == app2.AppID)
-                    {
-                        // With equal AppIDs, keep only the newer one
-
-                        FirewallException older = app1;
-                        FirewallException newer = app2;
-                        if (app1.CreationDate > app2.CreationDate)
-                        {
-                            older = app2;
-                            newer = app1;
-                        }
-                        AppExceptions.Remove(older);
-                        newer.RegenerateID();
-                    }
-                    else if (FirewallException.ExecutableNameEquals(app1, app2) 
-                        && (app1.Timer == AppExceptionTimer.Permanent)
-                        && (app2.Timer == AppExceptionTimer.Permanent)
-                        && (app1.LocalNetworkOnly == app2.LocalNetworkOnly)
-                    )
-                    {
-                        // Merge rules
-
-                        app1.RegenerateID();
-                        app2.MergeRulesTo(app1);
-                        AppExceptions.Remove(app2);
-                    }
-                }
-
-                // If communication is unrestricted, then all other rules are redundant
-                if (app1.UnrestricedTraffic)
-                {
-                    app1.RegenerateID();
-                    app1.Profiles = null;
-                    app1.OpenPortListenLocalTCP = null;
-                    app1.OpenPortListenLocalUDP = null;
-                    app1.OpenPortOutboundRemoteTCP = null;
-                    app1.OpenPortOutboundRemoteUDP = null;
-                }
-            } // for all exceptions
-        } // method
     } // class
 
     [Serializable]
@@ -276,6 +219,11 @@ namespace PKSoft
                 }
                 catch
                 {
+                    try
+                    {
+                        ret = Deprecated.SerializationHelper.LoadFromXMLFile<ControllerSettings>(SettingsFile);
+                    }
+                    catch { }
                 }
             }
 
@@ -291,9 +239,6 @@ namespace PKSoft
     [Serializable]
     public sealed class ServiceSettings
     {
-        private const string ENC_SALT = "O?2E/)YFq~e:w@a,";
-        private const string ENC_IV = "X0@!H93!Y=8&/M/T";   // must be 16/24/32 bytes
-
         internal static string PasswordFilePath
         {
             get { return Path.Combine(ServiceSettings21.AppDataPath, "pwd"); }
@@ -311,26 +256,54 @@ namespace PKSoft
             }
         }
 
-        internal bool Unlock(string passHash)
+        internal void SetPass(string password)
+        {
+            // Construct file path
+            string SettingsFile = PasswordFilePath;
+
+            if (password == string.Empty)
+                // If we have no password, delete password explicitly
+                File.Delete(SettingsFile);
+            else
+            {
+                string salt = Utils.RandomString(8);
+                string hash = TinyWall.Pbkdf2.GetHashForStorage(password, salt, 150000, 16);
+                File.WriteAllText(PasswordFilePath, hash, Encoding.UTF8);
+            }
+        }
+
+        internal bool Unlock(string password)
         {
             if (!HasPassword)
                 return true;
 
             try
-            {
+            {   // TODO: deprecated
+
+                const string ENC_SALT = "O?2E/)YFq~e:w@a,";
+                const string ENC_IV = "X0@!H93!Y=8&/M/T";   // must be 16/24/32 bytes
+
                 // Construct file path
                 string SettingsFile = PasswordFilePath;
 
                 // Construct key
-                string key = ENC_SALT + passHash;
+                string key = ENC_SALT + password;
                 key = Hasher.HashString(key).Substring(0, 16);
-                string hash = SerializationHelper.LoadFromEncryptedXMLFile<string>(SettingsFile, key, ENC_IV);
-                if (hash == passHash)
+                string hash = Deprecated.SerializationHelper.LoadFromEncryptedXMLFile<string>(SettingsFile, key, ENC_IV);
+                if (hash == password)
+                {
                     _Locked = false;
+                    SetPass(password);  // re-write password using new method
+                }
             }
             catch
             {
-                return false;
+                try
+                {
+                    string storedHash = System.IO.File.ReadAllText(PasswordFilePath, System.Text.Encoding.UTF8);
+                    _Locked = !Pbkdf2.CompareHash(storedHash, password);
+                }
+                catch { }
             }
 
             return !_Locked;
@@ -347,28 +320,16 @@ namespace PKSoft
                 return (fi.Length != 0);
             }
         }
-
-        internal void SetPass(string passHash)
-        {
-            // Construct file path
-            string SettingsFile = PasswordFilePath;
-
-            if (passHash == Hasher.HashString(string.Empty))
-                // If we have no password, delete password explicitly
-                File.Delete(SettingsFile);
-            else
-            {
-                // Construct key
-                string key = ENC_SALT + passHash;
-                key = Hasher.HashString(key).Substring(0, 16);
-
-                SerializationHelper.SaveToEncryptedXMLFile<string>(passHash, SettingsFile, key, ENC_IV);
-            }
-        }
     }
 
-    [Serializable]
     public sealed class ConfigContainer
+    {
+        public ServerConfiguration Service = null;
+        public ControllerSettings Controller = null;
+    }
+
+    [Obsolete]
+    public sealed class ConfigContainerOld
     {
         public ServiceSettings21 Service = null;
         public ControllerSettings Controller = null;
@@ -376,16 +337,17 @@ namespace PKSoft
 
     internal static class ActiveConfig
     {
-        internal static ServiceSettings21 Service = null;
+        internal static ServerConfiguration Service = null;
         internal static ControllerSettings Controller = null;
 
+        /*
         internal static ConfigContainer ToContainer()
         {
             ConfigContainer c = new ConfigContainer();
             c.Controller = ActiveConfig.Controller;
             c.Service = ActiveConfig.Service;
             return c;
-        }
+        }*/
     }
 }
 

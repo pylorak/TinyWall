@@ -17,6 +17,14 @@ namespace PKSoft
         
         private static int StartService(TinyWallService tw)
         {
+#if DEBUG
+            if (!Utils.RunningAsAdmin())
+            {
+                Console.WriteLine("Error: Not started as an admin process.");
+                return -1;
+            }
+#endif
+
             bool mutexok;
             using (Mutex SingleInstanceMutex = new Mutex(true, @"Global\TinyWallService", out mutexok))
             {
@@ -64,6 +72,19 @@ namespace PKSoft
         [STAThread]
         static int Main(string[] args)
         {
+            /*
+            DatabaseClasses.Application app = TinyWall.Interface.Internal.SerializationHelper.LoadFromXMLFile<DatabaseClasses.Application>(@"C:\Users\Dev\ownCloud\TinyWall\TinyWall3\TinyWall\Database\Special\Special File and printer sharing.xml2");
+            //DatabaseClasses.Application app = new DatabaseClasses.Application();
+            TinyWall.Interface.RuleListPolicy rp = new TinyWall.Interface.RuleListPolicy();
+            rp.Rules = new System.Collections.Generic.List<TinyWall.Interface.RuleDef>();
+            rp.Rules.Add(new TinyWall.Interface.RuleDef(Guid.NewGuid(), "Name", null, TinyWall.Interface.RuleAction.Allow, TinyWall.Interface.RuleDirection.Out, TinyWall.Interface.Protocol.UDP));
+            rp.Rules.Add(new TinyWall.Interface.RuleDef());
+            app.Components = new System.Collections.Generic.List<DatabaseClasses.SubjectIdentity>();
+            app.Components.Add(new DatabaseClasses.SubjectIdentity(TinyWall.Interface.GlobalSubject.Instance));
+            app.Components[0].Policy = rp;
+            TinyWall.Interface.Internal.SerializationHelper.SaveToXMLFile(app, @"C:\Users\Dev\ownCloud\TinyWall\TinyWall3\TinyWall\Database\Special\Special File and printer sharing.xml3");
+            */
+
 #if DEBUG
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(CurrentDomain_AssemblyLoad);
             AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
@@ -74,7 +95,7 @@ namespace PKSoft
             try
             {
                 // Prevent Windows Error Reporting running for us
-                NativeMethods.WerAddExcludedApplication(Utils.ExecutablePath, true);
+                NativeMethods.WerAddExcludedApplication(TinyWall.Interface.Internal.Utils.ExecutablePath, true);
             }
             catch { }
 
@@ -94,7 +115,7 @@ namespace PKSoft
             opts.uninstall = Utils.ArrayContains(args, "/uninstall");
 
             if (opts.ProgramMode == StartUpMode.Invalid)
-                opts.ProgramMode = StartUpMode.Controller;
+                opts.ProgramMode = StartUpMode.Service;
 
             if (opts.install)
             {
@@ -125,9 +146,17 @@ namespace PKSoft
                     {
                         StartService(srv);
 #if DEBUG
-                        while (true)
-                            Thread.Sleep(1000);
+                        Console.WriteLine("Press ENTER to end this process...");
+                        Console.ReadLine();
+
+                        try
+                        {
+                            PKSoft.WindowsFirewall.Policy Firewall = new PKSoft.WindowsFirewall.Policy();
+                            Firewall.ResetFirewall();
+                        }
+                        catch { }
 #endif
+
                     }
                     return 0;
                 default:

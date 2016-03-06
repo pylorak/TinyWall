@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
 using Windows.UI.Notifications;
 using Windows.Data.Xml.Dom;
 

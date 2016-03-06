@@ -17,7 +17,7 @@ public static class IconTools {
     /// Represents the different icon sizes that can be extracted using the 
     /// <see cref="IconTools.ExtractAssociatedIcon"/> method.
     /// </summary>
-    public enum ShellIconSize : uint
+    internal enum ShellIconSize : uint
     {
 
         /// <summary>
@@ -128,7 +128,7 @@ public static class IconTools {
 	/// <param name="filename">The path to the file.</param>
 	/// <param name="size">The desired size of the icon.</param>
 	/// <returns>An icon that represents the file.</returns>
-	public static Icon GetIconForFile(string filename, ShellIconSize size) {
+	internal static Icon GetIconForFile(string filename, ShellIconSize size) {
 		SHFILEINFO shinfo = new SHFILEINFO();
         NativeMethods.SHGetFileInfo(filename, FILE_ATTRIBUTE_NORMAL, ref shinfo, (uint)Marshal.SizeOf(shinfo), size);
 
@@ -145,13 +145,13 @@ public static class IconTools {
 		return icon;
 	}
 
-	/// <summary>
-	/// Returns the default icon representation for files with the specified extension.
-	/// </summary>
-	/// <param name="extension">File extension (including the leading period).</param>
-	/// <param name="size">The desired size of the icon.</param>
-	/// <returns>The default icon for files with the specified extension.</returns>
-	public static Icon GetIconForExtension(string extension, ShellIconSize size) {
+    /// <summary>
+    /// Returns the default icon representation for files with the specified extension.
+    /// </summary>
+    /// <param name="extension">File extension (including the leading period).</param>
+    /// <param name="size">The desired size of the icon.</param>
+    /// <returns>The default icon for files with the specified extension.</returns>
+    internal static Icon GetIconForExtension(string extension, ShellIconSize size) {
 		// repeat the process used for files, but instruct the API not to access the file
 		size |= (ShellIconSize)SHGFI_USEFILEATTRIBUTES;
 		return GetIconForFile(extension, size);

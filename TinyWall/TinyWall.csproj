@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PKSoft</RootNamespace>
     <AssemblyName>TinyWall</AssemblyName>
@@ -80,6 +80,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -87,6 +90,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Windows.Forms" />
@@ -105,9 +109,14 @@
     <Compile Include="ApplicationExceptionForm.Designer.cs">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConfigManager.cs" />
+    <Compile Include="DatabaseClasses\AppDatabase.cs" />
+    <Compile Include="DatabaseClasses\Application.cs" />
+    <Compile Include="DatabaseClasses\SubjectIdentity.cs" />
+    <Compile Include="Deprecated\SerializationHelper.cs" />
     <Compile Include="IconTools.cs" />
+    <Compile Include="Pbkdf2.cs" />
     <Compile Include="TinyWallController.cs" />
-    <Compile Include="WinTrust.cs" />
     <Compile Include="CmdLineArgs.cs" />
     <Compile Include="ConnectionsForm.cs">
       <SubType>Form</SubType>
@@ -122,20 +131,17 @@
     </Compile>
     <Compile Include="Controls\TaskDialog\TaskDialogNotificationArgs.cs" />
     <Compile Include="Controls\TaskDialog\UnsafeNativeMethods.cs" />
-    <Compile Include="DatabaseClasses\Application.cs" />
-    <Compile Include="DatabaseClasses\ApplicationCollection.cs" />
+    <Compile Include="Deprecated\Application.cs" />
+    <Compile Include="Deprecated\ApplicationCollection.cs" />
     <Compile Include="DevelToolForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="DevelToolForm.Designer.cs">
       <DependentUpon>DevelToolForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DisposableObject.cs" />
     <Compile Include="FileLocker.cs" />
     <Compile Include="FirewallLogWatcher.cs" />
-    <Compile Include="FirewallMode.cs" />
     <Compile Include="GlobalInstances.cs" />
-    <Compile Include="Hasher.cs" />
     <Compile Include="HostsFileManager.cs" />
     <Compile Include="Hotkey.cs" />
     <Compile Include="Installer\NgenInstaller.cs">
@@ -164,30 +170,23 @@
     <Compile Include="netstat\TcpTable.cs" />
     <Compile Include="netstat\UdpRow.cs" />
     <Compile Include="netstat\UdpTable.cs" />
-    <Compile Include="Parser\ParserFolderVariable.cs" />
-    <Compile Include="Parser\ParserParentVariable.cs" />
-    <Compile Include="Parser\ParserRegistryVariable.cs" />
-    <Compile Include="Parser\ParserVariable.cs" />
-    <Compile Include="Parser\RecursiveParser.cs" />
     <Compile Include="PasswordForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PasswordForm.Designer.cs">
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DatabaseClasses\Profile.cs" />
-    <Compile Include="DatabaseClasses\AppExceptionAssoc.cs" />
-    <Compile Include="DatabaseClasses\AppExceptionAssocCollection.cs" />
-    <Compile Include="DatabaseClasses\ProfileCollection.cs" />
-    <Compile Include="DatabaseClasses\ProfileManager.cs" />
+    <Compile Include="Deprecated\Profile.cs" />
+    <Compile Include="Deprecated\AppExceptionAssoc.cs" />
+    <Compile Include="Deprecated\AppExceptionAssocCollection.cs" />
+    <Compile Include="Deprecated\ProfileCollection.cs" />
+    <Compile Include="Deprecated\ProfileManager.cs" />
     <Compile Include="Resources\Messages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
-    <Compile Include="RuleDef.cs" />
-    <Compile Include="SerializationHelper.cs" />
-    <Compile Include="MachineFingerprint.cs" />
+    <Compile Include="Deprecated\MachineFingerprint.cs" />
     <Compile Include="ServiceControlManager.cs" />
     <Compile Include="Services.cs">
       <SubType>Form</SubType>
@@ -195,13 +194,12 @@
     <Compile Include="Services.Designer.cs">
       <DependentUpon>Services.cs</DependentUpon>
     </Compile>
-    <Compile Include="ServiceState.cs" />
     <Compile Include="ThreadBarrier.cs" />
     <Compile Include="TinyWallDoctor.cs" />
     <Compile Include="UpdateChecker.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="FirewallException.cs" />
-    <Compile Include="PipeCom.cs" />
+    <Compile Include="PipeServerEndpoint.cs" />
     <Compile Include="Processes.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -210,7 +208,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RequestQueue.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SettingsForm.cs">
       <SubType>Form</SubType>
@@ -221,20 +218,16 @@
     <Compile Include="TinyWallService.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TinyWallCommands.cs" />
     <Compile Include="Installer\ServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="WindowsFirewall\Action.cs" />
     <Compile Include="WindowsFirewall\LocalPolicyState.cs" />
     <Compile Include="WindowsFirewall\Policy.cs" />
     <Compile Include="WindowsFirewall\Product.cs" />
     <Compile Include="WindowsFirewall\Products.cs" />
     <Compile Include="WindowsFirewall\ProfileType.cs" />
-    <Compile Include="WindowsFirewall\Protocol.cs" />
     <Compile Include="WindowsFirewall\Rule.cs" />
     <Compile Include="WindowsFirewall\RuleCategories.cs" />
-    <Compile Include="WindowsFirewall\RuleDirection.cs" />
     <Compile Include="WindowsFirewall\Rules.cs" />
     <Compile Include="WindowsFirewall\ServiceRestriction.cs" />
     <EmbeddedResource Include="AppFinderForm.de.resx">
@@ -676,17 +669,6 @@
     <None Include="Resources\img\submit.png" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="NetFwTypeLib">
-      <Guid>{58FBCF7C-E7A9-467C-80B3-FC65E8FCCA08}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\img\export.png" />
   </ItemGroup>
   <ItemGroup>
@@ -742,6 +724,23 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\img\donate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="NetFwTypeLib">
+      <Guid>{58FBCF7C-E7A9-467C-80B3-FC65E8FCCA08}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TinyWall.Interface\TinyWall.Interface.csproj">
+      <Project>{ac7be8fe-87d6-44a6-9298-813534203590}</Project>
+      <Name>TinyWall.Interface</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

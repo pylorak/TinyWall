@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Drawing;
+using TinyWall.Interface;
+using PKSoft.DatabaseClasses;
 
 namespace PKSoft
 {
     internal static class GlobalInstances
     {
-        internal static ProfileManager ProfileMan;
-        internal static PipeCom CommunicationMan;
+        internal static AppDatabase AppDatabase;
+        internal static PipeServerEndpoint ServerPipe;
+        internal static Controller Controller;
+        internal static Guid ConfigChangeset;
 
         private static Bitmap _ApplyBtnIcon = null;
         internal static Bitmap ApplyBtnIcon

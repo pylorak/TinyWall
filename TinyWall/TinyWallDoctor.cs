@@ -37,7 +37,7 @@ namespace PKSoft
                 // Run installers
                 try
                 {
-                    ManagedInstallerClass.InstallHelper(new string[] { "/i", Utils.ExecutablePath });
+                    ManagedInstallerClass.InstallHelper(new string[] { "/i", TinyWall.Interface.Internal.Utils.ExecutablePath });
                 }
                 catch { }
 
@@ -70,7 +70,7 @@ namespace PKSoft
                 // We are not running as admin.
                 try
                 {
-                    using (Process p = Utils.StartProcess(Utils.ExecutablePath, "/install", true))
+                    using (Process p = Utils.StartProcess(TinyWall.Interface.Internal.Utils.ExecutablePath, "/install", true))
                     {
                         p.WaitForExit();
                         return (p.ExitCode == 0);
@@ -172,7 +172,7 @@ namespace PKSoft
             // Uninstall service
             try
             {
-                ManagedInstallerClass.InstallHelper(new string[] { "/u", Utils.ExecutablePath });
+                ManagedInstallerClass.InstallHelper(new string[] { "/u", TinyWall.Interface.Internal.Utils.ExecutablePath });
             }
             catch { }
 
@@ -201,7 +201,7 @@ namespace PKSoft
             { }
 
             // Ensure that controller will be started on next reboot
-            Utils.RunAtStartup("TinyWall Controller", Utils.ExecutablePath);
+            Utils.RunAtStartup("TinyWall Controller", TinyWall.Interface.Internal.Utils.ExecutablePath);
         }
 
         private static void EnsureServiceDependencies()

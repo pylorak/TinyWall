@@ -1,4 +1,5 @@
 using System;
+using TinyWall.Interface;
 
 using NetFwTypeLib;
 
@@ -82,19 +83,19 @@ namespace PKSoft.WindowsFirewall
         /// <summary>
         /// Specifies the default action for inbound traffic. 
         /// </summary>
-        internal PacketAction DefaultInboundAction
+        internal RuleAction DefaultInboundAction
         {
-            get { return (PacketAction)fwPolicy2.get_DefaultInboundAction(fwCurrentProfileTypes); }
-            set { ForAllProfiles((p, v) => fwPolicy2.set_DefaultInboundAction(p, v), fwCurrentProfileTypes, (NET_FW_ACTION_)value); }
+            get { return Rule.ActionFw2Tw(fwPolicy2.get_DefaultInboundAction(fwCurrentProfileTypes)); }
+            set { ForAllProfiles((p, v) => fwPolicy2.set_DefaultInboundAction(p, v), fwCurrentProfileTypes, Rule.ActionTw2Fw(value)); }
         }
 
         /// <summary>
         /// Specifies the default action for outbound. 
         /// </summary>
-        internal PacketAction DefaultOutboundAction
+        internal RuleAction DefaultOutboundAction
         {
-            get { return (PacketAction)fwPolicy2.get_DefaultOutboundAction(fwCurrentProfileTypes); }
-            set { ForAllProfiles((p, v) => fwPolicy2.set_DefaultOutboundAction(p, v), fwCurrentProfileTypes, (NET_FW_ACTION_)value); }
+            get { return Rule.ActionFw2Tw(fwPolicy2.get_DefaultOutboundAction(fwCurrentProfileTypes)); }
+            set { ForAllProfiles((p, v) => fwPolicy2.set_DefaultOutboundAction(p, v), fwCurrentProfileTypes, Rule.ActionTw2Fw(value)); }
         }
 
         /// <summary>

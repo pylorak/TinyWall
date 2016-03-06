@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="TinyWall">
+  <Components>
+    <SubjectIdentity>
+      <Policy i:type="RuleListPolicy">
+        <Rules>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>Out</Direction>
+            <Name>PPTP Initialization (Client)</Name>
+            <Protocol>TCP</Protocol>
+            <RemotePorts>1723</RemotePorts>
+          </RuleDef>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>InOut</Direction>
+            <Name>PPTP Traffic</Name>
+            <Protocol>GRE</Protocol>
+          </RuleDef>
+        </Rules>
+      </Policy>
+      <Subject i:type="GlobalSubject" />
+    </SubjectIdentity>
+  </Components>
+  <Flags xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+    <d2p1:KeyValueOfstringstring>
+      <d2p1:Key>TWUI:SPECIAL</d2p1:Key>
+      <d2p1:Value i:nil="true" />
+    </d2p1:KeyValueOfstringstring>
+  </Flags>
+  <Name>VPN_PPTP</Name>
+</Application>

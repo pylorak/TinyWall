@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using TinyWall.Interface;
 
 namespace PKSoft
 {
@@ -15,9 +16,9 @@ namespace PKSoft
         private bool RunSearch;
         private Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
-        internal ServiceSettings21 TmpSettings;
+        internal ServerConfiguration TmpSettings;
 
-        internal AppFinderForm(ServiceSettings21 zoneSettings)
+        internal AppFinderForm(ServerConfiguration zoneSettings)
         {
             InitializeComponent();
             this.IconList.ImageSize = IconSize;
@@ -46,6 +47,31 @@ namespace PKSoft
             }
         }
 
+        private sealed class SearchResults
+        {
+            private Dictionary<DatabaseClasses.Application, List<ExecutableSubject>> _List = new Dictionary<DatabaseClasses.Application, List<ExecutableSubject>>();
+
+            public void AddEntry(DatabaseClasses.Application app, ExecutableSubject resolvedSubject)
+            {
+                if (!_List.ContainsKey(app))
+                    _List.Add(app, new List<ExecutableSubject>());
+
+                _List[app].Add(resolvedSubject);
+            }
+
+            public List<DatabaseClasses.Application> GetFoundApps()
+            {
+                List<DatabaseClasses.Application> ret = new List<DatabaseClasses.Application>();
+                ret.AddRange(_List.Keys);
+                return ret;
+            }
+
+            public List<ExecutableSubject> GetFoundComponents(DatabaseClasses.Application app)
+            {
+                return _List[app];
+            }
+        }
+
         private void SearcherWorkerMethod()
         {
             // Clear list
@@ -54,7 +80,7 @@ namespace PKSoft
                 list.Items.Clear();
             });
 
-            ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
+            SearchResult = new SearchResults();
 
             // List of all possible paths to search
             string[] SearchPaths = new string[]{
@@ -69,11 +95,15 @@ namespace PKSoft
 
             // Construct a list of all file extensions we are looking for
             HashSet<string> exts = new HashSet<string>();
-            foreach (Application app in allApps)
+            foreach (DatabaseClasses.Application app in GlobalInstances.AppDatabase.KnownApplications)
             {
-                foreach (AppExceptionAssoc appFile in app.FileTemplates)
+                foreach (DatabaseClasses.SubjectIdentity subjTemplate in app.Components)
                 {
-                    string extFilter = "*" + Path.GetExtension(appFile.Executable).ToUpperInvariant();
+                    ExecutableSubject exesub = subjTemplate.Subject as ExecutableSubject;
+                    if (null == exesub)
+                        continue;
+
+                    string extFilter = "*" + Path.GetExtension(exesub.ExecutableName).ToUpperInvariant();
                     if (extFilter != "*")
                         exts.Add(extFilter);
                 }
@@ -85,7 +115,7 @@ namespace PKSoft
                 if (!RunSearch)
                     break;
 
-                DoSearchPath(path, exts, allApps);
+                DoSearchPath(path, exts, GlobalInstances.AppDatabase);
             }
 
             try
@@ -110,8 +140,9 @@ namespace PKSoft
             { }
         }
 
-        DateTime LastEnterDoSearchPath = DateTime.Now;
-        private void DoSearchPath(string path, HashSet<string> exts, ApplicationCollection allApps)
+        private DateTime LastEnterDoSearchPath = DateTime.Now;
+        private SearchResults SearchResult;
+        private void DoSearchPath(string path, HashSet<string> exts, DatabaseClasses.AppDatabase db)
         {
             #region Update user feedback periodically
             DateTime now = DateTime.Now;
@@ -138,18 +169,14 @@ namespace PKSoft
                             break;
 
                         // Try to match file
-                        AppExceptionAssoc appFile;
-                        Application app = allApps.TryGetRecognizedApp(file, null, out appFile);
-                        if ((app != null) && (!app.Special) && (!appFile.IsSigned || appFile.IsSignatureValid))
+                        FirewallExceptionV3 fwex;
+                        ExecutableSubject subject = ExecutableSubject.Construct(file, null) as ExecutableSubject;
+                        DatabaseClasses.Application app = db.TryGetApp(subject, out fwex);
+                        if ((app != null)  && (!subject.IsSigned || subject.CertValid))
                         {
-                            foreach (AppExceptionAssoc template in app.FileTemplates)
-                            {
-                                if (!template.ExecutableRealizations.Contains(file))
-                                {
-                                    template.ExecutableRealizations.Add(appFile.Executable);
-                                }
-                            } 
-                            
+                            SearchResult.AddEntry(app, subject);
+
+                            // We have a match. This file belongs to a known application!
                             Utils.Invoke(list, (MethodInvoker)delegate()
                             {
                                 AddRecognizedAppToList(app);
@@ -166,24 +193,24 @@ namespace PKSoft
                     if (!RunSearch)
                         break;
 
-                    DoSearchPath(dir, exts, allApps);
+                    DoSearchPath(dir, exts, db);
                 }
             }
             catch { }
         }
 
-        private void AddRecognizedAppToList(Application app)
+        private void AddRecognizedAppToList(DatabaseClasses.Application app)
         {
             // Check if we've already added this application
             for (int i = 0; i < list.Items.Count; ++i)
             {
-                if ((list.Items[i].Tag as Application).Name.Equals(app.Name))
+                if ((list.Items[i].Tag as DatabaseClasses.Application).Name.Equals(app.Name))
                     return;
             }
 
             if (!IconList.Images.ContainsKey(app.Name))
             {
-                string iconPath = app.FileTemplates[0].ExecutableRealizations[0];
+                string iconPath = app.FindComponents()[0].ExecutablePath;
                 if (!File.Exists(iconPath))
                     IconList.Images.Add(app.Name, Resources.Icons.window);
                 else
@@ -193,8 +220,7 @@ namespace PKSoft
             ListViewItem li = new ListViewItem(app.Name);
             li.ImageKey = app.Name;
             li.Tag = app;
-            if (app.Recommended)
-                li.Checked = true;
+            li.Checked = app.HasFlag("TWUI:Recommended");
 
             list.Items.Add(li);
         }
@@ -216,7 +242,7 @@ namespace PKSoft
         {
             foreach (ListViewItem li in list.Items)
             {
-                Application app = li.Tag as Application;
+                Obsolete.Application app = li.Tag as Obsolete.Application;
                 if (app.Recommended)
                     li.Checked = true;
             }
@@ -247,19 +273,15 @@ namespace PKSoft
             {
                 if (li.Checked)
                 {
-                    Application app = li.Tag as Application;
-                    foreach (AppExceptionAssoc template in app.FileTemplates)
+                    DatabaseClasses.Application app = li.Tag as DatabaseClasses.Application;
+                    List<ExecutableSubject> appFoundFiles = SearchResult.GetFoundComponents(app);
+                    foreach (ExecutableSubject subject in appFoundFiles)
                     {
-                        foreach (string execPath in template.ExecutableRealizations)
+                        FirewallExceptionV3 fwex;
+                        app = GlobalInstances.AppDatabase.TryGetApp(subject, out fwex);
+                        if ((app != null) && (!subject.IsSigned || subject.CertValid))
                         {
-                            try
-                            {
-                                if (AppExceptionAssoc.IsValidExecutablePath(execPath))
-                                {
-                                    TmpSettings.AppExceptions.Add(template.CreateException(execPath));
-                                }
-                            }
-                            catch (ArgumentException) { }
+                            TmpSettings.ActiveProfile.AppExceptions.Add(fwex);
                         }
                     }
                 }

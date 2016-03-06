@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using TinyWall.Interface.Internal;
 
 namespace PKSoft
 {
-    internal class MouseInterceptor : DisposableObject
+    internal class MouseInterceptor : Disposable
     {
         private static class NativeMethods
         {

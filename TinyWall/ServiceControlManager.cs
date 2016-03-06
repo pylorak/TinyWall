@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.ServiceProcess;
 using Microsoft.Win32.SafeHandles;
+using TinyWall.Interface.Internal;
 
 namespace ScmWrapper
 {
@@ -185,7 +186,7 @@ namespace ScmWrapper
         }
     }
     
-    internal class ServiceControlManager : PKSoft.DisposableObject
+    internal class ServiceControlManager : Disposable
     {
         private const uint SERVICE_NO_CHANGE = 0xFFFFFFFF;
 

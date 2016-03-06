@@ -6,6 +6,9 @@ using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
 
+using TinyWall.Interface.Internal;
+using TinyWall.Interface;
+
 #if DEBUG
 //using Microsoft.VisualStudio.Profiler;
 #endif
@@ -38,7 +41,7 @@ namespace PKSoft
         private string m_NewPassword;
         private Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
-        internal SettingsForm(ServiceSettings21 service, ControllerSettings controller)
+        internal SettingsForm(ServerConfiguration service, ControllerSettings controller)
         {
             InitializeComponent();
             this.IconList.ImageSize = IconSize;
@@ -61,7 +64,7 @@ namespace PKSoft
             TmpConfig.Service = service;
             TmpConfig.Controller = controller;
 
-            TmpConfig.Service.Normalize();
+            TmpConfig.Service.ActiveProfile.Normalize();
         }
 
         internal string NewPassword
@@ -96,17 +99,14 @@ namespace PKSoft
                 chkEnableBlocklists.Checked = TmpConfig.Service.Blocklists.EnableBlocklists;
                 chkEnableBlocklists_CheckedChanged(null, null);
 
-                // These will be reused multiple times
-                ApplicationCollection allApps = GlobalInstances.ProfileMan.KnownApplications;
-
                 // Fill lists of special exceptions
                 listRecommendedGlobalProfiles.BeginUpdate();
                 listOptionalGlobalProfiles.BeginUpdate();
                 listRecommendedGlobalProfiles.Items.Clear();
                 listOptionalGlobalProfiles.Items.Clear();
-                foreach (Application app in allApps)
+                foreach (DatabaseClasses.Application app in GlobalInstances.AppDatabase.KnownApplications)
                 {
-                    if (app.Special && app.ResolveFilePaths())
+                    if (app.HasFlag("TWUI:Special"))
                     {
                         // Get localized name
                         IdWithName item = new IdWithName(app.Name, app.LocalizedName);
@@ -115,16 +115,9 @@ namespace PKSoft
                         if (string.IsNullOrEmpty(item.Name))
                             item.Name = item.Id.Replace('_', ' ');
 
-                        if (app.Recommended)
-                        {
-                            int itemIdx = listRecommendedGlobalProfiles.Items.Add(item);
-                            listRecommendedGlobalProfiles.SetItemChecked(itemIdx, TmpConfig.Service.SpecialExceptions.Contains(item.Id));
-                        }
-                        else
-                        {
-                            int itemIdx = listOptionalGlobalProfiles.Items.Add(item);
-                            listOptionalGlobalProfiles.SetItemChecked(itemIdx, TmpConfig.Service.SpecialExceptions.Contains(item.Id));
-                        }
+                        CheckedListBox listBox = app.HasFlag("TWUI:Recommended") ? listRecommendedGlobalProfiles : listOptionalGlobalProfiles;
+                        int itemIdx = listBox.Items.Add(item);
+                        listBox.SetItemChecked(itemIdx, TmpConfig.Service.ActiveProfile.SpecialExceptions.Contains(item.Id));
                     }
                 }
                 listRecommendedGlobalProfiles.EndUpdate();
@@ -142,9 +135,9 @@ namespace PKSoft
         private void RebuildExceptionsList()
         {
             ExceptionItems.Clear();
-            for (int i = 0; i < TmpConfig.Service.AppExceptions.Count; ++i)
+            for (int i = 0; i < TmpConfig.Service.ActiveProfile.AppExceptions.Count; ++i)
             {
-                FirewallException ex = TmpConfig.Service.AppExceptions[i];
+                FirewallExceptionV3 ex = TmpConfig.Service.ActiveProfile.AppExceptions[i];
                 ExceptionItems.Add(ListItemFromAppException(ex));
             }
             ApplyExceptionFilter();
@@ -185,20 +178,38 @@ namespace PKSoft
             listApplications_SelectedIndexChanged(listApplications, null);
         }
 
-        private ListViewItem ListItemFromAppException(FirewallException ex)
+        private ListViewItem ListItemFromAppException(FirewallExceptionV3 ex)
         {
-            string name = string.IsNullOrEmpty(ex.ServiceName) ? ex.ExecutableName : "Srv: " + ex.ServiceName;
+            ExecutableSubject subject = ex.Subject as ExecutableSubject;
+            if (subject == null)
+                throw new NotImplementedException();
+
+            string name;
+            switch (ex.Subject.SubjectType)
+            {
+                case SubjectType.Executable:
+                    name = subject.ExecutableName;
+                    break;
+                case SubjectType.Service:
+                    name = $"Srv: {(subject as ServiceSubject).ServiceName}";
+                    break;
+                case SubjectType.Global:
+                    name = string.Empty;
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
 
             ListViewItem li = new ListViewItem(name);
-            li.SubItems.Add(ex.ExecutablePath);
+            li.SubItems.Add(subject.ExecutablePath);
             li.Tag = ex;
 
-            if (ex.AlwaysBlockTraffic)
+            if (ex.Policy.PolicyType == PolicyType.HardBlock)
             {
                 li.BackColor = System.Drawing.Color.LightPink;
             }
 
-            if (Utils.IsNetworkPath(ex.ExecutablePath))
+            if (NetworkPath.IsNetworkPath(subject.ExecutablePath))
             {
                 /* We do not load icons from network drives, to avoid 30s timeout if the drive is unavailable.
                  * If this is ever changed in the future, also remember that .Net's Icon.ExtractAssociatedIcon() 
@@ -207,11 +218,11 @@ namespace PKSoft
                  */
                 li.ImageKey = "network-drive";
             }
-            else if (File.Exists(ex.ExecutablePath))
+            else if (File.Exists(subject.ExecutablePath))
             {
-                if (!IconList.Images.ContainsKey(ex.ExecutablePath))
-                    IconList.Images.Add(ex.ExecutablePath, Utils.GetIconContained(ex.ExecutablePath, IconSize.Width, IconSize.Height));
-                li.ImageKey = ex.ExecutablePath;
+                if (!IconList.Images.ContainsKey(subject.ExecutablePath))
+                    IconList.Images.Add(subject.ExecutablePath, Utils.GetIconContained(subject.ExecutablePath, IconSize.Width, IconSize.Height));
+                li.ImageKey = subject.ExecutablePath;
             }
             else
             {
@@ -265,11 +276,11 @@ namespace PKSoft
             IdWithName item = clb.Items[e.Index] as IdWithName;
             if (e.NewValue == CheckState.Checked)
             {
-                TmpConfig.Service.SpecialExceptions.Add(item.Id);
+                TmpConfig.Service.ActiveProfile.SpecialExceptions.Add(item.Id);
             }
             else
             {
-                TmpConfig.Service.SpecialExceptions.Remove(item.Id);
+                TmpConfig.Service.ActiveProfile.SpecialExceptions.Remove(item.Id);
             }
         }
 
@@ -293,7 +304,7 @@ namespace PKSoft
             for (int i = listApplications.SelectedItems.Count - 1; i >= 0; --i)
             {
                 ListViewItem li = listApplications.SelectedItems[i];
-                TmpConfig.Service.AppExceptions.Remove((FirewallException)li.Tag);
+                TmpConfig.Service.ActiveProfile.AppExceptions.Remove((FirewallExceptionV3)li.Tag);
             }
             RebuildExceptionsList();
         }
@@ -303,24 +314,24 @@ namespace PKSoft
             if (MessageBox.Show(this, PKSoft.Resources.Messages.AreYouSureYouWantToRemoveAllExceptions, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.No)
                 return;
 
-            TmpConfig.Service.AppExceptions.Clear();
+            TmpConfig.Service.ActiveProfile.AppExceptions.Clear();
             RebuildExceptionsList();
         }
         
         private void btnAppModify_Click(object sender, EventArgs e)
         {
             ListViewItem li = listApplications.SelectedItems[0];
-            FirewallException oldEx = (FirewallException)li.Tag;
-            FirewallException newEx = Utils.DeepClone(oldEx);
-            newEx.RegenerateID();
+            FirewallExceptionV3 oldEx = (FirewallExceptionV3)li.Tag;
+            FirewallExceptionV3 newEx = Utils.DeepClone(oldEx);
+            newEx.RegenerateId();
             using (ApplicationExceptionForm f = new ApplicationExceptionForm(newEx))
             {
                 if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {
                     // Remove old rule
-                    TmpConfig.Service.AppExceptions.Remove(oldEx);
+                    TmpConfig.Service.ActiveProfile.AppExceptions.Remove(oldEx);
                     // Add new rule
-                    TmpConfig.Service.AppExceptions.Add(f.ExceptionSettings);
+                    TmpConfig.Service.ActiveProfile.AppExceptions.AddRange(f.ExceptionSettings);
                     TmpConfig.Service.Normalize();
                     RebuildExceptionsList();
                 }
@@ -331,14 +342,11 @@ namespace PKSoft
 
         private void btnAppAdd_Click(object sender, EventArgs e)
         {
-            FirewallException ex = new FirewallException();
-            using (ApplicationExceptionForm f = new ApplicationExceptionForm(ex))
+            using (ApplicationExceptionForm f = new ApplicationExceptionForm(null))
             {
                 if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {
-                    List<FirewallException> exceptions = FirewallException.CheckForAppDependencies(f.ExceptionSettings, true, true, true);
-                    for (int i = 0; i < exceptions.Count; ++i)
-                        TmpConfig.Service.AppExceptions.Add(exceptions[i]);
+                    TmpConfig.Service.ActiveProfile.AppExceptions.AddRange(f.ExceptionSettings);
                     TmpConfig.Service.Normalize();
                     RebuildExceptionsList();
                 }
@@ -352,25 +360,7 @@ namespace PKSoft
 
         private void btnSubmitAssoc_Click(object sender, EventArgs e)
         {
-            /* TODO
-            // Get exception
-            ListViewItem li = listApplications.SelectedItems[0];
-            FirewallException ex = (FirewallException)li.Tag;
-
-            // Construct association
-            ProfileAssoc pa = ProfileAssoc.FromExecutable(ex.ExecutablePath, string.Empty);
-            pa.Profiles = ex.Profiles;
-
-            // Submit association
-            string tmpfile = Path.GetTempFileName() + ".xml";
-            SerializationHelper.SaveToXMLFile(pa, tmpfile);
-
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.FileName = tmpfile;
-            psi.UseShellExecute = true;
-            psi.RedirectStandardOutput = false;
-            Process.Start(psi);
-            */
+            /* Not implemented */
         }
 
         private void SettingsForm_Shown(object sender, EventArgs e)
@@ -421,7 +411,7 @@ namespace PKSoft
         {
             try
             {
-                ProcessStartInfo psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "License.rtf"));
+                ProcessStartInfo psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath), "License.rtf"));
                 psi.UseShellExecute = true;
                 Process.Start(psi);
             }
@@ -463,16 +453,9 @@ namespace PKSoft
                     // Try loading from older export file format.
                     try
                     {
-                        SettingsContainer sc = SerializationHelper.LoadFromXMLFile<SettingsContainer>(ofd.FileName);
-                        TmpConfig.Controller = sc.ControllerConfig;
-                        TmpConfig.Service.AllowLocalSubnet = sc.CurrentZone.AllowLocalSubnet;
-                        TmpConfig.Service.AppExceptions = sc.CurrentZone.AppExceptions;
-                        TmpConfig.Service.AutoUpdateCheck = sc.GlobalConfig.AutoUpdateCheck;
-                        TmpConfig.Service.Blocklists = sc.GlobalConfig.Blocklists;
-                        TmpConfig.Service.LastUpdateCheck = sc.GlobalConfig.LastUpdateCheck;
-                        TmpConfig.Service.LockHostsFile = sc.GlobalConfig.LockHostsFile;
-                        TmpConfig.Service.SpecialExceptions = sc.CurrentZone.SpecialExceptions;
-                        TmpConfig.Service.StartupMode = sc.GlobalConfig.StartupMode;
+                        ConfigContainerOld oldConfig = Deprecated.SerializationHelper.LoadFromXMLFile<ConfigContainerOld>(ofd.FileName);
+                        TmpConfig.Controller = oldConfig.Controller;
+                        TmpConfig.Service = oldConfig.Service.ToNewFormat();
                     }
                     catch
                     {
@@ -566,7 +549,7 @@ namespace PKSoft
         {
             try
             {
-                ProcessStartInfo psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "Attributions.txt"));
+                ProcessStartInfo psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath), "Attributions.txt"));
                 psi.UseShellExecute = true;
                 Process.Start(psi);
             }

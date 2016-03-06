@@ -33,14 +33,15 @@ using System.Resources;
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.1.7")]                  // used by the CLR
-[assembly: AssemblyFileVersion("2.1.7")]              // full assembly version
-[assembly: AssemblyInformationalVersion("2.1.7")]     // informal version for customers
+[assembly: AssemblyVersion("2.2.0")]                  // used by the CLR
+[assembly: AssemblyFileVersion("2.2.0")]              // full assembly version
+[assembly: AssemblyInformationalVersion("2.2.0")]     // informal version for customers
 [assembly: NeutralResourcesLanguageAttribute("en")]
 
 [assembly: CLSCompliant(true)]
 
-#if DEBUG
+// TODO: negate for release
+#if !DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else
 [assembly: AssemblyConfiguration("Release")]

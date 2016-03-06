@@ -5,23 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 using Microsoft.Samples;
+using TinyWall.Interface.Parser;
+using TinyWall.Interface.Internal;
+using TinyWall.Interface;
 
-namespace PKSoft
+namespace PKSoft.Obsolete
 {
-    // The default value must have value Zero.
-    public enum AppExceptionTimer
-    {
-        Permanent = 0,
-        Until_Reboot = -1,
-        For_5_Minutes = 5,
-        For_30_Minutes = 30,
-        For_1_Hour = 60,
-        For_4_Hours = 240,
-        For_9_Hours = 540,
-        For_24_Hours = 1140,
-        Invalid
-    }
-
     [Serializable]
     public class FirewallException
     {
@@ -97,14 +86,14 @@ namespace PKSoft
             get { return _ExecutablePath; }
             set
             {
-                _ExecutablePath = PKSoft.Parser.RecursiveParser.ResolveString(value);
-                if (Utils.IsNetworkPath(_ExecutablePath))
+                _ExecutablePath = RecursiveParser.ResolveString(value);
+                if (NetworkPath.IsNetworkPath(_ExecutablePath))
                 {
-                    if (!Utils.IsUncPath(_ExecutablePath))
+                    if (!NetworkPath.IsUncPath(_ExecutablePath))
                     {
                         try
                         {
-                            _ExecutablePath = Utils.GetUncPath(_ExecutablePath);
+                            _ExecutablePath = NetworkPath.GetUncPath(_ExecutablePath);
                         }
                         catch { }
                     }
@@ -185,7 +174,8 @@ namespace PKSoft
             appFile = null;
 
             if (File.Exists(ExecutablePath))
-                app = GlobalInstances.ProfileMan.KnownApplications.TryGetRecognizedApp(ExecutablePath, ServiceName, out appFile);
+                // TODO: deprecated
+                //app = GlobalInstances.ProfileMan.KnownApplications.TryGetRecognizedApp(ExecutablePath, ServiceName, out appFile);
 
             if ((app != null) && (app.Special))
             {   // We do not want to recognize special apps
@@ -203,7 +193,8 @@ namespace PKSoft
                 // Apply recognized settings, if available
                 if ((app != null) && (!app.Special))
                 {
-                    ProfileCollection profiles = GlobalInstances.ProfileMan.GetProfilesFor(appFile);
+                    // TODO: deprecated
+                    //ProfileCollection profiles = GlobalInstances.ProfileMan.GetProfilesFor(appFile);
                     appFile.ExceptionTemplate.CopyRulesTo(this);
                 }
             }
@@ -298,26 +289,59 @@ namespace PKSoft
             return "[TW" + Utils.RandomString(12) + "]";
         }
 
-        internal static List<FirewallException> CheckForAppDependencies(FirewallException ex, bool useExOnRecognized, bool specialAllowed, bool promptUI, ApplicationCollection allApps = null)
+        
+        internal TinyWall.Interface.FirewallExceptionV3 ToNewFormat2()
+        {
+            ExceptionSubject subject;
+            if (this.IsService)
+                subject = new ServiceSubject(ExecutablePath, ServiceName);
+            else
+                subject = new ExecutableSubject(ExecutablePath);
+            TinyWall.Interface.FirewallExceptionV3 ret = new TinyWall.Interface.FirewallExceptionV3(subject, null);
+
+            ret.CreationDate = this.CreationDate;
+            ret.Id = Guid.NewGuid();
+            ret.Timer = this.Timer;
+
+            if (this.UnrestricedTraffic)
+            {
+                UnrestrictedPolicy pol = new UnrestrictedPolicy();
+                pol.LocalNetworkOnly = this.LocalNetworkOnly;
+                ret.Policy = pol;
+            }
+            else if (this.AlwaysBlockTraffic)
+            {
+                ret.Policy = new HardBlockPolicy();
+            }
+            else
+            {
+                TcpUdpPolicy pol = new TcpUdpPolicy();
+                pol.AllowedLocalTcpListenerPorts = this.OpenPortListenLocalTCP;
+                pol.AllowedLocalUdpListenerPorts = this.OpenPortListenLocalUDP;
+                pol.AllowedRemoteTcpConnectPorts = this.OpenPortOutboundRemoteTCP;
+                pol.AllowedRemoteUdpConnectPorts = this.OpenPortOutboundRemoteUDP;
+                pol.LocalNetworkOnly = this.LocalNetworkOnly;
+                ret.Policy = pol;
+            }
+
+
+            return ret;
+        }
+        
+        /*
+        internal static List<FirewallException> CheckForAppDependencies(FirewallException ex)
         {
             List<FirewallException> exceptions = new List<FirewallException>();
 
             AppExceptionAssoc appFile = null;
-            if (allApps == null)
-                allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
+            ApplicationCollection allApps = Utils.DeepClone(GlobalInstances.ProfileMan.KnownApplications);
 
             Application app = allApps.TryGetRecognizedApp(ex.ExecutablePath, ex.ServiceName, out appFile);
             if ((app != null) && (!appFile.IsSigned || appFile.IsSignatureValid))
             {
-                if (!specialAllowed && app.Special)
-                    return exceptions;
-
                 app.ResolveFilePaths(Path.GetDirectoryName(ex.ExecutablePath));
 
-                if (useExOnRecognized)
-                    exceptions.Add(ex);
-                else
-                    exceptions.Add(appFile.CreateException(ex.ExecutablePath));
+                exceptions.Add(ex);
 
                 foreach (AppExceptionAssoc template in app.FileTemplates)
                 {
@@ -333,7 +357,7 @@ namespace PKSoft
                 exceptions.Add(ex);
             }
 
-            if ((exceptions.Count > 1) && promptUI)
+            if (exceptions.Count > 1)
             {
                 string firstLine, contentLines;
                 Utils.SplitFirstLine(string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.UnblockApp, app.LocalizedName), out firstLine, out contentLines);
@@ -379,7 +403,7 @@ namespace PKSoft
             }
 
             return exceptions;
-        }
+        }*/
     }
 
 }

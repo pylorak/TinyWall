@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
+using TinyWall.Interface.Internal;
 
 namespace PKSoft
 {
-    internal class ThreadBarrier : DisposableObject
+    internal class ThreadBarrier : Disposable
     {
         private ManualResetEvent BarrierEvent;
         private int Count;

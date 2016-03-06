@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
+using TinyWall.Interface;
 
 namespace PKSoft
 {
@@ -11,20 +12,17 @@ namespace PKSoft
         internal List<string> SelectedPaths = new List<string>();
         private Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
-        internal static List<FirewallException> ChooseProcess(IWin32Window parent, bool multiSelect)
+        internal static List<string> ChooseProcess(IWin32Window parent, bool multiSelect)
         {
             using (ProcessesForm pf = new ProcessesForm(multiSelect))
             {
-                List<FirewallException> exList = new List<FirewallException>();
+                List<string> pathList = new List<string>();
 
                 if (pf.ShowDialog(parent) == DialogResult.Cancel)
-                    return exList;
+                    return pathList;
 
-                foreach (string path in pf.SelectedPaths)
-                {
-                    exList.Add(new FirewallException(path, null, true));
-                }
-                return exList;
+                pathList.AddRange(pf.SelectedPaths);
+                return pathList;
             }
         }
 
@@ -78,7 +76,7 @@ namespace PKSoft
                 {
                     try
                     {
-                        string ProcPath = Utils.GetPathOfProcessUseTwService(p);
+                        string ProcPath = Utils.GetPathOfProcessUseTwService(p, GlobalInstances.Controller);
                         if (string.IsNullOrEmpty(ProcPath))
                             continue;
 

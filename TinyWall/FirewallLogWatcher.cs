@@ -1,78 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
-using System.IO;
-using PKSoft.WindowsFirewall;
+using TinyWall.Interface;
+using TinyWall.Interface.Internal;
 
 namespace PKSoft
 {
-    internal enum EventLogEvent
-    {
-        BLOCKED,
-        ALLOWED,
-        ALLOWED_LISTEN = 5154,
-        ALLOWED_CONNECTION = 5156,
-        ALLOWED_LOCAL_BIND = 5158,
-        BLOCKED_LISTEN = 5155,
-        BLOCKED_CONNECTION = 5157,
-        BLOCKED_PACKET = 5152,
-        BLOCKED_LOCAL_BIND = 5159
-    }
-
-    [Serializable]
-    internal class FirewallLogEntry
-    {
-        internal DateTime Timestamp;
-        internal EventLogEvent Event;
-        internal UInt64 ProcessID;
-        internal Protocol Protocol;
-        internal RuleDirection Direction;
-        internal string SourceIP;
-        internal string DestinationIP;
-        internal int SourcePort;
-        internal int DestinationPort;
-        internal string AppPath;
-
-        public override bool Equals(object obj)
-        {
-            // If parameter is null return false.
-            if (obj == null)
-                return false;
-
-            return this.Equals(obj as FirewallLogEntry, true);
-        }
-
-        public override int GetHashCode()
-        {
-            return Timestamp.GetHashCode() ^ Event.GetHashCode() ^ 
-                ProcessID.GetHashCode() ^ Protocol.GetHashCode() ^ 
-                SourceIP.GetHashCode() ^ DestinationIP.GetHashCode() ^ 
-                SourcePort.GetHashCode() ^ DestinationPort.GetHashCode() ^
-                AppPath.GetHashCode();
-        }
-
-        internal bool Equals(FirewallLogEntry obj, bool timestampMustMatch)
-        {
-            // Return true if the fields match.
-            bool eventMatch =
-                this.DestinationIP.Equals(obj.DestinationIP) &&
-                (this.DestinationPort == obj.DestinationPort) &&
-                (this.Event == obj.Event) &&
-                (this.ProcessID == obj.ProcessID) &&
-                (this.Protocol == obj.Protocol) &&
-                (this.Direction == obj.Direction) &&
-                this.SourceIP.Equals(obj.SourceIP) &&
-                this.AppPath.Equals(obj.AppPath) &&
-                (this.SourcePort == obj.SourcePort);
-
-            if (timestampMustMatch)
-                return this.Timestamp.Equals(obj.Timestamp) && eventMatch;
-            else
-                return eventMatch;
-        }
-    }
-
-    internal class FirewallLogWatcher : DisposableObject
+    internal class FirewallLogWatcher : Disposable
     {
         //private readonly string FIREWALLLOG_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"LogFiles\Firewall\pfirewall.log");
         private EventLogWatcher LogWatcher = null;
@@ -195,7 +129,8 @@ namespace PKSoft
                     }
                 case EventLogEvent.BLOCKED_LOCAL_BIND:
                     {
-                        // TODO: Figure out when and if at all this case can happen
+                        // TODO: deprecated 
+                        // Figure out when and if at all this case can happen
                         break;
                     }
                 case EventLogEvent.ALLOWED_LISTEN:

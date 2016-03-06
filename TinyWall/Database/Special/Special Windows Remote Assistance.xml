@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="TinyWall">
+  <Components>
+    <SubjectIdentity>
+      <Policy i:type="RuleListPolicy">
+        <Rules>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>In</Direction>
+			<Name>PNRP Server</Name>
+            <LocalPorts>3540</LocalPorts>
+            <Protocol>UDP</Protocol>
+          </RuleDef>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>Out</Direction>
+			<Name>PNRP Client</Name>
+            <Protocol>UDP</Protocol>
+            <RemotePorts>3540</RemotePorts>
+          </RuleDef>
+        </Rules>
+      </Profile>
+      </Policy>
+      <Subject i:type="ServiceSubject">
+        <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
+        <ServiceName>PNRPsvc</ServiceName>
+      </Subject>
+    </SubjectIdentity>
+    <SubjectIdentity>
+      <Policy i:type="RuleListPolicy">
+        <Rules>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>In</Direction>
+            <LocalPorts>1900</LocalPorts>
+			<Name>SSDP Server</Name>
+            <Protocol>UDP</Protocol>
+            <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          </RuleDef>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>Out</Direction>
+			<Name>SSDP Client</Name>
+            <Protocol>UDP</Protocol>
+            <RemotePorts>1900</RemotePorts>
+            <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          </RuleDef>
+        </Rules>
+      </Policy>
+      <Subject i:type="ServiceSubject">
+        <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
+        <ServiceName>ssdpsrv</ServiceName>
+      </Subject>
+    </SubjectIdentity>
+    <SubjectIdentity>
+      <Policy i:type="TcpUdpPolicy">
+        <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
+        <AllowedLocalUdpListenerPorts>*</AllowedLocalUdpListenerPorts>
+        <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
+        <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
+      </Policy>
+      <Subject i:type="ExecutableSubject">
+        <ExecutablePath>{folder:sys32}\raserver.exe</ExecutablePath>
+      </Subject>
+    </SubjectIdentity>
+    <SubjectIdentity>
+      <Policy i:type="TcpUdpPolicy">
+        <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
+        <AllowedLocalUdpListenerPorts>*</AllowedLocalUdpListenerPorts>
+        <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
+        <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
+      </Policy>
+      <Subject i:type="ExecutableSubject">
+        <ExecutablePath>{folder:sys32}\msra.exe</ExecutablePath>
+      </Subject>
+    </SubjectIdentity>
+  </Components>
+  <Flags xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+    <d2p1:KeyValueOfstringstring>
+      <d2p1:Key>TWUI:SPECIAL</d2p1:Key>
+      <d2p1:Value i:nil="true" />
+    </d2p1:KeyValueOfstringstring>
+  </Flags>
+  <Name>Windows_Remote_Assistance</Name>
+</Application>

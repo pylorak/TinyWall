@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="TinyWall">
+  <Components>
+    <SubjectIdentity>
+      <Policy i:type="RuleListPolicy">
+        <Rules>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>Out</Direction>
+            <Name>NetBIOS UDP Client</Name>
+            <Protocol>UDP</Protocol>
+            <RemoteAddresses>137,138</RemoteAddresses>
+            <RemotePorts>LocalSubnet</RemotePorts>
+          </RuleDef>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>Out</Direction>
+            <Name>NetBIOS TCP Client</Name>
+            <Protocol>TCP</Protocol>
+            <RemotePorts>139,445</RemotePorts>
+            <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          </RuleDef>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>In</Direction>
+            <LocalPorts>137,138</LocalPorts>
+            <Name>NetBIOS UDP Server</Name>
+            <Protocol>UDP</Protocol>
+            <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          </RuleDef>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>In</Direction>
+            <LocalPorts>139,445</LocalPorts>
+            <Name>NetBIOS TCP Server</Name>
+            <Protocol>TCP</Protocol>
+            <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          </RuleDef>
+        </Rules>
+      </Policy>
+      <Subject i:type="ExecutableSubject">
+        <ExecutablePath>System</ExecutablePath>
+      </Subject>
+    </SubjectIdentity>
+    <SubjectIdentity>
+      <Policy i:type="TcpUdpPolicy">
+        <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
+        <AllowedLocalUdpListenerPorts>*</AllowedLocalUdpListenerPorts>
+        <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
+        <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
+        <LocalNetworkOnly>true</LocalNetworkOnly>
+      </Policy>
+      <Subject i:type="ExecutableSubject">
+        <ExecutablePath>{folder:sys32}\spoolsv.exe</ExecutablePath>
+      </Subject>
+    </SubjectIdentity>
+  </Components>
+  <Flags xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+    <d2p1:KeyValueOfstringstring>
+      <d2p1:Key>TWUI:SPECIAL</d2p1:Key>
+      <d2p1:Value i:nil="true" />
+    </d2p1:KeyValueOfstringstring>
+  </Flags>
+  <Name>File_and_Printer_Sharing</Name>
+</Application>

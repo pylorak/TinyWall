@@ -7,23 +7,11 @@ using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Samples;
 
+using TinyWall.Interface;
+using TinyWall.Interface.Internal;
+
 namespace PKSoft
 {
-    [Serializable]
-    public class UpdateModule
-    {
-        public string Component;
-        public string ComponentVersion;
-        public string DownloadHash;
-        public string UpdateURL;
-    }
-
-    [Serializable]
-    public class UpdateDescriptor
-    {
-        public string MagicWord = "TinyWall Update Descriptor";
-        public UpdateModule[] Modules;
-    }
 
     internal class Updater
     {
@@ -200,7 +188,7 @@ namespace PKSoft
 
     internal static class UpdateChecker
     {
-        private const int UPDATER_VERSION = 3;
+        private const int UPDATER_VERSION = 4;
         private const string URL_UPDATE_DESCRIPTOR = @"http://tinywall.pados.hu/updates/UpdVer{0}/update.xml";
 
         internal static UpdateDescriptor GetDescriptor()

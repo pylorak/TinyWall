@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="TinyWall">
+  <Components>
+    <SubjectIdentity>
+      <Policy i:type="RuleListPolicy">
+        <Rules>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>Out</Direction>
+            <Name>DNS client TCP</Name>
+            <Protocol>TCP</Protocol>
+            <RemotePorts>53</RemotePorts>
+            <RemoteAddresses>DNS</RemoteAddresses>
+          </RuleDef>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>InOut</Direction>
+            <Name>DNS client UDP</Name>
+            <Protocol>UDP</Protocol>
+            <RemotePorts>53</RemotePorts>
+            <RemoteAddresses>DNS</RemoteAddresses>
+          </RuleDef>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>InOut</Direction>
+            <Name>LLMNR-UDP (client)</Name>
+            <Protocol>UDP</Protocol>
+            <RemotePorts>5355</RemotePorts>
+            <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          </RuleDef>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>InOut</Direction>
+            <Name>LLMNR-UDP (server)</Name>
+            <LocalPorts>5355</LocalPorts>
+            <Protocol>UDP</Protocol>
+            <RemoteAddresses>LocalSubnet</RemoteAddresses>
+          </RuleDef>
+        </Rules>
+      </Policy>
+      <Subject i:type="ServiceSubject">
+        <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
+        <ServiceName>Dnscache</ServiceName>
+      </Subject>
+    </SubjectIdentity>
+  </Components>
+  <Flags xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+    <d2p1:KeyValueOfstringstring>
+      <d2p1:Key>TWUI:SPECIAL</d2p1:Key>
+      <d2p1:Value i:nil="true" />
+    </d2p1:KeyValueOfstringstring>
+    <d2p1:KeyValueOfstringstring>
+      <d2p1:Key>TWUI:RECOMMENDED</d2p1:Key>
+      <d2p1:Value i:nil="true" />
+    </d2p1:KeyValueOfstringstring>
+  </Flags>
+  <Name>Windows_DNS_Client</Name>
+</Application>

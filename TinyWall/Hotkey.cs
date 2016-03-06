@@ -3,10 +3,11 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Windows.Forms;
+using TinyWall.Interface.Internal;
 
 namespace PKSoft
 {
-    internal class Hotkey : DisposableObject, IMessageFilter
+    internal class Hotkey : Disposable, IMessageFilter
 	{
         private static class NativeMethods
         {

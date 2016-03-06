@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AC7BE8FE-87D6-44A6-9298-813534203590}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TinyWall.Interface</RootNamespace>
+    <AssemblyName>TinyWall.Interface</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>TinyWall.key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controller.cs" />
+    <Compile Include="ExceptionPolicy.cs" />
+    <Compile Include="FirewallException.cs" />
+    <Compile Include="FirewallLogEntry.cs" />
+    <Compile Include="Internal\BoundedMessageQueue.cs" />
+    <Compile Include="Internal\Disposable.cs" />
+    <Compile Include="Internal\Future.cs" />
+    <Compile Include="Internal\Hasher.cs" />
+    <Compile Include="Internal\Message.cs" />
+    <Compile Include="Internal\MessageType.cs" />
+    <Compile Include="Internal\NetworkPath.cs" />
+    <Compile Include="Internal\PipeClientEndpoint.cs" />
+    <Compile Include="Internal\SerializationHelper.cs" />
+    <Compile Include="Internal\Utils.cs" />
+    <Compile Include="Internal\WinTrust.cs" />
+    <Compile Include="Parser\ParserFolderVariable.cs" />
+    <Compile Include="Parser\ParserParentVariable.cs" />
+    <Compile Include="Parser\ParserRegistryVariable.cs" />
+    <Compile Include="Parser\ParserVariable.cs" />
+    <Compile Include="Parser\RecursiveParser.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocol.cs" />
+    <Compile Include="RuleAction.cs" />
+    <Compile Include="ExceptionSubject.cs" />
+    <Compile Include="RuleDef.cs" />
+    <Compile Include="ServerConfiguration.cs" />
+    <Compile Include="ServerState.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TinyWall.key.snk" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Principal;
 using System.Text;
@@ -12,6 +13,7 @@ using System.Windows.Forms;
 using System.Threading;
 using Microsoft.Win32;
 using Microsoft.Samples;
+using TinyWall.Interface.Internal;
 
 namespace PKSoft
 {
@@ -117,76 +119,6 @@ namespace PKSoft
         }
         */
 
-        internal static bool IsUncPath(string path)
-        {
-            Uri uri = null;
-            if (!Uri.TryCreate(path, UriKind.Absolute, out uri))
-            {
-                return false;
-            }
-            return uri.IsUnc;
-        }
-
-        internal static string GetUncPath(string localPath)
-        {
-            // The return value.
-            string retVal = null;
-
-            // The pointer in memory to the structure.
-            IntPtr buffer = IntPtr.Zero;
-
-            // Wrap in a try/catch block for cleanup.
-            try
-            {
-                // First, call WNetGetUniversalName to get the size.
-                int size = 0;
-
-                // Make the call.
-                // Pass IntPtr.Size because the API doesn't like null, even though
-                // size is zero.  We know that IntPtr.Size will be
-                // aligned correctly.
-                int apiRetVal = NativeMethods.WNetGetUniversalName(localPath, NativeMethods.UNIVERSAL_NAME_INFO_LEVEL, (IntPtr)IntPtr.Size, ref size);
-
-                // If the return value is not ERROR_MORE_DATA, then
-                // raise an exception.
-                if (apiRetVal != NativeMethods.ERROR_MORE_DATA)
-                    // Throw an exception.
-                    throw new System.ComponentModel.Win32Exception(apiRetVal);
-
-                // Allocate the memory.
-                buffer = Marshal.AllocCoTaskMem(size);
-
-                // Now make the call.
-                apiRetVal = NativeMethods.WNetGetUniversalName(localPath, NativeMethods.UNIVERSAL_NAME_INFO_LEVEL, buffer, ref size);
-
-                // If it didn't succeed, then throw.
-                if (apiRetVal != NativeMethods.NOERROR)
-                    // Throw an exception.
-                    throw new System.ComponentModel.Win32Exception(apiRetVal);
-
-                // Now get the string.  It's all in the same buffer, but
-                // the pointer is first, so offset the pointer by IntPtr.Size
-                // and pass to PtrToStringAnsi.
-                retVal = Marshal.PtrToStringAuto(new IntPtr(buffer.ToInt64() + IntPtr.Size), size);
-                retVal = retVal.Substring(0, retVal.IndexOf('\0'));
-            }
-            finally
-            {
-                // Release the buffer.
-                Marshal.FreeCoTaskMem(buffer);
-            }
-
-            // First, allocate the memory for the structure.
-
-            // That's all folks.
-            return retVal;
-        }
-        
-        internal static bool IsNetworkPath(string path)
-        {
-            return NativeMethods.PathIsNetworkPath(path);
-        }
-
         internal static bool IsMetroActive(out bool success)
         { // http://stackoverflow.com/questions/12009999/imetromodeislaunchervisible-in-c-sharp-via-pinvoke
 
@@ -219,7 +151,7 @@ namespace PKSoft
         {
             msg = msg.Replace("\n", "|");
             string args = string.Format(CultureInfo.InvariantCulture, "KPados.TinyWall.Controller \"{0}\"", msg);
-            Utils.StartProcess(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "Toaster.exe"), args, false, true);
+            Utils.StartProcess(Path.Combine(Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath), "Toaster.exe"), args, false, true);
         }
 
         internal static Process GetForegroundProcess()
@@ -233,6 +165,14 @@ namespace PKSoft
         internal static bool IsImmersiveProcess(Process p)
         {
             return NativeMethods.IsImmersiveProcess(p.Handle);
+        }
+
+        internal static string ProgramFilesx86()
+        {
+            if ((8 == IntPtr.Size) || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
+                return Environment.GetEnvironmentVariable("ProgramFiles(x86)");
+            else
+                return Environment.GetEnvironmentVariable("ProgramFiles");
         }
 
         internal static void CompressDeflate(string inputFile, string outputFile)
@@ -280,7 +220,7 @@ namespace PKSoft
             }
         }
 
-        internal static string GetPathOfProcessUseTwService(Process p)
+        internal static string GetPathOfProcessUseTwService(Process p, TinyWall.Interface.Controller controller)
         {
             // Shortcut for special case
             if ((p.Id == 0) || (p.Id == 4))
@@ -292,11 +232,7 @@ namespace PKSoft
             }
             catch
             {
-                Message resp = GlobalInstances.CommunicationMan.QueueMessage(new Message(TWControllerMessages.GET_PROCESS_PATH, p.Id)).GetResponse();
-                if (resp.Command == TWControllerMessages.RESPONSE_OK)
-                    return resp.Arguments[0] as string;
-                else
-                    return string.Empty;
+                return controller.TryGetProcessPath(p.Id);
             }
         }
 
@@ -319,7 +255,7 @@ namespace PKSoft
             }
         }
         
-        internal static string GetExecutableUnderCursor(int x, int y)
+        internal static string GetExecutableUnderCursor(int x, int y, TinyWall.Interface.Controller controller)
         {
             // Get process id under cursor
             int ProcId;
@@ -328,7 +264,7 @@ namespace PKSoft
             // Get executable of process
             using (Process p = Process.GetProcessById(ProcId))
             {
-                return Utils.GetPathOfProcessUseTwService(p);
+                return Utils.GetPathOfProcessUseTwService(p, controller);
             }
         }
 
@@ -375,15 +311,6 @@ namespace PKSoft
                 buffer[i] = chars[_rng.Next(chars.Length)];
             }
             return new string(buffer);
-        }
-
-        internal static string HexEncode(byte[] binstr)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (byte oct in binstr)
-                sb.Append(oct.ToString(@"X2", CultureInfo.InvariantCulture));
-
-            return sb.ToString();
         }
 
         /*
@@ -463,7 +390,9 @@ namespace PKSoft
             using (MemoryStream ms = new MemoryStream())
             {
                 BinaryFormatter formatter = new BinaryFormatter();
+                formatter.Context = new StreamingContext(StreamingContextStates.Clone);
                 formatter.Serialize(ms, obj);
+                ms.Flush();
                 ms.Position = 0;
 
                 return (T)formatter.Deserialize(ms);
@@ -645,14 +574,6 @@ namespace PKSoft
                 syncCtx.Send(method, null);
         }
 
-        internal static string ProgramFilesx86()
-        {
-            if ((8 == IntPtr.Size) || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
-                return Environment.GetEnvironmentVariable("ProgramFiles(x86)");
-            else
-                return Environment.GetEnvironmentVariable("ProgramFiles");
-        }
-
         internal static void SplitFirstLine(string str, out string firstLine, out string restLines)
         {
             string[] lines = str.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
@@ -683,19 +604,6 @@ namespace PKSoft
                 return (DialogResult)taskDialog.Show();
             else
                 return (DialogResult)taskDialog.Show(parent);
-        }
-
-        private static string _ExecutablePath = null;
-        internal static string ExecutablePath
-        {
-            get
-            {
-                if (_ExecutablePath == null)
-                {
-                    _ExecutablePath = System.Reflection.Assembly.GetEntryAssembly().Location;
-                }
-                return _ExecutablePath;
-            }
         }
 
         private static Random RndGenerator = null;
