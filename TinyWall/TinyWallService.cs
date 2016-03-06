@@ -377,8 +377,7 @@ namespace PKSoft
                 Firewall.NotificationsDisabled = true;
 
                 FwRules = Firewall.GetRules(false);
-                for (int i = 0; i < FwRules.Count; ++i)
-                    FwRules[i].Enabled = false;
+                FwRules.Clear();
 
                 barrier.Wait();
                 // --- THREAD BARRIER ---
