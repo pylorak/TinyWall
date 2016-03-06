@@ -123,28 +123,28 @@
   <data name="columnHeader1.Text" xml:space="preserve">
     <value>Nazwa</value>
   </data>
-  <data name="btnSelectImportant.Text" xml:space="preserve">
-    <value>Zaznacz ważne</value>
-  </data>
   <data name="lblStatus.Text" xml:space="preserve">
     <value>Szukam</value>
-  </data>
-  <data name="btnOK.Text" xml:space="preserve">
-    <value>Zatwierdź</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Aby odblokować znalezioną aplikacje zaznacz ją "ptaszkiem" i potwierdź przyciskiem "Zatwierdź".</value>
   </data>
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Anuluj</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Wyszukaj aplikacje - TinyWall</value>
+  <data name="btnOK.Text" xml:space="preserve">
+    <value>Zatwierdź</value>
+  </data>
+  <data name="btnSelectImportant.Text" xml:space="preserve">
+    <value>Zaznacz ważne</value>
   </data>
   <data name="btnSelectAll.Text" xml:space="preserve">
     <value>Zaznacz wszystkie</value>
   </data>
   <data name="btnDeselectAll.Text" xml:space="preserve">
     <value>Odznacz wszytskie</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Aby odblokować znalezioną aplikacje zaznacz ją "ptaszkiem" i potwierdź przyciskiem "Zatwierdź".</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Wyszukaj aplikacje - TinyWall</value>
   </data>
 </root>

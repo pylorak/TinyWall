@@ -1,0 +1,365 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
+    <value>Nebylo možné navýšit na privilegia nezbytné pro aktualizaci.</value>
+  </data>
+  <data name="TinyWallUpdater" xml:space="preserve">
+    <value>TinyWall Aktualizátor</value>
+  </data>
+  <data name="ErrorCheckingForUpdates" xml:space="preserve">
+    <value>Nemohu se spojit s aktualizačním serverem.
+Server může být vypnutý, ale prosím ujistěte se, že TinyWall má přístup k internetu a akci zkuste znovu.</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Novější verze {0} aplikace TinyWall je dostupná. Chcete nyní aktualizovat?</value>
+  </data>
+  <data name="DownloadingUpdate" xml:space="preserve">
+    <value>Stahuji aktualizaci...</value>
+  </data>
+  <data name="NoUpdateAvailable" xml:space="preserve">
+    <value>Máte nejnovější verzi aplikace TinyWall. Žádná aktualizace není dostupná.</value>
+  </data>
+  <data name="DownloadInterrupted" xml:space="preserve">
+    <value>Stahování přerušeno.</value>
+  </data>
+  <data name="StartingUpdate" xml:space="preserve">
+    <value>Započínám aktualizaci...</value>
+  </data>
+  <data name="TinyWallIsCurrentlyLocked" xml:space="preserve">
+    <value>TinyWall je momentálně uzamčen. Odemkněte jej a akci zopakujte.</value>
+  </data>
+  <data name="PleaseWaitWhileTinyWallChecksForUpdates" xml:space="preserve">
+    <value>Prosím vyčkejte zatímco TinyWall vyhledává aktualizace.</value>
+  </data>
+  <data name="CouldNotWhitelistProcess" xml:space="preserve">
+    <value>Nebylo možné přidat do whitelistu proces v {0}.</value>
+  </data>
+  <data name="CouldNotCloseProcess" xml:space="preserve">
+    <value>Nebylo možné ukončit proces {0}({1}).</value>
+  </data>
+  <data name="PasswordFieldsDoNotMatch" xml:space="preserve">
+    <value>Hesla nesouhlasí. Zkontrolujte je prosím.</value>
+  </data>
+  <data name="AreYouSureYouWantToRemoveAllExceptions" xml:space="preserve">
+    <value>Skutečně chcete odebrat všechny firewall vyjímky?</value>
+  </data>
+  <data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
+    <value>Nemáte administrátorská privilegia potřebná v vykonání této akce.
+Zvolte Navýšit v tray menu a akci zkuste znovu.</value>
+  </data>
+  <data name="TinyWallSettingsFileFilter" xml:space="preserve">
+    <value>TinyWall Nastavení</value>
+  </data>
+  <data name="AllFilesFileFilter" xml:space="preserve">
+    <value>Všechny soubory</value>
+  </data>
+  <data name="ConfigurationHasBeenImported" xml:space="preserve">
+    <value>Konfigurační soubor byl úspěšně importován. Stiskněte Budiž ve Správě firewallu pro uplatnění nového nastavení.</value>
+  </data>
+  <data name="ConfigurationImportError" xml:space="preserve">
+    <value>Nebylo možné importovat konfigurační soubor.</value>
+  </data>
+  <data name="ConfigurationHasBeenExported" xml:space="preserve">
+    <value>Konfigurační soubor byl úspěšně exportován.</value>
+  </data>
+  <data name="CurrentZone" xml:space="preserve">
+    <value>Současná zóna: {0}</value>
+  </data>
+  <data name="Zone" xml:space="preserve">
+    <value>Zóna</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Mód</value>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>Odemknout</value>
+  </data>
+  <data name="Lock" xml:space="preserve">
+    <value>Zamknout</value>
+  </data>
+  <data name="UpdateAvailableBubble" xml:space="preserve">
+    <value>Novější verze {0} aplikace TinyWall je dostupná. Klikněte na tuto bublinu pro zahájení aktualizace.</value>
+  </data>
+  <data name="TheFirewallIsNowOperatingAsRecommended" xml:space="preserve">
+    <value>Firewall nyní běží v doporučeném módu.</value>
+  </data>
+  <data name="TheFirewallIsNowAllowsOutgoingConnections" xml:space="preserve">
+    <value>Firewall nyní povoluje odchozí komunikaci, ale blokuje příchozí.</value>
+  </data>
+  <data name="TheFirewallIsNowBlockingAllInAndOut" xml:space="preserve">
+    <value>Firewall nyní blokuje veškerou příchozí a odchozí komunikaci.</value>
+  </data>
+  <data name="TheFirewallIsNowDisabled" xml:space="preserve">
+    <value>Firewall je nyní vypnut.</value>
+  </data>
+  <data name="TheTinyWallServiceIsUnavailable" xml:space="preserve">
+    <value>Služba TinyWall je nedostupná. Ujistěte se, že je nainstalována a spuštěna, následně akci zopakujte.</value>
+  </data>
+  <data name="TrafficIn" xml:space="preserve">
+    <value>Přích</value>
+  </data>
+  <data name="TrafficOut" xml:space="preserve">
+    <value>Odch</value>
+  </data>
+  <data name="SettingHaveChangedRetry" xml:space="preserve">
+    <value>Konfigurace byla změněna při úpravě nastavení. Pro předejití ztráty konfigurace, proveďte ji prosím znovu.</value>
+  </data>
+  <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
+    <value>Nastavení firewallu bylo úspěšně aktualizováno.</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Úspěch.</value>
+  </data>
+  <data name="OtherSettingsPreventEffect" xml:space="preserve">
+    <value>Operace byla úspěsná, ale jiná nastavení brání v nabytí její plné platnosti.</value>
+  </data>
+  <data name="OperationFailed" xml:space="preserve">
+    <value>Operace selhala.</value>
+  </data>
+  <data name="CommunicationWithTheServiceError" xml:space="preserve">
+    <value>Komunikace se službou TinyWall selhala.</value>
+  </data>
+  <data name="ClickOnAWindowWhitelisting" xml:space="preserve">
+    <value>Klikněte do vnitřku libovolného okna pro selekci jeho aplikace pro přidání do whitelistu.</value>
+  </data>
+  <data name="WhitelistingCancelled" xml:space="preserve">
+    <value>Přidání do whitelistu zrušeno.</value>
+  </data>
+  <data name="CannotGetExecutablePathWhitelisting" xml:space="preserve">
+    <value>Nemohu nalézt danou cestu. Přidání do whitelistu selhalo.</value>
+  </data>
+  <data name="FirewallRulesForRecognizedChanged" xml:space="preserve">
+    <value>Firewall pravidla pro známou aplikaci {0} byla změněna. Klikněte na toto upozornění pro editaci vyjímky.</value>
+  </data>
+  <data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
+    <value>Firewall pravidla pro neznámou aplikaci {0} byla změněna. Klikněte na toto upozornění pro editaci vyjímky.</value>
+  </data>
+  <data name="TinyWallHasBeenUnlocked" xml:space="preserve">
+    <value>TinyWall byl odemčen. Nyní můžete provádět akce měnící nastavení.</value>
+  </data>
+  <data name="UnlockFailed" xml:space="preserve">
+    <value>Odemčení selhalo. Zkuste to prosím znovu.</value>
+  </data>
+  <data name="CouldNotElevatePrivileges" xml:space="preserve">
+    <value>Nebylo možné navýšit privilegia.</value>
+  </data>
+  <data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
+    <value>Databáze chybí nebo je poškozena.</value>
+  </data>
+  <data name="SearchingPath" xml:space="preserve">
+    <value>Prohledávám: {0}</value>
+  </data>
+  <data name="SearchResults" xml:space="preserve">
+    <value>Výsledky hledání:</value>
+  </data>
+  <data name="RecognizedApplication" xml:space="preserve">
+    <value>Rozpoznána aplikace {0}</value>
+  </data>
+  <data name="UnknownApplication" xml:space="preserve">
+    <value>Neznámá aplikace</value>
+  </data>
+  <data name="Permanent" xml:space="preserve">
+    <value>Permanentní</value>
+  </data>
+  <data name="UntilReboot" xml:space="preserve">
+    <value>Do restartu</value>
+  </data>
+  <data name="XMinutes" xml:space="preserve">
+    <value>{0} minut</value>
+  </data>
+  <data name="XHour" xml:space="preserve">
+    <value>{0} hodinu</value>
+  </data>
+  <data name="XHours" xml:space="preserve">
+    <value>{0} hodin</value>
+  </data>
+  <data name="FirewallModeAllowOut" xml:space="preserve">
+    <value>Povolit odchozí</value>
+  </data>
+  <data name="FirewallModeBlockAll" xml:space="preserve">
+    <value>Blokovat vše</value>
+  </data>
+  <data name="FirewallModeDisabled" xml:space="preserve">
+    <value>Vypnut</value>
+  </data>
+  <data name="FirewallModeNormal" xml:space="preserve">
+    <value>Normální</value>
+  </data>
+  <data name="FirewallModeUnknown" xml:space="preserve">
+    <value>Neznámý</value>
+  </data>
+  <data name="CannotGetPathOfProcess" xml:space="preserve">
+    <value>Nemohu nalézt cestu procesu.</value>
+  </data>
+  <data name="TheFirewallIsNowLearning" xml:space="preserve">
+    <value>Firewall se nyní učí pravidla a propouští veškerou komunikaci.</value>
+  </data>
+  <data name="FirewallModeLearn" xml:space="preserve">
+    <value>Autotrénink</value>
+  </data>
+  <data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
+    <value>Opravdu chcete spustit automatický trénink?
+V tomto módu TinyWall povolí veškerou komunikaci a zapamatuje si, které aplikace využívaly připojení k internetu. Po ukončení automaticky přidá vyjímky pro všechny zapamatované programy. Tento režim nefunguje pro speciální vyjímky.
+
+Před vstupem do tréninkového módu se ujistěte, že se ve vašem systému nenachází aktivní malware. Nejlepší je spuštění tréninkového módu na čistě instalovaném systému a je doporučeno zkontrolovat svůj počítač na malware před použitím tohoto módu.
+
+Chcete nyní přejít do tréninkového módu?</value>
+  </data>
+  <data name="DidYouInitiateTheUninstall" xml:space="preserve">
+    <value>Vyvolal jste odinstalaci/aktualizaci aplikace TinyWall?</value>
+  </data>
+  <data name="PortListInvalid" xml:space="preserve">
+    <value>Formát listu portů je neplatný.
+Můžete použít jedno nebo více čísel v rozmezí 1-65535 oddělených čárkami. Asterix (*) může být také použit na zjištění všech možných portů.</value>
+  </data>
+  <data name="UnblockAppCancel" xml:space="preserve">
+    <value>Zrušit přidání do whitelistu</value>
+  </data>
+  <data name="UnblockApp" xml:space="preserve">
+    <value>Související soubory nalezeny
+Zvolený spustitelný soubor by mohl být součástí {0}. Pro zajištění bezchybné činnosti aplikace je doporučeno odblokovat některé další soubory.</value>
+  </data>
+  <data name="UnblockAppShowRelated" xml:space="preserve">
+    <value>Zobrazit/skrýt příbuzné spustitelné soubory.</value>
+  </data>
+  <data name="UnblockAppUnblockAllRecommended" xml:space="preserve">
+    <value>Odblokovat všechny doporučené programy.</value>
+  </data>
+  <data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
+    <value>Odblokovat pouze zvolený soubor</value>
+  </data>
+  <data name="CompromisedApplication" xml:space="preserve">
+    <value>{0}, potenciálně ohrožena</value>
+  </data>
+  <data name="ToastInputNeeded" xml:space="preserve">
+    <value>Vaše interakce je nutná
+pro pokračování firewall whitelistingu.</value>
+  </data>
+  <data name="ToastAppWhitelisted" xml:space="preserve">
+    <value>Přidáno do whitelistu</value>
+  </data>
+  <data name="ToastWhitelistFailed" xml:space="preserve">
+    <value>Přidání do whitelistu selhalo.
+Zkuste akci prosím znovu.</value>
+  </data>
+  <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
+    <value>Nebylo možné uplatnit nastavení firewallu kvůli vnitřní chybě.</value>
+  </data>
+</root>

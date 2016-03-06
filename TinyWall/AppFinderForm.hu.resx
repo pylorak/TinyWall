@@ -124,46 +124,46 @@
     <value>Név</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="btnDeselectAll.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 43</value>
-  </data>
   <data name="lblStatus.Size" type="System.Drawing.Size, System.Drawing">
     <value>48, 13</value>
-  </data>
-  <data name="btnSelectImportant.Text" xml:space="preserve">
-    <value>Fontosak kijelölése</value>
-  </data>
-  <data name="btnSelectImportant.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 43</value>
-  </data>
-  <data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>90, 43</value>
   </data>
   <data name="lblStatus.Text" xml:space="preserve">
     <value>Keresés:</value>
   </data>
-  <data name="btnOK.Text" xml:space="preserve">
-    <value>Alkalmaz</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Egy alkalmazás feloldásához jelöld ki a hozzá tartozó választódobozt az eredménylistában.</value>
-  </data>
-  <data name="btnOK.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
     <value>90, 43</value>
   </data>
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Mégse</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Alkalmazás kereső - TinyWall</value>
+  <data name="btnOK.Size" type="System.Drawing.Size, System.Drawing">
+    <value>90, 43</value>
   </data>
-  <data name="btnSelectAll.Text" xml:space="preserve">
-    <value>Összes kijelölése</value>
+  <data name="btnOK.Text" xml:space="preserve">
+    <value>Alkalmaz</value>
+  </data>
+  <data name="btnSelectImportant.Size" type="System.Drawing.Size, System.Drawing">
+    <value>94, 43</value>
+  </data>
+  <data name="btnSelectImportant.Text" xml:space="preserve">
+    <value>Fontosak kijelölése</value>
   </data>
   <data name="btnSelectAll.Size" type="System.Drawing.Size, System.Drawing">
     <value>94, 43</value>
   </data>
+  <data name="btnSelectAll.Text" xml:space="preserve">
+    <value>Összes kijelölése</value>
+  </data>
+  <data name="btnDeselectAll.Size" type="System.Drawing.Size, System.Drawing">
+    <value>94, 43</value>
+  </data>
   <data name="btnDeselectAll.Text" xml:space="preserve">
     <value>Kijelölés megszüntetése</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Egy alkalmazás feloldásához jelöld ki a hozzá tartozó választódobozt az eredménylistában.</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Alkalmazás kereső - TinyWall</value>
   </data>
 </root>

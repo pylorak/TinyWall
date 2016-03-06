@@ -127,28 +127,28 @@
   <data name="lblStatus.Size" type="System.Drawing.Size, System.Drawing">
     <value>47, 13</value>
   </data>
-  <data name="btnSelectImportant.Text" xml:space="preserve">
-    <value>selecteer belangrijk</value>
-  </data>
   <data name="lblStatus.Text" xml:space="preserve">
     <value>Zoeken:</value>
-  </data>
-  <data name="btnOK.Text" xml:space="preserve">
-    <value>Toepassen</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Selecteer de toepassing door het aankruisvakje bij de toepassing aan te vinken in het zoekresultaat</value>
   </data>
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Annuleren</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Zoeken naar toepassing - Tinywall</value>
+  <data name="btnOK.Text" xml:space="preserve">
+    <value>Toepassen</value>
+  </data>
+  <data name="btnSelectImportant.Text" xml:space="preserve">
+    <value>selecteer belangrijk</value>
   </data>
   <data name="btnSelectAll.Text" xml:space="preserve">
     <value>selecteer alles</value>
   </data>
   <data name="btnDeselectAll.Text" xml:space="preserve">
     <value>deselecteer alles</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Selecteer de toepassing door het aankruisvakje bij de toepassing aan te vinken in het zoekresultaat</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Zoeken naar toepassing - Tinywall</value>
   </data>
 </root>

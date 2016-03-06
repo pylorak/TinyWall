@@ -12,7 +12,7 @@ Italian - Stefano Scotti
 Chinese - Ruiming Xu
 Polish - Kamil Nęcek
 Turkish - Hakan Ateş
-
+Czech - Lukáš Hajn
 
 Icon resources:
 -----------------------------------------------

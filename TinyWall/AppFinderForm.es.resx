@@ -120,34 +120,34 @@
   <data name="label1.Text" xml:space="preserve">
     <value>TinyWall puede detectar automaticamente y desbloquear cualquier software del ordenador. Esto ayuda a no tener que desbloquear las aplicaciones una por una. Se podrán revisar los resultados antes de confirmar los cambios.</value>
   </data>
-  <data name="columnHeader1.Text" xml:space="preserve">
-    <value>Nombre</value>
-  </data>
   <data name="btnStartDetection.Text" xml:space="preserve">
     <value>Comenzar</value>
   </data>
-  <data name="btnSelectImportant.Text" xml:space="preserve">
-    <value>Importantes</value>
+  <data name="columnHeader1.Text" xml:space="preserve">
+    <value>Nombre</value>
   </data>
   <data name="lblStatus.Text" xml:space="preserve">
     <value>Buscando:</value>
   </data>
-  <data name="btnOK.Text" xml:space="preserve">
-    <value>Aplicar</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Marcar la casilla de verificación para desbloquear los resultados de la búsqueda.</value>
-  </data>
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Cancelar</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Programa encontrado - TinyWall</value>
+  <data name="btnOK.Text" xml:space="preserve">
+    <value>Aplicar</value>
+  </data>
+  <data name="btnSelectImportant.Text" xml:space="preserve">
+    <value>Importantes</value>
   </data>
   <data name="btnSelectAll.Text" xml:space="preserve">
     <value>Seleccionar Todo</value>
   </data>
   <data name="btnDeselectAll.Text" xml:space="preserve">
     <value>Deseleccionar Todo</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Marcar la casilla de verificación para desbloquear los resultados de la búsqueda.</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Programa encontrado - TinyWall</value>
   </data>
 </root>

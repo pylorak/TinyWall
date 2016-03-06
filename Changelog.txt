@@ -1,7 +1,17 @@
 TinyWall Changelog
 ---------------------
 
-2.1.7 - Maintenance release (04.01.2015.)
+2.1.8 - Maintenance release (xx.03.2016.)
+- Fix: Potential GUI crash when whitelisting by window
+- Fix: Workaround for performance issue in Windows 10
+- Fix: Connections form GUI scaling issue in German localization
+- Atomic file updates to reduce chance of lost settings due to file corruptions
+- Add Czech localization, and Spanish update
+
+
+---------------------
+
+2.1.7 - Maintenance release (04.01.2016.)
 - Fix: GUI freezes if Application Finder is closed while scan is running
 - Fix: GUI is blurry if desktop scaling is enabled
 - Add Polish and Turkish localizations

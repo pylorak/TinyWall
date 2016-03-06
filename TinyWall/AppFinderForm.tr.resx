@@ -120,34 +120,34 @@
   <data name="label1.Text" xml:space="preserve">
     <value>TinyWall bilgisayarınızdaki yazılımları otomatik olarak saptayıp engelini kaldırabilir. Böylece yazılımların birer birer elgelini kaldırmayla uğraşmanıza gerek kalmaz. Bir değişiklik yapılmadan önce sonuçları incelemek için imkanınız olacaktır.</value>
   </data>
-  <data name="columnHeader1.Text" xml:space="preserve">
-    <value>Adı</value>
-  </data>
   <data name="btnStartDetection.Text" xml:space="preserve">
     <value>Başlat</value>
   </data>
-  <data name="btnSelectImportant.Text" xml:space="preserve">
-    <value>Sonucu doğrula</value>
+  <data name="columnHeader1.Text" xml:space="preserve">
+    <value>Adı</value>
   </data>
   <data name="lblStatus.Text" xml:space="preserve">
     <value>Arama:</value>
   </data>
-  <data name="btnOK.Text" xml:space="preserve">
-    <value>Uygula</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Arama sonuçlarındaki bir yazılımın engelini kaldırmak için onay kutusunu işaretleyin.</value>
-  </data>
   <data name="btnCancel.Text" xml:space="preserve">
     <value>İptal</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Uygulama Bulucu - TinyWall</value>
+  <data name="btnOK.Text" xml:space="preserve">
+    <value>Uygula</value>
+  </data>
+  <data name="btnSelectImportant.Text" xml:space="preserve">
+    <value>Sonucu doğrula</value>
   </data>
   <data name="btnSelectAll.Text" xml:space="preserve">
     <value>Tümünü seç</value>
   </data>
   <data name="btnDeselectAll.Text" xml:space="preserve">
     <value>Tüm seçimleri kaldır</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Arama sonuçlarındaki bir yazılımın engelini kaldırmak için onay kutusunu işaretleyin.</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Uygulama Bulucu - TinyWall</value>
   </data>
 </root>

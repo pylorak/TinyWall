@@ -117,58 +117,64 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="mnuModeNormal.Text" xml:space="preserve">
-    <value>Protección normal</value>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Zrušit</value>
   </data>
-  <data name="mnuModeBlockAll.Text" xml:space="preserve">
-    <value>Bloquear todo</value>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Spustitelná cesta:</value>
   </data>
-  <data name="mnuModeAllowOutgoing.Text" xml:space="preserve">
-    <value>Permitir redireccionar</value>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Název služby:</value>
   </data>
-  <data name="mnuModeDisabled.Text" xml:space="preserve">
-    <value>Desactivar cortafuegos</value>
+  <data name="btnBrowse.Text" xml:space="preserve">
+    <value>Najít soubor...</value>
   </data>
-  <data name="mnuModeLearn.Text" xml:space="preserve">
-    <value>Auto aprendizaje</value>
+  <data name="btnProcess.Text" xml:space="preserve">
+    <value>Vybrat proces...</value>
   </data>
-  <data name="mnuMode.Text" xml:space="preserve">
-    <value>Cambiar a modo</value>
+  <data name="btnChooseService.Text" xml:space="preserve">
+    <value>Zvolit službu...</value>
   </data>
-  <data name="mnuManage.Text" xml:space="preserve">
-    <value>Consola</value>
+  <data name="ofd.Title" xml:space="preserve">
+    <value>Zvolit spustitelný soubor aplikace</value>
   </data>
-  <data name="mnuConnections.Text" xml:space="preserve">
-    <value>Mostrar conexiones</value>
+  <data name="label6.Text" xml:space="preserve">
+    <value>Platnost vyjímky:</value>
   </data>
-  <data name="mnuLock.Text" xml:space="preserve">
-    <value>Bloquear</value>
+  <data name="chkRestrictToLocalNetwork.Text" xml:space="preserve">
+    <value>Omezit na lokální síť</value>
   </data>
-  <data name="mnuElevate.Text" xml:space="preserve">
-    <value>Elevar</value>
+  <data name="radBlock.Text" xml:space="preserve">
+    <value>Blokovat veškerou komunikaci</value>
   </data>
-  <data name="mnuAllowLocalSubnet.Text" xml:space="preserve">
-    <value>Desbloquear tráfico de red local</value>
+  <data name="radTcpUdpOut.Text" xml:space="preserve">
+    <value>Povolit odchozí UDP a TCP komunikaci</value>
   </data>
-  <data name="mnuEnableHostsBlocklist.Text" xml:space="preserve">
-    <value>Activar lista de bloqueados</value>
+  <data name="radTcpUdpUnrestricted.Text" xml:space="preserve">
+    <value>Neomezená UDP a TCP komunikace</value>
   </data>
-  <data name="mnuWhitelistByExecutable.Text" xml:space="preserve">
-    <value>Lista blanca por Ejecutables</value>
+  <data name="radUnrestricted.Text" xml:space="preserve">
+    <value>Bez omezení</value>
   </data>
-  <data name="mnuWhitelistByProcess.Text" xml:space="preserve">
-    <value>Lista blanca por Procesos</value>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Otevřít následující porty pro doplnění nastavení výše. (list oddělen čárkami)</value>
   </data>
-  <data name="mnuWhitelistByWindow.Text" xml:space="preserve">
-    <value>Lista blanca por Ventanas</value>
+  <data name="txtListenPortUDP.AccessibleName" xml:space="preserve">
+    <value>Příchozí UDP</value>
   </data>
-  <data name="mnuQuit.Text" xml:space="preserve">
-    <value>Salir</value>
+  <data name="txtListenPortTCP.AccessibleName" xml:space="preserve">
+    <value>Příchozí TCP</value>
   </data>
-  <data name="ofd.Filter" xml:space="preserve">
-    <value>Todos los archivos |*.*</value>
+  <data name="txtOutboundPortUDP.AccessibleName" xml:space="preserve">
+    <value>Odchozí UDP</value>
+  </data>
+  <data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
+    <value>Odchozí TCP</value>
+  </data>
+  <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
+    <value>Povolit pouze určité porty</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Control TinyWall</value>
+    <value>Přidat/Upravit vyjímku firewallu - TinyWall</value>
   </data>
 </root>
