@@ -105,6 +105,7 @@
     <Compile Include="ApplicationExceptionForm.Designer.cs">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="AtomicFileUpdater.cs" />
     <Compile Include="IconTools.cs" />
     <Compile Include="TinyWallController.cs" />
     <Compile Include="WinTrust.cs" />

@@ -102,16 +102,26 @@ namespace PKSoft
         {
             Normalize();
 
-            // Construct file path
+            // Construct file paths
             string SettingsFile = Path.Combine(ServiceSettings21.AppDataPath, "config");
 
-            // Construct key
-            string key = ENC_SALT;
-            key = Hasher.HashString(key).Substring(0, 16);
-
-            lock (locker)
+            lock (locker)   // TODO: Hmmm... why do we need this lock?
             {
-                SerializationHelper.SaveToEncryptedXMLFile<ServiceSettings21>(this, SettingsFile, key, ENC_IV);
+                try
+                {
+                    using (AtomicFileUpdater fileUpdater = new AtomicFileUpdater(SettingsFile))
+                    {
+                        // Construct key
+                        string key = ENC_SALT;
+                        key = Hasher.HashString(key).Substring(0, 16);
+
+                        // Save new settings to temporary file
+                        SerializationHelper.SaveToEncryptedXMLFile<ServiceSettings21>(this, fileUpdater.TemporaryFilePath, key, ENC_IV);
+
+                        fileUpdater.Commit();
+                    }
+                }
+                catch { }
             }
         }
 
@@ -126,7 +136,6 @@ namespace PKSoft
             {
                 try
                 {
-
                     // Construct key
                     string key = ENC_SALT;
                     key = Hasher.HashString(key).Substring(0, 16);
@@ -255,10 +264,16 @@ namespace PKSoft
 
         internal void Save()
         {
-            // Construct file path
             string SettingsFile = Path.Combine(UserDataPath, "ControllerConfig");
-
-            SerializationHelper.SaveToXMLFile(this, SettingsFile);
+            try
+            {
+                using (AtomicFileUpdater fileUpdater = new AtomicFileUpdater(SettingsFile))
+                {
+                    SerializationHelper.SaveToXMLFile(this, fileUpdater.TemporaryFilePath);
+                    fileUpdater.Commit();
+                }
+            }
+            catch { }
         }
 
         internal static ControllerSettings Load()
@@ -358,11 +373,20 @@ namespace PKSoft
                 File.Delete(SettingsFile);
             else
             {
-                // Construct key
-                string key = ENC_SALT + passHash;
-                key = Hasher.HashString(key).Substring(0, 16);
+                try
+                {
+                    using (AtomicFileUpdater fileUpdater = new AtomicFileUpdater(SettingsFile))
+                    {
+                        // Construct key
+                        string key = ENC_SALT + passHash;
+                        key = Hasher.HashString(key).Substring(0, 16);
 
-                SerializationHelper.SaveToEncryptedXMLFile<string>(passHash, SettingsFile, key, ENC_IV);
+                        SerializationHelper.SaveToEncryptedXMLFile<string>(passHash, fileUpdater.TemporaryFilePath, key, ENC_IV);
+
+                        fileUpdater.Commit();
+                    }
+                }
+                catch { }
             }
         }
     }
