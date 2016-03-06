@@ -368,7 +368,18 @@ namespace PKSoft
         private void mnuCopyRemoteAddress_Click(object sender, EventArgs e)
         {
             ListViewItem li = list.SelectedItems[0];
-            Clipboard.SetText(li.SubItems[5].Text, TextDataFormat.UnicodeText);
+            string clipboardData = li.SubItems[5].Text;
+
+            IDataObject dataObject = new DataObject();
+            dataObject.SetData(DataFormats.UnicodeText, false, clipboardData);
+            try
+            {
+                Clipboard.SetDataObject(dataObject, true, 20, 100);
+            }
+            catch
+            {
+                // Fail silently :(
+            }
         }
 
         private void mnuVirusTotal_Click(object sender, EventArgs e)
