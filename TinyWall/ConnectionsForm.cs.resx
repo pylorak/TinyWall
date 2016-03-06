@@ -117,58 +117,70 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="mnuModeNormal.Text" xml:space="preserve">
-    <value>Protección normal</value>
+  <data name="btnClose.Text" xml:space="preserve">
+    <value>Zavřít</value>
   </data>
-  <data name="mnuModeBlockAll.Text" xml:space="preserve">
-    <value>Bloquear todo</value>
+  <data name="columnHeader1.Text" xml:space="preserve">
+    <value>Proces (id)</value>
   </data>
-  <data name="mnuModeAllowOutgoing.Text" xml:space="preserve">
-    <value>Permitir redireccionar</value>
+  <data name="columnHeader2.Text" xml:space="preserve">
+    <value>Protokol</value>
   </data>
-  <data name="mnuModeDisabled.Text" xml:space="preserve">
-    <value>Desactivar cortafuegos</value>
+  <data name="columnHeader3.Text" xml:space="preserve">
+    <value>Zdrojový port</value>
   </data>
-  <data name="mnuModeLearn.Text" xml:space="preserve">
-    <value>Auto aprendizaje</value>
+  <data name="columnHeader4.Text" xml:space="preserve">
+    <value>Lokální/Zdrojová adresa</value>
   </data>
-  <data name="mnuMode.Text" xml:space="preserve">
-    <value>Cambiar a modo</value>
+  <data name="columnHeader5.Text" xml:space="preserve">
+    <value>Cílový port</value>
   </data>
-  <data name="mnuManage.Text" xml:space="preserve">
-    <value>Consola</value>
+  <data name="columnHeader6.Text" xml:space="preserve">
+    <value>Vzdálená/Cílová adresa</value>
   </data>
-  <data name="mnuConnections.Text" xml:space="preserve">
-    <value>Mostrar conexiones</value>
+  <data name="columnHeader7.Text" xml:space="preserve">
+    <value>Stav</value>
   </data>
-  <data name="mnuLock.Text" xml:space="preserve">
-    <value>Bloquear</value>
+  <data name="columnHeader8.Text" xml:space="preserve">
+    <value>Směr</value>
   </data>
-  <data name="mnuElevate.Text" xml:space="preserve">
-    <value>Elevar</value>
+  <data name="mnuUnblock.Text" xml:space="preserve">
+    <value>Odblokovat</value>
   </data>
-  <data name="mnuAllowLocalSubnet.Text" xml:space="preserve">
-    <value>Desbloquear tráfico de red local</value>
+  <data name="mnuCloseProcess.Text" xml:space="preserve">
+    <value>Ukončit proces</value>
   </data>
-  <data name="mnuEnableHostsBlocklist.Text" xml:space="preserve">
-    <value>Activar lista de bloqueados</value>
+  <data name="mnuVirusTotal.Text" xml:space="preserve">
+    <value>Na VirusTotal</value>
   </data>
-  <data name="mnuWhitelistByExecutable.Text" xml:space="preserve">
-    <value>Lista blanca por Ejecutables</value>
+  <data name="mnuProcessLibrary.Text" xml:space="preserve">
+    <value>Na ProcessLibrary</value>
   </data>
-  <data name="mnuWhitelistByProcess.Text" xml:space="preserve">
-    <value>Lista blanca por Procesos</value>
+  <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
+    <value>Název souboru na webu</value>
   </data>
-  <data name="mnuWhitelistByWindow.Text" xml:space="preserve">
-    <value>Lista blanca por Ventanas</value>
+  <data name="mnuRemoteAddressOnTheWeb.Text" xml:space="preserve">
+    <value>Vzdálenou adresu na webu</value>
   </data>
-  <data name="mnuQuit.Text" xml:space="preserve">
-    <value>Salir</value>
+  <data name="mnuSearch.Text" xml:space="preserve">
+    <value>Hledat...</value>
   </data>
-  <data name="ofd.Filter" xml:space="preserve">
-    <value>Todos los archivos |*.*</value>
+  <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
+    <value>Kopírovat vzdálenou adresu</value>
+  </data>
+  <data name="btnRefresh.Text" xml:space="preserve">
+    <value>Aktualizovat</value>
+  </data>
+  <data name="chkShowListen.Text" xml:space="preserve">
+    <value>Zobrazit otevřené porty</value>
+  </data>
+  <data name="chkShowActive.Text" xml:space="preserve">
+    <value>Zobrazit aktivní připojení</value>
+  </data>
+  <data name="chkShowBlocked.Text" xml:space="preserve">
+    <value>Zobrazit blokované aplikace (poslední 2 min)</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Control TinyWall</value>
+    <value>Připojení - TinyWall</value>
   </data>
 </root>

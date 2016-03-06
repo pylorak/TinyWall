@@ -124,38 +124,38 @@
   <data name="lblStatus.Size" type="System.Drawing.Size, System.Drawing">
     <value>47, 13</value>
   </data>
-  <data name="btnSelectAll.Location" type="System.Drawing.Point, System.Drawing">
-    <value>135, 432</value>
+  <data name="lblStatus.Text" xml:space="preserve">
+    <value>Suchen:</value>
   </data>
-  <data name="btnSelectImportant.Text" xml:space="preserve">
-    <value>Wichtige auswählen</value>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="btnOK.Text" xml:space="preserve">
+    <value>Anwenden</value>
   </data>
   <data name="btnSelectImportant.Size" type="System.Drawing.Size, System.Drawing">
     <value>112, 33</value>
   </data>
+  <data name="btnSelectImportant.Text" xml:space="preserve">
+    <value>Wichtige auswählen</value>
+  </data>
+  <data name="btnSelectAll.Location" type="System.Drawing.Point, System.Drawing">
+    <value>135, 432</value>
+  </data>
+  <data name="btnSelectAll.Text" xml:space="preserve">
+    <value>Alle auswählen</value>
+  </data>
   <data name="btnDeselectAll.Location" type="System.Drawing.Point, System.Drawing">
     <value>237, 432</value>
   </data>
-  <data name="lblStatus.Text" xml:space="preserve">
-    <value>Suchen:</value>
-  </data>
-  <data name="btnOK.Text" xml:space="preserve">
-    <value>Anwenden</value>
+  <data name="btnDeselectAll.Text" xml:space="preserve">
+    <value>Alle abwählen</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
     <value>Zum Freigeben einer Anwendung in den Suchergebnissen, wählen Sie die Anwendung aus und drücke die Checkbox.
 </value>
   </data>
-  <data name="btnCancel.Text" xml:space="preserve">
-    <value>Abbrechen</value>
-  </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Anwendungsfinder - TinyWall</value>
-  </data>
-  <data name="btnSelectAll.Text" xml:space="preserve">
-    <value>Alle auswählen</value>
-  </data>
-  <data name="btnDeselectAll.Text" xml:space="preserve">
-    <value>Alle abwählen</value>
   </data>
 </root>

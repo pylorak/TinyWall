@@ -117,58 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="mnuModeNormal.Text" xml:space="preserve">
-    <value>Protección normal</value>
+  <data name="File_and_Printer_Sharing" xml:space="preserve">
+    <value>Sdílení souborů a tiskáren</value>
   </data>
-  <data name="mnuModeBlockAll.Text" xml:space="preserve">
-    <value>Bloquear todo</value>
+  <data name="Filtered_ICMP_Traffic" xml:space="preserve">
+    <value>Filtrovaná ICMP komunikace</value>
   </data>
-  <data name="mnuModeAllowOutgoing.Text" xml:space="preserve">
-    <value>Permitir redireccionar</value>
+  <data name="Pingable_local_machine" xml:space="preserve">
+    <value>Pingovatelný lokální počítač</value>
   </data>
-  <data name="mnuModeDisabled.Text" xml:space="preserve">
-    <value>Desactivar cortafuegos</value>
+  <data name="Windows_DHCP_Client" xml:space="preserve">
+    <value>Klient DHCP</value>
   </data>
-  <data name="mnuModeLearn.Text" xml:space="preserve">
-    <value>Auto aprendizaje</value>
+  <data name="Windows_DNS_Client" xml:space="preserve">
+    <value>Klient DNS</value>
   </data>
-  <data name="mnuMode.Text" xml:space="preserve">
-    <value>Cambiar a modo</value>
+  <data name="Windows_Network_Discovery" xml:space="preserve">
+    <value>Zjišťování sítě</value>
   </data>
-  <data name="mnuManage.Text" xml:space="preserve">
-    <value>Consola</value>
+  <data name="Windows_Remote_Assistance" xml:space="preserve">
+    <value>Vzdálená pomoc</value>
   </data>
-  <data name="mnuConnections.Text" xml:space="preserve">
-    <value>Mostrar conexiones</value>
+  <data name="Windows_Remote_Desktop" xml:space="preserve">
+    <value>Vzdálená plocha</value>
   </data>
-  <data name="mnuLock.Text" xml:space="preserve">
-    <value>Bloquear</value>
+  <data name="Windows_Store_and_Apps" xml:space="preserve">
+    <value>Windows Store &amp; aplikace</value>
   </data>
-  <data name="mnuElevate.Text" xml:space="preserve">
-    <value>Elevar</value>
-  </data>
-  <data name="mnuAllowLocalSubnet.Text" xml:space="preserve">
-    <value>Desbloquear tráfico de red local</value>
-  </data>
-  <data name="mnuEnableHostsBlocklist.Text" xml:space="preserve">
-    <value>Activar lista de bloqueados</value>
-  </data>
-  <data name="mnuWhitelistByExecutable.Text" xml:space="preserve">
-    <value>Lista blanca por Ejecutables</value>
-  </data>
-  <data name="mnuWhitelistByProcess.Text" xml:space="preserve">
-    <value>Lista blanca por Procesos</value>
-  </data>
-  <data name="mnuWhitelistByWindow.Text" xml:space="preserve">
-    <value>Lista blanca por Ventanas</value>
-  </data>
-  <data name="mnuQuit.Text" xml:space="preserve">
-    <value>Salir</value>
-  </data>
-  <data name="ofd.Filter" xml:space="preserve">
-    <value>Todos los archivos |*.*</value>
-  </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Control TinyWall</value>
+  <data name="Windows_Time_Sync" xml:space="preserve">
+    <value>Synchronizace času</value>
   </data>
 </root>

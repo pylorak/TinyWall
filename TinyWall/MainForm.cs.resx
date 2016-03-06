@@ -118,57 +118,54 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="mnuModeNormal.Text" xml:space="preserve">
-    <value>Protección normal</value>
+    <value>Normální ochrana</value>
   </data>
   <data name="mnuModeBlockAll.Text" xml:space="preserve">
-    <value>Bloquear todo</value>
+    <value>Blokovat vše</value>
   </data>
   <data name="mnuModeAllowOutgoing.Text" xml:space="preserve">
-    <value>Permitir redireccionar</value>
+    <value>Povolit odchozí</value>
   </data>
   <data name="mnuModeDisabled.Text" xml:space="preserve">
-    <value>Desactivar cortafuegos</value>
+    <value>Vypnout firewall</value>
   </data>
   <data name="mnuModeLearn.Text" xml:space="preserve">
-    <value>Auto aprendizaje</value>
+    <value>Autotrénink</value>
   </data>
   <data name="mnuMode.Text" xml:space="preserve">
-    <value>Cambiar a modo</value>
+    <value>Změnit mód</value>
   </data>
   <data name="mnuManage.Text" xml:space="preserve">
-    <value>Consola</value>
+    <value>Spravovat</value>
   </data>
   <data name="mnuConnections.Text" xml:space="preserve">
-    <value>Mostrar conexiones</value>
+    <value>Zobrazit připojení</value>
   </data>
   <data name="mnuLock.Text" xml:space="preserve">
-    <value>Bloquear</value>
+    <value>Zamknout</value>
   </data>
   <data name="mnuElevate.Text" xml:space="preserve">
-    <value>Elevar</value>
+    <value>Povýšit</value>
   </data>
   <data name="mnuAllowLocalSubnet.Text" xml:space="preserve">
-    <value>Desbloquear tráfico de red local</value>
+    <value>Odblokovat LAN komunikaci</value>
   </data>
   <data name="mnuEnableHostsBlocklist.Text" xml:space="preserve">
-    <value>Activar lista de bloqueados</value>
+    <value>Povolit bloklisty</value>
   </data>
   <data name="mnuWhitelistByExecutable.Text" xml:space="preserve">
-    <value>Lista blanca por Ejecutables</value>
+    <value>Whitelistnout aplikaci</value>
   </data>
   <data name="mnuWhitelistByProcess.Text" xml:space="preserve">
-    <value>Lista blanca por Procesos</value>
+    <value>Whitelistnout proces</value>
   </data>
   <data name="mnuWhitelistByWindow.Text" xml:space="preserve">
-    <value>Lista blanca por Ventanas</value>
+    <value>Whitelistnout okno</value>
   </data>
   <data name="mnuQuit.Text" xml:space="preserve">
-    <value>Salir</value>
-  </data>
-  <data name="ofd.Filter" xml:space="preserve">
-    <value>Todos los archivos |*.*</value>
+    <value>Ukončit</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Control TinyWall</value>
+    <value>Konfigurátor TinyWall</value>
   </data>
 </root>
