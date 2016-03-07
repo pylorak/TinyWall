@@ -202,6 +202,7 @@ namespace PKSoft
                         newer.RegenerateID();
                     }
                     else if (FirewallException.ExecutableNameEquals(app1, app2) 
+                        && (!app1.ExecutablePath.Equals("*"))
                         && (app1.Timer == AppExceptionTimer.Permanent)
                         && (app2.Timer == AppExceptionTimer.Permanent)
                         && (app1.LocalNetworkOnly == app2.LocalNetworkOnly)

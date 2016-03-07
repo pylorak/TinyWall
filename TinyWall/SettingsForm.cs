@@ -207,6 +207,10 @@ namespace PKSoft
                  */
                 li.ImageKey = "network-drive";
             }
+            else if (ex.ExecutablePath.Equals("*"))
+            {
+                // Empty on purpose
+            }
             else if (File.Exists(ex.ExecutablePath))
             {
                 if (!IconList.Images.ContainsKey(ex.ExecutablePath))

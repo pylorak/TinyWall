@@ -18,6 +18,11 @@ namespace PKSoft
 
         internal Application TryGetRecognizedApp(string executablePath, string service, out AppExceptionAssoc file)
         {
+            file = null;
+
+            if (executablePath.Equals("*"))
+                return null;
+
             AppExceptionAssoc exe = AppExceptionAssoc.FromExecutable(executablePath, service);
 
             for (int i = 0; i < this.Count; ++i)
@@ -33,7 +38,6 @@ namespace PKSoft
                 }
             }
 
-            file = null;
             return null;
         }
     }

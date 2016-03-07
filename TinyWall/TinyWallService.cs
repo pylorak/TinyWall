@@ -295,8 +295,11 @@ namespace PKSoft
             if (ex.UnrestricedTraffic)
             {
                 RuleDef def = new RuleDef(ex.AppID, "Full access", PacketAction.Allow, RuleDirection.InOut, Protocol.Any);
-                def.Application = ex.ExecutablePath;
-                def.ServiceName = ex.ServiceName;
+                if (!ex.ExecutablePath.Equals("*"))
+                {
+                    def.Application = ex.ExecutablePath;
+                    def.ServiceName = ex.ServiceName;
+                }
                 if (ex.LocalNetworkOnly)
                     def.RemoteAddresses = "LocalSubnet";
                 ruleset.Add(def);
@@ -316,8 +319,11 @@ namespace PKSoft
                     {
                         RuleDef def = p.Rules[j];
                         def.ExceptionId = ex.AppID;
-                        def.Application = ex.ExecutablePath;
-                        def.ServiceName = ex.ServiceName;
+                        if (!ex.ExecutablePath.Equals("*"))
+                        {
+                            def.Application = ex.ExecutablePath;
+                            def.ServiceName = ex.ServiceName;
+                        }
                         if (ex.LocalNetworkOnly)
                             def.RemoteAddresses = "LocalSubnet";
                         ruleset.Add(def);
@@ -329,8 +335,11 @@ namespace PKSoft
             if (!string.IsNullOrEmpty(ex.OpenPortListenLocalTCP))
             {
                 RuleDef def = new RuleDef(ex.AppID, "TCP Listen Ports", PacketAction.Allow, RuleDirection.In,  Protocol.TCP);
-                def.Application = ex.ExecutablePath;
-                def.ServiceName = ex.ServiceName;
+                if (!ex.ExecutablePath.Equals("*"))
+                {
+                    def.Application = ex.ExecutablePath;
+                    def.ServiceName = ex.ServiceName;
+                }
                 if (!ex.OpenPortListenLocalTCP.Equals("*"))
                     def.LocalPorts = ex.OpenPortListenLocalTCP;
                 if (ex.LocalNetworkOnly)
@@ -340,8 +349,11 @@ namespace PKSoft
             if (!string.IsNullOrEmpty(ex.OpenPortListenLocalUDP))
             {
                 RuleDef def = new RuleDef(ex.AppID, "UDP Listen Ports", PacketAction.Allow, RuleDirection.In, Protocol.UDP);
-                def.Application = ex.ExecutablePath;
-                def.ServiceName = ex.ServiceName;
+                if (!ex.ExecutablePath.Equals("*"))
+                {
+                    def.Application = ex.ExecutablePath;
+                    def.ServiceName = ex.ServiceName;
+                }
                 if (!ex.OpenPortListenLocalUDP.Equals("*"))
                     def.LocalPorts = ex.OpenPortListenLocalUDP;
                 if (ex.LocalNetworkOnly)
@@ -351,8 +363,11 @@ namespace PKSoft
             if (!string.IsNullOrEmpty(ex.OpenPortOutboundRemoteTCP))
             {
                 RuleDef def = new RuleDef(ex.AppID, "TCP Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.TCP);
-                def.Application = ex.ExecutablePath;
-                def.ServiceName = ex.ServiceName;
+                if (!ex.ExecutablePath.Equals("*"))
+                {
+                    def.Application = ex.ExecutablePath;
+                    def.ServiceName = ex.ServiceName;
+                }
                 if (!ex.OpenPortOutboundRemoteTCP.Equals("*"))
                     def.RemotePorts = ex.OpenPortOutboundRemoteTCP;
                 if (ex.LocalNetworkOnly)
@@ -362,8 +377,11 @@ namespace PKSoft
             if (!string.IsNullOrEmpty(ex.OpenPortOutboundRemoteUDP))
             {
                 RuleDef def = new RuleDef(ex.AppID, "UDP Outbound Ports", PacketAction.Allow, RuleDirection.Out, Protocol.UDP);
-                def.Application = ex.ExecutablePath;
-                def.ServiceName = ex.ServiceName;
+                if (!ex.ExecutablePath.Equals("*"))
+                {
+                    def.Application = ex.ExecutablePath;
+                    def.ServiceName = ex.ServiceName;
+                }
                 if (!ex.OpenPortOutboundRemoteUDP.Equals("*"))
                     def.RemotePorts = ex.OpenPortOutboundRemoteUDP;
                 if (ex.LocalNetworkOnly)
