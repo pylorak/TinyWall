@@ -159,26 +159,42 @@ namespace PKSoft
             // Give some additional time for process shutdown
             System.Threading.Thread.Sleep(5000);
 
-            // Disable automatic start of controller
-            Utils.RunAtStartup("TinyWall Controller", null);
-
-            // Put back the user's original hosts file
-            HostsFileManager.DisableHostsFile();
-
-            // Reset Windows Firewall to its default state
-            WindowsFirewall.Policy Firewall = new WindowsFirewall.Policy();
-            Firewall.ResetFirewall();
-
-            // Uninstall service
             try
             {
+                // Disable automatic start of controller
+                Utils.RunAtStartup("TinyWall Controller", null);
+            }
+            catch { }
+
+            try
+            {
+                // Put back the user's original hosts file
+                HostsFileManager.DisableHostsFile();
+            }
+            catch { }
+
+            try
+            {
+                // Reset Windows Firewall to its default state
+                WindowsFirewall.Policy Firewall = new WindowsFirewall.Policy();
+                Firewall.ResetFirewall();
+            }
+            catch { }
+
+            try
+            {
+                // Uninstall service
                 ManagedInstallerClass.InstallHelper(new string[] { "/u", Utils.ExecutablePath });
             }
             catch { }
 
-            // Remove user settings
-            string UserDir = ControllerSettings.UserDataPath;
-            Directory.Delete(UserDir, true);
+            try
+            {
+                // Remove user settings
+                string UserDir = ControllerSettings.UserDataPath;
+                Directory.Delete(UserDir, true);
+            }
+            catch { }
 
             return 0;
         }
