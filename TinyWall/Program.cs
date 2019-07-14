@@ -2,6 +2,7 @@
 using System.ServiceProcess;
 using System.Threading;
 using System.Diagnostics;
+using System.Net;
 
 namespace PKSoft
 {
@@ -98,6 +99,11 @@ namespace PKSoft
                 NativeMethods.WerAddExcludedApplication(TinyWall.Interface.Internal.Utils.ExecutablePath, true);
             }
             catch { }
+
+            // Setup TLS 1.2 & 1.3 support
+            const SecurityProtocolType _tls12 = (SecurityProtocolType)3072;
+            const SecurityProtocolType _tls13 = (SecurityProtocolType)12288;
+            ServicePointManager.SecurityProtocol = _tls12 | _tls13 | SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls;
 
             // Parse comman-line options
             CmdLineArgs opts = new CmdLineArgs();
