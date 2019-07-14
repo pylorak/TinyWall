@@ -29,7 +29,16 @@ namespace PKSoft.WindowsFirewall
         protected override void ClearItems()
         {
             foreach (Rule rule in base.Items)
-                FwRules.Remove(rule.Name);
+            {
+                try
+                {
+                    FwRules.Remove(rule.Name);
+                }
+                catch
+                {
+                    // There are some built-in rules which we cannot remove, unfortunately.
+                }
+            }
 
             base.ClearItems();
         }
