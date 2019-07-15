@@ -57,11 +57,41 @@ namespace PKSoft
             this.btnWeb.Image = GlobalInstances.WebBtnIcon;
             this.btnDonate.BackgroundImage = Resources.Icons.donate;
 
+            listApplications.AllowDrop = true;
+            listApplications.DragEnter += ListApplications_DragEnter;
+            listApplications.DragDrop += ListApplications_DragDrop;
+
             TmpConfig = new ConfigContainer();
             TmpConfig.Service = service;
             TmpConfig.Controller = controller;
 
             TmpConfig.Service.Normalize();
+        }
+
+        private void ListApplications_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            foreach (string file in files)
+            {
+                try
+                {
+                    FirewallException ex = new FirewallException(file, null, true);
+                    ex.TryRecognizeApp(out Application app, out AppExceptionAssoc assoc);
+                    TmpConfig.Service.AppExceptions.Add(ex);
+                }
+                catch { }
+            }
+
+            TmpConfig.Service.Normalize();
+            RebuildExceptionsList();
+        }
+
+        private void ListApplications_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
         }
 
         internal string NewPassword
