@@ -1417,13 +1417,13 @@
     <value>18, 47</value>
   </data>
   <data name="label12.Size" type="System.Drawing.Size, System.Drawing">
-    <value>182, 13</value>
+    <value>155, 13</value>
   </data>
   <data name="label12.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
   </data>
   <data name="label12.Text" xml:space="preserve">
-    <value>Copyright © 2011-2015 Károly Pados</value>
+    <value>Copyright © 2011 Károly Pados</value>
   </data>
   <data name="&gt;&gt;label12.Name" xml:space="preserve">
     <value>label12</value>

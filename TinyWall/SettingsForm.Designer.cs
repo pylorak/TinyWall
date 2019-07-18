@@ -196,6 +196,7 @@
             this.columnHeader2});
             this.listApplications.FullRowSelect = true;
             this.listApplications.GridLines = true;
+            this.listApplications.HideSelection = false;
             this.listApplications.Name = "listApplications";
             this.listApplications.SmallImageList = this.IconList;
             this.listApplications.UseCompatibleStateImageBehavior = false;
