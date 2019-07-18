@@ -1,6 +1,15 @@
 TinyWall Changelog
 ---------------------
 
+2.1.9 - Maintenance release (18.07.2019.)
+- Add support for Windows 10 v1903
+- Add drag&drop whitelist support to applications in settings window
+- Fix: Online updates not supporting TLS >= 1.2
+- Updated application database
+- Updated hosts blocklist
+
+---------------------
+
 2.1.8 - Maintenance release (10.03.2016.)
 - Fix: Potential GUI crash when whitelisting by window
 - Fix: GUI crash if copying to clipboard which is in use by another app

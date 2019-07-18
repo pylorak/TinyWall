@@ -34,10 +34,10 @@
 	</Company_Info>
 	<Program_Info>
 		<Program_Name>TinyWall</Program_Name>
-		<Program_Version>2.1.8</Program_Version>
-		<Program_Release_Month>03</Program_Release_Month>
-		<Program_Release_Day>10</Program_Release_Day>
-		<Program_Release_Year>2016</Program_Release_Year>
+		<Program_Version>2.1.9</Program_Version>
+		<Program_Release_Month>07</Program_Release_Month>
+		<Program_Release_Day>18</Program_Release_Day>
+		<Program_Release_Year>2019</Program_Release_Year>
 		<Program_Cost_Dollars>0</Program_Cost_Dollars>
 		<Program_Cost_Other_Code />
 		<Program_Cost_Other />
@@ -51,8 +51,8 @@
 		<Program_Category_Class>Security &amp; Privacy::Access Control</Program_Category_Class>
 		<Program_System_Requirements>Microsoft .Net Framework 3.5 SP1</Program_System_Requirements>
 		<File_Info>
-			<File_Size_Bytes>1204224</File_Size_Bytes>
-			<File_Size_K>1176</File_Size_K>
+			<File_Size_Bytes>1208320</File_Size_Bytes>
+			<File_Size_K>1180</File_Size_K>
 			<File_Size_MB>1.15</File_Size_MB>
 		</File_Info>
 		<Expire_Info>
