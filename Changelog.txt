@@ -1,6 +1,11 @@
 TinyWall Changelog
 ---------------------
 
+2.1.10 - Maintenance release (19.07.2019.)
+- Fix accidentally introduced dependency on .Net 4.8
+
+---------------------
+
 2.1.9 - Maintenance release (18.07.2019.)
 - Add support for Windows 10 v1903
 - Add drag&drop whitelist support to applications in settings window
