@@ -100,10 +100,22 @@ namespace PKSoft
             }
             catch { }
 
-            // Setup TLS 1.2 & 1.3 support
-            const SecurityProtocolType _tls12 = (SecurityProtocolType)3072;
-            const SecurityProtocolType _tls13 = (SecurityProtocolType)12288;
-            ServicePointManager.SecurityProtocol = _tls12 | _tls13 | SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls;
+            // Setup TLS 1.2 & 1.3 support, if supported
+            if (ServicePointManager.SecurityProtocol != 0)
+            {
+                const SecurityProtocolType _tls12 = (SecurityProtocolType)3072;
+                const SecurityProtocolType _tls13 = (SecurityProtocolType)12288;
+                try
+                {
+                    ServicePointManager.SecurityProtocol |= _tls12;
+                }
+                catch { }
+                try
+                {
+                    ServicePointManager.SecurityProtocol |= _tls13;
+                }
+                catch { }
+            }
 
             // Parse comman-line options
             CmdLineArgs opts = new CmdLineArgs();
