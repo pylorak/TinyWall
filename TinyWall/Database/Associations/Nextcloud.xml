@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application Name="Nextcloud">
+	<Files>
+    <AppExceptionAssoc Executable="nextcloud.exe">
+      <ExceptionTemplate Template="true">
+        <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
+      </ExceptionTemplate>
+      <Hashes>
+        <string>C7489BCA1C171A824D4762E55AC3A2620EBD5250</string>
+      </Hashes>
+      <SearchPaths>
+        <string>{folder:pf32}\Nextcloud</string>
+        <string>{folder:pf64}\Nextcloud</string>
+      </SearchPaths>
+    </AppExceptionAssoc>
+	</Files>
+</Application>
