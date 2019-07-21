@@ -78,9 +78,9 @@ namespace PKSoft
             {
                 try
                 {
-                    FirewallException ex = new FirewallException(file, null, true);
-                    ex.TryRecognizeApp(out Application app, out AppExceptionAssoc assoc);
-                    TmpConfig.Service.AppExceptions.Add(ex);
+                    FirewallExceptionV3 ex = new FirewallExceptionV3(new ExecutableSubject(file), new TcpUdpPolicy(true));
+                    TmpConfig.Service.ActiveProfile.AppExceptions.Add(ex);
+                    // TODO: support for recognized applications
                 }
                 catch { }
             }

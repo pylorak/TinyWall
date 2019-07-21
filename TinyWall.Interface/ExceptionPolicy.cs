@@ -114,6 +114,17 @@ namespace TinyWall.Interface
             }
         }
 
+        public TcpUdpPolicy(bool unrestricted = false)
+        {
+            if (unrestricted)
+            {
+                AllowedRemoteTcpConnectPorts = "*";
+                AllowedRemoteUdpConnectPorts = "*";
+                AllowedLocalTcpListenerPorts = "*";
+                AllowedLocalUdpListenerPorts = "*";
+            }
+        }
+
         [DataMember(EmitDefaultValue = false)]
         public bool LocalNetworkOnly { get; set; }
 
