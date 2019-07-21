@@ -46,7 +46,7 @@ namespace PKSoft
         {
             if (File.Exists(txtAssocExePath.Text))
             {
-                Obsolete.AppExceptionAssoc pa = Obsolete.AppExceptionAssoc.FromExecutable(txtAssocExePath.Text, string.Empty);
+                var pa = Obsolete.AppExceptionAssoc.FromExecutable(txtAssocExePath.Text, string.Empty);
                 string tmpfile = Path.GetTempFileName();
                 SerializationHelper.SaveToXMLFile(pa, tmpfile);
                 using (StreamReader sr = new StreamReader(tmpfile))
@@ -70,7 +70,7 @@ namespace PKSoft
         private void btnCollectionsCreate_Click(object sender, EventArgs e)
         {
             // Common init
-            Obsolete.ProfileManager Manager = new Obsolete.ProfileManager();
+            var Manager = new Obsolete.ProfileManager();
             Manager.AvailableProfiles.Clear();
             Manager.KnownApplications.Clear();
 
@@ -103,7 +103,7 @@ namespace PKSoft
             string[] files = Directory.GetFiles(Path.Combine(txtDBFolderPath.Text, "Special"));
             foreach (string fpath in files)
             {
-                Obsolete.Application app = Deprecated.SerializationHelper.LoadFromXMLFile<PKSoft.Obsolete.Application>(fpath);
+                var app = Deprecated.SerializationHelper.LoadFromXMLFile<PKSoft.Obsolete.Application>(fpath);
                 SerializationHelper.SaveToXMLFile(app.ToNewFormat(), fpath + "2");
 //                Manager.KnownApplications.Add(app);
             }

@@ -623,7 +623,7 @@ namespace PKSoft
         {
             lock (logLocker)
             {
-                string logfile = Path.Combine(ServiceSettings21.AppDataPath, "errorlog");
+                string logfile = Path.Combine(Utils.AppDataPath, "errorlog");
 
                 // Only log if log file has not yet reached a certain size
                 if (File.Exists(logfile))

@@ -25,11 +25,19 @@ namespace TinyWall.Interface
 
         public override bool Equals(object obj)
         {
-            ExceptionSubject other = obj as ExceptionSubject;
-            if (null == other)
+            if (obj == null)
                 return false;
 
-            return this.Equals(other);
+            ExceptionSubject other = obj as ExceptionSubject;
+            if (other == null)
+                return false;
+            else
+                return Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            throw new NotImplementedException();
         }
 
         public static ExceptionSubject Construct(string arg1, string arg2 = null)

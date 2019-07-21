@@ -369,7 +369,7 @@ namespace PKSoft
                     // Try again by loading config file from older versions
                     try
                     {
-                        ServiceSettings21 oldSettings = ServiceSettings21.Load();
+                        var oldSettings = ServiceSettings21.Load();
                         ret = oldSettings.ToNewFormat();
                     }
                     catch { }
