@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using TinyWall.Interface.Internal;
+using TinyWall.Interface;
 
 namespace PKSoft
 {
@@ -9,9 +10,9 @@ namespace PKSoft
         // Active system hosts file
         private static string HOSTS_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"drivers\etc\hosts");
         // Local copy of active hosts file
-        private static string HOSTS_BACKUP = Path.Combine(ServiceSettings21.AppDataPath, "hosts.bck");
+        private static string HOSTS_BACKUP = Path.Combine(Utils.AppDataPath, "hosts.bck");
         // User's original hosts file
-        private static string HOSTS_ORIGINAL = Path.Combine(ServiceSettings21.AppDataPath, "hosts.orig");
+        private static string HOSTS_ORIGINAL = Path.Combine(Utils.AppDataPath, "hosts.orig");
         // Should we lock the system's hosts file
         private static bool _ProtectHostsFile = false;
 

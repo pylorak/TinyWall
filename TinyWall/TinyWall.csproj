@@ -109,7 +109,6 @@
     <Compile Include="ApplicationExceptionForm.Designer.cs">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConfigManager.cs" />
     <Compile Include="DatabaseClasses\AppDatabase.cs" />
     <Compile Include="DatabaseClasses\Application.cs" />
     <Compile Include="DatabaseClasses\SubjectIdentity.cs" />
@@ -198,7 +197,7 @@
     <Compile Include="TinyWallDoctor.cs" />
     <Compile Include="UpdateChecker.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="FirewallException.cs" />
+    <Compile Include="Deprecated\FirewallException.cs" />
     <Compile Include="PipeServerEndpoint.cs" />
     <Compile Include="Processes.cs">
       <SubType>Form</SubType>

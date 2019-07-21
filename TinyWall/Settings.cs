@@ -188,7 +188,7 @@ namespace PKSoft
             get
             {
                 string dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                dir = System.IO.Path.Combine(dir, ServiceSettings21.APP_NAME);
+                dir = System.IO.Path.Combine(dir, "TinyWall");
                 if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
                 return dir;
@@ -246,7 +246,7 @@ namespace PKSoft
     {
         internal static string PasswordFilePath
         {
-            get { return Path.Combine(ServiceSettings21.AppDataPath, "pwd"); }
+            get { return Path.Combine(Utils.AppDataPath, "pwd"); }
         }
 
         private bool _Locked;

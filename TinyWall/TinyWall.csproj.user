@@ -9,7 +9,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - Desktop|AnyCPU'">
-    <StartArguments>/develtool</StartArguments>
+    <StartArguments>/desktop</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - Service|AnyCPU'">
     <StartArguments>/service</StartArguments>

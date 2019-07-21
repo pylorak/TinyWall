@@ -349,6 +349,51 @@ namespace PKSoft
             }
         }
 
+        private static ServerConfiguration LoadServerConfig()
+        {
+            ServerConfiguration ret = null;
+
+            // Construct file path
+            string SettingsFile = Path.Combine(Utils.AppDataPath, "config");
+
+            if (File.Exists(SettingsFile))
+            {
+                try
+                {
+                    ret = ServerConfiguration.Load(SettingsFile);
+                }
+                catch { }
+
+                if (ret == null)
+                {
+                    // Try again by loading config file from older versions
+                    try
+                    {
+                        ServiceSettings21 oldSettings = ServiceSettings21.Load();
+                        ret = oldSettings.ToNewFormat();
+                    }
+                    catch { }
+                }
+            }
+
+            if (ret == null)
+            {
+                ret = new ServerConfiguration();
+
+                // Allow recommended exceptions
+                DatabaseClasses.AppDatabase db = GlobalInstances.AppDatabase;
+                foreach (DatabaseClasses.Application app in db.KnownApplications)
+                {
+                    if (app.HasFlag("TWUI:Special") && app.HasFlag("TWUI:Recommended"))
+                    {
+                        ret.ActiveProfile.SpecialExceptions.Add(app.Name);
+                    }
+                }
+            }
+
+            return ret;
+        }
+
         // This method completely reinitializes the firewall.
         private void InitFirewall()
         {
@@ -383,7 +428,7 @@ namespace PKSoft
                 // --- THREAD BARRIER ---
             }
 
-            ActiveConfig.Service = ConfigManager.LoadServerConfig();
+            ActiveConfig.Service = LoadServerConfig();
             GlobalInstances.ConfigChangeset = Guid.NewGuid();
             VisibleState.Mode = ActiveConfig.Service.StartupMode;
 
@@ -424,7 +469,7 @@ namespace PKSoft
         {
             try
             {
-                GlobalInstances.AppDatabase = DatabaseClasses.AppDatabase.Load(Obsolete.ProfileManager.DBPath);
+                GlobalInstances.AppDatabase = DatabaseClasses.AppDatabase.Load(DatabaseClasses.AppDatabase.DBPath);
             }
             catch
             {
@@ -438,7 +483,7 @@ namespace PKSoft
             {
                 VisibleState.Update = UpdateChecker.GetDescriptor();
             }
-            catch (Exception e)
+            catch
             {
                 // This is an automatic update check in the background.
                 // If we fail (for whatever reason, no internet, server down etc.),
@@ -455,7 +500,7 @@ namespace PKSoft
                 return;
 
             UpdateModule module = UpdateChecker.GetDatabaseFileModule(VisibleState.Update);
-            if (!module.DownloadHash.Equals(Hasher.HashFile(Obsolete.ProfileManager.DBPath), StringComparison.OrdinalIgnoreCase))
+            if (!module.DownloadHash.Equals(Hasher.HashFile(DatabaseClasses.AppDatabase.DBPath), StringComparison.OrdinalIgnoreCase))
             {
                 GetCompressedUpdate(module, DatabaseUpdateInstall);
             }
@@ -514,9 +559,9 @@ namespace PKSoft
         {
             string tmpFilePath = (string)file;
 
-            FileLocker.UnlockFile(Obsolete.ProfileManager.DBPath);
-            File.Copy(tmpFilePath, Obsolete.ProfileManager.DBPath, true);
-            FileLocker.LockFile(Obsolete.ProfileManager.DBPath, FileAccess.Read, FileShare.Read);
+            FileLocker.UnlockFile(DatabaseClasses.AppDatabase.DBPath);
+            File.Copy(tmpFilePath, DatabaseClasses.AppDatabase.DBPath, true);
+            FileLocker.LockFile(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
             NotifyController(MessageType.DATABASE_UPDATED);
             Q.Enqueue(new TwMessage(MessageType.REINIT), null);
         }
@@ -982,7 +1027,9 @@ namespace PKSoft
             if (VisibleState.Mode == TinyWall.Interface.FirewallMode.Disabled)
                 return;
 
+#pragma warning disable 219
             int propidx = -1;
+#pragma warning restore 219
             MessageType cmd = MessageType.INVALID_COMMAND;
             switch (e.EventRecord.Id)
             {
@@ -1078,7 +1125,7 @@ namespace PKSoft
                 EventLog.WriteEntry("TinyWall service starting up.");
                 VisibleState = new ServerState();
 
-                FileLocker.LockFile(Obsolete.ProfileManager.DBPath, FileAccess.Read, FileShare.Read);
+                FileLocker.LockFile(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
                 FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
 
                 // Lock configuration if we have a password

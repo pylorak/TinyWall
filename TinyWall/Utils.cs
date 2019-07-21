@@ -643,6 +643,21 @@ namespace PKSoft
                 }
             }
         }
+
+        internal static string AppDataPath
+        {
+            get
+            {
+#if DEBUG
+                return Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath);
+#else
+                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), ServiceSettings21.APP_NAME);
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+                return dir;
+#endif
+            }
+        }
     }
 
     [Serializable]

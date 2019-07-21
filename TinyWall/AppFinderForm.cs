@@ -242,8 +242,8 @@ namespace PKSoft
         {
             foreach (ListViewItem li in list.Items)
             {
-                Obsolete.Application app = li.Tag as Obsolete.Application;
-                if (app.Recommended)
+                DatabaseClasses.Application app = li.Tag as DatabaseClasses.Application;
+                if (app.HasFlag("TWUI:Recommended"))
                     li.Checked = true;
             }
         }

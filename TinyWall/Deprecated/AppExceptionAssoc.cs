@@ -14,6 +14,7 @@ using TinyWall.Interface;
 namespace PKSoft.Obsolete
 {
     [Serializable]  // Needed for cloning
+    [Obsolete]
     public sealed class AppExceptionAssoc
     {
 

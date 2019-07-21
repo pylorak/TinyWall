@@ -12,6 +12,7 @@ using TinyWall.Interface;
 namespace PKSoft.Obsolete
 {
     [Serializable]
+    [Obsolete]
     public class FirewallException
     {
         [XmlAttributeAttribute]

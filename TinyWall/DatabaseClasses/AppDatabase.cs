@@ -16,7 +16,7 @@ namespace PKSoft.DatabaseClasses
 
         public static string DBPath
         {
-            get { return System.IO.Path.Combine(ServiceSettings21.AppDataPath, "profiles_v3.xml"); }
+            get { return System.IO.Path.Combine(Utils.AppDataPath, "profiles_v3.xml"); }
         }
 
         public static AppDatabase Load(string filePath)

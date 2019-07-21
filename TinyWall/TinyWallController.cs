@@ -1050,7 +1050,7 @@ namespace PKSoft
         {
             BalloonClickedCallback = balloonClicked;
             BalloonClickedCallbackArgument = handlerArg;
-            Tray.ShowBalloonTip(period_ms, ServiceSettings21.APP_NAME, msg, icon);
+            Tray.ShowBalloonTip(period_ms, "TinyWall", msg, icon);
             Thread.Sleep(500);
         }
 
