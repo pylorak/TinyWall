@@ -349,36 +349,39 @@ namespace PKSoft
             }
         }
 
+        private static string ConfigSavePath
+        {
+            get
+            {
+                return Path.Combine(Utils.AppDataPath, "config");
+            }
+        }
+
         private static ServerConfiguration LoadServerConfig()
         {
             ServerConfiguration ret = null;
 
-            // Construct file path
-            string SettingsFile = Path.Combine(Utils.AppDataPath, "config");
-
-            if (File.Exists(SettingsFile))
+            try
             {
+                ret = ServerConfiguration.Load(ConfigSavePath);
+            }
+            catch { }
+
+            if (ret == null)
+            {
+                // Try again by loading config file from older versions
                 try
                 {
-                    ret = ServerConfiguration.Load(SettingsFile);
+                    var oldSettings = ServiceSettings21.Load();
+                    ret = oldSettings.ToNewFormat();
                 }
                 catch { }
-
-                if (ret == null)
-                {
-                    // Try again by loading config file from older versions
-                    try
-                    {
-                        var oldSettings = ServiceSettings21.Load();
-                        ret = oldSettings.ToNewFormat();
-                    }
-                    catch { }
-                }
             }
 
             if (ret == null)
             {
                 ret = new ServerConfiguration();
+                ret.SetActiveProfile(PKSoft.Resources.Messages.Default);
 
                 // Allow recommended exceptions
                 DatabaseClasses.AppDatabase db = GlobalInstances.AppDatabase;
@@ -493,7 +496,7 @@ namespace PKSoft
             {
                 ActiveConfig.Service.LastUpdateCheck = DateTime.Now;    // TODO do not invalidate client config just because LastUpdateCheck
                 GlobalInstances.ConfigChangeset = Guid.NewGuid();
-                ActiveConfig.Service.Save();
+                ActiveConfig.Service.Save(ConfigSavePath);
             }
 
             if (VisibleState.Update == null)
@@ -761,7 +764,7 @@ namespace PKSoft
 
                         Policy Firewall = new Policy();
                         if (CommitLearnedRules())
-                            ActiveConfig.Service.Save();
+                            ActiveConfig.Service.Save(ConfigSavePath);
 
                         RebuildApplicationRuleDefs();
                         AssembleActiveRules();
@@ -773,7 +776,7 @@ namespace PKSoft
                            )
                         {
                             ActiveConfig.Service.StartupMode = VisibleState.Mode;
-                            ActiveConfig.Service.Save();
+                            ActiveConfig.Service.Save(ConfigSavePath);
                         }
 
                         if (Firewall.LocalPolicyModifyState == LocalPolicyState.GP_OVERRRIDE)
@@ -793,7 +796,7 @@ namespace PKSoft
 
                             ActiveConfig.Service = newConf;
                             GlobalInstances.ConfigChangeset = Guid.NewGuid();
-                            ActiveConfig.Service.Save();
+                            ActiveConfig.Service.Save(ConfigSavePath);
                             Policy Firewall = new Policy();
                             ReapplySettings(Firewall.GetRules(false));
                         }
@@ -828,7 +831,7 @@ namespace PKSoft
                 case MessageType.REINIT:
                     {
                         if (CommitLearnedRules())
-                            ActiveConfig.Service.Save();
+                            ActiveConfig.Service.Save(ConfigSavePath);
                         InitFirewall();
                         return new TwMessage(MessageType.RESPONSE_OK);
                     }
@@ -932,7 +935,7 @@ namespace PKSoft
                         {
                             ActiveConfig.Service.ActiveProfile.AppExceptions = exs;
                             GlobalInstances.ConfigChangeset = Guid.NewGuid();
-                            ActiveConfig.Service.Save();
+                            ActiveConfig.Service.Save(ConfigSavePath);
                         }
 
                         return new TwMessage(MessageType.RESPONSE_OK);
@@ -1196,7 +1199,7 @@ namespace PKSoft
             }
 
             CommitLearnedRules();
-            ActiveConfig.Service.Save();
+            ActiveConfig.Service.Save(ConfigSavePath);
 
             if (LogWatcher != null)
             {

@@ -96,7 +96,7 @@ namespace PKSoft
         internal ServerConfiguration ToNewFormat()
         {
             ServerConfiguration ret = new ServerConfiguration();
-            ret.SetActiveProfile(string.Empty);
+            ret.SetActiveProfile(PKSoft.Resources.Messages.Default);
             ret.AutoUpdateCheck = this.AutoUpdateCheck;
             ret.Blocklists.EnableBlocklists = this.Blocklists.EnableBlocklists;
             ret.Blocklists.EnableHostsBlocklist = this.Blocklists.EnableHostsBlocklist;
@@ -104,11 +104,12 @@ namespace PKSoft
             ret.LastUpdateCheck = this.LastUpdateCheck;
             ret.LockHostsFile = this.LockHostsFile;
             ret.StartupMode = this.StartupMode;
-            ret.Profiles.Add(new ServerProfileConfiguration(string.Empty));
-            ret.Profiles[0].AllowLocalSubnet = this.AllowLocalSubnet;
-            ret.Profiles[0].SpecialExceptions = this.SpecialExceptions;
+
+            ServerProfileConfiguration prof = ret.ActiveProfile;
+            prof.AllowLocalSubnet = this.AllowLocalSubnet;
+            prof.SpecialExceptions = this.SpecialExceptions;
             foreach (Obsolete.FirewallException ex in this.AppExceptions)
-                ret.Profiles[0].AppExceptions.Add(ex.ToNewFormat2());
+                prof.AppExceptions.Add(ex.ToNewFormat2());
 
             return ret;
         }

@@ -128,11 +128,14 @@ namespace TinyWall.Interface
         public List<ServerProfileConfiguration> Profiles { get; set; } = new List<ServerProfileConfiguration>();
 
         [DataMember(EmitDefaultValue = false)]
-        private string _ActiveProfileName = null;
+        private string ActiveProfileName = null;
 
         public void SetActiveProfile(string profileName)
         {
-            _ActiveProfileName = profileName;
+            if (string.IsNullOrEmpty(profileName))
+                throw new ArgumentException();
+
+            ActiveProfileName = profileName;
             _ActiveProfile = null;
         }
         
@@ -142,11 +145,14 @@ namespace TinyWall.Interface
         {
             get
             {
+                if (string.IsNullOrEmpty(ActiveProfileName))
+                    throw new InvalidProgramException();
+
                 if (null == _ActiveProfile)
                 {
                     foreach (ServerProfileConfiguration profile in Profiles)
                     {
-                        if (profile.ProfileName.Equals(_ActiveProfileName))
+                        if (profile.ProfileName.Equals(ActiveProfileName))
                         {
                             _ActiveProfile = profile;
                             break;
@@ -156,7 +162,7 @@ namespace TinyWall.Interface
                     if (null == _ActiveProfile)
                     {
                         if (Profiles.Count == 0)
-                            Profiles.Add(new ServerProfileConfiguration(string.Empty));
+                            Profiles.Add(new ServerProfileConfiguration(ActiveProfileName));
                         _ActiveProfile = Profiles[0];
                     }
                 }
@@ -167,11 +173,6 @@ namespace TinyWall.Interface
 
         private const string ENC_SALT = @";n~3+i=wV;eg6Q@f";
         private const string ENC_IV = @"0!.&3x=GGu%>$G&5";   // must be 16/24/32 bytes
-
-        public void Save()
-        {
-         //   throw new NotImplementedException();
-        }
 
         public void Save(string filePath)
         {
