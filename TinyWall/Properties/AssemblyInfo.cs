@@ -40,8 +40,7 @@ using System.Resources;
 
 [assembly: CLSCompliant(true)]
 
-// TODO: negate for release
-#if !DEBUG
+#if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else
 [assembly: AssemblyConfiguration("Release")]
