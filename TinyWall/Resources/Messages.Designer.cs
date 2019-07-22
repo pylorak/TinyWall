@@ -196,15 +196,6 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current zone: {0}.
-        /// </summary>
-        internal static string CurrentZone {
-            get {
-                return ResourceManager.GetString("CurrentZone", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Database is missing or corrupt..
         /// </summary>
         internal static string DatabaseIsMissingOrCorrupt {
@@ -795,15 +786,6 @@ namespace PKSoft.Resources {
         internal static string YouDoNotHaveAdministrativePrivilegesNeeded {
             get {
                 return ResourceManager.GetString("YouDoNotHaveAdministrativePrivilegesNeeded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Zone.
-        /// </summary>
-        internal static string Zone {
-            get {
-                return ResourceManager.GetString("Zone", resourceCulture);
             }
         }
     }

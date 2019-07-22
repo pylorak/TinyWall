@@ -186,14 +186,6 @@ Select Elevate from the tray menu and try again.</value>
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>The configuration file has been successfully exported.</value>
   </data>
-  <data name="CurrentZone" xml:space="preserve">
-    <value>Current zone: {0}</value>
-    <comment>Param0 is name of zone</comment>
-  </data>
-  <data name="Zone" xml:space="preserve">
-    <value>Zone</value>
-    <comment>Tray text</comment>
-  </data>
   <data name="Mode" xml:space="preserve">
     <value>Mode</value>
     <comment>Tray text</comment>
