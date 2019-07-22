@@ -459,8 +459,6 @@ namespace PKSoft
 
         private void UpdateDisplay()
         {
-            // TODO: Remove resource PKSoft.Resources.Messages.CurrentZone as it is not used any more.
-
             // Update UI based on current firewall mode
             string FirewallModeName = PKSoft.Resources.Messages.FirewallModeUnknown;
             switch (FirewallState.Mode)
@@ -502,14 +500,13 @@ namespace PKSoft
                     break;
             }
 
-            // TODO: Remove resource PKSoft.Resources.Messages.Zone as it is not used any more.
             Tray.Text = string.Format(CultureInfo.CurrentCulture, "TinyWall\r\n{0}: {1}",
                 PKSoft.Resources.Messages.Mode, FirewallModeName);
 
             // Find out if we are locked and if we have a password
             this.Locked = FirewallState.Locked;
 
-            // Do we have a passord at all?
+            // Do we have a password at all?
             mnuLock.Visible = FirewallState.HasPassword;
 
             mnuAllowLocalSubnet.Checked = ActiveConfig.Service.ActiveProfile.AllowLocalSubnet;
@@ -614,6 +611,7 @@ namespace PKSoft
             {
                 ActiveConfig.Controller = new ControllerSettings();
                 ActiveConfig.Service = new ServerConfiguration();
+                ActiveConfig.Service.SetActiveProfile(PKSoft.Resources.Messages.Default);
                 FirewallState = new ServerState();
                 SettingsUpdated = true;
             }

@@ -206,7 +206,7 @@ namespace TinyWall.Interface
 #if DEBUG
                 return Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
 #else
-                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "TinyWall" /* TODO: was PKSoft.ServiceSettings21.APP_NAME */);
+                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "TinyWall");
                 if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
                 return dir;

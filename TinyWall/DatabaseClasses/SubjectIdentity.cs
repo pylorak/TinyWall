@@ -40,7 +40,7 @@ namespace PKSoft.DatabaseClasses
             return new FirewallExceptionV3(withSubject, this.Policy);
         }
 
-        // Tries to get the actual file path based on the search crateria
+        // Tries to get the actual file path based on the search criteria
         // specified by SearchPaths. Writes found files to ExecutableRealizations.
         public List<ExecutableSubject> SearchForFile(string pathHint = null)
         {
@@ -62,7 +62,7 @@ namespace PKSoft.DatabaseClasses
 
             List<string> searchPaths = new List<string>();
             if (SearchPaths != null) searchPaths.AddRange(SearchPaths);
-            if (pathHint != null) searchPaths.Add(pathHint);
+            if (!string.IsNullOrEmpty(pathHint)) searchPaths.Add(pathHint);
 
             if (ret.Count == 0)
             {

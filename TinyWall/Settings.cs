@@ -288,18 +288,16 @@ namespace PKSoft
                 return true;
 
             try
-            {   // TODO: deprecated
+            {   // TODO: Try to read old password format first.
+                // Remove once TW 2.1 is not supported anymore.
 
                 const string ENC_SALT = "O?2E/)YFq~e:w@a,";
                 const string ENC_IV = "X0@!H93!Y=8&/M/T";   // must be 16/24/32 bytes
 
-                // Construct file path
-                string SettingsFile = PasswordFilePath;
-
                 // Construct key
                 string key = ENC_SALT + password;
                 key = Hasher.HashString(key).Substring(0, 16);
-                string hash = Deprecated.SerializationHelper.LoadFromEncryptedXMLFile<string>(SettingsFile, key, ENC_IV);
+                string hash = Deprecated.SerializationHelper.LoadFromEncryptedXMLFile<string>(PasswordFilePath, key, ENC_IV);
                 if (hash == password)
                 {
                     _Locked = false;

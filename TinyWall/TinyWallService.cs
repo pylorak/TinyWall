@@ -222,27 +222,40 @@ namespace PKSoft
             // We will collect all our rules into this list
             SpecialRules.Clear();
 
-            /* TODO
-            Obsolete.ApplicationCollection allApps = GlobalInstances.ProfileMan.KnownApplications;
-            for (int i = 0; i < ActiveConfig.Service.ActiveProfile.SpecialExceptions.Count; ++i)
+            // Iterate all enabled special exceptions
+            foreach (string appName in ActiveConfig.Service.ActiveProfile.SpecialExceptions)
             {
                 try
-                {   //This try-catch will prevent errors if an exception profile string is invalid
-                    Obsolete.Application app = allApps.GetApplicationByName(ActiveConfig.Service.ActiveProfile.SpecialExceptions[i]);
-                    app.ResolveFilePaths();
-                    foreach (Obsolete.AppExceptionAssoc template in app.FileTemplates)
+                {
+
+                    // Retrieve database entry for appName
+                    DatabaseClasses.Application app = GlobalInstances.AppDatabase.GetApplicationByName(appName);
+                    if (app == null)
+                        continue;
+
+                    // Create rules
+                    foreach (DatabaseClasses.SubjectIdentity id in app.Components)
                     {
-                        foreach (string execPath in template.ExecutableRealizations)
+                        try
                         {
-                            FirewallExceptionV3 ex = template.CreateException(execPath).ToNewFormat();
-                            ex.RegenerateId();
-                            GetRulesForException(ex, SpecialRules);
+                            List<ExecutableSubject> foundSubjects = id.SearchForFile();
+                            foreach (ExecutableSubject subject in foundSubjects)
+                            {
+                                try
+                                {
+                                    FirewallExceptionV3 ex = id.InstantiateException(subject);
+                                    ex.RegenerateId();
+                                    GetRulesForException(ex, SpecialRules);
+                                }
+                                catch { }
+                            }
                         }
+                        catch { }
                     }
                 }
                 catch { }
             }
-*/
+
             SpecialRules.TrimExcess();
         }
 
@@ -464,8 +477,7 @@ namespace PKSoft
                 MinuteTimer = null;
             }
 
-            // TODO: re-enable for release
-            //MinuteTimer = new Timer(new TimerCallback(TimerCallback), null, 60000, 60000);
+            MinuteTimer = new Timer(new TimerCallback(TimerCallback), null, 60000, 60000);
         }
 
         private void LoadDatabase()
@@ -966,7 +978,7 @@ namespace PKSoft
                 }
                 catch
                 {
-                    // TODO: deprecated, only need to handle this on Vista
+                    // TODO: deprecated
                     EventLog.WriteEntry("Unable to listen for firewall events. Windows Firewall monitoring will be turned off.");
                 }
 

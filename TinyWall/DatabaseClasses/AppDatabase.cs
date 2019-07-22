@@ -40,6 +40,17 @@ namespace PKSoft.DatabaseClasses
             get { return _KnownApplications; }
         }
 
+        public Application GetApplicationByName(string name)
+        {
+            foreach (Application app in _KnownApplications)
+            {
+                if (app.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
+                    return app;
+            }
+
+            return null;
+        }
+
         internal Application TryGetApp(ExecutableSubject fromSubject, out FirewallExceptionV3 fwex)
         {
             for (int i = 0; i < KnownApplications.Count; ++i)
@@ -139,7 +150,7 @@ namespace PKSoft.DatabaseClasses
                     case 101:
                         break;
                     case 102:
-                        // Remove all exception with a different subject than the input argument
+                        // Remove all exceptions with a different subject than the input argument
                         for (int i = exceptions.Count-1; i >= 0; --i)
                         {
                             ExecutableSubject exesub = exceptions[i].Subject as ExecutableSubject;
