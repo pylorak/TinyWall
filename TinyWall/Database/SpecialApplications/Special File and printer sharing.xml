@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="TinyWall">
+  <Components>
+    <SubjectIdentity>
+      <Policy i:type="TcpUdpPolicy">
+        <Name>LLMNR-UDP</Name>
+        <AllowedLocalUdpListenerPorts>5355</AllowedLocalUdpListenerPorts>
+        <AllowedRemoteUdpConnectPorts>5355</AllowedRemoteUdpConnectPorts>
+        <LocalNetworkOnly>true</LocalNetworkOnly>
+      </Policy>
+      <Subject i:type="ServiceSubject">
+        <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
+        <ServiceName>dnscache</ServiceName>
+      </Subject>
+    </SubjectIdentity>
+    <SubjectIdentity>
+      <Policy i:type="TcpUdpPolicy">
+        <Name>NetBIOS</Name>
+        <AllowedLocalUdpListenerPorts>137,138</AllowedLocalUdpListenerPorts>
+        <AllowedRemoteUdpConnectPorts>137,138</AllowedRemoteUdpConnectPorts>
+        <AllowedLocalTcpListenerPorts>139</AllowedLocalTcpListenerPorts>
+        <AllowedRemoteTcpConnectPorts>139</AllowedRemoteTcpConnectPorts>
+        <LocalNetworkOnly>true</LocalNetworkOnly>
+      </Policy>
+      <Subject i:type="ExecutableSubject">
+        <ExecutablePath>System</ExecutablePath>
+      </Subject>
+    </SubjectIdentity>
+    <SubjectIdentity>
+      <Policy i:type="TcpUdpPolicy">
+        <Name>NetBIOS</Name>
+        <AllowedLocalTcpListenerPorts>445</AllowedLocalTcpListenerPorts>
+        <AllowedRemoteTcpConnectPorts>445</AllowedRemoteTcpConnectPorts>
+        <LocalNetworkOnly>true</LocalNetworkOnly>
+      </Policy>
+      <Subject i:type="ExecutableSubject">
+        <ExecutablePath>System</ExecutablePath>
+      </Subject>
+    </SubjectIdentity>
+    <SubjectIdentity>
+      <Policy i:type="TcpUdpPolicy">
+        <Name>Spooler - RPC</Name>
+        <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
+        <LocalNetworkOnly>true</LocalNetworkOnly>
+      </Policy>
+      <Subject i:type="ServiceSubject">
+        <ExecutablePath>{folder:sys32}\spoolsv.exe</ExecutablePath>
+        <ServiceName>Spooler</ServiceName>
+      </Subject>
+    </SubjectIdentity>
+    <SubjectIdentity>
+      <Policy i:type="TcpUdpPolicy">
+        <Name>Spooler - RPC-EPMAP</Name>
+        <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
+        <LocalNetworkOnly>true</LocalNetworkOnly>
+      </Policy>
+      <Subject i:type="ServiceSubject">
+        <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
+        <ServiceName>Rpcss</ServiceName>
+      </Subject>
+    </SubjectIdentity>
+
+  </Components>
+  <Flags xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+    <d2p1:KeyValueOfstringstring>
+      <d2p1:Key>TWUI:SPECIAL</d2p1:Key>
+      <d2p1:Value i:nil="true" />
+    </d2p1:KeyValueOfstringstring>
+  </Flags>
+  <Name>File_and_Printer_Sharing</Name>
+</Application>

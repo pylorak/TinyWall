@@ -2,50 +2,22 @@
 <Application xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="TinyWall">
   <Components>
     <SubjectIdentity>
-      <Policy i:type="RuleListPolicy">
-        <Rules>
-          <RuleDef>
-            <Action>Allow</Action>
-            <Direction>In</Direction>
-			<Name>PNRP Server</Name>
-            <LocalPorts>3540</LocalPorts>
-            <Protocol>UDP</Protocol>
-          </RuleDef>
-          <RuleDef>
-            <Action>Allow</Action>
-            <Direction>Out</Direction>
-			<Name>PNRP Client</Name>
-            <Protocol>UDP</Protocol>
-            <RemotePorts>3540</RemotePorts>
-          </RuleDef>
-        </Rules>
-      </Profile>
+      <Policy i:type="TcpUdpPolicy">
+        <Name>SSDP</Name>
+        <AllowedLocalTcpListenerPorts>2869</AllowedLocalTcpListenerPorts>
+        <AllowedRemoteTcpConnectPorts>2869</AllowedRemoteTcpConnectPorts>
+        <LocalNetworkOnly>true</LocalNetworkOnly>
       </Policy>
-      <Subject i:type="ServiceSubject">
-        <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
-        <ServiceName>PNRPsvc</ServiceName>
+      <Subject i:type="ExecutableSubject">
+        <ExecutablePath>System</ExecutablePath>
       </Subject>
     </SubjectIdentity>
     <SubjectIdentity>
-      <Policy i:type="RuleListPolicy">
-        <Rules>
-          <RuleDef>
-            <Action>Allow</Action>
-            <Direction>In</Direction>
-            <LocalPorts>1900</LocalPorts>
-			<Name>SSDP Server</Name>
-            <Protocol>UDP</Protocol>
-            <RemoteAddresses>LocalSubnet</RemoteAddresses>
-          </RuleDef>
-          <RuleDef>
-            <Action>Allow</Action>
-            <Direction>Out</Direction>
-			<Name>SSDP Client</Name>
-            <Protocol>UDP</Protocol>
-            <RemotePorts>1900</RemotePorts>
-            <RemoteAddresses>LocalSubnet</RemoteAddresses>
-          </RuleDef>
-        </Rules>
+      <Policy i:type="TcpUdpPolicy">
+        <Name>SSDP</Name>
+        <AllowedLocalUdpListenerPorts>1900</AllowedLocalUdpListenerPorts>
+        <AllowedRemoteUdpConnectPorts>1900</AllowedRemoteUdpConnectPorts>
+        <LocalNetworkOnly>true</LocalNetworkOnly>
       </Policy>
       <Subject i:type="ServiceSubject">
         <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
@@ -54,10 +26,20 @@
     </SubjectIdentity>
     <SubjectIdentity>
       <Policy i:type="TcpUdpPolicy">
+        <Name>PNRP</Name>
+        <AllowedLocalUdpListenerPorts>3540</AllowedLocalUdpListenerPorts>
+        <AllowedRemoteUdpConnectPorts>3540</AllowedRemoteUdpConnectPorts>
+        <LocalNetworkOnly>true</LocalNetworkOnly>
+      </Policy>
+      <Subject i:type="ServiceSubject">
+        <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
+        <ServiceName>PNRPsvc</ServiceName>
+      </Subject>
+    </SubjectIdentity>
+    <SubjectIdentity>
+      <Policy i:type="TcpUdpPolicy">
         <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
-        <AllowedLocalUdpListenerPorts>*</AllowedLocalUdpListenerPorts>
         <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
-        <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
       </Policy>
       <Subject i:type="ExecutableSubject">
         <ExecutablePath>{folder:sys32}\raserver.exe</ExecutablePath>
@@ -66,9 +48,7 @@
     <SubjectIdentity>
       <Policy i:type="TcpUdpPolicy">
         <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
-        <AllowedLocalUdpListenerPorts>*</AllowedLocalUdpListenerPorts>
         <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
-        <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
       </Policy>
       <Subject i:type="ExecutableSubject">
         <ExecutablePath>{folder:sys32}\msra.exe</ExecutablePath>
