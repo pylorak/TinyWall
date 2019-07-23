@@ -874,16 +874,19 @@ namespace PKSoft
 
         internal void WhitelistSubject(ExecutableSubject subject)
         {
-            List<FirewallExceptionV3> knownExceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true);
+            List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true);
 
             // Did we find any related files?
-            if (knownExceptions.Count <= 1)
+            if (exceptions.Count <= 1)
             {
                 FirewallExceptionV3 fwex = null;
-                if (1 == knownExceptions.Count)
-                    fwex = knownExceptions[0];
+                if (1 == exceptions.Count)
+                    fwex = exceptions[0];
                 else
+                {
                     fwex = new FirewallExceptionV3(subject, new UnrestrictedPolicy());
+                    exceptions.Add(fwex);
+                }
 
                 if (ActiveConfig.Controller.AskForExceptionDetails)
                 {
@@ -896,13 +899,13 @@ namespace PKSoft
                         if (f.ShowDialog() == DialogResult.Cancel)
                             return;
 
-                        knownExceptions = f.ExceptionSettings;
+                        exceptions = f.ExceptionSettings;
                     }
                 }
             }
 
             // Known file, add its exceptions, along with other files that belong to this app
-            foreach(FirewallExceptionV3 fwex in knownExceptions)
+            foreach(FirewallExceptionV3 fwex in exceptions)
                 AddNewException(fwex);
         }
 
