@@ -2,9 +2,11 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.IO;
+using System;
 
 namespace PKSoft.Deprecated
 {
+    [Obsolete]
     internal static class SerializationHelper
     {
         internal static T LoadFromEncryptedXMLFile<T>(string filepath, string key, string iv)

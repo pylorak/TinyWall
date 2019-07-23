@@ -62,9 +62,9 @@ namespace PKSoft.DatabaseClasses
             return Flags[flag];
         }
 
-        public List<ExecutableSubject> FindComponents(string pathHint = null)
+        public List<ExceptionSubject> FindComponents(string pathHint = null)
         {
-            List<ExecutableSubject> ret = new List<ExecutableSubject>();
+            List<ExceptionSubject> ret = new List<ExceptionSubject>();
             foreach (SubjectIdentity id in Components)
             {
                 ret.AddRange(id.SearchForFile(pathHint));

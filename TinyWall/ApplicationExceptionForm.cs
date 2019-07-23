@@ -321,7 +321,7 @@ namespace PKSoft
                 TmpExceptionSettings[0].Subject = subject;
                 TmpExceptionSettings[0].Policy = new UnrestrictedPolicy();
             }
-            if (1 == knownExceptions.Count)
+            else if (1 == knownExceptions.Count)
             {
                 // Known file
                 TmpExceptionSettings[0] = knownExceptions[0];

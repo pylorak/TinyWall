@@ -195,10 +195,6 @@ namespace PKSoft
             {
                 string name_i = rule_names[i];
 
-                // Skip if this is not a TinyWall rule
-                //if (!name_i.StartsWith("[TW", StringComparison.Ordinal))
-                //    continue;
-
                 bool found = false;
                 for (int j = ActiveRules.Count - 1; j >= 0; --j)          // for each TW firewall rule
                 {
@@ -213,7 +209,13 @@ namespace PKSoft
                 }
 
                 if (!found)
-                    FwRules.RemoveAt(i);
+                {
+                    try
+                    {
+                        FwRules.RemoveAt(i);
+                    }
+                    catch { }
+                }
             }
         }
 
@@ -238,8 +240,8 @@ namespace PKSoft
                     {
                         try
                         {
-                            List<ExecutableSubject> foundSubjects = id.SearchForFile();
-                            foreach (ExecutableSubject subject in foundSubjects)
+                            List<ExceptionSubject> foundSubjects = id.SearchForFile();
+                            foreach (var subject in foundSubjects)
                             {
                                 try
                                 {
@@ -356,6 +358,8 @@ namespace PKSoft
                 case PolicyType.RuleList:
                     {
                         RuleListPolicy pol = ex.Policy as RuleListPolicy;
+                        foreach (var rule in pol.Rules)
+                            rule.ExceptionId = ex.Id;
                         ruleset.AddRange(pol.Rules);
                         break;
                     }
@@ -934,7 +938,13 @@ namespace PKSoft
                                 for (int j = FwRules.Count-1; j >= 0; --j)
                                 {
                                     if (FwRules[j].Name.Contains(appid))
-                                        FwRules.RemoveAt(j);
+                                    {
+                                        try
+                                        {
+                                            FwRules.RemoveAt(j);
+                                        }
+                                        catch { }
+                                    }
                                 }
 
                                 // Remove exception
@@ -1210,14 +1220,14 @@ namespace PKSoft
                 ActiveConfig.Service.ActiveProfile.AppExceptions = exs;
             }
 
-            CommitLearnedRules();
-            ActiveConfig.Service.Save(ConfigSavePath);
-
             if (LogWatcher != null)
             {
                 LogWatcher.Dispose();
                 LogWatcher = null;
             }
+
+            CommitLearnedRules();
+            ActiveConfig.Service.Save(ConfigSavePath);
 
             try
             {

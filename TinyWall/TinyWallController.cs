@@ -1150,8 +1150,8 @@ namespace PKSoft
             {
                 foreach (SubjectIdentity id in app.Components)
                 {
-                    List<ExecutableSubject> subjects = id.SearchForFile();
-                    foreach (ExecutableSubject subject in subjects)
+                    List<ExceptionSubject> subjects = id.SearchForFile();
+                    foreach (var subject in subjects)
                     {
                         confCopy.ActiveProfile.AppExceptions.Add(id.InstantiateException(subject));
                     }

@@ -16,7 +16,7 @@ namespace PKSoft.DatabaseClasses
 
         public static string DBPath
         {
-            get { return System.IO.Path.Combine(Utils.AppDataPath, "profiles_v3.xml"); }
+            get { return System.IO.Path.Combine(Utils.AppDataPath, "profiles.xml"); }
         }
 
         public static AppDatabase Load(string filePath)
@@ -78,10 +78,13 @@ namespace PKSoft.DatabaseClasses
             Application app = null;
             for (int i = 0; i < KnownApplications.Count; ++i)
             {
+                if (KnownApplications[i].HasFlag("TWUI:Special"))
+                    continue;
+
                 for (int j = 0; j < KnownApplications[i].Components.Count; ++j)
                 {
                     SubjectIdentity id = KnownApplications[i].Components[j];
-                    if (id.DoesExecutableSatisfy(fromSubject))
+                    if ((id.Subject.SubjectType == SubjectType.Executable) &&  id.DoesExecutableSatisfy(fromSubject))
                     {
                         app = KnownApplications[i];
                         break;
@@ -100,8 +103,8 @@ namespace PKSoft.DatabaseClasses
             string pathHint = System.IO.Path.GetDirectoryName(fromSubject.ExecutablePath);
             foreach (SubjectIdentity id in app.Components)
             {
-                List<ExecutableSubject> foundSubjects = id.SearchForFile(pathHint);
-                foreach (ExecutableSubject subject in foundSubjects)
+                List<ExceptionSubject> foundSubjects = id.SearchForFile(pathHint);
+                foreach (ExceptionSubject subject in foundSubjects)
                 {
                     exceptions.Add(id.InstantiateException(subject));
                 }

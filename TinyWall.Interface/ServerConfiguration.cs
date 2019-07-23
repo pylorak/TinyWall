@@ -104,7 +104,6 @@ namespace TinyWall.Interface
     public sealed class ServerConfiguration
     {
         private const string APP_NAME = "TinyWall";
-        private readonly object locker = new object();
 
         public int ConfigVersion { get; set; } = 1;
 
@@ -178,7 +177,7 @@ namespace TinyWall.Interface
         {
             string key = Internal.Hasher.HashString(ENC_SALT).Substring(0, 16);
 
-            lock (locker)
+            lock (this)
             {
                 Internal.SerializationHelper.SaveToEncryptedXMLFile(this, filePath, key, ENC_IV);
             }

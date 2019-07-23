@@ -46,14 +46,24 @@ namespace PKSoft
         {
             if (File.Exists(txtAssocExePath.Text))
             {
-                var pa = Obsolete.AppExceptionAssoc.FromExecutable(txtAssocExePath.Text, string.Empty);
-                string tmpfile = Path.GetTempFileName();
-                SerializationHelper.SaveToXMLFile(pa, tmpfile);
-                using (StreamReader sr = new StreamReader(tmpfile))
+                var exe = new ExecutableSubject(txtAssocExePath.Text);
+                var id = new DatabaseClasses.SubjectIdentity(exe);
+                id.AllowedSha1 = new List<string>();
+                id.AllowedSha1.Add(exe.HashSha1);
+                if (exe.IsSigned && exe.CertValid)
                 {
-                    txtAssocResult.Text = sr.ReadToEnd();
+                    id.CertificateSubjects = new List<string>();
+                    id.CertificateSubjects.Add(exe.CertSubject);
                 }
-                File.Delete(tmpfile);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    SerializationHelper.SerializeDC(ms, id);
+                    ms.Seek(0, SeekOrigin.Begin);
+                    using (StreamReader sr = new StreamReader(ms))
+                    {
+                        txtAssocResult.Text = sr.ReadToEnd();
+                    }
+                }
             }
             else
             {
@@ -70,45 +80,47 @@ namespace PKSoft
         private void btnCollectionsCreate_Click(object sender, EventArgs e)
         {
             // Common init
-            var Manager = new Obsolete.ProfileManager();
-            Manager.AvailableProfiles.Clear();
-            Manager.KnownApplications.Clear();
+            var db = new DatabaseClasses.AppDatabase();
 
             string outputPath = txtAssocOutputPath.Text;
-            string profilesFolder = Path.Combine(txtDBFolderPath.Text, "Profiles");
-            string assocFolder = Path.Combine(txtDBFolderPath.Text, "Associations");
-            if (!Directory.Exists(profilesFolder) || !Directory.Exists(assocFolder))
+            string inputPath = txtDBFolderPath.Text;
+            if (!Directory.Exists(inputPath))
             {
-                MessageBox.Show(this, "Profile or Associations folder not found.", "Directory not found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(this, "Input database folder not found.", "Directory not found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
+
             /*
             // Merge profiles
-            string[] files = Directory.GetFiles(profilesFolder);
             foreach (string fpath in files)
             {
                 Obsolete.Profile p = Deprecated.SerializationHelper.LoadFromXMLFile<Obsolete.Profile>(fpath);
                 Manager.AvailableProfiles.Add(p);
-            }
-
-            // Merge associations
-            files = Directory.GetFiles(assocFolder);
-            foreach (string fpath in files)
-            {
-                Obsolete.Application app = Deprecated.SerializationHelper.LoadFromXMLFile<PKSoft.Obsolete.Application>(fpath);
-                Manager.KnownApplications.Add(app);
             }*/
 
-            // Merge special associations
-            string[] files = Directory.GetFiles(Path.Combine(txtDBFolderPath.Text, "Special"));
+            string[] files = Directory.GetFiles(inputPath, "*.xml", SearchOption.AllDirectories);
             foreach (string fpath in files)
             {
-                var app = Deprecated.SerializationHelper.LoadFromXMLFile<PKSoft.Obsolete.Application>(fpath);
-                SerializationHelper.SaveToXMLFile(app.ToNewFormat(), fpath + "2");
-//                Manager.KnownApplications.Add(app);
+                try
+                {
+                    var app = SerializationHelper.LoadFromXMLFile<PKSoft.DatabaseClasses.Application>(fpath);
+                    //SerializationHelper.SaveToXMLFile(app.ToNewFormat(), fpath + "2");
+                    db.KnownApplications.Add(app);
+                }
+                catch (Exception ex)
+                {
+                    try
+                    {
+                        var app = Deprecated.SerializationHelper.LoadFromXMLFile<PKSoft.Obsolete.Application>(fpath);
+                        //SerializationHelper.SaveToXMLFile(app.ToNewFormat(), fpath + "2");
+                        db.KnownApplications.Add(app.ToNewFormat());
+                    }
+                    catch { }
+                }
             }
 
- //           Manager.ToNewFormat().Save(Path.Combine(outputPath, Path.GetFileName(DatabaseClasses.AppDatabase.DBPath)));
+            db.Save(Path.Combine(outputPath, "profiles.xml"));
+            //Manager.ToNewFormat().Save(Path.Combine(outputPath, Path.GetFileName(DatabaseClasses.AppDatabase.DBPath)));
             MessageBox.Show(this, "Creation of collections finished.", "Success.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

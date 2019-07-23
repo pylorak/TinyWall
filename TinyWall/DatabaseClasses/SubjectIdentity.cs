@@ -42,9 +42,15 @@ namespace PKSoft.DatabaseClasses
 
         // Tries to get the actual file path based on the search criteria
         // specified by SearchPaths. Writes found files to ExecutableRealizations.
-        public List<ExecutableSubject> SearchForFile(string pathHint = null)
+        public List<ExceptionSubject> SearchForFile(string pathHint = null)
         {
-            List<ExecutableSubject> ret = new List<ExecutableSubject>();
+            List<ExceptionSubject> ret = new List<ExceptionSubject>();
+
+            if (Subject is GlobalSubject)
+            {
+                ret.Add(Subject);
+                return ret;
+            }
 
             // If the subject is not a file, we cannot search for it
             ExecutableSubject exesub = Subject as ExecutableSubject;
@@ -112,7 +118,7 @@ namespace PKSoft.DatabaseClasses
             {
                 reference = reference.ToResolved();
 
-                if (reference.ExecutablePath == reference.ExecutableName)   // This condition checks whetehr the reference is just a file name or a full path
+                if (reference.ExecutablePath == reference.ExecutableName)   // This condition checks whether the reference is just a file name or a full path
                 {
                     // File name must match
                     if (string.Compare(reference.ExecutableName, testee.ExecutableName, StringComparison.OrdinalIgnoreCase) != 0)
@@ -149,7 +155,7 @@ namespace PKSoft.DatabaseClasses
                 }
 
                 // Do we have a public key match? Either one of the listed keys in this instance is sufficient.
-                if ((this.CertificateSubjects.Count > 0) && testee.IsSigned && testee.CertValid)
+                if ((this.CertificateSubjects != null) && (this.CertificateSubjects.Count > 0) && testee.IsSigned && testee.CertValid)
                 {
                     for (int i = 0; i < this.CertificateSubjects.Count; ++i)
                     {
@@ -159,6 +165,9 @@ namespace PKSoft.DatabaseClasses
                         }
                     }
                 }
+
+                if ((this.AllowedSha1 == null) && (this.CertificateSubjects == null))
+                    return true;
             }
 
             // None of the identity proofs could be verified, so let's fail

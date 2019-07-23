@@ -210,7 +210,8 @@ namespace PKSoft
 
             if (!IconList.Images.ContainsKey(app.Name))
             {
-                string iconPath = app.FindComponents()[0].ExecutablePath;
+                var exe = app.FindComponents()[0] as ExecutableSubject;
+                string iconPath = (exe != null) ? exe.ExecutablePath : string.Empty;
                 if (!File.Exists(iconPath))
                     IconList.Images.Add(app.Name, Resources.Icons.window);
                 else
