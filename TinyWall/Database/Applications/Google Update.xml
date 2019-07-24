@@ -1,18 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Application Name="Google Update">
-	<Files>
-    <AppExceptionAssoc Executable="GoogleUpdate.exe">
-      <ExceptionTemplate Template="true">
-        <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
-        <OpenPortOutboundRemoteUDP>*</OpenPortOutboundRemoteUDP>
-      </ExceptionTemplate>
-      <PublicKeys>
-        <string>3082010A0282010100BBB250F61F7177B89191B762380519BA09D574E064B204740E6383DFE36D58243A5640F52711C573189388D6D532D76457BC29BAD99E25BBF3B257FA178DE38531DF5E6E3F1F03E18B3BB7B641C30D02566E000CC4F0DFCD7578A30369B361A090363AAD4F2C1A51EA16907ECE1F8F632F8159075224F6D5F6DDB8DFE072DA30A169ED75FF342EA0FE5D20DA2C6844F9D28BF4B62B1AB086E653E4498CAE99E76DBE5F8750346D985BFAB3E4E8E4B2AAE9AEA661DC3E860A80CFB998535DAEBC9AB653AB5C7B33E47D116400E03BB121FED9E9931AB49C67EA70D20BF3003979E869CE967649D286A1742E5EA8BB3A78A89360FF8A9C82A113647E087965BA750203010001</string>
-      </PublicKeys>
-      <SearchPaths>
-        <string>{reg:SOFTWARE\Wow6432Node\Google\Update:path}</string>
-        <string>{reg:SOFTWARE\Google\Update:path}</string>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="TinyWall">
+  <Components>
+    <SubjectIdentity>
+      <CertificateSubjects xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+        <d4p1:string>CN=Google Inc, O=Google Inc, L=Mountain View, S=California, C=US</d4p1:string>
+      </CertificateSubjects>
+      <Policy i:type="TcpUdpPolicy">
+        <AllowedLocalTcpListenerPorts></AllowedLocalTcpListenerPorts>
+        <AllowedLocalUdpListenerPorts></AllowedLocalUdpListenerPorts>
+        <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
+        <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
+      </Policy>
+      <SearchPaths xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+        <d4p1:string>{reg:SOFTWARE\Wow6432Node\Google\Update:path}</d4p1:string>
+        <d4p1:string>{reg:SOFTWARE\Google\Update:path}</d4p1:string>
+        <d4p1:string>{folder:pf64}\Google\Update</d4p1:string>
+        <d4p1:string>{folder:pf32}\Google\Update</d4p1:string>
       </SearchPaths>
-    </AppExceptionAssoc>
-	</Files>
+      <Subject i:type="ExecutableSubject">
+        <ExecutablePath>GoogleUpdate.exe</ExecutablePath>
+      </Subject>
+    </SubjectIdentity>
+  </Components>
+  <Name>Google Update</Name>
 </Application>

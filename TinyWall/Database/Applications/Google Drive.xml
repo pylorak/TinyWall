@@ -1,18 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Application Name="Google Drive Sync">
-	<Files>
-    <AppExceptionAssoc Executable="googledrivesync.exe">
-      <ExceptionTemplate Template="true">
-        <OpenPortOutboundRemoteTCP>*</OpenPortOutboundRemoteTCP>
-      </ExceptionTemplate>
-      <PublicKeys>
-        <string>3082010A0282010100DD88F3C40340E3BB9364DB5247E4D284F3E41C03EB325AC4FA069D7BCF82C49C57A6F630F50463138131B723EC97096EC7834C20F96EDB48C452A0443170B64AE37C6C581ACA7C7DDCFC66D460FEA5C97E1372145D124CAAAEE7C100BED3ACEDBDB5590FB080EC0BC7B710A8CEB93E07E29E798B270DB17F6EC802BB8C50D1AD4C816C4CA2D3D2E75D3DA28B9E66845AD8FD7ED6FDA3259F753B228A7831B2DD06B657385D88836BCB55AFE1C35566BCE72C8F53A9C889F0E5282FB61DA31C9E7D3971351C232109E5C77A6AE6B6C77735AAE7DF265BCD0720B7425DDE5ABF27CC2AFE81E23A8E1741AC749EA5CEDBFD3F341EA2CC2D74FBCF996C8B0CD556F30203010001</string>
-        <string>3082010A0282010100BE19705B27A5D05B05974BB1EF49E88FF1E83E1B7581DB62A385DA751BE2B0FD8611D2C86535ED786A357CA7254DCD2A8216C1F3A89BA53B5F307791D9F8105305E400D88B6D1B96A0BCA2B3493A0F96F7E63859E651DDB5F3087844DCCF2B61AA1BEB3A5C83F6CE91AE09F5FE4115941B13DE7E4C99BB955798A5DD6A827AC837A73F75D8B794DDBDF4F8FC16E4C82E82883A1553EECF2E32F86EA0E4647F693C6A7589D7BE54F4C8713D920E1007FCBDFC7851EB187C62227FBE8EC6988B47C8836A30780B0B5107921B1D405FF7E0CCAD35FB17FAAC418E6FB96A870A0B4165E38288C3914B68C04D764433C4834D5CB545F1781F90A83C4E65BA6B78DEFF0203010001</string>
-      </PublicKeys>
-      <SearchPaths>
-        <string>{parent:{reg:SOFTWARE\Wow6432Node\Google\Drive:InstallLocation}}</string>
-        <string>{parent:{reg:SOFTWARE\Google\Drive:InstallLocation}}</string>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="TinyWall">
+  <Components>
+    <SubjectIdentity>
+      <CertificateSubjects xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+        <d4p1:string>CN=Google LLC, O=Google LLC, L=Mountain View, S=ca, C=US</d4p1:string>
+      </CertificateSubjects>
+      <Policy i:type="TcpUdpPolicy">
+        <AllowedLocalTcpListenerPorts></AllowedLocalTcpListenerPorts>
+        <AllowedLocalUdpListenerPorts></AllowedLocalUdpListenerPorts>
+        <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
+        <AllowedRemoteUdpConnectPorts></AllowedRemoteUdpConnectPorts>
+      </Policy>
+      <SearchPaths xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+        <d4p1:string>{parent:{reg:SOFTWARE\Wow6432Node\Google\Drive:InstallLocation}}</d4p1:string>
+        <d4p1:string>{parent:{reg:SOFTWARE\Google\Drive:InstallLocation}}</d4p1:string>
       </SearchPaths>
-    </AppExceptionAssoc>
-	</Files>
+      <Subject i:type="ExecutableSubject">
+        <ExecutablePath>googledrivesync.exe</ExecutablePath>
+      </Subject>
+    </SubjectIdentity>
+  </Components>
+  <Name>Google Drive Sync</Name>
 </Application>
