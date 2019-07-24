@@ -80,7 +80,7 @@ namespace TinyWall.Interface
                         AppExceptions.Remove(older);
                         newer.RegenerateId();
                     }
-                    else if (app1.Subject.Equals(app2)
+                    else if (app1.Subject.Equals(app2.Subject)
                         && (app1.Timer == AppExceptionTimer.Permanent)
                         && (app2.Timer == AppExceptionTimer.Permanent)
                     )
