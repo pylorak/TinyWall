@@ -179,7 +179,7 @@ namespace PKSoft
                             // We have a match. This file belongs to a known application!
                             Utils.Invoke(list, (MethodInvoker)delegate()
                             {
-                                AddRecognizedAppToList(app);
+                                AddRecognizedAppToList(app, subject.ExecutablePath);
                             });
                         }
                     }
@@ -199,7 +199,7 @@ namespace PKSoft
             catch { }
         }
 
-        private void AddRecognizedAppToList(DatabaseClasses.Application app)
+        private void AddRecognizedAppToList(DatabaseClasses.Application app, string path)
         {
             // Check if we've already added this application
             for (int i = 0; i < list.Items.Count; ++i)
@@ -210,8 +210,7 @@ namespace PKSoft
 
             if (!IconList.Images.ContainsKey(app.Name))
             {
-                var exe = app.FindComponents()[0] as ExecutableSubject;
-                string iconPath = (exe != null) ? exe.ExecutablePath : string.Empty;
+                string iconPath = path;
                 if (!File.Exists(iconPath))
                     IconList.Images.Add(app.Name, Resources.Icons.window);
                 else
