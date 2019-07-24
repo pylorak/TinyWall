@@ -40,6 +40,33 @@ namespace PKSoft.DatabaseClasses
             return new FirewallExceptionV3(withSubject, this.Policy);
         }
 
+        private ExceptionSubject FromFolder(string parentFolder)
+        {
+            ExecutableSubject exesub = Subject as ExecutableSubject;
+            if (null == exesub)
+                throw new InvalidOperationException();
+
+            // Recursively resolve variables
+            string folderPath = Environment.ExpandEnvironmentVariables(RecursiveParser.ResolveString(parentFolder));
+            string filePath = Path.Combine(folderPath, exesub.ExecutableName);
+
+            if (IsValidExecutablePath(filePath))
+            {
+                ExecutableSubject testee = null;
+                if (this.Subject.SubjectType == SubjectType.Service)
+                    testee = new ServiceSubject(filePath, (this.Subject as ServiceSubject).ServiceName);
+                else
+                    testee = new ExecutableSubject(filePath);
+
+                if (this.DoesExecutableSatisfy(testee))
+                {
+                    return testee;
+                }
+            }
+
+            return null;
+        }
+
         // Tries to get the actual file path based on the search criteria
         // specified by SearchPaths. Writes found files to ExecutableRealizations.
         public List<ExceptionSubject> SearchForFile(string pathHint = null)
@@ -57,42 +84,36 @@ namespace PKSoft.DatabaseClasses
             if (null == exesub)
                 return ret;
 
+            // If the subject is specified with an absolute path, we won't search for it
             ExecutableSubject resolvedSubject = exesub.ToResolved();
             if (IsValidExecutablePath(resolvedSubject.ExecutablePath))
             {
                 if (this.DoesExecutableSatisfy(resolvedSubject))
                 {
                     ret.Add(resolvedSubject);
+                    return ret;
                 }
             }
 
-            List<string> searchPaths = new List<string>();
-            if (SearchPaths != null) searchPaths.AddRange(SearchPaths);
-            if (!string.IsNullOrEmpty(pathHint)) searchPaths.Add(pathHint);
-
-            if (ret.Count == 0)
+            // If we know where to look, we return that location
+            if (!string.IsNullOrEmpty(pathHint))
             {
-                for (int i = 0; i < searchPaths.Count; ++i)
+                var subj = FromFolder(pathHint);
+                if (subj != null)
                 {
-                    string path = searchPaths[i];
+                    ret.Add(subj);
+                    return ret;
+                }
+            }
 
-                    // Recursively resolve variables
-                    string folderPath = Environment.ExpandEnvironmentVariables(RecursiveParser.ResolveString(path));
-                    string filePath = Path.Combine(folderPath, exesub.ExecutableName);
-
-                    if (IsValidExecutablePath(resolvedSubject.ExecutablePath))
-                    {
-                        ExecutableSubject testee = null;
-                        if (this.Subject.SubjectType == SubjectType.Service)
-                            testee = new ServiceSubject(filePath, (this.Subject as ServiceSubject).ServiceName);
-                        else
-                            testee = new ExecutableSubject(filePath);
-
-                        if (this.DoesExecutableSatisfy(testee))
-                        {
-                            ret.Add(testee);
-                        }
-                    }
+            // Otherwise, we return all locations we could find
+            if (SearchPaths != null)
+            {
+                foreach (string folder in SearchPaths)
+                {
+                    var subj = FromFolder(folder);
+                    if (subj != null)
+                        ret.Add(subj);
                 }
             }
 
