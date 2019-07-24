@@ -1151,6 +1151,9 @@ namespace PKSoft
 
             foreach (DatabaseClasses.Application app in GlobalInstances.AppDatabase.KnownApplications)
             {
+                if (app.HasFlag("TWUI:Special"))
+                    continue;
+
                 foreach (SubjectIdentity id in app.Components)
                 {
                     List<ExceptionSubject> subjects = id.SearchForFile();
