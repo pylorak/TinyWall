@@ -211,8 +211,6 @@ namespace PKSoft
         private ListViewItem ListItemFromAppException(FirewallExceptionV3 ex)
         {
             ExecutableSubject subject = ex.Subject as ExecutableSubject;
-            if (subject == null)
-                throw new NotImplementedException();
 
             string name;
             switch (ex.Subject.SubjectType)
@@ -224,7 +222,7 @@ namespace PKSoft
                     name = $"Srv: {(subject as ServiceSubject).ServiceName}";
                     break;
                 case SubjectType.Global:
-                    name = string.Empty;
+                    name = "*";
                     break;
                 default:
                     throw new NotImplementedException();
@@ -239,7 +237,11 @@ namespace PKSoft
                 li.BackColor = System.Drawing.Color.LightPink;
             }
 
-            if (NetworkPath.IsNetworkPath(subject.ExecutablePath))
+            if (ex.Subject.SubjectType == SubjectType.Global)
+            {
+                li.ImageKey = "window";
+            }
+            else if (NetworkPath.IsNetworkPath(subject.ExecutablePath))
             {
                 /* We do not load icons from network drives, to avoid 30s timeout if the drive is unavailable.
                  * If this is ever changed in the future, also remember that .Net's Icon.ExtractAssociatedIcon() 
@@ -539,6 +541,7 @@ namespace PKSoft
 
             IconList.Images.Add("deleted", Resources.Icons.delete);
             IconList.Images.Add("network-drive", Resources.Icons.network_drive_small);
+            IconList.Images.Add("window", Resources.Icons.window);
 
             lblVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0} {1}", lblVersion.Text, System.Windows.Forms.Application.ProductVersion.ToString());
 
