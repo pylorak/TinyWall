@@ -51,6 +51,28 @@ namespace PKSoft.DatabaseClasses
             return null;
         }
 
+        public List<FirewallExceptionV3> FastSearchMachineForKnownApps()
+        {
+            List<FirewallExceptionV3> ret = new List<FirewallExceptionV3>();
+
+            foreach (DatabaseClasses.Application app in GlobalInstances.AppDatabase.KnownApplications)
+            {
+                if (app.HasFlag("TWUI:Special"))
+                    continue;
+
+                foreach (SubjectIdentity id in app.Components)
+                {
+                    List<ExceptionSubject> subjects = id.SearchForFile();
+                    foreach (var subject in subjects)
+                    {
+                        ret.Add(id.InstantiateException(subject));
+                    }
+                }
+            }
+
+            return ret;
+        }
+
         internal Application TryGetApp(ExecutableSubject fromSubject, out FirewallExceptionV3 fwex, bool matchSpecial)
         {
             foreach (var app in KnownApplications)

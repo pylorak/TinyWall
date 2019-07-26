@@ -34,11 +34,13 @@ namespace PKSoft
             if (!RunSearch)
             {
                 btnStartDetection.Text = PKSoft.Resources.Messages.Stop;
+                this.btnStartDetection.Image = GlobalInstances.CancelBtnIcon;
+                list.Items.Clear();
+
                 RunSearch = true;
                 SearcherThread = new Thread(SearcherWorkerMethod);
                 SearcherThread.IsBackground = true;
                 SearcherThread.Start();
-                this.btnStartDetection.Image = GlobalInstances.CancelBtnIcon;
             }
             else
             {
@@ -74,13 +76,36 @@ namespace PKSoft
 
         private void SearcherWorkerMethod()
         {
-            // Clear list
-            Utils.Invoke(list, (MethodInvoker)delegate()
-            {
-                list.Items.Clear();
-            });
-
             SearchResult = new SearchResults();
+
+            // ------------------------------------
+            //       First, do a fast search
+            // ------------------------------------
+            foreach (DatabaseClasses.Application app in GlobalInstances.AppDatabase.KnownApplications)
+            {
+                if (app.HasFlag("TWUI:Special"))
+                    continue;
+
+                foreach (DatabaseClasses.SubjectIdentity id in app.Components)
+                {
+                    List<ExceptionSubject> subjects = id.SearchForFile();
+                    foreach (var subject in subjects)
+                    {
+                        if (subject is ExecutableSubject exe)
+                        {
+                            SearchResult.AddEntry(app, exe);
+                            this.BeginInvoke((MethodInvoker)delegate ()
+                            {
+                                AddRecognizedAppToList(app, exe.ExecutablePath);
+                            });
+                        }
+                    }
+                }
+            }
+
+            // ------------------------------------
+            //      And now do a slow search
+            // ------------------------------------
 
             // List of all possible paths to search
             string[] SearchPaths = new string[]{

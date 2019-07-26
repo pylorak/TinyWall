@@ -1138,22 +1138,7 @@ namespace PKSoft
         {
             // Copy, so that settings are not changed if they cannot be saved
             ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
-
-            foreach (DatabaseClasses.Application app in GlobalInstances.AppDatabase.KnownApplications)
-            {
-                if (app.HasFlag("TWUI:Special"))
-                    continue;
-
-                foreach (SubjectIdentity id in app.Components)
-                {
-                    List<ExceptionSubject> subjects = id.SearchForFile();
-                    foreach (var subject in subjects)
-                    {
-                        confCopy.ActiveProfile.AppExceptions.Add(id.InstantiateException(subject));
-                    }
-                }
-            }
-
+            confCopy.ActiveProfile.AppExceptions.AddRange(GlobalInstances.AppDatabase.FastSearchMachineForKnownApps());
             confCopy.ActiveProfile.Normalize();
             ApplyFirewallSettings(confCopy);
         }
