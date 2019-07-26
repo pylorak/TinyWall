@@ -17,6 +17,7 @@ namespace PKSoft
         private Thread m_PipeWorkerThread;
         private PipeDataReceived m_RcvCallback;
         private bool m_Run = true;
+        private readonly string m_ServerFilePath;
 
         protected override void Dispose(bool disposing)
         {
@@ -41,6 +42,11 @@ namespace PKSoft
         {
             m_RcvCallback = recvCallback;
 
+            using (Process server = Process.GetCurrentProcess())
+            {
+                m_ServerFilePath = server.MainModule.FileName;
+            }
+
             // Start thread that is going to do the actual communication
             m_PipeWorkerThread = new Thread(new ThreadStart(PipeServerWorker));
             m_PipeWorkerThread.IsBackground = true;
@@ -60,7 +66,7 @@ namespace PKSoft
                 try
                 {
                     // Create pipe server
-                    using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(PipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.WriteThrough, 2048, 2048, ps))
+                    using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(PipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.WriteThrough, 2048*10, 2048*10, ps))
                     {
                         if (!pipeServer.IsConnected)
                         {
@@ -88,16 +94,9 @@ namespace PKSoft
             if (!Utils.SafeNativeMethods.GetNamedPipeClientProcessId(stream.SafePipeHandle.DangerousGetHandle(), out clientPid))
                 return false;
 
-            using (Process client = Process.GetProcessById((int)clientPid))
-            using (Process server = Process.GetCurrentProcess())
-            {
-                if (client.MainModule.FileName.Equals(server.MainModule.FileName, StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
-                else
-                    return false;
-            }
+            string clientFilePath = Utils.GetPathOfProcess((int)clientPid);
+
+            return clientFilePath.Equals(m_ServerFilePath, StringComparison.OrdinalIgnoreCase);
 #else
             return true;
 #endif
