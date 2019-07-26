@@ -27,16 +27,6 @@ namespace PKSoft
             [DllImport("user32.dll", SetLastError = true)]
             internal static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
-            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-            [return: MarshalAs(UnmanagedType.U4)]
-            internal static extern int GetLongPathName(
-                [MarshalAs(UnmanagedType.LPTStr)]
-                string lpszShortPath,
-                [MarshalAs(UnmanagedType.LPTStr)]
-                StringBuilder lpszLongPath,
-                [MarshalAs(UnmanagedType.U4)]
-                int cchBuffer);
-
             [DllImport("user32.dll")]
             internal static extern IntPtr GetForegroundWindow();
 
@@ -226,14 +216,11 @@ namespace PKSoft
             if ((p.Id == 0) || (p.Id == 4))
                 return "System";
 
-            try
-            {
-                return GetLongPathName(p.MainModule.FileName);
-            }
-            catch
-            {
-                return controller.TryGetProcessPath(p.Id);
-            }
+            string ret = GetLongPathName(GetExecutablePathAboveVista(p.Id));
+            if (string.IsNullOrEmpty(ret))
+                ret = controller.TryGetProcessPath(p.Id);
+
+            return ret;
         }
 
         internal static string GetPathOfProcess(int pid)
@@ -242,19 +229,13 @@ namespace PKSoft
             if ((pid == 0) || (pid == 4))
                 return "System";
 
-            try
-            {
-                using (Process p = Process.GetProcessById(pid))
-                {
-                    return Utils.GetLongPathName(p.MainModule.FileName);
-                }
-            }
-            catch
-            {
-                return string.Empty;
-            }
+            string ret = GetLongPathName(GetExecutablePathAboveVista(pid));
+            if (string.IsNullOrEmpty(ret))
+                ret = string.Empty;
+
+            return ret;
         }
-        
+
         internal static string GetExecutableUnderCursor(int x, int y, TinyWall.Interface.Controller controller)
         {
             // Get process id under cursor
@@ -281,7 +262,7 @@ namespace PKSoft
             }
 
             StringBuilder builder = new StringBuilder(255);
-            int result = NativeMethods.GetLongPathName(shortPath, builder, builder.Capacity);
+            int result = SafeNativeMethods.GetLongPathName(shortPath, builder, builder.Capacity);
             if ((result > 0) && (result < builder.Capacity))
             {
                 return builder.ToString(0, result);
@@ -291,7 +272,7 @@ namespace PKSoft
                 if (result > 0)
                 {
                     builder = new StringBuilder(result);
-                    result = NativeMethods.GetLongPathName(shortPath, builder, builder.Capacity);
+                    result = SafeNativeMethods.GetLongPathName(shortPath, builder, builder.Capacity);
                     return builder.ToString(0, result);
                 }
                 else
@@ -657,6 +638,32 @@ namespace PKSoft
                 return dir;
 #endif
             }
+        }
+
+        private static string GetExecutablePathAboveVista(int ProcessId)
+        {
+            System.Diagnostics.Debug.Assert(Environment.OSVersion.Version.Major >= 6);
+
+            var buffer = new StringBuilder(1024);
+            IntPtr hprocess = SafeNativeMethods.OpenProcess(SafeNativeMethods.ProcessAccessFlags.QueryLimitedInformation,
+                                          false, ProcessId);
+            if (hprocess != IntPtr.Zero)
+            {
+                try
+                {
+                    int size = buffer.Capacity;
+                    if (SafeNativeMethods.QueryFullProcessImageName(hprocess, 0, buffer, out size))
+                    {
+                        return buffer.ToString();
+                    }
+                }
+                finally
+                {
+                    SafeNativeMethods.CloseHandle(hprocess);
+                }
+            }
+
+            return null;
         }
     }
 
