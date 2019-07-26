@@ -54,6 +54,7 @@
     <!-- Feature description -->
     <Feature Id="ProductFeature" Title="Complete" Description="The complete package." ConfigurableDirectory="INSTALLDIR" Level="1">
       <ComponentRef Id='MainExecutable' />
+      <ComponentRef Id='InterfaceDLL' />
       <ComponentRef Id='MainExecutableConfig' />
       <ComponentRef Id='gac_MainExecutable' />
       <ComponentRef Id='Toaster' />
@@ -143,6 +144,9 @@
           </Component>
           <Component Id="MainExecutable" Guid="{D0A4DEC7-42C7-48F1-912D-76A4B33AC644}" Win64="$(var.Win64)">
             <File Id="TinyWallEXE" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+          </Component>
+          <Component Id="InterfaceDLL" Guid="{D7FFC9A3-6934-40F1-82FC-E6D2EADDE00B}" Win64="$(var.Win64)">
+            <File Id="InterfaceDLL" Source="Sources\ProgramFiles\TinyWall\TinyWall.Interface.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
           </Component>
           <Component Id="MainExecutableConfig" Guid="{81CD5E43-FAE3-4B3C-AA84-A7A0C660FDB4}" Win64="$(var.Win64)">
             <File Id="TinyWallCONFIG" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe.config" KeyPath="yes" />
