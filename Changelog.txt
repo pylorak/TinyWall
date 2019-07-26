@@ -1,14 +1,30 @@
 TinyWall Changelog
 ---------------------
 
-2.1.8 - Maintenance release (xx.03.2016.)
+3.0.0 - Major update (xx.xx.2019.)
+- Global exceptions (valid for all applications) can be added
+- Add automatic app recognition to drag&dropped files too
+- 
+
+---------------------
+
+2.1.9 - Maintenance release (18.07.2019.)
+- Add support for Windows 10 v1903
+- Add drag&drop whitelist support to applications in settings window
+- Fix: Online updates not supporting TLS >= 1.2
+- Updated application database
+- Updated hosts blocklist
+
+---------------------
+
+2.1.8 - Maintenance release (10.03.2016.)
 - Fix: Potential GUI crash when whitelisting by window
 - Fix: GUI crash if copying to clipboard which is in use by another app
 - Fix: Connections form GUI scaling issue in German localization
 - Workaround for performance issue in Windows 10
-- Atomic file updates to reduce chance of lost settings due to file corruptions
+- Atomic file updates to reduce chance of lost settings in case of file system corruptions
+- Handle some more possible errors on uninstallation
 - Add Czech localization, and Spanish update
-
 
 ---------------------
 

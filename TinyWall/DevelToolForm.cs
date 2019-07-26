@@ -104,7 +104,6 @@ namespace PKSoft
                 try
                 {
                     var app = SerializationHelper.LoadFromXMLFile<PKSoft.DatabaseClasses.Application>(fpath);
-                    //SerializationHelper.SaveToXMLFile(app.ToNewFormat(), fpath + "2");
                     db.KnownApplications.Add(app);
                 }
                 catch (Exception ex)

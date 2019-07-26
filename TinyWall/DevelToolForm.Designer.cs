@@ -116,7 +116,7 @@
             this.txtAssocOutputPath.Name = "txtAssocOutputPath";
             this.txtAssocOutputPath.Size = new System.Drawing.Size(423, 20);
             this.txtAssocOutputPath.TabIndex = 8;
-            this.txtAssocOutputPath.Text = "D:\\archive\\d0\\projects\\TinyWall\\TinyWall\\bin";
+            this.txtAssocOutputPath.Text = "C:\\Users\\Karoly\\Nextcloud\\TinyWall\\TinyWall3\\TinyWall\\Database";
             // 
             // btnAssocOutputBrowse
             // 
@@ -143,7 +143,7 @@
             this.txtDBFolderPath.Name = "txtDBFolderPath";
             this.txtDBFolderPath.Size = new System.Drawing.Size(423, 20);
             this.txtDBFolderPath.TabIndex = 3;
-            this.txtDBFolderPath.Text = "D:\\archive\\d0\\projects\\TinyWall\\TinyWall\\Database";
+            this.txtDBFolderPath.Text = "C:\\Users\\Karoly\\Nextcloud\\TinyWall\\TinyWall3\\TinyWall\\Database";
             // 
             // btnCollectionsCreate
             // 
@@ -215,7 +215,7 @@
             this.tabPage1.Controls.Add(this.txtAssocResult);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(764, 323);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Profile creator";
@@ -278,7 +278,7 @@
             this.tabPage2.Controls.Add(this.label2);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(764, 323);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Database creator";
@@ -461,7 +461,7 @@
             this.tabPage5.Controls.Add(this.listSatellites);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage5.Size = new System.Drawing.Size(764, 323);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "ResX optimizer";
@@ -549,7 +549,7 @@
             this.tabPage6.Controls.Add(this.label10);
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage6.Size = new System.Drawing.Size(764, 323);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Batch signer";
