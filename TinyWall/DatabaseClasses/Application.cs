@@ -61,16 +61,5 @@ namespace PKSoft.DatabaseClasses
 
             return Flags[flag];
         }
-
-        public List<ExceptionSubject> FindComponents(string pathHint = null)
-        {
-            List<ExceptionSubject> ret = new List<ExceptionSubject>();
-            foreach (SubjectIdentity id in Components)
-            {
-                ret.AddRange(id.SearchForFile(pathHint));
-            }
-
-            return ret;
-        }
     }
 }

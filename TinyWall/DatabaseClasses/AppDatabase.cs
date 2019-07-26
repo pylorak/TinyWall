@@ -51,17 +51,19 @@ namespace PKSoft.DatabaseClasses
             return null;
         }
 
-        internal Application TryGetApp(ExecutableSubject fromSubject, out FirewallExceptionV3 fwex)
+        internal Application TryGetApp(ExecutableSubject fromSubject, out FirewallExceptionV3 fwex, bool matchSpecial)
         {
-            for (int i = 0; i < KnownApplications.Count; ++i)
+            foreach (var app in KnownApplications)
             {
-                for (int j = 0; j < KnownApplications[i].Components.Count; ++j)
+                if (!matchSpecial && app.HasFlag("TWUI:Special"))
+                    continue;
+
+                foreach (var id in app.Components)
                 {
-                    SubjectIdentity id = KnownApplications[i].Components[j];
                     if (id.DoesExecutableSatisfy(fromSubject))
                     {
                         fwex = id.InstantiateException(fromSubject);
-                        return this.KnownApplications[i];
+                        return app;
                     }
                 }
             }
@@ -70,33 +72,17 @@ namespace PKSoft.DatabaseClasses
             return null;
         }
 
-        internal List<FirewallExceptionV3> GetExceptionsForApp(ExecutableSubject fromSubject, bool guiPrompt)
+        internal List<FirewallExceptionV3> GetExceptionsForApp(ExecutableSubject fromSubject, bool guiPrompt, out Application app)
         {
             List<FirewallExceptionV3> exceptions = new List<FirewallExceptionV3>();
 
             // Try to find an application this subject might belong to
-            Application app = null;
-            for (int i = 0; i < KnownApplications.Count; ++i)
-            {
-                if (KnownApplications[i].HasFlag("TWUI:Special"))
-                    continue;
-
-                for (int j = 0; j < KnownApplications[i].Components.Count; ++j)
-                {
-                    SubjectIdentity id = KnownApplications[i].Components[j];
-                    if ((id.Subject.SubjectType == SubjectType.Executable) &&  id.DoesExecutableSatisfy(fromSubject))
-                    {
-                        app = KnownApplications[i];
-                        break;
-                    }
-                }
-
-                if (app != null)
-                    break;
-            }
-
+            app = TryGetApp(fromSubject, out FirewallExceptionV3 fwEx, false);
             if (app == null)
+            {
+                exceptions.Add(new FirewallExceptionV3(fromSubject, new UnrestrictedPolicy()));
                 return exceptions;
+            }
 
             // Now that we have the app, try to instantiate firewall exceptions
             // for all components.

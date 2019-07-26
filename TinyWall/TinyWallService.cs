@@ -668,9 +668,11 @@ namespace PKSoft
                     if (alreadyExists)
                         continue;
 
-                    List<FirewallExceptionV3> knownExceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(newSubject, false);
-                    if (0 == knownExceptions.Count)
+                    List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(newSubject, false, out DatabaseClasses.Application app);
+                    if (app == null)
                     {
+                        System.Diagnostics.Debug.Assert(exceptions.Count == 1);
+
                         // Unknown file, add with unrestricted policy
                         FirewallExceptionV3 fwex = new FirewallExceptionV3(newSubject, null);
                         TcpUdpPolicy policy = new TcpUdpPolicy();
@@ -691,7 +693,7 @@ namespace PKSoft
                     else
                     {
                         // Known file, add its exceptions, along with other files that belong to this app
-                        LearningNewExceptions.AddRange(knownExceptions);
+                        LearningNewExceptions.AddRange(exceptions);
                     }
                 }
             }

@@ -874,33 +874,23 @@ namespace PKSoft
 
         internal void WhitelistSubject(ExecutableSubject subject)
         {
-            List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true);
+            List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out DatabaseClasses.Application dummyApp);
+            if (exceptions.Count == 0)
+                return;
 
             // Did we find any related files?
-            if (exceptions.Count <= 1)
+            if ((exceptions.Count == 1) && (ActiveConfig.Controller.AskForExceptionDetails))
             {
-                FirewallExceptionV3 fwex = null;
-                if (1 == exceptions.Count)
-                    fwex = exceptions[0];
-                else
+                using (ApplicationExceptionForm f = new ApplicationExceptionForm(exceptions[0]))
                 {
-                    fwex = new FirewallExceptionV3(subject, new UnrestrictedPolicy());
-                    exceptions.Add(fwex);
-                }
+                    bool success;
+                    if (Utils.IsMetroActive(out success))
+                        Utils.ShowToastNotif(Resources.Messages.ToastInputNeeded);
 
-                if (ActiveConfig.Controller.AskForExceptionDetails)
-                {
-                    using (ApplicationExceptionForm f = new ApplicationExceptionForm(fwex))
-                    {
-                        bool success;
-                        if (Utils.IsMetroActive(out success))
-                            Utils.ShowToastNotif(Resources.Messages.ToastInputNeeded);
+                    if (f.ShowDialog() == DialogResult.Cancel)
+                        return;
 
-                        if (f.ShowDialog() == DialogResult.Cancel)
-                            return;
-
-                        exceptions = f.ExceptionSettings;
-                    }
+                    exceptions = f.ExceptionSettings;
                 }
             }
 
@@ -1164,7 +1154,7 @@ namespace PKSoft
                 }
             }
 
-            confCopy.Normalize();
+            confCopy.ActiveProfile.Normalize();
             ApplyFirewallSettings(confCopy);
         }
 

@@ -169,9 +169,8 @@ namespace PKSoft
                             break;
 
                         // Try to match file
-                        FirewallExceptionV3 fwex;
                         ExecutableSubject subject = ExecutableSubject.Construct(file, null) as ExecutableSubject;
-                        DatabaseClasses.Application app = db.TryGetApp(subject, out fwex);
+                        DatabaseClasses.Application app = db.TryGetApp(subject, out FirewallExceptionV3 dummyFwex, false);
                         if ((app != null)  && (!subject.IsSigned || subject.CertValid))
                         {
                             SearchResult.AddEntry(app, subject);
@@ -277,8 +276,7 @@ namespace PKSoft
                     List<ExecutableSubject> appFoundFiles = SearchResult.GetFoundComponents(app);
                     foreach (ExecutableSubject subject in appFoundFiles)
                     {
-                        FirewallExceptionV3 fwex;
-                        app = GlobalInstances.AppDatabase.TryGetApp(subject, out fwex);
+                        app = GlobalInstances.AppDatabase.TryGetApp(subject, out FirewallExceptionV3 fwex, false);
                         if ((app != null) && (!subject.IsSigned || subject.CertValid))
                         {
                             TmpSettings.ActiveProfile.AppExceptions.Add(fwex);

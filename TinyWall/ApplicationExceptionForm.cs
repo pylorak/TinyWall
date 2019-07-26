@@ -314,22 +314,20 @@ namespace PKSoft
 
         private void ReinitFormFromSubject(ExecutableSubject subject)
         {
-            List<FirewallExceptionV3> knownExceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true);
-            if (0 == knownExceptions.Count)
+            List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out DatabaseClasses.Application app);
+            if (exceptions.Count == 0)
+                return;
+
+            if (app == null)
             {
-                // Unknown file, add with unrestricted policy
-                TmpExceptionSettings[0].Subject = subject;
-                TmpExceptionSettings[0].Policy = new UnrestrictedPolicy();
-            }
-            else if (1 == knownExceptions.Count)
-            {
-                // Known file
-                TmpExceptionSettings[0] = knownExceptions[0];
+                // Single known or unknown file
+                TmpExceptionSettings[0].Subject = exceptions[0].Subject;
+                TmpExceptionSettings[0].Policy = exceptions[0].Policy;
             }
             else
             {
                 // Multiple known files
-                TmpExceptionSettings = knownExceptions;
+                TmpExceptionSettings = exceptions;
 
                 btnOK_Click(null, null);
                 return;

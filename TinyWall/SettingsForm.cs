@@ -78,14 +78,13 @@ namespace PKSoft
             {
                 try
                 {
-                    FirewallExceptionV3 ex = new FirewallExceptionV3(new ExecutableSubject(file), new TcpUdpPolicy(true));
-                    TmpConfig.Service.ActiveProfile.AppExceptions.Add(ex);
-                    // TODO: support for recognized applications
+                    List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(new ExecutableSubject(file), true, out DatabaseClasses.Application app);
+                    TmpConfig.Service.ActiveProfile.AppExceptions.AddRange(exceptions);
                 }
                 catch { }
             }
 
-            TmpConfig.Service.Normalize();
+            TmpConfig.Service.ActiveProfile.Normalize();
             RebuildExceptionsList();
         }
 
@@ -211,26 +210,27 @@ namespace PKSoft
         private ListViewItem ListItemFromAppException(FirewallExceptionV3 ex)
         {
             ExecutableSubject subject = ex.Subject as ExecutableSubject;
+            ListViewItem li = new ListViewItem();
+            li.Tag = ex;
 
-            string name;
             switch (ex.Subject.SubjectType)
             {
                 case SubjectType.Executable:
-                    name = subject.ExecutableName;
+                    li.Text = subject.ExecutableName;
+                    li.SubItems.Add(subject.ExecutablePath);
                     break;
                 case SubjectType.Service:
-                    name = $"Srv: {(subject as ServiceSubject).ServiceName}";
+                    li.Text = $"Srv: {(subject as ServiceSubject).ServiceName}";
+                    li.SubItems.Add(subject.ExecutablePath);
                     break;
                 case SubjectType.Global:
-                    name = "*";
+                    li.Text = "*";
+                    li.SubItems.Add("*");
                     break;
                 default:
                     throw new NotImplementedException();
             }
 
-            ListViewItem li = new ListViewItem(name);
-            li.SubItems.Add(subject.ExecutablePath);
-            li.Tag = ex;
 
             if (ex.Policy.PolicyType == PolicyType.HardBlock)
             {
@@ -364,7 +364,7 @@ namespace PKSoft
                     TmpConfig.Service.ActiveProfile.AppExceptions.Remove(oldEx);
                     // Add new rule
                     TmpConfig.Service.ActiveProfile.AppExceptions.AddRange(f.ExceptionSettings);
-                    TmpConfig.Service.Normalize();
+                    TmpConfig.Service.ActiveProfile.Normalize();
                     RebuildExceptionsList();
                 }
             }
@@ -379,7 +379,7 @@ namespace PKSoft
                 if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {
                     TmpConfig.Service.ActiveProfile.AppExceptions.AddRange(f.ExceptionSettings);
-                    TmpConfig.Service.Normalize();
+                    TmpConfig.Service.ActiveProfile.Normalize();
                     RebuildExceptionsList();
                 }
             }

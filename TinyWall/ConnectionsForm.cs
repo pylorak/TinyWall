@@ -340,22 +340,12 @@ namespace PKSoft
 
                     // Try to recognize app based on this file
                     ExecutableSubject subject = ExceptionSubject.Construct(path, null) as ExecutableSubject;
-                    List<FirewallExceptionV3> knownExceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true);
+                    List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out DatabaseClasses.Application dummyApp);
+                    if (exceptions.Count == 0)
+                        return;
 
-                    // Did we find any related files?
-                    if (0 == knownExceptions.Count)
-                    {
-                        // Unknown file, add with unrestricted policy
-                        FirewallExceptionV3 fwex = new FirewallExceptionV3(subject, new UnrestrictedPolicy());
-                        confCopy.ActiveProfile.AppExceptions.Add(fwex);
-                    }
-                    else
-                    {
-                        // Known file, add its exceptions, along with other files that belong to this app
-                        confCopy.ActiveProfile.AppExceptions.AddRange(knownExceptions);
-                    }
-
-                    confCopy.Normalize();
+                    confCopy.ActiveProfile.AppExceptions.AddRange(exceptions);
+                    confCopy.ActiveProfile.Normalize();
                     Controller.ApplyFirewallSettings(confCopy, true);
                 }
                 catch
