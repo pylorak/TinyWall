@@ -810,11 +810,11 @@ namespace PKSoft
             {
                 try
                 {
-                    using (Process p = Utils.GetForegroundProcess())
-                    {
-                        string filePath = p.MainModule.FileName;
-                        WhitelistSubject(new ExecutableSubject(filePath));
-                    }
+                    int pid = Utils.GetForegroundProcessPid();
+                    string filePath = Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller);
+                    if (string.IsNullOrEmpty(filePath))
+                        throw new Exception();
+                    WhitelistSubject(new ExecutableSubject(filePath));
                 }
                 catch
                 {

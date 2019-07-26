@@ -193,7 +193,7 @@ namespace PKSoft
                     // launcherVisible flag is valid
                     success = true;
 
-                    using (Process p = Utils.GetForegroundProcess())
+                    using (Process p = Process.GetProcessById(Utils.GetForegroundProcessPid()))
                     {
                         return launcherVisible || Utils.IsImmersiveProcess(p);
                     }
@@ -214,12 +214,11 @@ namespace PKSoft
             Utils.StartProcess(Path.Combine(Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath), "Toaster.exe"), args, false, true);
         }
 
-        internal static Process GetForegroundProcess()
+        internal static int GetForegroundProcessPid()
         {
             IntPtr hwnd = SafeNativeMethods.GetForegroundWindow();
-            int pid;
-            SafeNativeMethods.GetWindowThreadProcessId(hwnd, out pid);
-            return Process.GetProcessById((int)pid);
+            SafeNativeMethods.GetWindowThreadProcessId(hwnd, out int pid);
+            return pid;
         }
 
         internal static bool IsImmersiveProcess(Process p)
