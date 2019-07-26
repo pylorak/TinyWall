@@ -44,5 +44,15 @@
       </Subject>
     </SubjectIdentity>
   </Components>
+  <Flags xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+    <d2p1:KeyValueOfstringstring>
+      <d2p1:Key>TWUI:SPECIAL</d2p1:Key>
+      <d2p1:Value i:nil="true" />
+    </d2p1:KeyValueOfstringstring>
+    <d2p1:KeyValueOfstringstring>
+    <d2p1:Key>TWUI:RECOMMENDED</d2p1:Key>
+      <d2p1:Value i:nil="true" />
+    </d2p1:KeyValueOfstringstring>
+  </Flags>
   <Name>Windows_Store_and_Apps</Name>
 </Application>

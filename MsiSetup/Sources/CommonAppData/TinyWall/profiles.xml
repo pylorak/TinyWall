@@ -342,53 +342,6 @@
       <Components>
         <SubjectIdentity>
           <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-            <d6p1:string>CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US</d6p1:string>
-          </CertificateSubjects>
-          <Policy i:type="TcpUdpPolicy">
-            <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
-            <AllowedLocalUdpListenerPorts>*</AllowedLocalUdpListenerPorts>
-            <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
-            <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
-          </Policy>
-          <Subject i:type="ExecutableSubject">
-            <ExecutablePath>{folder:sys32}\WWAHost.exe</ExecutablePath>
-          </Subject>
-        </SubjectIdentity>
-        <SubjectIdentity>
-          <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-            <d6p1:string>CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US</d6p1:string>
-          </CertificateSubjects>
-          <Policy i:type="TcpUdpPolicy">
-            <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
-            <AllowedLocalUdpListenerPorts>*</AllowedLocalUdpListenerPorts>
-            <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
-            <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
-          </Policy>
-          <Subject i:type="ExecutableSubject">
-            <ExecutablePath>{folder:windows}\SysWOW64\WWAHost.exe</ExecutablePath>
-          </Subject>
-        </SubjectIdentity>
-        <SubjectIdentity>
-          <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-            <d6p1:string>CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US</d6p1:string>
-          </CertificateSubjects>
-          <Policy i:type="TcpUdpPolicy">
-            <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
-            <AllowedLocalUdpListenerPorts>*</AllowedLocalUdpListenerPorts>
-            <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
-            <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
-          </Policy>
-          <Subject i:type="ExecutableSubject">
-            <ExecutablePath>{folder:windows}\WinStore\WSHost.exe</ExecutablePath>
-          </Subject>
-        </SubjectIdentity>
-      </Components>
-      <Name>Windows_Store_and_Apps</Name>
-    </Application>
-    <Application>
-      <Components>
-        <SubjectIdentity>
-          <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
             <d6p1:string>CN=Martin Prikryl, O=Martin Prikryl, L=Prague, S=Hlavni mesto Praha, C=CZ</d6p1:string>
           </CertificateSubjects>
           <Policy i:type="TcpUdpPolicy">
@@ -868,6 +821,63 @@
         </d4p1:KeyValueOfstringstring>
       </Flags>
       <Name>Windows_Remote_Desktop</Name>
+    </Application>
+    <Application>
+      <Components>
+        <SubjectIdentity>
+          <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+            <d6p1:string>CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US</d6p1:string>
+          </CertificateSubjects>
+          <Policy i:type="TcpUdpPolicy">
+            <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
+            <AllowedLocalUdpListenerPorts>*</AllowedLocalUdpListenerPorts>
+            <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
+            <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
+          </Policy>
+          <Subject i:type="ExecutableSubject">
+            <ExecutablePath>{folder:sys32}\WWAHost.exe</ExecutablePath>
+          </Subject>
+        </SubjectIdentity>
+        <SubjectIdentity>
+          <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+            <d6p1:string>CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US</d6p1:string>
+          </CertificateSubjects>
+          <Policy i:type="TcpUdpPolicy">
+            <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
+            <AllowedLocalUdpListenerPorts>*</AllowedLocalUdpListenerPorts>
+            <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
+            <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
+          </Policy>
+          <Subject i:type="ExecutableSubject">
+            <ExecutablePath>{folder:windows}\SysWOW64\WWAHost.exe</ExecutablePath>
+          </Subject>
+        </SubjectIdentity>
+        <SubjectIdentity>
+          <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+            <d6p1:string>CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US</d6p1:string>
+          </CertificateSubjects>
+          <Policy i:type="TcpUdpPolicy">
+            <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
+            <AllowedLocalUdpListenerPorts>*</AllowedLocalUdpListenerPorts>
+            <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
+            <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
+          </Policy>
+          <Subject i:type="ExecutableSubject">
+            <ExecutablePath>{folder:windows}\WinStore\WSHost.exe</ExecutablePath>
+          </Subject>
+        </SubjectIdentity>
+      </Components>
+      <Flags xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+        <d4p1:KeyValueOfstringstring>
+          <d4p1:Key>TWUI:SPECIAL</d4p1:Key>
+          <d4p1:Value i:nil="true" />
+        </d4p1:KeyValueOfstringstring>
+        <d4p1:KeyValueOfstringstring>
+          <d4p1:Key>TWUI:RECOMMENDED</d4p1:Key>
+          <d4p1:Value i:nil="true" />
+        </d4p1:KeyValueOfstringstring>
+      </Flags>
+      <Name>Windows_Store_and_Apps</Name>
     </Application>
     <Application>
       <Components>
