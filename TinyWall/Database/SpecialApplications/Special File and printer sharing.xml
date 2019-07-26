@@ -3,10 +3,10 @@
   <Components>
     <SubjectIdentity>
       <Policy i:type="TcpUdpPolicy">
-        <Name>LLMNR-UDP</Name>
         <AllowedLocalUdpListenerPorts>5355</AllowedLocalUdpListenerPorts>
         <AllowedRemoteUdpConnectPorts>5355</AllowedRemoteUdpConnectPorts>
         <LocalNetworkOnly>true</LocalNetworkOnly>
+        <Name>LLMNR-UDP</Name>
       </Policy>
       <Subject i:type="ServiceSubject">
         <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
@@ -15,12 +15,12 @@
     </SubjectIdentity>
     <SubjectIdentity>
       <Policy i:type="TcpUdpPolicy">
-        <Name>NetBIOS</Name>
-        <AllowedLocalUdpListenerPorts>137,138</AllowedLocalUdpListenerPorts>
-        <AllowedRemoteUdpConnectPorts>137,138</AllowedRemoteUdpConnectPorts>
         <AllowedLocalTcpListenerPorts>139</AllowedLocalTcpListenerPorts>
+        <AllowedLocalUdpListenerPorts>137,138</AllowedLocalUdpListenerPorts>
         <AllowedRemoteTcpConnectPorts>139</AllowedRemoteTcpConnectPorts>
+        <AllowedRemoteUdpConnectPorts>137,138</AllowedRemoteUdpConnectPorts>
         <LocalNetworkOnly>true</LocalNetworkOnly>
+        <Name>NetBIOS</Name>
       </Policy>
       <Subject i:type="ExecutableSubject">
         <ExecutablePath>System</ExecutablePath>
@@ -28,10 +28,10 @@
     </SubjectIdentity>
     <SubjectIdentity>
       <Policy i:type="TcpUdpPolicy">
-        <Name>NetBIOS</Name>
         <AllowedLocalTcpListenerPorts>445</AllowedLocalTcpListenerPorts>
         <AllowedRemoteTcpConnectPorts>445</AllowedRemoteTcpConnectPorts>
         <LocalNetworkOnly>true</LocalNetworkOnly>
+        <Name>NetBIOS</Name>
       </Policy>
       <Subject i:type="ExecutableSubject">
         <ExecutablePath>System</ExecutablePath>
@@ -39,9 +39,9 @@
     </SubjectIdentity>
     <SubjectIdentity>
       <Policy i:type="TcpUdpPolicy">
-        <Name>Spooler - RPC</Name>
         <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
         <LocalNetworkOnly>true</LocalNetworkOnly>
+        <Name>Spooler - RPC</Name>
       </Policy>
       <Subject i:type="ServiceSubject">
         <ExecutablePath>{folder:sys32}\spoolsv.exe</ExecutablePath>
@@ -50,16 +50,15 @@
     </SubjectIdentity>
     <SubjectIdentity>
       <Policy i:type="TcpUdpPolicy">
-        <Name>Spooler - RPC-EPMAP</Name>
         <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
         <LocalNetworkOnly>true</LocalNetworkOnly>
+        <Name>Spooler - RPC-EPMAP</Name>
       </Policy>
       <Subject i:type="ServiceSubject">
         <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
         <ServiceName>Rpcss</ServiceName>
       </Subject>
     </SubjectIdentity>
-
   </Components>
   <Flags xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
     <d2p1:KeyValueOfstringstring>

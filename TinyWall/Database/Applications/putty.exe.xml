@@ -2,9 +2,6 @@
 <Application xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="TinyWall">
   <Components>
     <SubjectIdentity>
-      <CertificateSubjects xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-        <d4p1:string>CN=Simon Tatham, O=Simon Tatham, L=Cambridge, S=Cambridgeshire, C=GB</d4p1:string>
-      </CertificateSubjects>
       <AllowedSha1 xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
         <d4p1:string>44AC2504A02AF84EE142ADAA3EA70B868185906F</d4p1:string>
         <d4p1:string>89C19274AD51B6FBD12FB59908316088C1135307</d4p1:string>
@@ -12,6 +9,9 @@
         <d4p1:string>9DED3CE2AE09C37CA173BBD3DCB57258B72CDBD5</d4p1:string>
         <d4p1:string>3B1333F826E5FE36395042FE0F1B895F4A373F1B</d4p1:string>
       </AllowedSha1>
+      <CertificateSubjects xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+        <d4p1:string>CN=Simon Tatham, O=Simon Tatham, L=Cambridge, S=Cambridgeshire, C=GB</d4p1:string>
+      </CertificateSubjects>
       <Policy i:type="TcpUdpPolicy">
         <AllowedLocalTcpListenerPorts></AllowedLocalTcpListenerPorts>
         <AllowedLocalUdpListenerPorts></AllowedLocalUdpListenerPorts>

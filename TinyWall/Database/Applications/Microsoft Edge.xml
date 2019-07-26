@@ -12,7 +12,7 @@
         <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
       </Policy>
       <Subject i:type="ExecutableSubject">
-        <ExecutablePath>MicrosoftEdgeCP.exe</ExecutablePath>
+        <ExecutablePath>{folder:sys32}\MicrosoftEdgeCP.exe</ExecutablePath>
       </Subject>
     </SubjectIdentity>
   </Components>
