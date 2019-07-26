@@ -96,7 +96,7 @@ namespace PKSoft
             try
             {
                 // Prevent Windows Error Reporting running for us
-                NativeMethods.WerAddExcludedApplication(TinyWall.Interface.Internal.Utils.ExecutablePath, true);
+                Utils.SafeNativeMethods.WerAddExcludedApplication(TinyWall.Interface.Internal.Utils.ExecutablePath, true);
             }
             catch { }
 

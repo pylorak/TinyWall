@@ -1101,7 +1101,7 @@ namespace PKSoft
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                NativeMethods.DoMouseRightClick();
+                Utils.SafeNativeMethods.DoMouseRightClick();
             }
         }
 

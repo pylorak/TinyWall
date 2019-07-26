@@ -76,7 +76,7 @@ namespace PKSoft
                 {
                     try
                     {
-                        string ProcPath = Utils.GetPathOfProcessUseTwService(p, GlobalInstances.Controller);
+                        string ProcPath = Utils.GetPathOfProcessUseTwService(p.Id, GlobalInstances.Controller);
                         if (string.IsNullOrEmpty(ProcPath))
                             continue;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -19,7 +20,8 @@ namespace PKSoft
 {
     internal static class Utils
     {
-        private static class NativeMethods
+        [SuppressUnmanagedCodeSecurityAttribute]
+        internal static class SafeNativeMethods
         {
             [DllImport("user32.dll")]
             internal static extern IntPtr WindowFromPoint(Point pt);
@@ -37,6 +39,29 @@ namespace PKSoft
             [DllImport("shlwapi.dll")]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool PathIsNetworkPath(string pszPath);
+
+            [DllImport("kernel32.dll", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool GetNamedPipeClientProcessId(IntPtr Pipe, out long ClientProcessId);
+
+            [DllImport("Wer.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
+            internal static extern void WerAddExcludedApplication(
+                [MarshalAs(UnmanagedType.LPWStr)]
+                string pwzExeName,
+                [MarshalAs(UnmanagedType.Bool)]
+                bool bAllUsers
+            );
+
+            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+            [return: MarshalAs(UnmanagedType.U4)]
+            internal static extern int GetLongPathName(
+                [MarshalAs(UnmanagedType.LPTStr)]
+                string lpszShortPath,
+                [MarshalAs(UnmanagedType.LPTStr)]
+                StringBuilder lpszLongPath,
+                [MarshalAs(UnmanagedType.U4)]
+                int cchBuffer
+            );
 
             #region WNetGetUniversalName
             internal const int UNIVERSAL_NAME_INFO_LEVEL = 0x00000001;
@@ -87,6 +112,51 @@ namespace PKSoft
                 HRESULT LauncherVisibilityChange([In] bool currentVisibleState);
             }
             #endregion
+
+            #region DoMouseRightClick
+            [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+            public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint cButtons, IntPtr dwExtraInfo);
+            private const uint MOUSEEVENTF_LEFTDOWN = 0x02;
+            private const uint MOUSEEVENTF_LEFTUP = 0x04;
+            private const uint MOUSEEVENTF_RIGHTDOWN = 0x08;
+            private const uint MOUSEEVENTF_RIGHTUP = 0x10;
+            internal static void DoMouseRightClick()
+            {
+                //Call the imported function with the cursor's current position  
+                uint X = (uint)System.Windows.Forms.Cursor.Position.X;
+                uint Y = (uint)System.Windows.Forms.Cursor.Position.Y;
+                mouse_event(MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP, X, Y, 0, IntPtr.Zero);
+            }
+            #endregion
+
+            #region GetExecutablePathAboveVista
+            [Flags]
+            internal enum ProcessAccessFlags : uint
+            {
+                All = 0x001F0FFF,
+                Terminate = 0x00000001,
+                CreateThread = 0x00000002,
+                VMOperation = 0x00000008,
+                VMRead = 0x00000010,
+                VMWrite = 0x00000020,
+                DupHandle = 0x00000040,
+                SetInformation = 0x00000200,
+                QueryInformation = 0x00000400,
+                Synchronize = 0x00100000,
+                ReadControl = 0x00020000,
+                QueryLimitedInformation = 0x00001000,
+            }
+
+            [DllImport("kernel32.dll")]
+            internal static extern bool QueryFullProcessImageName(IntPtr hprocess, int dwFlags,
+                            StringBuilder lpExeName, out int size);
+            [DllImport("kernel32.dll")]
+            internal static extern IntPtr OpenProcess(ProcessAccessFlags dwDesiredAccess,
+                            bool bInheritHandle, int dwProcessId);
+            [DllImport("kernel32.dll", SetLastError = true)]
+            internal static extern bool CloseHandle(IntPtr hHandle);
+            #endregion
+
         }
 
         private static readonly Random _rng = new Random();
@@ -116,9 +186,9 @@ namespace PKSoft
             try
             {
                 Type tIAppVisibility = Type.GetTypeFromCLSID(new Guid("7E5FE3D9-985F-4908-91F9-EE19F9FD1514"));
-                NativeMethods.IAppVisibility appVisibility = (NativeMethods.IAppVisibility)Activator.CreateInstance(tIAppVisibility);
+                SafeNativeMethods.IAppVisibility appVisibility = (SafeNativeMethods.IAppVisibility)Activator.CreateInstance(tIAppVisibility);
                 bool launcherVisible;
-                if (NativeMethods.HRESULT.S_OK == appVisibility.IsLauncherVisible(out launcherVisible))
+                if (SafeNativeMethods.HRESULT.S_OK == appVisibility.IsLauncherVisible(out launcherVisible))
                 {
                     // launcherVisible flag is valid
                     success = true;
@@ -146,15 +216,15 @@ namespace PKSoft
 
         internal static Process GetForegroundProcess()
         {
-            IntPtr hwnd = NativeMethods.GetForegroundWindow();
+            IntPtr hwnd = SafeNativeMethods.GetForegroundWindow();
             int pid;
-            NativeMethods.GetWindowThreadProcessId(hwnd, out pid);
+            SafeNativeMethods.GetWindowThreadProcessId(hwnd, out pid);
             return Process.GetProcessById((int)pid);
         }
 
         internal static bool IsImmersiveProcess(Process p)
         {
-            return NativeMethods.IsImmersiveProcess(p.Handle);
+            return SafeNativeMethods.IsImmersiveProcess(p.Handle);
         }
 
         internal static string ProgramFilesx86()
@@ -210,15 +280,15 @@ namespace PKSoft
             }
         }
 
-        internal static string GetPathOfProcessUseTwService(Process p, TinyWall.Interface.Controller controller)
+        internal static string GetPathOfProcessUseTwService(int pid, TinyWall.Interface.Controller controller)
         {
             // Shortcut for special case
-            if ((p.Id == 0) || (p.Id == 4))
+            if ((pid == 0) || (pid == 4))
                 return "System";
 
-            string ret = GetLongPathName(GetExecutablePathAboveVista(p.Id));
+            string ret = GetLongPathName(GetExecutablePathAboveVista(pid));
             if (string.IsNullOrEmpty(ret))
-                ret = controller.TryGetProcessPath(p.Id);
+                ret = controller.TryGetProcessPath(pid);
 
             return ret;
         }
@@ -240,13 +310,10 @@ namespace PKSoft
         {
             // Get process id under cursor
             int ProcId;
-            int dummy = NativeMethods.GetWindowThreadProcessId(NativeMethods.WindowFromPoint(new System.Drawing.Point(x, y)), out ProcId);
+            int dummy = SafeNativeMethods.GetWindowThreadProcessId(SafeNativeMethods.WindowFromPoint(new System.Drawing.Point(x, y)), out ProcId);
 
             // Get executable of process
-            using (Process p = Process.GetProcessById(ProcId))
-            {
-                return Utils.GetPathOfProcessUseTwService(p, controller);
-            }
+            return Utils.GetPathOfProcessUseTwService(ProcId, controller);
         }
 
         /// <summary>

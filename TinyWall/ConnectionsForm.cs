@@ -159,12 +159,7 @@ namespace PKSoft
                 else
                 {
                     if (appName == null)
-                    {
-                        using (Process proc = Process.GetProcessById(procId))
-                        {
-                            pi.path = Utils.GetPathOfProcessUseTwService(proc, GlobalInstances.Controller);
-                        }
-                    }
+                        pi.path = Utils.GetPathOfProcessUseTwService(procId, GlobalInstances.Controller);
                     else
                         pi.path = appName;
 

@@ -161,7 +161,6 @@
       <DependentUpon>Icons.resx</DependentUpon>
     </Compile>
     <Compile Include="MouseInterceptor.cs" />
-    <Compile Include="NativeMethods.cs" />
     <Compile Include="netstat\IPVersion.cs" />
     <Compile Include="netstat\NetStat.cs" />
     <Compile Include="netstat\SafeNativeMethods.cs" />
