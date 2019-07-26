@@ -9,7 +9,7 @@ namespace TinyWall.Interface.Internal
         [SuppressUnmanagedCodeSecurity]
         private static class NativeMethods
         {
-            [DllImport("shlwapi.dll")]
+            [DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool PathIsNetworkPath(string pszPath);
 

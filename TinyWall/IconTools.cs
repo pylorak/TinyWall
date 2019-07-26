@@ -73,7 +73,7 @@ public static class IconTools {
 		/// <param name="cbSizeFileInfo">The size, in bytes, of the SHFILEINFO structure pointed to by the psfi parameter.</param>
 		/// <param name="uFlags">The flags that specify the file information to retrieve.</param>
 		/// <returns>Nonzero if successful, or zero otherwise.</returns>
-		[DllImport("shell32.dll")]
+		[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
 		public static extern IntPtr SHGetFileInfo(
 			string pszPath, 
 			uint dwFileAttributes, 

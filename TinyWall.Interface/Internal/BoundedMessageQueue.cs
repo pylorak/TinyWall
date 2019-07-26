@@ -8,6 +8,7 @@ namespace TinyWall.Interface.Internal
         private List<TwMessage> MsgQueue = new List<TwMessage>();
         private List<Future<TwMessage>> FutureQueue = new List<Future<TwMessage>>();
         private Semaphore BoundSema = new Semaphore(0, 64);
+        private readonly object locker = new object();
 
         protected override void Dispose(bool disposing)
         {
@@ -25,7 +26,7 @@ namespace TinyWall.Interface.Internal
 
         public void Enqueue(TwMessage msg, Future<TwMessage> future)
         {
-            lock (BoundSema)
+            lock (locker)
             {
                 MsgQueue.Add(msg);
                 FutureQueue.Add(future);
@@ -46,7 +47,7 @@ namespace TinyWall.Interface.Internal
         public void Dequeue(out TwMessage msg, out Future<TwMessage> future)
         {
             BoundSema.WaitOne();
-            lock (BoundSema)
+            lock (locker)
             {
                 msg = MsgQueue[0];
                 future = FutureQueue[0];
@@ -57,7 +58,7 @@ namespace TinyWall.Interface.Internal
 
         public bool HasMessageType(MessageType type)
         {
-            lock (BoundSema)
+            lock (locker)
             {
                 for (int i = 0; i < MsgQueue.Count; ++i)
                 {

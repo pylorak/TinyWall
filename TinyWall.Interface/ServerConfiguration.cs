@@ -145,7 +145,7 @@ namespace TinyWall.Interface
             get
             {
                 if (string.IsNullOrEmpty(ActiveProfileName))
-                    throw new InvalidProgramException();
+                    throw new InvalidOperationException();
 
                 if (null == _ActiveProfile)
                 {

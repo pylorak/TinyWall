@@ -85,7 +85,7 @@ namespace PKSoft
         {
 #if !DEBUG
             long clientPid;
-            if (!NativeMethods.GetNamedPipeClientProcessId(stream.SafePipeHandle.DangerousGetHandle(), out clientPid))
+            if (!Utils.SafeNativeMethods.GetNamedPipeClientProcessId(stream.SafePipeHandle.DangerousGetHandle(), out clientPid))
                 return false;
 
             using (Process client = Process.GetProcessById((int)clientPid))
