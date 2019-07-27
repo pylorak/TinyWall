@@ -4,7 +4,8 @@ TinyWall Changelog
 3.0.0 - Major update (xx.xx.2019.)
 - Global exceptions (valid for all applications) can be added
 - Add automatic app recognition to drag&dropped files too
-- 
+- Improved loading time of the processes list
+- Make manual app detection instant by starting with a fast check
 
 ---------------------
 
