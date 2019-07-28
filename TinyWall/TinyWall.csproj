@@ -115,6 +115,7 @@
     <Compile Include="Deprecated\SerializationHelper.cs" />
     <Compile Include="IconTools.cs" />
     <Compile Include="Pbkdf2.cs" />
+    <Compile Include="Privilege.cs" />
     <Compile Include="TinyWallController.cs" />
     <Compile Include="CmdLineArgs.cs" />
     <Compile Include="ConnectionsForm.cs">
@@ -767,7 +768,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
