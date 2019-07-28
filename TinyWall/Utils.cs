@@ -46,6 +46,9 @@ namespace PKSoft
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool PathIsNetworkPath(string pszPath);
 
+            [DllImport("dnsapi.dll", EntryPoint = "DnsFlushResolverCache")]
+            internal static extern uint DnsFlushResolverCache();
+
             #region WNetGetUniversalName
             internal const int UNIVERSAL_NAME_INFO_LEVEL = 0x00000001;
             internal const int ERROR_MORE_DATA = 234;
@@ -734,6 +737,11 @@ namespace PKSoft
                     sw.WriteLine();
                 }
             }
+        }
+
+        internal static void FlushDnsCache()
+        {
+            NativeMethods.DnsFlushResolverCache();
         }
     }
 

@@ -478,7 +478,7 @@ namespace PKSoft
             {
                 VisibleState.Update = UpdateChecker.GetDescriptor();
             }
-            catch (Exception e)
+            catch
             {
                 // This is an automatic update check in the background.
                 // If we fail (for whatever reason, no internet, server down etc.),
