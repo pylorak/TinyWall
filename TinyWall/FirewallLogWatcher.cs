@@ -1,7 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
-using System.IO;
+using System.Runtime.InteropServices;
 using PKSoft.WindowsFirewall;
 
 namespace PKSoft
@@ -246,20 +247,69 @@ namespace PKSoft
             return entries;
         }
 
+        private static class NativeMethods
+        {
+            [Flags]
+            internal enum AuditingInformationEnum : uint
+            {
+                POLICY_AUDIT_EVENT_SUCCESS = 1,
+                POLICY_AUDIT_EVENT_FAILURE = 2,
+            }
+
+            [StructLayout(LayoutKind.Sequential)]
+            internal struct AUDIT_POLICY_INFORMATION
+            {
+                internal Guid AuditSubCategoryGuid;
+                internal AuditingInformationEnum AuditingInformation;
+                internal Guid AuditCategoryGuid;
+            }
+
+            [DllImport("advapi32", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.U1)]
+            internal static extern bool AuditSetSystemPolicy([In] ref AUDIT_POLICY_INFORMATION pAuditPolicy, uint policyCount);
+        }
+
+        private static readonly Guid PACKET_LOGGING_AUDIT_SUBCAT = new Guid("{0CCE9225-69AE-11D9-BED3-505054503030}");
+        private static readonly Guid CONNECTION_LOGGING_AUDIT_SUBCAT = new Guid("{0CCE9226-69AE-11D9-BED3-505054503030}");
+
+        private static void AuditSetSystemPolicy(Guid guid, bool success, bool failure)
+        {
+            NativeMethods.AUDIT_POLICY_INFORMATION pol = new NativeMethods.AUDIT_POLICY_INFORMATION();
+            pol.AuditCategoryGuid = guid;
+            pol.AuditSubCategoryGuid = guid;
+            if (success)
+                pol.AuditingInformation |= NativeMethods.AuditingInformationEnum.POLICY_AUDIT_EVENT_SUCCESS;
+            if (failure)
+                pol.AuditingInformation |= NativeMethods.AuditingInformationEnum.POLICY_AUDIT_EVENT_FAILURE;
+
+            if (!NativeMethods.AuditSetSystemPolicy(ref pol, 1))
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+        }
+
         private void EnableLogging()
         {
-            // Packet logging
-            Utils.StartProcess("auditpol.exe", "/set /subcategory:{0CCE9225-69AE-11D9-BED3-505054503030} /success:enable /failure:enable", true, true);
-            // Connection logging
-            Utils.StartProcess("auditpol.exe", "/set /subcategory:{0CCE9226-69AE-11D9-BED3-505054503030} /success:enable /failure:enable", true, true);
+            try
+            {
+                Privilege.RunWithPrivilege(Privilege.Security, true, delegate (object state)
+                {
+                    AuditSetSystemPolicy(PACKET_LOGGING_AUDIT_SUBCAT, true, true);
+                    AuditSetSystemPolicy(CONNECTION_LOGGING_AUDIT_SUBCAT, true, true);
+                }, null);
+            }
+            catch { }
         }
 
         private void DisableLogging()
         {
-            // Packet logging
-            Utils.StartProcess("auditpol.exe", "/set /subcategory:{0CCE9225-69AE-11D9-BED3-505054503030} /success:disable /failure:disable", true, true);
-            // Connection logging
-            Utils.StartProcess("auditpol.exe", "/set /subcategory:{0CCE9226-69AE-11D9-BED3-505054503030} /success:disable /failure:disable", true, true);
+            try
+            {
+                Privilege.RunWithPrivilege(Privilege.Security, true, delegate (object state)
+                {
+                    AuditSetSystemPolicy(PACKET_LOGGING_AUDIT_SUBCAT, false, false);
+                    AuditSetSystemPolicy(CONNECTION_LOGGING_AUDIT_SUBCAT, false, false);
+                }, null);
+            }
+            catch { }
         }
-    }
+}
 }

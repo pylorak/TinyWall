@@ -107,6 +107,7 @@
     </Compile>
     <Compile Include="AtomicFileUpdater.cs" />
     <Compile Include="IconTools.cs" />
+    <Compile Include="Privilege.cs" />
     <Compile Include="TinyWallController.cs" />
     <Compile Include="WinTrust.cs" />
     <Compile Include="CmdLineArgs.cs" />
