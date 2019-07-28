@@ -1,6 +1,12 @@
 TinyWall Changelog
 ---------------------
 
+2.1.11 - Maintenance release (28.07.2019.)
+- Fix service hang on some systems when blocklists are enabled
+- Fix service hang on some systems when opening Connections window
+
+---------------------
+
 2.1.10 - Maintenance release (19.07.2019.)
 - Fix accidentally introduced dependency on .Net 4.8
 
