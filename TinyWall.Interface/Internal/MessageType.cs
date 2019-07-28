@@ -32,6 +32,7 @@
         STOP_SERVICE,
         MINUTE_TIMER,
         TEST_EXCEPTION,
+        REENUMERATE_ADDRESSES,
 
 
         // Service-to-client messages

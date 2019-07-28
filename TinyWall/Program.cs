@@ -166,13 +166,6 @@ namespace PKSoft
 #if DEBUG
                         Console.WriteLine("Press ENTER to end this process...");
                         Console.ReadLine();
-
-                        try
-                        {
-                            PKSoft.WindowsFirewall.Policy Firewall = new PKSoft.WindowsFirewall.Policy();
-                            Firewall.ResetFirewall();
-                        }
-                        catch { }
 #endif
 
                     }

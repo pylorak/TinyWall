@@ -4,11 +4,14 @@ using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.ServiceProcess;
 using System.Threading;
-using PKSoft.WindowsFirewall;
 using TinyWall.Interface;
 using TinyWall.Interface.Internal;
+using WFPdotNet;
+using WFPdotNet.Interop;
 
 namespace PKSoft
 {
@@ -16,7 +19,6 @@ namespace PKSoft
     {
         internal readonly static string[] ServiceDependencies = new string[]
         {
-            "mpssvc",
             "eventlog",
             "Winmgmt"
         };
@@ -36,27 +38,139 @@ namespace PKSoft
         // Context needed for learning mode
         List<FirewallExceptionV3> LearningNewExceptions;
         
-        private List<RuleDef> ActiveRules;
-        private List<RuleDef> AppExRules;
-        private List<RuleDef> SpecialRules;
-
         private bool UninstallRequested = false;
         private bool RunService = false;
 
         private ServerState VisibleState = null;
 
-        private void AssembleActiveRules()
+        private Engine WfpEngine = null;
+        private Guid ProviderKey = Guid.Empty;
+        private Guid DynamicSublayerKey = Guid.Empty;
+        private List<Filter> ActiveWfpFilters = new List<Filter>();
+
+        private List<IpAddrMask> InterfaceAddreses = new List<IpAddrMask>();
+        private List<IpAddrMask> GatewayAddresses = new List<IpAddrMask>();
+
+        private void ExpandRule(RuleDef r, List<RuleDef> results)
         {
-            ActiveRules.Clear();
-            ActiveRules.AddRange(AppExRules);
-            ActiveRules.AddRange(SpecialRules);
+            if (r.Direction == RuleDirection.InOut)
+            {
+                RuleDef tmp = r.DeepCopy();
+                tmp.Direction = RuleDirection.In;
+                ExpandRule(tmp, results);
+
+                tmp = r.DeepCopy();
+                tmp.Direction = RuleDirection.Out;
+                ExpandRule(tmp, results);
+            }
+            else if (r.Protocol == Protocol.TcpUdp)
+            {
+                RuleDef tmp = r.DeepCopy();
+                tmp.Protocol = Protocol.TCP;
+                ExpandRule(tmp, results);
+
+                tmp = r.DeepCopy();
+                tmp.Protocol = Protocol.UDP;
+                ExpandRule(tmp, results);
+            }
+            else if (r.Protocol == Protocol.ICMP)
+            {
+                RuleDef tmp = r.DeepCopy();
+                tmp.Protocol = Protocol.ICMPv4;
+                ExpandRule(tmp, results);
+
+                tmp = r.DeepCopy();
+                tmp.Protocol = Protocol.ICMPv6;
+                ExpandRule(tmp, results);
+            }
+            else if (!string.IsNullOrEmpty(r.IcmpTypesAndCodes) && r.IcmpTypesAndCodes.Contains(","))
+            {
+                string[] list = r.IcmpTypesAndCodes.Split(',');
+                foreach (var e in list)
+                {
+                    RuleDef tmp = r.DeepCopy();
+                    tmp.IcmpTypesAndCodes = e;
+                    ExpandRule(tmp, results);
+                }
+            }
+            else if (!string.IsNullOrEmpty(r.RemoteAddresses) && r.RemoteAddresses.Contains(","))
+            {
+                string[] addresses = r.RemoteAddresses.Split(',');
+                foreach (var addr in addresses)
+                {
+                    RuleDef tmp = r.DeepCopy();
+                    tmp.RemoteAddresses = addr.Trim();
+                    ExpandRule(tmp, results);
+                }
+            }
+            else if (Utils.EqualsCaseInsensitive(r.RemoteAddresses, "LocalSubnet"))
+            {
+                RuleDef tmp;
+                foreach (var addr in InterfaceAddreses)
+                {
+                    tmp = r.DeepCopy();
+                    tmp.RemoteAddresses = addr.SubnetFirstIp.ToString();
+                    ExpandRule(tmp, results);
+                }
+                tmp = r.DeepCopy();
+                tmp.RemoteAddresses = IpAddrMask.LinkLocal.ToString();
+                ExpandRule(tmp, results);
+                tmp = r.DeepCopy();
+                tmp.RemoteAddresses = IpAddrMask.IPv6LinkLocal.ToString();
+                ExpandRule(tmp, results);
+                tmp = r.DeepCopy();
+                tmp.RemoteAddresses = IpAddrMask.LinkLocalMulticast.ToString();
+                ExpandRule(tmp, results);
+                tmp = r.DeepCopy();
+                tmp.RemoteAddresses = IpAddrMask.IPv6LinkLocalMulticast.ToString();
+                ExpandRule(tmp, results);
+            }
+            else if (Utils.EqualsCaseInsensitive(r.RemoteAddresses, "DefaultGateway"))
+            {
+                foreach (var addr in GatewayAddresses)
+                {
+                    RuleDef tmp = r.DeepCopy();
+                    tmp.RemoteAddresses = addr.Address.ToString();
+                    ExpandRule(tmp, results);
+                }
+            }
+            else
+            {
+                results.Add(r);
+            }
+        }
+
+        private List<RuleDef> ExpandRules(List<RuleDef> rules)
+        {
+            List<RuleDef> results = new List<RuleDef>();
+
+            foreach (var r in rules)
+                ExpandRule(r, results);
+
+            return results;
+        }
+
+        private static int BlockingRulesFirstComparison(RuleDef a, RuleDef b)
+        {
+            int x = (a.Action == RuleAction.Block) ? 0 : 1;
+            int y = (a.Action == RuleAction.Block) ? 0 : 1;
+            return x.CompareTo(y);
+        }
+
+        private List<RuleDef> AssembleActiveRules()
+        {
+            List<RuleDef> ActiveRules = new List<RuleDef>();
+            ActiveRules.AddRange(RebuildApplicationRuleDefs());
+            ActiveRules.AddRange(RebuildSpecialRuleDefs());
+            ActiveRules.Sort(BlockingRulesFirstComparison);
 
             Guid ModeId = Guid.NewGuid();
+            RuleDef def;
 
             // Do we want to let local traffic through?
             if (ActiveConfig.Service.ActiveProfile.AllowLocalSubnet)
             {
-                RuleDef def = new RuleDef(ModeId, "Allow local subnet", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any);
+                def = new RuleDef(ModeId, "Allow local subnet", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any);
                 def.RemoteAddresses = "LocalSubnet";
                 ActiveRules.Add(def);
                 
@@ -86,18 +200,13 @@ namespace PKSoft
                 case TinyWall.Interface.FirewallMode.AllowOutgoing:
                     {
                         // Add rule to explicitly allow outgoing connections
-                        RuleDef def = new RuleDef(ModeId, "Allow outbound", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.Out, Protocol.Any);
-                        ActiveRules.Add(def);
+                        ActiveRules.Add(new RuleDef(ModeId, "Allow outbound", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.Out, Protocol.Any));
                         break;
                     }
                 case TinyWall.Interface.FirewallMode.BlockAll:
                     {
-                        // Remove all rules
+                        // Remove all exceptions
                         ActiveRules.Clear();
-
-                        // Add a rule to deny all traffic. Denial rules have priority, so this will disable all traffic.
-                        RuleDef def = new RuleDef(ModeId, "Block all traffic", GlobalSubject.Instance, RuleAction.Block, RuleDirection.InOut, Protocol.Any);
-                        ActiveRules.Add(def);
                         break;
                     }
                 case TinyWall.Interface.FirewallMode.Disabled:
@@ -106,8 +215,7 @@ namespace PKSoft
                         ActiveRules.Clear();
 
                         // Add rule to explicitly allow everything
-                        RuleDef def = new RuleDef(ModeId, "Allow everything", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any);
-                        ActiveRules.Add(def);
+                        ActiveRules.Add(new RuleDef(ModeId, "Allow everything", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any));
                         break;
                     }
                 case TinyWall.Interface.FirewallMode.Learning:
@@ -116,8 +224,7 @@ namespace PKSoft
                         ActiveRules.Clear();
 
                         // Add rule to explicitly allow everything
-                        RuleDef def = new RuleDef(ModeId, "Allow everything", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any);
-                        ActiveRules.Add(def);
+                        ActiveRules.Add(new RuleDef(ModeId, "Allow everything", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any));
 
                         // Start up firewall logging
                         Q.Enqueue(new TwMessage(MessageType.READ_FW_LOG), null);
@@ -130,99 +237,303 @@ namespace PKSoft
                     }
             }
 
-            ActiveRules.TrimExcess();
+            // Add a rule to deny all traffic. Denial rules have priority, so this will disable all traffic.
+            def = new RuleDef(ModeId, "Block all traffic", GlobalSubject.Instance, RuleAction.Block, RuleDirection.InOut, Protocol.Any);
+            ActiveRules.Add(def);
+
+            return ExpandRules(ActiveRules);
         }
 
-        private void MergeActiveRulesIntoWinFirewall(WindowsFirewall.Rules FwRules)
+        private void InstallFirewallRules()
         {
-            int lenId = Guid.NewGuid().ToString().Length;
-            List<Rule> rules = new List<Rule>();
+            List<RuleDef> rules = AssembleActiveRules();
 
-            // We cache rule names locally to lighten on string creation.
-            // Each time Rule.Name is accessed, interop creates new strings.
-            // By preloading all rules names (which we will use often)
-            // we spare CPU and memory resources.
-            List<string> rule_names = new List<string>(FwRules.Count);
-            for (int i = 0; i < FwRules.Count; ++i)
-                rule_names.Add(FwRules[i].Name);
-
-            // Add new rules
-            for (int i = ActiveRules.Count - 1; i >= 0; --i)          // for each TW firewall rule
+            using (Transaction trx = WfpEngine.BeginTransaction())
             {
-                RuleDef rule_i = ActiveRules[i];
-                string id_i = rule_i.ExceptionId.ToString();
-
-                bool found = false;
-                for (int j = rule_names.Count - 1; j >= 0; --j)    // for each Win firewall rule
-                {
-                    string name_j = rule_names[j];
-
-                    // Skip if this is not a TinyWall rule
-                    //if (!name_j.StartsWith("[TW", StringComparison.Ordinal))
-                    //    continue;
-
-                    if (name_j.StartsWith(id_i, StringComparison.Ordinal))
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-
-                // Rule is not yet active, add it to the Windows firewall
-                if (!found)
-                    Rule.ConstructRule(rules, rule_i);
-            }
-
-            // We add new rules before removing invalid ones, 
-            // so that we don't break existing connections.
-            List<Rule> failedRules = new List<Rule>();
-            FwRules.Add(rules, ref failedRules);
-
-            // If we couldn't add a rule, log rule details to log for later inspection
-            if (failedRules.Count > 0)
-            {
-                string log = string.Empty;
-                for (int i = 0; i< failedRules.Count;++i)
-                {
-                    Rule r = failedRules[i];
-                    log += r.Name + "; " + r.Action + "; " + r.ApplicationName + "; " + r.Direction + "; " + r.Protocol + "; " + r.LocalAddresses + "; " + r.LocalPorts + "; " + r.RemoteAddresses + "; " + r.RemotePorts + "; " + r.ServiceName + Environment.NewLine;
-                }
-                Utils.Log(log);
-            }
-
-            // Remove dead rules
-            for (int i = rule_names.Count - 1; i >= 0; --i)    // for each Win firewall rule
-            {
-                string name_i = rule_names[i];
-
-                bool found = false;
-                for (int j = ActiveRules.Count - 1; j >= 0; --j)          // for each TW firewall rule
-                {
-                    RuleDef rule_j = ActiveRules[j];
-                    string id_j = rule_j.ExceptionId.ToString();
-
-                    if (name_i.StartsWith(id_j, StringComparison.Ordinal))
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found)
+                // Remove old rules
+                for (int i = ActiveWfpFilters.Count - 1; i >= 0; --i)
                 {
                     try
                     {
-                        FwRules.RemoveAt(i);
+                        WfpEngine.UnregisterFilter(ActiveWfpFilters[i].FilterKey);
+                        ActiveWfpFilters.RemoveAt(i);
                     }
                     catch { }
                 }
+
+                System.Diagnostics.Debug.Assert(ActiveWfpFilters.Count == 0);
+
+                // Add new rules
+                uint filterWeight = uint.MaxValue; 
+                foreach (RuleDef r in rules)
+                {
+                    --filterWeight;
+                     ConstructFilter(r, filterWeight);
+                }
+
+                trx.Commit();
             }
         }
 
-        private void RebuildSpecialRuleDefs()
+        private enum LayerKeyEnum
+        {
+            FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6,
+            FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4,
+            FWPM_LAYER_INBOUND_ICMP_ERROR_V6,
+            FWPM_LAYER_INBOUND_ICMP_ERROR_V4,
+            FWPM_LAYER_ALE_AUTH_CONNECT_V6,
+            FWPM_LAYER_ALE_AUTH_CONNECT_V4,
+            FWPM_LAYER_ALE_AUTH_LISTEN_V6,
+            FWPM_LAYER_ALE_AUTH_LISTEN_V4,
+            FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6,
+            FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4
+        }
+
+        private static Guid GetSublayerKey(LayerKeyEnum layer)
+        {
+            switch (layer)
+            {
+                case LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6:
+                    return WfpSublayerKeys.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6;
+                case LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4:
+                    return WfpSublayerKeys.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4;
+                case LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V6:
+                    return WfpSublayerKeys.FWPM_LAYER_INBOUND_ICMP_ERROR_V6;
+                case LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V4:
+                    return WfpSublayerKeys.FWPM_LAYER_INBOUND_ICMP_ERROR_V4;
+                case LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V6:
+                    return WfpSublayerKeys.FWPM_LAYER_ALE_AUTH_CONNECT_V6;
+                case LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V4:
+                    return WfpSublayerKeys.FWPM_LAYER_ALE_AUTH_CONNECT_V4;
+                case LayerKeyEnum.FWPM_LAYER_ALE_AUTH_LISTEN_V6:
+                    return WfpSublayerKeys.FWPM_LAYER_ALE_AUTH_LISTEN_V6;
+                case LayerKeyEnum.FWPM_LAYER_ALE_AUTH_LISTEN_V4:
+                    return WfpSublayerKeys.FWPM_LAYER_ALE_AUTH_LISTEN_V4;
+                case LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6:
+                    return WfpSublayerKeys.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6;
+                case LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4:
+                    return WfpSublayerKeys.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4;
+                default:
+                    throw new ArgumentException("Invalid or not support layerEnum.");
+            }
+        }
+
+        private static Guid GetLayerKey(LayerKeyEnum layer)
+        {
+            switch (layer)
+            {
+                case LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6:
+                    return LayerKeys.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6;
+                case LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4:
+                    return LayerKeys.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4;
+                case LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V6:
+                    return LayerKeys.FWPM_LAYER_INBOUND_ICMP_ERROR_V6;
+                case LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V4:
+                    return LayerKeys.FWPM_LAYER_INBOUND_ICMP_ERROR_V4;
+                case LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V6:
+                    return LayerKeys.FWPM_LAYER_ALE_AUTH_CONNECT_V6;
+                case LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V4:
+                    return LayerKeys.FWPM_LAYER_ALE_AUTH_CONNECT_V4;
+                case LayerKeyEnum.FWPM_LAYER_ALE_AUTH_LISTEN_V6:
+                    return LayerKeys.FWPM_LAYER_ALE_AUTH_LISTEN_V6;
+                case LayerKeyEnum.FWPM_LAYER_ALE_AUTH_LISTEN_V4:
+                    return LayerKeys.FWPM_LAYER_ALE_AUTH_LISTEN_V4;
+                case LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6:
+                    return LayerKeys.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6;
+                case LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4:
+                    return LayerKeys.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4;
+                default:
+                    throw new ArgumentException("Invalid or not support layerEnum.");
+            }
+        }
+
+        private void ConstructFilter(RuleDef r, uint filterWeight, LayerKeyEnum layer)
+        {
+            Filter f = new Filter(
+                r.ExceptionId.ToString(),
+                r.Name,
+                ProviderKey,
+                (r.Action == RuleAction.Allow) ? FilterActions.FWP_ACTION_PERMIT : FilterActions.FWP_ACTION_BLOCK,
+                filterWeight
+            );
+            f.FilterKey = Guid.NewGuid();
+            f.LayerKey = GetLayerKey(layer);
+            f.SublayerKey = GetSublayerKey(layer);
+
+            // We never want to affect loopback traffic
+            if (VersionInfo.Win8OrNewer)
+                f.Conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK | ConditionFlags.FWP_CONDITION_FLAG_IS_APPCONTAINER_LOOPBACK | ConditionFlags.FWP_CONDITION_FLAG_IS_NON_APPCONTAINER_LOOPBACK, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
+            else
+                f.Conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
+
+
+            if (!string.IsNullOrEmpty(r.Application))
+            {
+                System.Diagnostics.Debug.Assert(!r.Application.Equals("*"));
+                f.Conditions.Add(new AppIdFilterCondition(r.Application));
+            }
+            if (r.Protocol != Protocol.Any)
+            {
+                System.Diagnostics.Debug.Assert(r.Protocol != Protocol.ICMP);
+                System.Diagnostics.Debug.Assert(r.Protocol != Protocol.TcpUdp);
+                if (LayerIsAleAuthConnect(layer) || LayerIsAleAuthRecvAccept(layer))
+                    f.Conditions.Add(new ProtocolFilterCondition((byte)r.Protocol));
+            }
+            if (!string.IsNullOrEmpty(r.LocalPorts))
+            {
+                System.Diagnostics.Debug.Assert(!r.LocalPorts.Equals("*"));
+                string[] ports = r.LocalPorts.Split(',');
+                foreach (var p in ports)
+                {
+                    f.Conditions.Add(new PortFilterCondition(p, RemoteOrLocal.Local));
+                }
+            }
+            if (!string.IsNullOrEmpty(r.RemotePorts) && !LayerIsAleAuthListen(layer))
+            {
+                System.Diagnostics.Debug.Assert(!r.RemotePorts.Equals("*"));
+                string[] ports = r.RemotePorts.Split(',');
+                foreach (var p in ports)
+                {
+                    f.Conditions.Add(new PortFilterCondition(p, RemoteOrLocal.Remote));
+                }
+            }
+            if (!string.IsNullOrEmpty(r.RemoteAddresses) && !LayerIsAleAuthListen(layer))
+            {
+                System.Diagnostics.Debug.Assert(!r.RemoteAddresses.Equals("*"));
+
+                IpAddrMask remote = IpAddrMask.Parse(r.RemoteAddresses);
+                if (remote.IsIPv6 == LayerIsV6Stack(layer))
+                    f.Conditions.Add(new IpFilterCondition(remote.Address, (byte)remote.PrefixLen, RemoteOrLocal.Remote));
+                else
+                    // Break. We don't want to add this filter to this layer.
+                    return;
+            }
+            if (!string.IsNullOrEmpty(r.IcmpTypesAndCodes))
+            {
+                System.Diagnostics.Debug.Assert(!r.IcmpTypesAndCodes.Equals("*"));
+                string[] list = r.IcmpTypesAndCodes.Split(',');
+                foreach (var e in list)
+                {
+                    string[] tc = e.Split(':');
+
+                    if (LayerIsIcmpError(layer))
+                    {
+                        // ICMP Type
+                        if (!string.IsNullOrEmpty(tc[0]) && ushort.TryParse(tc[0], out ushort icmpType))
+                        {
+                            FWP_CONDITION_VALUE0 cv = new FWP_CONDITION_VALUE0();
+                            cv.type = FWP_DATA_TYPE.FWP_UINT16;
+                            cv.uint16 = icmpType;
+                            f.Conditions.Add(new FilterCondition(ConditionKeys.FWPM_CONDITION_ICMP_TYPE, FieldMatchType.FWP_MATCH_EQUAL, cv));
+                        }
+                        // ICMP Code
+                        if ((tc.Length > 1) && !string.IsNullOrEmpty(tc[1]) && ushort.TryParse(tc[1], out ushort icmpCode))
+                        {
+                            FWP_CONDITION_VALUE0 cv = new FWP_CONDITION_VALUE0();
+                            cv.type = FWP_DATA_TYPE.FWP_UINT16;
+                            cv.uint16 = icmpCode;
+                            f.Conditions.Add(new FilterCondition(ConditionKeys.FWPM_CONDITION_ICMP_CODE, FieldMatchType.FWP_MATCH_EQUAL, cv));
+                        }
+                    }
+                    else
+                    {
+                        // ICMP Type - note different condition key
+                        if (!string.IsNullOrEmpty(tc[0]) && ushort.TryParse(tc[0], out ushort icmpType))
+                        {
+                            FWP_CONDITION_VALUE0 cv = new FWP_CONDITION_VALUE0();
+                            cv.type = FWP_DATA_TYPE.FWP_UINT16;
+                            cv.uint16 = icmpType;
+                            f.Conditions.Add(new FilterCondition(ConditionKeys.FWPM_CONDITION_ORIGINAL_ICMP_TYPE, FieldMatchType.FWP_MATCH_EQUAL, cv));
+                        }
+                        // Matching on ICMP Code not possible
+                    }
+                }
+            }
+
+            try
+            {
+                WfpEngine.RegisterFilter(f);
+                ActiveWfpFilters.Add(f);
+            }
+            catch { }
+        }
+
+        private static bool LayerIsAleAuthConnect(LayerKeyEnum layer)
+        {
+            return
+                (layer == LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V4) ||
+                (layer == LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V6);
+        }
+
+        private static bool LayerIsAleAuthRecvAccept(LayerKeyEnum layer)
+        {
+            return
+                (layer == LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6) ||
+                (layer == LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4);
+        }
+
+        private static bool LayerIsAleAuthListen(LayerKeyEnum layer)
+        {
+            return
+                (layer == LayerKeyEnum.FWPM_LAYER_ALE_AUTH_LISTEN_V6) ||
+                (layer == LayerKeyEnum.FWPM_LAYER_ALE_AUTH_LISTEN_V4);
+        }
+
+        private static bool LayerIsIcmpError(LayerKeyEnum layer)
+        {
+            return
+                (layer == LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6) ||
+                (layer == LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4) ||
+                (layer == LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V6) ||
+                (layer == LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V4);
+        }
+
+        private static bool LayerIsV6Stack(LayerKeyEnum layer)
+        {
+            return
+                (layer == LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V6) ||
+                (layer == LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6) ||
+                (layer == LayerKeyEnum.FWPM_LAYER_ALE_AUTH_LISTEN_V6) ||
+                (layer == LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6) ||
+                (layer == LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V6);
+        }
+
+        private void ConstructFilter(RuleDef r, uint filterWeight)
+        {
+            switch (r.Direction)
+            {
+                case RuleDirection.Out:
+                    ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V6);
+                    ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V4);
+                    if ((r.Protocol == Protocol.Any) || (r.Protocol == Protocol.ICMPv4) || (r.Protocol == Protocol.ICMPv6))
+                    {
+                        ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6);
+                        ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4);
+                    }
+                    break;
+                case RuleDirection.In:
+                    ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6);
+                    ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4);
+                    if ((r.Protocol == Protocol.Any) || (r.Protocol == Protocol.ICMPv4) || (r.Protocol == Protocol.ICMPv6))
+                    {
+                        ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V6);
+                        ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V4);
+                    }
+                    if ((r.Protocol == Protocol.Any) || (r.Protocol == Protocol.TCP))
+                    {
+                        ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_LISTEN_V6);
+                        ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_LISTEN_V4);
+                    }
+                    break;
+                default:
+                    throw new ArgumentException("Unsupported direction parameter.");
+            }
+        }
+
+        private List<RuleDef> RebuildSpecialRuleDefs()
         {
             // We will collect all our rules into this list
-            SpecialRules.Clear();
+            List<RuleDef> SpecialRules = new List<RuleDef>();
 
             // Iterate all enabled special exceptions
             foreach (string appName in ActiveConfig.Service.ActiveProfile.SpecialExceptions)
@@ -258,13 +569,13 @@ namespace PKSoft
                 catch { }
             }
 
-            SpecialRules.TrimExcess();
+            return SpecialRules;
         }
 
-        private void RebuildApplicationRuleDefs()
+        private List<RuleDef> RebuildApplicationRuleDefs()
         {
             // We will collect all our rules into this list
-            AppExRules.Clear();
+            List<RuleDef> AppExRules = new List<RuleDef>();
 
             for (int i = 0; i < ActiveConfig.Service.ActiveProfile.AppExceptions.Count; ++i)
             {
@@ -282,7 +593,7 @@ namespace PKSoft
                 }
             }
 
-            AppExRules.TrimExcess();
+            return AppExRules;
         }
 
         private void GetRulesForException(FirewallExceptionV3 ex, List<RuleDef> ruleset)
@@ -417,9 +728,6 @@ namespace PKSoft
         // This method completely reinitializes the firewall.
         private void InitFirewall()
         {
-            Policy Firewall = new Policy();
-            WindowsFirewall.Rules FwRules = null;
-
             using (ThreadBarrier barrier = new ThreadBarrier(2))
             {
                 ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
@@ -434,16 +742,6 @@ namespace PKSoft
                     }
                 });
 
-                Firewall.ResetFirewall();
-                Firewall.Enabled = true;
-                Firewall.DefaultInboundAction = RuleAction.Block;
-                Firewall.DefaultOutboundAction = RuleAction.Block;
-                Firewall.BlockAllInboundTraffic = false;
-                Firewall.NotificationsDisabled = true;
-
-                FwRules = Firewall.GetRules(false);
-                FwRules.Clear();
-
                 barrier.Wait();
                 // --- THREAD BARRIER ---
             }
@@ -452,17 +750,14 @@ namespace PKSoft
             GlobalInstances.ConfigChangeset = Guid.NewGuid();
             VisibleState.Mode = ActiveConfig.Service.StartupMode;
 
-            ReapplySettings(FwRules);
+            ReapplySettings();
         }
 
 
         // This method reapplies all firewall settings.
-        private void ReapplySettings(WindowsFirewall.Rules FwRules)
+        private void ReapplySettings()
         {
-            RebuildApplicationRuleDefs();
-            RebuildSpecialRuleDefs();
-            AssembleActiveRules();
-            MergeActiveRulesIntoWinFirewall(FwRules);
+            InstallFirewallRules();
 
             HostsFileManager.EnableProtection(ActiveConfig.Service.LockHostsFile);
             if (ActiveConfig.Service.Blocklists.EnableBlocklists
@@ -728,30 +1023,6 @@ namespace PKSoft
             return needsSave;
         }
 
-        private bool TestExceptionList(List<FirewallExceptionV3> testList)
-        {
-            try
-            {
-                List<RuleDef> defs = new List<RuleDef>();
-                foreach (FirewallExceptionV3 ex in testList)
-                {
-                    GetRulesForException(ex, defs);
-                }
-
-                List<Rule> ruleList = new List<Rule>();
-                foreach (RuleDef def in defs)
-                {
-                    Rule.ConstructRule(ruleList, def);
-                }
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         private TwMessage ProcessCmd(TwMessage req)
         {
             switch (req.Type)
@@ -770,23 +1041,16 @@ namespace PKSoft
                     }
                 case MessageType.TEST_EXCEPTION:
                     {
-                        List<FirewallExceptionV3> testList = req.Arguments[0] as List<FirewallExceptionV3>;
-                        if (TestExceptionList(testList))
-                            return new TwMessage(MessageType.RESPONSE_OK);
-                        else
-                            return new TwMessage(MessageType.RESPONSE_ERROR);
+                        throw new Exception("Deprecated. Don't call.");
                     }
                 case MessageType.MODE_SWITCH:
                     {
                         VisibleState.Mode = (TinyWall.Interface.FirewallMode)req.Arguments[0];
 
-                        Policy Firewall = new Policy();
                         if (CommitLearnedRules())
                             ActiveConfig.Service.Save(ConfigSavePath);
 
-                        RebuildApplicationRuleDefs();
-                        AssembleActiveRules();
-                        MergeActiveRulesIntoWinFirewall(Firewall.GetRules(false));
+                        InstallFirewallRules();
 
                         if (
                                (VisibleState.Mode != TinyWall.Interface.FirewallMode.Disabled)
@@ -797,10 +1061,7 @@ namespace PKSoft
                             ActiveConfig.Service.Save(ConfigSavePath);
                         }
 
-                        if (Firewall.LocalPolicyModifyState == LocalPolicyState.GP_OVERRRIDE)
-                            return new TwMessage(MessageType.RESPONSE_WARNING);
-                        else
-                            return new TwMessage(MessageType.RESPONSE_OK);
+                        return new TwMessage(MessageType.RESPONSE_OK);
                     }
                 case MessageType.PUT_SETTINGS:
                     {
@@ -809,14 +1070,12 @@ namespace PKSoft
                         MessageType resp = (clientChangeset == GlobalInstances.ConfigChangeset) ? MessageType.RESPONSE_OK : MessageType.RESPONSE_WARNING;
                         if (MessageType.RESPONSE_OK == resp)
                         {
-                            if (!TestExceptionList(newConf.ActiveProfile.AppExceptions))
-                                return new TwMessage(MessageType.RESPONSE_ERROR);
+                            // TODO: Atomic setting of new settings.
 
                             ActiveConfig.Service = newConf;
                             GlobalInstances.ConfigChangeset = Guid.NewGuid();
                             ActiveConfig.Service.Save(ConfigSavePath);
-                            Policy Firewall = new Policy();
-                            ReapplySettings(Firewall.GetRules(false));
+                            ReapplySettings();
                         }
                         return new TwMessage(resp, ActiveConfig.Service, GlobalInstances.ConfigChangeset, VisibleState);
                     }
@@ -920,8 +1179,6 @@ namespace PKSoft
                         bool needsSave = false;
 
                         // Check all exceptions if any one has expired
-                        Policy Firewall = new Policy();
-                        WindowsFirewall.Rules FwRules = Firewall.GetRules(false);
                         List<FirewallExceptionV3> exs = ActiveConfig.Service.ActiveProfile.AppExceptions;
                         for (int i = exs.Count-1; i >= 0; --i)
                         {
@@ -933,17 +1190,18 @@ namespace PKSoft
                             if (exs[i].CreationDate.AddMinutes((double)exs[i].Timer) <= DateTime.Now)
                             {
                                 // Remove rule
-                                string appid = exs[i].Id.ToString();
+                                string exId = exs[i].Id.ToString();
 
                                 // Search for the exception identifier in the rule name.
                                 // Remove rules with a match.
-                                for (int j = FwRules.Count-1; j >= 0; --j)
+                                for (int j = ActiveWfpFilters.Count-1; j >= 0; --j)
                                 {
-                                    if (FwRules[j].Name.Contains(appid))
+                                    if (ActiveWfpFilters[j].DisplayName.Contains(exId))
                                     {
                                         try
                                         {
-                                            FwRules.RemoveAt(j);
+                                            WfpEngine.UnregisterFilter(ActiveWfpFilters[j].FilterKey);
+                                            ActiveWfpFilters.RemoveAt(j);
                                         }
                                         catch { }
                                     }
@@ -964,6 +1222,36 @@ namespace PKSoft
 
                         return new TwMessage(MessageType.RESPONSE_OK);
                     }
+                case MessageType.REENUMERATE_ADDRESSES:
+                    {
+                        InterfaceAddreses.Clear();
+                        GatewayAddresses.Clear();
+
+                        NetworkInterface[] coll = NetworkInterface.GetAllNetworkInterfaces();
+                        foreach (var iface in coll)
+                        {
+                            if (iface.OperationalStatus != OperationalStatus.Up)
+                                continue;
+
+                            var props = iface.GetIPProperties();
+
+                            foreach (var uni in props.UnicastAddresses)
+                            {
+                                IpAddrMask am = new IpAddrMask(uni);
+                                if (am.IsLoopback || am.IsLinkLocal)
+                                    continue;
+
+                                InterfaceAddreses.Add(am);
+                            }
+
+                            foreach (var uni in props.GatewayAddresses)
+                            {
+                                IpAddrMask am = new IpAddrMask(uni);
+                                GatewayAddresses.Add(am);
+                            }
+                        }
+                        return new TwMessage(MessageType.RESPONSE_OK);
+                    }
                 default:
                     {
                         return new TwMessage(MessageType.RESPONSE_ERROR);
@@ -975,47 +1263,112 @@ namespace PKSoft
         // Only one thread (this one) is allowed to issue them.
         private void FirewallWorkerMethod()
         {
-            AppExRules = new List<RuleDef>();
-            SpecialRules = new List<RuleDef>();
-            ActiveRules = new List<RuleDef>();
-
             EventLogWatcher WFEventWatcher = null;
-            try
+
+            NetworkChange.NetworkAddressChanged += NetworkChange_NetworkAddressChanged;
+            NetworkChange.NetworkAvailabilityChanged += NetworkChange_NetworkAvailabilityChanged;
+
+            Guid TINYWALL_PROVIDER_KEY = new Guid("{66CA412C-4453-4F1E-A973-C16E433E34D0}");
+            using (WfpEngine = new Engine("TinyWall Session", "", WFPdotNet.Interop.FWPM_SESSION_FLAGS.FWPM_SESSION_FLAG_DYNAMIC, 5000))
+            using (var WfeEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback, null))
             {
+                // Check if TinyWall session already exists, and if it does, use it
+                ProviderCollection coll = WfpEngine.GetProviders();
+                foreach (FWPM_PROVIDER0 p in coll)
+                {
+                    if (0 == p.providerKey.CompareTo(TINYWALL_PROVIDER_KEY))
+                        ProviderKey = TINYWALL_PROVIDER_KEY;
+                }
+
+                // Install a temporary provider if needed
+                if (0 != ProviderKey.CompareTo(TINYWALL_PROVIDER_KEY))
+                {
+                    var provider = new FWPM_PROVIDER0();
+                    provider.displayData.name = "TinyWall Temporary Provider";
+                    provider.serviceName = TinyWallService.SERVICE_NAME;
+                    ProviderKey = WfpEngine.RegisterProvider(ref provider);
+                }
+
+                // Check if the necessary sublayers are installed
+                var layerKeys = (LayerKeyEnum[])Enum.GetValues(typeof(LayerKeyEnum));
+                var subLayers = WfpEngine.GetSublayers();
+                foreach (var layer in layerKeys)
+                {
+                    Guid slKey = GetSublayerKey(layer);
+
+                    bool found = false;
+                    foreach (var sub in subLayers)
+                    {
+                        if (slKey == sub.SublayerKey)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        // Install missing layer
+                        var wfpSublayer = new Sublayer($"TinyWall Sublayer for {layer.ToString()}");
+                        wfpSublayer.Weight = ushort.MaxValue >> 4;
+                        wfpSublayer.SublayerKey = slKey;
+                        wfpSublayer.ProviderKey = ProviderKey;
+                        WfpEngine.RegisterSublayer(wfpSublayer);
+                    }
+                }
+
+
                 try
                 {
-                    WFEventWatcher = new EventLogWatcher("Microsoft-Windows-Windows Firewall With Advanced Security/Firewall");
-                    WFEventWatcher.EventRecordWritten += new EventHandler<EventRecordWrittenEventArgs>(WFEventWatcher_EventRecordWritten);
-                    WFEventWatcher.Enabled = true;
+                    try
+                    {
+                        WFEventWatcher = new EventLogWatcher("Microsoft-Windows-Windows Firewall With Advanced Security/Firewall");
+                        WFEventWatcher.EventRecordWritten += new EventHandler<EventRecordWrittenEventArgs>(WFEventWatcher_EventRecordWritten);
+                        WFEventWatcher.Enabled = true;
+                    }
+                    catch
+                    {
+                        // TODO: deprecated
+                        EventLog.WriteEntry("Unable to listen for firewall events. Windows Firewall monitoring will be turned off.");
+                    }
+
+                    RunService = true;
+                    while (RunService)
+                    {
+                        TwMessage msg;
+                        Future<TwMessage> future;
+                        Q.Dequeue(out msg, out future);
+
+                        TwMessage resp;
+                        resp = ProcessCmd(msg);
+                        if (null != future)
+                            future.Value = resp;
+                    }
                 }
-                catch
+                finally
                 {
-                    // TODO: deprecated
-                    EventLog.WriteEntry("Unable to listen for firewall events. Windows Firewall monitoring will be turned off.");
+                    WFEventWatcher?.Dispose();
+                    Cleanup();
+                    Environment.Exit(0);
                 }
-
-                RunService = true;
-                while (RunService)
-                {
-                    TwMessage msg;
-                    Future<TwMessage> future;
-                    Q.Dequeue(out msg, out future);
-
-                    TwMessage resp;
-                    resp = ProcessCmd(msg);
-                    if (null != future)
-                        future.Value = resp;
-                }
-            }
-            finally
-            {
-                if (WFEventWatcher != null)
-                    WFEventWatcher.Dispose();
-
-                Cleanup();
-                Environment.Exit(0);
             }
         }
+
+        private void NetworkChange_NetworkAvailabilityChanged(object sender, NetworkAvailabilityEventArgs e)
+        {
+            Q.Enqueue(new TwMessage(MessageType.REENUMERATE_ADDRESSES), null);
+        }
+
+        private void NetworkChange_NetworkAddressChanged(object sender, EventArgs e)
+        {
+            Q.Enqueue(new TwMessage(MessageType.REENUMERATE_ADDRESSES), null);
+        }
+
+        private void WfpNetEventCallback(object context, NetEventData data)
+        {
+
+        }
+
 
         // Entry point for thread that listens to commands from the controller application.
         private TwMessage PipeServerDataReceived(TwMessage req)
@@ -1162,6 +1515,7 @@ namespace PKSoft
 
                 // Issue load command
                 Q = new BoundedMessageQueue();
+                Q.Enqueue(new TwMessage(MessageType.REENUMERATE_ADDRESSES), null);
                 Q.Enqueue(new TwMessage(MessageType.REINIT), null);
 
                 // Start thread that is going to control Windows Firewall

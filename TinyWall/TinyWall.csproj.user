@@ -12,6 +12,6 @@
     <StartArguments>/desktop</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug - Service|AnyCPU'">
-    <StartArguments>/service</StartArguments>
+    <StartArguments>/selfhosted</StartArguments>
   </PropertyGroup>
 </Project>

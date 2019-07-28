@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
 using System.Reflection;
-using PKSoft.WindowsFirewall;
 using TinyWall.Interface;
 
 namespace PKSoft
@@ -217,9 +216,42 @@ namespace PKSoft
             res = res.Replace(" ", string.Empty);
             res = res.Replace(';', ',');
 
+            // Remove empty elements
+            while (res.Contains(",,"))
+                res = res.Replace(",,", ",");
+
+            // Terminate early if nothing left
+            if (string.IsNullOrEmpty(res))
+                return string.Empty;
+
             // Check validity
-            Rule r = new Rule("", "", ProfileType.Private, RuleDirection.In, RuleAction.Allow, Protocol.TCP);
-            r.LocalPorts = res;
+            string[] elems = res.Split(new char[]{','}, StringSplitOptions.RemoveEmptyEntries);
+            res = string.Empty;
+            foreach (var e in elems)
+            {
+                bool isRange = (-1 != e.IndexOf('-'));
+                if (isRange)
+                {
+                    string[] minmax = e.Split('-');
+                    ushort x = ushort.Parse(minmax[0], System.Globalization.CultureInfo.InvariantCulture);
+                    ushort y = ushort.Parse(minmax[1], System.Globalization.CultureInfo.InvariantCulture);
+                    ushort min = Math.Min(x, y);
+                    ushort max = Math.Max(x, y);
+                    res = $"{res},{min:D}-{max:D}";
+                }
+                else
+                {
+                    if (e.Equals("*"))
+                        // If we have a wildcard, all other list elements are redundant
+                        return "*";
+
+                    ushort x = ushort.Parse(e, System.Globalization.CultureInfo.InvariantCulture);
+                    res = $"{res},{x:D}";
+                }
+            }
+
+            // Now we have a ',' at the very start. Remove it.
+            res = res.Remove(0, 1);
 
             return res;
         }

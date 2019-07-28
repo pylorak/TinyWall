@@ -114,6 +114,7 @@
     <Compile Include="DatabaseClasses\SubjectIdentity.cs" />
     <Compile Include="Deprecated\SerializationHelper.cs" />
     <Compile Include="IconTools.cs" />
+    <Compile Include="IpAddrMask.cs" />
     <Compile Include="Pbkdf2.cs" />
     <Compile Include="Privilege.cs" />
     <Compile Include="TinyWallController.cs" />
@@ -220,15 +221,7 @@
     <Compile Include="Installer\ServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="WindowsFirewall\LocalPolicyState.cs" />
-    <Compile Include="WindowsFirewall\Policy.cs" />
-    <Compile Include="WindowsFirewall\Product.cs" />
-    <Compile Include="WindowsFirewall\Products.cs" />
-    <Compile Include="WindowsFirewall\ProfileType.cs" />
-    <Compile Include="WindowsFirewall\Rule.cs" />
-    <Compile Include="WindowsFirewall\RuleCategories.cs" />
-    <Compile Include="WindowsFirewall\Rules.cs" />
-    <Compile Include="WindowsFirewall\ServiceRestriction.cs" />
+    <Compile Include="WfpSublayerKeys.cs" />
     <EmbeddedResource Include="AppFinderForm.de.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -751,20 +744,13 @@
     <None Include="Resources\img\donate.png" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="NetFwTypeLib">
-      <Guid>{58FBCF7C-E7A9-467C-80B3-FC65E8FCCA08}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\TinyWall.Interface\TinyWall.Interface.csproj">
       <Project>{ac7be8fe-87d6-44a6-9298-813534203590}</Project>
       <Name>TinyWall.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WFPdotNet\WFPdotNet.csproj">
+      <Project>{6766416a-3b7c-4faa-8d3c-e2b31749763f}</Project>
+      <Name>WFPdotNet</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

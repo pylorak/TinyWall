@@ -1,0 +1,528 @@
+﻿using System;
+using System.Runtime.InteropServices;
+
+namespace WFPdotNet.Interop
+{
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_DISPLAY_DATA0
+    {
+        [MarshalAs(UnmanagedType.LPWStr)] public string name;
+        [MarshalAs(UnmanagedType.LPWStr)] public string description;
+    }
+
+    [Flags]
+    public enum FWPM_SESSION_FLAGS : uint
+    {
+        FWPM_SESSION_FLAG_NONE = 0,
+        FWPM_SESSION_FLAG_DYNAMIC = 0x00000001,
+        FWPM_SESSION_FLAG_RESERVED = 0x10000000
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public unsafe struct SID_IDENTIFIER_AUTHORITY
+    {
+        public fixed byte Value[6];
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SID
+    {
+        public byte Revision;
+        public byte SubAuthorityCount;
+        public SID_IDENTIFIER_AUTHORITY IdentifierAuthority;
+
+        // Note 1: http://stackoverflow.com/questions/6066650/how-to-pinvoke-a-variable-length-array-of-structs-from-gettokeninformation-saf
+        // Note 2: http://stackoverflow.com/questions/3939867/passing-a-structure-to-c-api-using-marshal-structuretoptr-in-c-sharp
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1)] public uint[] SubAuthority;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_SESSION0
+    {
+        public Guid sessionKey;
+        public Interop.FWPM_DISPLAY_DATA0 displayData;
+        public FWPM_SESSION_FLAGS flags;
+        public uint txnWaitTimeoutInMSec;
+        public uint processId;
+        public IntPtr sid;  // Interop.SID*
+        [MarshalAs(UnmanagedType.LPWStr)] public string username;
+        [MarshalAs(UnmanagedType.Bool)] public bool kernelMode;
+    }
+
+    public enum RPC_C_AUTHN : uint
+    {
+        RPC_C_AUTHN_WINNT = 10,
+        RPC_C_AUTHN_DEFAULT = 0xFFFFFFFF
+    }
+
+    [Flags]
+    public enum FWPM_PROVIDER_FLAGS : uint
+    {
+        FWPM_PROVIDER_FLAG_PERSISTENT = 0x00000001,
+        FWPM_PROVIDER_FLAG_DISABLED = 0x00000010
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWP_BYTE_BLOB
+    {
+        public uint size;
+        public IntPtr data;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_PROVIDER0
+    {
+        public Guid providerKey;
+        public Interop.FWPM_DISPLAY_DATA0 displayData;
+        public FWPM_PROVIDER_FLAGS flags;
+        public FWP_BYTE_BLOB providerData;
+        [MarshalAs(UnmanagedType.LPWStr)] public string serviceName;
+    }
+
+    [Flags]
+    public enum FWPM_SUBLAYER_FLAGS : uint
+    {
+        FWPM_SUBLAYER_FLAG_PERSISTENT = 0x00000001
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_SUBLAYER0
+    {
+        public Guid subLayerKey;
+        public Interop.FWPM_DISPLAY_DATA0 displayData;
+        public FWPM_SUBLAYER_FLAGS flags;
+        public Guid providerKey;
+        public FWP_BYTE_BLOB providerData;
+        public ushort weight;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWP_V4_ADDR_AND_MASK
+    {
+        public uint addr;
+        public uint mask;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWP_V6_ADDR_AND_MASK
+    {
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16, ArraySubType = UnmanagedType.U1)]
+        public byte[] addr;
+        public byte prefixLength;
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    public unsafe struct FWP_VALUE0
+    {
+#if X86_64
+        const int PTRSIZE = 8;
+#else
+        const int PTRSIZE = 4;
+#endif
+
+        [FieldOffset(0)]
+        public FWP_DATA_TYPE type;
+        [FieldOffset(PTRSIZE)]
+        public byte uint8;
+        [FieldOffset(PTRSIZE)]
+        public ushort uint16;
+        [FieldOffset(PTRSIZE)]
+        public uint uint32;
+        [FieldOffset(PTRSIZE)]
+        public IntPtr uint64;
+        [FieldOffset(PTRSIZE)]
+        public sbyte int8;
+        [FieldOffset(PTRSIZE)]
+        public short int16;
+        [FieldOffset(PTRSIZE)]
+        public int int32;
+        [FieldOffset(PTRSIZE)]
+        public IntPtr int64;
+        [FieldOffset(PTRSIZE)]
+        public float float32;
+        [FieldOffset(PTRSIZE)]
+        public double* double64;
+        [FieldOffset(PTRSIZE)]
+        public byte* byteArray16;
+        [FieldOffset(PTRSIZE)]
+        public FWP_BYTE_BLOB* byteBlob;
+        [FieldOffset(PTRSIZE)]
+        public IntPtr sid;  // SID*
+        [FieldOffset(PTRSIZE)]
+        public IntPtr sd;   // FWP_BYTE_BLOB*
+        [FieldOffset(PTRSIZE)]
+        public IntPtr tokenInformation;
+        [FieldOffset(PTRSIZE)]
+        public IntPtr tokenAccessInformation;   // FWP_BYTE_BLOB*
+        [FieldOffset(PTRSIZE)]
+        public IntPtr unicodeString;
+        [FieldOffset(PTRSIZE)]
+        public IntPtr byteArray6;   // byte*
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWP_RANGE0
+    {
+      public FWP_VALUE0 valueLow;
+      public FWP_VALUE0 valueHigh;
+    }
+
+    public enum FWP_DATA_TYPE : uint
+    {
+        FWP_EMPTY,
+        FWP_UINT8,
+        FWP_UINT16,
+        FWP_UINT32,
+        FWP_UINT64,
+        FWP_INT8,
+        FWP_INT16,
+        FWP_INT32,
+        FWP_INT64,
+        FWP_FLOAT,
+        FWP_DOUBLE,
+        FWP_BYTE_ARRAY16_TYPE,
+        FWP_BYTE_BLOB_TYPE,
+        FWP_SID,
+        FWP_SECURITY_DESCRIPTOR_TYPE,
+        FWP_TOKEN_INFORMATION_TYPE,
+        FWP_TOKEN_ACCESS_INFORMATION_TYPE,
+        FWP_UNICODE_STRING_TYPE,
+        FWP_BYTE_ARRAY6_TYPE,
+        FWP_SINGLE_DATA_TYPE_MAY = 0xFF,
+        FWP_V4_ADDR_MASK,
+        FWP_V6_ADDR_MASK,
+        FWP_RANGE_TYPE,
+        FWP_DATA_TYPE_MAX
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    public unsafe struct FWP_CONDITION_VALUE0
+    {
+#if X86_64
+        const int PTRSIZE = 8;
+#else
+        const int PTRSIZE = 4;
+#endif
+
+        [FieldOffset(0)]
+        public FWP_DATA_TYPE type;
+        [FieldOffset(PTRSIZE)]
+        public byte uint8;
+        [FieldOffset(PTRSIZE)]
+        public ushort uint16;
+        [FieldOffset(PTRSIZE)]
+        public uint uint32;
+        [FieldOffset(PTRSIZE)]
+        public ulong* uint64;
+        [FieldOffset(PTRSIZE)]
+        public sbyte int8;
+        [FieldOffset(PTRSIZE)]
+        public short int16;
+        [FieldOffset(PTRSIZE)]
+        public int int32;
+        [FieldOffset(PTRSIZE)]
+        public long* int64;
+        [FieldOffset(PTRSIZE)]
+        public float float32;
+        [FieldOffset(PTRSIZE)]
+        public double* double64;
+        [FieldOffset(PTRSIZE)]
+        public IntPtr byteArray16;
+        [FieldOffset(PTRSIZE)]
+        public IntPtr byteBlob;
+        [FieldOffset(PTRSIZE)]
+        public IntPtr sid;  // SID*
+        [FieldOffset(PTRSIZE)]
+        public IntPtr sd;   // FWP_BYTE_BLOB*
+        [FieldOffset(PTRSIZE)]
+        public IntPtr tokenInformation;
+        [FieldOffset(PTRSIZE)]
+        public FWP_BYTE_BLOB* tokenAccessInformation;
+        [FieldOffset(PTRSIZE)]
+        public IntPtr unicodeString;
+        [FieldOffset(PTRSIZE)]
+        public byte* byteArray6;
+        [FieldOffset(PTRSIZE)]
+        public IntPtr v4AddrMask;   // FWP_V4_ADDR_AND_MASK*
+        [FieldOffset(PTRSIZE)]
+        public IntPtr v6AddrMask;   // FWP_V6_ADDR_AND_MASK*
+        [FieldOffset(PTRSIZE)]
+        public IntPtr rangeValue;   // FWP_RANGE0*
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_FILTER_CONDITION0
+    {
+        public Guid fieldKey;
+        public FieldMatchType matchType;
+        public Interop.FWP_CONDITION_VALUE0 conditionValue;
+    }
+
+    [Flags]
+    public enum FWP_ACTION_FLAG : uint
+    {
+        FWP_ACTION_FLAG_TERMINATING     = 0x00001000,
+        FWP_ACTION_FLAG_NON_TERMINATING = 0x00002000,
+        FWP_ACTION_FLAG_CALLOUT         = 0x00004000
+    }
+
+    public enum FWP_ACTION_TYPE : uint
+    {
+        FWP_ACTION_BLOCK = (0x00000001 | FWP_ACTION_FLAG.FWP_ACTION_FLAG_TERMINATING),
+        FWP_ACTION_PERMIT = (0x00000002 | FWP_ACTION_FLAG.FWP_ACTION_FLAG_TERMINATING),
+        FWP_ACTION_CALLOUT_TERMINATING = (0x00000003 | FWP_ACTION_FLAG.FWP_ACTION_FLAG_CALLOUT | FWP_ACTION_FLAG.FWP_ACTION_FLAG_TERMINATING),
+        FWP_ACTION_CALLOUT_INSPECTION = (0x00000004 | FWP_ACTION_FLAG.FWP_ACTION_FLAG_CALLOUT | FWP_ACTION_FLAG.FWP_ACTION_FLAG_NON_TERMINATING),
+        FWP_ACTION_CALLOUT_UNKNOWN = (0x00000005 | FWP_ACTION_FLAG.FWP_ACTION_FLAG_CALLOUT)
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    public struct FWPM_ACTION0
+    {
+        [FieldOffset(0)]
+        public FWP_ACTION_TYPE type;
+        [FieldOffset(4)]
+        public Guid filterType;
+        [FieldOffset(4)]
+        public Guid calloutKey;
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    public struct Filter0Context
+    {
+        [FieldOffset(0)]
+        public ulong rawContext;
+        [FieldOffset(0)]
+        public Guid providerContextKey;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_FILTER0
+    {
+        public Guid filterKey;
+        public FWPM_DISPLAY_DATA0 displayData;
+        public FilterFlags flags;
+        public IntPtr providerKey;
+        public FWP_BYTE_BLOB providerData;
+        public Guid layerKey;
+        public Guid subLayerKey;
+        public FWP_VALUE0 weight;
+        public uint numFilterConditions;
+        public IntPtr filterConditions;
+        public FWPM_ACTION0 action;
+        public Filter0Context filterContext;
+        public IntPtr reserved;
+        public ulong filterId;
+        public FWP_VALUE0 effectiveWeight;
+    }
+
+    
+    public enum FWP_FILTER_ENUM_TYPE : uint
+    {
+        FWP_FILTER_ENUM_FULLY_CONTAINED = 0,
+        FWP_FILTER_ENUM_OVERLAPPING = 1,
+        FWP_FILTER_ENUM_TYPE_MAX = 2
+    }
+
+    [Flags]
+    public enum FilterEnumTemplateFlags : uint
+    {
+        FWP_FILTER_ENUM_FLAG_BEST_TERMINATING_MATCH = 0x00000001,
+        FWP_FILTER_ENUM_FLAG_SORTED  = 0x00000002,
+        FWP_FILTER_ENUM_FLAG_BOOTTIME_ONLY  = 0x00000004,
+        FWP_FILTER_ENUM_FLAG_INCLUDE_BOOTTIME  = 0x00000008,
+        FWP_FILTER_ENUM_FLAG_INCLUDE_DISABLED = 0x00000010
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_FILTER_ENUM_TEMPLATE0
+    {
+        public IntPtr providerKey;
+        public Guid layerKey;
+        public FWP_FILTER_ENUM_TYPE enumType;
+        public FilterEnumTemplateFlags flags;
+        public IntPtr providerContextTemplate;
+        public uint numFilterConditions;
+        public IntPtr filterCondition;
+        public uint actionMask;
+        public IntPtr calloutKey;
+    }
+
+    [Flags]
+    public enum FilterSubscriptionFlags : uint
+    {
+        FWPM_SUBSCRIPTION_FLAG_NOTIFY_ON_ADD = 0x00000001,
+        FWPM_SUBSCRIPTION_FLAG_NOTIFY_ON_DELETE = 0x00000002
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_FILTER_SUBSCRIPTION0
+    {
+        public IntPtr enumTemplate;
+        public FilterSubscriptionFlags flags;
+        public Guid sessionKey;
+    }
+
+    public enum FWPM_CHANGE_TYPE
+    {
+        FWPM_CHANGE_ADD = 1,
+        FWPM_CHANGE_DELETE = 2,
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_FILTER_CHANGE0
+    {
+        public FWPM_CHANGE_TYPE changeType;
+        public Guid filterKey;
+        public ulong filterId;
+    }
+
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_NET_EVENT_SUBSCRIPTION0
+    {
+        public IntPtr enumTemplate;
+        public uint flags;
+        public Guid sessionKey;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FILETIME
+    {
+        private long timestamp;
+        public DateTime Local
+        {
+            get { return DateTime.FromFileTime(this.timestamp); }
+            set { this.timestamp = value.ToFileTime(); }
+        }
+        public DateTime Utc
+        {
+            get { return DateTime.FromFileTimeUtc(this.timestamp); }
+            set { this.timestamp = value.ToFileTimeUtc(); }
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_NET_EVENT_ENUM_TEMPLATE0
+    {
+        public FILETIME startTime;
+        public FILETIME endTime;
+        public uint numFilterConditions;
+        public IntPtr filterCondition;
+    }
+
+    public enum FWPM_NET_EVENT_TYPE
+    {
+        FWPM_NET_EVENT_TYPE_IKEEXT_MM_FAILURE,
+        FWPM_NET_EVENT_TYPE_IKEEXT_QM_FAILURE,
+        FWPM_NET_EVENT_TYPE_IKEEXT_EM_FAILURE,
+        FWPM_NET_EVENT_TYPE_CLASSIFY_DROP,
+        FWPM_NET_EVENT_TYPE_IPSEC_KERNEL_DROP,
+        FWPM_NET_EVENT_TYPE_IPSEC_DOSP_DROP,
+        FWPM_NET_EVENT_TYPE_CLASSIFY_ALLOW,
+        FWPM_NET_EVENT_TYPE_CAPABILITY_DROP,
+        FWPM_NET_EVENT_TYPE_CAPABILITY_ALLOW,
+        FWPM_NET_EVENT_TYPE_CLASSIFY_DROP_MAC,
+        FWPM_NET_EVENT_TYPE_MAX
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    public unsafe struct InternetworkAddr
+    {
+        [FieldOffset(0)]
+        public uint AddrV4;
+        [FieldOffset(0)]
+        public fixed byte AddrV6[16];
+
+        public System.Net.IPAddress ToIpV4()
+        {
+            byte[] b = BitConverter.GetBytes(AddrV4);
+            Array.Reverse(b);
+            return new System.Net.IPAddress(b);
+        }
+        public System.Net.IPAddress ToIpV6()
+        {
+            byte[] b = new byte[16];
+            unsafe
+            {
+                fixed (byte* srcPtr = AddrV6)
+                {
+                    Marshal.Copy((IntPtr)srcPtr, b, 0, 16);
+                }
+            }
+            Array.Reverse(b);
+            return new System.Net.IPAddress(b);
+        }
+    }
+
+    [Flags]
+    public enum NetEventHeaderValidField
+    {
+        FWPM_NET_EVENT_FLAG_IP_PROTOCOL_SET = 0x00000001,
+        FWPM_NET_EVENT_FLAG_LOCAL_ADDR_SET = 0x00000002,
+        FWPM_NET_EVENT_FLAG_REMOTE_ADDR_SET = 0x00000004,
+        FWPM_NET_EVENT_FLAG_LOCAL_PORT_SET = 0x00000008,
+        FWPM_NET_EVENT_FLAG_REMOTE_PORT_SET = 0x00000010,
+        FWPM_NET_EVENT_FLAG_APP_ID_SET = 0x00000020,
+        FWPM_NET_EVENT_FLAG_USER_ID_SET = 0x00000040,
+        FWPM_NET_EVENT_FLAG_SCOPE_ID_SET = 0x00000080,
+        FWPM_NET_EVENT_FLAG_IP_VERSION_SET = 0x00000100,
+        FWPM_NET_EVENT_FLAG_REAUTH_REASON_SET = 0x00000200,
+        FWPM_NET_EVENT_FLAG_PACKAGE_ID_SET = 0x00000400
+    }
+
+    public enum FWP_IP_VERSION
+    {
+        FWP_IP_VERSION_V4 = 0,
+        FWP_IP_VERSION_V6 = (FWP_IP_VERSION_V4 + 1),
+        FWP_IP_VERSION_NONE = (FWP_IP_VERSION_V6 + 1),
+        FWP_IP_VERSION_MAX = (FWP_IP_VERSION_NONE + 1)
+    }
+
+#if X86_64
+    [StructLayout(LayoutKind.Sequential, Size = 144)]
+#else
+    [StructLayout(LayoutKind.Sequential, Size = 128)]
+#endif
+    public struct FWPM_NET_EVENT_HEADER1
+    {
+        public FILETIME timeStamp;
+        public NetEventHeaderValidField flag;
+        public FWP_IP_VERSION ipVersion;
+        public byte ipProtocol;
+        public InternetworkAddr localAddr;
+        public InternetworkAddr remoteAddr;
+        public ushort localPort;
+        public ushort remotePort;
+        public uint scopeId;
+        public FWP_BYTE_BLOB appId;
+        public IntPtr userId;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_NET_EVENT1
+    {
+        public FWPM_NET_EVENT_HEADER1 header;
+        public FWPM_NET_EVENT_TYPE type;
+        public IntPtr EventInfo;
+    };
+
+    public enum FwpmDirection : uint
+    {
+        FWP_DIRECTION_IN = 0x00003900,
+        FWP_DIRECTION_OUT = 0x00003901,
+        FWP_DIRECTION_FORWARD = 0x00003902
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_NET_EVENT_CLASSIFY_DROP1
+    {
+        public ulong filterId;
+        public ushort layerId;
+        public uint reauthReason;
+        public uint originalProfile;
+        public uint currentProfile;
+        public FwpmDirection msFwpDirection;
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool isLoopback;
+    }
+}

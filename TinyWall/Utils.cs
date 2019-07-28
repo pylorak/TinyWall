@@ -739,6 +739,14 @@ namespace PKSoft
 
             return null;
         }
+
+        public static bool EqualsCaseInsensitive(string a, string b)
+        {
+            if (a == b)
+                return true;
+
+            return (a != null) && a.Equals(b, StringComparison.InvariantCultureIgnoreCase);
+        }
     }
 
     [Serializable]

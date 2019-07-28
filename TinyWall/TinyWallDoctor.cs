@@ -175,9 +175,11 @@ namespace PKSoft
 
             try
             {
-                // Reset Windows Firewall to its default state
-                WindowsFirewall.Policy Firewall = new WindowsFirewall.Policy();
-                Firewall.ResetFirewall();
+                // TODO:
+                // Remove boot-time filters
+                // Remove persistent filters
+                // Remove persistent sublayers
+                // Remove persistent providers
             }
             catch { }
 
@@ -200,6 +202,12 @@ namespace PKSoft
 
         internal static void EnsureHealth()
         {
+            // TODO:
+            // Install persistent providers
+            // Install persistent sublayers
+            // Install persistent filters
+            // Install boot-time filters
+
             // Ensure that TinyWall's dependencies can be started
             EnsureServiceDependencies();
 

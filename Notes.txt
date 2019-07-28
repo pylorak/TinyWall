@@ -1,4 +1,9 @@
 Future development ideas:
+- Make saving of service settings atomic
+- Filter promiscuous mode
+- Simply use-case of networked installers
+- Make Processes window remember size
+- Add "Open folder" to Processes and Connections windows
 - avast.setup
 - Checkboxes in mode menu
 - Batch-cleanup exceptions with invalid file paths
