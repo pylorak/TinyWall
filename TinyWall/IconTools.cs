@@ -17,7 +17,7 @@ public static class IconTools {
     /// Represents the different icon sizes that can be extracted using the 
     /// <see cref="IconTools.ExtractAssociatedIcon"/> method.
     /// </summary>
-    public enum ShellIconSize : uint
+    public enum ShellIconSize : int
     {
 
         /// <summary>
@@ -32,32 +32,32 @@ public static class IconTools {
 
     private const uint FILE_ATTRIBUTE_NORMAL = 0x80;
 
-	#region Win32
+    #region Win32
 
-	/// <summary>
-	/// Retrieve the handle to the icon that represents the file and the index 
-	/// of the icon within the system image list. The handle is copied to the 
-	/// hIcon member of the structure specified by psfi, and the index is 
-	/// copied to the iIcon member.
-	/// </summary>
-	internal const uint SHGFI_ICON = 0x100;
-	/// <summary>
-	/// Modify SHGFI_ICON, causing the function to retrieve the file's large 
-	/// icon. The SHGFI_ICON flag must also be set.
-	/// </summary>
-	internal const uint SHGFI_LARGEICON = 0x0;
-	/// <summary>
-	/// Modify SHGFI_ICON, causing the function to retrieve the file's small 
-	/// icon. Also used to modify SHGFI_SYSICONINDEX, causing the function to 
-	/// return the handle to the system image list that contains small icon 
-	/// images. The SHGFI_ICON and/or SHGFI_SYSICONINDEX flag must also be set.
-	/// </summary>
-	internal const uint SHGFI_SMALLICON = 0x1;
-	/// <summary>
-	/// Indicates that the function should not attempt to access the file 
-	/// specified by pszPath.
-	/// </summary>
-	const uint SHGFI_USEFILEATTRIBUTES = 0x10;
+    /// <summary>
+    /// Retrieve the handle to the icon that represents the file and the index 
+    /// of the icon within the system image list. The handle is copied to the 
+    /// hIcon member of the structure specified by psfi, and the index is 
+    /// copied to the iIcon member.
+    /// </summary>
+    private const int SHGFI_ICON = 0x100;
+    /// <summary>
+    /// Modify SHGFI_ICON, causing the function to retrieve the file's large 
+    /// icon. The SHGFI_ICON flag must also be set.
+    /// </summary>
+    private const int SHGFI_LARGEICON = 0x0;
+    /// <summary>
+    /// Modify SHGFI_ICON, causing the function to retrieve the file's small 
+    /// icon. Also used to modify SHGFI_SYSICONINDEX, causing the function to 
+    /// return the handle to the system image list that contains small icon 
+    /// images. The SHGFI_ICON and/or SHGFI_SYSICONINDEX flag must also be set.
+    /// </summary>
+    private const int SHGFI_SMALLICON = 0x1;
+    /// <summary>
+    /// Indicates that the function should not attempt to access the file 
+    /// specified by pszPath.
+    /// </summary>
+    private const int SHGFI_USEFILEATTRIBUTES = 0x10;
 
 	/// <summary>
 	/// Contains the native Win32 functions.
