@@ -40,6 +40,9 @@ namespace PKSoft
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool PathIsNetworkPath(string pszPath);
 
+            [DllImport("dnsapi.dll", EntryPoint = "DnsFlushResolverCache")]
+            internal static extern uint DnsFlushResolverCache();
+
             [DllImport("kernel32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool GetNamedPipeClientProcessId(IntPtr Pipe, out long ClientProcessId);
@@ -122,7 +125,7 @@ namespace PKSoft
             private const uint MOUSEEVENTF_RIGHTUP = 0x10;
             internal static void DoMouseRightClick()
             {
-                //Call the imported function with the cursor's current position  
+                //Call the imported function with the cursor's current position
                 uint X = (uint)System.Windows.Forms.Cursor.Position.X;
                 uint Y = (uint)System.Windows.Forms.Cursor.Position.Y;
                 mouse_event(MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP, X, Y, 0, IntPtr.Zero);
@@ -244,7 +247,7 @@ namespace PKSoft
               {
                 using (DeflateStream Compress = new DeflateStream(outFile, CompressionMode.Compress, true))
                 {
-                    // Copy the source file into 
+                    // Copy the source file into
                     // the compression stream.
                     byte[] buffer = new byte[4096];
                     int numRead;
@@ -407,7 +410,7 @@ namespace PKSoft
                 }
             }
         }
-        
+
         internal static byte[] DecryptFromStream(int nBytes, Stream stream, string key, string IV)
         {
             byte[] data = new byte[nBytes];
@@ -689,6 +692,11 @@ namespace PKSoft
                     sw.WriteLine();
                 }
             }
+        }
+
+        internal static void FlushDnsCache()
+        {
+            SafeNativeMethods.DnsFlushResolverCache();
         }
 
         internal static string AppDataPath
