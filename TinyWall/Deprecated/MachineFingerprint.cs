@@ -5,6 +5,7 @@ using TinyWall.Interface.Internal;
 
 namespace PKSoft.Deprecated
 {
+    [Obsolete]
     internal static class MachineFingerprint
     {
         private static string fingerPrint = string.Empty;
