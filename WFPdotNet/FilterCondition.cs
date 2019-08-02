@@ -32,7 +32,11 @@ namespace WFPdotNet
         FWPM_CONDITION_IP_LOCAL_PORT,
         FWPM_CONDITION_IP_REMOTE_PORT,
         FWPM_CONDITION_IP_PROTOCOL,
-        FWPM_CONDITION_ORIGINAL_PROFILE_ID
+        FWPM_CONDITION_ALE_APP_ID,
+        FWPM_CONDITION_ALE_ORIGINAL_APP_ID,
+        FWPM_CONDITION_ICMP_TYPE,
+        FWPM_CONDITION_ICMP_CODE,
+        FWPM_CONDITION_ORIGINAL_ICMP_TYPE,
     }
 
     public class FilterCondition : IDisposable
@@ -62,8 +66,16 @@ namespace WFPdotNet
                     _fieldKeyName = FieldKeyNames.FWPM_CONDITION_IP_REMOTE_PORT;
                 else if (0 == _nativeStruct.fieldKey.CompareTo(ConditionKeys.FWPM_CONDITION_IP_PROTOCOL))
                     _fieldKeyName = FieldKeyNames.FWPM_CONDITION_IP_PROTOCOL;
-                else if (0 == _nativeStruct.fieldKey.CompareTo(ConditionKeys.FWPM_CONDITION_ORIGINAL_PROFILE_ID))
-                    _fieldKeyName = FieldKeyNames.FWPM_CONDITION_ORIGINAL_PROFILE_ID;
+                else if (0 == _nativeStruct.fieldKey.CompareTo(ConditionKeys.FWPM_CONDITION_ALE_APP_ID))
+                    _fieldKeyName = FieldKeyNames.FWPM_CONDITION_ALE_APP_ID;
+                else if (0 == _nativeStruct.fieldKey.CompareTo(ConditionKeys.FWPM_CONDITION_ALE_ORIGINAL_APP_ID))
+                    _fieldKeyName = FieldKeyNames.FWPM_CONDITION_ALE_ORIGINAL_APP_ID;
+                else if (0 == _nativeStruct.fieldKey.CompareTo(ConditionKeys.FWPM_CONDITION_ICMP_TYPE))
+                    _fieldKeyName = FieldKeyNames.FWPM_CONDITION_ICMP_TYPE;
+                else if (0 == _nativeStruct.fieldKey.CompareTo(ConditionKeys.FWPM_CONDITION_ICMP_CODE))
+                    _fieldKeyName = FieldKeyNames.FWPM_CONDITION_ICMP_CODE;
+                else if (0 == _nativeStruct.fieldKey.CompareTo(ConditionKeys.FWPM_CONDITION_ORIGINAL_ICMP_TYPE))
+                    _fieldKeyName = FieldKeyNames.FWPM_CONDITION_ORIGINAL_ICMP_TYPE;
                 else
                     _fieldKeyName = FieldKeyNames.Unknown;
 
@@ -126,6 +138,9 @@ namespace WFPdotNet
 
     public sealed class IpFilterCondition : FilterCondition
     {
+        private static readonly byte[] MaskByteBitsLookup = new byte[]
+        { 0x00, 0x80, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC, 0xFE, 0xFF };
+
         private AllocHGlobalSafeHandle nativeMem;
 
         public IpFilterCondition(IPAddress addr, RemoteOrLocal peer)
@@ -164,20 +179,21 @@ namespace WFPdotNet
             _nativeStruct.fieldKey = (peer == RemoteOrLocal.Local) ? ConditionKeys.FWPM_CONDITION_IP_LOCAL_ADDRESS : ConditionKeys.FWPM_CONDITION_IP_REMOTE_ADDRESS;
 
             byte[] addressBytes = addr.GetAddressBytes();
-            Array.Reverse(addressBytes);
 
             switch (addr.AddressFamily)
             {
                 case System.Net.Sockets.AddressFamily.InterNetwork:
                     // Convert CIDR subnet length to byte array
                     byte[] maskBytes = new byte[4];
-                    int numAllOnes = subnetLen / 8;
-                    for (int i = 0; i < numAllOnes; ++i)
-                        maskBytes[i] = 255;
-                    int maskRem = subnetLen - numAllOnes * 8;
-                    string binString = string.Empty.PadLeft(maskRem, '1').PadRight(8, '0');
-                    maskBytes[numAllOnes] = Convert.ToByte(binString, 2);
+                    int prefix = subnetLen;
+                    for (int i = 0; i < maskBytes.Length; ++i)
+                    {
+                        int s = (prefix < 8) ? prefix : 8;
+                        maskBytes[i] = MaskByteBitsLookup[s];
+                        prefix -= s;
+                    }
                     Array.Reverse(maskBytes);
+                    Array.Reverse(addressBytes);
 
                     Interop.FWP_V4_ADDR_AND_MASK addrAndMask4 = new Interop.FWP_V4_ADDR_AND_MASK();
                     addrAndMask4.addr = BitConverter.ToUInt32(addressBytes, 0);
@@ -335,7 +351,7 @@ namespace WFPdotNet
 
         private FwpmMemorySafeHandle appIdNativeMem;
 
-        public AppIdFilterCondition(string filePath, bool bBeforeProxying)
+        public AppIdFilterCondition(string filePath, bool bBeforeProxying = false)
         {
             if (bBeforeProxying && !VersionInfo.Win8OrNewer)
                 throw new NotSupportedException("FWPM_CONDITION_ALE_ORIGINAL_APP_ID (set by bBeforeProxying) requires Windows 8 or newer.");
@@ -520,4 +536,44 @@ namespace WFPdotNet
             base.Dispose(disposing);
         }
     }
+
+    [Flags]
+    public enum ConditionFlags : uint
+    {
+        FWP_CONDITION_FLAG_IS_LOOPBACK = 0x00000001,
+        FWP_CONDITION_FLAG_IS_IPSEC_SECURED = 0x00000002,
+        FWP_CONDITION_FLAG_IS_REAUTHORIZE = 0x00000004,
+        FWP_CONDITION_FLAG_IS_WILDCARD_BIND = 0x00000008,
+        FWP_CONDITION_FLAG_IS_RAW_ENDPOINT = 0x00000010,
+        FWP_CONDITION_FLAG_IS_FRAGMENT = 0x00000020,
+        FWP_CONDITION_FLAG_IS_FRAGMENT_GROUP = 0x00000040,
+        FWP_CONDITION_FLAG_IS_IPSEC_NATT_RECLASSIFY = 0x00000080,
+        FWP_CONDITION_FLAG_REQUIRES_ALE_CLASSIFY = 0x00000100,
+        FWP_CONDITION_FLAG_IS_IMPLICIT_BIND = 0x00000200,
+        FWP_CONDITION_FLAG_IS_REASSEMBLED = 0x00000400,
+        FWP_CONDITION_FLAG_IS_NAME_APP_SPECIFIED = 0x00004000,
+        FWP_CONDITION_FLAG_IS_PROMISCUOUS = 0x00008000,
+        FWP_CONDITION_FLAG_IS_AUTH_FW = 0x00010000,
+        FWP_CONDITION_FLAG_IS_RECLASSIFY = 0x00020000,
+        FWP_CONDITION_FLAG_IS_OUTBOUND_PASS_THRU = 0x00040000,
+        FWP_CONDITION_FLAG_IS_INBOUND_PASS_THRU = 0x00080000,
+        FWP_CONDITION_FLAG_IS_CONNECTION_REDIRECTED = 0x00100000,
+        FWP_CONDITION_FLAG_IS_PROXY_CONNECTION = 0x00200000,
+        FWP_CONDITION_FLAG_IS_APPCONTAINER_LOOPBACK = 0x00400000,
+        FWP_CONDITION_FLAG_IS_NON_APPCONTAINER_LOOPBACK = 0x00800000,
+        FWP_CONDITION_FLAG_IS_RESERVED = 0x01000000,
+        FWP_CONDITION_FLAG_IS_HONORING_POLICY_AUTHORIZE = 0x02000000
+    }
+
+    public sealed class FlagsFilterCondition : FilterCondition
+    {
+        public FlagsFilterCondition(ConditionFlags flags, FieldMatchType matchType)
+        {
+            _nativeStruct.matchType = matchType;
+            _nativeStruct.fieldKey = ConditionKeys.FWPM_CONDITION_FLAGS;
+            _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT32;
+            _nativeStruct.conditionValue.uint32 = (uint)flags;
+        }
+    }
+
 }
