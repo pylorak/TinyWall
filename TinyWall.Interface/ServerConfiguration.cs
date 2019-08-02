@@ -177,9 +177,13 @@ namespace TinyWall.Interface
         {
             string key = Internal.Hasher.HashString(ENC_SALT).Substring(0, 16);
 
-            lock (this)
+            using (AtomicFileUpdater fileUpdater = new AtomicFileUpdater(filePath))
             {
-                Internal.SerializationHelper.SaveToEncryptedXMLFile(this, filePath, key, ENC_IV);
+                lock (this)
+                {
+                    Internal.SerializationHelper.SaveToEncryptedXMLFile(this, fileUpdater.TemporaryFilePath, key, ENC_IV);
+                }
+                fileUpdater.Commit();
             }
         }
 

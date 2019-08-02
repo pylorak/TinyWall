@@ -2,7 +2,7 @@
 using System.IO;
 namespace TinyWall.Interface
 {
-    public class AtomicFileUpdater :TinyWall.Interface.Internal.Disposable
+    public class AtomicFileUpdater : TinyWall.Interface.Internal.Disposable
     {
         public AtomicFileUpdater(string targetFile)
         {
