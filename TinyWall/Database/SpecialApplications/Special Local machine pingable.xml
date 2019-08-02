@@ -7,15 +7,29 @@
           <RuleDef>
             <Action>Allow</Action>
             <Direction>In</Direction>
-            <IcmpTypesAndCodes>8:0</IcmpTypesAndCodes>
-            <Name>ICMPv4 (echo-req) in</Name>
+            <IcmpTypesAndCodes>8</IcmpTypesAndCodes>
+            <Name>ICMPv4 (echo-req, in)</Name>
+            <Protocol>ICMPv4</Protocol>
+          </RuleDef>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>Out</Direction>
+            <IcmpTypesAndCodes>0</IcmpTypesAndCodes>
+            <Name>ICMPv4 (echo-reply, out)</Name>
             <Protocol>ICMPv4</Protocol>
           </RuleDef>
           <RuleDef>
             <Action>Allow</Action>
             <Direction>In</Direction>
-            <IcmpTypesAndCodes>128:0</IcmpTypesAndCodes>
-            <Name>ICMPv6 (echo-req) in</Name>
+            <IcmpTypesAndCodes>128</IcmpTypesAndCodes>
+            <Name>ICMPv6 (echo-req, in)</Name>
+            <Protocol>ICMPv6</Protocol>
+          </RuleDef>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>Out</Direction>
+            <IcmpTypesAndCodes>129</IcmpTypesAndCodes>
+            <Name>ICMPv6 (echo-reply, out)</Name>
             <Protocol>ICMPv6</Protocol>
           </RuleDef>
         </Rules>

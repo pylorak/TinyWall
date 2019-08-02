@@ -434,32 +434,96 @@
                 <Action>Allow</Action>
                 <Application i:nil="true" />
                 <Direction>Out</Direction>
-                <IcmpTypesAndCodes>8:0</IcmpTypesAndCodes>
-                <Name>ICMPv4 (echo-req) out</Name>
+                <IcmpTypesAndCodes>8</IcmpTypesAndCodes>
+                <Name>ICMPv4 (echo-req, out)</Name>
                 <Protocol>ICMPv4</Protocol>
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
                 <Application i:nil="true" />
-                <Direction>Out</Direction>
-                <IcmpTypesAndCodes>128:0</IcmpTypesAndCodes>
-                <Name>ICMPv6 (echo-req) out</Name>
+                <Direction>In</Direction>
+                <IcmpTypesAndCodes>0</IcmpTypesAndCodes>
+                <Name>ICMPv4 (echo-reply, in)</Name>
+                <Protocol>ICMPv4</Protocol>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Application i:nil="true" />
+                <Direction>In</Direction>
+                <IcmpTypesAndCodes>3:*</IcmpTypesAndCodes>
+                <Name>ICMPv4 (dest.unreachable)</Name>
+                <Protocol>ICMPv4</Protocol>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Application i:nil="true" />
+                <Direction>In</Direction>
+                <IcmpTypesAndCodes>11:*</IcmpTypesAndCodes>
+                <Name>ICMPv4 (time exceeded)</Name>
+                <Protocol>ICMPv4</Protocol>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Application i:nil="true" />
+                <Direction>InOut</Direction>
+                <IcmpTypesAndCodes>1</IcmpTypesAndCodes>
+                <Name>ICMPv6 (dest.unreachable)</Name>
                 <Protocol>ICMPv6</Protocol>
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
                 <Application i:nil="true" />
                 <Direction>In</Direction>
-                <Name i:nil="true" />
-                <Protocol>HOPOPT</Protocol>
-                <RemoteAddresses>Defaultgateway</RemoteAddresses>
+                <IcmpTypesAndCodes>2</IcmpTypesAndCodes>
+                <Name>ICMPv6 (packet too big)</Name>
+                <Protocol>ICMPv6</Protocol>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Application i:nil="true" />
+                <Direction>InOut</Direction>
+                <IcmpTypesAndCodes>3</IcmpTypesAndCodes>
+                <Name>ICMPv6 (time exceeded)</Name>
+                <Protocol>ICMPv6</Protocol>
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
                 <Application i:nil="true" />
                 <Direction>In</Direction>
-                <IcmpTypesAndCodes>129:0,1:*,3:*,2:0</IcmpTypesAndCodes>
-                <Name>ICMPv6 (safe)</Name>
+                <IcmpTypesAndCodes>4</IcmpTypesAndCodes>
+                <Name>ICMPv6 (param.problem)</Name>
+                <Protocol>ICMPv6</Protocol>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Application i:nil="true" />
+                <Direction>Out</Direction>
+                <IcmpTypesAndCodes>133,135,141</IcmpTypesAndCodes>
+                <Name>ICMPv6 (addr.configuration, out)</Name>
+                <Protocol>ICMPv6</Protocol>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Application i:nil="true" />
+                <Direction>In</Direction>
+                <IcmpTypesAndCodes>134,136,142</IcmpTypesAndCodes>
+                <Name>ICMPv6 (addr.configuration, in)</Name>
+                <Protocol>ICMPv6</Protocol>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Application i:nil="true" />
+                <Direction>Out</Direction>
+                <IcmpTypesAndCodes>128</IcmpTypesAndCodes>
+                <Name>ICMPv6 (echo-req, out)</Name>
+                <Protocol>ICMPv6</Protocol>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Application i:nil="true" />
+                <Direction>In</Direction>
+                <IcmpTypesAndCodes>129</IcmpTypesAndCodes>
+                <Name>ICMPv6 (echo-reply, in)</Name>
                 <Protocol>ICMPv6</Protocol>
               </RuleDef>
             </Rules>
@@ -488,16 +552,32 @@
                 <Action>Allow</Action>
                 <Application i:nil="true" />
                 <Direction>In</Direction>
-                <IcmpTypesAndCodes>8:0</IcmpTypesAndCodes>
-                <Name>ICMPv4 (echo-req) in</Name>
+                <IcmpTypesAndCodes>8</IcmpTypesAndCodes>
+                <Name>ICMPv4 (echo-req, in)</Name>
+                <Protocol>ICMPv4</Protocol>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Application i:nil="true" />
+                <Direction>Out</Direction>
+                <IcmpTypesAndCodes>0</IcmpTypesAndCodes>
+                <Name>ICMPv4 (echo-reply, out)</Name>
                 <Protocol>ICMPv4</Protocol>
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
                 <Application i:nil="true" />
                 <Direction>In</Direction>
-                <IcmpTypesAndCodes>128:0</IcmpTypesAndCodes>
-                <Name>ICMPv6 (echo-req) in</Name>
+                <IcmpTypesAndCodes>128</IcmpTypesAndCodes>
+                <Name>ICMPv6 (echo-req, in)</Name>
+                <Protocol>ICMPv6</Protocol>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Application i:nil="true" />
+                <Direction>Out</Direction>
+                <IcmpTypesAndCodes>129</IcmpTypesAndCodes>
+                <Name>ICMPv6 (echo-reply, out)</Name>
                 <Protocol>ICMPv6</Protocol>
               </RuleDef>
             </Rules>
