@@ -541,9 +541,27 @@ namespace WFPdotNet
            0xaf, 0x22, 0xa8, 0xf7, 0x91, 0xac, 0x77, 0x5b
         );
 
+        // 0c1ba1af-5765-453f-af22-a8f791ac775b
+        public static readonly Guid     // same as FWPM_CONDITION_IP_LOCAL_PORT (not a mistake)
+           FWPM_CONDITION_ICMP_TYPE = new Guid(
+           0x0c1ba1af,
+           0x5765,
+           0x453f,
+           0xaf, 0x22, 0xa8, 0xf7, 0x91, 0xac, 0x77, 0x5b
+        );
+
         // c35a604d-d22b-4e1a-91b4-68f674ee674b
         public static readonly Guid
            FWPM_CONDITION_IP_REMOTE_PORT = new Guid(
+           0xc35a604d,
+           0xd22b,
+           0x4e1a,
+           0x91, 0xb4, 0x68, 0xf6, 0x74, 0xee, 0x67, 0x4b
+        );
+
+        // c35a604d-d22b-4e1a-91b4-68f674ee674b
+        public static readonly Guid     // same as FWPM_CONDITION_IP_REMOTE_PORT (not a mistake)
+           FWPM_CONDITION_ICMP_CODE = new Guid(
            0xc35a604d,
            0xd22b,
            0x4e1a,
