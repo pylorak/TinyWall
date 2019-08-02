@@ -15,13 +15,6 @@ namespace PKSoft
 {
     internal partial class ConnectionsForm : Form
     {
-        private struct ProcInfo
-        {
-            internal int pid;
-            internal string name;
-            internal string path;
-        }
-
         private List<FirewallLogEntry> FwLogEntries = new List<FirewallLogEntry>();
         private TinyWallController Controller = null;
         private Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
@@ -39,12 +32,29 @@ namespace PKSoft
             this.Close();
         }
 
+        private string GetPathFromPidCached(Dictionary<int, string> cache, int pid, string path = null)
+        {
+            if (cache.ContainsKey(pid))
+                return cache[pid];
+            else
+            {
+                string ret = null;
+                if (path == null)
+                    ret = Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller);
+                else
+                    ret = path;
+
+                cache.Add(pid, ret);
+                return ret;
+            }
+        }
+
         private void UpdateList()
         {
             List<ListViewItem> itemColl = new List<ListViewItem>();
-            Dictionary<int, ProcInfo> procCache = new Dictionary<int, ProcInfo>();
+            Dictionary<int, string> procCache = new Dictionary<int, string>();
 
-            Future<TinyWall.Interface.Internal.TwMessage> fwLogRequest = GlobalInstances.Controller.BeginReadFwLog();
+            Future<TwMessage> fwLogRequest = GlobalInstances.Controller.BeginReadFwLog();
 
             // Retrieve IP tables while waiting for log entries
 
@@ -52,16 +62,22 @@ namespace PKSoft
             TcpTable tcpTable = NetStat.GetExtendedTcp4Table(false);
             foreach (TcpRow tcpRow in tcpTable)
             {
-                if ( (chkShowListen.Checked && (tcpRow.State == TcpState.Listen))
+                if ((chkShowListen.Checked && (tcpRow.State == TcpState.Listen))
                   || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
-                    ConstructListItem(itemColl, null, procCache, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now);
+                {
+                    string path = GetPathFromPidCached(procCache, tcpRow.ProcessId);
+                    ConstructListItem(itemColl, path, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now);
+                }
             }
             tcpTable = NetStat.GetExtendedTcp6Table(false);
             foreach (TcpRow tcpRow in tcpTable)
             {
                 if ((chkShowListen.Checked && (tcpRow.State == TcpState.Listen))
                  || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
-                    ConstructListItem(itemColl, null, procCache, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now);
+                {
+                    string path = GetPathFromPidCached(procCache, tcpRow.ProcessId);
+                    ConstructListItem(itemColl, path, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now);
+                }
             }
 
             if (chkShowListen.Checked)
@@ -70,12 +86,14 @@ namespace PKSoft
                 UdpTable udpTable = NetStat.GetExtendedUdp4Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
-                    ConstructListItem(itemColl, null, procCache, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now);
+                    string path = GetPathFromPidCached(procCache, udpRow.ProcessId);
+                    ConstructListItem(itemColl, path, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now);
                 }
                 udpTable = NetStat.GetExtendedUdp6Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
-                    ConstructListItem(itemColl, null, procCache, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now);
+                    string path = GetPathFromPidCached(procCache, udpRow.ProcessId);
+                    ConstructListItem(itemColl, path, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now);
                 }
             }
 
@@ -83,7 +101,7 @@ namespace PKSoft
 
             // Remove log entries older than 2 minutes
             now = DateTime.Now;
-            TimeSpan refSpan = TimeSpan.FromMinutes(2);
+            TimeSpan refSpan = TimeSpan.FromMinutes(5);
             for (int i = FwLogEntries.Count - 1; i >= 0; --i)
             {
                 TimeSpan span = now - FwLogEntries[i].Timestamp;
@@ -101,6 +119,7 @@ namespace PKSoft
                     case EventLogEvent.ALLOWED_LISTEN:
                     case EventLogEvent.ALLOWED_CONNECTION:
                     case EventLogEvent.ALLOWED_LOCAL_BIND:
+                    case EventLogEvent.ALLOWED:
                         {
                             newEntry.Event = EventLogEvent.ALLOWED;
                             break;
@@ -109,6 +128,7 @@ namespace PKSoft
                     case EventLogEvent.BLOCKED_CONNECTION:
                     case EventLogEvent.BLOCKED_LOCAL_BIND:
                     case EventLogEvent.BLOCKED_PACKET:
+                    case EventLogEvent.BLOCKED:
                         {
                             bool matchFound = false;
                             newEntry.Event = EventLogEvent.BLOCKED;
@@ -137,7 +157,7 @@ namespace PKSoft
                 for (int i = 0; i < FwLogEntries.Count; ++i)
                 {
                     FirewallLogEntry entry = FwLogEntries[i];
-                    ConstructListItem(itemColl, entry.AppPath, procCache, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked", entry.Timestamp, entry.Direction);
+                    ConstructListItem(itemColl, entry.AppPath, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked", entry.Timestamp, entry.Direction);
                 }
             }
 
@@ -148,39 +168,26 @@ namespace PKSoft
             list.ResumeLayout(false);
         }
 
-        private void ConstructListItem(List<ListViewItem> itemColl, string appName, Dictionary<int, ProcInfo> procCache, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, RuleDirection dir = RuleDirection.Invalid)
+        private void ConstructListItem(List<ListViewItem> itemColl, string appPath, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, RuleDirection dir = RuleDirection.Invalid)
         {
             try
             {
-                // Get process information
-                ProcInfo pi = new ProcInfo();
-                if (procCache.ContainsKey(procId))
-                    pi = procCache[procId];
-                else
-                {
-                    if (appName == null)
-                        pi.path = Utils.GetPathOfProcessUseTwService(procId, GlobalInstances.Controller);
-                    else
-                        pi.path = appName;
-
-                    pi.pid = procId;
-                    pi.name = System.IO.Path.GetFileName(pi.path);
-                    procCache.Add(procId, pi);
-                }
 
                 // Construct list item
-                ListViewItem li = new ListViewItem(string.Format(CultureInfo.CurrentCulture, "{0}({1})", pi.name, pi.pid));
-                li.Tag = pi.pid;
-                li.ToolTipText = pi.path;
+                string name = System.IO.Path.GetFileName(appPath);
+                string title = (procId != 0) ? $"{name} ({procId})" : name;
+                ListViewItem li = new ListViewItem(title);
+                li.Tag = procId;
+                li.ToolTipText = appPath;
 
-                if (System.IO.Path.IsPathRooted(pi.path) && System.IO.File.Exists(pi.path))
+                if (System.IO.Path.IsPathRooted(appPath) && System.IO.File.Exists(appPath))
                 {
-                    if (!IconList.Images.ContainsKey(pi.path))
+                    if (!IconList.Images.ContainsKey(appPath))
                     {
                         // Get icon
-                        IconList.Images.Add(pi.path, Utils.GetIconContained(pi.path, IconSize.Width, IconSize.Height));
+                        IconList.Images.Add(appPath, Utils.GetIconContained(appPath, IconSize.Width, IconSize.Height));
                     }
-                    li.ImageKey = pi.path;
+                    li.ImageKey = appPath;
                 }
 
                 li.SubItems.Add(protocol);
@@ -280,6 +287,14 @@ namespace PKSoft
         {
             if (list.SelectedIndices.Count < 1)
                 e.Cancel = true;
+
+            // Don't allow Kill if we don't have a PID
+            bool hasPid = true;
+            foreach (ListViewItem li in list.SelectedItems)
+            {
+                hasPid &= ((int)li.Tag != 0);
+            }
+            mnuCloseProcess.Enabled = hasPid;
         }
 
         private void mnuCloseProcess_Click(object sender, EventArgs e)
