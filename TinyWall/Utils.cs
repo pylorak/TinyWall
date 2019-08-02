@@ -747,6 +747,45 @@ namespace PKSoft
 
             return (a != null) && a.Equals(b, StringComparison.InvariantCultureIgnoreCase);
         }
+
+
+
+        public static class DevicePathMapper
+        {
+            [DllImport("Kernel32.dll", CharSet = CharSet.Unicode)]
+            private static extern uint QueryDosDevice([In] string lpDeviceName, [Out] StringBuilder lpTargetPath, [In] int ucchMax);
+
+            public static string FromDevicePath(string devicePath)
+            {
+                var drive = Array.Find(DriveInfo.GetDrives(), d => devicePath.StartsWith(GetDevicePath(d), StringComparison.InvariantCultureIgnoreCase));
+                if (drive == null)
+                    return devicePath;
+                return drive != null ? ReplaceFirst(devicePath, GetDevicePath(drive), GetDriveLetter(drive)) : null;
+            }
+
+            private static string GetDevicePath(DriveInfo driveInfo)
+            {
+                var devicePathBuilder = new StringBuilder(128);
+                string ret = QueryDosDevice(GetDriveLetter(driveInfo), devicePathBuilder, devicePathBuilder.Capacity + 1) != 0 ?
+                    devicePathBuilder.ToString() :                    null;
+                return ret;
+            }
+
+            private static string GetDriveLetter(DriveInfo driveInfo)
+            {
+                return driveInfo.Name.Substring(0, 2);
+            }
+
+            private static string ReplaceFirst(string text, string search, string replace)
+            {
+                int pos = text.IndexOf(search, StringComparison.InvariantCultureIgnoreCase);
+                if (pos < 0)
+                {
+                    return text;
+                }
+                return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
+            }
+        }
     }
 
     [Serializable]

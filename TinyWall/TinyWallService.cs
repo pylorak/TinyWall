@@ -19,6 +19,7 @@ namespace PKSoft
     {
         internal readonly static string[] ServiceDependencies = new string[]
         {
+            "mpssvc",
             "eventlog",
             "Winmgmt"
         };
@@ -32,11 +33,12 @@ namespace PKSoft
         private Timer MinuteTimer;
         private DateTime LastControllerCommandTime = DateTime.Now;
         private DateTime LastFwLogReadTime = DateTime.Now;
-        private FirewallLogWatcher LogWatcher;
+        private List<FirewallLogEntry> FirewallLogEntries = new List<FirewallLogEntry>();
         private ServiceSettings ServiceLocker = null;
 
         // Context needed for learning mode
-        List<FirewallExceptionV3> LearningNewExceptions;
+        FirewallLogWatcher LogWatcher;
+        List<FirewallExceptionV3> LearningNewExceptions = new List<FirewallExceptionV3>();
         
         private bool UninstallRequested = false;
         private bool RunService = false;
@@ -370,7 +372,10 @@ namespace PKSoft
             if (!string.IsNullOrEmpty(r.Application))
             {
                 System.Diagnostics.Debug.Assert(!r.Application.Equals("*"));
-                f.Conditions.Add(new AppIdFilterCondition(r.Application));
+                if (!LayerIsIcmpError(layer))
+                    f.Conditions.Add(new AppIdFilterCondition(r.Application));
+                else
+                    return;
             }
             if (r.Protocol != Protocol.Any)
             {
@@ -883,7 +888,8 @@ namespace PKSoft
         private void NotifyController(MessageType msg)
         {
             VisibleState.ClientNotifs.Add(msg);
-            GlobalInstances.ConfigChangeset = Guid.NewGuid();        }
+            GlobalInstances.ConfigChangeset = Guid.NewGuid();
+        }
 
         internal void TimerCallback(Object state)
         {
@@ -911,114 +917,34 @@ namespace PKSoft
 
         private List<FirewallLogEntry> GetFwLog()
         {
-            if (LogWatcher == null)
+            List<FirewallLogEntry> entries = new List<FirewallLogEntry>();
+            lock (FirewallLogEntries)
             {
-                LogWatcher = new FirewallLogWatcher();
-                LogWatcher.NewLogEntry += new EventHandler(LogWatcher_NewLogEntry);
+                entries.AddRange(FirewallLogEntries);
+                FirewallLogEntries.Clear();
             }
-
-            LastFwLogReadTime = DateTime.Now;
-            return LogWatcher.QueryNewEntries();
-        }
-
-        private void LogWatcher_NewLogEntry(object sender, EventArgs e)
-        {
-            if (VisibleState.Mode != TinyWall.Interface.FirewallMode.Learning)
-                return;
-
-            lock (LogWatcher)
-            {
-                List<FirewallLogEntry> list = GetFwLog();
-                foreach (FirewallLogEntry entry in list)
-                {
-                    if (  // IPv4
-                        ((entry.DestinationIP.Equals("127.0.0.1", StringComparison.Ordinal)
-                        && entry.SourceIP.Equals("127.0.0.1", StringComparison.Ordinal)))
-                       || // IPv6
-                        ((entry.DestinationIP.Equals("::1", StringComparison.Ordinal)
-                        && entry.SourceIP.Equals("::1", StringComparison.Ordinal)))
-                       )
-                    {
-                        // Ignore communication within local machine
-                        continue;
-                    }
-
-                    if (entry.AppPath == null)
-                        continue;
-
-                    if (LearningNewExceptions == null)
-                        LearningNewExceptions = new List<FirewallExceptionV3>();
-
-                    ExecutableSubject newSubject = new ExecutableSubject(entry.AppPath);
-
-                    bool alreadyExists = false;
-                    for (int j = 0; j < LearningNewExceptions.Count; ++j)
-                    {
-                        if (LearningNewExceptions[j].Subject.Equals(newSubject))
-                        {
-                            alreadyExists = true;
-                            break;
-                        }
-                    }
-                    if (alreadyExists)
-                        continue;
-
-                    List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(newSubject, false, out DatabaseClasses.Application app);
-                    if (app == null)
-                    {
-                        System.Diagnostics.Debug.Assert(exceptions.Count == 1);
-
-                        // Unknown file, add with unrestricted policy
-                        FirewallExceptionV3 fwex = new FirewallExceptionV3(newSubject, null);
-                        TcpUdpPolicy policy = new TcpUdpPolicy();
-                        if (((entry.Direction == RuleDirection.In) && (entry.Event == EventLogEvent.ALLOWED_CONNECTION))
-                            || entry.Event == EventLogEvent.ALLOWED_LISTEN)
-                        {
-                            policy.AllowedLocalTcpListenerPorts = "*";
-                            policy.AllowedLocalUdpListenerPorts = "*";
-                        }
-                        else
-                        {
-                            policy.AllowedRemoteTcpConnectPorts = "*";
-                            policy.AllowedRemoteUdpConnectPorts = "*";
-                        }
-                        fwex.Policy = policy;
-                        LearningNewExceptions.Add(fwex);
-                    }
-                    else
-                    {
-                        // Known file, add its exceptions, along with other files that belong to this app
-                        LearningNewExceptions.AddRange(exceptions);
-                    }
-                }
-            }
+            return entries;
         }
 
         private bool CommitLearnedRules()
         {
             bool needsSave = false;
 
-            if (LogWatcher == null)
-                return needsSave;
-
-            if (LearningNewExceptions == null)
-                return needsSave;
-
-            if (LearningNewExceptions.Count > 0)
+            lock (LearningNewExceptions)
             {
-                lock (LogWatcher)
-                {
-                    foreach (FirewallExceptionV3 ex in LearningNewExceptions)
-                    {
-                        needsSave = true;
-                        ActiveConfig.Service.ActiveProfile.AppExceptions.Add(ex);
-                    }
+                if (LearningNewExceptions.Count == 0)
+                    return false;
 
-                    LearningNewExceptions = null;
+                foreach (FirewallExceptionV3 ex in LearningNewExceptions)
+                {
+                    needsSave = true;
+                    ActiveConfig.Service.ActiveProfile.AppExceptions.Add(ex);
                 }
 
-                GlobalInstances.ConfigChangeset = Guid.NewGuid();
+                LearningNewExceptions.Clear();
             }
+
+            GlobalInstances.ConfigChangeset = Guid.NewGuid();
 
             return needsSave;
         }
@@ -1051,6 +977,20 @@ namespace PKSoft
                             ActiveConfig.Service.Save(ConfigSavePath);
 
                         InstallFirewallRules();
+
+                        if (VisibleState.Mode == FirewallMode.Learning)
+                        {
+                            if (LogWatcher == null)
+                            {
+                                LogWatcher = new FirewallLogWatcher();
+                                LogWatcher.NewLogEntry += LogWatcher_NewLogEntry;
+                            }
+                        }
+                        else
+                        {
+                            LogWatcher?.Dispose();
+                            LogWatcher = null;
+                        }
 
                         if (
                                (VisibleState.Mode != TinyWall.Interface.FirewallMode.Disabled)
@@ -1163,19 +1103,6 @@ namespace PKSoft
                     }
                 case MessageType.MINUTE_TIMER:
                     {
-                        if (VisibleState.Mode != TinyWall.Interface.FirewallMode.Learning)
-                        {
-                            // Disable firewall logging if its log has not been read recently
-                            if (DateTime.Now - LastFwLogReadTime > TimeSpan.FromMinutes(2))
-                            {
-                                if (LogWatcher != null)
-                                {
-                                    LogWatcher.Dispose();
-                                    LogWatcher = null;
-                                }
-                            }
-                        }
-
                         bool needsSave = false;
 
                         // Check all exceptions if any one has expired
@@ -1259,18 +1186,21 @@ namespace PKSoft
             }
         }
 
+        private void LogWatcher_NewLogEntry(FirewallLogWatcher sender, FirewallLogEntry entry)
+        {
+            AutoLearnLogEntry(entry);
+        }
+
         // Entry point for thread that actually issues commands to Windows Firewall.
         // Only one thread (this one) is allowed to issue them.
         private void FirewallWorkerMethod()
         {
-            EventLogWatcher WFEventWatcher = null;
-
             NetworkChange.NetworkAddressChanged += NetworkChange_NetworkAddressChanged;
             NetworkChange.NetworkAvailabilityChanged += NetworkChange_NetworkAvailabilityChanged;
 
             Guid TINYWALL_PROVIDER_KEY = new Guid("{66CA412C-4453-4F1E-A973-C16E433E34D0}");
-            using (WfpEngine = new Engine("TinyWall Session", "", WFPdotNet.Interop.FWPM_SESSION_FLAGS.FWPM_SESSION_FLAG_DYNAMIC, 5000))
-            using (var WfeEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback, null))
+            using (WfpEngine = new Engine("TinyWall Session", "", FWPM_SESSION_FLAGS.FWPM_SESSION_FLAG_DYNAMIC, 5000))
+            using (var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback, null))
             {
                 // Check if TinyWall session already exists, and if it does, use it
                 ProviderCollection coll = WfpEngine.GetProviders();
@@ -1320,18 +1250,6 @@ namespace PKSoft
 
                 try
                 {
-                    try
-                    {
-                        WFEventWatcher = new EventLogWatcher("Microsoft-Windows-Windows Firewall With Advanced Security/Firewall");
-                        WFEventWatcher.EventRecordWritten += new EventHandler<EventRecordWrittenEventArgs>(WFEventWatcher_EventRecordWritten);
-                        WFEventWatcher.Enabled = true;
-                    }
-                    catch
-                    {
-                        // TODO: deprecated
-                        EventLog.WriteEntry("Unable to listen for firewall events. Windows Firewall monitoring will be turned off.");
-                    }
-
                     RunService = true;
                     while (RunService)
                     {
@@ -1347,7 +1265,6 @@ namespace PKSoft
                 }
                 finally
                 {
-                    WFEventWatcher?.Dispose();
                     Cleanup();
                     Environment.Exit(0);
                 }
@@ -1366,9 +1283,120 @@ namespace PKSoft
 
         private void WfpNetEventCallback(object context, NetEventData data)
         {
+            EventLogEvent eventType = EventLogEvent.ALLOWED;
+            if (data.EventType == FWPM_NET_EVENT_TYPE.FWPM_NET_EVENT_TYPE_CLASSIFY_DROP)
+                eventType = EventLogEvent.BLOCKED;
+            else if (data.EventType == FWPM_NET_EVENT_TYPE.FWPM_NET_EVENT_TYPE_CLASSIFY_ALLOW)
+                eventType = EventLogEvent.ALLOWED;
+            else
+                return;
 
+            FirewallLogEntry entry = new FirewallLogEntry();
+            entry.Timestamp = DateTime.Now;
+            entry.Event = eventType;
+
+            if (!string.IsNullOrEmpty(data.appId))
+                entry.AppPath = Utils.DevicePathMapper.FromDevicePath(data.appId);
+            else
+                entry.AppPath = "System";
+            entry.DestinationIP = data.remoteAddr?.ToString();
+            if (data.remotePort.HasValue)
+                entry.DestinationPort = data.remotePort.Value;
+            entry.DestinationIP = data.remoteAddr?.ToString();
+            if (data.direction.HasValue)
+                entry.Direction = data.direction == FwpmDirection.FWP_DIRECTION_OUT ? RuleDirection.Out : RuleDirection.In;
+            if (data.ipProtocol.HasValue)
+                entry.Protocol = (Protocol)data.ipProtocol;
+            if (data.localPort.HasValue)
+                entry.SourcePort = data.localPort.Value;
+            entry.SourceIP = data.localAddr?.ToString();
+
+            // Replace invalid IP strings with the "unspecified address" IPv6 specifier
+            if (string.IsNullOrEmpty(entry.DestinationIP))
+                entry.DestinationIP = "::";
+            if (string.IsNullOrEmpty(entry.SourceIP))
+                entry.SourceIP = "::";
+
+            // Maximum number of allowed entries
+            const int MAX_ENTRIES = 1000;
+
+            lock (FirewallLogEntries)
+            {
+                // Safe guard against using up all memory
+                if (FirewallLogEntries.Count >= MAX_ENTRIES)
+                {
+                    // Keep the latest MAX_ENTRIES entries
+                    int overLimit = FirewallLogEntries.Count - MAX_ENTRIES;
+                    FirewallLogEntries.RemoveRange(0, overLimit);
+                }
+
+                FirewallLogEntries.Add(entry);
+            }
         }
 
+        private void AutoLearnLogEntry(FirewallLogEntry entry)
+        {
+            if (  // IPv4
+                ((entry.DestinationIP.Equals("127.0.0.1", StringComparison.Ordinal)
+                && entry.SourceIP.Equals("127.0.0.1", StringComparison.Ordinal)))
+               || // IPv6
+                ((entry.DestinationIP.Equals("::1", StringComparison.Ordinal)
+                && entry.SourceIP.Equals("::1", StringComparison.Ordinal)))
+               )
+            {
+                // Ignore communication within local machine
+                return;
+            }
+
+            // Certain things we don't want to whitelist
+            if (string.IsNullOrEmpty(entry.AppPath) || entry.AppPath.Equals("System", StringComparison.InvariantCultureIgnoreCase))
+                return;
+
+            ExecutableSubject newSubject = new ExecutableSubject(entry.AppPath);
+
+            lock (LearningNewExceptions)
+            {
+                bool alreadyExists = false;
+                for (int j = 0; j < LearningNewExceptions.Count; ++j)
+                {
+                    if (LearningNewExceptions[j].Subject.Equals(newSubject))
+                    {
+                        alreadyExists = true;
+                        break;
+                    }
+                }
+                if (alreadyExists)
+                    return;
+
+                List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(newSubject, false, out DatabaseClasses.Application app);
+                if (app == null)
+                {
+                    System.Diagnostics.Debug.Assert(exceptions.Count == 1);
+
+                    // Unknown file, add with unrestricted policy
+                    FirewallExceptionV3 fwex = new FirewallExceptionV3(newSubject, null);
+                    TcpUdpPolicy policy = new TcpUdpPolicy();
+                    if (((entry.Direction == RuleDirection.In) && (entry.Event == EventLogEvent.ALLOWED_CONNECTION))
+                        || entry.Event == EventLogEvent.ALLOWED_LISTEN)
+                    {
+                        policy.AllowedLocalTcpListenerPorts = "*";
+                        policy.AllowedLocalUdpListenerPorts = "*";
+                    }
+                    else
+                    {
+                        policy.AllowedRemoteTcpConnectPorts = "*";
+                        policy.AllowedRemoteUdpConnectPorts = "*";
+                    }
+                    fwex.Policy = policy;
+                    LearningNewExceptions.Add(fwex);
+                }
+                else
+                {
+                    // Known file, add its exceptions, along with other files that belong to this app
+                    LearningNewExceptions.AddRange(exceptions);
+                }
+            }
+        }
 
         // Entry point for thread that listens to commands from the controller application.
         private TwMessage PipeServerDataReceived(TwMessage req)
@@ -1389,95 +1417,6 @@ namespace PKSoft
 
                 // Send response back to pipe
                 return resp;
-            }
-        }
-
-        // This is a list of apps that are allowed to change firewall rules
-        private readonly string[] WhitelistedApps = new string[]
-                {
-#if DEBUG
-                    Path.Combine(Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath), "TinyWall.vshost.exe"),
-#endif
-                    TinyWall.Interface.Internal.Utils.ExecutablePath,
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "dllhost.exe")
-                };
-        private void WFEventWatcher_EventRecordWritten(object sender, EventRecordWrittenEventArgs e)
-        {
-            // Do nothing if the firewall is in disabled mode
-            if (VisibleState.Mode == TinyWall.Interface.FirewallMode.Disabled)
-                return;
-
-#pragma warning disable 219
-            int propidx = -1;
-#pragma warning restore 219
-            MessageType cmd = MessageType.INVALID_COMMAND;
-            switch (e.EventRecord.Id)
-            {
-                case 2003:     // firewall setting changed
-                    {
-                        propidx = 7;
-                        cmd = MessageType.REINIT;
-                        break;
-                    }
-                case 2004:     // rule added
-                    {
-                        propidx = 22;
-                        cmd = MessageType.REINIT;
-                        break;
-                    }
-                case 2005:     // rule changed
-                    {
-                        propidx = 22;
-                        cmd = MessageType.REINIT;
-                        break;
-                    }
-                case 2006:     // rule deleted
-                    {
-                        propidx = 3;
-                        cmd = MessageType.REINIT;
-                        break;
-                    }
-                case 2010:     // network interface changed profile
-                    {
-                        cmd = MessageType.REINIT;
-                        break;
-                    }
-                case 2032:     // firewall has been reset
-                    {
-                        propidx = 1;
-                        cmd = MessageType.REINIT;
-                        break;
-                    }
-                default:
-                    break;
-            }
-
-            if ((cmd != MessageType.INVALID_COMMAND) && (!Q.HasMessageType(cmd)))
-            {
-              /* EVpath has bogus empty value when run inside the IDE, so triggered by itself,
-               * it brings the TW service into an infinite REINIT loop.
-               * Hence we only allow the REINIT in release builds.
-               * */
-#if !DEBUG
-                if (propidx != -1)
-                {
-                    // If the rules were changed by an allowed app, do nothing
-                    string EVpath = (string)e.EventRecord.Properties[propidx].Value;
-                    for (int i = 0; i < WhitelistedApps.Length; ++i)
-                    {
-                        if (string.Compare(WhitelistedApps[i], EVpath, StringComparison.OrdinalIgnoreCase) == 0)
-                            return;
-                    }
-                    
-                    if (string.IsNullOrEmpty(EVpath))
-                      EventLog.WriteEntry("Reloading firewall configuration because an external process has modified it.");
-                    else
-                      EventLog.WriteEntry("Reloading firewall configuration because " + EVpath + " has modified it.");
-
-                }
-
-                Q.Enqueue(new TwMessage(cmd), null);
-#endif
             }
         }
 
@@ -1576,12 +1515,8 @@ namespace PKSoft
                 ActiveConfig.Service.ActiveProfile.AppExceptions = exs;
             }
 
-            if (LogWatcher != null)
-            {
-                LogWatcher.Dispose();
-                LogWatcher = null;
-            }
-
+            LogWatcher?.Dispose();
+            LogWatcher = null;
             CommitLearnedRules();
             ActiveConfig.Service.Save(ConfigSavePath);
 

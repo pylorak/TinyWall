@@ -11,10 +11,10 @@ namespace PKSoft
     internal class FirewallLogWatcher : Disposable
     {
         //private readonly string FIREWALLLOG_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"LogFiles\Firewall\pfirewall.log");
-        private EventLogWatcher LogWatcher = null;
-        private List<FirewallLogEntry> NewEntries = new List<FirewallLogEntry>();
+        private EventLogWatcher LogWatcher;
 
-        internal event EventHandler NewLogEntry;
+        public delegate void NewLogEntryDelegate(FirewallLogWatcher sender, FirewallLogEntry entry);
+        public event NewLogEntryDelegate NewLogEntry;
 
         protected override void Dispose(bool disposing)
         {
@@ -31,7 +31,6 @@ namespace PKSoft
 
             DisableLogging();
             LogWatcher = null;
-            NewEntries = null;
             base.Dispose(disposing);
         }
 
@@ -103,84 +102,11 @@ namespace PKSoft
 
         void LogWatcher_EventRecordWritten(object sender, EventRecordWrittenEventArgs e)
         {
-            // Maximum number of allowed entries
-            const int MAX_ENTRIES = 1000;
-
-            FirewallLogEntry entry;
             try
             {
-                entry = ParseLogEntry(e);
+                NewLogEntry?.Invoke(this, ParseLogEntry(e));
             }
-            catch
-            {
-                return;
-            }
-            switch (entry.Event)
-            {
-                case EventLogEvent.BLOCKED_LISTEN:
-                    {
-                        break;
-                    }
-                case EventLogEvent.BLOCKED_PACKET:
-                    {
-                        break;
-                    }
-                case EventLogEvent.BLOCKED_CONNECTION:
-                    {
-                        break;
-                    }
-                case EventLogEvent.BLOCKED_LOCAL_BIND:
-                    {
-                        // TODO: deprecated
-                        // Figure out when and if at all this case can happen
-                        break;
-                    }
-                case EventLogEvent.ALLOWED_LISTEN:
-                    {
-                        break;
-                    }
-                case EventLogEvent.ALLOWED_CONNECTION:
-                    {
-                        break;
-                    }
-                case EventLogEvent.ALLOWED_LOCAL_BIND:
-                    {
-                        break;
-                    }
-                default:
-#if DEBUG
-                    throw new InvalidOperationException();
-#else
-                    return;
-#endif
-            }
-
-            lock (NewEntries)
-            {
-                // Safe guard against using up all memory
-                if (NewEntries.Count >= MAX_ENTRIES)
-                {
-                    // Keep the latest MAX_ENTRIES entries
-                    int overLimit = NewEntries.Count - MAX_ENTRIES;
-                    NewEntries.RemoveRange(0, overLimit);
-                }
-
-                NewEntries.Add(entry);
-            }
-
-            if (NewLogEntry != null)
-                NewLogEntry(this, null);
-        }
-
-        internal List<FirewallLogEntry> QueryNewEntries()
-        {
-            List<FirewallLogEntry> entries = new List<FirewallLogEntry>();
-            lock(NewEntries)
-            {
-                entries.AddRange(NewEntries);
-                NewEntries.Clear();
-            }
-            return entries;
+            catch { }
         }
 
         private static class NativeMethods
@@ -222,7 +148,7 @@ namespace PKSoft
                 throw new Win32Exception(Marshal.GetLastWin32Error());
         }
 
-        private void EnableLogging()
+        private static void EnableLogging()
         {
             try
             {
@@ -235,7 +161,7 @@ namespace PKSoft
             catch { }
         }
 
-        private void DisableLogging()
+        private static void DisableLogging()
         {
             try
             {
