@@ -7,7 +7,7 @@ using System.Security;
 
 namespace WFPdotNet
 {
-    public class SublayerCollection : System.Collections.ObjectModel.ReadOnlyCollection<Interop.FWPM_SUBLAYER0>
+    public class SublayerCollection : System.Collections.ObjectModel.ReadOnlyCollection<Sublayer>
     {
         [SuppressUnmanagedCodeSecurity]
         internal static class NativeMethods
@@ -29,7 +29,7 @@ namespace WFPdotNet
         }
 
         internal SublayerCollection(Engine engine)
-            : base(new List<Interop.FWPM_SUBLAYER0>())
+            : base(new List<Sublayer>())
         {
             FwpmSublayerEnumSafeHandle enumSafeHandle = null;
             FwpmMemorySafeHandle entries = null;
@@ -70,7 +70,7 @@ namespace WFPdotNet
                     IntPtr[] ptrList = PInvokeHelper.PtrToStructureArray<IntPtr>(entries.DangerousGetHandle(), numEntriesReturned, (uint)Marshal.SizeOf(typeof(IntPtr)));
                     for (int i = 0; i < numEntriesReturned; ++i)
                     {
-                        Items.Add((Interop.FWPM_SUBLAYER0)Marshal.PtrToStructure(ptrList[i], typeof(Interop.FWPM_SUBLAYER0)));
+                        Items.Add(new Sublayer((Interop.FWPM_SUBLAYER0)Marshal.PtrToStructure(ptrList[i], typeof(Interop.FWPM_SUBLAYER0))));
                     }
 
                     // Exit infinite loop if we have exhausted the list

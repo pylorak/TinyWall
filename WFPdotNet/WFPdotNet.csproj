@@ -101,6 +101,7 @@
     <Compile Include="ProviderCollection.cs" />
     <Compile Include="SafeHandles.cs" />
     <Compile Include="SessionCollection.cs" />
+    <Compile Include="Sublayer.cs" />
     <Compile Include="SublayerCollection.cs" />
     <Compile Include="VersionInfo.cs" />
     <Compile Include="WfpException.cs" />

@@ -136,7 +136,7 @@ namespace WFPdotNet
 
         public Guid RegisterProvider(ref Interop.FWPM_PROVIDER0 provider)
         {
-            if (0 == provider.providerKey.CompareTo(Guid.Empty))
+            if (Guid.Empty == provider.providerKey)
                 provider.providerKey = Guid.NewGuid();
 
             uint error = NativeMethods.FwpmProviderAdd0(_nativeEngineHandle, ref provider, IntPtr.Zero);
@@ -146,25 +146,27 @@ namespace WFPdotNet
             return provider.providerKey;
         }
 
-        public Guid RegisterSublayer(ref Interop.FWPM_SUBLAYER0 sublayer)
+        public Guid RegisterSublayer(Sublayer sublayer)
         {
-            if (0 == sublayer.subLayerKey.CompareTo(Guid.Empty))
-                sublayer.subLayerKey = Guid.NewGuid();
+            if (Guid.Empty == sublayer.SublayerKey)
+                sublayer.SublayerKey = Guid.NewGuid();
 
-            uint error = NativeMethods.FwpmSubLayerAdd0(_nativeEngineHandle, ref sublayer, IntPtr.Zero);
+            var nativeStruct = sublayer.Marshal();
+
+            uint error = NativeMethods.FwpmSubLayerAdd0(_nativeEngineHandle, ref nativeStruct, IntPtr.Zero);
             if (0 != error)
                 throw new WfpException(error, "FwpmProviderAdd0");
 
-            return sublayer.subLayerKey;
+            return sublayer.SublayerKey;
         }
 
         public void RegisterFilter(Filter filter)
         {
-            if (0 == filter.FilterKey.CompareTo(Guid.Empty))
+            if (Guid.Empty == filter.FilterKey)
                 filter.FilterKey = Guid.NewGuid();
 
             ulong id;
-            WFPdotNet.Interop.FWPM_FILTER0 nf = filter.Marshal();
+            Interop.FWPM_FILTER0 nf = filter.Marshal();
             uint err = NativeMethods.FwpmFilterAdd0(_nativeEngineHandle, ref nf, IntPtr.Zero, out id);
             if (0 != err)
                 throw new WfpException(err, "FwpmFilterAdd0");

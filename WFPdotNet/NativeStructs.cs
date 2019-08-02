@@ -91,7 +91,7 @@ namespace WFPdotNet.Interop
         public Guid subLayerKey;
         public Interop.FWPM_DISPLAY_DATA0 displayData;
         public FWPM_SUBLAYER_FLAGS flags;
-        public Guid providerKey;
+        public IntPtr providerKey;
         public FWP_BYTE_BLOB providerData;
         public ushort weight;
     }
