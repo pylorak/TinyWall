@@ -308,12 +308,15 @@ namespace PKSoft
             this.StartupOpts = opts;
 
             ActiveConfig.Controller = ControllerSettings.Load();
-            try
+            if (!ActiveConfig.Controller.Language.Equals("auto", StringComparison.InvariantCultureIgnoreCase))
             {
-                Thread.CurrentThread.CurrentUICulture = new CultureInfo(ActiveConfig.Controller.Language);
-                System.Windows.Forms.Application.CurrentCulture = Thread.CurrentThread.CurrentUICulture;
+                try
+                {
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo(ActiveConfig.Controller.Language);
+                    System.Windows.Forms.Application.CurrentCulture = Thread.CurrentThread.CurrentUICulture;
+                }
+                catch { }
             }
-            catch { }
 
             System.Windows.Forms.Application.AddMessageFilter(this);
             InitializeComponent();
