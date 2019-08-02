@@ -388,7 +388,7 @@ namespace WFPdotNet.Interop
     [StructLayout(LayoutKind.Sequential)]
     public struct FILETIME
     {
-        private long timestamp;
+        public long timestamp;
         public DateTime Local
         {
             get { return DateTime.FromFileTime(this.timestamp); }
@@ -506,6 +506,44 @@ namespace WFPdotNet.Interop
         public IntPtr EventInfo;
     };
 
+    public enum FWP_AF
+    {
+        FWP_AF_INET  = FWP_IP_VERSION.FWP_IP_VERSION_V4,
+        FWP_AF_INET6 = FWP_IP_VERSION.FWP_IP_VERSION_V6,
+        FWP_AF_ETHER = FWP_IP_VERSION.FWP_IP_VERSION_NONE,
+        FWP_AF_NONE  = (FWP_AF_ETHER + 1)
+    }
+
+#if X86_64
+    [StructLayout(LayoutKind.Sequential, Size = 104)]
+#else
+    [StructLayout(LayoutKind.Sequential, Size = 80)]
+#endif
+    public struct FWPM_NET_EVENT_HEADER2
+    {
+        public FILETIME timeStamp;
+        public NetEventHeaderValidField flag;
+        public FWP_IP_VERSION ipVersion;
+        public byte ipProtocol;
+        public InternetworkAddr localAddr;
+        public InternetworkAddr remoteAddr;
+        public ushort localPort;
+        public ushort remotePort;
+        public uint scopeId;
+        public FWP_BYTE_BLOB appId;
+        public IntPtr userId;
+        public FWP_AF addressFamily;
+        public IntPtr packageSid;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_NET_EVENT2
+    {
+        public FWPM_NET_EVENT_HEADER2 header;
+        public FWPM_NET_EVENT_TYPE type;
+        public IntPtr EventInfo;
+    };
+
     public enum FwpmDirection : uint
     {
         FWP_DIRECTION_IN = 0x00003900,
@@ -515,6 +553,19 @@ namespace WFPdotNet.Interop
 
     [StructLayout(LayoutKind.Sequential)]
     public struct FWPM_NET_EVENT_CLASSIFY_DROP1
+    {
+        public ulong filterId;
+        public ushort layerId;
+        public uint reauthReason;
+        public uint originalProfile;
+        public uint currentProfile;
+        public FwpmDirection msFwpDirection;
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool isLoopback;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_NET_EVENT_CLASSIFY_ALLOW0
     {
         public ulong filterId;
         public ushort layerId;
