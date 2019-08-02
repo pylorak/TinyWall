@@ -56,15 +56,20 @@ namespace WFPdotNet
             this.Weight = weight;
         }
 
-
         internal Filter(Interop.FWPM_FILTER0 filt0, bool getConditions)
         {
             _nativeStruct = filt0;
 
             // TODO: Do we really not need to own these SafeHandles ???
-            _providerKeyHandle = new AllocHGlobalSafeHandle(_nativeStruct.providerKey, false);
             _weightHandle = new AllocHGlobalSafeHandle(_nativeStruct.weight.uint64, false);
             _conditionsHandle = new AllocHGlobalSafeHandle(_nativeStruct.filterConditions, false);
+
+            if (_nativeStruct.providerKey != IntPtr.Zero)
+            {
+                // TODO: Do we really not need to own these SafeHandles ???
+                _providerKeyHandle = new AllocHGlobalSafeHandle(_nativeStruct.providerKey, false);
+                _providerKey = (Guid)System.Runtime.InteropServices.Marshal.PtrToStructure(_providerKeyHandle.DangerousGetHandle(), typeof(Guid));
+            }
 
             if (getConditions)
             {
@@ -127,7 +132,7 @@ namespace WFPdotNet
             get { return _providerKey; }
             set
             {
-                _providerKeyHandle.Dispose();
+                _providerKeyHandle?.Dispose();
                 _providerKeyHandle = null;
 
                 _providerKey = value;
@@ -188,7 +193,10 @@ namespace WFPdotNet
             _providerKeyHandle?.Dispose();
             _weightHandle?.Dispose();
             _conditionsHandle?.Dispose();
-        }
 
+            _providerKeyHandle = null;
+            _weightHandle = null;
+            _conditionsHandle = null;
+        }
     }
 }
