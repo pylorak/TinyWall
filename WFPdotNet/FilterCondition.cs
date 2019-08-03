@@ -385,7 +385,7 @@ namespace WFPdotNet
 
         protected SecurityDescriptorFilterCondition() { }
 
-        protected void Init(Guid fieldKey, RawSecurityDescriptor sd)
+        protected void Init(Guid fieldKey, RawSecurityDescriptor sd, FieldMatchType matchType)
         {
             // Get the SD in SDDL self-related form into an unmanaged pointer
             byte[] sdBinaryForm = new byte[sd.BinaryLength];
@@ -399,7 +399,7 @@ namespace WFPdotNet
             blob.data = sdNativeMem.DangerousGetHandle();
             byteBlobNativeMem = PInvokeHelper.StructToHGlobal<Interop.FWP_BYTE_BLOB>(blob);
 
-            _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
+            _nativeStruct.matchType = matchType;
             _nativeStruct.fieldKey = fieldKey;
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_SECURITY_DESCRIPTOR_TYPE;
             _nativeStruct.conditionValue.sd = byteBlobNativeMem.DangerousGetHandle();
@@ -421,7 +421,7 @@ namespace WFPdotNet
 
     public sealed class ServiceNameFilterCondition : SecurityDescriptorFilterCondition
     {
-        public ServiceNameFilterCondition(string serviceName) 
+        public ServiceNameFilterCondition(string serviceName, FieldMatchType matchType)
         {
             // Get service SID
             string serviceSid = GetServiceSidFromName(serviceName);
@@ -430,7 +430,11 @@ namespace WFPdotNet
             string sddl = string.Format("O:SYG:SYD:(A;;CCRC;;;{0})", serviceSid);
 
             // Construct condition from security descriptor
-            Init(ConditionKeys.FWPM_CONDITION_ALE_USER_ID, new RawSecurityDescriptor(sddl));
+            Init(ConditionKeys.FWPM_CONDITION_ALE_USER_ID, new RawSecurityDescriptor(sddl), matchType);
+        }
+
+        public ServiceNameFilterCondition(string serviceName) : this(serviceName, FieldMatchType.FWP_MATCH_EQUAL)
+        {
         }
 
         private string GetServiceSidFromName(string serviceName)
@@ -504,7 +508,8 @@ namespace WFPdotNet
             string sddl = string.Format("O:LSD:(A;;CC;;;{0}))", sid);
             Init(
                 (RemoteOrLocal.Local == peer) ? ConditionKeys.FWPM_CONDITION_ALE_USER_ID : ConditionKeys.FWPM_CONDITION_ALE_REMOTE_USER_ID,
-                new RawSecurityDescriptor(sddl)
+                new RawSecurityDescriptor(sddl),
+                FieldMatchType.FWP_MATCH_EQUAL
             );
         }
     }
@@ -573,6 +578,24 @@ namespace WFPdotNet
             _nativeStruct.fieldKey = ConditionKeys.FWPM_CONDITION_FLAGS;
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT32;
             _nativeStruct.conditionValue.uint32 = (uint)flags;
+        }
+    }
+
+    public enum SioRcvAll : uint
+    {
+        SIO_RCVALL = (uint)2550136833u,
+        SIO_RCVALL_MCAST = (uint)2550136834u,
+        SIO_RCVALL_IGMPMCAST = (uint)2550136835u
+    }
+
+    public sealed class PromiscuousSocketFilterCondition : FilterCondition
+    {
+        public PromiscuousSocketFilterCondition(SioRcvAll val, FieldMatchType matchType)
+        {
+            _nativeStruct.matchType = matchType;
+            _nativeStruct.fieldKey = ConditionKeys.FWPM_CONDITION_ALE_PROMISCUOUS_MODE;
+            _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT32;
+            _nativeStruct.conditionValue.uint32 = (uint)val;
         }
     }
 

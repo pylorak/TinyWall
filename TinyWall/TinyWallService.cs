@@ -265,7 +265,8 @@ namespace PKSoft
                      ConstructFilter(r, filterWeight);
                 }
 
-                InstallPortScanProtection();
+                InstallPortScanProtection(filterWeight);
+                InstallRawSocketFilters(filterWeight);
 
                 trx.Commit();
             }
@@ -284,7 +285,9 @@ namespace PKSoft
             FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6,
             FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4,
             FWPM_LAYER_INBOUND_TRANSPORT_V6_DISCARD,
-            FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD
+            FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD,
+            FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6,
+            FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4,
         }
 
         private static Guid GetSublayerKey(LayerKeyEnum layer)
@@ -315,6 +318,10 @@ namespace PKSoft
                     return WfpSublayerKeys.FWPM_LAYER_INBOUND_TRANSPORT_V6_DISCARD;
                 case LayerKeyEnum.FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD:
                     return WfpSublayerKeys.FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD;
+                case LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6:
+                    return WfpSublayerKeys.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6;
+                case LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4:
+                    return WfpSublayerKeys.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4;
                 default:
                     throw new ArgumentException("Invalid or not support layerEnum.");
             }
@@ -348,6 +355,10 @@ namespace PKSoft
                     return LayerKeys.FWPM_LAYER_INBOUND_TRANSPORT_V6_DISCARD;
                 case LayerKeyEnum.FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD:
                     return LayerKeys.FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD;
+                case LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6:
+                    return LayerKeys.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6;
+                case LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4:
+                    return LayerKeys.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4;
                 default:
                     throw new ArgumentException("Invalid or not support layerEnum.");
             }
@@ -463,20 +474,68 @@ namespace PKSoft
             catch { }
         }
 
-        private void InstallPortScanProtection()
+        private void InstallRawSocketFilters(ulong filterWeight)
         {
-            InstallPortScanProtection(LayerKeyEnum.FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD, BuiltinCallouts.FWPM_CALLOUT_WFP_TRANSPORT_LAYER_V4_SILENT_DROP);
-            InstallPortScanProtection(LayerKeyEnum.FWPM_LAYER_INBOUND_TRANSPORT_V6_DISCARD, BuiltinCallouts.FWPM_CALLOUT_WFP_TRANSPORT_LAYER_V6_SILENT_DROP);
+            InstallRawSocketFilters(filterWeight, LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4);
+            InstallRawSocketFilters(filterWeight, LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6);
         }
-        
-        private void InstallPortScanProtection(LayerKeyEnum layer, Guid callout)
+
+        private void InstallRawSocketFilters(ulong filterWeight, LayerKeyEnum layer)
+        {
+            Filter f = new Filter(
+                "Raw socket filter",
+                string.Empty,
+                ProviderKey,
+                FilterActions.FWP_ACTION_BLOCK,
+                filterWeight
+            );
+            f.FilterKey = Guid.NewGuid();
+            f.LayerKey = GetLayerKey(layer);
+            f.SublayerKey = GetSublayerKey(layer);
+            f.Conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_RAW_ENDPOINT , FieldMatchType.FWP_MATCH_FLAGS_ANY_SET));
+
+            try
+            {
+                WfpEngine.RegisterFilter(f);
+                ActiveWfpFilters.Add(f);
+            }
+            catch { }
+
+            f = new Filter(
+                "Promiscuous socket filter",
+                string.Empty,
+                ProviderKey,
+                FilterActions.FWP_ACTION_BLOCK,
+                filterWeight
+            );
+            f.FilterKey = Guid.NewGuid();
+            f.LayerKey = GetLayerKey(layer);
+            f.SublayerKey = GetSublayerKey(layer);
+            f.Conditions.Add(new PromiscuousSocketFilterCondition(SioRcvAll.SIO_RCVALL, FieldMatchType.FWP_MATCH_EQUAL));
+            f.Conditions.Add(new ServiceNameFilterCondition("dhcp", FieldMatchType.FWP_MATCH_NOT_EQUAL));   // Windows DHCP client is a valid user of promiscuous mode, so we exclude it
+
+            try
+            {
+                WfpEngine.RegisterFilter(f);
+                ActiveWfpFilters.Add(f);
+            }
+            catch { }
+        }
+
+        private void InstallPortScanProtection(ulong filterWeight)
+        {
+            InstallPortScanProtection(filterWeight, LayerKeyEnum.FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD, BuiltinCallouts.FWPM_CALLOUT_WFP_TRANSPORT_LAYER_V4_SILENT_DROP);
+            InstallPortScanProtection(filterWeight, LayerKeyEnum.FWPM_LAYER_INBOUND_TRANSPORT_V6_DISCARD, BuiltinCallouts.FWPM_CALLOUT_WFP_TRANSPORT_LAYER_V6_SILENT_DROP);
+        }
+
+        private void InstallPortScanProtection(ulong filterWeight, LayerKeyEnum layer, Guid callout)
         {
             Filter f = new Filter(
                 "Port Scanning Protection",
                 string.Empty,
                 ProviderKey,
                 FilterActions.FWP_ACTION_CALLOUT_TERMINATING,
-                ulong.MaxValue >> 3
+                filterWeight
             );
             f.FilterKey = Guid.NewGuid();
             f.LayerKey = GetLayerKey(layer);

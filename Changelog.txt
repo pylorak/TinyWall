@@ -15,7 +15,19 @@ TinyWall Changelog
 - Add warning about remote installations to installer
 - Modernized installer look
 - Add port scan protection
-- Fix: Don't leave locked files on service exit.
+- Raw socket and promiscuous mode rights management
+- Fix: Don't leave locked files on service exit
+
+---------------------
+
+2.1.11 - Maintenance release (28.07.2019.)
+- Fix service hang on some systems when blocklists are enabled
+- Fix service hang on some systems when opening Connections window
+
+---------------------
+
+2.1.10 - Maintenance release (19.07.2019.)
+- Fix accidentally introduced dependency on .Net 4.8
 
 ---------------------
 
