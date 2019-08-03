@@ -1,5 +1,8 @@
 Future development ideas:
-- Make saving of service settings atomic
+- Remove RuleDef.Application field
+- Compile new port block list from Docs/MalwarePorts/
+- Boot-time filters
+- Port-scanning prevention
 - Filter promiscuous mode
 - Simply use-case of networked installers
 - Make Processes window remember size

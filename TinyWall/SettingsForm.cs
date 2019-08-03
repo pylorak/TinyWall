@@ -135,7 +135,7 @@ namespace PKSoft
                 listOptionalGlobalProfiles.Items.Clear();
                 foreach (DatabaseClasses.Application app in GlobalInstances.AppDatabase.KnownApplications)
                 {
-                    if (app.HasFlag("TWUI:Special"))
+                    if (app.HasFlag("TWUI:Special") && !app.HasFlag("TWUI:Hidden"))
                     {
                         // Get localized name
                         IdWithName item = new IdWithName(app.Name, app.LocalizedName);

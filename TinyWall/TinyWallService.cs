@@ -186,15 +186,7 @@ namespace PKSoft
             if (ActiveConfig.Service.Blocklists.EnableBlocklists
                 && ActiveConfig.Service.Blocklists.EnablePortBlocklist)
             {
-                // TODO 
-                /* Obsolete.Profile profileMalwarePortBlock = GlobalInstances.ProfileMan.GetProfile("Malware port block");
-                if (profileMalwarePortBlock != null)
-                {
-                    foreach (RuleDef rule in profileMalwarePortBlock.Rules)
-                        rule.ExceptionId = ModeId;
-                    ActiveRules.AddRange(profileMalwarePortBlock.Rules);
-                }
-                */
+                ActiveRules.AddRange(CollectRulesForAppByName("Malware Ports"));
             }
 
             // This switch should be executed last, as it might modify existing elements in ActiveRules
@@ -536,6 +528,42 @@ namespace PKSoft
             }
         }
 
+        private List<RuleDef> CollectRulesForAppByName(string name)
+        {
+            List<RuleDef> rules = new List<RuleDef>();
+
+            try
+            {
+                // Retrieve database entry for appName
+                DatabaseClasses.Application app = GlobalInstances.AppDatabase.GetApplicationByName(name);
+                if (app == null)
+                    return rules;
+
+                // Create rules
+                foreach (DatabaseClasses.SubjectIdentity id in app.Components)
+                {
+                    try
+                    {
+                        List<ExceptionSubject> foundSubjects = id.SearchForFile();
+                        foreach (var subject in foundSubjects)
+                        {
+                            try
+                            {
+                                FirewallExceptionV3 ex = id.InstantiateException(subject);
+                                ex.RegenerateId();
+                                GetRulesForException(ex, rules);
+                            }
+                            catch { }
+                        }
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+
+            return rules;
+        }
+
         private List<RuleDef> RebuildSpecialRuleDefs()
         {
             // We will collect all our rules into this list
@@ -544,35 +572,7 @@ namespace PKSoft
             // Iterate all enabled special exceptions
             foreach (string appName in ActiveConfig.Service.ActiveProfile.SpecialExceptions)
             {
-                try
-                {
-
-                    // Retrieve database entry for appName
-                    DatabaseClasses.Application app = GlobalInstances.AppDatabase.GetApplicationByName(appName);
-                    if (app == null)
-                        continue;
-
-                    // Create rules
-                    foreach (DatabaseClasses.SubjectIdentity id in app.Components)
-                    {
-                        try
-                        {
-                            List<ExceptionSubject> foundSubjects = id.SearchForFile();
-                            foreach (var subject in foundSubjects)
-                            {
-                                try
-                                {
-                                    FirewallExceptionV3 ex = id.InstantiateException(subject);
-                                    ex.RegenerateId();
-                                    GetRulesForException(ex, SpecialRules);
-                                }
-                                catch { }
-                            }
-                        }
-                        catch { }
-                    }
-                }
-                catch { }
+                SpecialRules.AddRange(CollectRulesForAppByName(appName));
             }
 
             return SpecialRules;
