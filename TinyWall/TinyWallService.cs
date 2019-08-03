@@ -941,25 +941,21 @@ namespace PKSoft
 
         private bool CommitLearnedRules()
         {
-            bool needsSave = false;
-
             lock (LearningNewExceptions)
             {
-                if (LearningNewExceptions.Count == 0)
+                bool needSave = (LearningNewExceptions.Count > 0);
+                if (!needSave)
                     return false;
 
                 foreach (FirewallExceptionV3 ex in LearningNewExceptions)
-                {
-                    needsSave = true;
                     ActiveConfig.Service.ActiveProfile.AppExceptions.Add(ex);
-                }
 
                 LearningNewExceptions.Clear();
             }
 
+            ActiveConfig.Service.ActiveProfile.Normalize();
             GlobalInstances.ConfigChangeset = Guid.NewGuid();
-
-            return needsSave;
+            return true;
         }
 
         private TwMessage ProcessCmd(TwMessage req)
@@ -1058,6 +1054,7 @@ namespace PKSoft
                     {
                         if (CommitLearnedRules())
                             ActiveConfig.Service.Save(ConfigSavePath);
+
                         InitFirewall();
                         return new TwMessage(MessageType.RESPONSE_OK);
                     }
@@ -1533,6 +1530,7 @@ namespace PKSoft
             LogWatcher?.Dispose();
             LogWatcher = null;
             CommitLearnedRules();
+
             ActiveConfig.Service.Save(ConfigSavePath);
 
 #if !DEBUG
