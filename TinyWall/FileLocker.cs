@@ -52,7 +52,14 @@ namespace PKSoft
 
         internal static void UnlockAll()
         {
-            foreach (string filePath in LockedFiles.Keys)
+            // We cannot remove items from a dictionary while we are iterating over it.
+            // So we iterate over a copy, and modify the original.
+
+            Dictionary<string, FileStream> listCopy = new Dictionary<string, FileStream>();
+            foreach (var elem in LockedFiles)
+                listCopy.Add(elem.Key, elem.Value);
+
+            foreach (string filePath in listCopy.Keys)
                 UnlockFile(filePath);
         }
     }
