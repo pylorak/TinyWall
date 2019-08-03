@@ -352,4 +352,8 @@ Versuchen Sie es nocheinmal.</value>
     <value>Alle Anwendungen</value>
     <comment>Shown in settings for application exceptions that are global</comment>
   </data>
+  <data name="Default" xml:space="preserve">
+    <value>Standard</value>
+    <comment>As in, the standard, or default, if nothing else is set.</comment>
+  </data>
 </root>
