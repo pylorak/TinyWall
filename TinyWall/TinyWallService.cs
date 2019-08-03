@@ -20,7 +20,6 @@ namespace PKSoft
     {
         internal readonly static string[] ServiceDependencies = new string[]
         {
-            "mpssvc",
             "eventlog",
             "Winmgmt"
         };
@@ -772,12 +771,16 @@ namespace PKSoft
 
         private static void EnableMpsSvcNotifications(bool enable)
         {
-            Type tNetFwPolicy2 = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
-            INetFwPolicy2 fwPolicy2 = (INetFwPolicy2)Activator.CreateInstance(tNetFwPolicy2);
-            NET_FW_PROFILE_TYPE2_ fwCurrentProfileTypes = (NET_FW_PROFILE_TYPE2_)fwPolicy2.CurrentProfileTypes;
-            fwPolicy2.set_NotificationsDisabled(NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_DOMAIN, !enable);
-            fwPolicy2.set_NotificationsDisabled(NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PRIVATE, !enable);
-            fwPolicy2.set_NotificationsDisabled(NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PUBLIC, !enable);
+            try
+            {
+                Type tNetFwPolicy2 = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
+                INetFwPolicy2 fwPolicy2 = (INetFwPolicy2)Activator.CreateInstance(tNetFwPolicy2);
+                NET_FW_PROFILE_TYPE2_ fwCurrentProfileTypes = (NET_FW_PROFILE_TYPE2_)fwPolicy2.CurrentProfileTypes;
+                fwPolicy2.set_NotificationsDisabled(NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_DOMAIN, !enable);
+                fwPolicy2.set_NotificationsDisabled(NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PRIVATE, !enable);
+                fwPolicy2.set_NotificationsDisabled(NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PUBLIC, !enable);
+            }
+            catch { }
         }
 
         // This method completely reinitializes the firewall.
