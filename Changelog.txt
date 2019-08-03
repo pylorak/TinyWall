@@ -10,6 +10,7 @@ TinyWall Changelog
 - Configuration saving is now atomic too, eliminating corrupted files
 - Fixed interaction with File and Printer Sharing and network browsing
 - Connections windows need not be open to register blocked applications
+- Reduced number of failed whitelisting cases
 
 ---------------------
 

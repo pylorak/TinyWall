@@ -921,21 +921,12 @@ namespace PKSoft
 
         private void AddNewException(FirewallExceptionV3 fwex)
         {
-            // Test rules for syntactic correctness
-            MessageType resp = GlobalInstances.Controller.TestExceptions(new List<FirewallExceptionV3>() { fwex });
-            if (MessageType.RESPONSE_OK != resp)
-            {
-                ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CouldNotWhitelistProcess, fwex.Subject.ToString()), ToolTipIcon.Warning);
-                return;
-            }
-
-
             LoadSettingsFromServer();
             ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
             confCopy.ActiveProfile.AppExceptions.Add(fwex);
             confCopy.ActiveProfile.Normalize();
 
-            resp = ApplyFirewallSettings(confCopy, false);
+            MessageType resp = ApplyFirewallSettings(confCopy, false);
 
             bool success;
             bool metroActive = Utils.IsMetroActive(out success);
@@ -954,9 +945,12 @@ namespace PKSoft
                         else
                             ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForUnrecognizedChanged, fwex.Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(fwex));
                         break;
-                    case MessageType.RESPONSE_ERROR:
+                    case MessageType.RESPONSE_WARNING:
                         // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
                         ShowBalloonTip(PKSoft.Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
+                        break;
+                    case MessageType.RESPONSE_ERROR:
+                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CouldNotWhitelistProcess, fwex.Subject.ToString()), ToolTipIcon.Warning);
                         break;
                     default:
                         DefaultPopups(resp);

@@ -69,11 +69,6 @@ namespace TinyWall.Interface
             return resp.Type;
         }
 
-        public MessageType TestExceptions(List<FirewallExceptionV3> exceptions)
-        {
-            return Endpoint.QueueMessageSimple(MessageType.TEST_EXCEPTION, exceptions).Type;
-        }
-
         public Future<TwMessage> BeginReadFwLog()
         {
             return Endpoint.QueueMessage(new TwMessage(MessageType.READ_FW_LOG));

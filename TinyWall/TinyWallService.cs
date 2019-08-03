@@ -978,10 +978,6 @@ namespace PKSoft
                     {
                         return new TwMessage(MessageType.RESPONSE_OK);
                     }
-                case MessageType.TEST_EXCEPTION:
-                    {
-                        throw new Exception("Deprecated. Don't call.");
-                    }
                 case MessageType.MODE_SWITCH:
                     {
                         VisibleState.Mode = (TinyWall.Interface.FirewallMode)req.Arguments[0];
