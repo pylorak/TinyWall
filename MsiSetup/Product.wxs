@@ -124,7 +124,9 @@
     </InstallUISequence>
 
     <!-- UI definition and overrides -->
-    <UIRef Id="WixUI_InstallDir" />
+    <UIRef Id="WixUI_InstallDir_Custom" />
+    <WixVariable Id="WixUIBannerBmp" Value="banner.png" />
+    <WixVariable Id="WixUIDialogBmp" Value="background.png" />
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
     <Property Id="WIXUI_EXITDIALOGOPTIONALTEXT" Value='The default configuration of TinyWall is to block most programs. If an application is unable to access the network, remember to use one of the "Whitelist by..." options from the tray menu.' />
     <WixVariable Id="WixUILicenseRtf" Value="Sources\ProgramFiles\TinyWall\License.rtf" />

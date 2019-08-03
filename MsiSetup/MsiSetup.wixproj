@@ -34,7 +34,9 @@
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="RemoteWarnDlg.wxs" />
     <Compile Include="Product.wxs" />
+    <Compile Include="WixUI_InstallDir_Custom.wxs" />
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixUtilExtension">
