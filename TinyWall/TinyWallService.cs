@@ -1015,12 +1015,17 @@ namespace PKSoft
                         MessageType resp = (clientChangeset == GlobalInstances.ConfigChangeset) ? MessageType.RESPONSE_OK : MessageType.RESPONSE_WARNING;
                         if (MessageType.RESPONSE_OK == resp)
                         {
-                            // TODO: Atomic setting of new settings.
-
-                            ActiveConfig.Service = newConf;
-                            GlobalInstances.ConfigChangeset = Guid.NewGuid();
-                            ActiveConfig.Service.Save(ConfigSavePath);
-                            ReapplySettings();
+                            try
+                            {
+                                ActiveConfig.Service = newConf;
+                                GlobalInstances.ConfigChangeset = Guid.NewGuid();
+                                ActiveConfig.Service.Save(ConfigSavePath);
+                                ReapplySettings();
+                            }
+                            catch (Exception e)
+                            {
+                                Utils.LogCrash(e);
+                            }
                         }
                         return new TwMessage(resp, ActiveConfig.Service, GlobalInstances.ConfigChangeset, VisibleState);
                     }
