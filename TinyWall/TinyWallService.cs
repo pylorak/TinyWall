@@ -1574,8 +1574,8 @@ namespace PKSoft
             LogWatcher?.Dispose();
             LogWatcher = null;
             CommitLearnedRules();
-
             ActiveConfig.Service.Save(ConfigSavePath);
+            FileLocker.UnlockAll();
 
 #if !DEBUG
             try

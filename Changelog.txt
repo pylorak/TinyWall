@@ -15,6 +15,7 @@ TinyWall Changelog
 - Add warning about remote installations to installer
 - Modernized installer look
 - Add port scan protection
+- Fix: Don't leave locked files on service exit.
 
 ---------------------
 
