@@ -224,7 +224,7 @@ namespace PKSoft
                     li.SubItems.Add(subject.ExecutablePath);
                     break;
                 case SubjectType.Global:
-                    li.Text = "*";
+                    li.Text = Resources.Messages.AllApplications;
                     li.SubItems.Add("*");
                     break;
                 default:

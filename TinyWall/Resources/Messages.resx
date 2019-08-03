@@ -391,4 +391,8 @@ You might succeed if you try again.</value>
     <value>Default</value>
     <comment>As in, the standard, or default, if nothing else is set.</comment>
   </data>
+  <data name="AllApplications" xml:space="preserve">
+    <value>All applications</value>
+    <comment>Shown in settings for application exceptions that are global</comment>
+  </data>
 </root>

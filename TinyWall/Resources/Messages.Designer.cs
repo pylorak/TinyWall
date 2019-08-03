@@ -61,6 +61,15 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All applications.
+        /// </summary>
+        internal static string AllApplications {
+            get {
+                return ResourceManager.GetString("AllApplications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All files.
         /// </summary>
         internal static string AllFilesFileFilter {

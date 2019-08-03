@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
     <value>Konnte die Rechte für die Aktuaklisierung nicht anheben.</value>
@@ -347,5 +347,9 @@ Versuchen Sie es nocheinmal.</value>
   </data>
   <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>Wegen eines internen Fehlers konnten die Einstellungen nicht übernommen werden.</value>
+  </data>
+  <data name="AllApplications" xml:space="preserve">
+    <value>Alle Anwendungen</value>
+    <comment>Shown in settings for application exceptions that are global</comment>
   </data>
 </root>
