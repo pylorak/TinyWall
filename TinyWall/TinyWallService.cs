@@ -344,56 +344,15 @@ namespace PKSoft
 
         private void ConstructFilter(RuleDef r, uint filterWeight, LayerKeyEnum layer)
         {
-            Filter f = new Filter(
-                r.ExceptionId.ToString(),
-                r.Name,
-                ProviderKey,
-                (r.Action == RuleAction.Allow) ? FilterActions.FWP_ACTION_PERMIT : FilterActions.FWP_ACTION_BLOCK,
-                filterWeight
-            );
-            f.FilterKey = Guid.NewGuid();
-            f.LayerKey = GetLayerKey(layer);
-            f.SublayerKey = GetSublayerKey(layer);
-
-            // We never want to affect loopback traffic
-            if (VersionInfo.Win8OrNewer)
-                f.Conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK | ConditionFlags.FWP_CONDITION_FLAG_IS_APPCONTAINER_LOOPBACK | ConditionFlags.FWP_CONDITION_FLAG_IS_NON_APPCONTAINER_LOOPBACK, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
-            else
-                f.Conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
-
+            List<FilterCondition> conditions = new List<FilterCondition>();
 
             if (!string.IsNullOrEmpty(r.Application))
             {
                 System.Diagnostics.Debug.Assert(!r.Application.Equals("*"));
                 if (!LayerIsIcmpError(layer))
-                    f.Conditions.Add(new AppIdFilterCondition(r.Application));
+                    conditions.Add(new AppIdFilterCondition(r.Application));
                 else
                     return;
-            }
-            if (r.Protocol != Protocol.Any)
-            {
-                System.Diagnostics.Debug.Assert(r.Protocol != Protocol.ICMP);
-                System.Diagnostics.Debug.Assert(r.Protocol != Protocol.TcpUdp);
-                if (LayerIsAleAuthConnect(layer) || LayerIsAleAuthRecvAccept(layer))
-                    f.Conditions.Add(new ProtocolFilterCondition((byte)r.Protocol));
-            }
-            if (!string.IsNullOrEmpty(r.LocalPorts))
-            {
-                System.Diagnostics.Debug.Assert(!r.LocalPorts.Equals("*"));
-                string[] ports = r.LocalPorts.Split(',');
-                foreach (var p in ports)
-                {
-                    f.Conditions.Add(new PortFilterCondition(p, RemoteOrLocal.Local));
-                }
-            }
-            if (!string.IsNullOrEmpty(r.RemotePorts) && !LayerIsAleAuthListen(layer))
-            {
-                System.Diagnostics.Debug.Assert(!r.RemotePorts.Equals("*"));
-                string[] ports = r.RemotePorts.Split(',');
-                foreach (var p in ports)
-                {
-                    f.Conditions.Add(new PortFilterCondition(p, RemoteOrLocal.Remote));
-                }
             }
             if (!string.IsNullOrEmpty(r.RemoteAddresses) && !LayerIsAleAuthListen(layer))
             {
@@ -401,10 +360,38 @@ namespace PKSoft
 
                 IpAddrMask remote = IpAddrMask.Parse(r.RemoteAddresses);
                 if (remote.IsIPv6 == LayerIsV6Stack(layer))
-                    f.Conditions.Add(new IpFilterCondition(remote.Address, (byte)remote.PrefixLen, RemoteOrLocal.Remote));
+                    conditions.Add(new IpFilterCondition(remote.Address, (byte)remote.PrefixLen, RemoteOrLocal.Remote));
                 else
                     // Break. We don't want to add this filter to this layer.
                     return;
+            }
+            // We never want to affect loopback traffic
+            if (VersionInfo.Win8OrNewer)
+                conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK | ConditionFlags.FWP_CONDITION_FLAG_IS_APPCONTAINER_LOOPBACK | ConditionFlags.FWP_CONDITION_FLAG_IS_NON_APPCONTAINER_LOOPBACK, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
+            else
+                conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
+
+
+            if (r.Protocol != Protocol.Any)
+            {
+                System.Diagnostics.Debug.Assert(r.Protocol != Protocol.ICMP);
+                System.Diagnostics.Debug.Assert(r.Protocol != Protocol.TcpUdp);
+                if (LayerIsAleAuthConnect(layer) || LayerIsAleAuthRecvAccept(layer))
+                    conditions.Add(new ProtocolFilterCondition((byte)r.Protocol));
+            }
+            if (!string.IsNullOrEmpty(r.LocalPorts))
+            {
+                System.Diagnostics.Debug.Assert(!r.LocalPorts.Equals("*"));
+                string[] ports = r.LocalPorts.Split(',');
+                foreach (var p in ports)
+                    conditions.Add(new PortFilterCondition(p, RemoteOrLocal.Local));
+            }
+            if (!string.IsNullOrEmpty(r.RemotePorts) && !LayerIsAleAuthListen(layer))
+            {
+                System.Diagnostics.Debug.Assert(!r.RemotePorts.Equals("*"));
+                string[] ports = r.RemotePorts.Split(',');
+                foreach (var p in ports)
+                    conditions.Add(new PortFilterCondition(p, RemoteOrLocal.Remote));
             }
             if (!string.IsNullOrEmpty(r.IcmpTypesAndCodes))
             {
@@ -422,7 +409,7 @@ namespace PKSoft
                             FWP_CONDITION_VALUE0 cv = new FWP_CONDITION_VALUE0();
                             cv.type = FWP_DATA_TYPE.FWP_UINT16;
                             cv.uint16 = icmpType;
-                            f.Conditions.Add(new FilterCondition(ConditionKeys.FWPM_CONDITION_ICMP_TYPE, FieldMatchType.FWP_MATCH_EQUAL, cv));
+                            conditions.Add(new FilterCondition(ConditionKeys.FWPM_CONDITION_ICMP_TYPE, FieldMatchType.FWP_MATCH_EQUAL, cv));
                         }
                         // ICMP Code
                         if ((tc.Length > 1) && !string.IsNullOrEmpty(tc[1]) && ushort.TryParse(tc[1], out ushort icmpCode))
@@ -430,7 +417,7 @@ namespace PKSoft
                             FWP_CONDITION_VALUE0 cv = new FWP_CONDITION_VALUE0();
                             cv.type = FWP_DATA_TYPE.FWP_UINT16;
                             cv.uint16 = icmpCode;
-                            f.Conditions.Add(new FilterCondition(ConditionKeys.FWPM_CONDITION_ICMP_CODE, FieldMatchType.FWP_MATCH_EQUAL, cv));
+                            conditions.Add(new FilterCondition(ConditionKeys.FWPM_CONDITION_ICMP_CODE, FieldMatchType.FWP_MATCH_EQUAL, cv));
                         }
                     }
                     else
@@ -441,12 +428,24 @@ namespace PKSoft
                             FWP_CONDITION_VALUE0 cv = new FWP_CONDITION_VALUE0();
                             cv.type = FWP_DATA_TYPE.FWP_UINT16;
                             cv.uint16 = icmpType;
-                            f.Conditions.Add(new FilterCondition(ConditionKeys.FWPM_CONDITION_ORIGINAL_ICMP_TYPE, FieldMatchType.FWP_MATCH_EQUAL, cv));
+                            conditions.Add(new FilterCondition(ConditionKeys.FWPM_CONDITION_ORIGINAL_ICMP_TYPE, FieldMatchType.FWP_MATCH_EQUAL, cv));
                         }
                         // Matching on ICMP Code not possible
                     }
                 }
             }
+
+            Filter f = new Filter(
+                r.ExceptionId.ToString(),
+                r.Name,
+                ProviderKey,
+                (r.Action == RuleAction.Allow) ? FilterActions.FWP_ACTION_PERMIT : FilterActions.FWP_ACTION_BLOCK,
+                filterWeight
+            );
+            f.FilterKey = Guid.NewGuid();
+            f.LayerKey = GetLayerKey(layer);
+            f.SublayerKey = GetSublayerKey(layer);
+            f.Conditions.AddRange(conditions);
 
             try
             {
