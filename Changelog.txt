@@ -14,6 +14,7 @@ TinyWall Changelog
 - Install location can now be customized
 - Add warning about remote installations to installer
 - Modernized installer look
+- Add port scan protection
 
 ---------------------
 

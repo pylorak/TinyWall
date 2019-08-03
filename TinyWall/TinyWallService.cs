@@ -266,6 +266,8 @@ namespace PKSoft
                      ConstructFilter(r, filterWeight);
                 }
 
+                InstallPortScanProtection();
+
                 trx.Commit();
             }
         }
@@ -281,7 +283,9 @@ namespace PKSoft
             FWPM_LAYER_ALE_AUTH_LISTEN_V6,
             FWPM_LAYER_ALE_AUTH_LISTEN_V4,
             FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6,
-            FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4
+            FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4,
+            FWPM_LAYER_INBOUND_TRANSPORT_V6_DISCARD,
+            FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD
         }
 
         private static Guid GetSublayerKey(LayerKeyEnum layer)
@@ -308,6 +312,10 @@ namespace PKSoft
                     return WfpSublayerKeys.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6;
                 case LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4:
                     return WfpSublayerKeys.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4;
+                case LayerKeyEnum.FWPM_LAYER_INBOUND_TRANSPORT_V6_DISCARD:
+                    return WfpSublayerKeys.FWPM_LAYER_INBOUND_TRANSPORT_V6_DISCARD;
+                case LayerKeyEnum.FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD:
+                    return WfpSublayerKeys.FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD;
                 default:
                     throw new ArgumentException("Invalid or not support layerEnum.");
             }
@@ -337,6 +345,10 @@ namespace PKSoft
                     return LayerKeys.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6;
                 case LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4:
                     return LayerKeys.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4;
+                case LayerKeyEnum.FWPM_LAYER_INBOUND_TRANSPORT_V6_DISCARD:
+                    return LayerKeys.FWPM_LAYER_INBOUND_TRANSPORT_V6_DISCARD;
+                case LayerKeyEnum.FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD:
+                    return LayerKeys.FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD;
                 default:
                     throw new ArgumentException("Invalid or not support layerEnum.");
             }
@@ -366,10 +378,7 @@ namespace PKSoft
                     return;
             }
             // We never want to affect loopback traffic
-            if (VersionInfo.Win8OrNewer)
-                conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK | ConditionFlags.FWP_CONDITION_FLAG_IS_APPCONTAINER_LOOPBACK | ConditionFlags.FWP_CONDITION_FLAG_IS_NON_APPCONTAINER_LOOPBACK, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
-            else
-                conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
+            conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
 
 
             if (r.Protocol != Protocol.Any)
@@ -446,6 +455,37 @@ namespace PKSoft
             f.LayerKey = GetLayerKey(layer);
             f.SublayerKey = GetSublayerKey(layer);
             f.Conditions.AddRange(conditions);
+
+            try
+            {
+                WfpEngine.RegisterFilter(f);
+                ActiveWfpFilters.Add(f);
+            }
+            catch { }
+        }
+
+        private void InstallPortScanProtection()
+        {
+            InstallPortScanProtection(LayerKeyEnum.FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD, BuiltinCallouts.FWPM_CALLOUT_WFP_TRANSPORT_LAYER_V4_SILENT_DROP);
+            InstallPortScanProtection(LayerKeyEnum.FWPM_LAYER_INBOUND_TRANSPORT_V6_DISCARD, BuiltinCallouts.FWPM_CALLOUT_WFP_TRANSPORT_LAYER_V6_SILENT_DROP);
+        }
+        
+        private void InstallPortScanProtection(LayerKeyEnum layer, Guid callout)
+        {
+            Filter f = new Filter(
+                "Port Scanning Protection",
+                string.Empty,
+                ProviderKey,
+                FilterActions.FWP_ACTION_CALLOUT_TERMINATING,
+                ulong.MaxValue >> 3
+            );
+            f.FilterKey = Guid.NewGuid();
+            f.LayerKey = GetLayerKey(layer);
+            f.SublayerKey = GetSublayerKey(layer);
+            f.CalloutKey = callout;
+
+            // Don't affect loopback traffic
+            f.Conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK | ConditionFlags.FWP_CONDITION_FLAG_IS_IPSEC_SECURED, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
 
             try
             {
@@ -1224,7 +1264,7 @@ namespace PKSoft
                 if (0 != ProviderKey.CompareTo(TINYWALL_PROVIDER_KEY))
                 {
                     var provider = new FWPM_PROVIDER0();
-                    provider.displayData.name = "TinyWall Temporary Provider";
+                    provider.displayData.name = "TinyWall Dynamic Provider";
                     provider.serviceName = TinyWallService.SERVICE_NAME;
                     ProviderKey = WfpEngine.RegisterProvider(ref provider);
                 }

@@ -495,7 +495,7 @@
               <RuleDef>
                 <Action>Allow</Action>
                 <Application i:nil="true" />
-                <Direction>InOut</Direction>
+                <Direction>In</Direction>
                 <IcmpTypesAndCodes>1</IcmpTypesAndCodes>
                 <Name>ICMPv6 (dest.unreachable)</Name>
                 <Protocol>ICMPv6</Protocol>

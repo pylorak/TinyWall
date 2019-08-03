@@ -19,7 +19,8 @@ namespace WFPdotNet
     public enum FilterActions : uint
     {
         FWP_ACTION_BLOCK = Interop.FWP_ACTION_TYPE.FWP_ACTION_BLOCK,
-        FWP_ACTION_PERMIT = Interop.FWP_ACTION_TYPE.FWP_ACTION_PERMIT
+        FWP_ACTION_PERMIT = Interop.FWP_ACTION_TYPE.FWP_ACTION_PERMIT,
+        FWP_ACTION_CALLOUT_TERMINATING = Interop.FWP_ACTION_TYPE.FWP_ACTION_CALLOUT_TERMINATING,
     }
 
     public sealed class Filter : IDisposable
@@ -186,6 +187,11 @@ namespace WFPdotNet
         {
             get { return (FilterActions)_nativeStruct.action.type; }
             set { _nativeStruct.action.type = (Interop.FWP_ACTION_TYPE)value; }
+        }
+        public Guid CalloutKey
+        {
+            get { return _nativeStruct.action.calloutKey; }
+            set { _nativeStruct.action.calloutKey = value; }
         }
 
         public void Dispose()

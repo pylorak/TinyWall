@@ -17,5 +17,7 @@ namespace PKSoft
         public static readonly Guid FWPM_LAYER_ALE_AUTH_LISTEN_V4 = new Guid("{19EC1DE9-7B31-49D2-BA12-83945E08F168}");
         public static readonly Guid FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6 = new Guid("{DE420F02-5DA6-43B5-94C1-F193C4909AA4}");
         public static readonly Guid FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4 = new Guid("{089B5CA9-6AC2-4B5E-939B-F1818816884F}");
+        public static readonly Guid FWPM_LAYER_INBOUND_TRANSPORT_V6_DISCARD = new Guid("{D05BD1D0-1298-4E86-BB38-305E0BEFB112}");
+        public static readonly Guid FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD = new Guid("{024A1067-9549-4949-8916-4BB6DDCDBD6A}");
     }
 }

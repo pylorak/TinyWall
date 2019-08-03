@@ -87,6 +87,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BuiltinCallouts.cs" />
     <Compile Include="ConditionKeys.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Filter.cs" />
