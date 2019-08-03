@@ -160,6 +160,7 @@ namespace PKSoft
                 case PolicyType.HardBlock:
                     radBlock.Checked = true;
                     chkRestrictToLocalNetwork.Enabled = false;
+                    chkRestrictToLocalNetwork.Checked = false;
                     break;
                 case PolicyType.RuleList:
                     radBlock.Enabled = false;
@@ -168,9 +169,11 @@ namespace PKSoft
                     radTcpUdpOut.Enabled = false;
                     radOnlySpecifiedPorts.Enabled = false;
                     chkRestrictToLocalNetwork.Enabled = false;
+                    chkRestrictToLocalNetwork.Checked = false;
                     break;
                 case PolicyType.TcpUdpOnly:
                     TcpUdpPolicy pol = TmpExceptionSettings[0].Policy as TcpUdpPolicy;
+                    chkRestrictToLocalNetwork.Enabled = true;
                     chkRestrictToLocalNetwork.Checked = pol.LocalNetworkOnly;
                     if (
                         string.Equals(pol.AllowedLocalTcpListenerPorts, "*")
@@ -199,8 +202,10 @@ namespace PKSoft
                     txtListenPortUDP.Text = string.IsNullOrEmpty(pol.AllowedLocalUdpListenerPorts) ? string.Empty : pol.AllowedLocalUdpListenerPorts.Replace(",", ", ");
                     break;
                 case PolicyType.Unrestricted:
+                    UnrestrictedPolicy upol = TmpExceptionSettings[0].Policy as UnrestrictedPolicy;
                     radUnrestricted.Checked = true;
-                    chkRestrictToLocalNetwork.Enabled = false;
+                    chkRestrictToLocalNetwork.Enabled = true;
+                    chkRestrictToLocalNetwork.Checked = upol.LocalNetworkOnly;
                     break;
                 default:
                     throw new NotImplementedException();
@@ -392,6 +397,8 @@ namespace PKSoft
                 txtListenPortUDP.Text = string.Empty;
                 txtOutboundPortTCP.Text = string.Empty;
                 txtOutboundPortUDP.Text = string.Empty;
+                chkRestrictToLocalNetwork.Enabled = false;
+                chkRestrictToLocalNetwork.Checked = false;
             }
             else if (radOnlySpecifiedPorts.Checked)
             {
@@ -404,6 +411,7 @@ namespace PKSoft
                 txtOutboundPortUDP.Enabled = true;
                 label7.Enabled = true;
                 label8.Enabled = true;
+                chkRestrictToLocalNetwork.Enabled = true;
             }
             else if (radTcpUdpOut.Checked)
             {
@@ -416,6 +424,7 @@ namespace PKSoft
                 txtOutboundPortUDP.Enabled = false;
                 label7.Enabled = false;
                 label8.Enabled = false;
+                chkRestrictToLocalNetwork.Enabled = true;
             }
             else if (radTcpUdpUnrestricted.Checked)
             {
@@ -424,6 +433,7 @@ namespace PKSoft
                 txtListenPortUDP.Text = "*";
                 txtOutboundPortTCP.Text = "*";
                 txtOutboundPortUDP.Text = "*";
+                chkRestrictToLocalNetwork.Enabled = true;
             }
             else if (radUnrestricted.Checked)
             {
@@ -432,6 +442,7 @@ namespace PKSoft
                 txtListenPortUDP.Text = "*";
                 txtOutboundPortTCP.Text = "*";
                 txtOutboundPortUDP.Text = "*";
+                chkRestrictToLocalNetwork.Enabled = true;
             }
             else
             {
