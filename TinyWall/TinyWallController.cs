@@ -897,9 +897,23 @@ namespace PKSoft
                 }
             }
 
-            // Known file, add its exceptions, along with other files that belong to this app
-            foreach(FirewallExceptionV3 fwex in exceptions)
-                AddNewException(fwex);
+            // Add exceptions, along with other files that belong to this app
+            AddExceptionList(exceptions);
+        }
+
+        internal void AddExceptionList(List<FirewallExceptionV3> list)
+        {
+            if (list.Count > 1)
+            {
+                LoadSettingsFromServer();
+                ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
+                foreach (FirewallExceptionV3 fwex in list)
+                    confCopy.ActiveProfile.AppExceptions.Add(fwex);
+                confCopy.ActiveProfile.Normalize();
+                ApplyFirewallSettings(confCopy);
+            }
+            else if (list.Count == 1)
+                AddNewException(list[0]);
         }
 
         // Called when a user double-clicks on a popup to edit the most recent exception
@@ -915,8 +929,8 @@ namespace PKSoft
                 exceptions = f.ExceptionSettings;
             }
 
-            foreach (FirewallExceptionV3 fwex in exceptions)
-                AddNewException(fwex);
+            // Add exceptions, along with other files that belong to this app
+            AddExceptionList(exceptions);
         }
 
         private void AddNewException(FirewallExceptionV3 fwex)
