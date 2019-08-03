@@ -44,7 +44,7 @@
 		<Program_Type>Freeware</Program_Type>
 		<Program_Release_Status>Minor Update</Program_Release_Status>
 		<Program_Install_Support>Install and Uninstall</Program_Install_Support>
-		<Program_OS_Support>Win7 x32,Win7 x64,WinOther,WinVista,WinVista x64,Other</Program_OS_Support>
+		<Program_OS_Support>Win10,Win8,Win7 x32,Win7 x64,WinOther</Program_OS_Support>
 		<Program_Language>English,Dutch,French,German,Hungarian,Italian,Japanese,Portuguese,Russian,Spanish,Polish,Turkish</Program_Language>
 		<Program_Change_Info>See http://tinywall.pados.hu/changelog.txt</Program_Change_Info>
 		<Program_Specific_Category>Utilities</Program_Specific_Category>

@@ -44,7 +44,7 @@
     <Property Id="MSIRESTARTMANAGERCONTROL" Value="Disable" />
 
     <!-- .Net Framework detection -->
-    <Condition Message="You need to be running Windows Vista or later to install $(var.ProductName).">VersionNT >= 600</Condition>
+    <Condition Message="You need to be running Windows 7 or later to install $(var.ProductName).">VersionNT >= 601</Condition>
     <PropertyRef Id="NETFRAMEWORK35"/>
     <PropertyRef Id="NETFRAMEWORK40FULL"/>
     <Condition Message='This setup requires the .NET Framework 3.5 SP1 or newer to be installed.'>
