@@ -18,6 +18,8 @@ namespace PKSoft
 
         internal ApplicationExceptionForm(FirewallExceptionV3 fwex)
         {
+            InitializeComponent();
+
             try
             {
                 // Prevent flickering, only if our assembly 
@@ -36,8 +38,6 @@ namespace PKSoft
             {
                 // Don't do anything, we are running in a trusted contex.
             }
-
-            InitializeComponent();
 
             this.Icon = Resources.Icons.firewall;
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
