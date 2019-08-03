@@ -10,6 +10,7 @@ using System.ServiceProcess;
 using System.Threading;
 using TinyWall.Interface;
 using TinyWall.Interface.Internal;
+using NetFwTypeLib;
 using WFPdotNet;
 using WFPdotNet.Interop;
 
@@ -730,9 +731,21 @@ namespace PKSoft
             return ret;
         }
 
+        private static void EnableMpsSvcNotifications(bool enable)
+        {
+            Type tNetFwPolicy2 = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
+            INetFwPolicy2 fwPolicy2 = (INetFwPolicy2)Activator.CreateInstance(tNetFwPolicy2);
+            NET_FW_PROFILE_TYPE2_ fwCurrentProfileTypes = (NET_FW_PROFILE_TYPE2_)fwPolicy2.CurrentProfileTypes;
+            fwPolicy2.set_NotificationsDisabled(NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_DOMAIN, !enable);
+            fwPolicy2.set_NotificationsDisabled(NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PRIVATE, !enable);
+            fwPolicy2.set_NotificationsDisabled(NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PUBLIC, !enable);
+        }
+
         // This method completely reinitializes the firewall.
         private void InitFirewall()
         {
+            EnableMpsSvcNotifications(false);
+
             using (ThreadBarrier barrier = new ThreadBarrier(2))
             {
                 ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
@@ -1265,8 +1278,11 @@ namespace PKSoft
                 }
                 finally
                 {
-                    Cleanup();
-                    Environment.Exit(0);
+                    try
+                    {
+                        Cleanup();
+                    }
+                    finally { }
                 }
             }
         }
@@ -1488,6 +1504,7 @@ namespace PKSoft
         protected override void OnStop()
         {
             RequestStop();
+            FirewallWorkerThread.Join(5000);
         }
 
         private void RequestStop()
@@ -1500,6 +1517,8 @@ namespace PKSoft
 
         private void Cleanup()
         {
+            EnableMpsSvcNotifications(true);
+
             // Check all exceptions if any one has expired
             {
                 List<FirewallExceptionV3> exs = ActiveConfig.Service.ActiveProfile.AppExceptions;
@@ -1520,6 +1539,7 @@ namespace PKSoft
             CommitLearnedRules();
             ActiveConfig.Service.Save(ConfigSavePath);
 
+#if !DEBUG
             try
             {
                 if (!UninstallRequested)
@@ -1537,6 +1557,7 @@ namespace PKSoft
                 }
             }
             catch { }
+#endif
         }
 
         // Executed on computer shutdown.
