@@ -34,7 +34,7 @@ namespace PKSoft.Obsolete
 
         public void Save(string filePath)
         {
-            // TODO: deprecated
+            // Deprecated
             //SerializationHelper.SaveToXMLFile(this, filePath);
         }
 

@@ -174,8 +174,8 @@ namespace PKSoft.Obsolete
             app = null;
             appFile = null;
 
-            if (File.Exists(ExecutablePath))
-                // TODO: deprecated
+            // Deprecated
+            //if (File.Exists(ExecutablePath))
                 //app = GlobalInstances.ProfileMan.KnownApplications.TryGetRecognizedApp(ExecutablePath, ServiceName, out appFile);
 
             if ((app != null) && (app.Special))
@@ -194,7 +194,7 @@ namespace PKSoft.Obsolete
                 // Apply recognized settings, if available
                 if ((app != null) && (!app.Special))
                 {
-                    // TODO: deprecated
+                    // Deprecated
                     //ProfileCollection profiles = GlobalInstances.ProfileMan.GetProfilesFor(appFile);
                     appFile.ExceptionTemplate.CopyRulesTo(this);
                 }
