@@ -66,8 +66,6 @@
       <ComponentRef Id='Attributions' />
       <ComponentRef Id='NetFwTypeLib' />
       <ComponentRef Id='gac_NetFwTypeLib' />
-      <ComponentRef Id='XmlSerializersLib' />
-      <ComponentRef Id='gac_XmlSerializersLib' />
       <ComponentRef Id='Database' />
       <ComponentRef Id='hosts' />
       <ComponentGroupRef Id='Localizations' />
@@ -165,9 +163,6 @@
           </Component>
           <Component Id="NetFwTypeLib" Guid="{7AB618A2-D50A-499A-93B9-101AEF6BC809}" Win64="$(var.Win64)">
             <File Id="NetFwTypeLibDLL" Source="Sources\ProgramFiles\TinyWall\Interop.NetFwTypeLib.dll" Vital="yes" KeyPath="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
-          </Component>
-          <Component Id="XmlSerializersLib" Guid="{C4ABBB1A-478B-4BDA-953B-CF1F8C39AF41}" Win64="$(var.Win64)">
-            <File Id="XmlSerializersDLL" Source="Sources\ProgramFiles\TinyWall\TinyWall.XmlSerializers.dll" Vital="yes" KeyPath="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
           </Component>
           <Directory Id="LOCDIR_es" Name="es">
             <Component Id="LocSatelliteLib_es" Guid="{164A848E-99AB-4FF3-BFEE-400B0C43E9B0}" Win64="$(var.Win64)">
@@ -273,9 +268,6 @@
       </Component>
       <Component Id="gac_NetFwTypeLib" Guid="{9EC03A82-4E6F-4456-8C8E-878400C34EC7}" Win64="$(var.Win64)">
         <File Id="gac_NetFwTypeLibDLL" Source="Sources\ProgramFiles\TinyWall\Interop.NetFwTypeLib.dll" Vital="yes" KeyPath="yes" Assembly=".net" />
-      </Component>
-      <Component Id="gac_XmlSerializersLib" Guid="{70CD3800-B50A-4BA0-9A04-4B2BE48AFF8D}" Win64="$(var.Win64)">
-        <File Id="gac_XmlSerializersDLL" Source="Sources\ProgramFiles\TinyWall\TinyWall.XmlSerializers.dll" Vital="yes" KeyPath="yes" Assembly=".net" />
       </Component>
 
       <!-- ProgramData -->
