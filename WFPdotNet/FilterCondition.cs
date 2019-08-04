@@ -587,16 +587,4 @@ namespace WFPdotNet
         SIO_RCVALL_MCAST = (uint)2550136834u,
         SIO_RCVALL_IGMPMCAST = (uint)2550136835u
     }
-
-    public sealed class PromiscuousSocketFilterCondition : FilterCondition
-    {
-        public PromiscuousSocketFilterCondition(SioRcvAll val, FieldMatchType matchType)
-        {
-            _nativeStruct.matchType = matchType;
-            _nativeStruct.fieldKey = ConditionKeys.FWPM_CONDITION_ALE_PROMISCUOUS_MODE;
-            _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT32;
-            _nativeStruct.conditionValue.uint32 = (uint)val;
-        }
-    }
-
 }

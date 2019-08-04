@@ -37,6 +37,8 @@ namespace TinyWall.Interface
         [DataMember]
         public RuleDirection Direction;
 
+        public ulong Weight;
+
         public RuleDef()
         {
         }
@@ -56,10 +58,11 @@ namespace TinyWall.Interface
             copy.IcmpTypesAndCodes = this.IcmpTypesAndCodes;
             copy.Protocol = this.Protocol;
             copy.Direction = this.Direction;
+            copy.Weight = this.Weight;
             return copy;
         }
 
-        public RuleDef(Guid exceptionId, string name, ExceptionSubject subject, RuleAction action, RuleDirection direction, Protocol protocol)
+        public RuleDef(Guid exceptionId, string name, ExceptionSubject subject, RuleAction action, RuleDirection direction, Protocol protocol, ulong weight)
         {
             if (subject != null)
             {
@@ -87,6 +90,7 @@ namespace TinyWall.Interface
             this.Action = action;
             this.Direction = direction;
             this.Protocol = protocol;
+            this.Weight = weight;
         }
     }
 }

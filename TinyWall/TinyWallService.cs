@@ -24,6 +24,17 @@ namespace PKSoft
             "Winmgmt"
         };
 
+        private enum FilterWeights : ulong
+        {
+            Blocklist           = 9000000,
+            RawSockePermit      = 8000000,
+            RawSocketBlock      = 7000000,
+            UserBlock           = 6000000,
+            UserPermit          = 5000000,
+            DefaultPermit       = 4000000,
+            DefaultBlock        = 3000000,
+        }
+
         internal const string SERVICE_NAME = "TinyWall";
         internal const string SERVICE_DISPLAY_NAME = "TinyWall Service";
 
@@ -115,6 +126,9 @@ namespace PKSoft
                     ExpandRule(tmp, results);
                 }
                 tmp = r.DeepCopy();
+                tmp.RemoteAddresses = "255.255.255.255";
+                ExpandRule(tmp, results);
+                tmp = r.DeepCopy();
                 tmp.RemoteAddresses = IpAddrMask.LinkLocal.ToString();
                 ExpandRule(tmp, results);
                 tmp = r.DeepCopy();
@@ -152,95 +166,114 @@ namespace PKSoft
             return results;
         }
 
-        private static int BlockingRulesFirstComparison(RuleDef a, RuleDef b)
+        private List<RuleDef> AssembleActiveRules(List<RuleDef> rawSocketExceptions)
         {
-            int x = (a.Action == RuleAction.Block) ? 0 : 1;
-            int y = (a.Action == RuleAction.Block) ? 0 : 1;
-            return x.CompareTo(y);
-        }
-
-        private List<RuleDef> AssembleActiveRules()
-        {
-            List<RuleDef> ActiveRules = new List<RuleDef>();
-            ActiveRules.AddRange(RebuildApplicationRuleDefs());
-            ActiveRules.AddRange(RebuildSpecialRuleDefs());
-            ActiveRules.Sort(BlockingRulesFirstComparison);
-
+            List<RuleDef> rules = new List<RuleDef>();
             Guid ModeId = Guid.NewGuid();
             RuleDef def;
+
 
             // Do we want to let local traffic through?
             if (ActiveConfig.Service.ActiveProfile.AllowLocalSubnet)
             {
-                def = new RuleDef(ModeId, "Allow local subnet", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any);
+                def = new RuleDef(ModeId, "Allow local subnet", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultPermit);
                 def.RemoteAddresses = "LocalSubnet";
-                ActiveRules.Add(def);
-                
-                def = new RuleDef(ModeId, "Allow local subnet (broadcast)", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.Out, Protocol.TcpUdp);
-                def.RemoteAddresses = "255.255.255.255";
-                ActiveRules.Add(def);
+                ExpandRule(def, rules);
             }
 
             // Do we want to block known malware ports?
-            if (ActiveConfig.Service.Blocklists.EnableBlocklists
-                && ActiveConfig.Service.Blocklists.EnablePortBlocklist)
+            if (ActiveConfig.Service.Blocklists.EnableBlocklists && ActiveConfig.Service.Blocklists.EnablePortBlocklist)
             {
-                ActiveRules.AddRange(CollectRulesForAppByName("Malware Ports"));
+                List<FirewallExceptionV3> exceptions = new List<FirewallExceptionV3>();
+                exceptions.AddRange(CollectExceptionsForAppByName("Malware Ports"));
+                foreach (FirewallExceptionV3 ex in exceptions)
+                {
+                    ex.RegenerateId();
+                    GetRulesForException(ex, rules, (ulong)FilterWeights.DefaultPermit, (ulong)FilterWeights.Blocklist);
+                }
             }
 
-            // This switch should be executed last, as it might modify existing elements in ActiveRules
+            // Rules specific to the selected firewall mode
+            bool needUserRules = true;
             switch (VisibleState.Mode)
             {
                 case TinyWall.Interface.FirewallMode.AllowOutgoing:
                     {
                         // Add rule to explicitly allow outgoing connections
-                        ActiveRules.Add(new RuleDef(ModeId, "Allow outbound", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.Out, Protocol.Any));
+                        def = new RuleDef(ModeId, "Allow outbound", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.Out, Protocol.Any, (ulong)FilterWeights.DefaultPermit);
+                        ExpandRule(def, rules);
+
+                        // Block rest
+                        def = new RuleDef(ModeId, "Block incoming", GlobalSubject.Instance, RuleAction.Block, RuleDirection.In, Protocol.Any, (ulong)FilterWeights.DefaultBlock);
+                        ExpandRule(def, rules);
                         break;
                     }
                 case TinyWall.Interface.FirewallMode.BlockAll:
                     {
-                        // Remove all exceptions
-                        ActiveRules.Clear();
-                        break;
-                    }
-                case TinyWall.Interface.FirewallMode.Disabled:
-                    {
-                        // Remove all rules
-                        ActiveRules.Clear();
+                        // We won't need application exceptions
+                        needUserRules = false;
 
-                        // Add rule to explicitly allow everything
-                        ActiveRules.Add(new RuleDef(ModeId, "Allow everything", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any));
+                        // Block all
+                        def = new RuleDef(ModeId, "Block everything", GlobalSubject.Instance, RuleAction.Block, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultBlock);
+                        ExpandRule(def, rules);
                         break;
                     }
                 case TinyWall.Interface.FirewallMode.Learning:
                     {
-                        // Remove all rules
-                        ActiveRules.Clear();
+                        // Add rule to explicitly allow everything
+                        def = new RuleDef(ModeId, "Allow everything", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultPermit);
+                        ExpandRule(def, rules);
+                        break;
+                    }
+                case TinyWall.Interface.FirewallMode.Disabled:
+                    {
+                        // We won't need application exceptions
+                        needUserRules = false;
 
                         // Add rule to explicitly allow everything
-                        ActiveRules.Add(new RuleDef(ModeId, "Allow everything", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any));
-
-                        // Start up firewall logging
-                        Q.Enqueue(new TwMessage(MessageType.READ_FW_LOG), null);
+                        def = new RuleDef(ModeId, "Allow everything", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultPermit);
+                        ExpandRule(def, rules);
                         break;
                     }
                 case TinyWall.Interface.FirewallMode.Normal:
                     {
-                        // Nothing to do here
+                        // Block all by default
+                        def = new RuleDef(ModeId, "Block everything", GlobalSubject.Instance, RuleAction.Block, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultBlock);
+                        ExpandRule(def, rules);
                         break;
                     }
             }
 
-            // Add a rule to deny all traffic. Denial rules have priority, so this will disable all traffic.
-            def = new RuleDef(ModeId, "Block all traffic", GlobalSubject.Instance, RuleAction.Block, RuleDirection.InOut, Protocol.Any);
-            ActiveRules.Add(def);
+            if (needUserRules)
+            {
+                List<FirewallExceptionV3> UserExceptions = new List<FirewallExceptionV3>();
 
-            return ExpandRules(ActiveRules);
+                // Collect all applications exceptions
+                UserExceptions.AddRange(ActiveConfig.Service.ActiveProfile.AppExceptions);
+
+                // Collect all special exceptions
+                foreach (string appName in ActiveConfig.Service.ActiveProfile.SpecialExceptions)
+                    UserExceptions.AddRange(CollectExceptionsForAppByName(appName));
+
+                // Convert exceptions to rules
+                foreach (FirewallExceptionV3 ex in UserExceptions)
+                {
+                    ex.RegenerateId();
+                    GetRulesForException(ex, rules, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
+
+                    if (ex.Policy.PolicyType == PolicyType.Unrestricted)
+                        // Make exception for promiscuous mode
+                        rawSocketExceptions.Add(rules[rules.Count - 1]);
+                }
+            }
+
+            return rules;
         }
 
         private void InstallFirewallRules()
         {
-            List<RuleDef> rules = AssembleActiveRules();
+            List<RuleDef> rawSocketExceptions = new List<RuleDef>();
+            List<RuleDef> rules = AssembleActiveRules(rawSocketExceptions);
 
             using (Transaction trx = WfpEngine.BeginTransaction())
             {
@@ -249,24 +282,26 @@ namespace PKSoft
                 {
                     try
                     {
-                        WfpEngine.UnregisterFilter(ActiveWfpFilters[i].FilterKey);
+                        Filter f = ActiveWfpFilters[i];
+                        WfpEngine.UnregisterFilter(f.FilterKey);
                         ActiveWfpFilters.RemoveAt(i);
+                        f.Dispose();
                     }
-                    catch { }
+                    catch { System.Diagnostics.Debug.Assert(false); }
                 }
-
-                System.Diagnostics.Debug.Assert(ActiveWfpFilters.Count == 0);
 
                 // Add new rules
-                uint filterWeight = uint.MaxValue; 
                 foreach (RuleDef r in rules)
                 {
-                    --filterWeight;
-                     ConstructFilter(r, filterWeight);
+                     ConstructFilter(r);
                 }
 
-                InstallPortScanProtection(filterWeight);
-                InstallRawSocketFilters(filterWeight);
+                // Built-in protections
+                if (VisibleState.Mode != FirewallMode.Disabled)
+                {
+                    InstallPortScanProtection();
+                    InstallRawSocketFilters(rawSocketExceptions);
+                }
 
                 trx.Commit();
             }
@@ -364,9 +399,19 @@ namespace PKSoft
             }
         }
 
-        private void ConstructFilter(RuleDef r, uint filterWeight, LayerKeyEnum layer)
+        private void ConstructFilter(RuleDef r, LayerKeyEnum layer)
         {
             List<FilterCondition> conditions = new List<FilterCondition>();
+
+
+            if (!string.IsNullOrEmpty(r.ServiceName))
+            {
+                System.Diagnostics.Debug.Assert(!r.ServiceName.Equals("*"));
+                if (!LayerIsIcmpError(layer))
+                    conditions.Add(new ServiceNameFilterCondition(r.ServiceName));
+                else
+                    return;
+            }
 
             if (!string.IsNullOrEmpty(r.Application))
             {
@@ -376,6 +421,7 @@ namespace PKSoft
                 else
                     return;
             }
+
             if (!string.IsNullOrEmpty(r.RemoteAddresses) && !LayerIsAleAuthListen(layer))
             {
                 System.Diagnostics.Debug.Assert(!r.RemoteAddresses.Equals("*"));
@@ -387,9 +433,9 @@ namespace PKSoft
                     // Break. We don't want to add this filter to this layer.
                     return;
             }
+
             // We never want to affect loopback traffic
             conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
-
 
             if (r.Protocol != Protocol.Any)
             {
@@ -459,7 +505,7 @@ namespace PKSoft
                 r.Name,
                 ProviderKey,
                 (r.Action == RuleAction.Allow) ? FilterActions.FWP_ACTION_PERMIT : FilterActions.FWP_ACTION_BLOCK,
-                filterWeight
+                r.Weight
             );
             f.FilterKey = Guid.NewGuid();
             f.LayerKey = GetLayerKey(layer);
@@ -474,25 +520,25 @@ namespace PKSoft
             catch { }
         }
 
-        private void InstallRawSocketFilters(ulong filterWeight)
+        private void InstallRawSocketFilters(List<RuleDef> rawSocketExceptions)
         {
-            InstallRawSocketFilters(filterWeight, LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4);
-            InstallRawSocketFilters(filterWeight, LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6);
+            InstallRawSocketFilters(rawSocketExceptions, LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4);
+            InstallRawSocketFilters(rawSocketExceptions, LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6);
         }
 
-        private void InstallRawSocketFilters(ulong filterWeight, LayerKeyEnum layer)
+        private void InstallRawSocketFilters(List<RuleDef> rawSocketExceptions, LayerKeyEnum layer)
         {
             Filter f = new Filter(
                 "Raw socket filter",
                 string.Empty,
                 ProviderKey,
                 FilterActions.FWP_ACTION_BLOCK,
-                filterWeight
+                (ulong)FilterWeights.RawSocketBlock
             );
             f.FilterKey = Guid.NewGuid();
             f.LayerKey = GetLayerKey(layer);
             f.SublayerKey = GetSublayerKey(layer);
-            f.Conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_RAW_ENDPOINT , FieldMatchType.FWP_MATCH_FLAGS_ANY_SET));
+            f.Conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_RAW_ENDPOINT, FieldMatchType.FWP_MATCH_FLAGS_ANY_SET));
 
             try
             {
@@ -501,41 +547,46 @@ namespace PKSoft
             }
             catch { }
 
-            f = new Filter(
-                "Promiscuous socket filter",
-                string.Empty,
-                ProviderKey,
-                FilterActions.FWP_ACTION_BLOCK,
-                filterWeight
-            );
-            f.FilterKey = Guid.NewGuid();
-            f.LayerKey = GetLayerKey(layer);
-            f.SublayerKey = GetSublayerKey(layer);
-            f.Conditions.Add(new PromiscuousSocketFilterCondition(SioRcvAll.SIO_RCVALL, FieldMatchType.FWP_MATCH_EQUAL));
-            f.Conditions.Add(new ServiceNameFilterCondition("dhcp", FieldMatchType.FWP_MATCH_NOT_EQUAL));   // Windows DHCP client is a valid user of promiscuous mode, so we exclude it
-
-            try
+            foreach (var subj in rawSocketExceptions)
             {
-                WfpEngine.RegisterFilter(f);
-                ActiveWfpFilters.Add(f);
+                f = new Filter(
+                    "Raw socket permit",
+                    string.Empty,
+                    ProviderKey,
+                    FilterActions.FWP_ACTION_PERMIT,
+                    (ulong)FilterWeights.RawSockePermit
+                );
+                f.FilterKey = Guid.NewGuid();
+                f.LayerKey = GetLayerKey(layer);
+                f.SublayerKey = GetSublayerKey(layer);
+                if (!string.IsNullOrEmpty(subj.ServiceName))
+                    f.Conditions.Add(new ServiceNameFilterCondition(subj.ServiceName));
+                if (!string.IsNullOrEmpty(subj.Application))
+                    f.Conditions.Add(new AppIdFilterCondition(subj.Application));
+
+                try
+                {
+                    WfpEngine.RegisterFilter(f);
+                    ActiveWfpFilters.Add(f);
+                }
+                catch { }
             }
-            catch { }
         }
 
-        private void InstallPortScanProtection(ulong filterWeight)
+        private void InstallPortScanProtection()
         {
-            InstallPortScanProtection(filterWeight, LayerKeyEnum.FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD, BuiltinCallouts.FWPM_CALLOUT_WFP_TRANSPORT_LAYER_V4_SILENT_DROP);
-            InstallPortScanProtection(filterWeight, LayerKeyEnum.FWPM_LAYER_INBOUND_TRANSPORT_V6_DISCARD, BuiltinCallouts.FWPM_CALLOUT_WFP_TRANSPORT_LAYER_V6_SILENT_DROP);
+            InstallPortScanProtection(LayerKeyEnum.FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD, BuiltinCallouts.FWPM_CALLOUT_WFP_TRANSPORT_LAYER_V4_SILENT_DROP);
+            InstallPortScanProtection(LayerKeyEnum.FWPM_LAYER_INBOUND_TRANSPORT_V6_DISCARD, BuiltinCallouts.FWPM_CALLOUT_WFP_TRANSPORT_LAYER_V6_SILENT_DROP);
         }
 
-        private void InstallPortScanProtection(ulong filterWeight, LayerKeyEnum layer, Guid callout)
+        private void InstallPortScanProtection(LayerKeyEnum layer, Guid callout)
         {
             Filter f = new Filter(
                 "Port Scanning Protection",
                 string.Empty,
                 ProviderKey,
                 FilterActions.FWP_ACTION_CALLOUT_TERMINATING,
-                filterWeight
+                (ulong)FilterWeights.Blocklist
             );
             f.FilterKey = Guid.NewGuid();
             f.LayerKey = GetLayerKey(layer);
@@ -593,31 +644,31 @@ namespace PKSoft
                 (layer == LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V6);
         }
 
-        private void ConstructFilter(RuleDef r, uint filterWeight)
+        private void ConstructFilter(RuleDef r)
         {
             switch (r.Direction)
             {
                 case RuleDirection.Out:
-                    ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V6);
-                    ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V4);
+                    ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V6);
+                    ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V4);
                     if ((r.Protocol == Protocol.Any) || (r.Protocol == Protocol.ICMPv4) || (r.Protocol == Protocol.ICMPv6))
                     {
-                        ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6);
-                        ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4);
+                        ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6);
+                        ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4);
                     }
                     break;
                 case RuleDirection.In:
-                    ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6);
-                    ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4);
+                    ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6);
+                    ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4);
                     if ((r.Protocol == Protocol.Any) || (r.Protocol == Protocol.ICMPv4) || (r.Protocol == Protocol.ICMPv6))
                     {
-                        ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V6);
-                        ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V4);
+                        ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V6);
+                        ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V4);
                     }
                     if ((r.Protocol == Protocol.Any) || (r.Protocol == Protocol.TCP))
                     {
-                        ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_LISTEN_V6);
-                        ConstructFilter(r, filterWeight, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_LISTEN_V4);
+                        ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_LISTEN_V6);
+                        ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_LISTEN_V4);
                     }
                     break;
                 default:
@@ -625,16 +676,16 @@ namespace PKSoft
             }
         }
 
-        private List<RuleDef> CollectRulesForAppByName(string name)
+        private List<FirewallExceptionV3> CollectExceptionsForAppByName(string name)
         {
-            List<RuleDef> rules = new List<RuleDef>();
+            List<FirewallExceptionV3> exceptions = new List<FirewallExceptionV3>();
 
             try
             {
                 // Retrieve database entry for appName
                 DatabaseClasses.Application app = GlobalInstances.AppDatabase.GetApplicationByName(name);
                 if (app == null)
-                    return rules;
+                    return exceptions;
 
                 // Create rules
                 foreach (DatabaseClasses.SubjectIdentity id in app.Components)
@@ -644,13 +695,7 @@ namespace PKSoft
                         List<ExceptionSubject> foundSubjects = id.SearchForFile();
                         foreach (var subject in foundSubjects)
                         {
-                            try
-                            {
-                                FirewallExceptionV3 ex = id.InstantiateException(subject);
-                                ex.RegenerateId();
-                                GetRulesForException(ex, rules);
-                            }
-                            catch { }
+                            exceptions.Add(id.InstantiateException(subject));
                         }
                     }
                     catch { }
@@ -658,48 +703,10 @@ namespace PKSoft
             }
             catch { }
 
-            return rules;
+            return exceptions;
         }
 
-        private List<RuleDef> RebuildSpecialRuleDefs()
-        {
-            // We will collect all our rules into this list
-            List<RuleDef> SpecialRules = new List<RuleDef>();
-
-            // Iterate all enabled special exceptions
-            foreach (string appName in ActiveConfig.Service.ActiveProfile.SpecialExceptions)
-            {
-                SpecialRules.AddRange(CollectRulesForAppByName(appName));
-            }
-
-            return SpecialRules;
-        }
-
-        private List<RuleDef> RebuildApplicationRuleDefs()
-        {
-            // We will collect all our rules into this list
-            List<RuleDef> AppExRules = new List<RuleDef>();
-
-            for (int i = 0; i < ActiveConfig.Service.ActiveProfile.AppExceptions.Count; ++i)
-            {
-                try
-                {   //This try-catch will prevent errors if an exception profile string is invalid
-                    FirewallExceptionV3 ex = ActiveConfig.Service.ActiveProfile.AppExceptions[i];
-                    GetRulesForException(ex, AppExRules);
-                }
-                catch (Exception e)
-                {
-                    Utils.LogCrash(e);
-#if DEBUG
-                    throw;
-#endif
-                }
-            }
-
-            return AppExRules;
-        }
-
-        private void GetRulesForException(FirewallExceptionV3 ex, List<RuleDef> ruleset)
+        private void GetRulesForException(FirewallExceptionV3 ex, List<RuleDef> results, ulong permitWeight, ulong blockWeight)
         {
             if (ex.Id == Guid.Empty)
             {
@@ -716,16 +723,16 @@ namespace PKSoft
             {
                 case PolicyType.HardBlock:
                     {
-                        RuleDef def = new RuleDef(ex.Id, "Block", ex.Subject, RuleAction.Block, RuleDirection.InOut, Protocol.Any);
-                        ruleset.Add(def);
+                        RuleDef def = new RuleDef(ex.Id, "Block", ex.Subject, RuleAction.Block, RuleDirection.InOut, Protocol.Any, blockWeight);
+                        ExpandRule(def, results);
                         break;
                     }
                 case PolicyType.Unrestricted:
                     {
-                        RuleDef def = new RuleDef(ex.Id, "Full access", ex.Subject, RuleAction.Allow, RuleDirection.InOut, Protocol.Any);
+                        RuleDef def = new RuleDef(ex.Id, "Full access", ex.Subject, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, permitWeight);
                         if ((ex.Policy as UnrestrictedPolicy).LocalNetworkOnly)
                             def.RemoteAddresses = "LocalSubnet";
-                        ruleset.Add(def);
+                        ExpandRule(def, results);
                         break;
                     }
                 case PolicyType.TcpUdpOnly:
@@ -733,39 +740,39 @@ namespace PKSoft
                         TcpUdpPolicy pol = ex.Policy as TcpUdpPolicy;
                         if (!string.IsNullOrEmpty(pol.AllowedLocalTcpListenerPorts))
                         {
-                            RuleDef def = new RuleDef(ex.Id, "TCP Listen Ports", ex.Subject, RuleAction.Allow, RuleDirection.In, Protocol.TCP);
+                            RuleDef def = new RuleDef(ex.Id, "TCP Listen Ports", ex.Subject, RuleAction.Allow, RuleDirection.In, Protocol.TCP, permitWeight);
                             if (!pol.AllowedLocalTcpListenerPorts.Equals("*"))
                                 def.LocalPorts = pol.AllowedLocalTcpListenerPorts;
                             if (pol.LocalNetworkOnly)
                                 def.RemoteAddresses = "LocalSubnet";
-                            ruleset.Add(def);
+                            ExpandRule(def, results);
                         }
                         if (!string.IsNullOrEmpty(pol.AllowedLocalUdpListenerPorts))
                         {
-                            RuleDef def = new RuleDef(ex.Id, "UDP Listen Ports", ex.Subject, RuleAction.Allow, RuleDirection.In, Protocol.UDP);
+                            RuleDef def = new RuleDef(ex.Id, "UDP Listen Ports", ex.Subject, RuleAction.Allow, RuleDirection.In, Protocol.UDP, permitWeight);
                             if (!pol.AllowedLocalUdpListenerPorts.Equals("*"))
                                 def.LocalPorts = pol.AllowedLocalUdpListenerPorts;
                             if (pol.LocalNetworkOnly)
                                 def.RemoteAddresses = "LocalSubnet";
-                            ruleset.Add(def);
+                            ExpandRule(def, results);
                         }
                         if (!string.IsNullOrEmpty(pol.AllowedRemoteTcpConnectPorts))
                         {
-                            RuleDef def = new RuleDef(ex.Id, "TCP Outbound Ports", ex.Subject, RuleAction.Allow, RuleDirection.Out, Protocol.TCP);
+                            RuleDef def = new RuleDef(ex.Id, "TCP Outbound Ports", ex.Subject, RuleAction.Allow, RuleDirection.Out, Protocol.TCP, permitWeight);
                             if (!pol.AllowedRemoteTcpConnectPorts.Equals("*"))
                                 def.RemotePorts = pol.AllowedRemoteTcpConnectPorts;
                             if (pol.LocalNetworkOnly)
                                 def.RemoteAddresses = "LocalSubnet";
-                            ruleset.Add(def);
+                            ExpandRule(def, results);
                         }
                         if (!string.IsNullOrEmpty(pol.AllowedRemoteUdpConnectPorts))
                         {
-                            RuleDef def = new RuleDef(ex.Id, "UDP Outbound Ports", ex.Subject, RuleAction.Allow, RuleDirection.Out, Protocol.UDP);
+                            RuleDef def = new RuleDef(ex.Id, "UDP Outbound Ports", ex.Subject, RuleAction.Allow, RuleDirection.Out, Protocol.UDP, permitWeight);
                             if (!pol.AllowedRemoteUdpConnectPorts.Equals("*"))
                                 def.RemotePorts = pol.AllowedRemoteUdpConnectPorts;
                             if (pol.LocalNetworkOnly)
                                 def.RemoteAddresses = "LocalSubnet";
-                            ruleset.Add(def);
+                            ExpandRule(def, results);
                         }
                         break;
                     }
@@ -773,8 +780,11 @@ namespace PKSoft
                     {
                         RuleListPolicy pol = ex.Policy as RuleListPolicy;
                         foreach (var rule in pol.Rules)
+                        {
                             rule.ExceptionId = ex.Id;
-                        ruleset.AddRange(pol.Rules);
+                            rule.Weight = (rule.Action == RuleAction.Allow) ? permitWeight : blockWeight;
+                            ExpandRule(rule, results);
+                        }
                         break;
                     }
             }
