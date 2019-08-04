@@ -133,7 +133,7 @@ namespace PKSoft
             opts.uninstall = Utils.ArrayContains(args, "/uninstall");
 
             if (opts.ProgramMode == StartUpMode.Invalid)
-                opts.ProgramMode = StartUpMode.Service;
+                opts.ProgramMode = StartUpMode.Controller;
 
             if (opts.install)
             {
