@@ -942,9 +942,10 @@ namespace PKSoft
 
         internal void AddExceptionList(List<FirewallExceptionV3> list)
         {
+            LoadSettingsFromServer();
+
             if (list.Count > 1)
             {
-                LoadSettingsFromServer();
                 ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
                 foreach (FirewallExceptionV3 fwex in list)
                     confCopy.ActiveProfile.AppExceptions.Add(fwex);
@@ -974,7 +975,6 @@ namespace PKSoft
 
         private void AddNewException(FirewallExceptionV3 fwex)
         {
-            LoadSettingsFromServer();
             ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
             confCopy.ActiveProfile.AppExceptions.Add(fwex);
             confCopy.ActiveProfile.Normalize();
@@ -1069,6 +1069,8 @@ namespace PKSoft
 
         private void mnuAllowLocalSubnet_Click(object sender, EventArgs e)
         {
+            LoadSettingsFromServer();
+
             // Copy, so that settings are not changed if they cannot be saved
             ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
             confCopy.ActiveProfile.AllowLocalSubnet = !mnuAllowLocalSubnet.Checked;
@@ -1079,6 +1081,8 @@ namespace PKSoft
 
         private void mnuEnableHostsBlocklist_Click(object sender, EventArgs e)
         {
+            LoadSettingsFromServer();
+
             // Copy, so that settings are not changed if they cannot be saved
             ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
             confCopy.Blocklists.EnableBlocklists = !mnuEnableHostsBlocklist.Checked;
