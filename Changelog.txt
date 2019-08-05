@@ -16,6 +16,7 @@ TinyWall Changelog
 - Modernized installer look
 - Add port scan protection
 - Raw socket and promiscuous mode rights management
+- Update traffic rate in tray menu live while visible
 - Fix: Don't leave locked files on service exit
 
 ---------------------

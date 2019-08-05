@@ -1,6 +1,4 @@
 Future development ideas:
-- Make speed info in tray menu update while open
-- Add filter condition creation for services
 - Check thread safety of update methods w.r.t. settings
 - See if service name can be retrieved from WFP log
 - Add support for UWP apps

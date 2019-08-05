@@ -322,8 +322,14 @@ namespace PKSoft
             InitializeComponent();
             InitController();
 
+            TrayMenu.Closed += TrayMenu_Closed;
             Tray.ContextMenuStrip = TrayMenu;
             Tray.Visible = true;
+        }
+
+        private void TrayMenu_Closed(object sender, ToolStripDropDownClosedEventArgs e)
+        {
+            ShowTraffixRate = false;
         }
 
         protected override void Dispose(bool disposing)
@@ -424,6 +430,8 @@ namespace PKSoft
                         txDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}MiB/s", MBytesTxPerSec);
                     else
                         txDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}KiB/s", KBytesTxPerSec);
+
+                    UpdateTrafficRateText();
                 }
             }
             catch
@@ -433,6 +441,37 @@ namespace PKSoft
                 toolStripMenuItem1.Visible = false;
                 TrafficTimer.Change(Timeout.Infinite, Timeout.Infinite);
             }
+        }
+
+        private bool _ShowTraffixRate = false;
+        private bool ShowTraffixRate
+        {
+            get { return _ShowTraffixRate; }
+            set
+            {
+                _ShowTraffixRate = value;
+
+                // Update more often while visible
+                if (value)
+                    TrafficTimer.Change(0, 1000);
+                else
+                    TrafficTimer.Change(5000, 5000);
+            }
+        }
+
+        private void UpdateTrafficRateText()
+        {
+            if (!ShowTraffixRate)
+                return;
+
+            string text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", PKSoft.Resources.Messages.TrafficIn, rxDisplay, PKSoft.Resources.Messages.TrafficOut, txDisplay);
+            if (TrayMenu.InvokeRequired)
+                TrayMenu.BeginInvoke((MethodInvoker)delegate
+                {
+                   mnuTrafficRate.Text = text;
+                });
+            else
+                mnuTrafficRate.Text = text;
         }
 
         private void StartUpdate(object sender, AnyEventArgs e)
@@ -660,7 +699,7 @@ namespace PKSoft
                 }
             }
 
-            mnuTrafficRate.Text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", PKSoft.Resources.Messages.TrafficIn, rxDisplay, PKSoft.Resources.Messages.TrafficOut, txDisplay);
+            ShowTraffixRate = true;
 
             bool locked = GlobalInstances.Controller.IsServerLocked;
             this.Locked = locked;
@@ -1194,7 +1233,8 @@ namespace PKSoft
 
                 // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
                 // BEGIN
-                TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.Zero, TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
+                TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, 0, Timeout.Infinite);
+                ShowTraffixRate = false;
                 mnuElevate.Visible = !Utils.RunningAsAdmin();
                 mnuModeDisabled.Image = Resources.Icons.shield_grey_small.ToBitmap();
                 mnuModeAllowOutgoing.Image = Resources.Icons.shield_red_small.ToBitmap();
