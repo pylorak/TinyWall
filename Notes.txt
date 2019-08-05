@@ -1,5 +1,4 @@
 Future development ideas:
-- Check thread safety of update methods w.r.t. settings
 - See if service name can be retrieved from WFP log
 - Add support for UWP apps
 - Add support for WSL

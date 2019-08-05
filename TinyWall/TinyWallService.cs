@@ -924,7 +924,7 @@ namespace PKSoft
             }
         }
 
-        private void UpdaterMethod(object state)
+        private void UpdaterMethod()
         {
             try
             {
@@ -935,6 +935,7 @@ namespace PKSoft
                 // This is an automatic update check in the background.
                 // If we fail (for whatever reason, no internet, server down etc.),
                 // we fail silently.
+                return;
             }
             finally
             {
@@ -946,16 +947,23 @@ namespace PKSoft
             if (VisibleState.Update == null)
                 return;
 
-            UpdateModule module = UpdateChecker.GetDatabaseFileModule(VisibleState.Update);
-            if (!module.DownloadHash.Equals(Hasher.HashFile(DatabaseClasses.AppDatabase.DBPath), StringComparison.OrdinalIgnoreCase))
+            try
             {
-                GetCompressedUpdate(module, DatabaseUpdateInstall);
-            }
+                UpdateModule module = UpdateChecker.GetDatabaseFileModule(VisibleState.Update);
+                if (!module.DownloadHash.Equals(Hasher.HashFile(DatabaseClasses.AppDatabase.DBPath), StringComparison.OrdinalIgnoreCase))
+                {
+                    GetCompressedUpdate(module, DatabaseUpdateInstall);
+                }
 
-            module = UpdateChecker.GetHostsFileModule(VisibleState.Update);
-            if (!module.DownloadHash.Equals(HostsFileManager.GetHostsHash(), StringComparison.OrdinalIgnoreCase))
+                module = UpdateChecker.GetHostsFileModule(VisibleState.Update);
+                if (!module.DownloadHash.Equals(HostsFileManager.GetHostsHash(), StringComparison.OrdinalIgnoreCase))
+                {
+                    GetCompressedUpdate(module, HostsUpdateInstall);
+                }
+            }
+            catch(Exception e)
             {
-                GetCompressedUpdate(module, HostsUpdateInstall);
+                Utils.LogCrash(e);
             }
         }
 
@@ -1026,21 +1034,6 @@ namespace PKSoft
             // Check if a timed exception has expired
             if (!Q.HasMessageType(MessageType.MINUTE_TIMER))
                 Q.Enqueue(new TwMessage(MessageType.MINUTE_TIMER), null);
-
-            // Check for inactivity and lock if necessary
-            if (DateTime.Now - LastControllerCommandTime > TimeSpan.FromMinutes(10))
-            {
-                Q.Enqueue(new TwMessage(MessageType.LOCK), null);
-            }
-
-            // Check for updates once every 2 days
-            if (ActiveConfig.Service.AutoUpdateCheck)
-            {
-                if (DateTime.Now - ActiveConfig.Service.LastUpdateCheck >= TimeSpan.FromDays(2))
-                {
-                    ThreadPool.QueueUserWorkItem(UpdaterMethod);
-                }
-            }
         }
 
         private List<FirewallLogEntry> GetFwLog()
@@ -1231,7 +1224,13 @@ namespace PKSoft
                     {
                         bool needsSave = false;
 
-                        // Check all exceptions if any one has expired
+                        // Check for inactivity and lock if necessary
+                        if (DateTime.Now - LastControllerCommandTime > TimeSpan.FromMinutes(10))
+                        {
+                            Q.Enqueue(new TwMessage(MessageType.LOCK), null);
+                        }
+
+                        // Check all exceptions if any has expired
                         List<FirewallExceptionV3> exs = ActiveConfig.Service.ActiveProfile.AppExceptions;
                         for (int i = exs.Count-1; i >= 0; --i)
                         {
@@ -1265,12 +1264,20 @@ namespace PKSoft
                                 needsSave = true;
                             }
                         }
-
                         if (needsSave)
                         {
                             ActiveConfig.Service.ActiveProfile.AppExceptions = exs;
                             GlobalInstances.ConfigChangeset = Guid.NewGuid();
                             ActiveConfig.Service.Save(ConfigSavePath);
+                        }
+
+                        // Check for updates once every 2 days
+                        if (ActiveConfig.Service.AutoUpdateCheck)
+                        {
+                            if (DateTime.Now - ActiveConfig.Service.LastUpdateCheck >= TimeSpan.FromDays(2))
+                            {
+                                UpdaterMethod();
+                            }
                         }
 
                         return new TwMessage(MessageType.RESPONSE_OK);
