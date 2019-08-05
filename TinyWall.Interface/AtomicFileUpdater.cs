@@ -47,8 +47,7 @@ namespace TinyWall.Interface
             {
                 try
                 {
-                    if (File.Exists(TemporaryFilePath))
-                        File.Delete(TemporaryFilePath);
+                    File.Delete(TemporaryFilePath);
                 }
                 catch { }
             }

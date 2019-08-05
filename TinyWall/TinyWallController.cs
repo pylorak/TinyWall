@@ -337,10 +337,10 @@ namespace PKSoft
             if (disposing && (components != null))
             {
                 // Manually added
-                if (HotKeyWhitelistExecutable != null) HotKeyWhitelistExecutable.Dispose();
-                if (HotKeyWhitelistProcess != null) HotKeyWhitelistProcess.Dispose();
-                if (HotKeyWhitelistWindow != null) HotKeyWhitelistWindow.Dispose();
-                if (MouseInterceptor != null) MouseInterceptor.Dispose();
+                HotKeyWhitelistExecutable?.Dispose();
+                HotKeyWhitelistProcess?.Dispose();
+                HotKeyWhitelistWindow?.Dispose();
+                MouseInterceptor?.Dispose();
 
                 using (WaitHandle wh = new AutoResetEvent(false))
                 {
@@ -1109,11 +1109,8 @@ namespace PKSoft
             }
             else
             {   // disable hotkey
-                if (hk != null)
-                {
-                    hk.Dispose();
-                    hk = null;
-                }
+                hk?.Dispose();
+                hk = null;
                 menu.ShortcutKeyDisplayString = string.Empty;
             }
         }

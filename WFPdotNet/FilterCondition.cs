@@ -221,8 +221,8 @@ namespace WFPdotNet
         {
             if (disposing)
             {
-                if (nativeMem != null)
-                    nativeMem.Dispose();
+                nativeMem?.Dispose();
+                nativeMem = null;
             }
 
             base.Dispose(disposing);
@@ -294,8 +294,8 @@ namespace WFPdotNet
         {
             if (disposing)
             {
-                if (rangeNativeMem != null)
-                    rangeNativeMem.Dispose();
+                rangeNativeMem?.Dispose();
+                rangeNativeMem = null;
             }
 
             base.Dispose(disposing);
@@ -370,8 +370,8 @@ namespace WFPdotNet
         {
             if (disposing)
             {
-                if (appIdNativeMem != null)
-                    appIdNativeMem.Dispose();
+                appIdNativeMem?.Dispose();
+                appIdNativeMem = null;
             }
 
             base.Dispose(disposing);
@@ -409,10 +409,8 @@ namespace WFPdotNet
         {
             if (disposing)
             {
-                if (byteBlobNativeMem != null)
-                    byteBlobNativeMem.Dispose();
-                if (sdNativeMem != null)
-                    sdNativeMem.Dispose();
+                byteBlobNativeMem?.Dispose();
+                sdNativeMem?.Dispose();
             }
 
             base.Dispose(disposing);

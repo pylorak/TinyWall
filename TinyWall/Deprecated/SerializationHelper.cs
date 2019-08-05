@@ -35,8 +35,7 @@ namespace PKSoft.Deprecated
                 }
                 finally
                 {
-                    if (fs != null)
-                        fs.Dispose();
+                    fs?.Dispose();
                 }
             }
         }

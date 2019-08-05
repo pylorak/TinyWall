@@ -211,8 +211,7 @@ namespace PKSoft
             }
             finally
             {
-                if (File.Exists(tmpFile))
-                    File.Delete(tmpFile);
+                File.Delete(tmpFile);
             }
         }
 

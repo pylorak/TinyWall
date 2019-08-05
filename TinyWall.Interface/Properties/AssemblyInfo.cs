@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Károly Pados")]
 [assembly: AssemblyProduct("TinyWall.Interface")]
-[assembly: AssemblyCopyright("Copyright © 2011-2016 Károly Pados")]
+[assembly: AssemblyCopyright("Copyright © 2016 Károly Pados")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

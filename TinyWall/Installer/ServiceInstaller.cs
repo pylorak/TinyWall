@@ -34,10 +34,8 @@ namespace PKSoft
             }
             catch
             {
-                if (serviceInstaller != null)
-                    serviceInstaller.Dispose();
-                if (serviceProcessInstaller != null)
-                    serviceProcessInstaller.Dispose();
+                serviceInstaller?.Dispose();
+                serviceProcessInstaller?.Dispose();
             }
         }
 

@@ -471,11 +471,8 @@ namespace PKSoft
             {
                 if ( this.disposed ) return;
 
-                if ( this.threadHandle != null )
-                {
-                    this.threadHandle.Dispose();
-                    this.threadHandle = null;
-                }
+                this.threadHandle?.Dispose();
+                this.threadHandle = null;
 
                 if ( this.isImpersonating )
                 {
