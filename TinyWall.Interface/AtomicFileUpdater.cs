@@ -9,8 +9,13 @@ namespace TinyWall.Interface
             // File.Replace needs the target and temporary files to be on the same volume.
             // To ensure this, we create our temporary file in the same folder as our target.
             TargetFilePath = targetFile;
-            string targetDir = Path.GetDirectoryName(targetFile);
-            this.TemporaryFilePath = Path.Combine(targetDir, Path.GetRandomFileName());
+            TemporaryFilePath = RandomFileInSameDir(targetFile);
+        }
+
+        private static string RandomFileInSameDir(string file)
+        {
+            string targetDir = Path.GetDirectoryName(file);
+            return Path.Combine(targetDir, Path.GetRandomFileName());
         }
 
         public string TemporaryFilePath { get; }
@@ -18,10 +23,22 @@ namespace TinyWall.Interface
 
         public void Commit()
         {
-            if (File.Exists(TargetFilePath))
-                File.Replace(TemporaryFilePath, TargetFilePath, null);
-            else
-                File.Move(TemporaryFilePath, TargetFilePath);
+            string tmp = RandomFileInSameDir(TargetFilePath);
+            try
+            {
+                if (File.Exists(TargetFilePath))
+                    File.Replace(TemporaryFilePath, TargetFilePath, tmp, true);
+                else
+                    File.Move(TemporaryFilePath, TargetFilePath);
+            }
+            finally
+            {
+                try
+                {
+                    File.Delete(tmp);
+                }
+                catch { }
+            }
         }
 
         protected override void Dispose(bool disposing)
