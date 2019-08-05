@@ -177,6 +177,11 @@ namespace PKSoft
         public bool ConnFormShowOpenPorts = false;
         public bool ConnFormShowBlocked = false;
 
+        // Processes window
+        public System.Windows.Forms.FormWindowState ProcessesFormWindowState = System.Windows.Forms.FormWindowState.Normal;
+        public System.Drawing.Point ProcessesFormWindowLoc = new System.Drawing.Point(150, 150);
+        public System.Drawing.Size ProcessesFormWindowSize = new System.Drawing.Size(827, 386);
+
         // Manage window
         public bool AskForExceptionDetails = false;
         public int ManageTabIndex;

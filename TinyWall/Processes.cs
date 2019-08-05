@@ -66,6 +66,9 @@ namespace PKSoft
         private void ProcessesForm_Load(object sender, EventArgs e)
         {
             this.Icon = Resources.Icons.firewall;
+            this.Size = ActiveConfig.Controller.ProcessesFormWindowSize;
+            this.Location = ActiveConfig.Controller.ProcessesFormWindowLoc;
+            this.WindowState = ActiveConfig.Controller.ProcessesFormWindowState;
 
             List<ListViewItem> itemColl = new List<ListViewItem>();
 
@@ -129,6 +132,23 @@ namespace PKSoft
                 newSorter.Ascending = !oldSorter.Ascending;
 
             listView.ListViewItemSorter = newSorter;
+        }
+
+        private void ProcessesForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ActiveConfig.Controller.ProcessesFormWindowState = this.WindowState;
+            if (this.WindowState == FormWindowState.Normal)
+            {
+                ActiveConfig.Controller.ProcessesFormWindowSize = this.Size;
+                ActiveConfig.Controller.ProcessesFormWindowLoc = this.Location;
+            }
+            else
+            {
+                ActiveConfig.Controller.ProcessesFormWindowSize = this.RestoreBounds.Size;
+                ActiveConfig.Controller.ProcessesFormWindowLoc = this.RestoreBounds.Location;
+            }
+
+            ActiveConfig.Controller.Save();
         }
     }
 }

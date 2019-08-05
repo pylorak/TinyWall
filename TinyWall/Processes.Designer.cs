@@ -45,6 +45,7 @@
             this.columnHeader1,
             this.columnHeader2});
             this.listView.FullRowSelect = true;
+            this.listView.HideSelection = false;
             this.listView.MultiSelect = false;
             this.listView.Name = "listView";
             this.listView.SmallImageList = this.IconList;
@@ -99,6 +100,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "ProcessesForm";
             this.TopMost = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ProcessesForm_FormClosing);
             this.Load += new System.EventHandler(this.ProcessesForm_Load);
             this.ResumeLayout(false);
 

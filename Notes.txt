@@ -1,12 +1,11 @@
 Future development ideas:
-- See if service name can be retrieved from WFP log
 - Add support for UWP apps
 - Add support for WSL
+- Context-menu whitelisting
 - Remove RuleDef.Application field
 - Compile new port block list from Docs/MalwarePorts/
 - Boot-time filters
 - Simplify use-case of networked installers
-- Make Processes window remember size
 - Add "Open folder" to Processes and Connections windows
 - avast.setup
 - Checkboxes in mode menu

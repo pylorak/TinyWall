@@ -17,6 +17,7 @@ TinyWall Changelog
 - Add port scan protection
 - Raw socket and promiscuous mode rights management
 - Update traffic rate in tray menu live while visible
+- Processes window remembers size
 - Fix: Don't leave locked files on service exit
 - Fix: Race condition between update check and service message loop
 
