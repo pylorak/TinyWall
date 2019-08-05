@@ -293,7 +293,11 @@ namespace PKSoft
                 // Add new rules
                 foreach (RuleDef r in rules)
                 {
-                     ConstructFilter(r);
+                    try
+                    {
+                        ConstructFilter(r);
+                    }
+                    catch { }
                 }
 
                 // Built-in protections
@@ -549,23 +553,23 @@ namespace PKSoft
 
             foreach (var subj in rawSocketExceptions)
             {
-                f = new Filter(
-                    "Raw socket permit",
-                    string.Empty,
-                    ProviderKey,
-                    FilterActions.FWP_ACTION_PERMIT,
-                    (ulong)FilterWeights.RawSockePermit
-                );
-                f.FilterKey = Guid.NewGuid();
-                f.LayerKey = GetLayerKey(layer);
-                f.SublayerKey = GetSublayerKey(layer);
-                if (!string.IsNullOrEmpty(subj.ServiceName))
-                    f.Conditions.Add(new ServiceNameFilterCondition(subj.ServiceName));
-                if (!string.IsNullOrEmpty(subj.Application))
-                    f.Conditions.Add(new AppIdFilterCondition(subj.Application));
-
                 try
                 {
+                    f = new Filter(
+                        "Raw socket permit",
+                        string.Empty,
+                        ProviderKey,
+                        FilterActions.FWP_ACTION_PERMIT,
+                        (ulong)FilterWeights.RawSockePermit
+                    );
+                    f.FilterKey = Guid.NewGuid();
+                    f.LayerKey = GetLayerKey(layer);
+                    f.SublayerKey = GetSublayerKey(layer);
+                    if (!string.IsNullOrEmpty(subj.ServiceName))
+                        f.Conditions.Add(new ServiceNameFilterCondition(subj.ServiceName));
+                    if (!string.IsNullOrEmpty(subj.Application))
+                        f.Conditions.Add(new AppIdFilterCondition(subj.Application));
+
                     WfpEngine.RegisterFilter(f);
                     ActiveWfpFilters.Add(f);
                 }
