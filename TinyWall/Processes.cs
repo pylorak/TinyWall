@@ -85,10 +85,10 @@ namespace PKSoft
 
                         // Scan list of already added items to prevent duplicates
                         bool skip = false;
-                        for (int j = 0; j < listView.Items.Count; ++j)
+                        for (int j = 0; j < itemColl.Count; ++j)
                         {
-                            if (listView.Items[j].SubItems[0].Text.ToUpperInvariant().Equals(p.ProcessName.ToUpperInvariant()) &&
-                                listView.Items[j].SubItems[1].Text.ToUpperInvariant().Equals(ProcPath.ToUpperInvariant())
+                            if (itemColl[j].SubItems[0].Text.ToUpperInvariant().Equals(p.ProcessName.ToUpperInvariant()) &&
+                                itemColl[j].SubItems[1].Text.ToUpperInvariant().Equals(ProcPath.ToUpperInvariant())
                                 )
                             {
                                 skip = true;
