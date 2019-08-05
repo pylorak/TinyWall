@@ -212,7 +212,10 @@ namespace WFPdotNet
 
         public NetEventSubscription SubscribeNetEvent(NetEventCallback callback, object context)
         {
-            return new NetEventSubscription(this, callback, context);
+            if (VersionInfo.Win8OrNewer)
+                return new NetEventSubscription1(this, callback, context);
+            else
+                return new NetEventSubscription0(this, callback, context);
         }
 
         public Filter GetFilter(Guid guid, bool getConditions)

@@ -132,51 +132,19 @@ namespace WFPdotNet
 
     public delegate void NetEventCallback(object context, NetEventData data);
 
-    public sealed class NetEventSubscription : IDisposable
+    public abstract class NetEventSubscription : IDisposable
     {
-        [SuppressUnmanagedCodeSecurity]
-        internal static class NativeMethods
-        {
-            [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-            internal delegate void FWPM_NET_EVENT_CALLBACK0(IntPtr context, IntPtr netEvent1);
+        protected readonly FwpmNetEventSubscriptionSafeHandle _changeHandle;
+        protected readonly NetEventCallback _callback;
+        protected readonly object _context;
 
-            [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-            internal delegate void FWPM_NET_EVENT_CALLBACK1(IntPtr context, IntPtr netEvent2);
-
-            [DllImport("FWPUClnt.dll", EntryPoint = "FwpmNetEventSubscribe0")]
-            [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-            internal static extern uint FwpmNetEventSubscribe0(
-                [In] FwpmEngineSafeHandle engineHandle,
-                [In] ref Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subscription,
-                [In] FWPM_NET_EVENT_CALLBACK0 callback,
-                [In] IntPtr context,
-                [Out] out FwpmNetEventSubscriptionSafeHandle changeHandle);
-
-            [DllImport("FWPUClnt.dll", EntryPoint = "FwpmNetEventSubscribe1")]
-            [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-            internal static extern uint FwpmNetEventSubscribe1(
-                [In] FwpmEngineSafeHandle engineHandle,
-                [In] ref Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subscription,
-                [In] FWPM_NET_EVENT_CALLBACK1 callback,
-                [In] IntPtr context,
-                [Out] out FwpmNetEventSubscriptionSafeHandle changeHandle);
-
-        }
-
-
-        private readonly FwpmNetEventSubscriptionSafeHandle _changeHandle;
-        private readonly NetEventCallback _callback;
-        private readonly object _context;
-        private readonly NativeMethods.FWPM_NET_EVENT_CALLBACK0 _nativeCallbackDelegate0;
-        private readonly NativeMethods.FWPM_NET_EVENT_CALLBACK1 _nativeCallbackDelegate1;
+        protected abstract uint CreateSubscription(FwpmEngineSafeHandle engineHandle, ref Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subscription, IntPtr context, out FwpmNetEventSubscriptionSafeHandle changeHandle);
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "dummy")]
-        internal NetEventSubscription(Engine engine, NetEventCallback callback, object context)
+        protected NetEventSubscription(Engine engine, NetEventCallback callback, object context)
         {
             _callback = callback;
             _context = context;
-            _nativeCallbackDelegate0 = new NativeMethods.FWPM_NET_EVENT_CALLBACK0(NativeCallbackHandler0);
-            _nativeCallbackDelegate1 = new NativeMethods.FWPM_NET_EVENT_CALLBACK1(NativeCallbackHandler1);
             AllocHGlobalSafeHandle templMemHandle = null;
 
             RuntimeHelpers.PrepareConstrainedRegions();
@@ -206,10 +174,7 @@ namespace WFPdotNet
                 try { }
                 finally
                 {
-                    if (VersionInfo.Win8OrNewer)
-                        err = NativeMethods.FwpmNetEventSubscribe1(engine.NativePtr, ref subs0, _nativeCallbackDelegate1, IntPtr.Zero, out _changeHandle);
-                    else
-                        err = NativeMethods.FwpmNetEventSubscribe0(engine.NativePtr, ref subs0, _nativeCallbackDelegate0, IntPtr.Zero, out _changeHandle);
+                    err = CreateSubscription(engine.NativePtr, ref subs0, IntPtr.Zero, out _changeHandle);
                     if (0 == err)
                         handleOk = _changeHandle.SetEngineReference(engine.NativePtr);
                 }
@@ -226,21 +191,85 @@ namespace WFPdotNet
             }
         }
 
-        private void NativeCallbackHandler0(IntPtr context, IntPtr netEvent1)
-        {
-            Interop.FWPM_NET_EVENT1 ev = (Interop.FWPM_NET_EVENT1)Marshal.PtrToStructure(netEvent1, typeof(Interop.FWPM_NET_EVENT1));
-            _callback(_context, new NetEventData(ev));
-        }
-
-        private void NativeCallbackHandler1(IntPtr context, IntPtr netEvent2)
-        {
-            Interop.FWPM_NET_EVENT2 ev = (Interop.FWPM_NET_EVENT2)Marshal.PtrToStructure(netEvent2, typeof(Interop.FWPM_NET_EVENT2));
-            _callback(_context, new NetEventData(ev));
-        }
-
         public void Dispose()
         {
             _changeHandle.Dispose();
         }
     }
+
+    public sealed class NetEventSubscription0 : NetEventSubscription
+    {
+        [SuppressUnmanagedCodeSecurity]
+        internal static class NativeMethods
+        {
+            [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+            internal delegate void FWPM_NET_EVENT_CALLBACK0(IntPtr context, IntPtr netEvent1);
+
+            [DllImport("FWPUClnt.dll", EntryPoint = "FwpmNetEventSubscribe0")]
+            [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+            internal static extern uint FwpmNetEventSubscribe0(
+                [In] FwpmEngineSafeHandle engineHandle,
+                [In] ref Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subscription,
+                [In] FWPM_NET_EVENT_CALLBACK0 callback,
+                [In] IntPtr context,
+                [Out] out FwpmNetEventSubscriptionSafeHandle changeHandle);
+        }
+
+        private NativeMethods.FWPM_NET_EVENT_CALLBACK0 _nativeCallbackDelegate0;
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "dummy")]
+        internal NetEventSubscription0(Engine engine, NetEventCallback callback, object context) : base(engine, callback, context)
+        { }
+
+        protected override uint CreateSubscription(FwpmEngineSafeHandle engineHandle, ref Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subscription, IntPtr context, out FwpmNetEventSubscriptionSafeHandle changeHandle)
+        {
+            _nativeCallbackDelegate0 = new NativeMethods.FWPM_NET_EVENT_CALLBACK0(NativeCallbackHandler0);
+            return NativeMethods.FwpmNetEventSubscribe0(engineHandle, ref subscription, _nativeCallbackDelegate0, IntPtr.Zero, out changeHandle);
+        }
+
+        private void NativeCallbackHandler0(IntPtr context, IntPtr netEvent1)
+        {
+            Interop.FWPM_NET_EVENT1 ev = (Interop.FWPM_NET_EVENT1)Marshal.PtrToStructure(netEvent1, typeof(Interop.FWPM_NET_EVENT1));
+            _callback(_context, new NetEventData(ev));
+        }
+    }
+
+    public sealed class NetEventSubscription1 : NetEventSubscription
+    {
+        [SuppressUnmanagedCodeSecurity]
+        internal static class NativeMethods
+        {
+            [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+            internal delegate void FWPM_NET_EVENT_CALLBACK1(IntPtr context, IntPtr netEvent2);
+
+            [DllImport("FWPUClnt.dll", EntryPoint = "FwpmNetEventSubscribe1")]
+            [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+            internal static extern uint FwpmNetEventSubscribe1(
+                [In] FwpmEngineSafeHandle engineHandle,
+                [In] ref Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subscription,
+                [In] FWPM_NET_EVENT_CALLBACK1 callback,
+                [In] IntPtr context,
+                [Out] out FwpmNetEventSubscriptionSafeHandle changeHandle);
+
+        }
+
+        private NativeMethods.FWPM_NET_EVENT_CALLBACK1 _nativeCallbackDelegate0;
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "dummy")]
+        internal NetEventSubscription1(Engine engine, NetEventCallback callback, object context) : base(engine, callback, context)
+        { }
+
+        protected override uint CreateSubscription(FwpmEngineSafeHandle engineHandle, ref Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subscription, IntPtr context, out FwpmNetEventSubscriptionSafeHandle changeHandle)
+        {
+            _nativeCallbackDelegate0 = new NativeMethods.FWPM_NET_EVENT_CALLBACK1(NativeCallbackHandler1);
+            return NativeMethods.FwpmNetEventSubscribe1(engineHandle, ref subscription, _nativeCallbackDelegate0, IntPtr.Zero, out changeHandle);
+        }
+
+        private void NativeCallbackHandler1(IntPtr context, IntPtr netEvent1)
+        {
+            Interop.FWPM_NET_EVENT2 ev = (Interop.FWPM_NET_EVENT2)Marshal.PtrToStructure(netEvent1, typeof(Interop.FWPM_NET_EVENT2));
+            _callback(_context, new NetEventData(ev));
+        }
+    }
+
 }
