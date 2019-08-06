@@ -180,10 +180,8 @@ namespace WFPdotNet
                 }
 
                 // Do error handling after the CER
-                if (!handleOk)
-                    throw new Exception("Failed to set handle value.");
                 if (0 != err)
-                    throw new WfpException(err, "FwpmFilterSubscribeChanges0");
+                    throw new WfpException(err, "FwpmNetEventSubscribe1");
             }
             finally
             {

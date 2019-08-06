@@ -7,20 +7,15 @@ namespace WFPdotNet
     [Serializable]
     public class WfpException : Exception
     {
-        public uint ErrorCode;
-        public string Origin;
+        public readonly uint ErrorCode;
 
-        public WfpException(uint errCode, string origin)
+        private static string MakeErrorMsg(uint errCode, string wfpFunction)
+        { return $"{wfpFunction} returned error code {errCode}."; }
+
+        public WfpException(uint errCode, string wfpFunction)
+            : base(MakeErrorMsg(errCode, wfpFunction))
         {
             ErrorCode = errCode;
-            Origin = origin;
-        }
-
-        public WfpException(uint errCode, string origin, string message)
-            : base(message)
-        {
-            ErrorCode = errCode;
-            Origin = origin;
         }
 
         protected WfpException(SerializationInfo info, StreamingContext context)
@@ -29,7 +24,6 @@ namespace WFPdotNet
             if (info != null)
             {
                 this.ErrorCode = info.GetUInt32("ErrorCode");
-                this.Origin = info.GetString("Origin");
             }
         }
 
@@ -41,7 +35,6 @@ namespace WFPdotNet
             if (info != null)
             {
                 info.AddValue("ErrorCode", this.ErrorCode);
-                info.AddValue("Origin", this.Origin);
             }
         }
     }
