@@ -13,9 +13,28 @@ namespace WFPdotNet.Interop
     [Flags]
     public enum FWPM_SESSION_FLAGS : uint
     {
-        FWPM_SESSION_FLAG_NONE = 0,
+        None = 0,
         FWPM_SESSION_FLAG_DYNAMIC = 0x00000001,
         FWPM_SESSION_FLAG_RESERVED = 0x10000000
+    }
+
+    public enum FWPM_ENGINE_OPTION
+    {
+        FWPM_ENGINE_COLLECT_NET_EVENTS = 0,
+        FWPM_ENGINE_NET_EVENT_MATCH_ANY_KEYWORDS,
+        FWPM_ENGINE_NAME_CACHE,
+        FWPM_ENGINE_MONITOR_IPSEC_CONNECTIONS,
+        FWPM_ENGINE_PACKET_QUEUING,
+        FWPM_ENGINE_TXN_WATCHDOG_TIMEOUT_IN_MSEC,
+        FWPM_ENGINE_OPTION_MAX
+    }
+
+    [Flags]
+    public enum InboundEventMatchKeyword
+    {
+        None = 0,
+        FWPM_NET_EVENT_KEYWORD_INBOUND_MCAST,
+        FWPM_NET_EVENT_KEYWORD_INBOUND_BCAST
     }
 
     [StructLayout(LayoutKind.Sequential)]

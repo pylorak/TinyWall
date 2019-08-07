@@ -7,7 +7,6 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("WFPdotNet")]
 [assembly: AssemblyDescription("WFP Interop Library")]
-[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Károly Pados")]
 [assembly: AssemblyProduct("WFPdotNet")]
 [assembly: AssemblyCopyright("Copyright © Károly Pados 2015")]
@@ -34,3 +33,10 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
+[assembly: AssemblyConfiguration("Release")]
+[assembly: System.Diagnostics.Debuggable(false, false)]
+#endif

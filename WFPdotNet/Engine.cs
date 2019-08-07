@@ -28,6 +28,18 @@ namespace WFPdotNet
                 [In] ref Interop.FWPM_SESSION0 session,
                 [Out] out FwpmEngineSafeHandle engineHandle);
 
+            [DllImport("FWPUClnt.dll", EntryPoint = "FwpmEngineSetOption0")]
+            internal static extern uint FwpmEngineSetOption0(
+                [In] FwpmEngineSafeHandle engineHandle,
+                [In] Interop.FWPM_ENGINE_OPTION option,
+                [In] ref Interop.FWP_VALUE0 newValue);
+
+            [DllImport("FWPUClnt.dll", EntryPoint = "FwpmEngineGetOption0")]
+            internal static extern uint FwpmEngineGetOption0(
+                [In] FwpmEngineSafeHandle engineHandle,
+                [In] Interop.FWPM_ENGINE_OPTION option,
+                [Out] out FwpmMemorySafeHandle value);
+
             [DllImport("FWPUClnt.dll", EntryPoint = "FwpmProviderAdd0")]
             internal static extern uint FwpmProviderAdd0(
                 [In] FwpmEngineSafeHandle engineHandle,
@@ -76,7 +88,6 @@ namespace WFPdotNet
         }
 
         private readonly FwpmEngineSafeHandle _nativeEngineHandle;
-        private readonly Guid _sessionKey;
 
         public FwpmEngineSafeHandle NativePtr
         {
@@ -97,8 +108,8 @@ namespace WFPdotNet
         public Engine(string displName, string displDescr, Interop.FWPM_SESSION_FLAGS flags, uint txnTimeoutMsec)
         {
             Interop.FWPM_SESSION0 session = new Interop.FWPM_SESSION0();
-            _sessionKey = Guid.NewGuid();
-            session.sessionKey = _sessionKey;
+            SessionKey = Guid.NewGuid();
+            session.sessionKey = SessionKey;
             session.displayData.name = displName;
             session.displayData.description = displDescr;
             session.flags = flags;
@@ -109,9 +120,75 @@ namespace WFPdotNet
                 throw new WfpException(error, "FwpmEngineOpen0");
         }
 
+        private uint EngineOptionGetValue(Interop.FWPM_ENGINE_OPTION opt)
+        {
+            uint err = NativeMethods.FwpmEngineGetOption0(_nativeEngineHandle, opt, out FwpmMemorySafeHandle nativeMem);
+            if (0 != err)
+                throw new WfpException(err, "FwpmEngineGetOption0");
+
+            try
+            {
+                Interop.FWP_VALUE0 val = (Interop.FWP_VALUE0)Marshal.PtrToStructure(nativeMem.DangerousGetHandle(), typeof(Interop.FWP_VALUE0));
+                System.Diagnostics.Debug.Assert(val.type == Interop.FWP_DATA_TYPE.FWP_UINT32);
+                return val.uint32;
+            }
+            finally
+            {
+                nativeMem.Dispose();
+            }
+        }
+
+        private void EngineOptionSetValue(Interop.FWPM_ENGINE_OPTION opt, uint val)
+        {
+            Interop.FWP_VALUE0 vs = new Interop.FWP_VALUE0();
+            vs.type = Interop.FWP_DATA_TYPE.FWP_UINT32;
+            vs.uint32 = val;
+
+            uint err = NativeMethods.FwpmEngineSetOption0(_nativeEngineHandle, opt, ref vs);
+            if (0 != err)
+                throw new WfpException(err, "FwpmEngineSetOption0");
+        }
+
+        public bool CollectNetEvents
+        {
+            get
+            {
+                uint val = EngineOptionGetValue(Interop.FWPM_ENGINE_OPTION.FWPM_ENGINE_COLLECT_NET_EVENTS);
+                return (val != 0);
+            }
+            set
+            {
+                EngineOptionSetValue(Interop.FWPM_ENGINE_OPTION.FWPM_ENGINE_COLLECT_NET_EVENTS, value ? 1u : 0u);
+            }
+        }
+
+        public Interop.InboundEventMatchKeyword EventMatchAnyKeywords
+        {
+            get
+            {
+                return (Interop.InboundEventMatchKeyword)EngineOptionGetValue(Interop.FWPM_ENGINE_OPTION.FWPM_ENGINE_NET_EVENT_MATCH_ANY_KEYWORDS);
+            }
+            set
+            {
+                EngineOptionSetValue(Interop.FWPM_ENGINE_OPTION.FWPM_ENGINE_NET_EVENT_MATCH_ANY_KEYWORDS, (uint)value);
+            }
+        }
+
+        public int TxnWatchdogTimeoutMsec
+        {
+            get
+            {
+                return (int)EngineOptionGetValue(Interop.FWPM_ENGINE_OPTION.FWPM_ENGINE_TXN_WATCHDOG_TIMEOUT_IN_MSEC);
+            }
+            set
+            {
+                EngineOptionSetValue(Interop.FWPM_ENGINE_OPTION.FWPM_ENGINE_TXN_WATCHDOG_TIMEOUT_IN_MSEC, (uint)value);
+            }
+        }
+
         public Guid SessionKey
         {
-            get { return _sessionKey; }
+            get; private set;
         }
 
         public SessionCollection GetSessions()
