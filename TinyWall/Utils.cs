@@ -664,10 +664,17 @@ namespace PKSoft
             return RndGenerator.Next(0, int.MaxValue);
         }
 
+        internal static Version TinyWallVersion { get; } = typeof(Utils).Assembly.GetName().Version;
+
         private static object logLocker = new object();
         internal static void LogCrash(Exception e)
         {
-            Utils.Log(e.ToString());
+            Utils.Log(string.Join(
+                Environment.NewLine, new string[] {
+                $"TinyWall version: {Utils.TinyWallVersion}",
+                $"Windows version: {TinyWall.Interface.VersionInfo.WindowsVersionString}",
+                e.ToString()
+                }));
         }
         internal static void Log(string info)
         {

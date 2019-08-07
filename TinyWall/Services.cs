@@ -34,9 +34,9 @@ namespace PKSoft
         private static string GetServiceExecutable(string serviceName)
         {
             string ImagePath = string.Empty;
-            using (RegistryKey KeyHKLM = Registry.LocalMachine)
+            using (RegistryKey KeyHKLM = Microsoft.Win32.Registry.LocalMachine)
             {
-                using (RegistryKey Key = KeyHKLM.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\"+serviceName))
+                using (RegistryKey Key = KeyHKLM.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\"+ serviceName))
                 {
                     ImagePath = Key.GetValue("ImagePath") as string;
                 }

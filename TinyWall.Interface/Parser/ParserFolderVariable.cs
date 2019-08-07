@@ -1,48 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
+using TinyWall.Interface;
 
 namespace TinyWall.Interface.Parser
 {
     public sealed class ParserFolderVariable : ParserVariable
     {
-        internal static class NativeMethods
-        {
-            internal static bool is64BitProcess = (IntPtr.Size == 8);
-            internal static bool is64BitOperatingSystem = is64BitProcess || InternalCheckIsWow64();
-
-            [DllImport("kernel32", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            private static extern bool IsWow64Process([In] IntPtr hProcess, [Out] out bool wow64Process);
-
-            private static bool InternalCheckIsWow64()
-            {
-                if ((Environment.OSVersion.Version.Major == 5 && Environment.OSVersion.Version.Minor >= 1) ||
-                    Environment.OSVersion.Version.Major >= 6)
-                {
-                    using (Process p = Process.GetCurrentProcess())
-                    {
-                        try
-                        {
-                            bool retVal;
-                            if (!IsWow64Process(p.Handle, out retVal))
-                            {
-                                return false;
-                            }
-                            return retVal;
-                        }
-                        catch { return false; }
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-
-
         internal const string OPENING_TAG = "{folder:";
 
         internal override string Resolve(string str)
@@ -85,7 +48,7 @@ namespace TinyWall.Interface.Parser
 
         private static string ProgramFilesx64()
         {
-            if (NativeMethods.is64BitOperatingSystem)
+            if (VersionInfo.Is64BitOs)
                 return Environment.GetEnvironmentVariable("ProgramW6432");
             else
                 return Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
@@ -93,7 +56,7 @@ namespace TinyWall.Interface.Parser
 
         private static string NativeSys32()
         {
-            if (NativeMethods.is64BitOperatingSystem)
+            if (VersionInfo.Is64BitOs)
                 return Path.Combine(Environment.GetEnvironmentVariable("windir"), "System32");
             else
                 return Environment.GetFolderPath(Environment.SpecialFolder.System);

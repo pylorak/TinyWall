@@ -58,6 +58,7 @@
     <Compile Include="Internal\SerializationHelper.cs" />
     <Compile Include="Internal\Utils.cs" />
     <Compile Include="Internal\WinTrust.cs" />
+    <Compile Include="Registry.cs" />
     <Compile Include="Parser\ParserFolderVariable.cs" />
     <Compile Include="Parser\ParserParentVariable.cs" />
     <Compile Include="Parser\ParserRegistryVariable.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="RuleDef.cs" />
     <Compile Include="ServerConfiguration.cs" />
     <Compile Include="ServerState.cs" />
+    <Compile Include="VersionInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TinyWall.key.snk" />
