@@ -485,7 +485,7 @@ namespace PKSoft
                     // Try loading from older export file format.
                     try
                     {
-                        var oldConfig = Deprecated.SerializationHelper.LoadFromXMLFile<ConfigContainerOld>(ofd.FileName);
+                        var oldConfig = Deprecated.SerializationHelper.LoadFromXMLFile<Obsolete.ConfigContainer>(ofd.FileName);
                         TmpConfig.Controller = oldConfig.Controller;
                         TmpConfig.Service = oldConfig.Service.ToNewFormat();
                     }

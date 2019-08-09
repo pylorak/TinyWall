@@ -7,6 +7,8 @@ using TinyWall.Interface.Internal;
 using TinyWall.Interface;
 using TinyWall;
 
+using System.Xml.Serialization;
+
 namespace PKSoft
 {
     [Serializable]
@@ -341,11 +343,14 @@ namespace PKSoft
         public ControllerSettings Controller = null;
     }
 
-    [Obsolete]
-    public sealed class ConfigContainerOld
+    namespace Obsolete
     {
-        public ServiceSettings21 Service = null;
-        public ControllerSettings Controller = null;
+        [Obsolete, Serializable]
+        public sealed class ConfigContainer
+        {
+            public ServiceSettings21 Service = null;
+            public ControllerSettings Controller = null;
+        }
     }
 
     internal static class ActiveConfig
