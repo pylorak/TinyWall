@@ -426,6 +426,7 @@ namespace PKSoft
 
             ActiveConfig.Service = ServiceSettings21.Load();
             ActiveConfig.Service.SequenceNumber = Utils.GetRandomNumber();
+            ActiveConfig.Service.LastUpdateCheck = DateTime.MinValue;
             VisibleState.Mode = ActiveConfig.Service.StartupMode;
 
             ReapplySettings(FwRules);

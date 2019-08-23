@@ -261,6 +261,7 @@ namespace PKSoft
 
         // Traffic rate monitoring
         private System.Threading.Timer TrafficTimer = null;
+        private System.Threading.Timer UpdateTimer = null;
         private const int TRAFFIC_TIMER_INTERVAL = 2;
         private ulong bytesRxTotal = 0;
         private ulong bytesTxTotal = 0;
@@ -336,6 +337,12 @@ namespace PKSoft
                     wh.WaitOne();
                 }
 
+                using (WaitHandle wh = new AutoResetEvent(false))
+                {
+                    UpdateTimer.Dispose(wh);
+                    wh.WaitOne();
+                }
+
                 components.Dispose();
             }
 
@@ -370,6 +377,18 @@ namespace PKSoft
                 // This is an automatic update check in the background.
                 // If we fail (for whatever reason, no internet, server down etc.),
                 // we fail silently.
+            }
+        }
+
+        private void UpdateTimerTick(object state)
+        {
+            if (DateTime.Now - LastUpdateNotification > TimeSpan.FromHours(4))
+            {
+                ThreadPool.QueueUserWorkItem((WaitCallback)delegate (object dummy)
+                {
+                    VerifyUpdates();
+                });
+                LastUpdateNotification = DateTime.Now;
             }
         }
 
@@ -635,15 +654,6 @@ namespace PKSoft
                 }
                 FirewallState.ClientNotifs.Clear();
                 UpdateDisplay();
-            }
-
-            if (DateTime.Now - LastUpdateNotification > TimeSpan.FromHours(4))
-            {
-                ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
-                {
-                    VerifyUpdates();
-                });
-                LastUpdateNotification = DateTime.Now;
             }
 
             return SettingsUpdated;
@@ -1226,6 +1236,7 @@ namespace PKSoft
                 // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
                 // BEGIN
                 TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, TimeSpan.Zero, TimeSpan.FromSeconds(TRAFFIC_TIMER_INTERVAL));
+                UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(10));
                 mnuElevate.Visible = !Utils.RunningAsAdmin();
                 mnuModeDisabled.Image = Resources.Icons.shield_grey_small.ToBitmap();
                 mnuModeAllowOutgoing.Image = Resources.Icons.shield_red_small.ToBitmap();
