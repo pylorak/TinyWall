@@ -253,6 +253,7 @@
             // listOptionalGlobalProfiles
             // 
             resources.ApplyResources(this.listOptionalGlobalProfiles, "listOptionalGlobalProfiles");
+            this.listOptionalGlobalProfiles.CheckOnClick = true;
             this.listOptionalGlobalProfiles.FormattingEnabled = true;
             this.listOptionalGlobalProfiles.Name = "listOptionalGlobalProfiles";
             this.listOptionalGlobalProfiles.Sorted = true;
@@ -261,6 +262,7 @@
             // listRecommendedGlobalProfiles
             // 
             resources.ApplyResources(this.listRecommendedGlobalProfiles, "listRecommendedGlobalProfiles");
+            this.listRecommendedGlobalProfiles.CheckOnClick = true;
             this.listRecommendedGlobalProfiles.FormattingEnabled = true;
             this.listRecommendedGlobalProfiles.Name = "listRecommendedGlobalProfiles";
             this.listRecommendedGlobalProfiles.Sorted = true;
