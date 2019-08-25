@@ -1,5 +1,5 @@
 Future development ideas:
-- Open Show Connections > select all the connections of the process at same time > click unblock > you get one notification for each connection unblocked which with the sound become very irritating.
+- Implement DataContracts round-tripping
 - Don' let multiple windows open at the same time.
 - Fix update user notifications
 - Don't forget blocked apps list when Connections window is closed

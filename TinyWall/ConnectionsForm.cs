@@ -337,32 +337,37 @@ namespace PKSoft
 
         private void mnuUnblock_Click(object sender, EventArgs e)
         {
+            List<FirewallExceptionV3> exceptions = new List<FirewallExceptionV3>();
+
             foreach (ListViewItem li in list.SelectedItems)
             {
                 string path = li.ToolTipText;
                 if (string.IsNullOrEmpty(path))
                     continue;
 
-                try
+                // Check if we already have an exception for this file
+                bool found = false;
+                foreach (var ex in exceptions)
                 {
-                    // Copy, so that settings are not changed if they cannot be saved
-                    ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
-
-                    // Try to recognize app based on this file
-                    ExecutableSubject subject = ExceptionSubject.Construct(path, null) as ExecutableSubject;
-                    List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out DatabaseClasses.Application dummyApp);
-                    if (exceptions.Count == 0)
-                        return;
-
-                    confCopy.ActiveProfile.AppExceptions.AddRange(exceptions);
-                    confCopy.ActiveProfile.Normalize();
-                    Controller.ApplyFirewallSettings(confCopy, true);
+                    if (ex.Subject is ExecutableSubject exe)
+                    {
+                        if (exe.ExecutablePath.Equals(path, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
                 }
-                catch
-                {
-                    MessageBox.Show(this, string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CouldNotWhitelistProcess, path), PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
+
+                if (found)
+                    continue;
+
+                // Try to recognize app based on this file
+                ExecutableSubject subject = ExceptionSubject.Construct(path, null) as ExecutableSubject;
+                exceptions.AddRange(GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out DatabaseClasses.Application dummyApp));
             }
+
+            Controller.AddExceptionList(exceptions);
         }
 
         private void mnuCopyRemoteAddress_Click(object sender, EventArgs e)

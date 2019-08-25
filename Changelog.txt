@@ -21,6 +21,7 @@ x.x.x - Major update (not yet released)
     - Processes window remembers size
     - Much improved loading time of the Processes window
     - Don't list duplicate processes in Processes window
+    - Improved handling of batch whitelisting from Connections
 - General reliability improvements
     - Atomic saving of configuration
     - Reduced probability of failed whitelisting attempts

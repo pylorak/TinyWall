@@ -956,8 +956,7 @@ namespace PKSoft
             if (list.Count > 1)
             {
                 ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
-                foreach (FirewallExceptionV3 fwex in list)
-                    confCopy.ActiveProfile.AppExceptions.Add(fwex);
+                confCopy.ActiveProfile.AppExceptions.AddRange(list);
                 confCopy.ActiveProfile.Normalize();
                 ApplyFirewallSettings(confCopy);
             }
