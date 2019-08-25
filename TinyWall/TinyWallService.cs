@@ -1089,7 +1089,6 @@ namespace PKSoft
             lock (FirewallLogEntries)
             {
                 entries.AddRange(FirewallLogEntries);
-                FirewallLogEntries.Clear();
             }
             return entries;
         }

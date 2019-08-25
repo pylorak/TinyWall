@@ -1,8 +1,6 @@
 Future development ideas:
 - Implement DataContracts round-tripping
 - Don' let multiple windows open at the same time.
-- Fix update user notifications
-- Don't forget blocked apps list when Connections window is closed
 - Add support for UWP apps
 - Add support for WSL
 - Context-menu whitelisting

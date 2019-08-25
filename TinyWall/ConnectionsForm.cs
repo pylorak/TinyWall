@@ -15,7 +15,6 @@ namespace PKSoft
 {
     internal partial class ConnectionsForm : Form
     {
-        private List<FirewallLogEntry> FwLogEntries = new List<FirewallLogEntry>();
         private TinyWallController Controller = null;
         private Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
@@ -99,21 +98,19 @@ namespace PKSoft
 
             // Finished reading tables, continues with log processing
 
-            // Remove log entries older than 2 minutes
-            now = DateTime.Now;
-            TimeSpan refSpan = TimeSpan.FromMinutes(5);
-            for (int i = FwLogEntries.Count - 1; i >= 0; --i)
-            {
-                TimeSpan span = now - FwLogEntries[i].Timestamp;
-                if (span > refSpan)
-                    FwLogEntries.RemoveAt(i);
-            }
-
             // Add new log entries
-            List<FirewallLogEntry> fwLogEntry = GlobalInstances.Controller.EndReadFwLog(fwLogRequest);
-            for (int i = 0; i < fwLogEntry.Count; ++i)
+            List<FirewallLogEntry> fwLog = GlobalInstances.Controller.EndReadFwLog(fwLogRequest);
+            List<FirewallLogEntry> filteredLog = new List<FirewallLogEntry>();
+            TimeSpan refSpan = TimeSpan.FromMinutes(5);
+            for (int i = 0; i < fwLog.Count; ++i)
             {
-                FirewallLogEntry newEntry = fwLogEntry[i];
+                FirewallLogEntry newEntry = fwLog[i];
+
+                // Ignore log entries older than refSpan
+                TimeSpan span = now - newEntry.Timestamp;
+                if (span > refSpan)
+                    continue;
+
                 switch (newEntry.Event)
                 {
                     case EventLogEvent.ALLOWED_LISTEN:
@@ -133,9 +130,9 @@ namespace PKSoft
                             bool matchFound = false;
                             newEntry.Event = EventLogEvent.BLOCKED;
 
-                            for (int j = 0; j < FwLogEntries.Count; ++j)
+                            for (int j = 0; j < filteredLog.Count; ++j)
                             {
-                                FirewallLogEntry oldEntry = FwLogEntries[j];
+                                FirewallLogEntry oldEntry = filteredLog[j];
                                 if (oldEntry.Equals(newEntry, false))
                                 {
                                     matchFound = true;
@@ -145,7 +142,7 @@ namespace PKSoft
                             }
 
                             if (!matchFound)
-                                FwLogEntries.Add(newEntry);
+                                filteredLog.Add(newEntry);
                             break;
                         }
                 }
@@ -154,9 +151,9 @@ namespace PKSoft
             // Show log entries if requested by user
             if (chkShowBlocked.Checked)
             {
-                for (int i = 0; i < FwLogEntries.Count; ++i)
+                for (int i = 0; i < filteredLog.Count; ++i)
                 {
-                    FirewallLogEntry entry = FwLogEntries[i];
+                    FirewallLogEntry entry = filteredLog[i];
                     ConstructListItem(itemColl, entry.AppPath, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked", entry.Timestamp, entry.Direction);
                 }
             }
