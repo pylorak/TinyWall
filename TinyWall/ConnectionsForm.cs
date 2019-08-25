@@ -205,7 +205,7 @@ namespace PKSoft
                         li.SubItems.Add(string.Empty);
                         break;
                 }
-                li.SubItems.Add(ts.ToString(CultureInfo.InvariantCulture));
+                li.SubItems.Add(ts.ToString("yyyy/MM/dd HH:mm:ss"));
                 itemColl.Add(li);
             }
             catch
@@ -270,7 +270,7 @@ namespace PKSoft
 
         private void ConnectionsForm_Load(object sender, EventArgs e)
         {
-            list.ListViewItemSorter = new ListViewItemComparer(0);
+            list.ListViewItemSorter = new ListViewItemComparer(8, false);
             this.Size = ActiveConfig.Controller.ConnFormWindowSize;
             this.Location = ActiveConfig.Controller.ConnFormWindowLoc;
             this.WindowState = ActiveConfig.Controller.ConnFormWindowState;

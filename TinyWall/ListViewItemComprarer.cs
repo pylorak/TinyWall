@@ -9,9 +9,10 @@ namespace PKSoft
     {
         internal ListViewItemComparer() { }
 
-        internal ListViewItemComparer(int column)
+        internal ListViewItemComparer(int column, bool ascending = true)
         {
             Column = column;
+            Ascending = ascending;
         }
 
         public int Compare(object x, object y)

@@ -23,6 +23,7 @@ x.x.x - Major update (not yet released)
     - Don't list duplicate processes in Processes window
     - Improved handling of batch whitelisting from Connections list
     - Improved handling of batch whitelisting from Processes list
+    - Sort Connections list by timestamp by default
 - General reliability improvements
     - Atomically store configuration
     - Reduced probability of failed whitelisting attempts
