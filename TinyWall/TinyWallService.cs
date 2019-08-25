@@ -50,8 +50,10 @@ namespace PKSoft
         // Context needed for learning mode
         FirewallLogWatcher LogWatcher;
         List<FirewallExceptionV3> LearningNewExceptions = new List<FirewallExceptionV3>();
-        
+
+#if !DEBUG
         private bool UninstallRequested = false;
+#endif
         private bool RunService = false;
 
         private ServerState VisibleState = null;
@@ -843,16 +845,60 @@ namespace PKSoft
             return ret;
         }
 
-        private static void EnableMpsSvcNotifications(bool enable)
+        private static INetFwPolicy2 GetFwPolicy2()
+        {
+            Type tNetFwPolicy2 = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
+            return (INetFwPolicy2)Activator.CreateInstance(tNetFwPolicy2);
+        }
+
+        private static INetFwRule CreateFwRule(string name, NET_FW_ACTION_ action, NET_FW_RULE_DIRECTION_ dir)
+        {
+            Type tNetFwRule = Type.GetTypeFromProgID("HNetCfg.FwRule");
+            INetFwRule rule = (INetFwRule)Activator.CreateInstance(tNetFwRule);
+
+            rule.Name = name;
+            rule.Action = action;
+            rule.Direction = dir;
+            rule.Grouping = "TinyWall";
+            rule.Profiles = (int)NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PRIVATE | (int)NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PUBLIC | (int)NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_DOMAIN;
+            rule.Enabled = true;
+            if ((NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN == dir) && (NET_FW_ACTION_.NET_FW_ACTION_ALLOW == action))
+                rule.EdgeTraversal = true;
+
+            return rule;
+        }
+
+        private void DisableMpsSvc()
         {
             try
             {
-                Type tNetFwPolicy2 = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
-                INetFwPolicy2 fwPolicy2 = (INetFwPolicy2)Activator.CreateInstance(tNetFwPolicy2);
-                NET_FW_PROFILE_TYPE2_ fwCurrentProfileTypes = (NET_FW_PROFILE_TYPE2_)fwPolicy2.CurrentProfileTypes;
-                fwPolicy2.set_NotificationsDisabled(NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_DOMAIN, !enable);
-                fwPolicy2.set_NotificationsDisabled(NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PRIVATE, !enable);
-                fwPolicy2.set_NotificationsDisabled(NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PUBLIC, !enable);
+                INetFwPolicy2 fwPolicy2 = GetFwPolicy2();
+                fwPolicy2.Rules.Add(CreateFwRule("TinyWall Inbound Compatibility", NET_FW_ACTION_.NET_FW_ACTION_ALLOW, NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN));
+                fwPolicy2.Rules.Add(CreateFwRule("TinyWall Outbound Compatibility", NET_FW_ACTION_.NET_FW_ACTION_ALLOW, NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT));
+
+                fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PRIVATE] = true;
+                fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PUBLIC] = true;
+                fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_DOMAIN] = true;
+            }
+            catch { }
+        }
+
+        private void RestoreMpsSvc()
+        {
+            try
+            {
+                INetFwPolicy2 fwPolicy2 = GetFwPolicy2();
+
+                fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PRIVATE] = false;
+                fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PUBLIC] = false;
+                fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_DOMAIN] = false;
+
+                INetFwRules rules = fwPolicy2.Rules;
+                foreach (INetFwRule rule in rules)
+                {
+                    if (rule.Grouping.Equals("TinyWall"))
+                        rules.Remove(rule.Name);
+                }
             }
             catch { }
         }
@@ -860,7 +906,7 @@ namespace PKSoft
         // This method completely reinitializes the firewall.
         private void InitFirewall()
         {
-            EnableMpsSvcNotifications(false);
+            DisableMpsSvc();
 
             using (ThreadBarrier barrier = new ThreadBarrier(2))
             {
@@ -1217,7 +1263,9 @@ namespace PKSoft
                     }
                 case MessageType.STOP_DISABLE:
                     {
+#if !DEBUG
                         UninstallRequested = true;
+#endif
                         RunService = false;
                         return new TwMessage(MessageType.RESPONSE_OK);
                     }
@@ -1645,7 +1693,7 @@ namespace PKSoft
 
         private void Cleanup()
         {
-            EnableMpsSvcNotifications(true);
+            RestoreMpsSvc();
 
             // Check all exceptions if any one has expired
             {
