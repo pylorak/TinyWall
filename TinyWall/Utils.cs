@@ -701,6 +701,16 @@ namespace PKSoft
             }
         }
 
+        internal static void SetDoubleBuffering(Control control, bool enable)
+        {
+            try
+            {
+                var doubleBufferPropertyInfo = control.GetType().GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+                doubleBufferPropertyInfo.SetValue(control, enable, null);
+            }
+            catch { }
+        }
+
         internal static void FlushDnsCache()
         {
             SafeNativeMethods.DnsFlushResolverCache();

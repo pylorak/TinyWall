@@ -159,10 +159,10 @@ namespace PKSoft
             }
 
             // Add items to list
-            list.SuspendLayout();
+            list.BeginUpdate();
             list.Items.Clear();
             list.Items.AddRange(itemColl.ToArray());
-            list.ResumeLayout(false);
+            list.EndUpdate();
         }
 
         private void ConstructListItem(List<ListViewItem> itemColl, string appPath, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, RuleDirection dir = RuleDirection.Invalid)
@@ -270,6 +270,7 @@ namespace PKSoft
 
         private void ConnectionsForm_Load(object sender, EventArgs e)
         {
+            Utils.SetDoubleBuffering(list, true);
             list.ListViewItemSorter = new ListViewItemComparer(8, false);
             this.Size = ActiveConfig.Controller.ConnFormWindowSize;
             this.Location = ActiveConfig.Controller.ConnFormWindowLoc;

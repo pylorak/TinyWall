@@ -515,11 +515,11 @@ namespace PKSoft
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-//            ReferencedBool loadingDone = MarqueeForm.ShowProgress();
-
 #if DEBUG
-//            DataCollection.StartProfile(ProfileLevel.Global, DataCollection.CurrentId);
+            //DataCollection.StartProfile(ProfileLevel.Global, DataCollection.CurrentId);
 #endif
+
+            Utils.SetDoubleBuffering(listApplications, true);
             listApplications.ListViewItemSorter = new ListViewItemComparer(0);
             tabControl1.SelectedIndex = TmpConfig.Controller.ManageTabIndex;
 
