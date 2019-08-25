@@ -109,9 +109,6 @@ namespace TinyWall.Interface
 
         // Machine settings
         [DataMember(EmitDefaultValue = false)]
-        public DateTime LastUpdateCheck { get; set; } = DateTime.MinValue;
-
-        [DataMember(EmitDefaultValue = false)]
         public BlockListSettings Blocklists { get; set; } = new BlockListSettings();
 
         [DataMember(EmitDefaultValue = false)]

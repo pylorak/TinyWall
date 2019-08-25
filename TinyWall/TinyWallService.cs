@@ -55,6 +55,7 @@ namespace PKSoft
         private bool RunService = false;
 
         private ServerState VisibleState = null;
+        private DateTime LastUpdateCheck = DateTime.MinValue;
 
         private Engine WfpEngine = null;
         private Guid ProviderKey = Guid.Empty;
@@ -939,7 +940,7 @@ namespace PKSoft
             }
             finally
             {
-                ActiveConfig.Service.LastUpdateCheck = DateTime.Now;    // TODO do not invalidate client config just because LastUpdateCheck
+                LastUpdateCheck = DateTime.Now;    // TODO do not invalidate client config just because LastUpdateCheck
                 GlobalInstances.ConfigChangeset = Guid.NewGuid();
                 ActiveConfig.Service.Save(ConfigSavePath);
             }
@@ -1274,7 +1275,7 @@ namespace PKSoft
                         // Check for updates once every 2 days
                         if (ActiveConfig.Service.AutoUpdateCheck)
                         {
-                            if (DateTime.Now - ActiveConfig.Service.LastUpdateCheck >= TimeSpan.FromDays(2))
+                            if (DateTime.Now - LastUpdateCheck >= TimeSpan.FromDays(2))
                             {
                                 UpdaterMethod();
                             }

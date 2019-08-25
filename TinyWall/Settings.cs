@@ -103,7 +103,6 @@ namespace PKSoft
             ret.Blocklists.EnableBlocklists = this.Blocklists.EnableBlocklists;
             ret.Blocklists.EnableHostsBlocklist = this.Blocklists.EnableHostsBlocklist;
             ret.Blocklists.EnablePortBlocklist = this.Blocklists.EnablePortBlocklist;
-            ret.LastUpdateCheck = this.LastUpdateCheck;
             ret.LockHostsFile = this.LockHostsFile;
             ret.StartupMode = this.StartupMode;
 
