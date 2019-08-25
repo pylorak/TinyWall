@@ -123,7 +123,7 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="btnClose.Location" type="System.Drawing.Point, System.Drawing">
-    <value>758, 388</value>
+    <value>914, 441</value>
   </data>
   <data name="btnClose.Size" type="System.Drawing.Size, System.Drawing">
     <value>90, 33</value>
@@ -198,6 +198,9 @@
   <data name="columnHeader9.Text" xml:space="preserve">
     <value>Timestamp</value>
   </data>
+  <data name="columnHeader9.Width" type="System.Int32, mscorlib">
+    <value>146</value>
+  </data>
   <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>110, 17</value>
   </metadata>
@@ -262,7 +265,7 @@
     <value>12, 12</value>
   </data>
   <data name="list.Size" type="System.Drawing.Size, System.Drawing">
-    <value>836, 337</value>
+    <value>992, 390</value>
   </data>
   <metadata name="IconList.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
@@ -289,7 +292,7 @@
     <value>Bottom, Right</value>
   </data>
   <data name="btnRefresh.Location" type="System.Drawing.Point, System.Drawing">
-    <value>662, 388</value>
+    <value>818, 441</value>
   </data>
   <data name="btnRefresh.Size" type="System.Drawing.Size, System.Drawing">
     <value>90, 33</value>
@@ -319,7 +322,7 @@
     <value>True</value>
   </data>
   <data name="chkShowListen.Location" type="System.Drawing.Point, System.Drawing">
-    <value>175, 364</value>
+    <value>175, 417</value>
   </data>
   <data name="chkShowListen.Size" type="System.Drawing.Size, System.Drawing">
     <value>106, 17</value>
@@ -349,7 +352,7 @@
     <value>True</value>
   </data>
   <data name="chkShowActive.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 364</value>
+    <value>12, 417</value>
   </data>
   <data name="chkShowActive.Size" type="System.Drawing.Size, System.Drawing">
     <value>146, 17</value>
@@ -379,7 +382,7 @@
     <value>True</value>
   </data>
   <data name="chkShowBlocked.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 397</value>
+    <value>12, 450</value>
   </data>
   <data name="chkShowBlocked.Size" type="System.Drawing.Size, System.Drawing">
     <value>189, 17</value>
@@ -409,7 +412,7 @@
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>860, 433</value>
+    <value>1016, 486</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Connections - TinyWall</value>

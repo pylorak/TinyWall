@@ -81,6 +81,7 @@
             this.list.ContextMenuStrip = this.contextMenuStrip1;
             this.list.FullRowSelect = true;
             this.list.GridLines = true;
+            this.list.HideSelection = false;
             this.list.Name = "list";
             this.list.ShowItemToolTips = true;
             this.list.SmallImageList = this.IconList;
