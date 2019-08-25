@@ -324,7 +324,7 @@
             this.txtUpdateURL.Name = "txtUpdateURL";
             this.txtUpdateURL.Size = new System.Drawing.Size(423, 20);
             this.txtUpdateURL.TabIndex = 23;
-            this.txtUpdateURL.Text = "http://tinywall.pados.hu/updates/UpdVer3/";
+            this.txtUpdateURL.Text = "http://tinywall.pados.hu/updates/UpdVer4/";
             // 
             // label8
             // 
@@ -370,6 +370,7 @@
             this.txtUpdateOutput.Name = "txtUpdateOutput";
             this.txtUpdateOutput.Size = new System.Drawing.Size(423, 20);
             this.txtUpdateOutput.TabIndex = 19;
+            this.txtUpdateOutput.Text = "C:\\Users\\Karoly\\Nextcloud\\TinyWall\\TinyWall3\\OnlineUpdate";
             // 
             // label6
             // 
@@ -386,6 +387,8 @@
             this.txtUpdateHosts.Name = "txtUpdateHosts";
             this.txtUpdateHosts.Size = new System.Drawing.Size(423, 20);
             this.txtUpdateHosts.TabIndex = 17;
+            this.txtUpdateHosts.Text = "C:\\Users\\Karoly\\Nextcloud\\TinyWall\\TinyWall3\\MsiSetup\\Sources\\CommonAppData\\TinyW" +
+    "all\\hosts.bck";
             // 
             // label3
             // 
@@ -402,6 +405,8 @@
             this.txtUpdateTWInstaller.Name = "txtUpdateTWInstaller";
             this.txtUpdateTWInstaller.Size = new System.Drawing.Size(423, 20);
             this.txtUpdateTWInstaller.TabIndex = 12;
+            this.txtUpdateTWInstaller.Text = "C:\\Users\\Karoly\\Nextcloud\\TinyWall\\TinyWall3\\MsiSetup\\bin\\Release\\TinyWallInstall" +
+    "er.msi";
             // 
             // txtUpdateDatabase
             // 
@@ -409,6 +414,8 @@
             this.txtUpdateDatabase.Name = "txtUpdateDatabase";
             this.txtUpdateDatabase.Size = new System.Drawing.Size(423, 20);
             this.txtUpdateDatabase.TabIndex = 15;
+            this.txtUpdateDatabase.Text = "C:\\Users\\Karoly\\Nextcloud\\TinyWall\\TinyWall3\\MsiSetup\\Sources\\CommonAppData\\TinyW" +
+    "all\\profiles.xml";
             // 
             // btnUpdateDatabaseBrowse
             // 

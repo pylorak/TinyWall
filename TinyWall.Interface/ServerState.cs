@@ -1,22 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using TinyWall.Interface.Internal;
 
 namespace TinyWall.Interface
 {
     [Serializable]
+    [DataContract(Namespace = "TinyWall")]
     public class UpdateModule
     {
+        [DataMember]
         public string Component;
+        [DataMember]
         public string ComponentVersion;
+        [DataMember]
         public string DownloadHash;
+        [DataMember]
         public string UpdateURL;
     }
 
     [Serializable]
+    [DataContract(Namespace = "TinyWall")]
     public class UpdateDescriptor
     {
+        [DataMember]
         public string MagicWord = "TinyWall Update Descriptor";
+        [DataMember]
         public UpdateModule[] Modules;
     }
 

@@ -29,7 +29,10 @@ namespace TinyWall.Interface.Internal
             typeof(RuleListPolicy),
 
             typeof(RuleDef),
-            typeof(FirewallExceptionV3)
+            typeof(FirewallExceptionV3),
+
+            typeof(UpdateModule),
+            typeof(UpdateDescriptor),
         };
 
         public static void Serialize<T>(Stream stream, T obj)
