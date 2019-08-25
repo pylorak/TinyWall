@@ -589,5 +589,14 @@ namespace PKSoft
             }
             catch { }
         }
+
+        private void SettingsForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (listApplications.Focused && (e.KeyCode == Keys.Delete))
+            {
+                btnAppRemove_Click(btnAppRemove, null);
+                e.Handled = true;
+            }
+        }
     }
 }

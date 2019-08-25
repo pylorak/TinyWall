@@ -24,6 +24,7 @@ x.x.x - Major update (not yet released)
     - Improved handling of batch whitelisting from Connections list
     - Improved handling of batch whitelisting from Processes list
     - Support F5-refresh in Connections window
+    - Support Delete key for application exceptions list
     - Sort Connections list by timestamp by default
 - General reliability improvements
     - Atomically store configuration
