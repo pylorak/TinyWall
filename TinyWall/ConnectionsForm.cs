@@ -451,5 +451,14 @@ namespace PKSoft
                 MessageBox.Show(this, PKSoft.Resources.Messages.CannotGetPathOfProcess, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
+
+        private void ConnectionsForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.F5)
+            {
+                btnRefresh_Click(btnRefresh, null);
+                e.Handled = true;
+            }
+        }
     }
 }

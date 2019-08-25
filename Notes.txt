@@ -1,5 +1,6 @@
 Future development ideas:
 - Implement DataContracts round-tripping
+- Add block reason to Connections window
 - Don' let multiple windows open at the same time.
 - Add support for UWP apps
 - Add support for WSL

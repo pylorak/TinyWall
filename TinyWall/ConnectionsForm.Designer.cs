@@ -238,9 +238,11 @@
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.list);
             this.Controls.Add(this.btnClose);
+            this.KeyPreview = true;
             this.Name = "ConnectionsForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConnectionsForm_FormClosing);
             this.Load += new System.EventHandler(this.ConnectionsForm_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ConnectionsForm_KeyDown);
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
