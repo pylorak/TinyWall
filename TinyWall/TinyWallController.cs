@@ -726,13 +726,37 @@ namespace PKSoft
 
         private void mnuWhitelistByProcess_Click(object sender, EventArgs e)
         {
+            List<FirewallExceptionV3> exceptions = new List<FirewallExceptionV3>();
             List<string> pathList = ProcessesForm.ChooseProcess(null, true);
-            if (pathList.Count == 0) return;
 
             foreach (string path in pathList)
             {
-                WhitelistSubject(new ExecutableSubject(path));
+                if (string.IsNullOrEmpty(path))
+                    continue;
+
+                // Check if we already have an exception for this file
+                bool found = false;
+                foreach (var ex in exceptions)
+                {
+                    if (ex.Subject is ExecutableSubject exe)
+                    {
+                        if (exe.ExecutablePath.Equals(path, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (found)
+                    continue;
+
+                // Try to recognize app based on this file
+                ExecutableSubject subject = ExceptionSubject.Construct(path, null) as ExecutableSubject;
+                exceptions.AddRange(GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out DatabaseClasses.Application dummyApp));
             }
+
+            AddExceptionList(exceptions);
         }
 
         internal MessageType ApplyFirewallSettings(ServerConfiguration srvConfig, bool showUI = true)
