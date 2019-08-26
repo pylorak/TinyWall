@@ -286,6 +286,19 @@
     <Application>
       <Components>
         <SubjectIdentity>
+          <Policy i:type="TcpUdpPolicy">
+            <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
+          </Policy>
+          <Subject i:type="ExecutableSubject">
+            <ExecutablePath>{folder:sys32}\smartscreen.exe</ExecutablePath>
+          </Subject>
+        </SubjectIdentity>
+      </Components>
+      <Name>Windows SmartScreen</Name>
+    </Application>
+    <Application>
+      <Components>
+        <SubjectIdentity>
           <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
             <d6p1:string>CN=Valve, O=Valve, L=Bellevue, S=WA, C=US</d6p1:string>
           </CertificateSubjects>
