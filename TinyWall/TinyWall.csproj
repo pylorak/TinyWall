@@ -106,6 +106,7 @@
     <Compile Include="ApplicationExceptionForm.Designer.cs">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="CircularBuffer.cs" />
     <Compile Include="DatabaseClasses\AppDatabase.cs" />
     <Compile Include="DatabaseClasses\Application.cs" />
     <Compile Include="DatabaseClasses\SubjectIdentity.cs" />

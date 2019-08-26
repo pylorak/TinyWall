@@ -1,4 +1,5 @@
 Future development ideas:
+- WHOIS query to Connections' remote addresses
 - Implement DataContracts round-tripping
 - Add block reason to Connections window
 - Don' let multiple windows open at the same time.

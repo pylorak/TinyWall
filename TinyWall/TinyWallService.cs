@@ -44,7 +44,7 @@ namespace PKSoft
         private Timer MinuteTimer;
         private DateTime LastControllerCommandTime = DateTime.Now;
         private DateTime LastFwLogReadTime = DateTime.Now;
-        private List<FirewallLogEntry> FirewallLogEntries = new List<FirewallLogEntry>();
+        private CircularBuffer<FirewallLogEntry> FirewallLogEntries = new CircularBuffer<FirewallLogEntry>(500);
         private ServiceSettings ServiceLocker = null;
 
         // Context needed for learning mode
@@ -1510,20 +1510,9 @@ namespace PKSoft
             if (string.IsNullOrEmpty(entry.SourceIP))
                 entry.SourceIP = "::";
 
-            // Maximum number of allowed entries
-            const int MAX_ENTRIES = 1000;
-
             lock (FirewallLogEntries)
             {
-                // Safe guard against using up all memory
-                if (FirewallLogEntries.Count >= MAX_ENTRIES)
-                {
-                    // Keep the latest MAX_ENTRIES entries
-                    int overLimit = FirewallLogEntries.Count - MAX_ENTRIES;
-                    FirewallLogEntries.RemoveRange(0, overLimit);
-                }
-
-                FirewallLogEntries.Add(entry);
+                FirewallLogEntries.Enqueue(entry);
             }
         }
 
