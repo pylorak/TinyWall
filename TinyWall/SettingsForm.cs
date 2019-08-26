@@ -537,8 +537,9 @@ namespace PKSoft
             comboLanguages.Items.Add(new IdWithName("ru", "Русский"));
             comboLanguages.Items.Add(new IdWithName("tr", "Türkçe"));
             comboLanguages.Items.Add(new IdWithName("ja", "日本語"));
+            comboLanguages.Items.Add(new IdWithName("ko", "한국어"));
             comboLanguages.Items.Add(new IdWithName("zh", "汉语"));
-
+            
             IconList.Images.Add("deleted", Resources.Icons.delete);
             IconList.Images.Add("network-drive", Resources.Icons.network_drive_small);
             IconList.Images.Add("window", Resources.Icons.window);
