@@ -17,7 +17,7 @@ namespace TinyWall.Interface
         [DataMember]
         public RuleAction Action;
 
-        [DataMember]
+        [DataMember(EmitDefaultValue = false)]
         public string Application;
         [DataMember(EmitDefaultValue = false)]
         public string ServiceName;

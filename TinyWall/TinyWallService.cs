@@ -1324,7 +1324,9 @@ namespace PKSoft
                         {
                             if (DateTime.Now - LastUpdateCheck >= TimeSpan.FromDays(2))
                             {
+#if !DEBUG
                                 UpdaterMethod();
+#endif
                             }
                         }
 

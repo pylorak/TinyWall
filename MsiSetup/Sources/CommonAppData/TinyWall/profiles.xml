@@ -8,7 +8,6 @@
             <Rules>
               <RuleDef>
                 <Action>Block</Action>
-                <Application i:nil="true" />
                 <Direction>InOut</Direction>
                 <Name>Malware ports</Name>
                 <Protocol>TcpUdp</Protocol>
@@ -462,7 +461,6 @@
             <Rules>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>Out</Direction>
                 <IcmpTypesAndCodes>8</IcmpTypesAndCodes>
                 <Name>ICMPv4 (echo-req, out)</Name>
@@ -470,7 +468,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>In</Direction>
                 <IcmpTypesAndCodes>0</IcmpTypesAndCodes>
                 <Name>ICMPv4 (echo-reply, in)</Name>
@@ -478,7 +475,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>In</Direction>
                 <IcmpTypesAndCodes>3:*</IcmpTypesAndCodes>
                 <Name>ICMPv4 (dest.unreachable)</Name>
@@ -486,7 +482,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>In</Direction>
                 <IcmpTypesAndCodes>11:*</IcmpTypesAndCodes>
                 <Name>ICMPv4 (time exceeded)</Name>
@@ -494,7 +489,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>In</Direction>
                 <IcmpTypesAndCodes>1</IcmpTypesAndCodes>
                 <Name>ICMPv6 (dest.unreachable)</Name>
@@ -502,7 +496,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>In</Direction>
                 <IcmpTypesAndCodes>2</IcmpTypesAndCodes>
                 <Name>ICMPv6 (packet too big)</Name>
@@ -510,7 +503,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>InOut</Direction>
                 <IcmpTypesAndCodes>3</IcmpTypesAndCodes>
                 <Name>ICMPv6 (time exceeded)</Name>
@@ -518,7 +510,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>In</Direction>
                 <IcmpTypesAndCodes>4</IcmpTypesAndCodes>
                 <Name>ICMPv6 (param.problem)</Name>
@@ -526,23 +517,34 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>Out</Direction>
-                <IcmpTypesAndCodes>133,135,141</IcmpTypesAndCodes>
-                <Name>ICMPv6 (addr.configuration, out)</Name>
+                <IcmpTypesAndCodes>133</IcmpTypesAndCodes>
+                <Name>ICMPv6 (router solicitation)</Name>
                 <Protocol>ICMPv6</Protocol>
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>In</Direction>
-                <IcmpTypesAndCodes>134,136,142</IcmpTypesAndCodes>
-                <Name>ICMPv6 (addr.configuration, in)</Name>
+                <IcmpTypesAndCodes>134</IcmpTypesAndCodes>
+                <Name>ICMPv6 (router advertisement)</Name>
                 <Protocol>ICMPv6</Protocol>
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
+                <Direction>InOut</Direction>
+                <IcmpTypesAndCodes>135,136</IcmpTypesAndCodes>
+                <Name>ICMPv6 (neighbour discovery)</Name>
+                <Protocol>ICMPv6</Protocol>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Direction>InOut</Direction>
+                <IcmpTypesAndCodes>141,142</IcmpTypesAndCodes>
+                <Name>ICMPv6 (inverse neighbour discovery)</Name>
+                <Protocol>ICMPv6</Protocol>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
                 <Direction>Out</Direction>
                 <IcmpTypesAndCodes>128</IcmpTypesAndCodes>
                 <Name>ICMPv6 (echo-req, out)</Name>
@@ -550,7 +552,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>In</Direction>
                 <IcmpTypesAndCodes>129</IcmpTypesAndCodes>
                 <Name>ICMPv6 (echo-reply, in)</Name>
@@ -580,7 +581,6 @@
             <Rules>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>In</Direction>
                 <IcmpTypesAndCodes>8</IcmpTypesAndCodes>
                 <Name>ICMPv4 (echo-req, in)</Name>
@@ -588,7 +588,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>Out</Direction>
                 <IcmpTypesAndCodes>0</IcmpTypesAndCodes>
                 <Name>ICMPv4 (echo-reply, out)</Name>
@@ -596,7 +595,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>In</Direction>
                 <IcmpTypesAndCodes>128</IcmpTypesAndCodes>
                 <Name>ICMPv6 (echo-req, in)</Name>
@@ -604,7 +602,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>Out</Direction>
                 <IcmpTypesAndCodes>129</IcmpTypesAndCodes>
                 <Name>ICMPv6 (echo-reply, out)</Name>
@@ -653,7 +650,6 @@
             <Rules>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>InOut</Direction>
                 <LocalPorts>68</LocalPorts>
                 <Name>DHCP IPv4 client</Name>
@@ -662,7 +658,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>InOut</Direction>
                 <LocalPorts>546</LocalPorts>
                 <Name>DHCP IPv6 client</Name>
@@ -705,7 +700,6 @@
             <Rules>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>Out</Direction>
                 <Name>DNS client TCP</Name>
                 <Protocol>TCP</Protocol>
@@ -713,7 +707,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>InOut</Direction>
                 <Name>DNS client UDP</Name>
                 <Protocol>UDP</Protocol>
@@ -721,7 +714,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>InOut</Direction>
                 <Name>LLMNR-UDP (client)</Name>
                 <Protocol>UDP</Protocol>
@@ -729,7 +721,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>InOut</Direction>
                 <Name>LLMNR-UDP (server)</Name>
                 <Protocol>UDP</Protocol>
@@ -1052,7 +1043,6 @@
             <Rules>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>InOut</Direction>
                 <Name>IPSec IKE (Initiator)</Name>
                 <Protocol>UDP</Protocol>
@@ -1060,7 +1050,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>InOut</Direction>
                 <Name>IPSec NAT-T (Initiator)</Name>
                 <Protocol>UDP</Protocol>
@@ -1068,7 +1057,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>InOut</Direction>
                 <Name>LT2P/IPSec Traffic (Initiator)</Name>
                 <Protocol>UDP</Protocol>
@@ -1076,7 +1064,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>InOut</Direction>
                 <Name>IPSec ESP</Name>
                 <Protocol>ESP</Protocol>
@@ -1101,7 +1088,6 @@
             <Rules>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>Out</Direction>
                 <Name>PPTP Initialization (Client)</Name>
                 <Protocol>TCP</Protocol>
@@ -1109,7 +1095,6 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Application i:nil="true" />
                 <Direction>InOut</Direction>
                 <Name>PPTP Traffic</Name>
                 <Protocol>GRE</Protocol>

@@ -64,15 +64,29 @@
           <RuleDef>
             <Action>Allow</Action>
             <Direction>Out</Direction>
-            <IcmpTypesAndCodes>133,135,141</IcmpTypesAndCodes>
-            <Name>ICMPv6 (addr.configuration, out)</Name>
+            <IcmpTypesAndCodes>133</IcmpTypesAndCodes>
+            <Name>ICMPv6 (router solicitation)</Name>
             <Protocol>ICMPv6</Protocol>
           </RuleDef>
           <RuleDef>
             <Action>Allow</Action>
             <Direction>In</Direction>
-            <IcmpTypesAndCodes>134,136,142</IcmpTypesAndCodes>
-            <Name>ICMPv6 (addr.configuration, in)</Name>
+            <IcmpTypesAndCodes>134</IcmpTypesAndCodes>
+            <Name>ICMPv6 (router advertisement)</Name>
+            <Protocol>ICMPv6</Protocol>
+          </RuleDef>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>InOut</Direction>
+            <IcmpTypesAndCodes>135,136</IcmpTypesAndCodes>
+            <Name>ICMPv6 (neighbour discovery)</Name>
+            <Protocol>ICMPv6</Protocol>
+          </RuleDef>
+          <RuleDef>
+            <Action>Allow</Action>
+            <Direction>InOut</Direction>
+            <IcmpTypesAndCodes>141,142</IcmpTypesAndCodes>
+            <Name>ICMPv6 (inverse neighbour discovery)</Name>
             <Protocol>ICMPv6</Protocol>
           </RuleDef>
           <RuleDef>
