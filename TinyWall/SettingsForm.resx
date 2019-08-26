@@ -1336,13 +1336,13 @@
     <value>18, 77</value>
   </data>
   <data name="lblAboutHomepageLink.Size" type="System.Drawing.Size, System.Drawing">
-    <value>119, 13</value>
+    <value>124, 13</value>
   </data>
   <data name="lblAboutHomepageLink.TabIndex" type="System.Int32, mscorlib">
     <value>125</value>
   </data>
   <data name="lblAboutHomepageLink.Text" xml:space="preserve">
-    <value>http://tinywall.pados.hu</value>
+    <value>https://tinywall.pados.hu</value>
   </data>
   <data name="&gt;&gt;lblAboutHomepageLink.Name" xml:space="preserve">
     <value>lblAboutHomepageLink</value>
