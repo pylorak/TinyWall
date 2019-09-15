@@ -762,13 +762,15 @@ namespace PKSoft
         internal MessageType ApplyFirewallSettings(ServerConfiguration srvConfig, bool showUI = true)
         {
             ServerState state;
-            MessageType resp = GlobalInstances.Controller.SetServerConfig(ref srvConfig, ref GlobalInstances.ClientChangeset, out state);
+            Guid localChangeset = GlobalInstances.ClientChangeset;
+            MessageType resp = GlobalInstances.Controller.SetServerConfig(ref srvConfig, ref localChangeset, out state);
 
             switch (resp)
             {
                 case MessageType.RESPONSE_OK:
                     FirewallState = state;
                     ActiveConfig.Service = srvConfig;
+                    GlobalInstances.ClientChangeset = localChangeset;
                     if (showUI)
                         ShowBalloonTip(PKSoft.Resources.Messages.TheFirewallSettingsHaveBeenUpdated, ToolTipIcon.Info);
                     break;
