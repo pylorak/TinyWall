@@ -21,12 +21,18 @@ namespace PKSoft
 
         protected override void Dispose(bool disposing)
         {
-            m_Run = true;
+            m_Run = false;
+
+            // Create a dummy connection so that worker thread gets out of the infinite WaitForConnection()
+            using (NamedPipeClientStream npcs = new NamedPipeClientStream(PipeName))
+            {
+                npcs.Connect(100);
+            }
 
             if (disposing)
             {
                 // Release managed resources
-                m_PipeWorkerThread.Join(TimeSpan.FromMilliseconds(5000));
+                m_PipeWorkerThread.Join(TimeSpan.FromMilliseconds(1000));
             }
 
             // Release unmanaged resources.
