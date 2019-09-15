@@ -1178,6 +1178,8 @@ namespace PKSoft
                                 Utils.LogCrash(e);
                             }
                         }
+                        VisibleState.HasPassword = ServiceLocker.HasPassword;
+                        VisibleState.Locked = ServiceLocker.Locked;
                         return new TwMessage(resp, ActiveConfig.Service, GlobalInstances.ServerChangeset, VisibleState);
                     }
                 case MessageType.GET_SETTINGS:
@@ -1194,7 +1196,7 @@ namespace PKSoft
                             TwMessage ret = new TwMessage(MessageType.RESPONSE_OK,
                                 GlobalInstances.ServerChangeset,
                                 ActiveConfig.Service,
-                                Utils.DeepClone(VisibleState)
+                                VisibleState
                                 );
 
                             VisibleState.ClientNotifs.Clear();
@@ -1216,7 +1218,9 @@ namespace PKSoft
                     }
                 case MessageType.UNLOCK:
                     {
-                        if (ServiceLocker.Unlock((string)req.Arguments[0]))
+                        bool success = ServiceLocker.Unlock((string)req.Arguments[0]);
+                        GlobalInstances.ServerChangeset = Guid.NewGuid();
+                        if (success)
                             return new TwMessage(MessageType.RESPONSE_OK);
                         else
                             return new TwMessage(MessageType.RESPONSE_ERROR);
@@ -1224,6 +1228,7 @@ namespace PKSoft
                 case MessageType.LOCK:
                     {
                         ServiceLocker.Locked = true;
+                        GlobalInstances.ServerChangeset = Guid.NewGuid();
                         return new TwMessage(MessageType.RESPONSE_OK);
                     }
                 case MessageType.GET_PROCESS_PATH:
@@ -1241,6 +1246,7 @@ namespace PKSoft
                         try
                         {
                             ServiceLocker.SetPass((string)req.Arguments[0]);
+                            GlobalInstances.ServerChangeset = Guid.NewGuid();
                             return new TwMessage(MessageType.RESPONSE_OK);
                         }
                         catch

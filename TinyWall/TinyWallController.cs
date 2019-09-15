@@ -845,6 +845,11 @@ namespace PKSoft
 
                     if (sf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
+                        // Save settings
+                        ActiveConfig.Controller = sf.TmpConfig.Controller;
+                        ActiveConfig.Controller.Save();
+                        ApplyFirewallSettings(sf.TmpConfig.Service);
+
                         // Handle password change request
                         string passwd = sf.NewPassword;
                         if (passwd != null)
@@ -865,11 +870,6 @@ namespace PKSoft
                                 FirewallState.HasPassword = !string.IsNullOrEmpty(passwd);
                             }
                         }
-
-                        // Save settings
-                        ActiveConfig.Controller = sf.TmpConfig.Controller;
-                        ActiveConfig.Controller.Save();
-                        ApplyFirewallSettings(sf.TmpConfig.Service);
                     }
                 }
             }
