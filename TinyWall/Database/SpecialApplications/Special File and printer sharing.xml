@@ -40,6 +40,7 @@
     <SubjectIdentity>
       <Policy i:type="TcpUdpPolicy">
         <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
+        <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
         <LocalNetworkOnly>true</LocalNetworkOnly>
         <Name>Spooler - RPC</Name>
       </Policy>
