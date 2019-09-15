@@ -1,4 +1,6 @@
 Future development ideas:
+- Find out why Show Blocked Connections on Win7@Robert Benaroya didn't work
+- Inspect broken whitelisting from network shares
 - WHOIS query to Connections' remote addresses
 - Implement DataContracts round-tripping
 - Add block reason to Connections window
