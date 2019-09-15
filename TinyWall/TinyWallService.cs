@@ -719,7 +719,7 @@ namespace PKSoft
                 throw new InvalidOperationException("Firewall exception specification must have an ID.");
 #else
                 ex.RegenerateId();
-                GlobalInstances.ConfigChangeset = Guid.NewGuid();
+                GlobalInstances.ServerChangeset = Guid.NewGuid();
 #endif
             }
 
@@ -924,7 +924,7 @@ namespace PKSoft
             }
 
             ActiveConfig.Service = LoadServerConfig();
-            GlobalInstances.ConfigChangeset = Guid.NewGuid();
+            GlobalInstances.ServerChangeset = Guid.NewGuid();
             VisibleState.Mode = ActiveConfig.Service.StartupMode;
 
             ReapplySettings();
@@ -984,7 +984,7 @@ namespace PKSoft
             finally
             {
                 LastUpdateCheck = DateTime.Now;    // TODO do not invalidate client config just because LastUpdateCheck
-                GlobalInstances.ConfigChangeset = Guid.NewGuid();
+                GlobalInstances.ServerChangeset = Guid.NewGuid();
                 ActiveConfig.Service.Save(ConfigSavePath);
             }
 
@@ -1068,7 +1068,7 @@ namespace PKSoft
         private void NotifyController(MessageType msg)
         {
             VisibleState.ClientNotifs.Add(msg);
-            GlobalInstances.ConfigChangeset = Guid.NewGuid();
+            GlobalInstances.ServerChangeset = Guid.NewGuid();
         }
 
         internal void TimerCallback(Object state)
@@ -1105,7 +1105,7 @@ namespace PKSoft
             }
 
             ActiveConfig.Service.ActiveProfile.Normalize();
-            GlobalInstances.ConfigChangeset = Guid.NewGuid();
+            GlobalInstances.ServerChangeset = Guid.NewGuid();
             return true;
         }
 
@@ -1163,13 +1163,13 @@ namespace PKSoft
                     {
                         ServerConfiguration newConf = (ServerConfiguration)req.Arguments[0];
                         Guid clientChangeset = (Guid)req.Arguments[1];
-                        MessageType resp = (clientChangeset == GlobalInstances.ConfigChangeset) ? MessageType.RESPONSE_OK : MessageType.RESPONSE_WARNING;
+                        MessageType resp = (clientChangeset == GlobalInstances.ServerChangeset) ? MessageType.RESPONSE_OK : MessageType.RESPONSE_WARNING;
                         if (MessageType.RESPONSE_OK == resp)
                         {
                             try
                             {
                                 ActiveConfig.Service = newConf;
-                                GlobalInstances.ConfigChangeset = Guid.NewGuid();
+                                GlobalInstances.ServerChangeset = Guid.NewGuid();
                                 ActiveConfig.Service.Save(ConfigSavePath);
                                 ReapplySettings();
                             }
@@ -1178,7 +1178,7 @@ namespace PKSoft
                                 Utils.LogCrash(e);
                             }
                         }
-                        return new TwMessage(resp, ActiveConfig.Service, GlobalInstances.ConfigChangeset, VisibleState);
+                        return new TwMessage(resp, ActiveConfig.Service, GlobalInstances.ServerChangeset, VisibleState);
                     }
                 case MessageType.GET_SETTINGS:
                     {
@@ -1186,13 +1186,13 @@ namespace PKSoft
                         Guid changeset = (Guid)req.Arguments[0];
 
                         // If our changeset is different, send new settings to client
-                        if (changeset != GlobalInstances.ConfigChangeset)
+                        if (changeset != GlobalInstances.ServerChangeset)
                         {
                             VisibleState.HasPassword = ServiceLocker.HasPassword;
                             VisibleState.Locked = ServiceLocker.Locked;
 
                             TwMessage ret = new TwMessage(MessageType.RESPONSE_OK,
-                                GlobalInstances.ConfigChangeset,
+                                GlobalInstances.ServerChangeset,
                                 ActiveConfig.Service,
                                 Utils.DeepClone(VisibleState)
                                 );
@@ -1203,7 +1203,7 @@ namespace PKSoft
                         else
                         {
                             // Our changeset is the same, so do not send settings again
-                            return new TwMessage(MessageType.RESPONSE_OK, GlobalInstances.ConfigChangeset);
+                            return new TwMessage(MessageType.RESPONSE_OK, GlobalInstances.ServerChangeset);
                         }
                     }
                 case MessageType.REINIT:
@@ -1304,7 +1304,7 @@ namespace PKSoft
                         if (needsSave)
                         {
                             ActiveConfig.Service.ActiveProfile.AppExceptions = exs;
-                            GlobalInstances.ConfigChangeset = Guid.NewGuid();
+                            GlobalInstances.ServerChangeset = Guid.NewGuid();
                             ActiveConfig.Service.Save(ConfigSavePath);
                         }
 

@@ -651,7 +651,7 @@ namespace PKSoft
             ServerConfiguration config;
             ServerState state = FirewallState;
 
-            Guid inChangeset = force ? Guid.Empty : GlobalInstances.ConfigChangeset;
+            Guid inChangeset = force ? Guid.Empty : GlobalInstances.ClientChangeset;
             Guid outChangeset = inChangeset;
             MessageType ret = GlobalInstances.Controller.GetServerConfig(out config, out state, ref outChangeset);
 
@@ -663,7 +663,7 @@ namespace PKSoft
                 // Update our config based on what we received
                 if (SettingsUpdated)
                 {
-                    GlobalInstances.ConfigChangeset = outChangeset;
+                    GlobalInstances.ClientChangeset = outChangeset;
                     ActiveConfig.Service = config;
                     FirewallState = state;
                 }
@@ -762,7 +762,7 @@ namespace PKSoft
         internal MessageType ApplyFirewallSettings(ServerConfiguration srvConfig, bool showUI = true)
         {
             ServerState state;
-            MessageType resp = GlobalInstances.Controller.SetServerConfig(ref srvConfig, ref GlobalInstances.ConfigChangeset, out state);
+            MessageType resp = GlobalInstances.Controller.SetServerConfig(ref srvConfig, ref GlobalInstances.ClientChangeset, out state);
 
             switch (resp)
             {

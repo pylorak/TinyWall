@@ -10,7 +10,8 @@ namespace PKSoft
         internal static AppDatabase AppDatabase;
         internal static PipeServerEndpoint ServerPipe;
         internal static Controller Controller;
-        internal static Guid ConfigChangeset;
+        internal static Guid ClientChangeset;
+        internal static Guid ServerChangeset;
 
         private static Bitmap _ApplyBtnIcon = null;
         internal static Bitmap ApplyBtnIcon
