@@ -91,6 +91,11 @@ namespace TinyWall.Interface
             return Endpoint.QueueMessageSimple(MessageType.MODE_SWITCH, mode).Type;
         }
 
+        public MessageType RequestServerStop()
+        {
+            return Endpoint.QueueMessageSimple(MessageType.STOP_SERVICE).Type;
+        }
+
         public bool IsServerLocked
         {
             get

@@ -28,7 +28,6 @@
         PUT_SETTINGS,
         LOCK,
         SET_PASSPHRASE,
-        STOP_DISABLE,
         STOP_SERVICE,
         MINUTE_TIMER,
         TEST_EXCEPTION,

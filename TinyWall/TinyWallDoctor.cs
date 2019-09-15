@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration.Install;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Principal;
 using System.ServiceProcess;
+using TinyWall.Interface;
 
 namespace PKSoft
 {
@@ -108,51 +111,61 @@ namespace PKSoft
                 }
             }
 
-            // Disable automatic re-start of service
-            for (int i = 0; i < 5; ++i)
+            // Stop service
+            try
             {
-                // Try to stop service
-                try
+                if (TinyWallDoctor.IsServiceRunning())
                 {
-                    using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
+                    using (Controller twController = new Controller("TinyWallController"))
                     {
-                        sc.Stop();
-                        sc.WaitForStatus(ServiceControllerStatus.Stopped, System.TimeSpan.FromSeconds(10));
-                    }
-                }
-                catch { }
-
-                // Disable automatic recovery
-                try
-                {
-                    using (ScmWrapper.ServiceControlManager scm = new ScmWrapper.ServiceControlManager())
-                    {
-                        scm.SetStartupMode(TinyWallService.SERVICE_NAME, ServiceStartMode.Automatic);
-                        scm.SetRestartOnFailure(TinyWallService.SERVICE_NAME, false);
-                    }
-                }
-                catch { }
-
-                // Terminate TinyWall processes
-                {
-                    int ownPid = Process.GetCurrentProcess().Id;
-                    Process[] procs = Process.GetProcesses();
-                    foreach (Process p in procs)
-                    {
-                        try
+                        // Unlock server
+                        while (twController.IsServerLocked)
                         {
-                            if (p.ProcessName.Contains("TinyWall") && (p.Id != ownPid))
+                            using (PasswordForm pf = new PasswordForm())
                             {
-                                if (!p.CloseMainWindow())
-                                    p.Kill();
-                                else if (!p.WaitForExit(5000))
-                                    p.Kill();
+                                pf.BringToFront();
+                                pf.Activate();
+                                if (pf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                                {
+                                    twController.TryUnlockServer(pf.PassHash);
+                                }
+                                else
+                                    return -1;
                             }
                         }
-                        catch
+
+                        // Stop server
+                        twController.RequestServerStop();
+                        DateTime startTs = DateTime.Now;
+                        while (IsServiceRunning() && ((DateTime.Now - startTs) < TimeSpan.FromSeconds(5)))
+                            System.Threading.Thread.Sleep(200);
+                        if (IsServiceRunning())
+                            return -1;
+                    }
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+
+            // Terminate remaining TinyWall processes (e.g. controller)
+            {
+                int ownPid = Process.GetCurrentProcess().Id;
+                Process[] procs = Process.GetProcesses();
+                foreach (Process p in procs)
+                {
+                    try
+                    {
+                        if (p.ProcessName.Contains("TinyWall") && (p.Id != ownPid))
                         {
+                            if (!p.CloseMainWindow())
+                                p.Kill();
+                            else if (!p.WaitForExit(2000))
+                                p.Kill();
                         }
                     }
+                    catch { }
                 }
             }
 
@@ -209,7 +222,11 @@ namespace PKSoft
             // Install boot-time filters
 
             // Ensure that TinyWall's dependencies can be started
-            EnsureServiceDependencies();
+            try
+            {
+                EnsureServiceDependencies();
+            }
+            catch { }
 
             // Ensure that TinyWall itself can be started
             try
@@ -224,7 +241,11 @@ namespace PKSoft
             { }
 
             // Ensure that controller will be started on next reboot
-            Utils.RunAtStartup("TinyWall Controller", TinyWall.Interface.Internal.Utils.ExecutablePath);
+            try
+            {
+                Utils.RunAtStartup("TinyWall Controller", TinyWall.Interface.Internal.Utils.ExecutablePath);
+            }
+            catch { }
         }
 
         private static void EnsureServiceDependencies()

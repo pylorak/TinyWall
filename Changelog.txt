@@ -14,6 +14,7 @@ x.x.x - Major update (not yet released)
     - Install location can be customized
     - Warning about remote installations during setup
     - Slightly modernized installer look
+    - Password protection of locked instance during uninstall
 - GUI improvements
     - Automatic app recognition for drag&dropped files
     - Manual app detection gives instant first results
@@ -33,6 +34,7 @@ x.x.x - Major update (not yet released)
     - Reduced probability of failed whitelisting attempts
     - Fix: Don't leave locked files on service exit
     - Fix: Race condition between update check and service message loop
+    - Fix: Some code paths not reliably run at service exit
 - Deprecation notes
     - Windows Vista no longer supported
     - 32-bit systems no longer supported

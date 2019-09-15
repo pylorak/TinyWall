@@ -96,6 +96,28 @@ namespace ScmWrapper
         internal UInt32 Delay;
     }
 
+    public enum State : int
+    {
+        SERVICE_STOPPED = 0x00000001,
+        SERVICE_START_PENDING = 0x00000002,
+        SERVICE_STOP_PENDING = 0x00000003,
+        SERVICE_RUNNING = 0x00000004,
+        SERVICE_CONTINUE_PENDING = 0x00000005,
+        SERVICE_PAUSE_PENDING = 0x00000006,
+        SERVICE_PAUSED = 0x00000007,
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SERVICE_STATUS
+    {
+        public int serviceType;
+        public State currentState;
+        public int controlsAccepted;
+        public int win32ExitCode;
+        public int serviceSpecificExitCode;
+        public int checkPoint;
+        public int waitHint;
+    };
     #endregion
 
     #region Native Methods
@@ -156,6 +178,12 @@ namespace ScmWrapper
             IntPtr hService,
             ServiceConfig2InfoLevel dwInfoLevel,
             IntPtr lpInfo);
+
+        [DllImport("advapi32.dll", SetLastError = true)]
+        internal static extern bool SetServiceStatus(IntPtr hServiceStatus, ref SERVICE_STATUS lpServiceStatus);
+
+        [DllImport("advapi32.dll", SetLastError = true)]
+        internal static extern bool QueryServiceStatus(IntPtr hServiceStatus, ref SERVICE_STATUS lpServiceStatus);
     }
 
     #endregion
@@ -189,8 +217,32 @@ namespace ScmWrapper
     internal class ServiceControlManager : Disposable
     {
         private const uint SERVICE_NO_CHANGE = 0xFFFFFFFF;
+        private const uint ERROR_INSUFFICIENT_BUFFER = 122;
 
         private SafeServiceHandle SCManager;
+
+        internal bool SetServiceState(string serviceName, IntPtr privateHndl, State state, int exitCode)
+        {
+            IntPtr serviceHndl = OpenService(serviceName, ServiceAccessRights.SERVICE_QUERY_STATUS);
+
+            SERVICE_STATUS status = new SERVICE_STATUS();
+            try
+            {
+                if (!NativeMethods.QueryServiceStatus(serviceHndl, ref status))
+                    throw new Win32Exception();
+            }
+            finally
+            {
+                if (IntPtr.Zero != serviceHndl)
+                    NativeMethods.CloseServiceHandle(serviceHndl);
+            }
+
+            status.currentState = state;
+            status.win32ExitCode = exitCode;
+            if (!NativeMethods.SetServiceStatus(privateHndl, ref status))
+                throw new Win32Exception();
+            return true;
+        }
 
         /// <summary>
         /// Calls the Win32 OpenService function and performs error checking.

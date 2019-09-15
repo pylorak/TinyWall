@@ -51,9 +51,6 @@ namespace PKSoft
         FirewallLogWatcher LogWatcher;
         List<FirewallExceptionV3> LearningNewExceptions = new List<FirewallExceptionV3>();
 
-#if !DEBUG
-        private bool UninstallRequested = false;
-#endif
         private bool RunService = false;
 
         private ServerState VisibleState = null;
@@ -896,7 +893,7 @@ namespace PKSoft
                 INetFwRules rules = fwPolicy2.Rules;
                 foreach (INetFwRule rule in rules)
                 {
-                    if (rule.Grouping.Equals("TinyWall"))
+                    if ((rule.Grouping != null) && rule.Grouping.Equals("TinyWall"))
                         rules.Remove(rule.Name);
                 }
             }
@@ -1257,14 +1254,6 @@ namespace PKSoft
                     }
                 case MessageType.STOP_SERVICE:
                     {
-                        RunService = false;
-                        return new TwMessage(MessageType.RESPONSE_OK);
-                    }
-                case MessageType.STOP_DISABLE:
-                    {
-#if !DEBUG
-                        UninstallRequested = true;
-#endif
                         RunService = false;
                         return new TwMessage(MessageType.RESPONSE_OK);
                     }
@@ -1707,23 +1696,14 @@ namespace PKSoft
             FileLocker.UnlockAll();
 
 #if !DEBUG
-            try
+            TinyWallDoctor.EnsureHealth();
+
+            // Set service state to stopped or else we will be restarted by the SCM when our process ends
+            using (var srvManager = new ScmWrapper.ServiceControlManager())
             {
-                if (!UninstallRequested)
-                {
-                    TinyWallDoctor.EnsureHealth();
-                }
-                else
-                {
-                    // Disable automatic re-start of service
-                    using (ScmWrapper.ServiceControlManager scm = new ScmWrapper.ServiceControlManager())
-                    {
-                        scm.SetStartupMode(TinyWallService.SERVICE_NAME, ServiceStartMode.Automatic);
-                        scm.SetRestartOnFailure(TinyWallService.SERVICE_NAME, false);
-                    }
-                }
+                srvManager.SetServiceState(this.ServiceName, this.ServiceHandle, ScmWrapper.State.SERVICE_STOPPED, 0);
             }
-            catch { }
+            Process.GetCurrentProcess().Kill();
 #endif
         }
 
