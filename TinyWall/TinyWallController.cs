@@ -847,16 +847,19 @@ namespace PKSoft
                         string passwd = sf.NewPassword;
                         if (passwd != null)
                         {
-                            // Set the password. If the operation is successfull, do not report anything as we will be setting 
-                            // the other settings too and we want to avoid multiple popups.
-                            MessageType resp = GlobalInstances.Controller.SetPassphrase(Hasher.HashString(passwd));
-                            if (resp != MessageType.RESPONSE_OK)  // Only display a popup for setting the password if it did not succeed
+                            // If the new password is empty, we do not hash it because an empty password
+                            // is a special value signalizing the non-existence of a password.
+                            MessageType resp = GlobalInstances.Controller.SetPassphrase(string.IsNullOrEmpty(passwd) ? string.Empty : Hasher.HashString(passwd));
+                            if (resp != MessageType.RESPONSE_OK)
                             {
+                                // Only display a popup for setting the password if it did not succeed
                                 DefaultPopups(resp);
                                 return;
                             }
                             else
                             {
+                                // If the operation is successfull, do not report anything as we will be setting
+                                // the other settings too and we want to avoid multiple popups.
                                 FirewallState.HasPassword = !string.IsNullOrEmpty(passwd);
                             }
                         }
