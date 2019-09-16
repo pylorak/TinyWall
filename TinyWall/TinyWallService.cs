@@ -1488,16 +1488,15 @@ namespace PKSoft
             else
                 entry.AppPath = "System";
             entry.DestinationIP = data.remoteAddr?.ToString();
+            entry.SourceIP = data.localAddr?.ToString();
             if (data.remotePort.HasValue)
                 entry.DestinationPort = data.remotePort.Value;
-            entry.DestinationIP = data.remoteAddr?.ToString();
             if (data.direction.HasValue)
                 entry.Direction = data.direction == FwpmDirection.FWP_DIRECTION_OUT ? RuleDirection.Out : RuleDirection.In;
             if (data.ipProtocol.HasValue)
                 entry.Protocol = (Protocol)data.ipProtocol;
             if (data.localPort.HasValue)
                 entry.SourcePort = data.localPort.Value;
-            entry.SourceIP = data.localAddr?.ToString();
 
             // Replace invalid IP strings with the "unspecified address" IPv6 specifier
             if (string.IsNullOrEmpty(entry.DestinationIP))
