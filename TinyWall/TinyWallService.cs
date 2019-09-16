@@ -870,9 +870,20 @@ namespace PKSoft
             try
             {
                 INetFwPolicy2 fwPolicy2 = GetFwPolicy2();
+
+                // Remove earlier rules
+                INetFwRules rules = fwPolicy2.Rules;
+                foreach (INetFwRule rule in rules)
+                {
+                    if ((rule.Grouping != null) && rule.Grouping.Equals("TinyWall"))
+                        rules.Remove(rule.Name);
+                }
+
+                // Add new rules
                 fwPolicy2.Rules.Add(CreateFwRule("TinyWall Inbound Compatibility", NET_FW_ACTION_.NET_FW_ACTION_ALLOW, NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN));
                 fwPolicy2.Rules.Add(CreateFwRule("TinyWall Outbound Compatibility", NET_FW_ACTION_.NET_FW_ACTION_ALLOW, NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT));
 
+                // Disable Windows Firewall notifications
                 fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PRIVATE] = true;
                 fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PUBLIC] = true;
                 fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_DOMAIN] = true;
@@ -903,7 +914,7 @@ namespace PKSoft
         // This method completely reinitializes the firewall.
         private void InitFirewall()
         {
-            DisableMpsSvc();
+            ThreadPool.QueueUserWorkItem((WaitCallback)delegate (object state) { DisableMpsSvc(); });
 
             using (ThreadBarrier barrier = new ThreadBarrier(2))
             {
@@ -1677,8 +1688,6 @@ namespace PKSoft
 
         private void Cleanup()
         {
-            RestoreMpsSvc();
-
             // Check all exceptions if any one has expired
             {
                 List<FirewallExceptionV3> exs = ActiveConfig.Service.ActiveProfile.AppExceptions;
@@ -1699,6 +1708,8 @@ namespace PKSoft
             CommitLearnedRules();
             ActiveConfig.Service.Save(ConfigSavePath);
             FileLocker.UnlockAll();
+
+            RestoreMpsSvc();
 
 #if !DEBUG
             TinyWallDoctor.EnsureHealth();
