@@ -159,8 +159,7 @@ namespace PKSoft
             {
                 case PolicyType.HardBlock:
                     radBlock.Checked = true;
-                    chkRestrictToLocalNetwork.Enabled = false;
-                    chkRestrictToLocalNetwork.Checked = false;
+                    radRestriction_CheckedChanged(null, null);
                     break;
                 case PolicyType.RuleList:
                     radBlock.Enabled = false;
@@ -173,8 +172,6 @@ namespace PKSoft
                     break;
                 case PolicyType.TcpUdpOnly:
                     TcpUdpPolicy pol = TmpExceptionSettings[0].Policy as TcpUdpPolicy;
-                    chkRestrictToLocalNetwork.Enabled = true;
-                    chkRestrictToLocalNetwork.Checked = pol.LocalNetworkOnly;
                     if (
                         string.Equals(pol.AllowedLocalTcpListenerPorts, "*")
                         && string.Equals(pol.AllowedLocalUdpListenerPorts, "*")
@@ -195,7 +192,9 @@ namespace PKSoft
                     {
                         radOnlySpecifiedPorts.Checked = true;
                     }
-                    // Display ports list
+
+                    radRestriction_CheckedChanged(null, null);
+                    chkRestrictToLocalNetwork.Checked = pol.LocalNetworkOnly;
                     txtOutboundPortTCP.Text = string.IsNullOrEmpty(pol.AllowedRemoteTcpConnectPorts) ? string.Empty : pol.AllowedRemoteTcpConnectPorts.Replace(",", ", ");
                     txtOutboundPortUDP.Text = string.IsNullOrEmpty(pol.AllowedRemoteUdpConnectPorts) ? string.Empty : pol.AllowedRemoteUdpConnectPorts.Replace(",", ", ");
                     txtListenPortTCP.Text = string.IsNullOrEmpty(pol.AllowedLocalTcpListenerPorts) ? string.Empty : pol.AllowedLocalTcpListenerPorts.Replace(",", ", ");
@@ -204,13 +203,12 @@ namespace PKSoft
                 case PolicyType.Unrestricted:
                     UnrestrictedPolicy upol = TmpExceptionSettings[0].Policy as UnrestrictedPolicy;
                     radUnrestricted.Checked = true;
-                    chkRestrictToLocalNetwork.Enabled = true;
+                    radRestriction_CheckedChanged(null, null);
                     chkRestrictToLocalNetwork.Checked = upol.LocalNetworkOnly;
                     break;
                 default:
                     throw new NotImplementedException();
             }
-            radRestriction_CheckedChanged(null, null);
 
             UpdateOKButtonEnabled();
         }
