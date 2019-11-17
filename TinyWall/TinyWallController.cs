@@ -271,7 +271,6 @@ namespace PKSoft
         private ulong WmiTsSys100Ns = 0;
         private string rxDisplay = string.Empty;
         private string txDisplay = string.Empty;
-        private readonly bool RunningOnWin8;
 
         private EventHandler<AnyEventArgs> BalloonClickedCallback;
         private object BalloonClickedCallbackArgument;
@@ -303,9 +302,6 @@ namespace PKSoft
 
         public TinyWallController(CmdLineArgs opts)
         {
-            Version OsVer = Environment.OSVersion.Version;
-            Version Win8Version = new Version(6, 2, 0, 0);
-            this.RunningOnWin8 = (OsVer >= Win8Version);
             this.StartupOpts = opts;
 
             ActiveConfig.Controller = ControllerSettings.Load();
@@ -884,7 +880,7 @@ namespace PKSoft
         private void mnuWhitelistByWindow_Click(object sender, EventArgs e)
         {
             bool success;
-            bool foregroundIsMetro = RunningOnWin8 && Utils.IsMetroActive(out success);
+            bool foregroundIsMetro = VersionInfo.Win8OrNewer && Utils.IsMetroActive(out success);
 
             if (foregroundIsMetro)
             {

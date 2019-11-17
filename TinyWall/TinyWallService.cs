@@ -1645,6 +1645,13 @@ namespace PKSoft
             FirewallWorkerThread.Join(5000);
         }
 
+        // Executed on computer shutdown.
+        protected override void OnShutdown()
+        {
+            RequestStop();
+            FirewallWorkerThread.Join(5000);
+        }
+
         private void RequestStop()
         {
             TwMessage req = new TwMessage(MessageType.STOP_SERVICE);
@@ -1688,12 +1695,6 @@ namespace PKSoft
             }
             Process.GetCurrentProcess().Kill();
 #endif
-        }
-
-        // Executed on computer shutdown.
-        protected override void OnShutdown()
-        {
-            RequestStop();
         }
 
 #if DEBUG
