@@ -37,6 +37,7 @@ namespace PKSoft
 
         internal const string SERVICE_NAME = "TinyWall";
         internal const string SERVICE_DISPLAY_NAME = "TinyWall Service";
+        internal static readonly Guid TINYWALL_PROVIDER_KEY = new Guid("{66CA412C-4453-4F1E-A973-C16E433E34D0}");
 
         private BoundedMessageQueue Q;
 
@@ -59,7 +60,6 @@ namespace PKSoft
         private Engine WfpEngine = null;
         private Guid ProviderKey = Guid.Empty;
         private Guid DynamicSublayerKey = Guid.Empty;
-        private List<Filter> ActiveWfpFilters = new List<Filter>();
 
         private List<IpAddrMask> InterfaceAddreses = new List<IpAddrMask>();
         private List<IpAddrMask> GatewayAddresses = new List<IpAddrMask>();
@@ -277,17 +277,29 @@ namespace PKSoft
 
             using (Transaction trx = WfpEngine.BeginTransaction())
             {
-                // Remove old rules
-                for (int i = ActiveWfpFilters.Count - 1; i >= 0; --i)
+                // Remove all existing WFP objects
+                DeleteWfpObjects(WfpEngine, true);
+
+                // Install provider
+                var provider = new FWPM_PROVIDER0();
+                provider.displayData.name = "Karoly Pados";
+                provider.displayData.description = "TinyWall Provider";
+                provider.serviceName = TinyWallService.SERVICE_NAME;
+                provider.flags = FWPM_PROVIDER_FLAGS.FWPM_PROVIDER_FLAG_PERSISTENT;
+                provider.providerKey = TINYWALL_PROVIDER_KEY;
+                ProviderKey = WfpEngine.RegisterProvider(ref provider);
+
+                // Install sublayers
+                var layerKeys = (LayerKeyEnum[])Enum.GetValues(typeof(LayerKeyEnum));
+                foreach (var layer in layerKeys)
                 {
-                    try
-                    {
-                        Filter f = ActiveWfpFilters[i];
-                        WfpEngine.UnregisterFilter(f.FilterKey);
-                        ActiveWfpFilters.RemoveAt(i);
-                        f.Dispose();
-                    }
-                    catch { System.Diagnostics.Debug.Assert(false); }
+                    Guid slKey = GetSublayerKey(layer);
+                    var wfpSublayer = new Sublayer($"TinyWall Sublayer for {layer.ToString()}");
+                    wfpSublayer.Weight = ushort.MaxValue >> 4;
+                    wfpSublayer.SublayerKey = slKey;
+                    wfpSublayer.ProviderKey = ProviderKey;
+                    wfpSublayer.Flags = FWPM_SUBLAYER_FLAGS.FWPM_SUBLAYER_FLAG_PERSISTENT;
+                    WfpEngine.RegisterSublayer(wfpSublayer);
                 }
 
                 // Add new rules
@@ -519,7 +531,6 @@ namespace PKSoft
             try
             {
                 WfpEngine.RegisterFilter(f);
-                ActiveWfpFilters.Add(f);
             }
             catch { }
         }
@@ -547,7 +558,6 @@ namespace PKSoft
             try
             {
                 WfpEngine.RegisterFilter(f);
-                ActiveWfpFilters.Add(f);
             }
             catch { }
 
@@ -571,7 +581,6 @@ namespace PKSoft
                         f.Conditions.Add(new AppIdFilterCondition(subj.Application));
 
                     WfpEngine.RegisterFilter(f);
-                    ActiveWfpFilters.Add(f);
                 }
                 catch { }
             }
@@ -603,7 +612,6 @@ namespace PKSoft
             try
             {
                 WfpEngine.RegisterFilter(f);
-                ActiveWfpFilters.Add(f);
             }
             catch { }
         }
@@ -1290,24 +1298,6 @@ namespace PKSoft
                             // Did this one expire?
                             if (exs[i].CreationDate.AddMinutes((double)exs[i].Timer) <= DateTime.Now)
                             {
-                                // Remove rule
-                                string exId = exs[i].Id.ToString();
-
-                                // Search for the exception identifier in the rule name.
-                                // Remove rules with a match.
-                                for (int j = ActiveWfpFilters.Count-1; j >= 0; --j)
-                                {
-                                    if (ActiveWfpFilters[j].DisplayName.Contains(exId))
-                                    {
-                                        try
-                                        {
-                                            WfpEngine.UnregisterFilter(ActiveWfpFilters[j].FilterKey);
-                                            ActiveWfpFilters.RemoveAt(j);
-                                        }
-                                        catch { }
-                                    }
-                                }
-
                                 // Remove exception
                                 exs.RemoveAt(i);
                                 needsSave = true;
@@ -1318,6 +1308,7 @@ namespace PKSoft
                             ActiveConfig.Service.ActiveProfile.AppExceptions = exs;
                             GlobalInstances.ServerChangeset = Guid.NewGuid();
                             ActiveConfig.Service.Save(ConfigSavePath);
+                            InstallFirewallRules();
                         }
 
                         // Check for updates once every 2 days
@@ -1375,6 +1366,35 @@ namespace PKSoft
             AutoLearnLogEntry(entry);
         }
 
+        internal static void DeleteWfpObjects(Engine wfp, bool removeLayersAndProvider)
+        {
+            // Remove all filters
+            FilterCollection filters = wfp.GetFilters(false);
+            foreach (var f in filters)
+            {
+                if (TINYWALL_PROVIDER_KEY == f.ProviderKey)
+                    wfp.UnregisterFilter(f.FilterKey);
+            }
+
+            if (removeLayersAndProvider)
+            {
+                // Remove all sublayers
+                SublayerCollection subLayers = wfp.GetSublayers();
+                foreach (var sl in subLayers)
+                {
+                    if (TINYWALL_PROVIDER_KEY == sl.ProviderKey)
+                        wfp.UnregisterSublayer(sl.SublayerKey);
+                }
+
+                // Remove provider, ignore if not found
+                try
+                {
+                    wfp.UnregisterProvider(TINYWALL_PROVIDER_KEY);
+                }
+                catch { }
+            }
+        }
+
         // Entry point for thread that actually issues commands to Windows Firewall.
         // Only one thread (this one) is allowed to issue them.
         private void FirewallWorkerMethod()
@@ -1389,56 +1409,9 @@ namespace PKSoft
                 WfpEngine.EventMatchAnyKeywords = InboundEventMatchKeyword.FWPM_NET_EVENT_KEYWORD_INBOUND_BCAST | InboundEventMatchKeyword.FWPM_NET_EVENT_KEYWORD_INBOUND_MCAST;
             }
 
-            Guid TINYWALL_PROVIDER_KEY = new Guid("{66CA412C-4453-4F1E-A973-C16E433E34D0}");
-            using (WfpEngine = new Engine("TinyWall Session", "", FWPM_SESSION_FLAGS.FWPM_SESSION_FLAG_DYNAMIC, 5000))
+            using (WfpEngine = new Engine("TinyWall Session", "", FWPM_SESSION_FLAGS.None, 5000))
             using (var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback, null))
             {
-                // Check if TinyWall session already exists, and if it does, use it
-                ProviderCollection coll = WfpEngine.GetProviders();
-                foreach (FWPM_PROVIDER0 p in coll)
-                {
-                    if (0 == p.providerKey.CompareTo(TINYWALL_PROVIDER_KEY))
-                        ProviderKey = TINYWALL_PROVIDER_KEY;
-                }
-
-                // Install a temporary provider if needed
-                if (0 != ProviderKey.CompareTo(TINYWALL_PROVIDER_KEY))
-                {
-                    var provider = new FWPM_PROVIDER0();
-                    provider.displayData.name = "TinyWall Dynamic Provider";
-                    provider.serviceName = TinyWallService.SERVICE_NAME;
-                    ProviderKey = WfpEngine.RegisterProvider(ref provider);
-                }
-
-                // Check if the necessary sublayers are installed
-                var layerKeys = (LayerKeyEnum[])Enum.GetValues(typeof(LayerKeyEnum));
-                var subLayers = WfpEngine.GetSublayers();
-                foreach (var layer in layerKeys)
-                {
-                    Guid slKey = GetSublayerKey(layer);
-
-                    bool found = false;
-                    foreach (var sub in subLayers)
-                    {
-                        if (slKey == sub.SublayerKey)
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (!found)
-                    {
-                        // Install missing layer
-                        var wfpSublayer = new Sublayer($"TinyWall Sublayer for {layer.ToString()}");
-                        wfpSublayer.Weight = ushort.MaxValue >> 4;
-                        wfpSublayer.SublayerKey = slKey;
-                        wfpSublayer.ProviderKey = ProviderKey;
-                        WfpEngine.RegisterSublayer(wfpSublayer);
-                    }
-                }
-
-
                 try
                 {
                     RunService = true;

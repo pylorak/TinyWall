@@ -96,6 +96,11 @@ namespace WFPdotNet.Interop
         public FWPM_PROVIDER_FLAGS flags;
         public FWP_BYTE_BLOB providerData;
         [MarshalAs(UnmanagedType.LPWStr)] public string serviceName;
+
+        public override string ToString()
+        {
+            return displayData.description;
+        }
     }
 
     [Flags]

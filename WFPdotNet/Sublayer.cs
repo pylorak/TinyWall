@@ -90,5 +90,10 @@ namespace WFPdotNet
             _providerKeyHandle?.Dispose();
             _providerKeyHandle = null;
         }
+
+        public override string ToString()
+        {
+            return _nativeStruct.displayData.name;
+        }
     }
 }

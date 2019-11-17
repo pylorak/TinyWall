@@ -6,6 +6,8 @@ using System.IO;
 using System.Security.Principal;
 using System.ServiceProcess;
 using TinyWall.Interface;
+using WFPdotNet;
+using WFPdotNet.Interop;
 
 namespace PKSoft
 {
@@ -167,6 +169,12 @@ namespace PKSoft
                     }
                     catch { }
                 }
+            }
+
+            // Remove persistent WFP objects
+            using (var WfpEngine = new Engine("TinyWall Uninstall Session", "", FWPM_SESSION_FLAGS.None, 5000))
+            {
+                TinyWallService.DeleteWfpObjects(WfpEngine, true);
             }
 
             // Give some additional time for process shutdown
