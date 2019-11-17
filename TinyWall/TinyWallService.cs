@@ -669,11 +669,6 @@ namespace PKSoft
                         ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V6);
                         ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V4);
                     }
-                    if ((r.Protocol == Protocol.Any) || (r.Protocol == Protocol.TCP))
-                    {
-                        ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_LISTEN_V6);
-                        ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_LISTEN_V4);
-                    }
                     break;
                 default:
                     throw new ArgumentException("Unsupported direction parameter.");
