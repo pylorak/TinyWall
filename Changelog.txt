@@ -5,8 +5,9 @@ x.x.x - Major update (not yet released)
 - Firewall technology improvements
     - Rebuilt firewall on top of Windows Filtering Platform
     - Full support for File and Printer Sharing and Network Browser
+    - Boot-time filtering
     - Raw and promiscuous socket filtering
-    - Apps are no longer disconnected when firewall reloads
+    - Apps no longer disconnect when firewall reloads
     - Connections window need not be open to register blocked applications
     - Multicast support for local network firewall rules
     - Support for machine-global exceptions
@@ -14,9 +15,9 @@ x.x.x - Major update (not yet released)
     - Install location can be customized
     - Warning about remote installations during setup
     - Slightly modernized installer look
-    - Password protection of locked instance during uninstall
+    - Password protection of uninstaller if TinyWall is locked
 - GUI improvements
-    - Automatic app recognition for drag&dropped files
+    - New whitelisting option: drag&drop files into application list
     - Manual app detection gives instant first results
     - Live update of traffic rate in tray menu
     - Processes window remembers size

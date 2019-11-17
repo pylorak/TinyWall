@@ -415,6 +415,21 @@ namespace PKSoft
             }
         }
 
+        private void InstallWfpFilter(Filter f)
+        {
+            try
+            {
+                f.FilterKey = Guid.NewGuid();
+                f.Flags = FilterFlags.FWPM_FILTER_FLAG_PERSISTENT;
+                WfpEngine.RegisterFilter(f);
+
+                f.FilterKey = Guid.NewGuid();
+                f.Flags = FilterFlags.FWPM_FILTER_FLAG_BOOTTIME;
+                WfpEngine.RegisterFilter(f);
+            }
+            catch { }
+        }
+
         private void ConstructFilter(RuleDef r, LayerKeyEnum layer)
         {
             List<FilterCondition> conditions = new List<FilterCondition>();
@@ -523,16 +538,11 @@ namespace PKSoft
                 (r.Action == RuleAction.Allow) ? FilterActions.FWP_ACTION_PERMIT : FilterActions.FWP_ACTION_BLOCK,
                 r.Weight
             );
-            f.FilterKey = Guid.NewGuid();
             f.LayerKey = GetLayerKey(layer);
             f.SublayerKey = GetSublayerKey(layer);
             f.Conditions.AddRange(conditions);
 
-            try
-            {
-                WfpEngine.RegisterFilter(f);
-            }
-            catch { }
+            InstallWfpFilter(f);
         }
 
         private void InstallRawSocketFilters(List<RuleDef> rawSocketExceptions)
@@ -550,16 +560,11 @@ namespace PKSoft
                 FilterActions.FWP_ACTION_BLOCK,
                 (ulong)FilterWeights.RawSocketBlock
             );
-            f.FilterKey = Guid.NewGuid();
             f.LayerKey = GetLayerKey(layer);
             f.SublayerKey = GetSublayerKey(layer);
             f.Conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_RAW_ENDPOINT, FieldMatchType.FWP_MATCH_FLAGS_ANY_SET));
 
-            try
-            {
-                WfpEngine.RegisterFilter(f);
-            }
-            catch { }
+            InstallWfpFilter(f);
 
             foreach (var subj in rawSocketExceptions)
             {
@@ -572,7 +577,6 @@ namespace PKSoft
                         FilterActions.FWP_ACTION_PERMIT,
                         (ulong)FilterWeights.RawSockePermit
                     );
-                    f.FilterKey = Guid.NewGuid();
                     f.LayerKey = GetLayerKey(layer);
                     f.SublayerKey = GetSublayerKey(layer);
                     if (!string.IsNullOrEmpty(subj.ServiceName))
@@ -580,7 +584,7 @@ namespace PKSoft
                     if (!string.IsNullOrEmpty(subj.Application))
                         f.Conditions.Add(new AppIdFilterCondition(subj.Application));
 
-                    WfpEngine.RegisterFilter(f);
+                    InstallWfpFilter(f);
                 }
                 catch { }
             }
@@ -601,7 +605,6 @@ namespace PKSoft
                 FilterActions.FWP_ACTION_CALLOUT_TERMINATING,
                 (ulong)FilterWeights.Blocklist
             );
-            f.FilterKey = Guid.NewGuid();
             f.LayerKey = GetLayerKey(layer);
             f.SublayerKey = GetSublayerKey(layer);
             f.CalloutKey = callout;
@@ -609,11 +612,7 @@ namespace PKSoft
             // Don't affect loopback traffic
             f.Conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK | ConditionFlags.FWP_CONDITION_FLAG_IS_IPSEC_SECURED, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
 
-            try
-            {
-                WfpEngine.RegisterFilter(f);
-            }
-            catch { }
+            InstallWfpFilter(f);
         }
 
         private static bool LayerIsAleAuthConnect(LayerKeyEnum layer)
