@@ -39,9 +39,29 @@
     <SubjectIdentity>
       <Policy i:type="TcpUdpPolicy">
         <AllowedLocalUdpListenerPorts>3702</AllowedLocalUdpListenerPorts>
+        <LocalNetworkOnly>true</LocalNetworkOnly>
+        <Name>WSD-In</Name>
+      </Policy>
+      <Subject i:type="ExecutableSubject">
+        <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
+      </Subject>
+    </SubjectIdentity>
+    <SubjectIdentity>
+      <Policy i:type="TcpUdpPolicy">
         <AllowedRemoteUdpConnectPorts>3702</AllowedRemoteUdpConnectPorts>
         <LocalNetworkOnly>true</LocalNetworkOnly>
-        <Name>WSD</Name>
+        <Name>Pub WSD-Out</Name>
+      </Policy>
+      <Subject i:type="ServiceSubject">
+        <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
+        <ServiceName>fdrespub</ServiceName>
+      </Subject>
+    </SubjectIdentity>
+    <SubjectIdentity>
+      <Policy i:type="TcpUdpPolicy">
+        <AllowedRemoteUdpConnectPorts>3702</AllowedRemoteUdpConnectPorts>
+        <LocalNetworkOnly>true</LocalNetworkOnly>
+        <Name>WSD-Out</Name>
       </Policy>
       <Subject i:type="ServiceSubject">
         <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
