@@ -1027,9 +1027,8 @@
           <Policy i:type="TcpUdpPolicy">
             <AllowedRemoteUdpConnectPorts>123</AllowedRemoteUdpConnectPorts>
           </Policy>
-          <Subject i:type="ServiceSubject">
+          <Subject i:type="ExecutableSubject">
             <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
-            <ServiceName>W32Time</ServiceName>
           </Subject>
         </SubjectIdentity>
       </Components>
