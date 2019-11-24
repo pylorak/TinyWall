@@ -241,6 +241,45 @@
     <Application>
       <Components>
         <SubjectIdentity>
+          <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+            <d6p1:string>CN="S4M Tech, Inc.", O="S4M Tech, Inc.", POBox=95134, STREET="3500 Palmilla Dr. #3026", L=San-Jose, S=California, PostalCode=95134, C=US</d6p1:string>
+          </CertificateSubjects>
+          <Policy i:type="TcpUdpPolicy">
+            <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
+            <AllowedLocalUdpListenerPorts>*</AllowedLocalUdpListenerPorts>
+            <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
+            <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
+          </Policy>
+          <SearchPaths xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+            <d6p1:string>{reg:SOFTWARE\Seed4.Me VPN:InstallLocation}\bin</d6p1:string>
+          </SearchPaths>
+          <Subject i:type="ExecutableSubject">
+            <ExecutablePath>Seed4.Me_VPN.exe</ExecutablePath>
+          </Subject>
+        </SubjectIdentity>
+        <SubjectIdentity>
+          <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+            <d6p1:string>CN="S4M Tech, Inc.", O="S4M Tech, Inc.", POBox=95134, STREET="3500 Palmilla Dr. #3026", L=San-Jose, S=California, PostalCode=95134, C=US</d6p1:string>
+          </CertificateSubjects>
+          <Policy i:type="TcpUdpPolicy">
+            <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
+            <AllowedLocalUdpListenerPorts>*</AllowedLocalUdpListenerPorts>
+            <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
+            <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
+          </Policy>
+          <SearchPaths xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+            <d6p1:string>{reg:SOFTWARE\Seed4.Me VPN:InstallLocation}\bin</d6p1:string>
+          </SearchPaths>
+          <Subject i:type="ExecutableSubject">
+            <ExecutablePath>Seed4.Me_service.exe</ExecutablePath>
+          </Subject>
+        </SubjectIdentity>
+      </Components>
+      <Name>Seed4.Me VPN</Name>
+    </Application>
+    <Application>
+      <Components>
+        <SubjectIdentity>
           <AllowedSha1 xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
             <d6p1:string>E513DD19714559226CD52169FBB4489CA5740E88</d6p1:string>
             <d6p1:string>12a602b86fc394b1c88348fb099685eabb876495</d6p1:string>
