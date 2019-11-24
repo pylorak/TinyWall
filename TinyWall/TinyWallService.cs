@@ -16,6 +16,20 @@ using WFPdotNet.Interop;
 
 namespace PKSoft
 {
+    internal enum ProcessRuleState
+    {
+        Unassigned,
+        UserDefined,
+        Inherited,
+        NoRulesNeeded
+    }
+
+    internal class ProcessRule
+    {
+        internal ProcessRuleState State = ProcessRuleState.Unassigned;
+        internal List<RuleDef> Rules = new List<RuleDef>();
+    }
+
     internal class TinyWallService : ServiceBase
     {
         internal readonly static string[] ServiceDependencies = new string[]
@@ -52,8 +66,10 @@ namespace PKSoft
         FirewallLogWatcher LogWatcher;
         List<FirewallExceptionV3> LearningNewExceptions = new List<FirewallExceptionV3>();
 
-        private bool RunService = false;
+        // Context for process tree maintenance
+        ProcessRuleTreeWatcher<ProcessRule> ProcTree = null;
 
+        private bool RunService = false;
         private ServerState VisibleState = null;
         private DateTime LastUpdateCheck = DateTime.MinValue;
 
@@ -1401,6 +1417,9 @@ namespace PKSoft
             NetworkChange.NetworkAddressChanged += NetworkChange_NetworkAddressChanged;
             NetworkChange.NetworkAvailabilityChanged += NetworkChange_NetworkAvailabilityChanged;
 
+            ProcTree = new ProcessRuleTreeWatcher<ProcessRule>();
+            ProcTree.ProcessCreated += ProcTree_ProcessCreated;
+
             // Make sure event collection is enabled
             using (WfpEngine = new Engine("TinyWall Option Session", "", FWPM_SESSION_FLAGS.None, 5000))
             {
@@ -1435,6 +1454,16 @@ namespace PKSoft
                     finally { }
                 }
             }
+        }
+
+        private void ProcTree_ProcessCreated(uint pid)
+        {
+            var tree = ProcTree.GetTree();
+            while(true)
+            {
+                string path = tree[pid].Path;
+            }
+            //ProcTree[pid].Details.State = 
         }
 
         private void NetworkChange_NetworkAvailabilityChanged(object sender, NetworkAvailabilityEventArgs e)
@@ -1682,6 +1711,9 @@ namespace PKSoft
             CommitLearnedRules();
             ActiveConfig.Service.Save(ConfigSavePath);
             FileLocker.UnlockAll();
+
+            ProcTree?.Dispose();
+            ProcTree = null;
 
             RestoreMpsSvc();
 
