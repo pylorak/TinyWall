@@ -8,7 +8,7 @@ using System.Resources;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
 [assembly: AssemblyTitle("TinyWall")]
-[assembly: AssemblyDescription("An application to control and secure the built-in firewall of Windows.")]
+[assembly: AssemblyDescription("A free, lightweight and non-intrusive firewall.")]
 [assembly: AssemblyCompany("Károly Pados")]
 [assembly: AssemblyProduct("TinyWall")]
 [assembly: AssemblyCopyright("Copyright © 2011 Károly Pados")]
@@ -33,9 +33,9 @@ using System.Resources;
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.99.10")]                  // used by the CLR
-[assembly: AssemblyFileVersion("2.99.10")]              // full assembly version
-[assembly: AssemblyInformationalVersion("2.99.10")]     // informal version for customers
+[assembly: AssemblyVersion("2.99.11")]                  // used by the CLR
+[assembly: AssemblyFileVersion("2.99.11")]              // full assembly version
+[assembly: AssemblyInformationalVersion("2.99.11")]     // informal version for customers
 [assembly: NeutralResourcesLanguageAttribute("en")]
 
 [assembly: CLSCompliant(true)]
