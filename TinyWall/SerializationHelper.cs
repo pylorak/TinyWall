@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
@@ -8,6 +11,42 @@ namespace PKSoft
 {
     internal static class SerializationHelper
     {
+        sealed class TwServiceBinaryDeserializationBinder : SerializationBinder
+        {
+            private static readonly Type[] AllowedTypesArr = new Type[]
+            {
+                typeof(Message),
+                typeof(TWControllerMessages),
+                typeof(FirewallMode),
+                typeof(ServiceSettings21),
+                typeof(object),
+                typeof(BlockListSettings),
+                typeof(List<string>),
+                typeof(FirewallException),
+                typeof(List<FirewallException>),
+                typeof(AppExceptionTimer),
+                typeof(ServiceState),
+                typeof(TWServiceMessages),
+                typeof(List<TWServiceMessages>),
+                typeof(FirewallLogEntry),
+                typeof(List<FirewallLogEntry>),
+                typeof(EventLogEvent),
+                typeof(PKSoft.WindowsFirewall.Protocol),
+                typeof(PKSoft.WindowsFirewall.RuleDirection),
+            };
+            private static readonly HashSet<Type> AllowedTypes = new HashSet<Type>(AllowedTypesArr);
+
+            public override Type BindToType(string assemblyName, string typeName)
+            {
+                Type typeToDeserialize = Type.GetType($"{typeName}, {assemblyName}");
+
+                if (AllowedTypes.Contains(typeToDeserialize))
+                    return typeToDeserialize;
+
+                throw new ArgumentException("Unexpected type", nameof(typeName));
+            }
+        }
+
         internal static void Serialize<T>(Stream stream, T obj)
         {
             BinaryFormatter formatter = new BinaryFormatter();
@@ -18,6 +57,7 @@ namespace PKSoft
         internal static T Deserialize<T>(Stream stream)
         {
             BinaryFormatter formatter = new BinaryFormatter();
+            formatter.Binder = new TwServiceBinaryDeserializationBinder();  // fix for CVE-2019-19470
             formatter.AssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple;
             return (T)formatter.Deserialize(stream);
         }
