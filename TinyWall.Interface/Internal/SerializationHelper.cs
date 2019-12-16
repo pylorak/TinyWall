@@ -1,11 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
-using System.Xml.Serialization;
 using System.Xml;
 
 namespace TinyWall.Interface.Internal
@@ -43,22 +41,6 @@ namespace TinyWall.Interface.Internal
             typeof(UpdateModule),
             typeof(UpdateDescriptor),
         };
-
-        public static void Serialize<T>(Stream stream, T obj)
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-            formatter.AssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple;
-            formatter.Context = new StreamingContext(StreamingContextStates.Persistence | StreamingContextStates.CrossMachine);
-            formatter.Serialize(stream, obj);
-        }
-
-        public static T Deserialize<T>(Stream stream)
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-            formatter.AssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple;
-            formatter.Context = new StreamingContext(StreamingContextStates.Persistence | StreamingContextStates.CrossMachine);
-            return (T)formatter.Deserialize(stream);
-        }
 
         public static void SerializeToPipe<T>(Stream pipe, T obj)
         {
