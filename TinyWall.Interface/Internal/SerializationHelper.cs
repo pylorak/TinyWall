@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
@@ -13,6 +14,13 @@ namespace TinyWall.Interface.Internal
     {
         private static readonly Type[] KnownDataContractTypes =
         {
+            typeof(TwMessage),
+            typeof(MessageType),
+            typeof(ServerState),
+            typeof(FirewallMode),
+            typeof(FirewallLogEntry),
+            typeof(List<FirewallLogEntry>),
+
             typeof(BlockListSettings),
             typeof(ServerProfileConfiguration),
             typeof(ServerConfiguration),
@@ -29,6 +37,7 @@ namespace TinyWall.Interface.Internal
             typeof(RuleListPolicy),
 
             typeof(RuleDef),
+            typeof(List<RuleDef>),
             typeof(FirewallExceptionV3),
 
             typeof(UpdateModule),
@@ -50,6 +59,51 @@ namespace TinyWall.Interface.Internal
             formatter.Context = new StreamingContext(StreamingContextStates.Persistence | StreamingContextStates.CrossMachine);
             return (T)formatter.Deserialize(stream);
         }
+
+        public static void SerializeToPipe<T>(Stream pipe, T obj)
+        {
+            string xml;
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                XmlWriterSettings settings = new XmlWriterSettings();
+                settings.CloseOutput = false;
+                settings.Indent = true;
+                settings.Encoding = Encoding.UTF8;
+                using (XmlWriter writer = XmlWriter.Create(memoryStream, settings))
+                {
+                    DataContractSerializer serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
+                    serializer.WriteObject(writer, obj);
+                }
+
+                memoryStream.Position = 0;
+                using (StreamReader reader = new StreamReader(memoryStream, Encoding.UTF8))
+                {
+                    xml = reader.ReadToEnd();
+                }
+            }
+
+            BinaryWriter bw = new BinaryWriter(pipe);
+            bw.Write(xml);
+            bw.Flush();
+        }
+
+        public static T DeserializeFromPipe<T>(Stream pipe)
+        {
+            BinaryReader br = new BinaryReader(pipe);
+            string xml = br.ReadString();
+
+            using (Stream stream = new MemoryStream())
+            using (StreamWriter writer = new StreamWriter(stream, Encoding.UTF8))
+            {
+                writer.Write(xml);
+                writer.Flush();
+                stream.Position = 0;
+                DataContractSerializer serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
+                return (T)serializer.ReadObject(stream);
+            }
+        }
+
 
         public static void SerializeDC<T>(Stream stream, T obj)
         {

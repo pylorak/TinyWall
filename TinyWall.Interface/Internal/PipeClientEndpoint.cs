@@ -70,10 +70,10 @@ namespace TinyWall.Interface.Internal
                     pipeClient.Connect(500);
 
                     // Send command
-                    SerializationHelper.Serialize(pipeClient, msg);
+                    SerializationHelper.SerializeToPipe(pipeClient, msg);
 
                     // Get response
-                    return SerializationHelper.Deserialize<TwMessage>(pipeClient);
+                    return SerializationHelper.DeserializeFromPipe<TwMessage>(pipeClient);
                 }
             }
             catch

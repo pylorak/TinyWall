@@ -82,11 +82,11 @@ namespace PKSoft
                         }
 
                         // Read msg
-                        TwMessage msg = SerializationHelper.Deserialize<TwMessage>(pipeServer);
+                        TwMessage msg = SerializationHelper.DeserializeFromPipe<TwMessage>(pipeServer);
 
                         // Write response
                         TwMessage resp = m_RcvCallback(msg);
-                        SerializationHelper.Serialize(pipeServer, resp);
+                        SerializationHelper.SerializeToPipe(pipeServer, resp);
                     } //using
                 }
                 catch { }
