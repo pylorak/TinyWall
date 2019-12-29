@@ -262,4 +262,7 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Hinzufügen/Ändern einer Firewallausnahme - TinyWall</value>
   </data>
+  <data name="chkApplyToFolder.Text" xml:space="preserve">
+    <value>Aufs ganze Verzeichnis anwenden</value>
+  </data>
 </root>

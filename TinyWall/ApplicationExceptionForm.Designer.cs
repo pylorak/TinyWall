@@ -62,6 +62,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.radOnlySpecifiedPorts = new System.Windows.Forms.RadioButton();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.chkApplyToFolder = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -304,6 +305,12 @@
             this.panel3.Controls.Add(this.label9);
             this.panel3.Name = "panel3";
             // 
+            // chkApplyToFolder
+            // 
+            resources.ApplyResources(this.chkApplyToFolder, "chkApplyToFolder");
+            this.chkApplyToFolder.Name = "chkApplyToFolder";
+            this.chkApplyToFolder.UseVisualStyleBackColor = true;
+            // 
             // ApplicationExceptionForm
             // 
             this.AcceptButton = this.btnOK;
@@ -311,6 +318,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ControlBox = false;
+            this.Controls.Add(this.chkApplyToFolder);
             this.Controls.Add(this.radOnlySpecifiedPorts);
             this.Controls.Add(this.radUnrestricted);
             this.Controls.Add(this.radTcpUdpUnrestricted);
@@ -374,5 +382,6 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.RadioButton radOnlySpecifiedPorts;
         private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.CheckBox chkApplyToFolder;
     }
 }

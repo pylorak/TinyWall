@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Management;
 using System.ServiceProcess;
 using System.Threading;
 using TinyWall.Interface;
@@ -49,6 +50,12 @@ namespace PKSoft
         // Context needed for learning mode
         FirewallLogWatcher LogWatcher;
         List<FirewallExceptionV3> LearningNewExceptions = new List<FirewallExceptionV3>();
+
+        // Context for auto folder-rule inheritance
+        private object FolderInheritanceGuard = new object();
+        private Dictionary<string, FirewallExceptionV3> FolderInheritance = new Dictionary<string, FirewallExceptionV3>();
+        private HashSet<string> UserSubjectExes = new HashSet<string>();        // All executables with pre-configured rules.
+        private HashSet<string> InheritedSubjectExes = new HashSet<string>();   // Executables that have been already auto-whitelisted due to inheritance
 
         private bool RunService = false;
         private ServerState VisibleState = null;
@@ -255,7 +262,50 @@ namespace PKSoft
                 foreach (FirewallExceptionV3 ex in UserExceptions)
                 {
                     GetRulesForException(ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
+
+                    if (ex.Subject is ExecutableSubject exe)
+                    {
+                        UserSubjectExes.Add(exe.ExecutablePath);
+                        if (ex.ApplyToFolder)
+                        {
+                            FolderInheritance.Add(Path.GetDirectoryName(exe.ExecutablePath), ex);
+                        }
+                    }
                 }
+
+                if (FolderInheritance.Count != 0)
+                {
+                    Process[] processes = Process.GetProcesses();
+                    foreach (Process p in processes)
+                    {
+                        try
+                        {
+                            string procPath = Utils.GetPathOfProcess(p.Id);
+                            p.Dispose();
+
+                            // Skip if we have no path
+                            if (string.IsNullOrEmpty(procPath))
+                                continue;
+
+                            // Skip if we have a user-defined rule for this path
+                            if (UserSubjectExes.Contains(procPath))
+                                continue;
+
+                            foreach (var pair in FolderInheritance)
+                            {
+                                if (procPath.StartsWith(pair.Key))
+                                {
+                                    FirewallExceptionV3 ex = Utils.DeepClone(pair.Value);
+                                    ex.Subject = new ExecutableSubject(procPath);
+                                    GetRulesForException(ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
+                                    InheritedSubjectExes.Add(procPath); // remember this path so we won't add it again when a process starts
+                                }
+                            }
+                        }
+                        catch { }
+                    }
+                }   // if (FolderInheritance ...
+
             }
 
             return rules;
@@ -294,8 +344,15 @@ namespace PKSoft
 
         private void InstallFirewallRules()
         {
+            List<RuleDef> rules;
             List<ExceptionSubject> rawSocketExceptions = new List<ExceptionSubject>();
-            List<RuleDef> rules = AssembleActiveRules(rawSocketExceptions);
+            lock (FolderInheritanceGuard)
+            {
+                FolderInheritance.Clear();
+                UserSubjectExes.Clear();
+                InheritedSubjectExes.Clear();
+                rules = AssembleActiveRules(rawSocketExceptions);
+            }
 
             using (Transaction trx = WfpEngine.BeginTransaction())
             {
@@ -1444,6 +1501,7 @@ namespace PKSoft
         // Only one thread (this one) is allowed to issue them.
         private void FirewallWorkerMethod()
         {
+            WqlEventQuery StartQuery = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace");
             NetworkChange.NetworkAddressChanged += NetworkChange_NetworkAddressChanged;
             NetworkChange.NetworkAvailabilityChanged += NetworkChange_NetworkAvailabilityChanged;
 
@@ -1454,9 +1512,13 @@ namespace PKSoft
                 WfpEngine.EventMatchAnyKeywords = InboundEventMatchKeyword.FWPM_NET_EVENT_KEYWORD_INBOUND_BCAST | InboundEventMatchKeyword.FWPM_NET_EVENT_KEYWORD_INBOUND_MCAST;
             }
 
+            using (ManagementEventWatcher ProcessStartWatcher = new ManagementEventWatcher(StartQuery))
             using (WfpEngine = new Engine("TinyWall Session", "", FWPM_SESSION_FLAGS.None, 5000))
             using (var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback, null))
             {
+                ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
+                ProcessStartWatcher.Start();
+
                 try
                 {
                     RunService = true;
@@ -1480,6 +1542,45 @@ namespace PKSoft
                     }
                     finally { }
                 }
+            }
+        }
+
+        private void ProcessStartWatcher_EventArrived(object sender, EventArrivedEventArgs e)
+        {
+            uint pid = (uint)(e.NewEvent["ProcessID"]);
+            string path = Utils.GetPathOfProcess((int)pid);
+            List<FirewallExceptionV3> newExceptions = new List<FirewallExceptionV3>();
+
+            // Skip if we have no path
+            if (string.IsNullOrEmpty(path))
+                return;
+
+            lock (FolderInheritanceGuard)
+            {
+                // Skip if we have already added this file
+                if (InheritedSubjectExes.Contains(path))
+                    return;
+
+                // Skip if we have a user-defined rule for this path
+                if (UserSubjectExes.Contains(path))
+                    return;
+
+                // Remember this path so we won't process it again when a process starts
+                InheritedSubjectExes.Add(path);
+
+                foreach (var pair in FolderInheritance)
+                {
+                    if (path.StartsWith(pair.Key))
+                    {
+                        FirewallExceptionV3 ex = new FirewallExceptionV3(new ExecutableSubject(path), pair.Value.Policy);
+                        newExceptions.Add(ex);
+                    }
+                }
+            }
+
+            if (newExceptions.Count != 0)
+            {
+                Q.Enqueue(new TwMessage(MessageType.ADD_EXCEPTION, newExceptions), null);
             }
         }
 
@@ -1665,6 +1766,7 @@ namespace PKSoft
                 // Start thread that is going to control Windows Firewall
                 FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod));
                 FirewallWorkerThread.IsBackground = true;
+                FirewallWorkerThread.Priority = ThreadPriority.AboveNormal;
                 FirewallWorkerThread.Start();
 
                 // Fire up pipe

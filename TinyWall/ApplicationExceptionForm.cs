@@ -154,7 +154,10 @@ namespace PKSoft
                     throw new NotImplementedException();
             }
 
-            // Update rule/poolicy fields
+            // Update rule/policy fields
+
+            chkApplyToFolder.Checked = TmpExceptionSettings[0].ApplyToFolder;
+
             switch (TmpExceptionSettings[0].Policy.PolicyType)
             {
                 case PolicyType.HardBlock:
@@ -277,6 +280,8 @@ namespace PKSoft
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            TmpExceptionSettings[0].ApplyToFolder = chkApplyToFolder.Checked;
+
             if (radBlock.Checked)
             {
                 TmpExceptionSettings[0].Policy = HardBlockPolicy.Instance;

@@ -142,7 +142,7 @@
     <value>Kivétel időtartama:</value>
   </data>
   <data name="chkRestrictToLocalNetwork.Text" xml:space="preserve">
-    <value>Korlátozás helyi hálózatra</value>
+    <value>Korlátozás a helyi hálózatra</value>
   </data>
   <data name="radBlock.Text" xml:space="preserve">
     <value>Mindig blokkol minden forgalmat</value>
@@ -188,5 +188,8 @@
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Tűzfal kivételek megadása/módosítása - TinyWall</value>
+  </data>
+  <data name="chkApplyToFolder.Text" xml:space="preserve">
+    <value>Alkalmazás az egész könyvtárra</value>
   </data>
 </root>

@@ -126,7 +126,7 @@
     <value>MiddleLeft</value>
   </data>
   <data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>432, 512</value>
+    <value>432, 534</value>
   </data>
   <data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
     <value>90, 33</value>
@@ -148,7 +148,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnCancel.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="btnOK.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -157,7 +157,7 @@
     <value>MiddleLeft</value>
   </data>
   <data name="btnOK.Location" type="System.Drawing.Point, System.Drawing">
-    <value>336, 512</value>
+    <value>336, 534</value>
   </data>
   <data name="btnOK.Size" type="System.Drawing.Size, System.Drawing">
     <value>90, 33</value>
@@ -178,7 +178,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnOK.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="label1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -438,39 +438,6 @@
   <data name="panel1.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
     <value>Stretch</value>
   </data>
-  <data name="&gt;&gt;transparentLabel1.Name" xml:space="preserve">
-    <value>transparentLabel1</value>
-  </data>
-  <data name="&gt;&gt;transparentLabel1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;transparentLabel1.Parent" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;transparentLabel1.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="panel1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, -1</value>
-  </data>
-  <data name="panel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>535, 48</value>
-  </data>
-  <data name="panel1.TabIndex" type="System.Int32, mscorlib">
-    <value>30</value>
-  </data>
-  <data name="&gt;&gt;panel1.Name" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;panel1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;panel1.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;panel1.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
   <data name="transparentLabel1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
@@ -504,6 +471,27 @@
   <data name="&gt;&gt;transparentLabel1.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="panel1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, -1</value>
+  </data>
+  <data name="panel1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>535, 48</value>
+  </data>
+  <data name="panel1.TabIndex" type="System.Int32, mscorlib">
+    <value>30</value>
+  </data>
+  <data name="&gt;&gt;panel1.Name" xml:space="preserve">
+    <value>panel1</value>
+  </data>
+  <data name="&gt;&gt;panel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;panel1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;panel1.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
   <data name="panel2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
@@ -526,7 +514,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;panel2.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>10</value>
   </data>
   <data name="chkRestrictToLocalNetwork.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
@@ -556,7 +544,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;chkRestrictToLocalNetwork.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="radBlock.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
@@ -565,7 +553,7 @@
     <value>True</value>
   </data>
   <data name="radBlock.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 233</value>
+    <value>22, 254</value>
   </data>
   <data name="radBlock.Size" type="System.Drawing.Size, System.Drawing">
     <value>129, 17</value>
@@ -586,7 +574,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;radBlock.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="radTcpUdpOut.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
@@ -595,7 +583,7 @@
     <value>True</value>
   </data>
   <data name="radTcpUdpOut.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 279</value>
+    <value>22, 300</value>
   </data>
   <data name="radTcpUdpOut.Size" type="System.Drawing.Size, System.Drawing">
     <value>194, 17</value>
@@ -616,7 +604,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;radTcpUdpOut.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="radTcpUdpUnrestricted.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
@@ -625,7 +613,7 @@
     <value>True</value>
   </data>
   <data name="radTcpUdpUnrestricted.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 302</value>
+    <value>22, 323</value>
   </data>
   <data name="radTcpUdpUnrestricted.Size" type="System.Drawing.Size, System.Drawing">
     <value>182, 17</value>
@@ -646,7 +634,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;radTcpUdpUnrestricted.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="radUnrestricted.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
@@ -655,7 +643,7 @@
     <value>True</value>
   </data>
   <data name="radUnrestricted.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 325</value>
+    <value>22, 346</value>
   </data>
   <data name="radUnrestricted.Size" type="System.Drawing.Size, System.Drawing">
     <value>92, 17</value>
@@ -676,7 +664,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;radUnrestricted.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="label5.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -991,7 +979,7 @@
     <value>True</value>
   </data>
   <data name="radOnlySpecifiedPorts.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 256</value>
+    <value>22, 277</value>
   </data>
   <data name="radOnlySpecifiedPorts.Size" type="System.Drawing.Size, System.Drawing">
     <value>143, 17</value>
@@ -1012,13 +1000,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;radOnlySpecifiedPorts.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="panel3.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Bottom, Left, Right</value>
+    <value>Bottom, Left, Right</value>
   </data>
   <data name="panel3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 350</value>
+    <value>0, 372</value>
   </data>
   <data name="panel3.Size" type="System.Drawing.Size, System.Drawing">
     <value>535, 153</value>
@@ -1036,7 +1024,40 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;panel3.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>11</value>
+  </data>
+  <data name="chkApplyToFolder.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="chkApplyToFolder.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="chkApplyToFolder.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="chkApplyToFolder.Location" type="System.Drawing.Point, System.Drawing">
+    <value>22, 222</value>
+  </data>
+  <data name="chkApplyToFolder.Size" type="System.Drawing.Size, System.Drawing">
+    <value>177, 17</value>
+  </data>
+  <data name="chkApplyToFolder.TabIndex" type="System.Int32, mscorlib">
+    <value>45</value>
+  </data>
+  <data name="chkApplyToFolder.Text" xml:space="preserve">
+    <value>Apply to whole folder</value>
+  </data>
+  <data name="&gt;&gt;chkApplyToFolder.Name" xml:space="preserve">
+    <value>chkApplyToFolder</value>
+  </data>
+  <data name="&gt;&gt;chkApplyToFolder.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;chkApplyToFolder.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;chkApplyToFolder.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -1045,7 +1066,10 @@
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>534, 557</value>
+    <value>534, 579</value>
+  </data>
+  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Add/Modify Firewall Exception - TinyWall</value>

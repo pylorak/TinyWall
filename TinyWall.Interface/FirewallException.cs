@@ -36,6 +36,9 @@ namespace TinyWall.Interface
         [DataMember(EmitDefaultValue = false)]
         public ExceptionPolicy Policy { get; set; }
 
+        [DataMember(EmitDefaultValue = false)]
+        public bool ApplyToFolder { get; set; }
+
         public FirewallExceptionV3()
         {
             Timer = AppExceptionTimer.Permanent;
