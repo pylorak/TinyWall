@@ -33,9 +33,10 @@
         TEST_EXCEPTION,
         REENUMERATE_ADDRESSES,
 
-
         // Service-to-client messages
-        DATABASE_UPDATED
+        DATABASE_UPDATED,
 
+        // Service-to-service only (>4095)
+        ADD_EXCEPTION = 4096
     }
 }

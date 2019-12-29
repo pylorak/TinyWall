@@ -66,19 +66,16 @@ namespace TinyWall.Interface
         {
             if (subject != null)
             {
-                ExecutableSubject exe = subject as ExecutableSubject;
-                ServiceSubject service = subject as ServiceSubject;
-
-                switch (subject.SubjectType)
+                switch (subject)
                 {
-                    case SubjectType.Executable:
-                        this.Application = exe.ExecutablePath;
-                        break;
-                    case SubjectType.Service:
+                    case ServiceSubject service:
                         this.Application = service.ExecutablePath;
                         this.ServiceName = service.ServiceName;
                         break;
-                    case SubjectType.Global:
+                    case ExecutableSubject exe:
+                        this.Application = exe.ExecutablePath;
+                        break;
+                    case GlobalSubject glob:
                         break;
                     default:
                         throw new NotImplementedException();

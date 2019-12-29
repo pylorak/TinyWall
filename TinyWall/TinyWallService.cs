@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using System.ServiceProcess;
 using System.Threading;
 using TinyWall.Interface;
@@ -16,20 +14,6 @@ using WFPdotNet.Interop;
 
 namespace PKSoft
 {
-    internal enum ProcessRuleState
-    {
-        Unassigned,
-        UserDefined,
-        Inherited,
-        NoRulesNeeded
-    }
-
-    internal class ProcessRule
-    {
-        internal ProcessRuleState State = ProcessRuleState.Unassigned;
-        internal List<RuleDef> Rules = new List<RuleDef>();
-    }
-
     internal class TinyWallService : ServiceBase
     {
         internal readonly static string[] ServiceDependencies = new string[]
@@ -66,16 +50,12 @@ namespace PKSoft
         FirewallLogWatcher LogWatcher;
         List<FirewallExceptionV3> LearningNewExceptions = new List<FirewallExceptionV3>();
 
-        // Context for process tree maintenance
-        ProcessRuleTreeWatcher<ProcessRule> ProcTree = null;
-
         private bool RunService = false;
         private ServerState VisibleState = null;
         private DateTime LastUpdateCheck = DateTime.MinValue;
 
         private Engine WfpEngine = null;
         private Guid ProviderKey = Guid.Empty;
-        private Guid DynamicSublayerKey = Guid.Empty;
 
         private List<IpAddrMask> InterfaceAddreses = new List<IpAddrMask>();
         private List<IpAddrMask> GatewayAddresses = new List<IpAddrMask>();
@@ -182,7 +162,7 @@ namespace PKSoft
             return results;
         }
 
-        private List<RuleDef> AssembleActiveRules(List<RuleDef> rawSocketExceptions)
+        private List<RuleDef> AssembleActiveRules(List<ExceptionSubject> rawSocketExceptions)
         {
             List<RuleDef> rules = new List<RuleDef>();
             Guid ModeId = Guid.NewGuid();
@@ -205,7 +185,7 @@ namespace PKSoft
                 foreach (FirewallExceptionV3 ex in exceptions)
                 {
                     ex.RegenerateId();
-                    GetRulesForException(ex, rules, (ulong)FilterWeights.DefaultPermit, (ulong)FilterWeights.Blocklist);
+                    GetRulesForException(ex, rules, null, (ulong)FilterWeights.DefaultPermit, (ulong)FilterWeights.Blocklist);
                 }
             }
 
@@ -274,21 +254,47 @@ namespace PKSoft
                 // Convert exceptions to rules
                 foreach (FirewallExceptionV3 ex in UserExceptions)
                 {
-                    ex.RegenerateId();
-                    GetRulesForException(ex, rules, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
-
-                    if (ex.Policy.PolicyType == PolicyType.Unrestricted)
-                        // Make exception for promiscuous mode
-                        rawSocketExceptions.Add(rules[rules.Count - 1]);
+                    GetRulesForException(ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
                 }
             }
 
             return rules;
         }
 
+        private void InstallRules(List<RuleDef> rules, List<ExceptionSubject> rawSocketExceptions, bool useTransaction)
+        {
+            Transaction trx = useTransaction ? WfpEngine.BeginTransaction() : null;
+            try
+            {
+
+                // Add new rules
+                foreach (RuleDef r in rules)
+                {
+                    try
+                    {
+                        ConstructFilter(r);
+                    }
+                    catch { }
+                }
+
+                // Built-in protections
+                if (VisibleState.Mode != FirewallMode.Disabled)
+                {
+                    InstallRawSocketPermits(rawSocketExceptions);
+                }
+
+                trx?.Commit();
+            }
+            finally 
+            {
+                trx?.Dispose();
+            }
+
+        }
+
         private void InstallFirewallRules()
         {
-            List<RuleDef> rawSocketExceptions = new List<RuleDef>();
+            List<ExceptionSubject> rawSocketExceptions = new List<ExceptionSubject>();
             List<RuleDef> rules = AssembleActiveRules(rawSocketExceptions);
 
             using (Transaction trx = WfpEngine.BeginTransaction())
@@ -318,22 +324,14 @@ namespace PKSoft
                     WfpEngine.RegisterSublayer(wfpSublayer);
                 }
 
-                // Add new rules
-                foreach (RuleDef r in rules)
-                {
-                    try
-                    {
-                        ConstructFilter(r);
-                    }
-                    catch { }
-                }
-
-                // Built-in protections
+                // Add standard protections
                 if (VisibleState.Mode != FirewallMode.Disabled)
                 {
                     InstallPortScanProtection();
-                    InstallRawSocketFilters(rawSocketExceptions);
+                    InstallRawSocketBlocks();
                 }
+
+                InstallRules(rules, rawSocketExceptions, false);
 
                 trx.Commit();
             }
@@ -561,16 +559,16 @@ namespace PKSoft
             InstallWfpFilter(f);
         }
 
-        private void InstallRawSocketFilters(List<RuleDef> rawSocketExceptions)
+        private void InstallRawSocketBlocks()
         {
-            InstallRawSocketFilters(rawSocketExceptions, LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4);
-            InstallRawSocketFilters(rawSocketExceptions, LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6);
+            InstallRawSocketBlocks(LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4);
+            InstallRawSocketBlocks(LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6);
         }
 
-        private void InstallRawSocketFilters(List<RuleDef> rawSocketExceptions, LayerKeyEnum layer)
+        private void InstallRawSocketBlocks(LayerKeyEnum layer)
         {
             Filter f = new Filter(
-                "Raw socket filter",
+                "Raw socket block",
                 string.Empty,
                 ProviderKey,
                 FilterActions.FWP_ACTION_BLOCK,
@@ -581,12 +579,21 @@ namespace PKSoft
             f.Conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_RAW_ENDPOINT, FieldMatchType.FWP_MATCH_FLAGS_ANY_SET));
 
             InstallWfpFilter(f);
+        }
 
+        private void InstallRawSocketPermits(List<ExceptionSubject> rawSocketExceptions)
+        {
+            InstallRawSocketPermits(rawSocketExceptions, LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4);
+            InstallRawSocketPermits(rawSocketExceptions, LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6);
+        }
+
+        private void InstallRawSocketPermits(List<ExceptionSubject> rawSocketExceptions, LayerKeyEnum layer)
+        {
             foreach (var subj in rawSocketExceptions)
             {
                 try
                 {
-                    f = new Filter(
+                    Filter f = new Filter(
                         "Raw socket permit",
                         string.Empty,
                         ProviderKey,
@@ -595,10 +602,11 @@ namespace PKSoft
                     );
                     f.LayerKey = GetLayerKey(layer);
                     f.SublayerKey = GetSublayerKey(layer);
-                    if (!string.IsNullOrEmpty(subj.ServiceName))
-                        f.Conditions.Add(new ServiceNameFilterCondition(subj.ServiceName));
-                    if (!string.IsNullOrEmpty(subj.Application))
-                        f.Conditions.Add(new AppIdFilterCondition(subj.Application));
+
+                    if ((subj is ExecutableSubject exe) && !string.IsNullOrEmpty(exe.ExecutablePath))
+                        f.Conditions.Add(new AppIdFilterCondition(exe.ExecutablePath));
+                    if ((subj is ServiceSubject srv) && !string.IsNullOrEmpty(srv.ServiceName))
+                        f.Conditions.Add(new ServiceNameFilterCondition(srv.ServiceName));
 
                     InstallWfpFilter(f);
                 }
@@ -728,7 +736,7 @@ namespace PKSoft
             return exceptions;
         }
 
-        private void GetRulesForException(FirewallExceptionV3 ex, List<RuleDef> results, ulong permitWeight, ulong blockWeight)
+        private void GetRulesForException(FirewallExceptionV3 ex, List<RuleDef> results, List<ExceptionSubject> rawSocketExceptions, ulong permitWeight, ulong blockWeight)
         {
             if (ex.Id == Guid.Empty)
             {
@@ -755,6 +763,13 @@ namespace PKSoft
                         if ((ex.Policy as UnrestrictedPolicy).LocalNetworkOnly)
                             def.RemoteAddresses = "LocalSubnet";
                         ExpandRule(def, results);
+
+                        if (rawSocketExceptions != null)
+                        {
+                            // Make exception for promiscuous mode
+                            rawSocketExceptions.Add(ex.Subject);
+                        }
+
                         break;
                     }
                 case PolicyType.TcpUdpOnly:
@@ -1211,6 +1226,21 @@ namespace PKSoft
                         VisibleState.Locked = ServiceLocker.Locked;
                         return new TwMessage(resp, ActiveConfig.Service, GlobalInstances.ServerChangeset, VisibleState);
                     }
+                case MessageType.ADD_EXCEPTION:
+                    {
+                        List<RuleDef> rules = new List<RuleDef>();
+                        List<ExceptionSubject> rawSocketExceptions = new List<ExceptionSubject>();
+                        List<FirewallExceptionV3> exceptions = req.Arguments[0] as List<FirewallExceptionV3>;
+
+                        foreach (var ex in exceptions)
+                        {
+                            GetRulesForException(ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
+                        }
+
+                        InstallRules(rules, rawSocketExceptions, true);
+
+                        return new TwMessage(MessageType.RESPONSE_OK);
+                    }
                 case MessageType.GET_SETTINGS:
                     {
                         // Get changeset of client
@@ -1417,9 +1447,6 @@ namespace PKSoft
             NetworkChange.NetworkAddressChanged += NetworkChange_NetworkAddressChanged;
             NetworkChange.NetworkAvailabilityChanged += NetworkChange_NetworkAvailabilityChanged;
 
-            ProcTree = new ProcessRuleTreeWatcher<ProcessRule>();
-            ProcTree.ProcessCreated += ProcTree_ProcessCreated;
-
             // Make sure event collection is enabled
             using (WfpEngine = new Engine("TinyWall Option Session", "", FWPM_SESSION_FLAGS.None, 5000))
             {
@@ -1454,16 +1481,6 @@ namespace PKSoft
                     finally { }
                 }
             }
-        }
-
-        private void ProcTree_ProcessCreated(uint pid)
-        {
-            var tree = ProcTree.GetTree();
-            while(true)
-            {
-                string path = tree[pid].Path;
-            }
-            //ProcTree[pid].Details.State = 
         }
 
         private void NetworkChange_NetworkAvailabilityChanged(object sender, NetworkAvailabilityEventArgs e)
@@ -1589,6 +1606,11 @@ namespace PKSoft
                 // Notify that we need to be unlocked first
                 return new TwMessage(MessageType.RESPONSE_LOCKED, 1);
             }
+            if (((int)req.Type > 4095))
+            {
+                // We cannot receive this from the client
+                return new TwMessage(MessageType.RESPONSE_ERROR);
+            }
             else
             {
                 LastControllerCommandTime = DateTime.Now;
@@ -1711,9 +1733,6 @@ namespace PKSoft
             CommitLearnedRules();
             ActiveConfig.Service.Save(ConfigSavePath);
             FileLocker.UnlockAll();
-
-            ProcTree?.Dispose();
-            ProcTree = null;
 
             RestoreMpsSvc();
 
