@@ -19,7 +19,6 @@ namespace PKSoft
                 typeof(TWControllerMessages),
                 typeof(FirewallMode),
                 typeof(ServiceSettings21),
-                typeof(object),
                 typeof(BlockListSettings),
                 typeof(List<string>),
                 typeof(FirewallException),
@@ -33,6 +32,12 @@ namespace PKSoft
                 typeof(EventLogEvent),
                 typeof(PKSoft.WindowsFirewall.Protocol),
                 typeof(PKSoft.WindowsFirewall.RuleDirection),
+                typeof(UpdateDescriptor),
+                typeof(UpdateModule),
+                typeof(string),
+                typeof(bool),
+                typeof(object),
+                typeof(int),
             };
             private static readonly HashSet<Type> AllowedTypes = new HashSet<Type>(AllowedTypesArr);
 
