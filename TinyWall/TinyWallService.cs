@@ -56,6 +56,7 @@ namespace PKSoft
         private HashSet<string> UserSubjectExes = new HashSet<string>();        // All executables with pre-configured rules.
         private Dictionary<string, FirewallExceptionV3> ChildInheritance = new Dictionary<string, FirewallExceptionV3>();
         private Dictionary<string, HashSet<string>> ChildInheritedSubjectExes = new Dictionary<string, HashSet<string>>();   // Executables that have been already auto-whitelisted due to inheritance
+        private ThreadThrottler FirewallThreadThrottler;
 
         private bool RunService = false;
         private ServerState VisibleState = null;
@@ -1324,6 +1325,7 @@ namespace PKSoft
                         }
 
                         InstallRules(rules, rawSocketExceptions, true);
+                        FirewallThreadThrottler.Release();
 
                         return new TwMessage(MessageType.RESPONSE_OK);
                     }
@@ -1584,58 +1586,62 @@ namespace PKSoft
 
         private void ProcessStartWatcher_EventArrived(object sender, EventArrivedEventArgs e)
         {
-            uint pid = (uint)(e.NewEvent["ProcessID"]);
-            string path = ProcessManager.GetProcessPath(unchecked((int)pid))?.ToLowerInvariant();
-            List<FirewallExceptionV3> newExceptions = new List<FirewallExceptionV3>();
-
-            // Skip if we have no path
-            if (string.IsNullOrEmpty(path))
-                return;
-
-            lock (InheritanceGuard)
+            using (var throttler = new ThreadThrottler(ThreadPriority.Highest, true))
             {
-                // Skip if we have a user-defined rule for this path
-                if (UserSubjectExes.Contains(path))
+                uint pid = (uint)(e.NewEvent["ProcessID"]);
+                string path = ProcessManager.GetProcessPath(unchecked((int)pid))?.ToLowerInvariant();
+                List<FirewallExceptionV3> newExceptions = new List<FirewallExceptionV3>();
+
+                // Skip if we have no path
+                if (string.IsNullOrEmpty(path))
                     return;
 
-                // Start walking up the process tree
-                for (int parentPid = unchecked((int)pid); ;)
+                lock (InheritanceGuard)
                 {
-                    try { parentPid = ProcessManager.GetParentProcess(parentPid); }
-                    catch
+                    // Skip if we have a user-defined rule for this path
+                    if (UserSubjectExes.Contains(path))
+                        return;
+
+                    // Start walking up the process tree
+                    for (int parentPid = unchecked((int)pid); ;)
                     {
-                        // We reached top of process tree (with non-existent paretn)
-                        break;
-                    }
+                        try { parentPid = ProcessManager.GetParentProcess(parentPid); }
+                        catch
+                        {
+                            // We reached top of process tree (with non-existent paretn)
+                            break;
+                        }
 
-                    if (parentPid == 0)
-                        // We reached top of process tree (with idle process)
-                        break;
+                        if (parentPid == 0)
+                            // We reached top of process tree (with idle process)
+                            break;
 
-                    string parentPath = ProcessManager.GetProcessPath(parentPid)?.ToLowerInvariant();
-                    if (string.IsNullOrEmpty(parentPath))
-                        continue;
+                        string parentPath = ProcessManager.GetProcessPath(parentPid)?.ToLowerInvariant();
+                        if (string.IsNullOrEmpty(parentPath))
+                            continue;
 
-                    // Skip if we have already processed this parent-child combination
-                    if (ChildInheritedSubjectExes.ContainsKey(path) && ChildInheritedSubjectExes[path].Contains(parentPath))
-                        break;
+                        // Skip if we have already processed this parent-child combination
+                        if (ChildInheritedSubjectExes.ContainsKey(path) && ChildInheritedSubjectExes[path].Contains(parentPath))
+                            break;
 
-                    if (ChildInheritance.TryGetValue(parentPath, out FirewallExceptionV3 userEx))
-                    {
-                        FirewallExceptionV3 ex = new FirewallExceptionV3(new ExecutableSubject(path), userEx.Policy);
-                        newExceptions.Add(ex);
+                        if (ChildInheritance.TryGetValue(parentPath, out FirewallExceptionV3 userEx))
+                        {
+                            FirewallExceptionV3 ex = new FirewallExceptionV3(new ExecutableSubject(path), userEx.Policy);
+                            newExceptions.Add(ex);
 
-                        if (!ChildInheritedSubjectExes.ContainsKey(path))
-                            ChildInheritedSubjectExes.Add(path, new HashSet<string>());
-                        ChildInheritedSubjectExes[path].Add(parentPath);
-                        break;
+                            if (!ChildInheritedSubjectExes.ContainsKey(path))
+                                ChildInheritedSubjectExes.Add(path, new HashSet<string>());
+                            ChildInheritedSubjectExes[path].Add(parentPath);
+                            break;
+                        }
                     }
                 }
-            }
 
-            if (newExceptions.Count != 0)
-            {
-                Q.Enqueue(new TwMessage(MessageType.ADD_TEMPORARY_EXCEPTION, newExceptions), null);
+                if (newExceptions.Count != 0)
+                {
+                    FirewallThreadThrottler.Request();
+                    Q.Enqueue(new TwMessage(MessageType.ADD_TEMPORARY_EXCEPTION, newExceptions), null);
+                }
             }
         }
 
@@ -1820,8 +1826,8 @@ namespace PKSoft
 
                 // Start thread that is going to control Windows Firewall
                 FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod));
+                FirewallThreadThrottler = new ThreadThrottler(FirewallWorkerThread, ThreadPriority.Highest);
                 FirewallWorkerThread.IsBackground = true;
-                FirewallWorkerThread.Priority = ThreadPriority.AboveNormal;
                 FirewallWorkerThread.Start();
 
                 // Fire up pipe
@@ -1892,6 +1898,8 @@ namespace PKSoft
             FileLocker.UnlockAll();
 
             RestoreMpsSvc();
+
+            FirewallThreadThrottler?.Dispose();
 
 #if !DEBUG
             TinyWallDoctor.EnsureHealth();

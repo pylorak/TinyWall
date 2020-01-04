@@ -12,6 +12,7 @@ x.x.x - Major update (not yet released)
     - Multicast support for local network firewall rules
     - Support for machine-global exceptions
     - Increased protection against code-identity spoofing attacks
+    - Ability to automatically apply rules to child-processes
 - Installer improvements
     - Install location can be customized
     - Warning about remote installations during setup

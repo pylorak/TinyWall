@@ -114,6 +114,7 @@
     <Compile Include="Pbkdf2.cs" />
     <Compile Include="Privilege.cs" />
     <Compile Include="ProcessManager.cs" />
+    <Compile Include="ThreadThrottler.cs" />
     <Compile Include="TinyWallController.cs" />
     <Compile Include="CmdLineArgs.cs" />
     <Compile Include="ConnectionsForm.cs">
