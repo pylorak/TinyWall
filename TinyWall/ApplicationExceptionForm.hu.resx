@@ -189,7 +189,7 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Tűzfal kivételek megadása/módosítása - TinyWall</value>
   </data>
-  <data name="chkApplyToFolder.Text" xml:space="preserve">
-    <value>Alkalmazás az egész könyvtárra</value>
+  <data name="chkInheritToChildren.Text" xml:space="preserve">
+    <value>Szabály alkalmazása alprogramokra</value>
   </data>
 </root>

@@ -44,7 +44,6 @@ namespace PKSoft
         private Timer MinuteTimer;
         private DateTime LastControllerCommandTime = DateTime.Now;
         private DateTime LastRuleReloadTime = DateTime.Now;
-        private DateTime LastFwLogReadTime = DateTime.Now;
         private CircularBuffer<FirewallLogEntry> FirewallLogEntries = new CircularBuffer<FirewallLogEntry>(500);
         private ServiceSettings ServiceLocker = null;
 
@@ -55,8 +54,6 @@ namespace PKSoft
         // Context for auto rule inheritance
         private object InheritanceGuard = new object();
         private HashSet<string> UserSubjectExes = new HashSet<string>();        // All executables with pre-configured rules.
-        private Dictionary<string, FirewallExceptionV3> FolderInheritance = new Dictionary<string, FirewallExceptionV3>();
-        private HashSet<string> FolderInheritedSubjectExes = new HashSet<string>();   // Executables that have been already auto-whitelisted due to inheritance
         private Dictionary<string, FirewallExceptionV3> ChildInheritance = new Dictionary<string, FirewallExceptionV3>();
         private Dictionary<string, HashSet<string>> ChildInheritedSubjectExes = new Dictionary<string, HashSet<string>>();   // Executables that have been already auto-whitelisted due to inheritance
 
@@ -268,10 +265,9 @@ namespace PKSoft
                     {
                         string exePath = exe.ExecutablePath.ToLowerInvariant();
                         UserSubjectExes.Add(exePath);
-                        if (ex.ApplyToFolder)
+                        if (ex.ChildProcessesInherit)
                         {
                             ChildInheritance.Add(exePath, ex);
-                            FolderInheritance.Add(Path.GetDirectoryName(exePath), ex);
                         }
                     }
 
@@ -337,39 +333,6 @@ namespace PKSoft
                         }
                     }
                 }   // if (ChildInheritance ...
-
-                if (FolderInheritance.Count != 0)
-                {
-                    Process[] processes = Process.GetProcesses();
-                    foreach (Process p in processes)
-                    {
-                        try
-                        {
-                            string procPath = Utils.GetPathOfProcess(p.Id).ToLowerInvariant();
-                            p.Dispose();
-
-                            // Skip if we have no path
-                            if (string.IsNullOrEmpty(procPath))
-                                continue;
-
-                            // Skip if we have a user-defined rule for this path
-                            if (UserSubjectExes.Contains(procPath))
-                                continue;
-
-                            foreach (var pair in FolderInheritance)
-                            {
-                                if (procPath.StartsWith(pair.Key))
-                                {
-                                    FirewallExceptionV3 ex = Utils.DeepClone(pair.Value);
-                                    ex.Subject = new ExecutableSubject(procPath);
-                                    GetRulesForException(ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
-                                    FolderInheritedSubjectExes.Add(procPath); // remember this path so we won't add it again when a process starts
-                                }
-                            }
-                        }
-                        catch { }
-                    }
-                }   // if (FolderInheritance ...
             }
 
             return rules;
@@ -415,8 +378,6 @@ namespace PKSoft
             lock (InheritanceGuard)
             {
                 UserSubjectExes.Clear();
-                FolderInheritance.Clear();
-                FolderInheritedSubjectExes.Clear();
                 ChildInheritance.Clear();
                 ChildInheritedSubjectExes.Clear();
                 rules = AssembleActiveRules(rawSocketExceptions);
@@ -1633,26 +1594,10 @@ namespace PKSoft
 
             lock (InheritanceGuard)
             {
-                // Skip if we have already added this file
-                if (FolderInheritedSubjectExes.Contains(path))
-                    return;
-
                 // Skip if we have a user-defined rule for this path
                 if (UserSubjectExes.Contains(path))
                     return;
 
-                // Remember this path so we won't process it again when a process starts
-                FolderInheritedSubjectExes.Add(path);
-
-                foreach (var pair in FolderInheritance)
-                {
-                    if (path.StartsWith(pair.Key))
-                    {
-                        FirewallExceptionV3 ex = new FirewallExceptionV3(new ExecutableSubject(path), pair.Value.Policy);
-                        newExceptions.Add(ex);
-                    }
-                }
-                
                 // Start walking up the process tree
                 for (int parentPid = unchecked((int)pid); ;)
                 {

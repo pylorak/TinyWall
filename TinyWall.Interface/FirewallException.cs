@@ -37,7 +37,7 @@ namespace TinyWall.Interface
         public ExceptionPolicy Policy { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        public bool ApplyToFolder { get; set; }
+        public bool ChildProcessesInherit { get; set; }
 
         public FirewallExceptionV3()
         {

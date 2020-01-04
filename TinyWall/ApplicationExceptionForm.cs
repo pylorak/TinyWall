@@ -156,7 +156,7 @@ namespace PKSoft
 
             // Update rule/policy fields
 
-            chkApplyToFolder.Checked = TmpExceptionSettings[0].ApplyToFolder;
+            chkInheritToChildren.Checked = TmpExceptionSettings[0].ChildProcessesInherit;
 
             switch (TmpExceptionSettings[0].Policy.PolicyType)
             {
@@ -280,7 +280,7 @@ namespace PKSoft
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            TmpExceptionSettings[0].ApplyToFolder = chkApplyToFolder.Checked;
+            TmpExceptionSettings[0].ChildProcessesInherit = chkInheritToChildren.Checked;
 
             if (radBlock.Checked)
             {

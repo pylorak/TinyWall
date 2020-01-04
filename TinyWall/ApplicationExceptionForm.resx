@@ -1026,37 +1026,37 @@
   <data name="&gt;&gt;panel3.ZOrder" xml:space="preserve">
     <value>11</value>
   </data>
-  <data name="chkApplyToFolder.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+  <data name="chkInheritToChildren.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
   </data>
-  <data name="chkApplyToFolder.AutoSize" type="System.Boolean, mscorlib">
+  <data name="chkInheritToChildren.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="chkApplyToFolder.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+  <data name="chkInheritToChildren.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="chkApplyToFolder.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="chkInheritToChildren.Location" type="System.Drawing.Point, System.Drawing">
     <value>22, 222</value>
   </data>
-  <data name="chkApplyToFolder.Size" type="System.Drawing.Size, System.Drawing">
-    <value>177, 17</value>
+  <data name="chkInheritToChildren.Size" type="System.Drawing.Size, System.Drawing">
+    <value>124, 17</value>
   </data>
-  <data name="chkApplyToFolder.TabIndex" type="System.Int32, mscorlib">
+  <data name="chkInheritToChildren.TabIndex" type="System.Int32, mscorlib">
     <value>45</value>
   </data>
-  <data name="chkApplyToFolder.Text" xml:space="preserve">
-    <value>Apply to whole folder</value>
+  <data name="chkInheritToChildren.Text" xml:space="preserve">
+    <value>Apply same rules to child processes</value>
   </data>
-  <data name="&gt;&gt;chkApplyToFolder.Name" xml:space="preserve">
-    <value>chkApplyToFolder</value>
+  <data name="&gt;&gt;chkInheritToChildren.Name" xml:space="preserve">
+    <value>chkInheritToChildren</value>
   </data>
-  <data name="&gt;&gt;chkApplyToFolder.Type" xml:space="preserve">
+  <data name="&gt;&gt;chkInheritToChildren.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;chkApplyToFolder.Parent" xml:space="preserve">
+  <data name="&gt;&gt;chkInheritToChildren.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;chkApplyToFolder.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;chkInheritToChildren.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -1067,9 +1067,6 @@
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>534, 579</value>
-  </data>
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Add/Modify Firewall Exception - TinyWall</value>
