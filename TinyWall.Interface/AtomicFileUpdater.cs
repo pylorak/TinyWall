@@ -1,9 +1,13 @@
 ﻿using System;
 using System.IO;
+using TinyWall.Interface.Internal;
+
 namespace TinyWall.Interface
 {
-    public class AtomicFileUpdater : TinyWall.Interface.Internal.Disposable
+    public class AtomicFileUpdater : Disposable
     {
+        private bool disposed = false;
+
         public AtomicFileUpdater(string targetFile)
         {
             // File.Replace needs the target and temporary files to be on the same volume.
@@ -43,6 +47,9 @@ namespace TinyWall.Interface
 
         protected override void Dispose(bool disposing)
         {
+            if (disposed)
+                return;
+
             if (disposing)
             {
                 try
@@ -51,6 +58,9 @@ namespace TinyWall.Interface
                 }
                 catch { }
             }
+
+            disposed = true;
+            base.Dispose(disposing);
         }
     }
 }

@@ -14,6 +14,7 @@ namespace PKSoft
     {
         private static readonly string PipeName = "TinyWallController";
 
+        private bool disposed = false;
         private Thread m_PipeWorkerThread;
         private PipeDataReceived m_RcvCallback;
         private bool m_Run = true;
@@ -21,6 +22,9 @@ namespace PKSoft
 
         protected override void Dispose(bool disposing)
         {
+            if (disposed)
+                return;
+
             m_Run = false;
 
             // Create a dummy connection so that worker thread gets out of the infinite WaitForConnection()
@@ -40,7 +44,7 @@ namespace PKSoft
             // Call Dispose on your base class.
 
             m_PipeWorkerThread = null;
-            m_RcvCallback = null;
+            disposed = true;
             base.Dispose(disposing);
         }
 

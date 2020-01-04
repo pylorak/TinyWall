@@ -6,6 +6,7 @@ namespace TinyWall.Interface
 {
     public sealed class Controller : Disposable
     {
+        private bool disposed = false;
         private PipeClientEndpoint Endpoint;
 
         public Controller(string serverEndpoint)
@@ -15,13 +16,16 @@ namespace TinyWall.Interface
 
         protected override void Dispose(bool disposing)
         {
+            if (disposed)
+                return;
+
             if (disposing)
             {
                 Endpoint.Dispose();
             }
 
             Endpoint = null;
-
+            disposed = true;
             base.Dispose(disposing);
         }
 

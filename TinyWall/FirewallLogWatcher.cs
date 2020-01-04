@@ -10,6 +10,7 @@ namespace PKSoft
 {
     internal class FirewallLogWatcher : Disposable
     {
+        private bool disposed = false;
         //private readonly string FIREWALLLOG_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"LogFiles\Firewall\pfirewall.log");
         private EventLogWatcher LogWatcher;
 
@@ -18,6 +19,9 @@ namespace PKSoft
 
         protected override void Dispose(bool disposing)
         {
+            if (disposed)
+                return; 
+            
             if (disposing)
             {
                 // Release managed resources
@@ -30,8 +34,14 @@ namespace PKSoft
             // Call Dispose on your base class.
 
             DisableLogging();
-            LogWatcher = null;
+
+            disposed = true;
             base.Dispose(disposing);
+        }
+
+        ~FirewallLogWatcher()
+        {
+            Dispose(false);
         }
 
         internal FirewallLogWatcher()

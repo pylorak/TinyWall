@@ -25,6 +25,7 @@ namespace PKSoft
             internal static extern int UnregisterHotKey(IntPtr hWnd, int id);
         }
 
+		private bool disposed = false;
 		private static int currentID;
 		private const int maximumID = 0xBFFF;
 		
@@ -47,6 +48,9 @@ namespace PKSoft
 
         protected override void Dispose(bool disposing)
         {
+			if (disposed)
+				return;
+
             if (disposing)
             {
                 // Release managed resources
@@ -56,11 +60,18 @@ namespace PKSoft
             // Set large fields to null.
             this.Unregister();
 
-            // Call Dispose on your base class.
+			// Call Dispose on your base class.
+			disposed = true;
             base.Dispose(disposing);
         }
-        
-        internal Hotkey(Keys keyCode, bool shift, bool control, bool alt, bool windows)
+
+		~Hotkey()
+		{
+			Dispose(false);
+		}
+
+
+		internal Hotkey(Keys keyCode, bool shift, bool control, bool alt, bool windows)
 		{
 			// Assign properties
 			this.KeyCode = keyCode;

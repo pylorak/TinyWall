@@ -219,6 +219,7 @@ namespace ScmWrapper
         private const uint SERVICE_NO_CHANGE = 0xFFFFFFFF;
         private const uint ERROR_INSUFFICIENT_BUFFER = 122;
 
+        private bool disposed = false;
         private SafeServiceHandle SCManager;
 
         internal bool SetServiceState(string serviceName, IntPtr privateHndl, State state, int exitCode)
@@ -525,6 +526,9 @@ namespace ScmWrapper
 
         protected override void Dispose(bool disposing)
         {
+            if (disposed)
+                return;
+
             if (disposing)
             {
                 // Release managed resources
@@ -537,6 +541,7 @@ namespace ScmWrapper
             // Call Dispose on your base class.
 
             SCManager = null;
+            disposed = true;
             base.Dispose(disposing);
         }
     }

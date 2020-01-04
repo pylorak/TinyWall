@@ -5,6 +5,7 @@ namespace PKSoft
 {
     internal class ThreadBarrier : Disposable
     {
+        private bool disposed = false;
         private ManualResetEvent BarrierEvent;
         private int Count;
 
@@ -25,6 +26,9 @@ namespace PKSoft
 
         protected override void Dispose(bool disposing)
         {
+            if (disposed)
+                return;
+
             if (disposing)
             {
                 // Release managed resources
@@ -37,6 +41,7 @@ namespace PKSoft
             // Call Dispose on your base class.
 
             BarrierEvent = null;
+            disposed = true;
             base.Dispose(disposing);
         }
     }

@@ -9,12 +9,16 @@ namespace TinyWall.Interface.Internal
     {
         private static readonly string PipeName = "TinyWallController";
 
+        private bool disposed = false;
         private Thread m_PipeWorkerThread;
         private BoundedMessageQueue m_Queue = new BoundedMessageQueue();
         private bool m_Run = true;
 
         protected override void Dispose(bool disposing)
         {
+            if (disposed)
+                return;
+
             m_Run = false;
 
             if (disposing)
@@ -26,6 +30,7 @@ namespace TinyWall.Interface.Internal
 
             m_PipeWorkerThread = null;
             m_Queue = null;
+            disposed = true;
             base.Dispose(disposing);
         }
 

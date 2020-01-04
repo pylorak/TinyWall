@@ -5,6 +5,7 @@ namespace TinyWall.Interface.Internal
 {
     public sealed class BoundedMessageQueue : Disposable
     {
+        private bool disposed = false;
         private List<TwMessage> MsgQueue = new List<TwMessage>();
         private List<Future<TwMessage>> FutureQueue = new List<Future<TwMessage>>();
         private Semaphore BoundSema = new Semaphore(0, 64);
@@ -12,6 +13,9 @@ namespace TinyWall.Interface.Internal
 
         protected override void Dispose(bool disposing)
         {
+            if (disposed)
+                return;
+
             if (disposing)
             {
                 BoundSema.Close();
@@ -20,7 +24,7 @@ namespace TinyWall.Interface.Internal
             MsgQueue = null;
             FutureQueue = null;
             BoundSema = null;
-
+            disposed = true;
             base.Dispose(disposing);
         }
 

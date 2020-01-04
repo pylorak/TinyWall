@@ -55,6 +55,8 @@ namespace PKSoft
 
         internal delegate void MouseHookLButtonDown(int x, int y);
         internal event MouseHookLButtonDown MouseLButtonDown;
+
+        private bool disposed = false;
         private NativeMethods.LowLevelMouseProc _proc;
         private static IntPtr _hookID = IntPtr.Zero;
 
@@ -89,6 +91,9 @@ namespace PKSoft
 
         protected override void Dispose(bool disposing)
         {
+            if (disposed)
+                return;
+
             if (disposing)
             {
                 // Release managed resources
@@ -102,7 +107,9 @@ namespace PKSoft
             {
                 NativeMethods.UnhookWindowsHookEx(_hookID);
                 _hookID = IntPtr.Zero;
-            } 
+            }
+
+            disposed = true;
             base.Dispose(disposing);
         }
     }
