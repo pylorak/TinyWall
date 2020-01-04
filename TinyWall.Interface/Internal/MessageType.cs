@@ -37,6 +37,6 @@
         DATABASE_UPDATED,
 
         // Service-to-service only (>4095)
-        ADD_EXCEPTION = 4096
+        ADD_TEMPORARY_EXCEPTION = 4096
     }
 }

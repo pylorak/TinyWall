@@ -113,7 +113,7 @@
     <Compile Include="IpAddrMask.cs" />
     <Compile Include="Pbkdf2.cs" />
     <Compile Include="Privilege.cs" />
-    <Compile Include="ProcessRuleTreeWatcher.cs" />
+    <Compile Include="ProcessManager.cs" />
     <Compile Include="TinyWallController.cs" />
     <Compile Include="CmdLineArgs.cs" />
     <Compile Include="ConnectionsForm.cs">

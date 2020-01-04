@@ -43,6 +43,7 @@ namespace PKSoft
         private Thread FirewallWorkerThread;
         private Timer MinuteTimer;
         private DateTime LastControllerCommandTime = DateTime.Now;
+        private DateTime LastRuleReloadTime = DateTime.Now;
         private DateTime LastFwLogReadTime = DateTime.Now;
         private CircularBuffer<FirewallLogEntry> FirewallLogEntries = new CircularBuffer<FirewallLogEntry>(500);
         private ServiceSettings ServiceLocker = null;
@@ -51,11 +52,13 @@ namespace PKSoft
         FirewallLogWatcher LogWatcher;
         List<FirewallExceptionV3> LearningNewExceptions = new List<FirewallExceptionV3>();
 
-        // Context for auto folder-rule inheritance
-        private object FolderInheritanceGuard = new object();
-        private Dictionary<string, FirewallExceptionV3> FolderInheritance = new Dictionary<string, FirewallExceptionV3>();
+        // Context for auto rule inheritance
+        private object InheritanceGuard = new object();
         private HashSet<string> UserSubjectExes = new HashSet<string>();        // All executables with pre-configured rules.
-        private HashSet<string> InheritedSubjectExes = new HashSet<string>();   // Executables that have been already auto-whitelisted due to inheritance
+        private Dictionary<string, FirewallExceptionV3> FolderInheritance = new Dictionary<string, FirewallExceptionV3>();
+        private HashSet<string> FolderInheritedSubjectExes = new HashSet<string>();   // Executables that have been already auto-whitelisted due to inheritance
+        private Dictionary<string, FirewallExceptionV3> ChildInheritance = new Dictionary<string, FirewallExceptionV3>();
+        private Dictionary<string, HashSet<string>> ChildInheritedSubjectExes = new Dictionary<string, HashSet<string>>();   // Executables that have been already auto-whitelisted due to inheritance
 
         private bool RunService = false;
         private ServerState VisibleState = null;
@@ -261,17 +264,79 @@ namespace PKSoft
                 // Convert exceptions to rules
                 foreach (FirewallExceptionV3 ex in UserExceptions)
                 {
-                    GetRulesForException(ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
-
                     if (ex.Subject is ExecutableSubject exe)
                     {
-                        UserSubjectExes.Add(exe.ExecutablePath);
+                        string exePath = exe.ExecutablePath.ToLowerInvariant();
+                        UserSubjectExes.Add(exePath);
                         if (ex.ApplyToFolder)
                         {
-                            FolderInheritance.Add(Path.GetDirectoryName(exe.ExecutablePath), ex);
+                            ChildInheritance.Add(exePath, ex);
+                            FolderInheritance.Add(Path.GetDirectoryName(exePath), ex);
                         }
                     }
+
+                    GetRulesForException(ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
                 }
+
+                if (ChildInheritance.Count != 0)
+                {
+                    Dictionary<int, ProcessManager.PROCESSENTRY32> procTree = new Dictionary<int, ProcessManager.PROCESSENTRY32>();
+                    foreach (var p in ProcessManager.CreateToolhelp32Snapshot())
+                    {
+                        var p2 = p;
+                        try
+                        {
+                            p2.szExeFile = ProcessManager.GetProcessPath(p.th32ProcessID).ToLowerInvariant();
+                        }
+                        catch { }
+                        procTree.Add(p2.th32ProcessID, p2);
+                    }
+
+                    foreach (var pair in procTree)
+                    {
+                        string procPath = pair.Value.szExeFile;
+
+                        // Skip if we have no path
+                        if (string.IsNullOrEmpty(procPath))
+                            continue;
+
+                        // Skip if we have a user-defined rule for this path
+                        if (UserSubjectExes.Contains(procPath))
+                            continue;
+
+                        // Start walking up the process tree
+                        for (ProcessManager.PROCESSENTRY32 parentEntry = procTree[pair.Key]; ;)
+                        {
+                            if (procTree.ContainsKey(parentEntry.th32ParentProcessID))
+                                parentEntry = procTree[parentEntry.th32ParentProcessID];
+                            else
+                                // We reached top of process tree (with non-existing parent)
+                                break;
+
+                            if (parentEntry.th32ProcessID == 0)
+                                // We reached top of process tree (with idle process)
+                                break;
+
+                            if (string.IsNullOrEmpty(parentEntry.szExeFile))
+                                continue;
+
+                            // Skip if we have already processed this parent-child combination
+                            if (ChildInheritedSubjectExes.ContainsKey(procPath) && ChildInheritedSubjectExes[procPath].Contains(parentEntry.szExeFile))
+                                break;
+
+                            if (ChildInheritance.TryGetValue(parentEntry.szExeFile, out FirewallExceptionV3 userEx))
+                            {
+                                FirewallExceptionV3 ex = Utils.DeepClone(userEx);
+                                ex.Subject = new ExecutableSubject(procPath);
+                                GetRulesForException(ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
+                                if (!ChildInheritedSubjectExes.ContainsKey(procPath))
+                                    ChildInheritedSubjectExes.Add(procPath, new HashSet<string>());
+                                ChildInheritedSubjectExes[procPath].Add(parentEntry.szExeFile);
+                                break;
+                            }
+                        }
+                    }
+                }   // if (ChildInheritance ...
 
                 if (FolderInheritance.Count != 0)
                 {
@@ -280,7 +345,7 @@ namespace PKSoft
                     {
                         try
                         {
-                            string procPath = Utils.GetPathOfProcess(p.Id);
+                            string procPath = Utils.GetPathOfProcess(p.Id).ToLowerInvariant();
                             p.Dispose();
 
                             // Skip if we have no path
@@ -298,14 +363,13 @@ namespace PKSoft
                                     FirewallExceptionV3 ex = Utils.DeepClone(pair.Value);
                                     ex.Subject = new ExecutableSubject(procPath);
                                     GetRulesForException(ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
-                                    InheritedSubjectExes.Add(procPath); // remember this path so we won't add it again when a process starts
+                                    FolderInheritedSubjectExes.Add(procPath); // remember this path so we won't add it again when a process starts
                                 }
                             }
                         }
                         catch { }
                     }
                 }   // if (FolderInheritance ...
-
             }
 
             return rules;
@@ -344,13 +408,17 @@ namespace PKSoft
 
         private void InstallFirewallRules()
         {
+            LastRuleReloadTime = DateTime.Now;
+
             List<RuleDef> rules;
             List<ExceptionSubject> rawSocketExceptions = new List<ExceptionSubject>();
-            lock (FolderInheritanceGuard)
+            lock (InheritanceGuard)
             {
-                FolderInheritance.Clear();
                 UserSubjectExes.Clear();
-                InheritedSubjectExes.Clear();
+                FolderInheritance.Clear();
+                FolderInheritedSubjectExes.Clear();
+                ChildInheritance.Clear();
+                ChildInheritedSubjectExes.Clear();
                 rules = AssembleActiveRules(rawSocketExceptions);
             }
 
@@ -1283,7 +1351,7 @@ namespace PKSoft
                         VisibleState.Locked = ServiceLocker.Locked;
                         return new TwMessage(resp, ActiveConfig.Service, GlobalInstances.ServerChangeset, VisibleState);
                     }
-                case MessageType.ADD_EXCEPTION:
+                case MessageType.ADD_TEMPORARY_EXCEPTION:
                     {
                         List<RuleDef> rules = new List<RuleDef>();
                         List<ExceptionSubject> rawSocketExceptions = new List<ExceptionSubject>();
@@ -1410,6 +1478,14 @@ namespace PKSoft
                             ActiveConfig.Service.ActiveProfile.AppExceptions = exs;
                             GlobalInstances.ServerChangeset = Guid.NewGuid();
                             ActiveConfig.Service.Save(ConfigSavePath);
+                            InstallFirewallRules();
+                        }
+
+                        // Periodically reload all rules.
+                        // This is needed to clear out temprary rules
+                        // added due to child-process rule inheritance.
+                        if (DateTime.Now - LastRuleReloadTime > TimeSpan.FromMinutes(30))
+                        {
                             InstallFirewallRules();
                         }
 
@@ -1548,17 +1624,17 @@ namespace PKSoft
         private void ProcessStartWatcher_EventArrived(object sender, EventArrivedEventArgs e)
         {
             uint pid = (uint)(e.NewEvent["ProcessID"]);
-            string path = Utils.GetPathOfProcess((int)pid);
+            string path = ProcessManager.GetProcessPath(unchecked((int)pid))?.ToLowerInvariant();
             List<FirewallExceptionV3> newExceptions = new List<FirewallExceptionV3>();
 
             // Skip if we have no path
             if (string.IsNullOrEmpty(path))
                 return;
 
-            lock (FolderInheritanceGuard)
+            lock (InheritanceGuard)
             {
                 // Skip if we have already added this file
-                if (InheritedSubjectExes.Contains(path))
+                if (FolderInheritedSubjectExes.Contains(path))
                     return;
 
                 // Skip if we have a user-defined rule for this path
@@ -1566,7 +1642,7 @@ namespace PKSoft
                     return;
 
                 // Remember this path so we won't process it again when a process starts
-                InheritedSubjectExes.Add(path);
+                FolderInheritedSubjectExes.Add(path);
 
                 foreach (var pair in FolderInheritance)
                 {
@@ -1576,11 +1652,45 @@ namespace PKSoft
                         newExceptions.Add(ex);
                     }
                 }
+                
+                // Start walking up the process tree
+                for (int parentPid = unchecked((int)pid); ;)
+                {
+                    try { parentPid = ProcessManager.GetParentProcess(parentPid); }
+                    catch
+                    {
+                        // We reached top of process tree (with non-existent paretn)
+                        break;
+                    }
+
+                    if (parentPid == 0)
+                        // We reached top of process tree (with idle process)
+                        break;
+
+                    string parentPath = ProcessManager.GetProcessPath(parentPid)?.ToLowerInvariant();
+                    if (string.IsNullOrEmpty(parentPath))
+                        continue;
+
+                    // Skip if we have already processed this parent-child combination
+                    if (ChildInheritedSubjectExes.ContainsKey(path) && ChildInheritedSubjectExes[path].Contains(parentPath))
+                        break;
+
+                    if (ChildInheritance.TryGetValue(parentPath, out FirewallExceptionV3 userEx))
+                    {
+                        FirewallExceptionV3 ex = new FirewallExceptionV3(new ExecutableSubject(path), userEx.Policy);
+                        newExceptions.Add(ex);
+
+                        if (!ChildInheritedSubjectExes.ContainsKey(path))
+                            ChildInheritedSubjectExes.Add(path, new HashSet<string>());
+                        ChildInheritedSubjectExes[path].Add(parentPath);
+                        break;
+                    }
+                }
             }
 
             if (newExceptions.Count != 0)
             {
-                Q.Enqueue(new TwMessage(MessageType.ADD_EXCEPTION, newExceptions), null);
+                Q.Enqueue(new TwMessage(MessageType.ADD_TEMPORARY_EXCEPTION, newExceptions), null);
             }
         }
 
