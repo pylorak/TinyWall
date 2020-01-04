@@ -50,7 +50,7 @@ namespace PKSoft
 
             using (Process server = Process.GetCurrentProcess())
             {
-                m_ServerFilePath = server.MainModule.FileName;
+                m_ServerFilePath = Utils.GetPathOfProcess(server.Id);
             }
 
             // Start thread that is going to do the actual communication

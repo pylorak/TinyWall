@@ -11,6 +11,7 @@ x.x.x - Major update (not yet released)
     - Connections window need not be open to register blocked applications
     - Multicast support for local network firewall rules
     - Support for machine-global exceptions
+    - Increased protection against code-identity spoofing attacks
 - Installer improvements
     - Install location can be customized
     - Warning about remote installations during setup
@@ -23,8 +24,8 @@ x.x.x - Major update (not yet released)
     - Processes window remembers size
     - Much improved loading time of the Processes window
     - Don't list duplicate processes in Processes window
-    - Improved handling of batch whitelisting from Connections list
-    - Improved handling of batch whitelisting from Processes list
+    - Improved batch whitelisting from Connections list
+    - Improved batch whitelisting from Processes list
     - Support F5-refresh in Connections window
     - Support Delete key for application exceptions list
     - Eliminate flicker when updating Connections and Application lists

@@ -77,8 +77,9 @@ namespace TinyWall.Interface
         public static bool Win81OrNewer { get; } = WinVerEqOrGr(6, 3);
         public static bool Win10OrNewer { get; } = WinVerEqOrGr(10, 0);
 
+        public static bool IsWow64Process { get; } = SafeNativeMethods.InternalCheckIsWow64();
         public static bool Is64BitProcess { get; } = (IntPtr.Size == 8);
-        public static bool Is64BitOs { get; } = Is64BitProcess || SafeNativeMethods.InternalCheckIsWow64();
+        public static bool Is64BitOs { get; } = Is64BitProcess || IsWow64Process;
         public static string WindowsVersionString { get; } = GetWindowsVersionString();
 
     }
