@@ -281,11 +281,9 @@ namespace PKSoft
                     foreach (var p in ProcessManager.CreateToolhelp32Snapshot())
                     {
                         var p2 = p;
-                        try
-                        {
-                            p2.szExeFile = ProcessManager.GetProcessPath(p.th32ProcessID).ToLowerInvariant();
-                        }
-                        catch { }
+                        string tmpPath = ProcessManager.GetProcessPath(p.th32ProcessID);
+                        if (!string.IsNullOrEmpty(tmpPath))
+                            p2.szExeFile = tmpPath.ToLowerInvariant();
                         procTree.Add(p2.th32ProcessID, p2);
                     }
 
@@ -1605,12 +1603,9 @@ namespace PKSoft
                     // Start walking up the process tree
                     for (int parentPid = unchecked((int)pid); ;)
                     {
-                        try { parentPid = ProcessManager.GetParentProcess(parentPid); }
-                        catch
-                        {
+                        if (!ProcessManager.GetParentProcess(parentPid, ref parentPid))
                             // We reached top of process tree (with non-existent paretn)
                             break;
-                        }
 
                         if (parentPid == 0)
                             // We reached top of process tree (with idle process)
@@ -1910,6 +1905,12 @@ namespace PKSoft
                 srvManager.SetServiceState(this.ServiceName, this.ServiceHandle, ScmWrapper.State.SERVICE_STOPPED, 0);
             }
             Process.GetCurrentProcess().Kill();
+#else
+            using (Transaction trx = WfpEngine.BeginTransaction())
+            {
+                DeleteWfpObjects(WfpEngine, true);
+                trx.Commit();
+            }
 #endif
         }
 

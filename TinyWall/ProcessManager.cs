@@ -160,16 +160,18 @@ namespace PKSoft
             }
         }
 
-        public static int GetParentProcess(int processId)
+        public static bool GetParentProcess(int processId, ref int parentPid)
         {
             using (SafeProcessHandle hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
             {
                 if (hProcess.IsInvalid)
-                    throw new Exception($"Cannot open process Id {processId}.");
+                    return false;
+                    //throw new Exception($"Cannot open process Id {processId}.");
 
                 if (VersionInfo.IsWow64Process)
                 {
-                    throw new NotSupportedException("This method is not supported in 32-bit process on a 64-bit OS.");
+                    return false;
+                    //throw new NotSupportedException("This method is not supported in 32-bit process on a 64-bit OS.");
                 }
                 else
                 {
@@ -178,7 +180,8 @@ namespace PKSoft
                     if (status < 0)
                         throw new Exception($"NTSTATUS: {status}");
 
-                    return pbi.InheritedFromUniqueProcessId.ToInt32();
+                    parentPid = pbi.InheritedFromUniqueProcessId.ToInt32();
+                    return true;
                 }
             }
         }
