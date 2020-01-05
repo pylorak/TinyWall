@@ -66,10 +66,6 @@ namespace PKSoft
                 int cchBuffer
             );
 
-            [DllImport("user32.dll", SetLastError = true)]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            internal static extern bool PostThreadMessage(int threadId, uint msg, UIntPtr wParam, IntPtr lParam);
-
             #region WNetGetUniversalName
             internal const int UNIVERSAL_NAME_INFO_LEVEL = 0x00000001;
             internal const int ERROR_MORE_DATA = 234;

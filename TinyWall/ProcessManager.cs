@@ -2,7 +2,7 @@
 using System;
 using System.Security;
 using System.Collections.Generic;
-using System.Security.Permissions;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using Microsoft.Win32;
@@ -71,6 +71,10 @@ namespace PKSoft
             internal static extern bool Process32First(SafeSnapshotHandle hSnapshot, ref PROCESSENTRY32 lppe);
             [DllImport("kernel32", SetLastError = true)]
             internal static extern bool Process32Next(SafeSnapshotHandle hSnapshot, ref PROCESSENTRY32 lppe);
+
+            [DllImport("user32.dll", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool PostThreadMessage(int threadId, uint msg, UIntPtr wParam, IntPtr lParam);
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -201,6 +205,27 @@ namespace PKSoft
                 {
                     yield return pe32;
                 } while (SafeNativeMethods.Process32Next(hSnapshot, ref pe32));
+            }
+        }
+
+        public static void TerminateProcess(Process p, int timeoutMs)
+        {
+            if (p.MainWindowHandle == IntPtr.Zero)
+            {
+                foreach (ProcessThread thread in p.Threads)
+                {
+                    const uint WM_QUIT = 0x0012;
+                    SafeNativeMethods.PostThreadMessage(thread.Id, WM_QUIT, UIntPtr.Zero, IntPtr.Zero);
+                }
+            }
+            else
+            {
+                p.CloseMainWindow();
+            }
+            if (!p.WaitForExit(timeoutMs))
+            {
+                p.Kill();
+                p.WaitForExit(1000);
             }
         }
     }

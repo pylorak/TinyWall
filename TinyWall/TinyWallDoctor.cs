@@ -180,23 +180,7 @@ namespace PKSoft
                     {
                         if (p.ProcessName.Contains("TinyWall") && (p.Id != ownPid))
                         {
-                            if (p.MainWindowHandle == IntPtr.Zero)
-                            {
-                                foreach (ProcessThread thread in p.Threads)
-                                {
-                                    const uint WM_QUIT = 0x0012;
-                                    Utils.SafeNativeMethods.PostThreadMessage(thread.Id, WM_QUIT, UIntPtr.Zero, IntPtr.Zero);
-                                }
-                            }
-                            else
-                            {
-                                p.CloseMainWindow();
-                            }
-                            if (!p.WaitForExit(2000))
-                            {
-                                p.Kill();
-                                p.WaitForExit(1000);
-                            }
+                            ProcessManager.TerminateProcess(p, 2000);
                         }
                     }
                     catch { }

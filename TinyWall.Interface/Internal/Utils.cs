@@ -17,18 +17,7 @@ namespace TinyWall.Interface.Internal
             return sb.ToString();
         }
 
-        private static string _ExecutablePath = null;
-        public static string ExecutablePath
-        {
-            get
-            {
-                if (_ExecutablePath == null)
-                {
-                    _ExecutablePath = System.Reflection.Assembly.GetEntryAssembly().Location;
-                }
-                return _ExecutablePath;
-            }
-        }
+        public static string ExecutablePath { get; } = System.Reflection.Assembly.GetEntryAssembly().Location;
 
         public static string RandomString(int length)
         {
