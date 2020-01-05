@@ -27,7 +27,7 @@ namespace PKSoft
         private List<string> GetFiles(string dir, string filter)
         {
             List<string> files = new List<string>();
-            string[] filePaths = Directory.GetFiles(dir, filter, SearchOption.AllDirectories);
+            string[] filePaths = Directory.GetFiles(dir, filter, SearchOption.TopDirectoryOnly);
             foreach (string filePath in filePaths)
             {
                 try
