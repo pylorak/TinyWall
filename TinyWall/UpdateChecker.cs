@@ -200,6 +200,7 @@ namespace PKSoft
             {
                 using (WebClient HTTPClient = new WebClient())
                 {
+                    HTTPClient.Headers.Add("TW-Version", Application.ProductVersion);
                     HTTPClient.DownloadFile(url, tmpFile);
                 }
 
