@@ -19,6 +19,7 @@ x.x.x - Major update (not yet released)
     - Slightly modernized installer look
     - Password protection of uninstaller if TinyWall is locked
     - Display version number in Welcome screen title
+    - Fix dangling tray icon after uninstall
 - GUI improvements
     - Manual app detection gives instant first results
     - Live update of traffic rate in tray menu

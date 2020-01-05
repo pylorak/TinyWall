@@ -361,17 +361,13 @@ namespace PKSoft
                     wh.WaitOne();
                 }
 
+                Tray.Visible = false;
                 components.Dispose();
             }
 
             base.Dispose(disposing);
         }
 
-        protected override void ExitThreadCore()
-        {
-            Tray.Visible = false; // should remove lingering tray icon!
-            base.ExitThreadCore();
-        }
         private void VerifyUpdates()
         {
             try
