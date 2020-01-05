@@ -189,8 +189,10 @@ namespace PKSoft
 
             // Remove persistent WFP objects
             using (var WfpEngine = new Engine("TinyWall Uninstall Session", "", FWPM_SESSION_FLAGS.None, 5000))
+            using (Transaction trx = WfpEngine.BeginTransaction())
             {
                 TinyWallService.DeleteWfpObjects(WfpEngine, true);
+                trx.Commit();
             }
 
             try

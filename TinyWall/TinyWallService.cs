@@ -1866,14 +1866,14 @@ namespace PKSoft
         protected override void OnStop()
         {
             RequestStop();
-            FirewallWorkerThread.Join(5000);
+            FirewallWorkerThread.Join(10000);
         }
 
         // Executed on computer shutdown.
         protected override void OnShutdown()
         {
             RequestStop();
-            FirewallWorkerThread.Join(5000);
+            FirewallWorkerThread.Join(10000);
         }
 
         private void RequestStop()
