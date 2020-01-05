@@ -9,7 +9,7 @@ x.x.x - Major update (not yet released)
     - Raw and promiscuous socket filtering
     - Apps no longer disconnect when firewall reloads
     - Connections window need not be open to register blocked applications
-    - Multicast support for local network firewall rules
+    - Multicast support for local network detection
     - Support for machine-global exceptions
     - Increased protection against code-identity spoofing attacks
     - Ability to automatically apply rules to child-processes
@@ -18,13 +18,13 @@ x.x.x - Major update (not yet released)
     - Warning about remote installations during setup
     - Slightly modernized installer look
     - Password protection of uninstaller if TinyWall is locked
-    - Display version number in Welcome screen window title
+    - Display version number in Welcome screen title
 - GUI improvements
     - New whitelisting option: drag&drop files into application list
     - Manual app detection gives instant first results
     - Live update of traffic rate in tray menu
     - Processes window remembers size
-    - Much improved loading time of the Processes window
+    - Much improved loading time of Processes window
     - Don't list duplicate processes in Processes window
     - Improved batch whitelisting from Connections list
     - Improved batch whitelisting from Processes list
@@ -33,6 +33,7 @@ x.x.x - Major update (not yet released)
     - Eliminate flicker when updating Connections and Application lists
     - Enable single-click toggling of special exceptions
     - Sort Connections list by timestamp by default
+    - Group together deleted applications in settings
 - General reliability improvements
     - Atomically store configuration
     - Reduced probability of failed whitelisting attempts
