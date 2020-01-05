@@ -95,11 +95,11 @@
     <!-- Custom actions -->
     <CustomAction Id='FoundIncompatibleVersion' Error='An older version of $(var.ProductName) is installed that cannot be automatically updated. Please uninstall the existing version first, then try again.' />
     <CustomAction Id='FoundNewerVersion' Error='A newer version of $(var.ProductName) is already installed. Installation cannot continue.' />
-    <CustomAction Id='InstallCustom' FileKey='TinyWallEXE' ExeCommand='/install' Return='check' Execute='deferred' Impersonate='no' />
+    <CustomAction Id='InstallCustom' FileKey='TinyWallEXE' ExeCommand='/install' Return='check' Execute='commit' Impersonate='no' />
     <CustomAction Id='InstallCustomRollback' FileKey='TinyWallEXE' ExeCommand='/uninstall' Return='check' Execute='rollback' Impersonate='no' />
     <CustomAction Id='UninstallCustom' FileKey='TinyWallEXE' ExeCommand='/uninstall' Return='check' Execute='deferred' Impersonate='no' />
-    <CustomAction Id='StartControllerAndDetect' FileKey='TinyWallEXE' ExeCommand='/desktop /autowhitelist' Return='asyncNoWait' Execute='deferred' />
-    <CustomAction Id='StartController' FileKey='TinyWallEXE' ExeCommand='/desktop' Return='asyncNoWait' Execute='deferred' />
+    <CustomAction Id='StartControllerAndDetect' FileKey='TinyWallEXE' ExeCommand='/desktop /autowhitelist' Return='asyncNoWait' Execute='commit' />
+    <CustomAction Id='StartController' FileKey='TinyWallEXE' ExeCommand='/desktop' Return='asyncNoWait' Execute='commit' />
 
     <!-- Sequencing -->
     <InstallExecuteSequence>
@@ -112,7 +112,7 @@
       <!-- InstallInitialize -->
       <Custom Action='UninstallCustom' Before='UnpublishFeatures'>Installed</Custom>
       <Custom Action='InstallCustomRollback' Before='InstallCustom'>NOT Installed</Custom>
-      <Custom Action='InstallCustom' After='InstallFiles'>NOT Installed</Custom>
+      <Custom Action='InstallCustom' Before='InstallFinalize'>NOT Installed</Custom>
       <Custom Action='StartControllerAndDetect' After='InstallCustom'>(NOT Installed) AND (NOT OLDER_UPGRADEABLE_FOUND)</Custom>
       <Custom Action='StartController' After='InstallCustom'>(NOT Installed) AND OLDER_UPGRADEABLE_FOUND</Custom>
       <!-- InstallFinalize -->
