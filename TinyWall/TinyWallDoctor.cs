@@ -32,6 +32,25 @@ namespace PKSoft
 #endif
         }
 
+        internal static bool IsServiceStopped()
+        {
+#if !DEBUG
+            try
+            {
+                using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
+                {
+                    return (sc.Status == ServiceControllerStatus.Stopped);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+#else
+            return true;
+#endif
+        }
+
         internal static bool EnsureServiceInstalledAndRunning()
         {
             if (TinyWallDoctor.IsServiceRunning())
@@ -139,9 +158,9 @@ namespace PKSoft
                         // Stop server
                         twController.RequestServerStop();
                         DateTime startTs = DateTime.Now;
-                        while (IsServiceRunning() && ((DateTime.Now - startTs) < TimeSpan.FromSeconds(5)))
+                        while (!IsServiceStopped() && ((DateTime.Now - startTs) < TimeSpan.FromSeconds(5)))
                             System.Threading.Thread.Sleep(200);
-                        if (IsServiceRunning())
+                        if (!IsServiceStopped())
                             return -1;
                     }
                 }
@@ -162,9 +181,15 @@ namespace PKSoft
                         if (p.ProcessName.Contains("TinyWall") && (p.Id != ownPid))
                         {
                             if (!p.CloseMainWindow())
+                            {
                                 p.Kill();
+                                p.WaitForExit(2000);
+                            }
                             else if (!p.WaitForExit(2000))
+                            {
                                 p.Kill();
+                                p.WaitForExit(1000);
+                            }
                         }
                     }
                     catch { }
@@ -177,9 +202,6 @@ namespace PKSoft
                 TinyWallService.DeleteWfpObjects(WfpEngine, true);
             }
 
-            // Give some additional time for process shutdown
-            System.Threading.Thread.Sleep(5000);
-
             try
             {
                 // Disable automatic start of controller
@@ -191,16 +213,6 @@ namespace PKSoft
             {
                 // Put back the user's original hosts file
                 HostsFileManager.DisableHostsFile();
-            }
-            catch { }
-
-            try
-            {
-                // TODO:
-                // Remove boot-time filters
-                // Remove persistent filters
-                // Remove persistent sublayers
-                // Remove persistent providers
             }
             catch { }
 
