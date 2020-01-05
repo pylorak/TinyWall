@@ -638,27 +638,49 @@ namespace PKSoft
         internal static Version TinyWallVersion { get; } = typeof(Utils).Assembly.GetName().Version;
 
         private static object logLocker = new object();
-        internal static void LogCrash(Exception e)
+        internal static readonly string LOG_ID_SERVICE = "service";
+        internal static readonly string LOG_ID_CLIENT = "client";
+        internal static void LogCrash(Exception e, string logname)
         {
-            Utils.Log(string.Join(
-                Environment.NewLine, new string[] {
-                $"TinyWall version: {Utils.TinyWallVersion}",
-                $"Windows version: {TinyWall.Interface.VersionInfo.WindowsVersionString}",
-                e.ToString()
-                }));
+            Utils.Log(
+                string.Join(
+                    Environment.NewLine, new string[] {
+                    $"TinyWall version: {Utils.TinyWallVersion}",
+                    $"Windows version: {TinyWall.Interface.VersionInfo.WindowsVersionString}",
+                    e.ToString()
+                }),
+                logname
+            );
         }
-        internal static void Log(string info)
+        internal static void Log(string info, string logname)
         {
             lock (logLocker)
             {
-                string logfile = Path.Combine(Utils.AppDataPath, "errorlog");
+                // First, remove deprecated log files if any is found
+                // TODO: This can probably be removed in the future
+                string[] old_logs = new string[] {
+                    Path.Combine(Utils.AppDataPath, "errorlog")
+                };
+                foreach (string file in old_logs) {
+                    try {
+                        if (File.Exists(file))
+                            File.Delete(file);
+                    }
+                    catch { }
+                }
+
+                // Name of the current log file
+                string logfile = Path.Combine(Utils.AppDataPath, $"{logname}.log");
 
                 // Only log if log file has not yet reached a certain size
                 if (File.Exists(logfile))
                 {
                     FileInfo fi = new FileInfo(logfile);
-                    if (fi.Length > 1024 * 1024)
-                        return;
+                    if (fi.Length > 512 * 1024)
+                    {
+                        // Truncate file back to zero
+                        using (var fs = new FileStream(logfile, FileMode.Truncate, FileAccess.Write)) { }
+                    }
                 }
 
                 // Do the logging

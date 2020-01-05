@@ -1138,7 +1138,7 @@ namespace PKSoft
             }
             catch(Exception e)
             {
-                Utils.LogCrash(e);
+                Utils.LogCrash(e, Utils.LOG_ID_SERVICE);
             }
         }
 
@@ -1306,7 +1306,7 @@ namespace PKSoft
                             }
                             catch (Exception e)
                             {
-                                Utils.LogCrash(e);
+                                Utils.LogCrash(e, Utils.LOG_ID_SERVICE);
                             }
                         }
                         VisibleState.HasPassword = ServiceLocker.HasPassword;
@@ -1849,7 +1849,7 @@ namespace PKSoft
 
         void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Utils.LogCrash(e.ExceptionObject as Exception);
+            Utils.LogCrash(e.ExceptionObject as Exception, Utils.LOG_ID_SERVICE);
         }
 
         // Executed when service is stopped manually.

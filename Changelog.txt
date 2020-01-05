@@ -20,7 +20,6 @@ x.x.x - Major update (not yet released)
     - Password protection of uninstaller if TinyWall is locked
     - Display version number in Welcome screen title
 - GUI improvements
-    - New whitelisting option: drag&drop files into application list
     - Manual app detection gives instant first results
     - Live update of traffic rate in tray menu
     - Processes window remembers size
@@ -34,6 +33,7 @@ x.x.x - Major update (not yet released)
     - Enable single-click toggling of special exceptions
     - Sort Connections list by timestamp by default
     - Group together deleted applications in settings
+    - Add error logging to GUI
 - General reliability improvements
     - Atomically store configuration
     - Reduced probability of failed whitelisting attempts
@@ -43,6 +43,7 @@ x.x.x - Major update (not yet released)
 - Deprecation notes
     - Windows Vista no longer supported
     - 32-bit systems no longer supported
+    - Whitelisting from a network share temporary not supported
 
 ---------------------
 

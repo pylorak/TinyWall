@@ -302,6 +302,11 @@ namespace PKSoft
 
         public TinyWallController(CmdLineArgs opts)
         {
+#if !DEBUG
+            // Register an unhandled exception handler
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+#endif
+
             this.StartupOpts = opts;
 
             ActiveConfig.Controller = ControllerSettings.Load();
@@ -322,6 +327,11 @@ namespace PKSoft
             TrayMenu.Closed += TrayMenu_Closed;
             Tray.ContextMenuStrip = TrayMenu;
             Tray.Visible = true;
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Utils.LogCrash(e.ExceptionObject as Exception, Utils.LOG_ID_CLIENT);
         }
 
         private void TrayMenu_Closed(object sender, ToolStripDropDownClosedEventArgs e)
