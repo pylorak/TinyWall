@@ -49,10 +49,10 @@ Patch dialog sequence:
 
             <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
 
-            <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="RemoteWarnDlg">NOT Installed</Publish>
-            <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">Installed AND PATCH</Publish>
+            <Publish Dialog="CustomWelcomeDlg" Control="Next" Event="NewDialog" Value="RemoteWarnDlg">NOT Installed</Publish>
+            <Publish Dialog="CustomWelcomeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">Installed AND PATCH</Publish>
 
-            <Publish Dialog="RemoteWarnDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
+            <Publish Dialog="RemoteWarnDlg" Control="Back" Event="NewDialog" Value="CustomWelcomeDlg">1</Publish>
             <Publish Dialog="RemoteWarnDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
 
             <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="RemoteWarnDlg">1</Publish>
@@ -68,7 +68,7 @@ Patch dialog sequence:
             
             <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg" Order="1">NOT Installed</Publish>
             <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed AND NOT PATCH</Publish>
-            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">Installed AND PATCH</Publish>
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomWelcomeDlg" Order="2">Installed AND PATCH</Publish>
 
             <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
 
