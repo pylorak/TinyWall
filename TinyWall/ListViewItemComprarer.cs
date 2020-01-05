@@ -17,10 +17,20 @@ namespace PKSoft
 
         public int Compare(object x, object y)
         {
-            if (Ascending)
-                return String.Compare(((ListViewItem)x).SubItems[Column].Text, ((ListViewItem)y).SubItems[Column].Text, StringComparison.CurrentCulture);
-            else
-                return -String.Compare(((ListViewItem)x).SubItems[Column].Text, ((ListViewItem)y).SubItems[Column].Text, StringComparison.CurrentCulture);
+            int order = Ascending ? +1 : -1;
+
+            ListViewItem lx = x as ListViewItem;
+            ListViewItem ly = y as ListViewItem;
+
+            if (lx.ImageKey != ly.ImageKey)
+            {
+                if (lx.ImageKey == "deleted")
+                    return order * 1;
+                else if (ly.ImageKey == "deleted")
+                    return order * -1;
+            }
+
+            return order * String.Compare(lx.SubItems[Column].Text, ly.SubItems[Column].Text, StringComparison.CurrentCulture);
         }
 
         internal int Column { get; private set; } = 0;
