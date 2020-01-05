@@ -1507,11 +1507,24 @@ namespace PKSoft
 
         internal static void DeleteWfpObjects(Engine wfp, bool removeLayersAndProvider)
         {
-            // Remove all filters
+            // WARNING! This method is super-slow if not executed inside a WFP transaction!
+
+#if DEBUG
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+#endif
+
+            var layerSet = new HashSet<Guid>();
+            var layerKeys = (LayerKeyEnum[])Enum.GetValues(typeof(LayerKeyEnum));
+            foreach (var layer in layerKeys)
+                layerSet.Add(GetSublayerKey(layer));
+
             FilterCollection filters = wfp.GetFilters(false);
             foreach (var f in filters)
             {
-                if (TINYWALL_PROVIDER_KEY == f.ProviderKey)
+                // Remove filter if created by TinyWall
+                // Remove filter if in a TinyWall layer (created by a 3rd party)
+                if ((TINYWALL_PROVIDER_KEY == f.ProviderKey) || layerSet.Contains(f.SublayerKey))
                     wfp.UnregisterFilter(f.FilterKey);
             }
 
@@ -1526,12 +1539,14 @@ namespace PKSoft
                 }
 
                 // Remove provider, ignore if not found
-                try
-                {
-                    wfp.UnregisterProvider(TINYWALL_PROVIDER_KEY);
-                }
+                try { wfp.UnregisterProvider(TINYWALL_PROVIDER_KEY); }
                 catch { }
             }
+
+#if DEBUG
+            watch.Stop();
+            Debug.WriteLine($"DeleteWfpObjects completed in {watch.ElapsedMilliseconds} ms.");
+#endif
         }
 
         // Entry point for thread that actually issues commands to Windows Firewall.
