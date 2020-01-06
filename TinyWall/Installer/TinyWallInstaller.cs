@@ -10,37 +10,34 @@ namespace PKSoft
     [RunInstaller(true)]
     public class TinyWallInstaller : Installer
     {
+        private List<string> names = new List<string>();
+        private List<string> files = new List<string>();
+
         public TinyWallInstaller()
         {
-            List<string> files = new List<string>();
             string installDir = Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath);
-            files.AddRange(GetFiles(installDir, "*.exe"));
-            files.AddRange(GetFiles(installDir, "*.dll"));
+            GetFiles(installDir, "*.exe");
 
-            foreach (string target in files)
+            for (int i = 0; i < files.Count; ++i)
             {
-                this.Installers.Add(new NgenInstaller(target));
+                this.Installers.Add(new NgenInstaller(names[i], files[i]));
             }
             this.Installers.Add(new ServiceInstaller());
         }
 
-        private List<string> GetFiles(string dir, string filter)
+        private void GetFiles(string dir, string filter)
         {
-            List<string> files = new List<string>();
             string[] filePaths = Directory.GetFiles(dir, filter, SearchOption.TopDirectoryOnly);
             foreach (string filePath in filePaths)
             {
                 try
                 {
                     Assembly a = Assembly.ReflectionOnlyLoadFrom(filePath);
-                    string name = a.FullName;
-
                     files.Add(filePath);
+                    names.Add(a.FullName);  // same as the "display name"
                 }
                 catch { }
             }
-
-            return files;
         }
 
     }

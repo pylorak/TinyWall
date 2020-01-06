@@ -54,9 +54,6 @@
     <!-- Feature description -->
     <Feature Id="ProductFeature" Title="Complete" Description="The complete package." ConfigurableDirectory="INSTALLDIR" Level="1">
       <ComponentRef Id='MainExecutable' />
-      <ComponentRef Id='InterfaceLib' />
-      <ComponentRef Id='WfpDotNetLib' />
-      <ComponentRef Id='NetFwTypeLib' />
       <ComponentRef Id='gac_MainExecutable' />
       <ComponentRef Id='gac_InterfaceLib' />
       <ComponentRef Id='gac_WfpDotNetLib' />
@@ -148,12 +145,6 @@
           <Component Id="MainExecutable" Guid="{D0A4DEC7-42C7-48F1-912D-76A4B33AC644}" Win64="$(var.Win64)">
             <File Id="TinyWallEXE" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
           </Component>
-          <Component Id="InterfaceLib" Guid="{D7FFC9A3-6934-40F1-82FC-E6D2EADDE00B}" Win64="$(var.Win64)">
-            <File Id="InterfaceDLL" Source="Sources\ProgramFiles\TinyWall\TinyWall.Interface.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
-          </Component>
-          <Component Id="WfpDotNetLib" Guid="{B17459BC-D330-490B-A8D5-E1689B9A559F}" Win64="$(var.Win64)">
-            <File Id="WfpDotNetDLL" Source="Sources\ProgramFiles\TinyWall\WFPdotNet.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
-          </Component>
           <Component Id="MainExecutableConfig" Guid="{81CD5E43-FAE3-4B3C-AA84-A7A0C660FDB4}" Win64="$(var.Win64)">
             <File Id="TinyWallCONFIG" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe.config" KeyPath="yes" />
           </Component>
@@ -162,9 +153,6 @@
           </Component>
           <Component Id="Attributions" Guid="{76058250-1331-4D79-B09C-2B6ADEC3E7E2}" Win64="$(var.Win64)">
             <File Id="AttributionsTXT" Source="Sources\ProgramFiles\TinyWall\Attributions.txt" KeyPath="yes" />
-          </Component>
-          <Component Id="NetFwTypeLib" Guid="{7AB618A2-D50A-499A-93B9-101AEF6BC809}" Win64="$(var.Win64)">
-            <File Id="NetFwTypeLibDLL" Source="Sources\ProgramFiles\TinyWall\Interop.NetFwTypeLib.dll" Vital="yes" KeyPath="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
           </Component>
           <Directory Id="LOCDIR_es" Name="es">
             <Component Id="LocSatelliteLib_es" Guid="{164A848E-99AB-4FF3-BFEE-400B0C43E9B0}" Win64="$(var.Win64)">
