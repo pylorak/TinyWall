@@ -49,10 +49,29 @@ namespace PKSoft
             // Create event notifier
             EventLogQuery evquery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=5154 or EventID=5155 or EventID=5157 or EventID=5152 or EventID=5159 or EventID=5156 or EventID=5158)]]");
             LogWatcher = new EventLogWatcher(evquery);
+            LogWatcher.Enabled = false;
             LogWatcher.EventRecordWritten += new EventHandler<EventRecordWrittenEventArgs>(LogWatcher_EventRecordWritten);
-            LogWatcher.Enabled = true;
+        }
 
-            EnableLogging();    // Enable logging
+        internal bool Enabled
+        {
+            get 
+            {
+                return LogWatcher.Enabled;
+            }
+
+            set
+            {
+                if (value != LogWatcher.Enabled)
+                {
+                    if (value)
+                        EnableLogging();
+                    else
+                        DisableLogging();
+
+                    LogWatcher.Enabled = value;
+                }
+            }
         }
 
         private FirewallLogEntry ParseLogEntry(EventRecordWrittenEventArgs e)

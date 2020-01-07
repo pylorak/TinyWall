@@ -7,16 +7,15 @@ namespace PKSoft
         DevelTool,
         Service,
         Controller,
-        SelfHosted
+        SelfHosted,
+        Install,
+        Uninstall
     }
 
     internal class CmdLineArgs
     {
         internal bool autowhitelist = false;
         internal bool updatenow = false;
-
-        internal bool install = false;
-        internal bool uninstall = false;
 
         internal StartUpMode ProgramMode = StartUpMode.Invalid;
     }

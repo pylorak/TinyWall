@@ -26,8 +26,7 @@ namespace PKSoft
             }
 #endif
 
-            bool mutexok;
-            using (Mutex SingleInstanceMutex = new Mutex(true, @"Global\TinyWallService", out mutexok))
+            using (Mutex SingleInstanceMutex = new Mutex(true, @"Global\TinyWallService", out bool mutexok))
             {
                 if (!mutexok)
                 {
@@ -127,26 +126,23 @@ namespace PKSoft
                 opts.ProgramMode = StartUpMode.SelfHosted;
             if (Utils.ArrayContains(args, "/develtool"))
                 opts.ProgramMode = StartUpMode.DevelTool;
-            opts.autowhitelist = Utils.ArrayContains(args, "/autowhitelist");
-            opts.updatenow = Utils.ArrayContains(args, "/updatenow");
-            opts.install = Utils.ArrayContains(args, "/install");
-            opts.uninstall = Utils.ArrayContains(args, "/uninstall");
+            if (Utils.ArrayContains(args, "/install"))
+                opts.ProgramMode = StartUpMode.Install;
+            if (Utils.ArrayContains(args, "/uninstall"))
+                opts.ProgramMode = StartUpMode.Uninstall;
 
             if (opts.ProgramMode == StartUpMode.Invalid)
                 opts.ProgramMode = StartUpMode.Controller;
 
-            if (opts.install)
-            {
-                return InstallService();
-            }
-
-            if (opts.uninstall)
-            {
-                return UninstallService();
-            }
+            opts.autowhitelist = Utils.ArrayContains(args, "/autowhitelist");
+            opts.updatenow = Utils.ArrayContains(args, "/updatenow");
 
             switch (opts.ProgramMode)
             {
+                case StartUpMode.Install:
+                    return InstallService();
+                case StartUpMode.Uninstall:
+                    return UninstallService();
                 case StartUpMode.Controller:
                     return StartController(opts);
                 case StartUpMode.DevelTool:
@@ -167,7 +163,6 @@ namespace PKSoft
                         Console.WriteLine("Press ENTER to end this process...");
                         Console.ReadLine();
 #endif
-
                     }
                     return 0;
                 default:

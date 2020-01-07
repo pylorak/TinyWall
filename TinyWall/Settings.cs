@@ -41,7 +41,6 @@ namespace PKSoft
         internal const string APP_NAME = "TinyWall";
         private const string ENC_SALT = @";U~2+i=wV;eE3Q@f";
         private const string ENC_IV = @"0!#&9x=GGu%>$g&5";   // must be 16/24/32 bytes
-        private readonly object locker = new object();
 
         public int SequenceNumber = -1;
 
@@ -248,13 +247,9 @@ namespace PKSoft
         }
     }
 
-    [Serializable]
-    public sealed class ServiceSettings
+    public sealed class PasswordManager
     {
-        internal static string PasswordFilePath
-        {
-            get { return Path.Combine(Utils.AppDataPath, "pwd"); }
-        }
+        internal static string PasswordFilePath { get; } = Path.Combine(Utils.AppDataPath, "pwd");
 
         private bool _Locked;
 

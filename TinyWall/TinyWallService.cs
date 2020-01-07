@@ -36,11 +36,11 @@ namespace PKSoft
         private DateTime LastControllerCommandTime = DateTime.Now;
         private DateTime LastRuleReloadTime = DateTime.Now;
         private CircularBuffer<FirewallLogEntry> FirewallLogEntries = new CircularBuffer<FirewallLogEntry>(500);
-        private ServiceSettings ServiceLocker = new ServiceSettings();
+        private PasswordManager ServiceLocker = new PasswordManager();
 
         // Context needed for learning mode
-        FirewallLogWatcher LogWatcher;
-        List<FirewallExceptionV3> LearningNewExceptions = new List<FirewallExceptionV3>();
+        private FirewallLogWatcher LogWatcher = new FirewallLogWatcher();
+        private List<FirewallExceptionV3> LearningNewExceptions = new List<FirewallExceptionV3>();
 
         // Context for auto rule inheritance
         private readonly object InheritanceGuard = new object();
@@ -54,7 +54,6 @@ namespace PKSoft
         private DateTime LastUpdateCheck = DateTime.MinValue;
 
         private Engine WfpEngine;
-        private Guid ProviderKey = Guid.Empty;
 
         private List<IpAddrMask> InterfaceAddreses = new List<IpAddrMask>();
         private List<IpAddrMask> GatewayAddresses = new List<IpAddrMask>();
@@ -149,16 +148,6 @@ namespace PKSoft
             {
                 results.Add(r);
             }
-        }
-
-        private List<RuleDef> ExpandRules(List<RuleDef> rules)
-        {
-            List<RuleDef> results = new List<RuleDef>();
-
-            foreach (var r in rules)
-                ExpandRule(r, results);
-
-            return results;
         }
 
         private List<RuleDef> AssembleActiveRules(List<ExceptionSubject> rawSocketExceptions)
@@ -385,7 +374,8 @@ namespace PKSoft
                 provider.serviceName = TinyWallService.SERVICE_NAME;
                 provider.flags = FWPM_PROVIDER_FLAGS.FWPM_PROVIDER_FLAG_PERSISTENT;
                 provider.providerKey = TINYWALL_PROVIDER_KEY;
-                ProviderKey = WfpEngine.RegisterProvider(ref provider);
+                Guid providerKey = WfpEngine.RegisterProvider(ref provider);
+                Debug.Assert(TINYWALL_PROVIDER_KEY == providerKey);
 
                 // Install sublayers
                 var layerKeys = (LayerKeyEnum[])Enum.GetValues(typeof(LayerKeyEnum));
@@ -395,7 +385,7 @@ namespace PKSoft
                     var wfpSublayer = new Sublayer($"TinyWall Sublayer for {layer.ToString()}");
                     wfpSublayer.Weight = ushort.MaxValue >> 4;
                     wfpSublayer.SublayerKey = slKey;
-                    wfpSublayer.ProviderKey = ProviderKey;
+                    wfpSublayer.ProviderKey = TINYWALL_PROVIDER_KEY;
                     wfpSublayer.Flags = FWPM_SUBLAYER_FLAGS.FWPM_SUBLAYER_FLAG_PERSISTENT;
                     WfpEngine.RegisterSublayer(wfpSublayer);
                 }
@@ -624,7 +614,7 @@ namespace PKSoft
             Filter f = new Filter(
                 r.ExceptionId.ToString(),
                 r.Name,
-                ProviderKey,
+                TINYWALL_PROVIDER_KEY,
                 (r.Action == RuleAction.Allow) ? FilterActions.FWP_ACTION_PERMIT : FilterActions.FWP_ACTION_BLOCK,
                 r.Weight
             );
@@ -646,7 +636,7 @@ namespace PKSoft
             Filter f = new Filter(
                 "Raw socket block",
                 string.Empty,
-                ProviderKey,
+                TINYWALL_PROVIDER_KEY,
                 FilterActions.FWP_ACTION_BLOCK,
                 (ulong)FilterWeights.RawSocketBlock
             );
@@ -672,7 +662,7 @@ namespace PKSoft
                     Filter f = new Filter(
                         "Raw socket permit",
                         string.Empty,
-                        ProviderKey,
+                        TINYWALL_PROVIDER_KEY,
                         FilterActions.FWP_ACTION_PERMIT,
                         (ulong)FilterWeights.RawSockePermit
                     );
@@ -701,7 +691,7 @@ namespace PKSoft
             Filter f = new Filter(
                 "Port Scanning Protection",
                 string.Empty,
-                ProviderKey,
+                TINYWALL_PROVIDER_KEY,
                 FilterActions.FWP_ACTION_CALLOUT_TERMINATING,
                 (ulong)FilterWeights.Blocklist
             );
@@ -1218,9 +1208,7 @@ namespace PKSoft
                 if (!needSave)
                     return false;
 
-                foreach (FirewallExceptionV3 ex in LearningNewExceptions)
-                    ActiveConfig.Service.ActiveProfile.AppExceptions.Add(ex);
-
+                ActiveConfig.Service.ActiveProfile.AppExceptions.AddRange(LearningNewExceptions);
                 LearningNewExceptions.Clear();
             }
 
@@ -1254,19 +1242,7 @@ namespace PKSoft
 
                         InstallFirewallRules();
 
-                        if (VisibleState.Mode == FirewallMode.Learning)
-                        {
-                            if (LogWatcher == null)
-                            {
-                                LogWatcher = new FirewallLogWatcher();
-                                LogWatcher.NewLogEntry += LogWatcher_NewLogEntry;
-                            }
-                        }
-                        else
-                        {
-                            LogWatcher?.Dispose();
-                            LogWatcher = null;
-                        }
+                        LogWatcher.Enabled = (VisibleState.Mode == FirewallMode.Learning);
 
                         if (
                                (VisibleState.Mode != TinyWall.Interface.FirewallMode.Disabled)
@@ -1378,7 +1354,7 @@ namespace PKSoft
                     }
                 case MessageType.SET_PASSPHRASE:
                     {
-                        FileLocker.UnlockFile(ServiceSettings.PasswordFilePath);
+                        FileLocker.UnlockFile(PasswordManager.PasswordFilePath);
                         try
                         {
                             ServiceLocker.SetPass((string)req.Arguments[0]);
@@ -1391,7 +1367,7 @@ namespace PKSoft
                         }
                         finally
                         {
-                            FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
+                            FileLocker.LockFile(PasswordManager.PasswordFilePath, FileAccess.Read, FileShare.Read);
                         }
                     }
                 case MessageType.STOP_SERVICE:
@@ -1545,10 +1521,11 @@ namespace PKSoft
         public void Run()
         {
             FirewallThreadThrottler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest);
+            LogWatcher.NewLogEntry += LogWatcher_NewLogEntry;
 
             // Fire up file protections as soon as possible
             FileLocker.LockFile(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
-            FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
+            FileLocker.LockFile(PasswordManager.PasswordFilePath, FileAccess.Read, FileShare.Read);
 
 #if !DEBUG
             // Basic software health checks
@@ -1795,10 +1772,9 @@ namespace PKSoft
                 // Process and wait for response
                 Future<TwMessage> future = new Future<TwMessage>();
                 Q.Enqueue(req, future);
-                TwMessage resp = future.Value;
 
                 // Send response back to pipe
-                return resp;
+                return future.Value;
             }
         }
 
@@ -1807,7 +1783,7 @@ namespace PKSoft
             TwMessage req = new TwMessage(MessageType.STOP_SERVICE);
             Future<TwMessage> future = new Future<TwMessage>();
             Q.Enqueue(req, future);
-            TwMessage resp = future.Value;
+            future.WaitValue();
         }
 
         public void Dispose()
@@ -1827,8 +1803,7 @@ namespace PKSoft
                 ActiveConfig.Service.ActiveProfile.AppExceptions = exs;
             }
 
-            LogWatcher?.Dispose();
-            LogWatcher = null;
+            LogWatcher.Dispose();
             CommitLearnedRules();
             ActiveConfig.Service.Save(ConfigSavePath);
             FileLocker.UnlockAll();

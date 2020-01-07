@@ -5,7 +5,7 @@ namespace PKSoft
 {
     internal static class FileLocker
     {
-        private static Dictionary<string, FileStream> LockedFiles = new Dictionary<string, FileStream>();
+        private static readonly Dictionary<string, FileStream> LockedFiles = new Dictionary<string, FileStream>();
 
         internal static bool LockFile(string filePath, FileAccess localAccess, FileShare shareMode)
         {

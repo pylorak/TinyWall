@@ -43,7 +43,7 @@ namespace TinyWall.Interface.Internal
             }
             catch (SemaphoreFullException)
             {
-                Thread.Sleep(10);
+                Thread.Sleep(50);
                 goto RetrySema;
             }
         }

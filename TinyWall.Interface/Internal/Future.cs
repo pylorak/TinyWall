@@ -23,6 +23,11 @@ namespace TinyWall.Interface.Internal
             }
         }
 
+        public void WaitValue()
+        {
+            Event.WaitOne();
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposed)
