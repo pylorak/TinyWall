@@ -15,54 +15,45 @@ using WFPdotNet.Interop;
 
 namespace PKSoft
 {
-    internal class TinyWallService : ServiceBase
+    public sealed class TinyWallServer : IDisposable
     {
-        internal readonly static string[] ServiceDependencies = new string[]
-        {
-            "eventlog",
-            "Winmgmt"
-        };
-
         private enum FilterWeights : ulong
         {
-            Blocklist           = 9000000,
-            RawSockePermit      = 8000000,
-            RawSocketBlock      = 7000000,
-            UserBlock           = 6000000,
-            UserPermit          = 5000000,
-            DefaultPermit       = 4000000,
-            DefaultBlock        = 3000000,
+            Blocklist = 9000000,
+            RawSockePermit = 8000000,
+            RawSocketBlock = 7000000,
+            UserBlock = 6000000,
+            UserPermit = 5000000,
+            DefaultPermit = 4000000,
+            DefaultBlock = 3000000,
         }
 
-        internal const string SERVICE_NAME = "TinyWall";
-        internal const string SERVICE_DISPLAY_NAME = "TinyWall Service";
-        internal static readonly Guid TINYWALL_PROVIDER_KEY = new Guid("{66CA412C-4453-4F1E-A973-C16E433E34D0}");
+        private static readonly Guid TINYWALL_PROVIDER_KEY = new Guid("{66CA412C-4453-4F1E-A973-C16E433E34D0}");
 
-        private BoundedMessageQueue Q;
+        private BoundedMessageQueue Q = new BoundedMessageQueue();
 
-        private Thread FirewallWorkerThread;
         private Timer MinuteTimer;
         private DateTime LastControllerCommandTime = DateTime.Now;
         private DateTime LastRuleReloadTime = DateTime.Now;
         private CircularBuffer<FirewallLogEntry> FirewallLogEntries = new CircularBuffer<FirewallLogEntry>(500);
-        private ServiceSettings ServiceLocker = null;
+        private ServiceSettings ServiceLocker = new ServiceSettings();
 
         // Context needed for learning mode
         FirewallLogWatcher LogWatcher;
         List<FirewallExceptionV3> LearningNewExceptions = new List<FirewallExceptionV3>();
 
         // Context for auto rule inheritance
-        private object InheritanceGuard = new object();
+        private readonly object InheritanceGuard = new object();
         private HashSet<string> UserSubjectExes = new HashSet<string>();        // All executables with pre-configured rules.
         private Dictionary<string, FirewallExceptionV3> ChildInheritance = new Dictionary<string, FirewallExceptionV3>();
         private Dictionary<string, HashSet<string>> ChildInheritedSubjectExes = new Dictionary<string, HashSet<string>>();   // Executables that have been already auto-whitelisted due to inheritance
         private ThreadThrottler FirewallThreadThrottler;
 
         private bool RunService = false;
-        private ServerState VisibleState = null;
+        private ServerState VisibleState = new ServerState();
         private DateTime LastUpdateCheck = DateTime.MinValue;
 
-        private Engine WfpEngine = null;
+        private Engine WfpEngine;
         private Guid ProviderKey = Guid.Empty;
 
         private List<IpAddrMask> InterfaceAddreses = new List<IpAddrMask>();
@@ -361,7 +352,7 @@ namespace PKSoft
 
                 trx?.Commit();
             }
-            finally 
+            finally
             {
                 trx?.Dispose();
             }
@@ -825,7 +816,7 @@ namespace PKSoft
         {
             if (ex.Id == Guid.Empty)
             {
-// Do not let the service crash if a rule cannot be constructed 
+                // Do not let the service crash if a rule cannot be constructed 
 #if DEBUG
                 throw new InvalidOperationException("Firewall exception specification must have an ID.");
 #else
@@ -1036,7 +1027,7 @@ namespace PKSoft
 
             using (ThreadBarrier barrier = new ThreadBarrier(2))
             {
-                ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
+                ThreadPool.QueueUserWorkItem((WaitCallback)delegate (object state)
                 {
                     try
                     {
@@ -1134,7 +1125,7 @@ namespace PKSoft
                     GetCompressedUpdate(module, HostsUpdateInstall);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Utils.LogCrash(e, Utils.LOG_ID_SERVICE);
             }
@@ -1248,7 +1239,7 @@ namespace PKSoft
                     }
                 case MessageType.IS_LOCKED:
                     {
-                      return new TwMessage(MessageType.RESPONSE_OK, ServiceLocker.Locked);
+                        return new TwMessage(MessageType.RESPONSE_OK, ServiceLocker.Locked);
                     }
                 case MessageType.PING:
                     {
@@ -1420,7 +1411,7 @@ namespace PKSoft
 
                         // Check all exceptions if any has expired
                         List<FirewallExceptionV3> exs = ActiveConfig.Service.ActiveProfile.AppExceptions;
-                        for (int i = exs.Count-1; i >= 0; --i)
+                        for (int i = exs.Count - 1; i >= 0; --i)
                         {
                             // Timer values above zero are the number of minutes to stay active
                             if ((int)exs[i].Timer <= 0)
@@ -1551,8 +1542,32 @@ namespace PKSoft
 
         // Entry point for thread that actually issues commands to Windows Firewall.
         // Only one thread (this one) is allowed to issue them.
-        private void FirewallWorkerMethod()
+        public void Run()
         {
+            FirewallThreadThrottler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest);
+
+            // Fire up file protections as soon as possible
+            FileLocker.LockFile(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
+            FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
+
+#if !DEBUG
+            // Basic software health checks
+            try { TinyWallDoctor.EnsureHealth(); }
+            catch { }
+#endif
+
+            // Lock configuration if we have a password
+            if (ServiceLocker.HasPassword)
+                ServiceLocker.Locked = true;
+
+            // Issue load command
+            Q.Enqueue(new TwMessage(MessageType.REENUMERATE_ADDRESSES), null);
+            Q.Enqueue(new TwMessage(MessageType.REINIT), null);
+
+            // Fire up pipe
+            GlobalInstances.ServerPipe = new PipeServerEndpoint(new PipeDataReceived(PipeServerDataReceived));
+
+            // Listen to network configuration changes
             WqlEventQuery StartQuery = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace");
             NetworkChange.NetworkAddressChanged += NetworkChange_NetworkAddressChanged;
             NetworkChange.NetworkAvailabilityChanged += NetworkChange_NetworkAvailabilityChanged;
@@ -1571,28 +1586,15 @@ namespace PKSoft
                 ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
                 ProcessStartWatcher.Start();
 
-                try
+                RunService = true;
+                while (RunService)
                 {
-                    RunService = true;
-                    while (RunService)
-                    {
-                        TwMessage msg;
-                        Future<TwMessage> future;
-                        Q.Dequeue(out msg, out future);
+                    Q.Dequeue(out TwMessage msg, out Future<TwMessage> future);
 
-                        TwMessage resp;
-                        resp = ProcessCmd(msg);
-                        if (null != future)
-                            future.Value = resp;
-                    }
-                }
-                finally
-                {
-                    try
-                    {
-                        Cleanup();
-                    }
-                    finally { }
+                    TwMessage resp;
+                    resp = ProcessCmd(msg);
+                    if (null != future)
+                        future.Value = resp;
                 }
             }
         }
@@ -1797,86 +1799,7 @@ namespace PKSoft
             }
         }
 
-        internal TinyWallService()
-        {
-            this.CanShutdown = true;
-#if DEBUG
-            this.CanStop = true;
-#else
-            this.CanStop = false;
-#endif
-        }
-
-        // Entry point for Windows service.
-        protected override void OnStart(string[] args)
-        {
-#if !DEBUG
-            // Register an unhandled exception handler
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-#endif
-            
-            // Continue initialization on a new thread to prevent stalling the SCM
-            ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object dummy)
-            {
-                EventLog.WriteEntry("TinyWall service starting up.");
-                VisibleState = new ServerState();
-
-                FileLocker.LockFile(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
-                FileLocker.LockFile(ServiceSettings.PasswordFilePath, FileAccess.Read, FileShare.Read);
-
-                // Lock configuration if we have a password
-                ServiceLocker = new ServiceSettings();
-                if (ServiceLocker.HasPassword)
-                    ServiceLocker.Locked = true;
-
-                // Issue load command
-                Q = new BoundedMessageQueue();
-                Q.Enqueue(new TwMessage(MessageType.REENUMERATE_ADDRESSES), null);
-                Q.Enqueue(new TwMessage(MessageType.REINIT), null);
-
-                // Start thread that is going to control Windows Firewall
-                FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod));
-                FirewallThreadThrottler = new ThreadThrottler(FirewallWorkerThread, ThreadPriority.Highest);
-                FirewallWorkerThread.IsBackground = true;
-                FirewallWorkerThread.Start();
-
-                // Fire up pipe
-                GlobalInstances.ServerPipe = new PipeServerEndpoint(new PipeDataReceived(PipeServerDataReceived));
-
-#if !DEBUG
-                // Messing with the SCM in this method would hang us, so start it parallel
-                ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
-                {
-                    try
-                    {
-                        TinyWallDoctor.EnsureHealth();
-                    }
-                    catch { }
-                });
-#endif
-            });
-        }
-
-        void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            Utils.LogCrash(e.ExceptionObject as Exception, Utils.LOG_ID_SERVICE);
-        }
-
-        // Executed when service is stopped manually.
-        protected override void OnStop()
-        {
-            RequestStop();
-            FirewallWorkerThread.Join(10000);
-        }
-
-        // Executed on computer shutdown.
-        protected override void OnShutdown()
-        {
-            RequestStop();
-            FirewallWorkerThread.Join(10000);
-        }
-
-        private void RequestStop()
+        public void RequestStop()
         {
             TwMessage req = new TwMessage(MessageType.STOP_SERVICE);
             Future<TwMessage> future = new Future<TwMessage>();
@@ -1884,12 +1807,12 @@ namespace PKSoft
             TwMessage resp = future.Value;
         }
 
-        private void Cleanup()
+        public void Dispose()
         {
             // Check all exceptions if any one has expired
             {
                 List<FirewallExceptionV3> exs = ActiveConfig.Service.ActiveProfile.AppExceptions;
-                for (int i = exs.Count-1; i >= 0; --i)
+                for (int i = exs.Count - 1; i >= 0; --i)
                 {
                     // Did this one expire?
                     if (exs[i].Timer == AppExceptionTimer.Until_Reboot)
@@ -1912,21 +1835,99 @@ namespace PKSoft
             FirewallThreadThrottler?.Dispose();
 
 #if !DEBUG
-            TinyWallDoctor.EnsureHealth();
-
-            // Set service state to stopped or else we will be restarted by the SCM when our process ends
-            using (var srvManager = new ScmWrapper.ServiceControlManager())
-            {
-                srvManager.SetServiceState(this.ServiceName, this.ServiceHandle, ScmWrapper.State.SERVICE_STOPPED, 0);
-            }
-            Process.GetCurrentProcess().Kill();
+            // Basic software health checks
+            try { TinyWallDoctor.EnsureHealth(); }
+            catch { }
 #else
-            using (Transaction trx = WfpEngine.BeginTransaction())
+            using (var wfp = new Engine("TinyWall Cleanup Session", "", FWPM_SESSION_FLAGS.None, 5000))
+            using (var trx = wfp.BeginTransaction())
             {
-                DeleteWfpObjects(WfpEngine, true);
+                DeleteWfpObjects(wfp, true);
                 trx.Commit();
             }
 #endif
+        }
+    }
+
+
+    internal sealed class TinyWallService : ServiceBase
+    {
+        internal readonly static string[] ServiceDependencies = new string[]
+        {
+            "eventlog",
+            "Winmgmt"
+        };
+
+        internal const string SERVICE_NAME = "TinyWall";
+        internal const string SERVICE_DISPLAY_NAME = "TinyWall Service";
+
+        private TinyWallServer Server;
+        private Thread FirewallWorkerThread;
+
+        internal TinyWallService()
+        {
+            this.CanShutdown = true;
+#if DEBUG
+            this.CanStop = true;
+#else
+            this.CanStop = false;
+#endif
+        }
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Utils.LogCrash(e.ExceptionObject as Exception, Utils.LOG_ID_SERVICE);
+        }
+
+        private void FirewallWorkerMethod()
+        {
+            try
+            {
+                using (Server = new TinyWallServer())
+                {
+                    Server.Run();
+                }
+            }
+            finally
+            {
+#if !DEBUG
+                // Set service state to stopped or else we will be restarted by the SCM when our process ends
+                using (var srvManager = new ScmWrapper.ServiceControlManager())
+                {
+                    srvManager.SetServiceState(ServiceName, ServiceHandle, ScmWrapper.State.SERVICE_STOPPED, 0);
+                }
+                Process.GetCurrentProcess().Kill();
+#endif
+            }
+        }
+
+        // Entry point for Windows service.
+        protected override void OnStart(string[] args)
+        {
+#if !DEBUG
+            // Register an unhandled exception handler
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+#endif
+            // Initialization on a new thread prevents stalling the SCM
+            FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod));
+            FirewallWorkerThread.Start();
+        }
+
+        private void StopServer()
+        {
+            Server.RequestStop();
+            FirewallWorkerThread.Join(10000);
+        }
+
+        // Executed when service is stopped manually.
+        protected override void OnStop()
+        {
+            StopServer();
+        }
+
+        // Executed on computer shutdown.
+        protected override void OnShutdown()
+        {
+            StopServer();
         }
 
 #if DEBUG

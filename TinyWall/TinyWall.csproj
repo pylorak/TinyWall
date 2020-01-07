@@ -213,9 +213,7 @@
     <Compile Include="SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TinyWallService.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="TinyWallService.cs" />
     <Compile Include="Installer\ServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
