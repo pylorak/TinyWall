@@ -61,9 +61,13 @@ namespace PKSoft
             Address = addrInfo.Address;
             if (IsIPv4)
             {
-                byte[] b = addrInfo.IPv4Mask.GetAddressBytes();
-                for (int i = 0; i < b.Length; ++i)
-                    PrefixLen += CountBits(b[i]);
+                PrefixLen = 0;
+                if (addrInfo.IPv4Mask != null)
+                {
+                    byte[] b = addrInfo.IPv4Mask.GetAddressBytes();
+                    for (int i = 0; i < b.Length; ++i)
+                        PrefixLen += CountBits(b[i]);
+                }
             }
             else
             {
