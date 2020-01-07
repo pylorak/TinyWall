@@ -102,7 +102,7 @@ namespace PKSoft.DatabaseClasses
             app = TryGetApp(fromSubject, out FirewallExceptionV3 fwEx, false);
             if (app == null)
             {
-                exceptions.Add(new FirewallExceptionV3(fromSubject, new UnrestrictedPolicy()));
+                exceptions.Add(new FirewallExceptionV3(fromSubject, new TcpUdpPolicy(true)));
                 return exceptions;
             }
 
