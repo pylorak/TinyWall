@@ -970,22 +970,24 @@ namespace PKSoft
             {
                 INetFwPolicy2 fwPolicy2 = GetFwPolicy2();
 
-                // Remove earlier rules
-                INetFwRules rules = fwPolicy2.Rules;
-                foreach (INetFwRule rule in rules)
-                {
-                    if ((rule.Grouping != null) && rule.Grouping.Equals("TinyWall"))
-                        rules.Remove(rule.Name);
-                }
-
-                // Add new rules
-                fwPolicy2.Rules.Add(CreateFwRule("TinyWall Inbound Compatibility", NET_FW_ACTION_.NET_FW_ACTION_ALLOW, NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN));
-                fwPolicy2.Rules.Add(CreateFwRule("TinyWall Outbound Compatibility", NET_FW_ACTION_.NET_FW_ACTION_ALLOW, NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT));
-
                 // Disable Windows Firewall notifications
                 fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PRIVATE] = true;
                 fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PUBLIC] = true;
                 fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_DOMAIN] = true;
+
+                // Add new rules
+                string newRuleId = $"TinyWall Compat [{Utils.RandomString(6)}]";
+                fwPolicy2.Rules.Add(CreateFwRule(newRuleId, NET_FW_ACTION_.NET_FW_ACTION_ALLOW, NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN));
+                fwPolicy2.Rules.Add(CreateFwRule(newRuleId, NET_FW_ACTION_.NET_FW_ACTION_ALLOW, NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT));
+
+                // Remove earlier rules
+                INetFwRules rules = fwPolicy2.Rules;
+                foreach (INetFwRule rule in rules)
+                {
+                    string ruleName = rule.Name;
+                    if (!string.IsNullOrEmpty(ruleName) && ruleName.Contains("TinyWall") && (ruleName != newRuleId))
+                        rules.Remove(rule.Name);
+                }
             }
             catch { }
         }
@@ -996,10 +998,12 @@ namespace PKSoft
             {
                 INetFwPolicy2 fwPolicy2 = GetFwPolicy2();
 
+                // Enable Windows Firewall notifications
                 fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PRIVATE] = false;
                 fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PUBLIC] = false;
                 fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_DOMAIN] = false;
 
+                // Remove earlier rules
                 INetFwRules rules = fwPolicy2.Rules;
                 foreach (INetFwRule rule in rules)
                 {
