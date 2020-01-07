@@ -9,30 +9,30 @@
             <Direction>Out</Direction>
             <Name>DNS client TCP</Name>
             <Protocol>TCP</Protocol>
-            <RemotePorts>53</RemotePorts>
             <RemoteAddresses>DNS</RemoteAddresses>
+            <RemotePorts>53</RemotePorts>
           </RuleDef>
           <RuleDef>
             <Action>Allow</Action>
             <Direction>InOut</Direction>
             <Name>DNS client UDP</Name>
             <Protocol>UDP</Protocol>
-            <RemotePorts>53</RemotePorts>
             <RemoteAddresses>DNS</RemoteAddresses>
+            <RemotePorts>53</RemotePorts>
           </RuleDef>
           <RuleDef>
             <Action>Allow</Action>
             <Direction>InOut</Direction>
             <Name>LLMNR-UDP (client)</Name>
             <Protocol>UDP</Protocol>
-            <RemotePorts>5355</RemotePorts>
             <RemoteAddresses>LocalSubnet</RemoteAddresses>
+            <RemotePorts>5355</RemotePorts>
           </RuleDef>
           <RuleDef>
             <Action>Allow</Action>
             <Direction>InOut</Direction>
-            <Name>LLMNR-UDP (server)</Name>
             <LocalPorts>5355</LocalPorts>
+            <Name>LLMNR-UDP (server)</Name>
             <Protocol>UDP</Protocol>
             <RemoteAddresses>LocalSubnet</RemoteAddresses>
           </RuleDef>

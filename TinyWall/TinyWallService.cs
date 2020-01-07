@@ -57,6 +57,7 @@ namespace PKSoft
 
         private List<IpAddrMask> InterfaceAddreses = new List<IpAddrMask>();
         private List<IpAddrMask> GatewayAddresses = new List<IpAddrMask>();
+        private List<IpAddrMask> DnsAddresses = new List<IpAddrMask>();
 
         private void ExpandRule(RuleDef r, List<RuleDef> results)
         {
@@ -138,6 +139,15 @@ namespace PKSoft
             else if (Utils.EqualsCaseInsensitive(r.RemoteAddresses, "DefaultGateway"))
             {
                 foreach (var addr in GatewayAddresses)
+                {
+                    RuleDef tmp = r.DeepCopy();
+                    tmp.RemoteAddresses = addr.Address.ToString();
+                    ExpandRule(tmp, results);
+                }
+            }
+            else if (Utils.EqualsCaseInsensitive(r.RemoteAddresses, "DNS"))
+            {
+                foreach (var addr in DnsAddresses)
                 {
                     RuleDef tmp = r.DeepCopy();
                     tmp.RemoteAddresses = addr.Address.ToString();
@@ -1407,6 +1417,7 @@ namespace PKSoft
                     {
                         InterfaceAddreses.Clear();
                         GatewayAddresses.Clear();
+                        DnsAddresses.Clear();
 
                         NetworkInterface[] coll = NetworkInterface.GetAllNetworkInterfaces();
                         foreach (var iface in coll)
@@ -1429,6 +1440,12 @@ namespace PKSoft
                             {
                                 IpAddrMask am = new IpAddrMask(uni);
                                 GatewayAddresses.Add(am);
+                            }
+
+                            foreach (var uni in props.DnsAddresses)
+                            {
+                                IpAddrMask am = new IpAddrMask(uni);
+                                DnsAddresses.Add(am);
                             }
                         }
                         return new TwMessage(MessageType.RESPONSE_OK);

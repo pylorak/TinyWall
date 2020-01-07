@@ -755,6 +755,7 @@
                 <Direction>Out</Direction>
                 <Name>DNS client TCP</Name>
                 <Protocol>TCP</Protocol>
+                <RemoteAddresses>DNS</RemoteAddresses>
                 <RemotePorts>53</RemotePorts>
               </RuleDef>
               <RuleDef>
@@ -762,6 +763,7 @@
                 <Direction>InOut</Direction>
                 <Name>DNS client UDP</Name>
                 <Protocol>UDP</Protocol>
+                <RemoteAddresses>DNS</RemoteAddresses>
                 <RemotePorts>53</RemotePorts>
               </RuleDef>
               <RuleDef>
@@ -769,11 +771,13 @@
                 <Direction>InOut</Direction>
                 <Name>LLMNR-UDP (client)</Name>
                 <Protocol>UDP</Protocol>
+                <RemoteAddresses>LocalSubnet</RemoteAddresses>
                 <RemotePorts>5355</RemotePorts>
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
                 <Direction>InOut</Direction>
+                <LocalPorts>5355</LocalPorts>
                 <Name>LLMNR-UDP (server)</Name>
                 <Protocol>UDP</Protocol>
                 <RemoteAddresses>LocalSubnet</RemoteAddresses>
@@ -1123,21 +1127,21 @@
               <RuleDef>
                 <Action>Allow</Action>
                 <Direction>InOut</Direction>
-                <Name>IPSec IKE (Initiator)</Name>
+                <Name>IPSec IKE</Name>
                 <Protocol>UDP</Protocol>
                 <RemotePorts>500</RemotePorts>
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
                 <Direction>InOut</Direction>
-                <Name>IPSec NAT-T (Initiator)</Name>
+                <Name>IPSec NAT-T</Name>
                 <Protocol>UDP</Protocol>
                 <RemotePorts>4500</RemotePorts>
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
                 <Direction>InOut</Direction>
-                <Name>LT2P/IPSec Traffic (Initiator)</Name>
+                <Name>LT2P/IPSec Traffic</Name>
                 <Protocol>UDP</Protocol>
                 <RemotePorts>1701</RemotePorts>
               </RuleDef>
@@ -1146,6 +1150,12 @@
                 <Direction>InOut</Direction>
                 <Name>IPSec ESP</Name>
                 <Protocol>ESP</Protocol>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Direction>InOut</Direction>
+                <Name>IPSec AH</Name>
+                <Protocol>AH</Protocol>
               </RuleDef>
             </Rules>
           </Policy>
