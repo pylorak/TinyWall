@@ -1723,7 +1723,10 @@ namespace PKSoft
             }
 
             // Certain things we don't want to whitelist
-            if (string.IsNullOrEmpty(entry.AppPath) || entry.AppPath.Equals("System", StringComparison.InvariantCultureIgnoreCase))
+            if (string.IsNullOrEmpty(entry.AppPath)
+                || entry.AppPath.Equals("System", StringComparison.InvariantCultureIgnoreCase)
+                || entry.AppPath.EndsWith("svchost.exe", StringComparison.InvariantCultureIgnoreCase)
+                )
                 return;
 
             ExecutableSubject newSubject = new ExecutableSubject(entry.AppPath);
