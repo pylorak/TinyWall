@@ -1013,57 +1013,26 @@ namespace PKSoft
         // This method completely reinitializes the firewall.
         private void InitFirewall()
         {
-            ThreadPool.QueueUserWorkItem((WaitCallback)delegate (object state) { DisableMpsSvc(); });
-
-            using (ThreadBarrier barrier = new ThreadBarrier(2))
-            {
-                ThreadPool.QueueUserWorkItem((WaitCallback)delegate (object state)
-                {
-                    try
-                    {
-                        LoadDatabase();
-                    }
-                    finally
-                    {
-                        barrier.Wait();
-                    }
-                });
-
-                barrier.Wait();
-                // --- THREAD BARRIER ---
-            }
-
+            LoadDatabase();
             ActiveConfig.Service = LoadServerConfig();
-            GlobalInstances.ServerChangeset = Guid.NewGuid();
             VisibleState.Mode = ActiveConfig.Service.StartupMode;
+            GlobalInstances.ServerChangeset = Guid.NewGuid();
 
             ReapplySettings();
+            InstallFirewallRules();
+            ThreadPool.QueueUserWorkItem((WaitCallback)delegate (object state) { DisableMpsSvc(); });
         }
 
 
         // This method reapplies all firewall settings.
         private void ReapplySettings()
         {
-            InstallFirewallRules();
-
             HostsFileManager.EnableProtection(ActiveConfig.Service.LockHostsFile);
             if (ActiveConfig.Service.Blocklists.EnableBlocklists
                 && ActiveConfig.Service.Blocklists.EnableHostsBlocklist)
                 HostsFileManager.EnableHostsFile();
             else
                 HostsFileManager.DisableHostsFile();
-
-            if (MinuteTimer != null)
-            {
-                using (WaitHandle wh = new AutoResetEvent(false))
-                {
-                    MinuteTimer.Dispose(wh);
-                    wh.WaitOne();
-                }
-                MinuteTimer = null;
-            }
-
-            MinuteTimer = new Timer(new TimerCallback(TimerCallback), null, 60000, 60000);
         }
 
         private void LoadDatabase()
@@ -1185,7 +1154,6 @@ namespace PKSoft
         {
             // This timer is called every minute.
 
-            // Check if a timed exception has expired
             if (!Q.HasMessageType(MessageType.MINUTE_TIMER))
                 Q.Enqueue(new TwMessage(MessageType.MINUTE_TIMER), null);
         }
@@ -1268,6 +1236,7 @@ namespace PKSoft
                                 GlobalInstances.ServerChangeset = Guid.NewGuid();
                                 ActiveConfig.Service.Save(ConfigSavePath);
                                 ReapplySettings();
+                                InstallFirewallRules();
                             }
                             catch (Exception e)
                             {
@@ -1521,6 +1490,7 @@ namespace PKSoft
         public void Run()
         {
             FirewallThreadThrottler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest);
+            MinuteTimer = new Timer(new TimerCallback(TimerCallback), null, 60000, 60000);
             LogWatcher.NewLogEntry += LogWatcher_NewLogEntry;
 
             // Fire up file protections as soon as possible
@@ -1710,17 +1680,12 @@ namespace PKSoft
 
             lock (LearningNewExceptions)
             {
-                bool alreadyExists = false;
                 for (int j = 0; j < LearningNewExceptions.Count; ++j)
                 {
                     if (LearningNewExceptions[j].Subject.Equals(newSubject))
-                    {
-                        alreadyExists = true;
-                        break;
-                    }
+                        // Already in LearningNewExceptions, nothing to do
+                        return;
                 }
-                if (alreadyExists)
-                    return;
 
                 List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(newSubject, false, out DatabaseClasses.Application app);
                 LearningNewExceptions.AddRange(exceptions);
@@ -1776,6 +1741,16 @@ namespace PKSoft
                     }
                 }
                 ActiveConfig.Service.ActiveProfile.AppExceptions = exs;
+            }
+
+            if (MinuteTimer != null)
+            {
+                using (WaitHandle wh = new AutoResetEvent(false))
+                {
+                    MinuteTimer.Dispose(wh);
+                    wh.WaitOne();
+                }
+                MinuteTimer = null;
             }
 
             LogWatcher.Dispose();
