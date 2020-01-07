@@ -1723,32 +1723,7 @@ namespace PKSoft
                     return;
 
                 List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(newSubject, false, out DatabaseClasses.Application app);
-                if (app == null)
-                {
-                    System.Diagnostics.Debug.Assert(exceptions.Count == 1);
-
-                    // Unknown file, add with unrestricted policy
-                    FirewallExceptionV3 fwex = new FirewallExceptionV3(newSubject, null);
-                    TcpUdpPolicy policy = new TcpUdpPolicy();
-                    if (((entry.Direction == RuleDirection.In) && (entry.Event == EventLogEvent.ALLOWED_CONNECTION))
-                        || entry.Event == EventLogEvent.ALLOWED_LISTEN)
-                    {
-                        policy.AllowedLocalTcpListenerPorts = "*";
-                        policy.AllowedLocalUdpListenerPorts = "*";
-                    }
-                    else
-                    {
-                        policy.AllowedRemoteTcpConnectPorts = "*";
-                        policy.AllowedRemoteUdpConnectPorts = "*";
-                    }
-                    fwex.Policy = policy;
-                    LearningNewExceptions.Add(fwex);
-                }
-                else
-                {
-                    // Known file, add its exceptions, along with other files that belong to this app
-                    LearningNewExceptions.AddRange(exceptions);
-                }
+                LearningNewExceptions.AddRange(exceptions);
             }
         }
 
