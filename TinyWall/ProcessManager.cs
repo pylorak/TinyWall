@@ -143,10 +143,16 @@ namespace PKSoft
 
         public static string GetProcessPath(int processId)
         {
+            var buffer = new StringBuilder(1024);
+            return GetProcessPath(processId, buffer);
+        }
+
+        public static string GetProcessPath(int processId, StringBuilder buffer)
+        {
             // This method needs Windows Vista or newer OS
             System.Diagnostics.Debug.Assert(Environment.OSVersion.Version.Major >= 6);
 
-            var buffer = new StringBuilder(1024);
+            buffer.Length = 0;
             using (SafeProcessHandle hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
             {
                 if (hProcess.IsInvalid)

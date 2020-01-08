@@ -731,55 +731,76 @@ namespace PKSoft
 
             return (a != null) && a.Equals(b, StringComparison.InvariantCultureIgnoreCase);
         }
-
-        public static class DevicePathMapper
-        {
-            [DllImport("Kernel32.dll", CharSet = CharSet.Unicode)]
-            private static extern uint QueryDosDevice([In] string lpDeviceName, [Out] StringBuilder lpTargetPath, [In] int ucchMax);
-
-            public static string FromDevicePath(string devicePath)
-            {
-                var drive = Array.Find(DriveInfo.GetDrives(), d => devicePath.StartsWith(GetDevicePath(d), StringComparison.InvariantCultureIgnoreCase));
-                if (drive == null)
-                    return devicePath;
-                return drive != null ? ReplaceFirst(devicePath, GetDevicePath(drive), GetDriveLetter(drive)) : null;
-            }
-
-            private static string GetDevicePath(DriveInfo driveInfo)
-            {
-                var devicePathBuilder = new StringBuilder(128);
-                string ret = QueryDosDevice(GetDriveLetter(driveInfo), devicePathBuilder, devicePathBuilder.Capacity + 1) != 0 ?
-                    devicePathBuilder.ToString() :                    null;
-                return ret;
-            }
-
-            private static string GetDriveLetter(DriveInfo driveInfo)
-            {
-                return driveInfo.Name.Substring(0, 2);
-            }
-
-            private static string ReplaceFirst(string text, string search, string replace)
-            {
-                int pos = text.IndexOf(search, StringComparison.InvariantCultureIgnoreCase);
-                if (pos < 0)
-                {
-                    return text;
-                }
-                return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
-            }
-        }
     }
 
-    [Serializable]
-    internal class GenericTuple<T1, T2>
+    public class DevicePathMapper
     {
-        internal T1 obj1;
-        internal T2 obj2;
+        private StringBuilder sbuilder = new StringBuilder(260);
 
-        internal GenericTuple(T1 o1, T2 o2)
+        [DllImport("Kernel32.dll", CharSet = CharSet.Unicode)]
+        private static extern uint QueryDosDevice([In] string lpDeviceName, [Out] StringBuilder lpTargetPath, [In] int ucchMax);
+
+        public struct DriveCache
         {
-            obj1 = o1;
-            obj2 = o2;
+            public string DriverLetter;
+            public string DevicePath;
+        }
+
+        private static DriveCache[] BuildDriveCache()
+        {
+            var di = DriveInfo.GetDrives();
+            var cache = new DriveCache[di.Length];
+            for (int i = 0; i < cache.Length; ++i)
+            {
+                cache[i].DriverLetter = GetDriveLetter(di[i]);
+                cache[i].DevicePath = GetDevicePath(di[i]);
+            }
+            return cache;
+        }
+
+        // TODO: Cache needs update when list of mounted volumes changes!
+        public DriveCache[] Cache { get; private set; } = BuildDriveCache();
+
+        public string FromNtPath(string devicePath)
+        {
+            var drives = Cache;
+            foreach (var drive in drives)
+            {
+                if (devicePath.StartsWith(drive.DevicePath, StringComparison.InvariantCultureIgnoreCase))
+                    return ReplaceFirst(devicePath, drive.DevicePath, drive.DriverLetter, sbuilder);
+            }
+            return devicePath;
+        }
+
+        private static string GetDevicePath(DriveInfo driveInfo)
+        {
+            var devicePathBuilder = new StringBuilder(128);
+            string ret = QueryDosDevice(GetDriveLetter(driveInfo), devicePathBuilder, devicePathBuilder.Capacity + 1) != 0
+                ? devicePathBuilder.ToString()
+                : null;
+            return ret;
+        }
+
+        private static string GetDriveLetter(DriveInfo driveInfo)
+        {
+            return driveInfo.Name.Substring(0, 2);
+        }
+
+        private static string ReplaceFirst(string text, string search, string replace, StringBuilder sb)
+        {
+            int pos = text.IndexOf(search, StringComparison.InvariantCultureIgnoreCase);
+            if (pos < 0)
+                return text;
+            else
+            {
+                //return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
+                int tmp = pos + search.Length;
+                sb.Length = 0;
+                sb.Append(text, 0, pos);
+                sb.Append(replace);
+                sb.Append(text, tmp, text.Length - tmp);
+                return sb.ToString();
+            }
         }
     }
 }

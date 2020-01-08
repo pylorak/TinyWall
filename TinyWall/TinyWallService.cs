@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Management;
@@ -44,6 +45,7 @@ namespace PKSoft
 
         // Context for auto rule inheritance
         private readonly object InheritanceGuard = new object();
+        private readonly StringBuilder ProcessStartWatcher_Sbuilder = new StringBuilder(1024);
         private HashSet<string> UserSubjectExes = new HashSet<string>();        // All executables with pre-configured rules.
         private Dictionary<string, FirewallExceptionV3> ChildInheritance = new Dictionary<string, FirewallExceptionV3>();
         private Dictionary<string, HashSet<string>> ChildInheritedSubjectExes = new Dictionary<string, HashSet<string>>();   // Executables that have been already auto-whitelisted due to inheritance
@@ -54,6 +56,7 @@ namespace PKSoft
         private DateTime LastUpdateCheck = DateTime.MinValue;
 
         private Engine WfpEngine;
+        private DevicePathMapper NtPathMapper = new DevicePathMapper();
 
         private List<IpAddrMask> InterfaceAddreses = new List<IpAddrMask>();
         private List<IpAddrMask> GatewayAddresses = new List<IpAddrMask>();
@@ -267,11 +270,12 @@ namespace PKSoft
 
                 if (ChildInheritance.Count != 0)
                 {
+                    StringBuilder sbuilder = new StringBuilder(1024);
                     Dictionary<int, ProcessManager.PROCESSENTRY32> procTree = new Dictionary<int, ProcessManager.PROCESSENTRY32>();
                     foreach (var p in ProcessManager.CreateToolhelp32Snapshot())
                     {
                         var p2 = p;
-                        string tmpPath = ProcessManager.GetProcessPath(p.th32ProcessID);
+                        string tmpPath = ProcessManager.GetProcessPath(p.th32ProcessID, sbuilder);
                         if (!string.IsNullOrEmpty(tmpPath))
                             p2.szExeFile = tmpPath.ToLowerInvariant();
                         procTree.Add(p2.th32ProcessID, p2);
@@ -303,10 +307,11 @@ namespace PKSoft
                                 break;
 
                             if (string.IsNullOrEmpty(parentEntry.szExeFile))
+                                // We cannot get the path, so let's skip this parent
                                 continue;
 
-                            // Skip if we have already processed this parent-child combination
                             if (ChildInheritedSubjectExes.ContainsKey(procPath) && ChildInheritedSubjectExes[procPath].Contains(parentEntry.szExeFile))
+                                // We have already processed this parent-child combination
                                 break;
 
                             if (ChildInheritance.TryGetValue(parentEntry.szExeFile, out FirewallExceptionV3 userEx))
@@ -1572,7 +1577,7 @@ namespace PKSoft
             using (var throttler = new ThreadThrottler(ThreadPriority.Highest, true))
             {
                 uint pid = (uint)(e.NewEvent["ProcessID"]);
-                string path = ProcessManager.GetProcessPath(unchecked((int)pid))?.ToLowerInvariant();
+                string path = ProcessManager.GetProcessPath(unchecked((int)pid), ProcessStartWatcher_Sbuilder)?.ToLowerInvariant();
                 List<FirewallExceptionV3> newExceptions = new List<FirewallExceptionV3>();
 
                 // Skip if we have no path
@@ -1596,7 +1601,7 @@ namespace PKSoft
                             // We reached top of process tree (with idle process)
                             break;
 
-                        string parentPath = ProcessManager.GetProcessPath(parentPid)?.ToLowerInvariant();
+                        string parentPath = ProcessManager.GetProcessPath(parentPid, ProcessStartWatcher_Sbuilder)?.ToLowerInvariant();
                         if (string.IsNullOrEmpty(parentPath))
                             continue;
 
@@ -1650,7 +1655,7 @@ namespace PKSoft
             entry.Event = eventType;
 
             if (!string.IsNullOrEmpty(data.appId))
-                entry.AppPath = Utils.DevicePathMapper.FromDevicePath(data.appId);
+                entry.AppPath = NtPathMapper.FromNtPath(data.appId);
             else
                 entry.AppPath = "System";
             entry.DestinationIP = data.remoteAddr?.ToString();

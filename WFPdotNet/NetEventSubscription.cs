@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
@@ -16,15 +17,105 @@ namespace WFPdotNet
         public DateTime timeStamp;
         public Interop.NetEventHeaderValidField flags;
         public IpProtocol? ipProtocol;
-        public IPAddress localAddr;
-        public IPAddress remoteAddr;
         public ushort? localPort;
         public ushort? remotePort;
         public string appId;
         public SecurityIdentifier userId;
         public Interop.FwpmDirection? direction;
 
-        public NetEventData(Interop.FWPM_NET_EVENT1 nativeEvent) : this()
+#if true
+        public string localAddr;
+        public string remoteAddr;
+        private static string ToIpAddress(Interop.InternetworkAddr addr, bool isIpV6, StringBuilder sb)
+        {
+            sb.Length = 0;
+            if (isIpV6)
+            {
+                unsafe
+                {
+                    for (int i = 15; i >= 0; i -= 2)
+                    {
+                        byte b1 = addr.AddrV6[i];
+                        byte b0 = addr.AddrV6[i - 1];
+                        if (
+                            (b1 == 0)
+                            && (b0 == 0)
+                            )
+                        {
+                            sb.Append('0');
+                        }
+                        else
+                        {
+                            ToHex(b1, sb);
+                            ToHex(b0, sb);
+                        }
+                        if (i > 2)
+                            sb.Append(':');
+                    }
+                }
+            }
+            else
+            {
+                unsafe
+                {
+                    byte* b = (byte*)&addr.AddrV4;
+
+                    ToStringBuilder(b[3], sb);
+                    sb.Append('.');
+                    ToStringBuilder(b[2], sb);
+                    sb.Append('.');
+                    ToStringBuilder(b[1], sb);
+                    sb.Append('.');
+                    ToStringBuilder(b[0], sb);
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        private static void ToHex(byte b, StringBuilder sb)
+        {
+            var n = (byte)(b >> 4);
+            sb.Append((char)(n > 9 ? n - 10 + 'a' : n + '0'));
+            n = (byte)(b & 0x0F);
+            sb.Append((char)(n > 9 ? n - 10 + 'a' : n + '0'));
+        }
+
+        private const string IntChars = "0123456789";
+        private static void ToStringBuilder(uint a, StringBuilder sb)
+        {
+            if (a == 0)
+            {
+                sb.Append('0');
+            }
+            else
+            {
+                unsafe
+                {
+                    char* rev = stackalloc char[16];
+                    int i = 15;
+                    while (a > 0)
+                    {
+                        rev[i] = IntChars[(int)(a % 10)];
+                        --i;
+                        a /= 10;
+                    }
+                    ++i;
+                    for (; i < 16; ++i)
+                        sb.Append(rev[i]);
+                }
+            }
+        }
+#else
+        public IPAddress localAddr;
+        public IPAddress remoteAddr;
+        private static IPAddress ToIpAddress(Interop.InternetworkAddr addr, bool isIpV6)
+        {
+            return isIpV6 ? addr.ToIpV6() : addr.ToIpV4();
+        }
+#endif
+
+        public NetEventData(Interop.FWPM_NET_EVENT1 nativeEvent, StringBuilder sb) : this()
         {
             this.EventType = nativeEvent.type;
             this.timeStamp = nativeEvent.header.timeStamp.Local;
@@ -39,11 +130,8 @@ namespace WFPdotNet
                 ipProtocol = (IpProtocol)nativeEvent.header.ipProtocol;
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_LOCAL_ADDR_SET) != 0)
-            {
-                if (nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V4)
-                    localAddr = nativeEvent.header.localAddr.ToIpV4();
-                else if (nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6)
-                    localAddr = nativeEvent.header.localAddr.ToIpV6();
+            { 
+                localAddr = ToIpAddress(nativeEvent.header.localAddr, nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6, sb);
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_LOCAL_PORT_SET) != 0)
             {
@@ -51,19 +139,18 @@ namespace WFPdotNet
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_REMOTE_ADDR_SET) != 0)
             {
-                if (nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V4)
-                    remoteAddr = nativeEvent.header.remoteAddr.ToIpV4();
-                else if (nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6)
-                    remoteAddr = nativeEvent.header.remoteAddr.ToIpV6();
+                remoteAddr = ToIpAddress(nativeEvent.header.remoteAddr, nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6, sb);
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_REMOTE_PORT_SET) != 0)
             {
                 remotePort = nativeEvent.header.remotePort;
             }
+#if false   // This works, but needs a lot of resources and is currently not needed. Enable when needed.
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_USER_ID_SET) != 0)
             {
                 userId = PInvokeHelper.ConvertSidPtrToManaged(nativeEvent.header.userId);
             }
+#endif
 
             if (nativeEvent.type == Interop.FWPM_NET_EVENT_TYPE.FWPM_NET_EVENT_TYPE_CLASSIFY_DROP)
             {
@@ -73,7 +160,7 @@ namespace WFPdotNet
             }
         }
 
-        public NetEventData(Interop.FWPM_NET_EVENT2 nativeEvent) : this()
+        public NetEventData(Interop.FWPM_NET_EVENT2 nativeEvent, StringBuilder sb) : this()
         {
             this.EventType = nativeEvent.type;
             this.timeStamp = nativeEvent.header.timeStamp.Local;
@@ -89,10 +176,7 @@ namespace WFPdotNet
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_LOCAL_ADDR_SET) != 0)
             {
-                if (nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V4)
-                    localAddr = nativeEvent.header.localAddr.ToIpV4();
-                else if (nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6)
-                    localAddr = nativeEvent.header.localAddr.ToIpV6();
+                localAddr = ToIpAddress(nativeEvent.header.localAddr, nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6, sb);
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_LOCAL_PORT_SET) != 0)
             {
@@ -100,19 +184,18 @@ namespace WFPdotNet
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_REMOTE_ADDR_SET) != 0)
             {
-                if (nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V4)
-                    remoteAddr = nativeEvent.header.remoteAddr.ToIpV4();
-                else if (nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6)
-                    remoteAddr = nativeEvent.header.remoteAddr.ToIpV6();
+                remoteAddr = ToIpAddress(nativeEvent.header.remoteAddr, nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6, sb);
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_REMOTE_PORT_SET) != 0)
             {
                 remotePort = nativeEvent.header.remotePort;
             }
+#if false   // This works, but needs a lot of resources and is currently not needed. Enable when needed.
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_USER_ID_SET) != 0)
             {
                 userId = PInvokeHelper.ConvertSidPtrToManaged(nativeEvent.header.userId);
             }
+#endif
 
             if (nativeEvent.type == Interop.FWPM_NET_EVENT_TYPE.FWPM_NET_EVENT_TYPE_CLASSIFY_DROP)
             {
@@ -136,6 +219,7 @@ namespace WFPdotNet
     {
         protected readonly FwpmNetEventSubscriptionSafeHandle _changeHandle;
         protected readonly NetEventCallback _callback;
+        protected readonly StringBuilder SBuilder = new StringBuilder(40);
         protected readonly object _context;
 
         protected abstract uint CreateSubscription(FwpmEngineSafeHandle engineHandle, ref Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subscription, IntPtr context, out FwpmNetEventSubscriptionSafeHandle changeHandle);
@@ -228,7 +312,7 @@ namespace WFPdotNet
         private void NativeCallbackHandler0(IntPtr context, IntPtr netEvent1)
         {
             Interop.FWPM_NET_EVENT1 ev = (Interop.FWPM_NET_EVENT1)Marshal.PtrToStructure(netEvent1, typeof(Interop.FWPM_NET_EVENT1));
-            _callback(_context, new NetEventData(ev));
+            _callback(_context, new NetEventData(ev, SBuilder));
         }
     }
 
@@ -266,7 +350,7 @@ namespace WFPdotNet
         private void NativeCallbackHandler1(IntPtr context, IntPtr netEvent1)
         {
             Interop.FWPM_NET_EVENT2 ev = (Interop.FWPM_NET_EVENT2)Marshal.PtrToStructure(netEvent1, typeof(Interop.FWPM_NET_EVENT2));
-            _callback(_context, new NetEventData(ev));
+            _callback(_context, new NetEventData(ev, SBuilder));
         }
     }
 
