@@ -143,9 +143,6 @@
     <Compile Include="GlobalInstances.cs" />
     <Compile Include="HostsFileManager.cs" />
     <Compile Include="Hotkey.cs" />
-    <Compile Include="Installer\NgenInstaller.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Installer\TinyWallInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
