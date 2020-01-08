@@ -322,10 +322,6 @@ namespace PKSoft
 
             System.Windows.Forms.Application.AddMessageFilter(this);
             InitializeComponent();
-            InitController();
-
-            TrayMenu.Closed += TrayMenu_Closed;
-            Tray.ContextMenuStrip = TrayMenu;
             Tray.Visible = true;
         }
 
@@ -1317,11 +1313,18 @@ namespace PKSoft
             {
                 StartUpdate(null, null);
             }
+
+            TrayMenu.Closed += TrayMenu_Closed;
+            Tray.ContextMenuStrip = TrayMenu;
         }
 
         public bool PreFilterMessage(ref System.Windows.Forms.Message m)
         {
-            SyncCtx = SynchronizationContext.Current;
+            if (SyncCtx == null)
+            {
+                SyncCtx = SynchronizationContext.Current;
+                InitController();
+            }
             return false;
         }
     }
