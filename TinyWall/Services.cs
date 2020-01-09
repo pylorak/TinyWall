@@ -113,10 +113,11 @@ namespace PKSoft
                 }
             }
 
-            listView.SuspendLayout();
+            Utils.SetDoubleBuffering(listView, true);
+            listView.BeginUpdate();
             listView.ListViewItemSorter = new ListViewItemComparer(0);
             listView.Items.AddRange(itemColl.ToArray());
-            listView.ResumeLayout(true);
+            listView.EndUpdate();
         }
 
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
