@@ -45,6 +45,7 @@
             this.columnHeader2,
             this.columnHeader3});
             this.listView.FullRowSelect = true;
+            this.listView.HideSelection = false;
             this.listView.MultiSelect = false;
             this.listView.Name = "listView";
             this.listView.Sorting = System.Windows.Forms.SortOrder.Ascending;

@@ -133,7 +133,7 @@
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="btnCancel.TabIndex" type="System.Int32, mscorlib">
-    <value>16</value>
+    <value>1000</value>
   </data>
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Cancel</value>
@@ -163,7 +163,7 @@
     <value>90, 33</value>
   </data>
   <data name="btnOK.TabIndex" type="System.Int32, mscorlib">
-    <value>15</value>
+    <value>900</value>
   </data>
   <data name="btnOK.Text" xml:space="preserve">
     <value>OK</value>
@@ -244,7 +244,7 @@
     <value>214, 20</value>
   </data>
   <data name="txtSrvName.TabIndex" type="System.Int32, mscorlib">
-    <value>18</value>
+    <value>46</value>
   </data>
   <data name="&gt;&gt;txtSrvName.Name" xml:space="preserve">
     <value>txtSrvName</value>
@@ -268,7 +268,7 @@
     <value>214, 20</value>
   </data>
   <data name="txtAppPath.TabIndex" type="System.Int32, mscorlib">
-    <value>17</value>
+    <value>45</value>
   </data>
   <data name="&gt;&gt;txtAppPath.Name" xml:space="preserve">
     <value>txtAppPath</value>
@@ -295,7 +295,7 @@
     <value>142, 23</value>
   </data>
   <data name="btnBrowse.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+    <value>20</value>
   </data>
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Browse for a file...</value>
@@ -325,7 +325,7 @@
     <value>142, 23</value>
   </data>
   <data name="btnProcess.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
+    <value>10</value>
   </data>
   <data name="btnProcess.Text" xml:space="preserve">
     <value>Select a process...</value>
@@ -355,7 +355,7 @@
     <value>142, 23</value>
   </data>
   <data name="btnChooseService.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+    <value>30</value>
   </data>
   <data name="btnChooseService.Text" xml:space="preserve">
     <value>Choose a service...</value>
@@ -418,7 +418,7 @@
     <value>144, 21</value>
   </data>
   <data name="cmbTimer.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
+    <value>40</value>
   </data>
   <data name="&gt;&gt;cmbTimer.Name" xml:space="preserve">
     <value>cmbTimer</value>
@@ -529,7 +529,7 @@
     <value>140, 17</value>
   </data>
   <data name="chkRestrictToLocalNetwork.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
+    <value>50</value>
   </data>
   <data name="chkRestrictToLocalNetwork.Text" xml:space="preserve">
     <value>Restrict to local network</value>
@@ -559,7 +559,7 @@
     <value>129, 17</value>
   </data>
   <data name="radBlock.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
+    <value>70</value>
   </data>
   <data name="radBlock.Text" xml:space="preserve">
     <value>Always block all traffic</value>
@@ -589,7 +589,7 @@
     <value>194, 17</value>
   </data>
   <data name="radTcpUdpOut.TabIndex" type="System.Int32, mscorlib">
-    <value>8</value>
+    <value>90</value>
   </data>
   <data name="radTcpUdpOut.Text" xml:space="preserve">
     <value>Allow outgoing UDP and TCP traffic</value>
@@ -619,7 +619,7 @@
     <value>182, 17</value>
   </data>
   <data name="radTcpUdpUnrestricted.TabIndex" type="System.Int32, mscorlib">
-    <value>9</value>
+    <value>100</value>
   </data>
   <data name="radTcpUdpUnrestricted.Text" xml:space="preserve">
     <value>Unrestricted UDP and TCP traffic</value>
@@ -649,7 +649,7 @@
     <value>92, 17</value>
   </data>
   <data name="radUnrestricted.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
+    <value>110</value>
   </data>
   <data name="radUnrestricted.Text" xml:space="preserve">
     <value>No restrictions</value>
@@ -706,7 +706,7 @@
     <value>140, 20</value>
   </data>
   <data name="txtListenPortUDP.TabIndex" type="System.Int32, mscorlib">
-    <value>14</value>
+    <value>150</value>
   </data>
   <data name="&gt;&gt;txtListenPortUDP.Name" xml:space="preserve">
     <value>txtListenPortUDP</value>
@@ -730,7 +730,7 @@
     <value>140, 20</value>
   </data>
   <data name="txtListenPortTCP.TabIndex" type="System.Int32, mscorlib">
-    <value>13</value>
+    <value>130</value>
   </data>
   <data name="&gt;&gt;txtListenPortTCP.Name" xml:space="preserve">
     <value>txtListenPortTCP</value>
@@ -820,7 +820,7 @@
     <value>140, 20</value>
   </data>
   <data name="txtOutboundPortUDP.TabIndex" type="System.Int32, mscorlib">
-    <value>12</value>
+    <value>140</value>
   </data>
   <data name="&gt;&gt;txtOutboundPortUDP.Name" xml:space="preserve">
     <value>txtOutboundPortUDP</value>
@@ -844,7 +844,7 @@
     <value>140, 20</value>
   </data>
   <data name="txtOutboundPortTCP.TabIndex" type="System.Int32, mscorlib">
-    <value>11</value>
+    <value>120</value>
   </data>
   <data name="&gt;&gt;txtOutboundPortTCP.Name" xml:space="preserve">
     <value>txtOutboundPortTCP</value>
@@ -985,7 +985,7 @@
     <value>143, 17</value>
   </data>
   <data name="radOnlySpecifiedPorts.TabIndex" type="System.Int32, mscorlib">
-    <value>7</value>
+    <value>80</value>
   </data>
   <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
     <value>Allow only specified ports</value>
@@ -1012,7 +1012,7 @@
     <value>535, 153</value>
   </data>
   <data name="panel3.TabIndex" type="System.Int32, mscorlib">
-    <value>44</value>
+    <value>115</value>
   </data>
   <data name="&gt;&gt;panel3.Name" xml:space="preserve">
     <value>panel3</value>
@@ -1039,10 +1039,10 @@
     <value>22, 222</value>
   </data>
   <data name="chkInheritToChildren.Size" type="System.Drawing.Size, System.Drawing">
-    <value>124, 17</value>
+    <value>193, 17</value>
   </data>
   <data name="chkInheritToChildren.TabIndex" type="System.Int32, mscorlib">
-    <value>45</value>
+    <value>60</value>
   </data>
   <data name="chkInheritToChildren.Text" xml:space="preserve">
     <value>Apply same rules to child processes</value>

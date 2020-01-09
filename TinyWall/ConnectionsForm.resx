@@ -130,7 +130,7 @@
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="btnClose.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
+    <value>1000</value>
   </data>
   <data name="btnClose.Text" xml:space="preserve">
     <value>Close</value>
@@ -274,7 +274,7 @@
     <value>16, 16</value>
   </data>
   <data name="list.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
+    <value>10</value>
   </data>
   <data name="&gt;&gt;list.Name" xml:space="preserve">
     <value>list</value>
@@ -298,7 +298,7 @@
     <value>90, 33</value>
   </data>
   <data name="btnRefresh.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
+    <value>900</value>
   </data>
   <data name="btnRefresh.Text" xml:space="preserve">
     <value>Refresh</value>
@@ -328,7 +328,7 @@
     <value>106, 17</value>
   </data>
   <data name="chkShowListen.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+    <value>30</value>
   </data>
   <data name="chkShowListen.Text" xml:space="preserve">
     <value>Show open ports</value>
@@ -358,7 +358,7 @@
     <value>146, 17</value>
   </data>
   <data name="chkShowActive.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+    <value>20</value>
   </data>
   <data name="chkShowActive.Text" xml:space="preserve">
     <value>Show active connections</value>
@@ -388,7 +388,7 @@
     <value>189, 17</value>
   </data>
   <data name="chkShowBlocked.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
+    <value>40</value>
   </data>
   <data name="chkShowBlocked.Text" xml:space="preserve">
     <value>Show blocked apps (in last 2 mins)</value>

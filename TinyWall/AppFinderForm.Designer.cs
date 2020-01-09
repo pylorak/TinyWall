@@ -63,6 +63,7 @@
             this.list.CheckBoxes = true;
             this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
+            this.list.HideSelection = false;
             this.list.Name = "list";
             this.list.SmallImageList = this.IconList;
             this.list.Sorting = System.Windows.Forms.SortOrder.Ascending;
