@@ -1779,6 +1779,7 @@ namespace PKSoft
                 MinuteTimer = null;
             }
 
+            NtPathMapper.Dispose();
             LogWatcher.Dispose();
             CommitLearnedRules();
             ActiveConfig.Service.Save(ConfigSavePath);

@@ -12,9 +12,9 @@ using System.Security.Principal;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
+using System.Management;
 using Microsoft.Win32;
 using Microsoft.Samples;
-using TinyWall.Interface.Internal;
 
 namespace PKSoft
 {
@@ -733,17 +733,32 @@ namespace PKSoft
         }
     }
 
-    public class DevicePathMapper
+    public sealed class DevicePathMapper : IDisposable
     {
-        private StringBuilder sbuilder = new StringBuilder(260);
-
-        [DllImport("Kernel32.dll", CharSet = CharSet.Unicode)]
+        [DllImport("kernel32", CharSet = CharSet.Unicode)]
+        [SuppressUnmanagedCodeSecurity]
         private static extern uint QueryDosDevice([In] string lpDeviceName, [Out] StringBuilder lpTargetPath, [In] int ucchMax);
 
         public struct DriveCache
         {
             public string DriverLetter;
             public string DevicePath;
+        }
+
+        private StringBuilder sbuilder = new StringBuilder(260);
+        public DriveCache[] Cache { get; private set; } = BuildDriveCache();
+        private ManagementEventWatcher DriveWatcher;
+
+        public DevicePathMapper()
+        {
+            try
+            {
+                WqlEventQuery insertQuery = new WqlEventQuery("SELECT * FROM __InstanceCreationEvent WITHIN 3 WHERE TargetInstance ISA 'Win32_LogicalDisk'");
+                DriveWatcher = new ManagementEventWatcher(insertQuery);
+                DriveWatcher.EventArrived += Watcher_EventArrived;
+                DriveWatcher.Start();
+            }
+            catch { }
         }
 
         private static DriveCache[] BuildDriveCache()
@@ -758,12 +773,20 @@ namespace PKSoft
             return cache;
         }
 
-        // TODO: Cache needs update when list of mounted volumes changes!
-        public DriveCache[] Cache { get; private set; } = BuildDriveCache();
+        private void Watcher_EventArrived(object sender, EventArrivedEventArgs e)
+        {
+            RebuildCache();
+        }
+
+        public void RebuildCache()
+        {
+            Cache = BuildDriveCache();
+        }
 
         public string FromNtPath(string devicePath)
         {
             var drives = Cache;
+
             foreach (var drive in drives)
             {
                 if (devicePath.StartsWith(drive.DevicePath, StringComparison.InvariantCultureIgnoreCase))
@@ -801,6 +824,11 @@ namespace PKSoft
                 sb.Append(text, tmp, text.Length - tmp);
                 return sb.ToString();
             }
+        }
+
+        public void Dispose()
+        {
+            DriveWatcher?.Dispose();
         }
     }
 }
