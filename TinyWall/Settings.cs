@@ -172,7 +172,7 @@ namespace PKSoft
         // Connections window
         public System.Windows.Forms.FormWindowState ConnFormWindowState = System.Windows.Forms.FormWindowState.Normal;
         public System.Drawing.Point ConnFormWindowLoc = new System.Drawing.Point(150, 150);
-        public System.Drawing.Size ConnFormWindowSize = new System.Drawing.Size(827, 386);
+        public System.Drawing.Size ConnFormWindowSize = new System.Drawing.Size(830, 400);
         public bool ConnFormShowConnections = true;
         public bool ConnFormShowOpenPorts = false;
         public bool ConnFormShowBlocked = false;
@@ -180,11 +180,13 @@ namespace PKSoft
         // Processes window
         public System.Windows.Forms.FormWindowState ProcessesFormWindowState = System.Windows.Forms.FormWindowState.Normal;
         public System.Drawing.Point ProcessesFormWindowLoc = new System.Drawing.Point(150, 150);
-        public System.Drawing.Size ProcessesFormWindowSize = new System.Drawing.Size(827, 386);
+        public System.Drawing.Size ProcessesFormWindowSize = new System.Drawing.Size(830, 400);
 
         // Manage window
         public bool AskForExceptionDetails = false;
-        public int ManageTabIndex;
+        public int SettingsTabIndex;
+        public System.Drawing.Point SettingsFormWindowLoc = new System.Drawing.Point(150, 150);
+        public System.Drawing.Size SettingsFormWindowSize = new System.Drawing.Size(768, 486);
 
         // Hotkeys
         public bool EnableGlobalHotkeys = true;

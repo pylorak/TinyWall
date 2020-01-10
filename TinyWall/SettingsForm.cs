@@ -284,7 +284,7 @@ namespace PKSoft
             TmpConfig.Controller.AskForExceptionDetails = chkAskForExceptionDetails.Checked;
             TmpConfig.Controller.EnableGlobalHotkeys = chkEnableHotkeys.Checked;
             TmpConfig.Service.AutoUpdateCheck = chkAutoUpdateCheck.Checked;
-            TmpConfig.Controller.ManageTabIndex = tabControl1.SelectedIndex;
+            TmpConfig.Controller.SettingsTabIndex = tabControl1.SelectedIndex;
             TmpConfig.Service.LockHostsFile = chkLockHostsFile.Checked;
             TmpConfig.Service.Blocklists.EnablePortBlocklist = chkBlockMalwarePorts.Checked;
             TmpConfig.Service.Blocklists.EnableHostsBlocklist = chkHostsBlocklist.Checked;
@@ -518,10 +518,12 @@ namespace PKSoft
 #if DEBUG
             //DataCollection.StartProfile(ProfileLevel.Global, DataCollection.CurrentId);
 #endif
+            this.Size = TmpConfig.Controller.SettingsFormWindowSize;
+            this.Location = TmpConfig.Controller.SettingsFormWindowLoc;
 
             Utils.SetDoubleBuffering(listApplications, true);
             listApplications.ListViewItemSorter = new ListViewItemComparer(0);
-            tabControl1.SelectedIndex = TmpConfig.Controller.ManageTabIndex;
+            tabControl1.SelectedIndex = TmpConfig.Controller.SettingsTabIndex;
 
             comboLanguages.Items.Add(new IdWithName("auto", "Automatic"));
             comboLanguages.Items.Add(new IdWithName("cs", "Čeština"));
@@ -598,6 +600,15 @@ namespace PKSoft
                 btnAppRemove_Click(btnAppRemove, null);
                 e.Handled = true;
             }
+        }
+
+        private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            TmpConfig.Controller.SettingsFormWindowSize = this.Size;
+            TmpConfig.Controller.SettingsFormWindowLoc = this.Location;
+            ActiveConfig.Controller.SettingsFormWindowSize = this.Size;
+            ActiveConfig.Controller.SettingsFormWindowLoc = this.Location;
+            ActiveConfig.Controller.Save();
         }
     }
 }
