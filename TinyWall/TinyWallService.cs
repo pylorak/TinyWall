@@ -245,10 +245,20 @@ namespace PKSoft
             {
                 List<FirewallExceptionV3> UserExceptions = new List<FirewallExceptionV3>();
 
+                // Add rule for our own binary
+                UserExceptions.Add(new FirewallExceptionV3(
+                    new ExecutableSubject(ProcessManager.ExecutablePath),
+                    new TcpUdpPolicy()
+                    {
+                         AllowedRemoteTcpConnectPorts = "443"
+                    }
+                ));
+
                 // Collect all applications exceptions
                 UserExceptions.AddRange(ActiveConfig.Service.ActiveProfile.AppExceptions);
 
                 // Collect all special exceptions
+                ActiveConfig.Service.ActiveProfile.SpecialExceptions.Remove("TinyWall");    // TODO: Deprecated: Needed due to old configs. Remove in future version.
                 foreach (string appName in ActiveConfig.Service.ActiveProfile.SpecialExceptions)
                     UserExceptions.AddRange(CollectExceptionsForAppByName(appName));
 

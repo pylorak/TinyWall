@@ -675,29 +675,6 @@
     <Application>
       <Components>
         <SubjectIdentity>
-          <Policy i:type="TcpUdpPolicy">
-            <AllowedRemoteTcpConnectPorts>80,443</AllowedRemoteTcpConnectPorts>
-          </Policy>
-          <Subject i:type="ExecutableSubject">
-            <ExecutablePath>{folder:twpath}\TinyWall.exe</ExecutablePath>
-          </Subject>
-        </SubjectIdentity>
-      </Components>
-      <Flags xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-        <d4p1:KeyValueOfstringstring>
-          <d4p1:Key>TWUI:SPECIAL</d4p1:Key>
-          <d4p1:Value i:nil="true" />
-        </d4p1:KeyValueOfstringstring>
-        <d4p1:KeyValueOfstringstring>
-          <d4p1:Key>TWUI:RECOMMENDED</d4p1:Key>
-          <d4p1:Value i:nil="true" />
-        </d4p1:KeyValueOfstringstring>
-      </Flags>
-      <Name>TinyWall</Name>
-    </Application>
-    <Application>
-      <Components>
-        <SubjectIdentity>
           <Policy i:type="RuleListPolicy">
             <Rules>
               <RuleDef>

@@ -18,7 +18,6 @@ namespace PKSoft
         private Thread m_PipeWorkerThread;
         private PipeDataReceived m_RcvCallback;
         private bool m_Run = true;
-        private readonly string m_ServerFilePath;
 
         protected override void Dispose(bool disposing)
         {
@@ -51,11 +50,6 @@ namespace PKSoft
         internal PipeServerEndpoint(PipeDataReceived recvCallback)
         {
             m_RcvCallback = recvCallback;
-
-            using (Process server = Process.GetCurrentProcess())
-            {
-                m_ServerFilePath = Utils.GetPathOfProcess(server.Id);
-            }
 
             // Start thread that is going to do the actual communication
             m_PipeWorkerThread = new Thread(new ThreadStart(PipeServerWorker));
@@ -106,7 +100,7 @@ namespace PKSoft
 
             string clientFilePath = Utils.GetPathOfProcess((int)clientPid);
 
-            return clientFilePath.Equals(m_ServerFilePath, StringComparison.OrdinalIgnoreCase);
+            return clientFilePath.Equals(ProcessManager.ExecutablePath, StringComparison.OrdinalIgnoreCase);
 #else
             return true;
 #endif

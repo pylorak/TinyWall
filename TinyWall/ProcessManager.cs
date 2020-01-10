@@ -141,6 +141,14 @@ namespace PKSoft
             NativeFormat = 1
         }
 
+        public static string ExecutablePath { get; } = GetCurrentExecutablePath();
+        private static string GetCurrentExecutablePath()
+        {
+            using (var proc = Process.GetCurrentProcess())
+            {
+                return ProcessManager.GetProcessPath(proc.Id);
+            }
+        }
         public static string GetProcessPath(int processId)
         {
             var buffer = new StringBuilder(1024);

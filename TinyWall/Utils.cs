@@ -32,7 +32,7 @@ namespace PKSoft
             [DllImport("user32.dll")]
             internal static extern IntPtr GetForegroundWindow();
 
-            [DllImport("user32.dll", SetLastError=true)]
+            [DllImport("user32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool IsImmersiveProcess(IntPtr hProcess);
 
