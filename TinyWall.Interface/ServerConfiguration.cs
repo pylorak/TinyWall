@@ -23,7 +23,7 @@ namespace TinyWall.Interface
         public bool EnableBlocklists = false;
 
         [DataMember(EmitDefaultValue = false)]
-        public bool EnablePortBlocklist = true;
+        public bool EnablePortBlocklist = false;
 
         [DataMember(EmitDefaultValue = false)]
         public bool EnableHostsBlocklist = false;
