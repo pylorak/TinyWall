@@ -1252,6 +1252,8 @@ namespace PKSoft
 
         private void InitController()
         {
+            mnuTrafficRate.Text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", PKSoft.Resources.Messages.TrafficIn, "...", PKSoft.Resources.Messages.TrafficOut, "...");
+
             try
             {
                 TrafficStatsSearcher = new ManagementObjectSearcher(@"select BytesReceivedPersec, BytesSentPersec from Win32_PerfRawData_Tcpip_NetworkInterface");
