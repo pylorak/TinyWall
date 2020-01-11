@@ -1,7 +1,7 @@
 TinyWall Changelog
 ---------------------
 
-x.x.x - Major update (not yet released)
+3.0.0 - Major update (NOT yet released)
 - Firewall technology improvements
     - Rebuilt firewall on top of Windows Filtering Platform
     - Full support for File and Printer Sharing and Network Browser
@@ -13,6 +13,23 @@ x.x.x - Major update (not yet released)
     - Support for machine-global exceptions
     - Increased protection against code-identity spoofing attacks
     - Ability to automatically apply rules to child-processes
+    - Add IPSec AH support to VPN rules
+- GUI improvements
+    - Manual app detection gives instant first results
+    - Live update of traffic rate in tray menu
+    - Processes window remembers size
+    - Much improved loading time of Processes window
+    - Don't list duplicate processes in Processes window
+    - Improved batch whitelisting from Connections and Processes
+    - Make Settings window resizable
+    - Support F5-refresh in Connections window
+    - Support Delete key for application exceptions list
+    - Eliminate flicker from all lists in the application
+    - Enable single-click toggling of special exceptions
+    - Sort Connections list by timestamp by default
+    - Group together deleted applications in settings
+    - Add error logging to GUI
+    - Prevent svchost from being learned when using the Autolearn feature
 - Installer improvements
     - Install location can be customized
     - Warning about remote installations during setup
@@ -20,32 +37,36 @@ x.x.x - Major update (not yet released)
     - Password protection of uninstaller if TinyWall is locked
     - Display version number in Welcome screen title
     - Fix dangling tray icon after uninstall
-- GUI improvements
-    - Manual app detection gives instant first results
-    - Live update of traffic rate in tray menu
-    - Processes window remembers size
-    - Much improved loading time of Processes window
-    - Don't list duplicate processes in Processes window
-    - Improved batch whitelisting from Connections list
-    - Improved batch whitelisting from Processes list
-    - Support F5-refresh in Connections window
-    - Support Delete key for application exceptions list
-    - Eliminate flicker when updating Connections and Application lists
-    - Enable single-click toggling of special exceptions
-    - Sort Connections list by timestamp by default
-    - Group together deleted applications in settings
-    - Add error logging to GUI
-- General reliability improvements
+    - Show version on installer's Welcome screen
+    - Faster install and uninstall
+- General improvements
     - Atomically store configuration
     - Reduced probability of failed whitelisting attempts
     - Fix: Don't leave locked files on service exit
     - Fix: Race condition between update check and service message loop
     - Fix: Some code paths not reliably run at service exit
+    - Optimizations to startup performance
+    - Only check updates over HTTPS
 - Deprecation notes
     - Windows Vista no longer supported
     - 32-bit systems no longer supported
     - Whitelisting from a network share temporary not supported
 
+---------------------
+    
+2.1.14 - Maintenance release (02.01.2020.)
+- Fix communication error with Service when update info is available (2.1.13 regression)
+
+---------------------
+
+2.1.13 - Maintenance release (28.12.2019.)
+- Fix for local exploit CVE-2019-19470
+
+---------------------
+
+2.1.12 - Maintenance release (23.08.2019.)
+- Fix user may not get notified of updates for a very long time
+    
 ---------------------
 
 2.1.11 - Maintenance release (28.07.2019.)
