@@ -16,7 +16,7 @@ using PKSoft.DatabaseClasses;
 
 namespace PKSoft
 {
-    internal sealed class TinyWallController : ApplicationContext, IMessageFilter
+    internal sealed class TinyWallController : ApplicationContext
     {
         #region Vom Windows Form-Designer generierter Code
 
@@ -320,9 +320,19 @@ namespace PKSoft
                 catch { }
             }
 
-            System.Windows.Forms.Application.AddMessageFilter(this);
             InitializeComponent();
+            System.Windows.Forms.Application.Idle += Application_Idle;
             Tray.Visible = true;
+        }
+
+        private void Application_Idle(object sender, EventArgs e)
+        {
+            if (SyncCtx == null)
+            {
+                SyncCtx = SynchronizationContext.Current;
+                System.Windows.Forms.Application.Idle -= Application_Idle;
+                InitController();
+            }
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -1325,16 +1335,6 @@ namespace PKSoft
 
             TrayMenu.Closed += TrayMenu_Closed;
             Tray.ContextMenuStrip = TrayMenu;
-        }
-
-        public bool PreFilterMessage(ref System.Windows.Forms.Message m)
-        {
-            if (SyncCtx == null)
-            {
-                SyncCtx = SynchronizationContext.Current;
-                InitController();
-            }
-            return false;
         }
     }
 
