@@ -778,19 +778,35 @@
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Direction>InOut</Direction>
-                <Name>LLMNR-UDP (client)</Name>
+                <Direction>Out</Direction>
+                <Name>LLMNR-UDP</Name>
                 <Protocol>UDP</Protocol>
                 <RemoteAddresses>LocalSubnet</RemoteAddresses>
                 <RemotePorts>5355</RemotePorts>
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
-                <Direction>InOut</Direction>
+                <Direction>In</Direction>
                 <LocalPorts>5355</LocalPorts>
-                <Name>LLMNR-UDP (server)</Name>
+                <Name>LLMNR-UDP</Name>
                 <Protocol>UDP</Protocol>
                 <RemoteAddresses>LocalSubnet</RemoteAddresses>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Direction>In</Direction>
+                <LocalPorts>5353</LocalPorts>
+                <Name>mDNS</Name>
+                <Protocol>UDP</Protocol>
+                <RemoteAddresses>LocalSubnet</RemoteAddresses>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Direction>Out</Direction>
+                <Name>mDNS</Name>
+                <Protocol>UDP</Protocol>
+                <RemoteAddresses>LocalSubnet</RemoteAddresses>
+                <RemotePorts>5353</RemotePorts>
               </RuleDef>
             </Rules>
           </Policy>
@@ -815,10 +831,25 @@
     <Application>
       <Components>
         <SubjectIdentity>
-          <Policy i:type="TcpUdpPolicy">
-            <AllowedLocalUdpListenerPorts>1900</AllowedLocalUdpListenerPorts>
-            <AllowedRemoteUdpConnectPorts>1900</AllowedRemoteUdpConnectPorts>
-            <LocalNetworkOnly>true</LocalNetworkOnly>
+          <Policy i:type="RuleListPolicy">
+            <Rules>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Direction>In</Direction>
+                <LocalPorts>1900</LocalPorts>
+                <Name>SSDP</Name>
+                <Protocol>UDP</Protocol>
+                <RemoteAddresses>LocalSubnet,239.255.255.250</RemoteAddresses>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Direction>Out</Direction>
+                <Name>SSDP</Name>
+                <Protocol>UDP</Protocol>
+                <RemoteAddresses>LocalSubnet,239.255.255.250</RemoteAddresses>
+                <RemotePorts>1900</RemotePorts>
+              </RuleDef>
+            </Rules>
           </Policy>
           <Subject i:type="ServiceSubject">
             <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
@@ -847,18 +878,34 @@
           </Subject>
         </SubjectIdentity>
         <SubjectIdentity>
-          <Policy i:type="TcpUdpPolicy">
-            <AllowedLocalUdpListenerPorts>3702</AllowedLocalUdpListenerPorts>
-            <LocalNetworkOnly>true</LocalNetworkOnly>
+          <Policy i:type="RuleListPolicy">
+            <Rules>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Direction>In</Direction>
+                <LocalPorts>3702</LocalPorts>
+                <Name>WSD-In</Name>
+                <Protocol>UDP</Protocol>
+                <RemoteAddresses>LocalSubnet,239.255.255.250</RemoteAddresses>
+              </RuleDef>
+            </Rules>
           </Policy>
           <Subject i:type="ExecutableSubject">
             <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
           </Subject>
         </SubjectIdentity>
         <SubjectIdentity>
-          <Policy i:type="TcpUdpPolicy">
-            <AllowedRemoteUdpConnectPorts>3702</AllowedRemoteUdpConnectPorts>
-            <LocalNetworkOnly>true</LocalNetworkOnly>
+          <Policy i:type="RuleListPolicy">
+            <Rules>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Direction>Out</Direction>
+                <Name>Pub WSD-Out</Name>
+                <Protocol>UDP</Protocol>
+                <RemoteAddresses>LocalSubnet,239.255.255.250</RemoteAddresses>
+                <RemotePorts>3702</RemotePorts>
+              </RuleDef>
+            </Rules>
           </Policy>
           <Subject i:type="ServiceSubject">
             <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
@@ -866,9 +913,17 @@
           </Subject>
         </SubjectIdentity>
         <SubjectIdentity>
-          <Policy i:type="TcpUdpPolicy">
-            <AllowedRemoteUdpConnectPorts>3702</AllowedRemoteUdpConnectPorts>
-            <LocalNetworkOnly>true</LocalNetworkOnly>
+          <Policy i:type="RuleListPolicy">
+            <Rules>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Direction>Out</Direction>
+                <Name>WSD-Out</Name>
+                <Protocol>UDP</Protocol>
+                <RemoteAddresses>LocalSubnet,239.255.255.250</RemoteAddresses>
+                <RemotePorts>3702</RemotePorts>
+              </RuleDef>
+            </Rules>
           </Policy>
           <Subject i:type="ServiceSubject">
             <ExecutablePath>{folder:sys32}\svchost.exe</ExecutablePath>
