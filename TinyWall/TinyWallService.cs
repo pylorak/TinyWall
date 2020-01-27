@@ -281,19 +281,18 @@ namespace PKSoft
                 if (ChildInheritance.Count != 0)
                 {
                     StringBuilder sbuilder = new StringBuilder(1024);
-                    Dictionary<int, ProcessManager.PROCESSENTRY32> procTree = new Dictionary<int, ProcessManager.PROCESSENTRY32>();
-                    foreach (var p in ProcessManager.CreateToolhelp32Snapshot())
+                    Dictionary<int, ProcessManager.ExtendedProcessEntry> procTree = new Dictionary<int, ProcessManager.ExtendedProcessEntry>();
+                    foreach (var p in ProcessManager.CreateToolhelp32SnapshotExtended())
                     {
                         var p2 = p;
-                        string tmpPath = ProcessManager.GetProcessPath(p.th32ProcessID, sbuilder);
-                        if (!string.IsNullOrEmpty(tmpPath))
-                            p2.szExeFile = tmpPath.ToLowerInvariant();
-                        procTree.Add(p2.th32ProcessID, p2);
+                        if (!string.IsNullOrEmpty(p.ImagePath))
+                            p2.ImagePath = p.ImagePath.ToLowerInvariant();
+                        procTree.Add(p2.BaseEntry.th32ProcessID, p2);
                     }
 
                     foreach (var pair in procTree)
                     {
-                        string procPath = pair.Value.szExeFile;
+                        string procPath = pair.Value.ImagePath;
 
                         // Skip if we have no path
                         if (string.IsNullOrEmpty(procPath))
@@ -304,34 +303,39 @@ namespace PKSoft
                             continue;
 
                         // Start walking up the process tree
-                        for (ProcessManager.PROCESSENTRY32 parentEntry = procTree[pair.Key]; ;)
+                        for (ProcessManager.ExtendedProcessEntry parentEntry = procTree[pair.Key]; ;)
                         {
-                            if (procTree.ContainsKey(parentEntry.th32ParentProcessID))
-                                parentEntry = procTree[parentEntry.th32ParentProcessID];
+                            if (procTree.ContainsKey(parentEntry.BaseEntry.th32ParentProcessID))
+                                parentEntry = procTree[parentEntry.BaseEntry.th32ParentProcessID];
                             else
                                 // We reached top of process tree (with non-existing parent)
                                 break;
 
-                            if (parentEntry.th32ProcessID == 0)
+                            // Check if if what we have is really the parent, or just a reused PID
+                            if (parentEntry.CreationTime > pair.Value.CreationTime)
+                                // We reached the top of the process tree (with non-existing parent)
+                                break;
+
+                            if (parentEntry.BaseEntry.th32ProcessID == 0)
                                 // We reached top of process tree (with idle process)
                                 break;
 
-                            if (string.IsNullOrEmpty(parentEntry.szExeFile))
+                            if (string.IsNullOrEmpty(parentEntry.ImagePath))
                                 // We cannot get the path, so let's skip this parent
                                 continue;
 
-                            if (ChildInheritedSubjectExes.ContainsKey(procPath) && ChildInheritedSubjectExes[procPath].Contains(parentEntry.szExeFile))
+                            if (ChildInheritedSubjectExes.ContainsKey(procPath) && ChildInheritedSubjectExes[procPath].Contains(parentEntry.ImagePath))
                                 // We have already processed this parent-child combination
                                 break;
 
-                            if (ChildInheritance.TryGetValue(parentEntry.szExeFile, out FirewallExceptionV3 userEx))
+                            if (ChildInheritance.TryGetValue(parentEntry.ImagePath, out FirewallExceptionV3 userEx))
                             {
                                 FirewallExceptionV3 ex = Utils.DeepClone(userEx);
                                 ex.Subject = new ExecutableSubject(procPath);
                                 GetRulesForException(ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
                                 if (!ChildInheritedSubjectExes.ContainsKey(procPath))
                                     ChildInheritedSubjectExes.Add(procPath, new HashSet<string>());
-                                ChildInheritedSubjectExes[procPath].Add(parentEntry.szExeFile);
+                                ChildInheritedSubjectExes[procPath].Add(parentEntry.ImagePath);
                                 break;
                             }
                         }
@@ -1604,7 +1608,7 @@ namespace PKSoft
                     for (int parentPid = unchecked((int)pid); ;)
                     {
                         if (!ProcessManager.GetParentProcess(parentPid, ref parentPid))
-                            // We reached top of process tree (with non-existent paretn)
+                            // We reached the top of the process tree (with non-existent parent)
                             break;
 
                         if (parentPid == 0)

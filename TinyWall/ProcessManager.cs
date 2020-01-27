@@ -75,6 +75,10 @@ namespace PKSoft
             [DllImport("user32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool PostThreadMessage(int threadId, uint msg, UIntPtr wParam, IntPtr lParam);
+
+            [DllImport("kernel32", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool GetProcessTimes(SafeProcessHandle hProcess, out long lpCreationTime, out long lpExitTime, out long lpKernelTime, out long lpUserTime);
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -102,6 +106,13 @@ namespace PKSoft
             public int pcPriClassBase;
             public uint dwFlags;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)] public string szExeFile;
+        };
+
+        public struct ExtendedProcessEntry
+        {
+            public PROCESSENTRY32 BaseEntry;
+            public long CreationTime;
+            public string ImagePath;
         };
 
         [Flags]
@@ -157,21 +168,27 @@ namespace PKSoft
 
         public static string GetProcessPath(int processId, StringBuilder buffer)
         {
+            using (SafeProcessHandle hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
+            {
+                return GetProcessPath(hProcess, buffer);
+            }
+        }
+
+        public static string GetProcessPath(SafeProcessHandle hProcess, StringBuilder buffer)
+        {
             // This method needs Windows Vista or newer OS
             System.Diagnostics.Debug.Assert(Environment.OSVersion.Version.Major >= 6);
 
             buffer.Length = 0;
-            using (SafeProcessHandle hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
-            {
-                if (hProcess.IsInvalid)
-                    return null;
 
-                int size = buffer.Capacity;
-                if (SafeNativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.Win32Format, buffer, out size))
-                    return buffer.ToString();
-                else
-                    return null;
-            }
+            if (hProcess.IsInvalid)
+                return null;
+
+            int size = buffer.Capacity;
+            if (SafeNativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.Win32Format, buffer, out size))
+                return buffer.ToString();
+            else
+                return null;
         }
 
         public static bool GetParentProcess(int processId, ref int parentPid)
@@ -195,9 +212,25 @@ namespace PKSoft
                         throw new Exception($"NTSTATUS: {status}");
 
                     parentPid = pbi.InheritedFromUniqueProcessId.ToInt32();
-                    return true;
+
+                    // parentPid might have been reused and thus might not be the actual parent.
+                    // Check process creation times to figure it out.
+                    using (SafeProcessHandle hParentProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, parentPid))
+                    {
+                        if (GetProcessCreationTime(hParentProcess, out long parentCreation) && GetProcessCreationTime(hProcess, out long childCreation))
+                        {
+                            return parentCreation <= childCreation;
+                        }
+                        return false;
+                    }
                 }
             }
+        }
+
+        private static bool GetProcessCreationTime(SafeProcessHandle hProcess, out long creationTime)
+        {
+            long dummy1, dummy2, dummy3;
+            return SafeNativeMethods.GetProcessTimes(hProcess, out creationTime, out dummy1, out dummy2, out dummy3);
         }
 
         public static IEnumerable<PROCESSENTRY32> CreateToolhelp32Snapshot()
@@ -222,6 +255,22 @@ namespace PKSoft
                 {
                     yield return pe32;
                 } while (SafeNativeMethods.Process32Next(hSnapshot, ref pe32));
+            }
+        }
+
+        public static IEnumerable<ExtendedProcessEntry> CreateToolhelp32SnapshotExtended()
+        {
+            StringBuilder sbuilder = new StringBuilder(1024);
+            foreach (var p in CreateToolhelp32Snapshot())
+            {
+                using (SafeProcessHandle hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, p.th32ProcessID))
+                {
+                    ExtendedProcessEntry ret;
+                    ret.BaseEntry = p;
+                    ret.ImagePath = GetProcessPath(hProcess, sbuilder);
+                    GetProcessCreationTime(hProcess, out ret.CreationTime);
+                    yield return ret;
+                }
             }
         }
 
