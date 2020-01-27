@@ -1434,45 +1434,51 @@ namespace PKSoft
                     }
                 case MessageType.REENUMERATE_ADDRESSES:
                     {
-                        InterfaceAddreses.Clear();
-                        GatewayAddresses.Clear();
-                        DnsAddresses.Clear();
-
-                        NetworkInterface[] coll = NetworkInterface.GetAllNetworkInterfaces();
-                        foreach (var iface in coll)
-                        {
-                            if (iface.OperationalStatus != OperationalStatus.Up)
-                                continue;
-
-                            var props = iface.GetIPProperties();
-
-                            foreach (var uni in props.UnicastAddresses)
-                            {
-                                IpAddrMask am = new IpAddrMask(uni);
-                                if (am.IsLoopback || am.IsLinkLocal)
-                                    continue;
-
-                                InterfaceAddreses.Add(am);
-                            }
-
-                            foreach (var uni in props.GatewayAddresses)
-                            {
-                                IpAddrMask am = new IpAddrMask(uni);
-                                GatewayAddresses.Add(am);
-                            }
-
-                            foreach (var uni in props.DnsAddresses)
-                            {
-                                IpAddrMask am = new IpAddrMask(uni);
-                                DnsAddresses.Add(am);
-                            }
-                        }
+                        ReenumerateAdresses();
+                        InstallFirewallRules();
                         return new TwMessage(MessageType.RESPONSE_OK);
                     }
                 default:
                     {
                         return new TwMessage(MessageType.RESPONSE_ERROR);
                     }
+            }
+        }
+
+        private void ReenumerateAdresses()
+        {
+            InterfaceAddreses.Clear();
+            GatewayAddresses.Clear();
+            DnsAddresses.Clear();
+
+            NetworkInterface[] coll = NetworkInterface.GetAllNetworkInterfaces();
+            foreach (var iface in coll)
+            {
+                if (iface.OperationalStatus != OperationalStatus.Up)
+                    continue;
+
+                var props = iface.GetIPProperties();
+
+                foreach (var uni in props.UnicastAddresses)
+                {
+                    IpAddrMask am = new IpAddrMask(uni);
+                    if (am.IsLoopback || am.IsLinkLocal)
+                        continue;
+
+                    InterfaceAddreses.Add(am);
+                }
+
+                foreach (var uni in props.GatewayAddresses)
+                {
+                    IpAddrMask am = new IpAddrMask(uni);
+                    GatewayAddresses.Add(am);
+                }
+
+                foreach (var uni in props.DnsAddresses)
+                {
+                    IpAddrMask am = new IpAddrMask(uni);
+                    DnsAddresses.Add(am);
+                }
             }
         }
 
@@ -1547,8 +1553,10 @@ namespace PKSoft
             if (ServiceLocker.HasPassword)
                 ServiceLocker.Locked = true;
 
+            // Discover network configuration
+            ReenumerateAdresses();
+
             // Issue load command
-            Q.Enqueue(new TwMessage(MessageType.REENUMERATE_ADDRESSES), null);
             Q.Enqueue(new TwMessage(MessageType.REINIT), null);
 
             // Fire up pipe
