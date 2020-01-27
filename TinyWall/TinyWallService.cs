@@ -136,6 +136,9 @@ namespace PKSoft
                 tmp.RemoteAddresses = IpAddrMask.LinkLocalMulticast.ToString();
                 ExpandRule(tmp, results);
                 tmp = r.DeepCopy();
+                tmp.RemoteAddresses = IpAddrMask.AdminScopedMulticast.ToString();
+                ExpandRule(tmp, results);
+                tmp = r.DeepCopy();
                 tmp.RemoteAddresses = IpAddrMask.IPv6LinkLocalMulticast.ToString();
                 ExpandRule(tmp, results);
             }

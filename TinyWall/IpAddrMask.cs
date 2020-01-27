@@ -20,6 +20,9 @@ namespace PKSoft
         private static readonly byte[] MulticastBytes = new byte[]
         { 224, 0, 0, 0 };
 
+        private static readonly byte[] AdminScopedMulticastBytes = new byte[]
+        { 239, 192, 0, 0 };
+
         private static readonly byte[] IPv6MulticastBytes = new byte[]
         { 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
@@ -269,6 +272,13 @@ namespace PKSoft
         public static IpAddrMask Multicast
         {
             get { return new IpAddrMask(new IPAddress(MulticastBytes), 4); }
+        }
+
+        public static IpAddrMask AdminScopedMulticast
+        {
+            // This returns an IP range that encompasses both local-scoped and orgnaization-scopes
+            // addresses, plus a bit more...
+            get { return new IpAddrMask(new IPAddress(AdminScopedMulticastBytes), 10); }
         }
 
         public static IpAddrMask IPv6Multicast
