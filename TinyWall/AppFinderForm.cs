@@ -176,7 +176,7 @@ namespace PKSoft
             if (now - LastEnterDoSearchPath > TimeSpan.FromMilliseconds(500))
             {
                 LastEnterDoSearchPath = now;
-                Utils.Invoke(list, (MethodInvoker)delegate()
+                this.BeginInvoke((MethodInvoker)delegate()
                 {
                     lblStatus.Text = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.SearchingPath, path);
                 });
@@ -203,7 +203,7 @@ namespace PKSoft
                             SearchResult.AddEntry(app, subject);
 
                             // We have a match. This file belongs to a known application!
-                            Utils.Invoke(list, (MethodInvoker)delegate()
+                            this.BeginInvoke((MethodInvoker)delegate()
                             {
                                 AddRecognizedAppToList(app, subject.ExecutablePath);
                             });
@@ -320,6 +320,7 @@ namespace PKSoft
             this.Activate();
             this.BringToFront();
             btnStartDetection_Click(btnStartDetection, null);
+            Utils.SetDoubleBuffering(list, true);
         }
     }
 }

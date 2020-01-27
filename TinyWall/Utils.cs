@@ -581,14 +581,6 @@ namespace PKSoft
                 );
         }
 
-        internal static void Invoke(Control ctrl, MethodInvoker method)
-        {
-            if (ctrl.InvokeRequired)
-                ctrl.Invoke(method);
-            else
-                method();
-        }
-
         internal static void Invoke(SynchronizationContext syncCtx, SendOrPostCallback method)
         {
             if (syncCtx != null)
