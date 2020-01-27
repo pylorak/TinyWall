@@ -27,6 +27,8 @@ namespace PKSoft
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
             this.btnStartDetection.Image = GlobalInstances.ApplyBtnIcon;
             TmpSettings = zoneSettings;
+
+            btnSelectImportant.Visible = false;
         }
 
         private void btnStartDetection_Click(object sender, EventArgs e)
