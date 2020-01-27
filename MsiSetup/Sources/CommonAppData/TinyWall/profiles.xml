@@ -221,9 +221,9 @@
     <Application>
       <Components>
         <SubjectIdentity>
-          <AllowedSha1 xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-            <d6p1:string>C7489BCA1C171A824D4762E55AC3A2620EBD5250</d6p1:string>
-          </AllowedSha1>
+          <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+            <d6p1:string>CN=Nextcloud GmbH, O=Nextcloud GmbH, STREET=Hauptmannsreute 44A, L=Stuttgart, S=Baden-Württemberg, PostalCode=70192, C=DE</d6p1:string>
+          </CertificateSubjects>
           <Policy i:type="TcpUdpPolicy">
             <AllowedLocalTcpListenerPorts></AllowedLocalTcpListenerPorts>
             <AllowedLocalUdpListenerPorts></AllowedLocalUdpListenerPorts>
