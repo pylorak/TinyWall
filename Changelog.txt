@@ -1,9 +1,9 @@
 TinyWall Changelog
 ---------------------
 
-3.0.0 - Major update (NOT yet released)
+3.0.0 - Major update (soon to be released)
 - Firewall technology improvements
-    - Rebuilt firewall on top of Windows Filtering Platform
+    - Completely rebuilt firewall on top of Windows Filtering Platform
     - Full support for File and Printer Sharing and Network Browser
     - Boot-time filtering
     - Raw and promiscuous socket filtering
@@ -13,7 +13,7 @@ TinyWall Changelog
     - Support for machine-global exceptions
     - Increased protection against code-identity spoofing attacks
     - Ability to automatically apply rules to child-processes
-    - Add IPSec AH support to VPN rules
+    - IPSec AH support in VPN rules
 - GUI improvements
     - Manual app detection gives instant first results
     - Live update of traffic rate in tray menu
@@ -45,12 +45,13 @@ TinyWall Changelog
     - Fix: Don't leave locked files on service exit
     - Fix: Race condition between update check and service message loop
     - Fix: Some code paths not reliably run at service exit
+    - Fix: Application finder can freeze if closed while detection is running
     - Optimizations to startup performance
     - Only check updates over HTTPS
 - Deprecation notes
     - Windows Vista no longer supported
     - 32-bit systems no longer supported
-    - Whitelisting from a network share temporary not supported
+    - Whitelisting from a network share temporarily not supported
 
 ---------------------
     
