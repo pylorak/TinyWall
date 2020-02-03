@@ -308,6 +308,7 @@ namespace PKSoft
                         // Start walking up the process tree
                         for (ProcessManager.ExtendedProcessEntry parentEntry = procTree[pair.Key]; ;)
                         {
+                            long childCreationTime = parentEntry.CreationTime;
                             if (procTree.ContainsKey(parentEntry.BaseEntry.th32ParentProcessID))
                                 parentEntry = procTree[parentEntry.BaseEntry.th32ParentProcessID];
                             else
@@ -315,7 +316,7 @@ namespace PKSoft
                                 break;
 
                             // Check if if what we have is really the parent, or just a reused PID
-                            if (parentEntry.CreationTime > pair.Value.CreationTime)
+                            if (parentEntry.CreationTime > childCreationTime)
                                 // We reached the top of the process tree (with non-existing parent)
                                 break;
 
