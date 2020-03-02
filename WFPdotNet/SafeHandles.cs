@@ -315,4 +315,72 @@ namespace WFPdotNet
             return (IntPtr.Zero == NativeMethods.GlobalFree(handle));
         }
     }
+
+    public sealed class AllocHLocalSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
+    {
+        [SuppressUnmanagedCodeSecurity]
+        private static class NativeMethods
+        {
+            [DllImport("kernel32.dll")]
+            internal static extern IntPtr LocalAlloc(uint uFlags, UIntPtr dwBytes);
+
+            [DllImport("kernel32.dll")]
+            [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+            internal static extern IntPtr LocalFree(IntPtr hMem);
+        }
+
+        public AllocHLocalSafeHandle(int nBytes)
+            : base(true)
+        {
+            this.handle = NativeMethods.LocalAlloc(0, new UIntPtr((uint)nBytes));
+        }
+
+        public AllocHLocalSafeHandle(IntPtr ptr, bool ownsHandle)
+            : base(ownsHandle)
+        {
+            this.handle = ptr;
+        }
+
+        public AllocHLocalSafeHandle()
+            : base(true)
+        {
+            this.handle = IntPtr.Zero;
+        }
+
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+        [PrePrepareMethod]
+        protected override bool ReleaseHandle()
+        {
+            return (IntPtr.Zero == NativeMethods.LocalFree(handle));
+        }
+    }
+
+    public sealed class SidSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
+    {
+        [SuppressUnmanagedCodeSecurity]
+        private static class NativeMethods
+        {
+            [DllImport("advapi32.dll", SetLastError = false)]
+            internal static extern IntPtr FreeSid(IntPtr sid);
+        }
+
+        public SidSafeHandle(IntPtr ptr, bool ownsHandle)
+            : base(ownsHandle)
+        {
+            this.handle = ptr;
+        }
+
+        public SidSafeHandle()
+            : base(true)
+        {
+            this.handle = IntPtr.Zero;
+        }
+
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+        [PrePrepareMethod]
+        protected override bool ReleaseHandle()
+        {
+            return (IntPtr.Zero == NativeMethods.FreeSid(handle));
+        }
+    }
 }

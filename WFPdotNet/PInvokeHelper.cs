@@ -27,19 +27,6 @@ namespace WFPdotNet
             return safeHandle;
         }
 
-        [DllImport("advapi32", CharSet = CharSet.Auto, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool ConvertSidToStringSid(IntPtr pSid, out string strSid);
-
-        public static SecurityIdentifier ConvertSidPtrToManaged(IntPtr sid)
-        {
-            string ret = null;
-            if (ConvertSidToStringSid(sid, out ret))
-                return new SecurityIdentifier(ret);
-            else
-                return null;
-        }
-
         [DllImport("advapi32", CharSet = CharSet.Auto)]
         static extern uint GetLengthSid(IntPtr pSid);
 
@@ -47,10 +34,10 @@ namespace WFPdotNet
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool CopySid(uint nDestinationSidLength, IntPtr pDestinationSid, IntPtr pSourceSid);
 
-        public static AllocHGlobalSafeHandle CopyNativeSid(IntPtr sid)
+        public static SafeHandle CopyNativeSid(IntPtr sid)
         {
-            uint sidLength = GetLengthSid(sid);
-            AllocHGlobalSafeHandle ret = new AllocHGlobalSafeHandle((int)sidLength);
+            var sidLength = GetLengthSid(sid);
+            var ret = new AllocHLocalSafeHandle((int)sidLength);
             CopySid(sidLength, ret.DangerousGetHandle(), sid);
             return ret;
         }

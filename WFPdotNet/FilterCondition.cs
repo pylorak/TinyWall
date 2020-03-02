@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -514,19 +515,65 @@ namespace WFPdotNet
 
     public sealed class PackageIdFilterCondition : FilterCondition
     {
-        private AllocHGlobalSafeHandle sidNativeMem = null;
+        [SuppressUnmanagedCodeSecurity]
+        internal static class NativeMethods
+        {
+            [DllImport("advapi32", SetLastError = true, CharSet = CharSet.Unicode)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool ConvertStringSidToSid(string stringSid, out AllocHLocalSafeHandle ptrSid);
+
+            [DllImport("userenv", SetLastError = false, CharSet = CharSet.Unicode)]
+            internal static extern int DeriveAppContainerSidFromAppContainerName(string appContainerName, out SidSafeHandle sid);
+        }
+
+        private SafeHandle sidNativeMem = null;
 
         public PackageIdFilterCondition(IntPtr sid)
         {
             if (!VersionInfo.Win8OrNewer)
                 throw new NotSupportedException("FWPM_CONDITION_ALE_PACKAGE_ID requires Windows 8 or newer.");
 
-            sidNativeMem = PInvokeHelper.CopyNativeSid(sid);
+            Init(PInvokeHelper.CopyNativeSid(sid));
+        }
+
+        public PackageIdFilterCondition(string sid)
+        {
+            if (!VersionInfo.Win8OrNewer)
+                throw new NotSupportedException("FWPM_CONDITION_ALE_PACKAGE_ID requires Windows 8 or newer.");
+
+            if (!NativeMethods.ConvertStringSidToSid(sid, out AllocHLocalSafeHandle tmpHndl))
+                throw new Win32Exception(System.Runtime.InteropServices.Marshal.GetLastWin32Error());
+
+            Init(tmpHndl);
+        }
+
+        private PackageIdFilterCondition(SafeHandle sid)
+        {
+            if (!VersionInfo.Win8OrNewer)
+                throw new NotSupportedException("FWPM_CONDITION_ALE_PACKAGE_ID requires Windows 8 or newer.");
+
+            Init(sid);
+        }
+
+        private void Init(SafeHandle sidHandle)
+        {
+            sidNativeMem = sidHandle;
 
             _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
             _nativeStruct.fieldKey = ConditionKeys.FWPM_CONDITION_ALE_PACKAGE_ID;
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_SID;
             _nativeStruct.conditionValue.sd = sidNativeMem.DangerousGetHandle();
+        }
+
+        public static PackageIdFilterCondition FromPackageFamilyName(string packageFamilyName)
+        {
+            if (!VersionInfo.Win8OrNewer)
+                throw new NotSupportedException("FWPM_CONDITION_ALE_PACKAGE_ID requires Windows 8 or newer.");
+
+            if (0 != NativeMethods.DeriveAppContainerSidFromAppContainerName(packageFamilyName, out SidSafeHandle tmpHndl))
+                throw new ArgumentException();
+
+            return new PackageIdFilterCondition(tmpHndl);
         }
 
         protected override void Dispose(bool disposing)
