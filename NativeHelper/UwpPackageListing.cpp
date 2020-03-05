@@ -1,8 +1,5 @@
 #include "UwpPackageListing.h"
 
-#include <string>
-#include <vector>
-
 #pragma comment(lib, "windowsapp.lib")
 #include <winrt/Windows.Management.Deployment.h>
 #include <winrt/Windows.Foundation.Collections.h>
@@ -17,21 +14,23 @@
 #pragma comment(lib, "Advapi32.lib")
 #include <sddl.h>
 
-static wchar_t* CopyWinrtStr2CoTaskMem(const winrt::hstring &src)
+static wchar_t* CopyWinrtStr2CoTaskMem(const winrt::hstring &src) noexcept
 {
 	size_t numchars = (size_t)src.size() + 1;
 	size_t bufsize = sizeof(wchar_t) * numchars;
 	wchar_t* ret = (wchar_t*)CoTaskMemAlloc(bufsize);
-	wcscpy_s(ret, numchars, src.c_str());
+	if (ret)
+		lstrcpy(ret, src.c_str());
 	return ret;
 }
 
-static wchar_t* CopyLpwstr2CoTaskMem(const LPWSTR src)
+static wchar_t* CopyLpwstr2CoTaskMem(const LPWSTR src) noexcept
 {
-	size_t numchars = wcslen(src) + 1;
+	size_t numchars = (size_t)lstrlen(src) + 1;
 	size_t bufsize = sizeof(wchar_t) * numchars;
 	wchar_t* ret = (wchar_t*)CoTaskMemAlloc(bufsize);
-	wcscpy_s(ret, numchars, src);
+	if (ret)
+		lstrcpy(ret, src);
 	return ret;
 }
 
@@ -42,7 +41,7 @@ public:
 	wchar_t* Publisher;
 	wchar_t* Sid;
 
-	UwpPackage(const winrt::Windows::ApplicationModel::Package &package) :
+	UwpPackage(const winrt::Windows::ApplicationModel::Package &package) noexcept :
 		Name(CopyWinrtStr2CoTaskMem(package.Id().Name())),
 		Publisher(CopyWinrtStr2CoTaskMem(package.Id().Publisher())),
 		Sid(NULL)
@@ -64,9 +63,17 @@ public:
 	}
 };
 
-DLLEXPORT void DLLCALLCONV GetUwpPackageListing(UwpPackage **arr, int *size)
+DLLEXPORT void DLLCALLCONV GetUwpPackageListing(UwpPackage **ret, int *size) 
 {
-	std::vector<UwpPackage> coll;
+	const int MAX_NUM_ELEM = 1024;
+
+	UwpPackage *const arrBegin = (UwpPackage*)CoTaskMemAlloc(sizeof(UwpPackage) * MAX_NUM_ELEM);
+	if (!arrBegin)
+	{
+		*ret = NULL;
+		*size = 0;
+	}
+
 	winrt::Windows::Management::Deployment::PackageManager manager;
 	winrt::Windows::Foundation::Collections::IIterable<winrt::Windows::ApplicationModel::Package> collection = manager.FindPackagesForUser(winrt::hstring());
 	winrt::Windows::Foundation::Collections::IIterator<winrt::Windows::ApplicationModel::Package> packages = collection.First();
@@ -74,13 +81,15 @@ DLLEXPORT void DLLCALLCONV GetUwpPackageListing(UwpPackage **arr, int *size)
 	static_assert(std::is_standard_layout<UwpPackage>::value);
 	static_assert(std::is_trivially_copyable<UwpPackage>::value);
 
+	int n = 0;
+	UwpPackage *pPackage = arrBegin;
+
 	do
 	{
-		coll.emplace_back(packages.Current());
-	} while (packages.MoveNext());
+		new (pPackage) UwpPackage(packages.Current());
+		++n; ++pPackage;
+	} while (packages.MoveNext() && (n < MAX_NUM_ELEM));
 
-	size_t n = coll.size();
-	*size = static_cast<int>(n);
-	*arr = (UwpPackage*)CoTaskMemAlloc(sizeof(UwpPackage) * n);
-	memcpy(*arr, coll.data(), n * sizeof(UwpPackage));
+	*ret = arrBegin;
+	*size = n;
 }
