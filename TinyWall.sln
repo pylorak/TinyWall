@@ -1,9 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.705
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyWall", "TinyWall\TinyWall.csproj", "{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{062004FD-090C-494D-AEEC-43B62A62C711} = {062004FD-090C-494D-AEEC-43B62A62C711}
+	EndProjectSection
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "MsiSetup", "MsiSetup\MsiSetup.wixproj", "{E864E1F9-3383-454F-BB6F-D89EE97C518B}"
 EndProject
@@ -14,6 +17,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterfaceSample", "InterfaceSample\InterfaceSample.csproj", "{B4C2958E-F719-461C-863E-80ABAFEF4BCA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFPdotNet", "WFPdotNet\WFPdotNet.csproj", "{6766416A-3B7C-4FAA-8D3C-E2B31749763F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NativeHelper", "NativeHelper\NativeHelper.vcxproj", "{062004FD-090C-494D-AEEC-43B62A62C711}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +76,14 @@ Global
 		{6766416A-3B7C-4FAA-8D3C-E2B31749763F}.Release|x64.Build.0 = Release|x64
 		{6766416A-3B7C-4FAA-8D3C-E2B31749763F}.Release|x86.ActiveCfg = Release|x86
 		{6766416A-3B7C-4FAA-8D3C-E2B31749763F}.Release|x86.Build.0 = Release|x86
+		{062004FD-090C-494D-AEEC-43B62A62C711}.Debug|x64.ActiveCfg = Debug|x64
+		{062004FD-090C-494D-AEEC-43B62A62C711}.Debug|x64.Build.0 = Debug|x64
+		{062004FD-090C-494D-AEEC-43B62A62C711}.Debug|x86.ActiveCfg = Debug|Win32
+		{062004FD-090C-494D-AEEC-43B62A62C711}.Debug|x86.Build.0 = Debug|Win32
+		{062004FD-090C-494D-AEEC-43B62A62C711}.Release|x64.ActiveCfg = Release|x64
+		{062004FD-090C-494D-AEEC-43B62A62C711}.Release|x64.Build.0 = Release|x64
+		{062004FD-090C-494D-AEEC-43B62A62C711}.Release|x86.ActiveCfg = Release|Win32
+		{062004FD-090C-494D-AEEC-43B62A62C711}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

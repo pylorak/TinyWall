@@ -395,4 +395,16 @@ You might succeed if you try again.</value>
     <value>All applications</value>
     <comment>Shown in settings for application exceptions that are global</comment>
   </data>
+  <data name="SubjectTypeExecutable" xml:space="preserve">
+    <value>Executable</value>
+  </data>
+  <data name="SubjectTypeGlobal" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubjectTypeService" xml:space="preserve">
+    <value>Service</value>
+  </data>
+  <data name="SubjectTypeUwpApp" xml:space="preserve">
+    <value>UWP Package</value>
+  </data>
 </root>

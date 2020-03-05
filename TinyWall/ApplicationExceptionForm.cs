@@ -89,6 +89,7 @@ namespace PKSoft
 
         private void ApplicationExceptionForm_Load(object sender, EventArgs e)
         {
+            btnSelectUwpApp.Enabled = VersionInfo.Win8OrNewer;
             UpdateUI();
         }
 
@@ -139,16 +140,23 @@ namespace PKSoft
             switch (TmpExceptionSettings[0].Subject.SubjectType)
             {
                 case SubjectType.Global:
-                    txtAppPath.Text = "*";
-                    txtSrvName.Text = string.Empty;
+                    txtAppPath.Text = Resources.Messages.AllApplications;
+                    txtSrvName.Text = Resources.Messages.SubjectTypeGlobal;
                     break;
                 case SubjectType.Executable:
-                    txtAppPath.Text = (TmpExceptionSettings[0].Subject as ExecutableSubject).ExecutablePath;
-                    txtSrvName.Text = string.Empty;
+                    var exeSubj = TmpExceptionSettings[0].Subject as ExecutableSubject;
+                    txtAppPath.Text = exeSubj.ExecutablePath;
+                    txtSrvName.Text = Resources.Messages.SubjectTypeExecutable;
                     break;
                 case SubjectType.Service:
-                    txtAppPath.Text = (TmpExceptionSettings[0].Subject as ServiceSubject).ExecutablePath;
-                    txtSrvName.Text = (TmpExceptionSettings[0].Subject as ServiceSubject).ServiceName;
+                    var srvSubj = TmpExceptionSettings[0].Subject as ServiceSubject;
+                    txtAppPath.Text = srvSubj.ServiceName + " (" + srvSubj.ExecutablePath + ")";
+                    txtSrvName.Text = Resources.Messages.SubjectTypeService;
+                    break;
+                case SubjectType.AppContainer:
+                    var uwpSubj = TmpExceptionSettings[0].Subject as AppContainerSubject;
+                    txtAppPath.Text = uwpSubj.DisplayName;
+                    txtSrvName.Text = Resources.Messages.SubjectTypeUwpApp;
                     break;
                 default:
                     throw new NotImplementedException();
@@ -270,6 +278,7 @@ namespace PKSoft
                 case SubjectType.Service:
                     btnOK.Enabled = DatabaseClasses.SubjectIdentity.IsValidExecutablePath((TmpExceptionSettings[0].Subject as ExecutableSubject).ExecutablePath);
                     break;
+                case SubjectType.AppContainer:
                 case SubjectType.Global:
                     btnOK.Enabled = true;
                     break;
@@ -350,6 +359,25 @@ namespace PKSoft
             if (subject == null) return;
 
             ReinitFormFromSubject(subject);
+        }
+
+        private void btnSelectUwpApp_Click(object sender, EventArgs e)
+        {
+            var packageList = UwpPackagesForm.ChoosePackage(this, false);
+            if (packageList.Count == 0) return;
+
+            ReinitFormFromSubject(new AppContainerSubject(packageList[0].Sid, packageList[0].Name, packageList[0].Publisher));
+        }
+
+        private void ReinitFormFromSubject(AppContainerSubject subject)
+        {
+            TmpExceptionSettings.Clear();
+            TmpExceptionSettings.Add(new FirewallExceptionV3(
+                subject,
+                new TcpUdpPolicy(true)
+            ));
+
+            UpdateUI();
         }
 
         private void ReinitFormFromSubject(ExecutableSubject subject)

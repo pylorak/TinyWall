@@ -10,7 +10,8 @@ namespace TinyWall.Interface
         Invalid,
         Global,
         Executable,
-        Service
+        Service,
+        AppContainer
     }
 
     // -----------------------------------------------------------------------
@@ -309,4 +310,72 @@ namespace TinyWall.Interface
             return $"Service: {ServiceName}";
         }
     }
+
+    // -----------------------------------------------------------------------
+
+    [DataContract(Namespace = "TinyWall")]
+    [Serializable]
+    public class AppContainerSubject : ExceptionSubject
+    {
+        public override SubjectType SubjectType
+        {
+            get
+            {
+                return Interface.SubjectType.AppContainer;
+            }
+        }
+
+        [DataMember(EmitDefaultValue = false)]
+        public string Sid { get; private set; }
+
+        [DataMember(EmitDefaultValue = false)]
+        public string DisplayName { get; private set; }
+
+        [DataMember(EmitDefaultValue = false)]
+        public string Publisher { get; private set; }
+
+        public AppContainerSubject(string sid, string displayName, string publisher)
+        {
+            this.Sid = sid;
+            this.DisplayName = displayName;
+            this.Publisher = publisher;
+        }
+
+        public override bool Equals(ExceptionSubject other)
+        {
+            if (null == other)
+                return false;
+
+            if (other.GetType() != this.GetType())
+                return false;
+
+            AppContainerSubject o = other as AppContainerSubject;
+            if (!string.Equals(Sid, o.Sid, StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                const int OFFSET_BASIS = unchecked((int)2166136261u);
+                const int FNV_PRIME = 16777619;
+
+                int hash = OFFSET_BASIS;
+                if (null != Sid)
+                    hash = (hash ^ Sid.GetHashCode()) * FNV_PRIME;
+
+                return hash;
+            }
+        }
+
+        public override string ToString()
+        {
+            return DisplayName;
+        }
+    }
+
+    // -----------------------------------------------------------------------
 }

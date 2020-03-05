@@ -356,4 +356,16 @@ Versuchen Sie es nocheinmal.</value>
     <value>Standard</value>
     <comment>As in, the standard, or default, if nothing else is set.</comment>
   </data>
+  <data name="SubjectTypeExecutable" xml:space="preserve">
+    <value>Datei</value>
+  </data>
+  <data name="SubjectTypeGlobal" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubjectTypeService" xml:space="preserve">
+    <value>Dienst</value>
+  </data>
+  <data name="SubjectTypeUwpApp" xml:space="preserve">
+    <value>UWP App</value>
+  </data>
 </root>

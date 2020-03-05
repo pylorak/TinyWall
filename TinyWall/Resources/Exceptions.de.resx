@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="File_and_Printer_Sharing" xml:space="preserve">
-    <value>Datei und Drucker Freigabe</value>
+    <value>Datei- und Druckerfreigabe</value>
   </data>
   <data name="Filtered_ICMP_Traffic" xml:space="preserve">
     <value>Gefilteter ICMP Verkehr</value>
@@ -127,7 +127,7 @@
     <value>Pingbare lokale Maschine</value>
   </data>
   <data name="Windows_Network_Discovery" xml:space="preserve">
-    <value>Windows Netzwerk Erkennung</value>
+    <value>Windows Netzwerkerkennung</value>
   </data>
   <data name="Windows_Remote_Assistance" xml:space="preserve">
     <value>Windows Remote Unterstützung</value>

@@ -547,23 +547,38 @@ namespace PKSoft
         {
             List<FilterCondition> conditions = new List<FilterCondition>();
 
-
-            if (!string.IsNullOrEmpty(r.ServiceName))
+            if (!string.IsNullOrEmpty(r.AppContainerSid))
             {
-                System.Diagnostics.Debug.Assert(!r.ServiceName.Equals("*"));
+                System.Diagnostics.Debug.Assert(!r.AppContainerSid.Equals("*"));
+
+                // Skip filter if OS is not supported
+                if (!TinyWall.Interface.VersionInfo.Win8OrNewer)
+                    return;
+
                 if (!LayerIsIcmpError(layer))
-                    conditions.Add(new ServiceNameFilterCondition(r.ServiceName));
+                    conditions.Add(new PackageIdFilterCondition(r.AppContainerSid));
                 else
                     return;
             }
-
-            if (!string.IsNullOrEmpty(r.Application))
+            else
             {
-                System.Diagnostics.Debug.Assert(!r.Application.Equals("*"));
-                if (!LayerIsIcmpError(layer))
-                    conditions.Add(new AppIdFilterCondition(r.Application));
-                else
-                    return;
+                if (!string.IsNullOrEmpty(r.ServiceName))
+                {
+                    System.Diagnostics.Debug.Assert(!r.ServiceName.Equals("*"));
+                    if (!LayerIsIcmpError(layer))
+                        conditions.Add(new ServiceNameFilterCondition(r.ServiceName));
+                    else
+                        return;
+                }
+
+                if (!string.IsNullOrEmpty(r.Application))
+                {
+                    System.Diagnostics.Debug.Assert(!r.Application.Equals("*"));
+                    if (!LayerIsIcmpError(layer))
+                        conditions.Add(new AppIdFilterCondition(r.Application));
+                    else
+                        return;
+                }
             }
 
             if (!string.IsNullOrEmpty(r.RemoteAddresses) && !LayerIsAleAuthListen(layer))

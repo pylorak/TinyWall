@@ -18,6 +18,8 @@ namespace TinyWall.Interface
         public RuleAction Action;
 
         [DataMember(EmitDefaultValue = false)]
+        public string AppContainerSid;
+        [DataMember(EmitDefaultValue = false)]
         public string Application;
         [DataMember(EmitDefaultValue = false)]
         public string ServiceName;
@@ -51,6 +53,7 @@ namespace TinyWall.Interface
             copy.Action = this.Action;
             copy.Application = this.Application;
             copy.ServiceName = this.ServiceName;
+            copy.AppContainerSid = this.AppContainerSid;
             copy.LocalPorts = this.LocalPorts;
             copy.RemotePorts = this.RemotePorts;
             copy.LocalAddresses = this.LocalAddresses;
@@ -74,6 +77,9 @@ namespace TinyWall.Interface
                         break;
                     case ExecutableSubject exe:
                         this.Application = exe.ExecutablePath;
+                        break;
+                    case AppContainerSubject uwp:
+                        this.AppContainerSid = uwp.Sid;
                         break;
                     case GlobalSubject glob:
                         break;

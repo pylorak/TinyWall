@@ -42,8 +42,9 @@
             this.btnAppModify = new System.Windows.Forms.Button();
             this.btnAppAdd = new System.Windows.Forms.Button();
             this.listApplications = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnApp = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnDetails = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.IconList = new System.Windows.Forms.ImageList(this.components);
             this.label4 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -192,8 +193,9 @@
             // 
             resources.ApplyResources(this.listApplications, "listApplications");
             this.listApplications.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
+            this.columnApp,
+            this.columnType,
+            this.columnDetails});
             this.listApplications.FullRowSelect = true;
             this.listApplications.GridLines = true;
             this.listApplications.HideSelection = false;
@@ -205,13 +207,17 @@
             this.listApplications.SelectedIndexChanged += new System.EventHandler(this.listApplications_SelectedIndexChanged);
             this.listApplications.DoubleClick += new System.EventHandler(this.listApplications_DoubleClick);
             // 
-            // columnHeader1
+            // columnApp
             // 
-            resources.ApplyResources(this.columnHeader1, "columnHeader1");
+            resources.ApplyResources(this.columnApp, "columnApp");
             // 
-            // columnHeader2
+            // columnType
             // 
-            resources.ApplyResources(this.columnHeader2, "columnHeader2");
+            resources.ApplyResources(this.columnType, "columnType");
+            // 
+            // columnDetails
+            // 
+            resources.ApplyResources(this.columnDetails, "columnDetails");
             // 
             // IconList
             // 
@@ -551,8 +557,8 @@
         private System.Windows.Forms.Button btnAppModify;
         private System.Windows.Forms.Button btnAppAdd;
         private System.Windows.Forms.ListView listApplications;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnApp;
+        private System.Windows.Forms.ColumnHeader columnDetails;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Label label5;
@@ -599,5 +605,6 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox chkEnableHotkeys;
         private System.Windows.Forms.LinkLabel lblLinkAttributions;
+        private System.Windows.Forms.ColumnHeader columnType;
     }
 }

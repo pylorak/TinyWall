@@ -27,6 +27,7 @@ namespace TinyWall.Interface.Internal
             typeof(GlobalSubject),
             typeof(ExecutableSubject),
             typeof(ServiceSubject),
+            typeof(AppContainerSubject),
 
             typeof(ExceptionPolicy),
             typeof(HardBlockPolicy),

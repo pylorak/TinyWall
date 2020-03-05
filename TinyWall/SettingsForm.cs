@@ -209,23 +209,35 @@ namespace PKSoft
 
         private ListViewItem ListItemFromAppException(FirewallExceptionV3 ex)
         {
-            ExecutableSubject subject = ex.Subject as ExecutableSubject;
             ListViewItem li = new ListViewItem();
             li.Tag = ex;
+
+            var exeSubj = ex.Subject as ExecutableSubject;
+            var srvSubj = ex.Subject as ServiceSubject;
+            var uwpSubj = ex.Subject as AppContainerSubject;
 
             switch (ex.Subject.SubjectType)
             {
                 case SubjectType.Executable:
-                    li.Text = subject.ExecutableName;
-                    li.SubItems.Add(subject.ExecutablePath);
+                    li.Text = exeSubj.ExecutableName;
+                    li.SubItems.Add(Resources.Messages.SubjectTypeExecutable);
+                    li.SubItems.Add(exeSubj.ExecutablePath);
                     break;
                 case SubjectType.Service:
-                    li.Text = $"Srv: {(subject as ServiceSubject).ServiceName}";
-                    li.SubItems.Add(subject.ExecutablePath);
+                    li.Text = srvSubj.ServiceName;
+                    li.SubItems.Add(Resources.Messages.SubjectTypeService);
+                    li.SubItems.Add(srvSubj.ExecutablePath);
                     break;
                 case SubjectType.Global:
                     li.Text = Resources.Messages.AllApplications;
-                    li.SubItems.Add("*");
+                    li.SubItems.Add(Resources.Messages.SubjectTypeGlobal);
+                    li.ImageKey = "window";
+                    break;
+                case SubjectType.AppContainer:
+                    li.Text = uwpSubj.DisplayName;
+                    li.SubItems.Add(Resources.Messages.SubjectTypeUwpApp);
+                    li.SubItems.Add(uwpSubj.Publisher);
+                    // TODO: set deleted icon if appcontainer does not exist
                     break;
                 default:
                     throw new NotImplementedException();
@@ -237,29 +249,28 @@ namespace PKSoft
                 li.BackColor = System.Drawing.Color.LightPink;
             }
 
-            if (ex.Subject.SubjectType == SubjectType.Global)
+            if (exeSubj != null)
             {
-                li.ImageKey = "window";
-            }
-            else if (NetworkPath.IsNetworkPath(subject.ExecutablePath))
-            {
-                /* We do not load icons from network drives, to avoid 30s timeout if the drive is unavailable.
-                 * If this is ever changed in the future, also remember that .Net's Icon.ExtractAssociatedIcon() 
-                 * does not work with UNC paths. For workaround see:
-                 * http://stackoverflow.com/questions/1842226/how-to-get-the-associated-icon-from-a-network-share-file
-                 */
-                li.ImageKey = "network-drive";
-            }
-            else if (File.Exists(subject.ExecutablePath))
-            {
-                if (!IconList.Images.ContainsKey(subject.ExecutablePath))
-                    IconList.Images.Add(subject.ExecutablePath, Utils.GetIconContained(subject.ExecutablePath, IconSize.Width, IconSize.Height));
-                li.ImageKey = subject.ExecutablePath;
-            }
-            else
-            {
-                li.ImageKey = "deleted";
-                li.BackColor = System.Drawing.Color.LightGray;
+                if (NetworkPath.IsNetworkPath(exeSubj.ExecutablePath))
+                {
+                    /* We do not load icons from network drives, to avoid 30s timeout if the drive is unavailable.
+                     * If this is ever changed in the future, also remember that .Net's Icon.ExtractAssociatedIcon() 
+                     * does not work with UNC paths. For workaround see:
+                     * http://stackoverflow.com/questions/1842226/how-to-get-the-associated-icon-from-a-network-share-file
+                     */
+                    li.ImageKey = "network-drive";
+                }
+                else if (File.Exists(exeSubj.ExecutablePath))
+                {
+                    if (!IconList.Images.ContainsKey(exeSubj.ExecutablePath))
+                        IconList.Images.Add(exeSubj.ExecutablePath, Utils.GetIconContained(exeSubj.ExecutablePath, IconSize.Width, IconSize.Height));
+                    li.ImageKey = exeSubj.ExecutablePath;
+                }
+                else
+                {
+                    li.ImageKey = "deleted";
+                    li.BackColor = System.Drawing.Color.LightGray;
+                }
             }
 
             return li;

@@ -31,8 +31,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApplicationExceptionForm));
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblApplication = new System.Windows.Forms.Label();
+            this.lblApplicationType = new System.Windows.Forms.Label();
             this.txtSrvName = new System.Windows.Forms.TextBox();
             this.txtAppPath = new System.Windows.Forms.TextBox();
             this.btnBrowse = new System.Windows.Forms.Button();
@@ -44,6 +44,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.transparentLabel1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.btnSelectUwpApp = new System.Windows.Forms.Button();
             this.chkRestrictToLocalNetwork = new System.Windows.Forms.CheckBox();
             this.radBlock = new System.Windows.Forms.RadioButton();
             this.radTcpUdpOut = new System.Windows.Forms.RadioButton();
@@ -85,17 +86,17 @@
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
-            // label1
+            // lblApplication
             // 
-            resources.ApplyResources(this.label1, "label1");
-            this.label1.BackColor = System.Drawing.SystemColors.Window;
-            this.label1.Name = "label1";
+            resources.ApplyResources(this.lblApplication, "lblApplication");
+            this.lblApplication.BackColor = System.Drawing.SystemColors.Window;
+            this.lblApplication.Name = "lblApplication";
             // 
-            // label2
+            // lblApplicationType
             // 
-            resources.ApplyResources(this.label2, "label2");
-            this.label2.BackColor = System.Drawing.SystemColors.Window;
-            this.label2.Name = "label2";
+            resources.ApplyResources(this.lblApplicationType, "lblApplicationType");
+            this.lblApplicationType.BackColor = System.Drawing.SystemColors.Window;
+            this.lblApplicationType.Name = "lblApplicationType";
             // 
             // txtSrvName
             // 
@@ -174,16 +175,25 @@
             // 
             resources.ApplyResources(this.panel2, "panel2");
             this.panel2.BackColor = System.Drawing.SystemColors.Window;
+            this.panel2.Controls.Add(this.btnSelectUwpApp);
             this.panel2.Controls.Add(this.cmbTimer);
             this.panel2.Controls.Add(this.label6);
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.label2);
+            this.panel2.Controls.Add(this.lblApplication);
+            this.panel2.Controls.Add(this.lblApplicationType);
             this.panel2.Controls.Add(this.txtSrvName);
             this.panel2.Controls.Add(this.txtAppPath);
             this.panel2.Controls.Add(this.btnBrowse);
             this.panel2.Controls.Add(this.btnProcess);
             this.panel2.Controls.Add(this.btnChooseService);
             this.panel2.Name = "panel2";
+            // 
+            // btnSelectUwpApp
+            // 
+            resources.ApplyResources(this.btnSelectUwpApp, "btnSelectUwpApp");
+            this.btnSelectUwpApp.BackColor = System.Drawing.Color.AliceBlue;
+            this.btnSelectUwpApp.Name = "btnSelectUwpApp";
+            this.btnSelectUwpApp.UseVisualStyleBackColor = false;
+            this.btnSelectUwpApp.Click += new System.EventHandler(this.btnSelectUwpApp_Click);
             // 
             // chkRestrictToLocalNetwork
             // 
@@ -351,8 +361,8 @@
 
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblApplication;
+        private System.Windows.Forms.Label lblApplicationType;
         private System.Windows.Forms.TextBox txtSrvName;
         private System.Windows.Forms.TextBox txtAppPath;
         private System.Windows.Forms.Button btnBrowse;
@@ -383,5 +393,6 @@
         private System.Windows.Forms.RadioButton radOnlySpecifiedPorts;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.CheckBox chkInheritToChildren;
+        private System.Windows.Forms.Button btnSelectUwpApp;
     }
 }

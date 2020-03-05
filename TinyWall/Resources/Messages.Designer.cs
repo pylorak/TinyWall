@@ -19,7 +19,7 @@ namespace PKSoft.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Messages {
@@ -473,6 +473,42 @@ namespace PKSoft.Resources {
         internal static string Stop {
             get {
                 return ResourceManager.GetString("Stop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Executable.
+        /// </summary>
+        internal static string SubjectTypeExecutable {
+            get {
+                return ResourceManager.GetString("SubjectTypeExecutable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SubjectTypeGlobal {
+            get {
+                return ResourceManager.GetString("SubjectTypeGlobal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Service.
+        /// </summary>
+        internal static string SubjectTypeService {
+            get {
+                return ResourceManager.GetString("SubjectTypeService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UWP Package.
+        /// </summary>
+        internal static string SubjectTypeUwpApp {
+            get {
+                return ResourceManager.GetString("SubjectTypeUwpApp", resourceCulture);
             }
         }
         
