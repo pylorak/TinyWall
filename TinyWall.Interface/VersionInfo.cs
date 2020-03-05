@@ -24,8 +24,7 @@ namespace TinyWall.Interface
                     {
                         try
                         {
-                            bool retVal;
-                            if (!IsWow64Process(p.Handle, out retVal))
+                            if (!IsWow64Process(p.Handle, out bool retVal))
                             {
                                 return false;
                             }

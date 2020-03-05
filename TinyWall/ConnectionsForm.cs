@@ -15,7 +15,7 @@ namespace PKSoft
 {
     internal partial class ConnectionsForm : Form
     {
-        private TinyWallController Controller = null;
+        private readonly TinyWallController Controller;
         private Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
         internal ConnectionsForm(TinyWallController ctrl)
@@ -37,12 +37,7 @@ namespace PKSoft
                 return cache[pid];
             else
             {
-                string ret = null;
-                if (path == null)
-                    ret = Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller);
-                else
-                    ret = path;
-
+                string ret = path ?? Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller);
                 cache.Add(pid, ret);
                 return ret;
             }

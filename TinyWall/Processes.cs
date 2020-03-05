@@ -10,7 +10,7 @@ namespace PKSoft
     internal partial class ProcessesForm : Form
     {
         internal List<string> SelectedPaths = new List<string>();
-        private Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
+        private readonly Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
         internal static List<string> ChooseProcess(IWin32Window parent, bool multiSelect)
         {
@@ -65,7 +65,6 @@ namespace PKSoft
 
         private void ProcessesForm_Load(object sender, EventArgs e)
         {
-            Utils.SetDoubleBuffering(listView, true);
             this.Icon = Resources.Icons.firewall;
             this.Size = ActiveConfig.Controller.ProcessesFormWindowSize;
             this.Location = ActiveConfig.Controller.ProcessesFormWindowLoc;
@@ -119,6 +118,7 @@ namespace PKSoft
                 }
             }
 
+            Utils.SetDoubleBuffering(listView, true);
             listView.BeginUpdate();
             listView.ListViewItemSorter = new ListViewItemComparer(0);
             listView.Items.AddRange(itemColl.ToArray());

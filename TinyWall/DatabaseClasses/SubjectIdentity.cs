@@ -53,7 +53,7 @@ namespace PKSoft.DatabaseClasses
             if (IsValidExecutablePath(filePath))
             {
                 ExecutableSubject testee = null;
-                if (this.Subject.SubjectType == SubjectType.Service)
+                if (exesub.SubjectType == SubjectType.Service)
                     testee = new ServiceSubject(filePath, (this.Subject as ServiceSubject).ServiceName);
                 else
                     testee = new ExecutableSubject(filePath);
