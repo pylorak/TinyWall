@@ -182,6 +182,11 @@ namespace PKSoft
         public System.Drawing.Point ProcessesFormWindowLoc = new System.Drawing.Point(150, 150);
         public System.Drawing.Size ProcessesFormWindowSize = new System.Drawing.Size((int)(830 * Utils.DpiScalingFactor), (int)(400 * Utils.DpiScalingFactor));
 
+        // Services window
+        public System.Windows.Forms.FormWindowState ServicesFormWindowState = System.Windows.Forms.FormWindowState.Normal;
+        public System.Drawing.Point ServicesFormWindowLoc = new System.Drawing.Point(150, 150);
+        public System.Drawing.Size ServicesFormWindowSize = new System.Drawing.Size((int)(830 * Utils.DpiScalingFactor), (int)(400 * Utils.DpiScalingFactor));
+
         // Manage window
         public bool AskForExceptionDetails = false;
         public int SettingsTabIndex;

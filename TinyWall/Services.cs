@@ -94,6 +94,9 @@ namespace PKSoft
         private void ServicesForm_Load(object sender, EventArgs e)
         {
             this.Icon = Resources.Icons.firewall;
+            this.Size = ActiveConfig.Controller.ServicesFormWindowSize;
+            this.Location = ActiveConfig.Controller.ServicesFormWindowLoc;
+            this.WindowState = ActiveConfig.Controller.ServicesFormWindowState;
 
             List<ListViewItem> itemColl = new List<ListViewItem>();
 
@@ -128,6 +131,23 @@ namespace PKSoft
                 newSorter.Ascending = !oldSorter.Ascending;
 
             listView.ListViewItemSorter = newSorter;
+        }
+
+        private void ServicesForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ActiveConfig.Controller.ServicesFormWindowState = this.WindowState;
+            if (this.WindowState == FormWindowState.Normal)
+            {
+                ActiveConfig.Controller.ServicesFormWindowSize = this.Size;
+                ActiveConfig.Controller.ServicesFormWindowLoc = this.Location;
+            }
+            else
+            {
+                ActiveConfig.Controller.ServicesFormWindowSize = this.RestoreBounds.Size;
+                ActiveConfig.Controller.ServicesFormWindowLoc = this.RestoreBounds.Location;
+            }
+
+            ActiveConfig.Controller.Save();
         }
     }
 }

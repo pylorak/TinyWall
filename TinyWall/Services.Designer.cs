@@ -97,6 +97,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "ServicesForm";
             this.TopMost = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ServicesForm_FormClosing);
             this.Load += new System.EventHandler(this.ServicesForm_Load);
             this.ResumeLayout(false);
 
