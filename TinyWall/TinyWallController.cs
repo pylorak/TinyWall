@@ -1040,7 +1040,7 @@ namespace PKSoft
             MessageType resp = ApplyFirewallSettings(confCopy, false);
 
             bool success;
-            bool metroActive = Utils.IsMetroActive(out success);
+            bool metroActive = Utils.IsMetroActive(out success) && !VersionInfo.Win10OrNewer;
             if (!metroActive)
             {
                 switch (resp)
