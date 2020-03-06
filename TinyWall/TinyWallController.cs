@@ -736,33 +736,34 @@ namespace PKSoft
         private void mnuWhitelistByProcess_Click(object sender, EventArgs e)
         {
             List<FirewallExceptionV3> exceptions = new List<FirewallExceptionV3>();
-            List<string> pathList = ProcessesForm.ChooseProcess(null, true);
+            List<ProcessesForm.EntryDetails> pathList = ProcessesForm.ChooseProcess(null, true);
 
-            foreach (string path in pathList)
+            foreach (var sel in pathList)
             {
-                if (string.IsNullOrEmpty(path))
+                if (string.IsNullOrEmpty(sel.ExePath))
                     continue;
+
+                ExceptionSubject subj;
+                if (sel.Package.HasValue)
+                    subj = new AppContainerSubject(sel.Package.Value.Sid, sel.Package.Value.Name, sel.Package.Value.Publisher);
+                else
+                    subj = new ExecutableSubject(sel.ExePath);
 
                 // Check if we already have an exception for this file
                 bool found = false;
                 foreach (var ex in exceptions)
                 {
-                    if (ex.Subject is ExecutableSubject exe)
+                    if (ex.Subject.Equals(subj))
                     {
-                        if (exe.ExecutablePath.Equals(path, StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            found = true;
-                            break;
-                        }
+                        found = true;
+                        break;
                     }
                 }
-
                 if (found)
                     continue;
 
                 // Try to recognize app based on this file
-                ExecutableSubject subject = ExceptionSubject.Construct(path, null) as ExecutableSubject;
-                exceptions.AddRange(GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out DatabaseClasses.Application dummyApp));
+                exceptions.AddRange(GlobalInstances.AppDatabase.GetExceptionsForApp(subj, true, out _));
             }
 
             AddExceptionList(exceptions);

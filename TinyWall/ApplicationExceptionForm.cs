@@ -339,10 +339,16 @@ namespace PKSoft
 
         private void btnProcess_Click(object sender, EventArgs e)
         {
-            List<string> procList = ProcessesForm.ChooseProcess(this, false);
+            List<ProcessesForm.EntryDetails> procList = ProcessesForm.ChooseProcess(this, false);
             if (procList.Count == 0) return;
 
-            ReinitFormFromSubject(new ExecutableSubject(procList[0]));
+            ExceptionSubject subject;
+            if (procList[0].Package.HasValue)
+                subject = new AppContainerSubject(procList[0].Package.Value.Sid, procList[0].Package.Value.Name, procList[0].Package.Value.Publisher);
+            else
+                subject = new ExecutableSubject(procList[0].ExePath);
+
+            ReinitFormFromSubject(subject);
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -369,34 +375,17 @@ namespace PKSoft
             ReinitFormFromSubject(new AppContainerSubject(packageList[0].Sid, packageList[0].Name, packageList[0].Publisher));
         }
 
-        private void ReinitFormFromSubject(AppContainerSubject subject)
-        {
-            TmpExceptionSettings.Clear();
-            TmpExceptionSettings.Add(new FirewallExceptionV3(
-                subject,
-                new TcpUdpPolicy(true)
-            ));
-
-            UpdateUI();
-        }
-
-        private void ReinitFormFromSubject(ExecutableSubject subject)
+        private void ReinitFormFromSubject(ExceptionSubject subject)
         {
             List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out DatabaseClasses.Application app);
             if (exceptions.Count == 0)
                 return;
 
-            if (app == null)
-            {
-                // Single known or unknown file
-                TmpExceptionSettings[0].Subject = exceptions[0].Subject;
-                TmpExceptionSettings[0].Policy = exceptions[0].Policy;
-            }
-            else
+            TmpExceptionSettings = exceptions;
+
+            if (TmpExceptionSettings.Count > 1)
             {
                 // Multiple known files
-                TmpExceptionSettings = exceptions;
-
                 btnOK_Click(null, null);
                 return;
             }

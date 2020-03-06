@@ -6,7 +6,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace PKSoft
 {
-    public static class UwpPackage
+    public class UwpPackage
     {
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct Package
@@ -32,23 +32,43 @@ namespace PKSoft
             return packages;
         }
 
-        public static Package? FindPackageDetails(string sid)
+        private static Package? FindPackageDetails(string sid, Package[] list)
         {
             if (string.IsNullOrEmpty(sid))
                 return null;
 
-            if (!TinyWall.Interface.VersionInfo.Win8OrNewer)
-                throw new NotSupportedException();
-
-            NativeMethods.GetUwpPackageListing(out Package[] packages, out _);
-
-            foreach (var package in packages)
+            foreach (var package in list)
             {
                 if (package.Sid.Equals(sid))
                     return package;
             }
 
             return null;
+        }
+
+        public static Package? FindPackageDetails(string sid)
+        {
+            if (string.IsNullOrEmpty(sid))
+                return null;
+
+            NativeMethods.GetUwpPackageListing(out Package[] packages, out _);
+
+            return FindPackageDetails(sid, packages);
+        }
+
+        public Package[] Packages { get; private set; }
+
+        public UwpPackage()
+        {
+            Packages = UwpPackage.GetList();
+        }
+
+        public Package? FindPackage(string sid)
+        {
+            if (string.IsNullOrEmpty(sid))
+                return null;
+
+            return UwpPackage.FindPackageDetails(sid, Packages);
         }
     }
 }

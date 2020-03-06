@@ -9,19 +9,25 @@ namespace PKSoft
 {
     internal partial class ProcessesForm : Form
     {
-        internal List<string> SelectedPaths = new List<string>();
+        internal class EntryDetails
+        {
+            public string ExePath;
+            public UwpPackage.Package? Package;
+        }
+
+        private readonly List<EntryDetails> Selection = new List<EntryDetails>();
         private readonly Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
-        internal static List<string> ChooseProcess(IWin32Window parent, bool multiSelect)
+        internal static List<EntryDetails> ChooseProcess(IWin32Window parent, bool multiSelect)
         {
             using (ProcessesForm pf = new ProcessesForm(multiSelect))
             {
-                List<string> pathList = new List<string>();
+                List<EntryDetails> pathList = new List<EntryDetails>();
 
                 if (pf.ShowDialog(parent) == DialogResult.Cancel)
                     return pathList;
 
-                pathList.AddRange(pf.SelectedPaths);
+                pathList.AddRange(pf.Selection);
                 return pathList;
             }
         }
@@ -45,7 +51,7 @@ namespace PKSoft
         {
             for (int i = 0; i < listView.SelectedItems.Count; ++i)
             {
-                this.SelectedPaths.Add(listView.SelectedItems[i].Tag as string);
+                this.Selection.Add(listView.SelectedItems[i].Tag as EntryDetails);
             }
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
@@ -63,7 +69,7 @@ namespace PKSoft
             }
         }
 
-        private void ProcessesForm_Load(object sender, EventArgs e)
+        private void ProcessesForm_Load(object sender, EventArgs ev)
         {
             this.Icon = Resources.Icons.firewall;
             this.Size = ActiveConfig.Controller.ProcessesFormWindowSize;
@@ -71,6 +77,7 @@ namespace PKSoft
             this.WindowState = ActiveConfig.Controller.ProcessesFormWindowState;
 
             List<ListViewItem> itemColl = new List<ListViewItem>();
+            UwpPackage packages = new UwpPackage();
 
             Process[] procs = Process.GetProcesses();
             for (int i = 0; i < procs.Length; ++i)
@@ -79,17 +86,17 @@ namespace PKSoft
                 {
                     try
                     {
-                        string ProcPath = Utils.GetPathOfProcessUseTwService(p.Id, GlobalInstances.Controller);
-                        if (string.IsNullOrEmpty(ProcPath))
+                        EntryDetails e = new EntryDetails();
+
+                        e.ExePath = Utils.GetPathOfProcessUseTwService(p.Id, GlobalInstances.Controller);
+                        if (string.IsNullOrEmpty(e.ExePath))
                             continue;
 
                         // Scan list of already added items to prevent duplicates
                         bool skip = false;
                         for (int j = 0; j < itemColl.Count; ++j)
                         {
-                            if (itemColl[j].SubItems[0].Text.ToUpperInvariant().Equals(p.ProcessName.ToUpperInvariant()) &&
-                                itemColl[j].SubItems[1].Text.ToUpperInvariant().Equals(ProcPath.ToUpperInvariant())
-                                )
+                            if (itemColl[j].SubItems[1].Text.ToUpperInvariant().Equals(e.ExePath.ToUpperInvariant()))
                             {
                                 skip = true;
                                 break;
@@ -99,17 +106,20 @@ namespace PKSoft
                             continue;
 
                         // Add icon
-                        if (System.IO.Path.IsPathRooted(ProcPath) && System.IO.File.Exists(ProcPath))
+                        if (System.IO.Path.IsPathRooted(e.ExePath) && System.IO.File.Exists(e.ExePath))
                         {
-                            if (!IconList.Images.ContainsKey(ProcPath))
-                                IconList.Images.Add(ProcPath, Utils.GetIconContained(ProcPath, IconSize.Width, IconSize.Height));
+                            if (!IconList.Images.ContainsKey(e.ExePath))
+                                IconList.Images.Add(e.ExePath, Utils.GetIconContained(e.ExePath, IconSize.Width, IconSize.Height));
                         }
+
+                        // Detect AppContainers
+                        e.Package = packages.FindPackage(ProcessManager.GetAppContainerSid(p.Id));
 
                         // Add list item
                         ListViewItem li = new ListViewItem(p.ProcessName);
-                        li.ImageKey = ProcPath;
-                        li.SubItems.Add(ProcPath);
-                        li.Tag = ProcPath;
+                        li.ImageKey = e.ExePath;
+                        li.SubItems.Add(e.ExePath);
+                        li.Tag = e;
                         itemColl.Add(li);
                     }
                     catch

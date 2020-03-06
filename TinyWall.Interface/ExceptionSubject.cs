@@ -284,6 +284,8 @@ namespace TinyWall.Interface
             ServiceSubject o = other as ServiceSubject;
             if (!string.Equals(ServiceName, o.ServiceName, StringComparison.OrdinalIgnoreCase))
                 return false;
+            if (!string.Equals(ExecutablePath, o.ExecutablePath, StringComparison.OrdinalIgnoreCase))
+                return false;
 
             return true;
         }
