@@ -16,7 +16,7 @@ namespace PKSoft
     internal partial class ConnectionsForm : Form
     {
         private readonly TinyWallController Controller;
-        private Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
+        private readonly Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
         internal ConnectionsForm(TinyWallController ctrl)
         {
@@ -60,7 +60,7 @@ namespace PKSoft
                   || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
                 {
                     string path = GetPathFromPidCached(procCache, tcpRow.ProcessId);
-                    ConstructListItem(itemColl, path, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now);
+                    ConstructListItem(itemColl, path, null, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now);
                 }
             }
             tcpTable = NetStat.GetExtendedTcp6Table(false);
@@ -70,7 +70,7 @@ namespace PKSoft
                  || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
                 {
                     string path = GetPathFromPidCached(procCache, tcpRow.ProcessId);
-                    ConstructListItem(itemColl, path, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now);
+                    ConstructListItem(itemColl, path, null, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now);
                 }
             }
 
@@ -81,13 +81,13 @@ namespace PKSoft
                 foreach (UdpRow udpRow in udpTable)
                 {
                     string path = GetPathFromPidCached(procCache, udpRow.ProcessId);
-                    ConstructListItem(itemColl, path, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now);
+                    ConstructListItem(itemColl, path, null, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now);
                 }
                 udpTable = NetStat.GetExtendedUdp6Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
                     string path = GetPathFromPidCached(procCache, udpRow.ProcessId);
-                    ConstructListItem(itemColl, path, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now);
+                    ConstructListItem(itemColl, path, null, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now);
                 }
             }
 
@@ -149,7 +149,7 @@ namespace PKSoft
                 for (int i = 0; i < filteredLog.Count; ++i)
                 {
                     FirewallLogEntry entry = filteredLog[i];
-                    ConstructListItem(itemColl, entry.AppPath, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked", entry.Timestamp, entry.Direction);
+                    ConstructListItem(itemColl, entry.AppPath, entry.PackageID, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked", entry.Timestamp, entry.Direction);
                 }
             }
 
@@ -160,16 +160,22 @@ namespace PKSoft
             list.EndUpdate();
         }
 
-        private void ConstructListItem(List<ListViewItem> itemColl, string appPath, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, RuleDirection dir = RuleDirection.Invalid)
+        private void ConstructListItem(List<ListViewItem> itemColl, string appPath, string packageId, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, RuleDirection dir = RuleDirection.Invalid)
         {
+            UwpPackage packages = new UwpPackage();
             try
             {
+                ProcessInfo e = new ProcessInfo(procId)
+                {
+                    ExePath = appPath,
+                    Package = packages.FindPackage(packageId)
+                };
 
                 // Construct list item
                 string name = System.IO.Path.GetFileName(appPath);
                 string title = (procId != 0) ? $"{name} ({procId})" : name;
                 ListViewItem li = new ListViewItem(title);
-                li.Tag = procId;
+                li.Tag = e;
                 li.ToolTipText = appPath;
 
                 if (System.IO.Path.IsPathRooted(appPath) && System.IO.File.Exists(appPath))
@@ -285,7 +291,7 @@ namespace PKSoft
             bool hasPid = true;
             foreach (ListViewItem li in list.SelectedItems)
             {
-                hasPid &= ((int)li.Tag != 0);
+                hasPid &= (li.Tag as ProcessInfo).Pid != 0;
             }
             mnuCloseProcess.Enabled = hasPid;
         }
@@ -294,11 +300,11 @@ namespace PKSoft
         {
             foreach (ListViewItem li in list.SelectedItems)
             {
-                int pid = (int)li.Tag;
+                ProcessInfo pi = li.Tag as ProcessInfo;
 
                 try
                 {
-                    using (Process proc = Process.GetProcessById(pid))
+                    using (Process proc = Process.GetProcessById(pi.Pid))
                     {
                         try
                         {
@@ -317,7 +323,7 @@ namespace PKSoft
                         }
                         catch
                         {
-                            MessageBox.Show(this, string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CouldNotCloseProcess, proc.ProcessName, pid), PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            MessageBox.Show(this, string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CouldNotCloseProcess, proc.ProcessName, pi.Pid), PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         }
                     }
                 }
@@ -334,30 +340,32 @@ namespace PKSoft
 
             foreach (ListViewItem li in list.SelectedItems)
             {
-                string path = li.ToolTipText;
-                if (string.IsNullOrEmpty(path))
+                ProcessInfo pi = li.Tag as ProcessInfo;
+
+                if (string.IsNullOrEmpty(pi.ExePath))
                     continue;
+
+                ExceptionSubject subj;
+                if (pi.Package.HasValue)
+                    subj = new AppContainerSubject(pi.Package.Value.Sid, pi.Package.Value.Name, pi.Package.Value.Publisher);
+                else
+                    subj = new ExecutableSubject(pi.ExePath);
 
                 // Check if we already have an exception for this file
                 bool found = false;
                 foreach (var ex in exceptions)
                 {
-                    if (ex.Subject is ExecutableSubject exe)
+                    if (ex.Subject.Equals(subj))
                     {
-                        if (exe.ExecutablePath.Equals(path, StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            found = true;
-                            break;
-                        }
+                        found = true;
+                        break;
                     }
                 }
-
                 if (found)
                     continue;
 
                 // Try to recognize app based on this file
-                ExecutableSubject subject = ExceptionSubject.Construct(path, null) as ExecutableSubject;
-                exceptions.AddRange(GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out DatabaseClasses.Application dummyApp));
+                exceptions.AddRange(GlobalInstances.AppDatabase.GetExceptionsForApp(subj, true, out _));
             }
 
             Controller.AddExceptionList(exceptions);
@@ -387,7 +395,7 @@ namespace PKSoft
                 ListViewItem li = list.SelectedItems[0];
 
                 const string urlTemplate = @"https://www.virustotal.com/latest-scan/{0}";
-                string hash = Hasher.HashFile(li.ToolTipText);
+                string hash = Hasher.HashFile((li.Tag as ProcessInfo).ExePath);
                 string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, hash);
                 Utils.StartProcess(url, string.Empty, false);
             }
@@ -405,7 +413,7 @@ namespace PKSoft
                 ListViewItem li = list.SelectedItems[0];
 
                 const string urlTemplate = @"http://www.processlibrary.com/search/?q={0}";
-                string filename = System.IO.Path.GetFileName(li.ToolTipText);
+                string filename = System.IO.Path.GetFileName((li.Tag as ProcessInfo).ExePath);
                 string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, filename);
                 Utils.StartProcess(url, string.Empty, false);
             }
@@ -421,7 +429,7 @@ namespace PKSoft
                 ListViewItem li = list.SelectedItems[0];
 
                 const string urlTemplate = @"www.google.com/search?q={0}";
-                string filename = System.IO.Path.GetFileName(li.ToolTipText);
+                string filename = System.IO.Path.GetFileName((li.Tag as ProcessInfo).ExePath);
                 string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, filename);
                 Utils.StartProcess(url, string.Empty, false);
             }

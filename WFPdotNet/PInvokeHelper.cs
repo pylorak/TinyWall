@@ -41,5 +41,19 @@ namespace WFPdotNet
             CopySid(sidLength, ret.DangerousGetHandle(), sid);
             return ret;
         }
+
+        [DllImport("advapi32", CharSet = CharSet.Unicode, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool ConvertSidToStringSid(IntPtr Sid, out AllocHLocalSafeHandle StringSid);
+        
+        internal static string ConvertSidToStringSid(IntPtr pSid)
+        {
+            if (!ConvertSidToStringSid(pSid, out AllocHLocalSafeHandle ptrStrSid))
+                return null;
+
+            string strSid = Marshal.PtrToStringUni(ptrStrSid.DangerousGetHandle());
+            ptrStrSid.Dispose();
+            return strSid;
+        }
     }
 }

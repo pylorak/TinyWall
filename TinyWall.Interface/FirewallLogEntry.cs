@@ -38,6 +38,7 @@ namespace TinyWall.Interface
         public int SourcePort;
         public int DestinationPort;
         public string AppPath;
+        public string PackageID;
 
         public override bool Equals(object obj)
         {
@@ -66,6 +67,7 @@ namespace TinyWall.Interface
                 hash = (hash ^ SourcePort.GetHashCode()) * FNV_PRIME;
                 hash = (hash ^ DestinationPort.GetHashCode()) * FNV_PRIME;
                 hash = (hash ^ AppPath.GetHashCode()) * FNV_PRIME;
+                hash = (hash ^ PackageID.GetHashCode()) * FNV_PRIME;
 
                 return hash;
             }
@@ -85,6 +87,7 @@ namespace TinyWall.Interface
                 (this.Direction == obj.Direction) &&
                 this.SourceIP.Equals(obj.SourceIP) &&
                 this.AppPath.Equals(obj.AppPath) &&
+                this.AppPath.Equals(obj.PackageID) &&
                 (this.SourcePort == obj.SourcePort);
 
             if (timestampMustMatch)

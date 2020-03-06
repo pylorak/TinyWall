@@ -22,8 +22,9 @@ namespace WFPdotNet
         public string appId;
         public SecurityIdentifier userId;
         public Interop.FwpmDirection? direction;
+        public string packageId;
 
-#if true
+#if true    // would be easier to go over IPAdress, but this way a lot of object allocations are avoided
         public string localAddr;
         public string remoteAddr;
         private static string ToIpAddress(Interop.InternetworkAddr addr, bool isIpV6, StringBuilder sb)
@@ -189,6 +190,12 @@ namespace WFPdotNet
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_REMOTE_PORT_SET) != 0)
             {
                 remotePort = nativeEvent.header.remotePort;
+            }
+            if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_PACKAGE_ID_SET) != 0)
+            {
+                string sid = PInvokeHelper.ConvertSidToStringSid(nativeEvent.header.packageSid);
+                if ((sid != null) && sid.StartsWith("S-1-15-2-"))
+                    packageId = sid;
             }
 #if false   // This works, but needs a lot of resources and is currently not needed. Enable when needed.
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_USER_ID_SET) != 0)

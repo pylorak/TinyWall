@@ -1699,6 +1699,7 @@ namespace PKSoft
                 entry.AppPath = NtPathMapper.FromNtPath(data.appId);
             else
                 entry.AppPath = "System";
+            entry.PackageID = data.packageId;
             entry.DestinationIP = data.remoteAddr?.ToString();
             entry.SourceIP = data.localAddr?.ToString();
             if (data.remotePort.HasValue)
