@@ -8,14 +8,13 @@ using System.Runtime.CompilerServices;
 using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
 using System.Runtime.ConstrainedExecution;
-using System.Runtime.Versioning;
 using System.Text;
 using TinyWall.Interface;
 using System.ComponentModel;
 
 namespace PKSoft
 {
-    public class ProcessManager
+    public static class ProcessManager
     {
         public sealed class SafeProcessHandle : SafeHandleZeroOrMinusOneIsInvalid   // OpenProcess returns 0 on failure
         {
@@ -33,7 +32,7 @@ namespace PKSoft
             }
         }
 
-        public sealed class SafeSnapshotHandle : SafeHandleMinusOneIsInvalid   // CreateToolhelp32Snapshot  returns -1 on failure
+        protected sealed class SafeSnapshotHandle : SafeHandleMinusOneIsInvalid   // CreateToolhelp32Snapshot  returns -1 on failure
         {
             internal SafeSnapshotHandle() : base(true) { }
 
@@ -49,8 +48,93 @@ namespace PKSoft
             }
         }
 
+        public sealed class HeapSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
+        {
+            [SuppressUnmanagedCodeSecurity]
+            protected static class NativeMethods
+            {
+                [DllImport("kernel32")]
+                internal static extern IntPtr HeapAlloc(IntPtr heap, uint uFlags, UIntPtr dwBytes);
+
+                [DllImport("kernel32", SetLastError = true)]
+                internal static extern IntPtr GetProcessHeap();
+
+                [DllImport("kernel32", SetLastError = true)]
+                [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+                [return: MarshalAs(UnmanagedType.Bool)]
+                internal static extern bool HeapFree(IntPtr heap, uint flags, IntPtr mem);
+            }
+
+            private static IntPtr ProcessHeap { get; } = NativeMethods.GetProcessHeap();
+
+            public HeapSafeHandle(int nBytes, bool zeroBytes = false)
+                : base(true)
+            {
+                uint flags = zeroBytes ? 0x00000008u : 0u;
+                this.handle = NativeMethods.HeapAlloc(ProcessHeap, flags, (UIntPtr)(uint)nBytes);
+            }
+
+            public HeapSafeHandle(IntPtr ptr, bool ownsHandle)
+                : base(ownsHandle)
+            {
+                this.handle = ptr;
+            }
+
+            public HeapSafeHandle()
+                : base(true)
+            {
+                this.handle = IntPtr.Zero;
+            }
+
+            [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+            [PrePrepareMethod]
+            protected override bool ReleaseHandle()
+            {
+                return NativeMethods.HeapFree(ProcessHeap, 0, handle);
+            }
+        }
+
+        protected sealed class AllocHLocalSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
+        {
+            [SuppressUnmanagedCodeSecurity]
+            private static class NativeMethods
+            {
+                [DllImport("kernel32.dll")]
+                internal static extern IntPtr LocalAlloc(uint uFlags, UIntPtr dwBytes);
+
+                [DllImport("kernel32.dll")]
+                [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+                internal static extern IntPtr LocalFree(IntPtr hMem);
+            }
+
+            public AllocHLocalSafeHandle(int nBytes)
+                : base(true)
+            {
+                this.handle = NativeMethods.LocalAlloc(0, new UIntPtr((uint)nBytes));
+            }
+
+            public AllocHLocalSafeHandle(IntPtr ptr, bool ownsHandle)
+                : base(ownsHandle)
+            {
+                this.handle = ptr;
+            }
+
+            public AllocHLocalSafeHandle()
+                : base(true)
+            {
+                this.handle = IntPtr.Zero;
+            }
+
+            [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+            [PrePrepareMethod]
+            protected override bool ReleaseHandle()
+            {
+                return (IntPtr.Zero == NativeMethods.LocalFree(handle));
+            }
+        }
+
         [SuppressUnmanagedCodeSecurity]
-        public static class SafeNativeMethods
+        protected static class SafeNativeMethods
         {
             [DllImport("kernel32", SetLastError = true)]
             internal static extern SafeProcessHandle OpenProcess(ProcessAccessFlags dwDesiredAccess, bool bInheritHandle, int dwProcessId);
@@ -59,8 +143,8 @@ namespace PKSoft
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
             internal static extern bool CloseHandle(IntPtr hHandle);
 
-            [DllImport("kernel32", SetLastError = true)]
-            internal static extern bool QueryFullProcessImageName(SafeProcessHandle hProcess, QueryFullProcessImageNameFlags dwFlags, StringBuilder lpExeName, out int size);
+            [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
+            internal static extern bool QueryFullProcessImageName(SafeProcessHandle hProcess, QueryFullProcessImageNameFlags dwFlags, StringBuilder lpExeName, ref int size);
 
             [DllImport("ntdll")]
             internal static extern int NtQueryInformationProcess(SafeProcessHandle hProcess, int processInformationClass, [Out] out PROCESS_BASIC_INFORMATION processInformation, int processInformationLength, out int returnLength);
@@ -79,18 +163,128 @@ namespace PKSoft
             [DllImport("kernel32", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool GetProcessTimes(SafeProcessHandle hProcess, out long lpCreationTime, out long lpExitTime, out long lpKernelTime, out long lpUserTime);
+
+            [DllImport("advapi32", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool OpenProcessToken(
+                SafeProcessHandle ProcessToken,
+                TokenAccessLevels DesiredAccess,
+                out SafeProcessHandle TokenHandle);
+
+            [DllImport("advapi32", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool GetTokenInformation(
+                SafeProcessHandle TokenHandle,
+                TokenInformationClass TokenInformationClass,
+                HeapSafeHandle TokenInformation,
+                int TokenInformationLength,
+                out int ReturnLength);
+
+            [DllImport("advapi32", CharSet = CharSet.Unicode, SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool ConvertSidToStringSid(IntPtr Sid, out AllocHLocalSafeHandle StringSid);
+        }
+
+        protected enum TokenInformationClass
+        {
+            TokenUser = 1,
+            TokenGroups,
+            TokenPrivileges,
+            TokenOwner,
+            TokenPrimaryGroup,
+            TokenDefaultDacl,
+            TokenSource,
+            TokenType,
+            TokenImpersonationLevel,
+            TokenStatistics,
+            TokenRestrictedSids,
+            TokenSessionId,
+            TokenGroupsAndPrivileges,
+            TokenSessionReference,
+            TokenSandBoxInert,
+            TokenAuditPolicy,
+            TokenOrigin,
+            TokenElevationType,
+            TokenLinkedToken,
+            TokenElevation,
+            TokenHasRestrictions,
+            TokenAccessInformation,
+            TokenVirtualizationAllowed,
+            TokenVirtualizationEnabled,
+            TokenIntegrityLevel,
+            TokenUIAccess,
+            TokenMandatoryPolicy,
+            TokenLogonSid,
+            TokenIsAppContainer,
+            TokenCapabilities,
+            TokenAppContainerSid,
+            TokenAppContainerNumber,
+            TokenUserClaimAttributes,
+            TokenDeviceClaimAttributes,
+            TokenRestrictedUserClaimAttributes,
+            TokenRestrictedDeviceClaimAttributes,
+            TokenDeviceGroups,
+            TokenRestrictedDeviceGroups,
+            TokenSecurityAttributes,
+            TokenIsRestricted,
+            TokenProcessTrustLevel,
+            TokenPrivateNameSpace,
+            TokenSingletonAttributes,
+            TokenBnoIsolation,
+            TokenChildProcessFlags,
+            TokenIsLessPrivilegedAppContainer,
+            TokenIsSandboxed,
+            TokenOriginatingProcessTrustLevel,
+            MaxTokenInfoClass
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct PROCESS_BASIC_INFORMATION
+        protected struct TOKEN_APPCONTAINER_INFORMATION
+        {
+            public IntPtr TokenAppContainer;
+        };
+
+        [Flags]
+        internal enum TokenAccessLevels
+        {
+            AssignPrimary = 0x00000001,
+            Duplicate = 0x00000002,
+            Impersonate = 0x00000004,
+            TokenQuery = 0x00000008,
+            QuerySource = 0x00000010,
+            AdjustPrivileges = 0x00000020,
+            AdjustGroups = 0x00000040,
+            AdjustDefault = 0x00000080,
+            AdjustSessionId = 0x00000100,
+
+            Read = 0x00020000 | TokenQuery,
+
+            Write = 0x00020000 | AdjustPrivileges | AdjustGroups | AdjustDefault,
+
+            AllAccess = 0x000F0000 |
+                AssignPrimary |
+                Duplicate |
+                Impersonate |
+                TokenQuery |
+                QuerySource |
+                AdjustPrivileges |
+                AdjustGroups |
+                AdjustDefault |
+                AdjustSessionId,
+
+            MaximumAllowed = 0x02000000
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        protected struct PROCESS_BASIC_INFORMATION
         {
             // Fore more info, see docs for NtQueryInformationProcess()
-            internal IntPtr Reserved1;
-            internal IntPtr PebBaseAddress;
-            internal IntPtr Reserved2_0;
-            internal IntPtr Reserved2_1;
-            internal IntPtr UniqueProcessId;
-            internal IntPtr InheritedFromUniqueProcessId;
+            public IntPtr Reserved1;
+            public IntPtr PebBaseAddress;
+            public IntPtr Reserved2_0;
+            public IntPtr Reserved2_1;
+            public IntPtr UniqueProcessId;
+            public IntPtr InheritedFromUniqueProcessId;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -185,7 +379,7 @@ namespace PKSoft
                 return null;
 
             int size = buffer.Capacity;
-            if (SafeNativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.Win32Format, buffer, out size))
+            if (SafeNativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.Win32Format, buffer, ref size))
                 return buffer.ToString();
             else
                 return null;
@@ -229,8 +423,7 @@ namespace PKSoft
 
         private static bool GetProcessCreationTime(SafeProcessHandle hProcess, out long creationTime)
         {
-            long dummy1, dummy2, dummy3;
-            return SafeNativeMethods.GetProcessTimes(hProcess, out creationTime, out dummy1, out dummy2, out dummy3);
+            return SafeNativeMethods.GetProcessTimes(hProcess, out creationTime, out _, out _, out _);
         }
 
         public static IEnumerable<PROCESSENTRY32> CreateToolhelp32Snapshot()
@@ -292,6 +485,33 @@ namespace PKSoft
             {
                 p.Kill();
                 p.WaitForExit(1000);
+            }
+        }
+
+        public static string GetAppContainerSid(int pid)
+        {
+            using (SafeProcessHandle hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryInformation, false, pid))
+            {
+                if (!SafeNativeMethods.OpenProcessToken(hProcess, TokenAccessLevels.TokenQuery, out SafeProcessHandle token))
+                    return null;
+
+                const int hTokenInfoMemSize = 128;
+
+                using (var hToken = token)
+                using (var hTokenInfo = new HeapSafeHandle(hTokenInfoMemSize))
+                {
+                    if (!SafeNativeMethods.GetTokenInformation(hToken, TokenInformationClass.TokenAppContainerSid, hTokenInfo, hTokenInfoMemSize, out _))
+                        return null;
+
+                    var tokenAppContainerInfo = (TOKEN_APPCONTAINER_INFORMATION)Marshal.PtrToStructure(hTokenInfo.DangerousGetHandle(), typeof(TOKEN_APPCONTAINER_INFORMATION));
+                    if (tokenAppContainerInfo.TokenAppContainer == IntPtr.Zero)
+                        return null;
+
+                    SafeNativeMethods.ConvertSidToStringSid(tokenAppContainerInfo.TokenAppContainer, out AllocHLocalSafeHandle ptrStrSid);
+                    string strSid = Marshal.PtrToStringUni(ptrStrSid.DangerousGetHandle());
+                    ptrStrSid.Dispose();
+                    return strSid;
+                }
             }
         }
     }

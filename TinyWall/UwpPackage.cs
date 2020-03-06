@@ -31,5 +31,24 @@ namespace PKSoft
             NativeMethods.GetUwpPackageListing(out Package[] packages, out _);
             return packages;
         }
+
+        public static Package? FindPackageDetails(string sid)
+        {
+            if (string.IsNullOrEmpty(sid))
+                return null;
+
+            if (!TinyWall.Interface.VersionInfo.Win8OrNewer)
+                throw new NotSupportedException();
+
+            NativeMethods.GetUwpPackageListing(out Package[] packages, out _);
+
+            foreach (var package in packages)
+            {
+                if (package.Sid.Equals(sid))
+                    return package;
+            }
+
+            return null;
+        }
     }
 }

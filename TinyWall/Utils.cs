@@ -36,7 +36,7 @@ namespace PKSoft
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool IsImmersiveProcess(IntPtr hProcess);
 
-            [DllImport("shlwapi.dll")]
+            [DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool PathIsNetworkPath(string pszPath);
 
@@ -55,7 +55,7 @@ namespace PKSoft
                 bool bAllUsers
             );
 
-            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             [return: MarshalAs(UnmanagedType.U4)]
             internal static extern int GetLongPathName(
                 [MarshalAs(UnmanagedType.LPTStr)]
@@ -161,8 +161,7 @@ namespace PKSoft
             {
                 Type tIAppVisibility = Type.GetTypeFromCLSID(new Guid("7E5FE3D9-985F-4908-91F9-EE19F9FD1514"));
                 SafeNativeMethods.IAppVisibility appVisibility = (SafeNativeMethods.IAppVisibility)Activator.CreateInstance(tIAppVisibility);
-                bool launcherVisible;
-                if (SafeNativeMethods.HRESULT.S_OK == appVisibility.IsLauncherVisible(out launcherVisible))
+                if (SafeNativeMethods.HRESULT.S_OK == appVisibility.IsLauncherVisible(out bool launcherVisible))
                 {
                     // launcherVisible flag is valid
                     success = true;
@@ -279,14 +278,10 @@ namespace PKSoft
             return ret;
         }
 
-        internal static string GetExecutableUnderCursor(int x, int y, TinyWall.Interface.Controller controller)
+        internal static int GetPidUnderCursor(int x, int y)
         {
-            // Get process id under cursor
-            int ProcId;
-            int dummy = SafeNativeMethods.GetWindowThreadProcessId(SafeNativeMethods.WindowFromPoint(new System.Drawing.Point(x, y)), out ProcId);
-
-            // Get executable of process
-            return Utils.GetPathOfProcessUseTwService(ProcId, controller);
+            SafeNativeMethods.GetWindowThreadProcessId(SafeNativeMethods.WindowFromPoint(new System.Drawing.Point(x, y)), out int procId);
+            return procId;
         }
 
         /// <summary>
@@ -604,8 +599,7 @@ namespace PKSoft
 
         internal static DialogResult ShowMessageBox(string msg, string title, TaskDialogCommonButtons buttons, TaskDialogIcon icon, IWin32Window parent = null)
         {
-            string firstLine, contentLines;
-            Utils.SplitFirstLine(msg, out firstLine, out contentLines);
+            Utils.SplitFirstLine(msg, out string firstLine, out string contentLines);
 
             TaskDialog taskDialog = new TaskDialog();
             taskDialog.WindowTitle = title;
@@ -629,7 +623,7 @@ namespace PKSoft
 
         internal static Version TinyWallVersion { get; } = typeof(Utils).Assembly.GetName().Version;
 
-        private static object logLocker = new object();
+        private readonly static object logLocker = new object();
         internal static readonly string LOG_ID_SERVICE = "service";
         internal static readonly string LOG_ID_CLIENT = "client";
         internal static void LogCrash(Exception e, string logname)

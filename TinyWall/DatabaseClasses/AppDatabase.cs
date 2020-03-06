@@ -94,95 +94,108 @@ namespace PKSoft.DatabaseClasses
             return null;
         }
 
-        internal List<FirewallExceptionV3> GetExceptionsForApp(ExecutableSubject fromSubject, bool guiPrompt, out Application app)
+        internal List<FirewallExceptionV3> GetExceptionsForApp(ExceptionSubject fromSubject, bool guiPrompt, out Application app)
         {
+            app = null;
             List<FirewallExceptionV3> exceptions = new List<FirewallExceptionV3>();
 
-            // Try to find an application this subject might belong to
-            app = TryGetApp(fromSubject, out FirewallExceptionV3 fwEx, false);
-            if (app == null)
+            if (fromSubject is AppContainerSubject uwpSubject)
             {
                 exceptions.Add(new FirewallExceptionV3(fromSubject, new TcpUdpPolicy(true)));
                 return exceptions;
             }
-
-            // Now that we have the app, try to instantiate firewall exceptions
-            // for all components.
-            string pathHint = System.IO.Path.GetDirectoryName(fromSubject.ExecutablePath);
-            foreach (SubjectIdentity id in app.Components)
+            else if (fromSubject is ExecutableSubject exeSubject)
             {
-                List<ExceptionSubject> foundSubjects = id.SearchForFile(pathHint);
-                foreach (ExceptionSubject subject in foundSubjects)
+                // Try to find an application this subject might belong to
+                app = TryGetApp(exeSubject, out FirewallExceptionV3 fwEx, false);
+                if (app == null)
                 {
-                    exceptions.Add(id.InstantiateException(subject));
+                    exceptions.Add(new FirewallExceptionV3(exeSubject, new TcpUdpPolicy(true)));
+                    return exceptions;
+                }
+
+                // Now that we have the app, try to instantiate firewall exceptions
+                // for all components.
+                string pathHint = System.IO.Path.GetDirectoryName(exeSubject.ExecutablePath);
+                foreach (SubjectIdentity id in app.Components)
+                {
+                    List<ExceptionSubject> foundSubjects = id.SearchForFile(pathHint);
+                    foreach (ExceptionSubject subject in foundSubjects)
+                    {
+                        exceptions.Add(id.InstantiateException(subject));
+                    }
+                }
+
+                // If we have found dependencies, ask the user what to do
+                if ((exceptions.Count > 1) && guiPrompt)
+                {
+                    string firstLine, contentLines;
+
+                    // Try to get localized name
+                    string localizedAppName = PKSoft.Resources.Exceptions.ResourceManager.GetString(app.Name);
+                    localizedAppName = string.IsNullOrEmpty(localizedAppName) ? app.Name : localizedAppName;
+
+                    Utils.SplitFirstLine(string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.UnblockApp, localizedAppName), out firstLine, out contentLines);
+
+                    TaskDialog dialog = new TaskDialog();
+                    dialog.CustomMainIcon = PKSoft.Resources.Icons.firewall;
+                    dialog.WindowTitle = PKSoft.Resources.Messages.TinyWall;
+                    dialog.MainInstruction = firstLine;
+                    dialog.Content = contentLines;
+                    dialog.DefaultButton = 1;
+                    dialog.ExpandedControlText = PKSoft.Resources.Messages.UnblockAppShowRelated;
+                    dialog.ExpandFooterArea = true;
+                    dialog.AllowDialogCancellation = false;
+                    dialog.UseCommandLinks = true;
+
+                    TaskDialogButton button1 = new TaskDialogButton(101, PKSoft.Resources.Messages.UnblockAppUnblockAllRecommended);
+                    TaskDialogButton button2 = new TaskDialogButton(102, PKSoft.Resources.Messages.UnblockAppUnblockOnlySelected);
+                    TaskDialogButton button3 = new TaskDialogButton(103, PKSoft.Resources.Messages.UnblockAppCancel);
+                    dialog.Buttons = new TaskDialogButton[] { button1, button2, button3 };
+
+                    string fileListStr = string.Empty;
+                    foreach (FirewallExceptionV3 fwex in exceptions)
+                        fileListStr += fwex.Subject.ToString() + Environment.NewLine;
+                    dialog.ExpandedInformation = fileListStr.Trim();
+
+                    bool success;
+                    if (Utils.IsMetroActive(out success))
+                    {
+                        Utils.ShowToastNotif(Resources.Messages.ToastInputNeeded);
+                    }
+
+                    switch (dialog.Show())
+                    {
+                        case 101:
+                            break;
+                        case 102:
+                            // Remove all exceptions with a different subject than the input argument
+                            for (int i = exceptions.Count - 1; i >= 0; --i)
+                            {
+                                ExecutableSubject exesub = exceptions[i].Subject as ExecutableSubject;
+                                if (null == exesub)
+                                {
+                                    exceptions.RemoveAt(i);
+                                    continue;
+                                }
+
+                                if (!exesub.ExecutablePath.Equals(exeSubject.ExecutablePath, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    exceptions.RemoveAt(i);
+                                    continue;
+                                }
+                            }
+                            exceptions.RemoveRange(1, exceptions.Count - 1);
+                            break;
+                        case 103:
+                            exceptions.Clear();
+                            break;
+                    }
                 }
             }
-
-            // If we have found dependencies, ask the user what to do
-            if ((exceptions.Count > 1) && guiPrompt)
+            else
             {
-                string firstLine, contentLines;
-
-                // Try to get localized name
-                string localizedAppName = PKSoft.Resources.Exceptions.ResourceManager.GetString(app.Name);
-                localizedAppName = string.IsNullOrEmpty(localizedAppName) ? app.Name : localizedAppName;
-
-                Utils.SplitFirstLine(string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.UnblockApp, localizedAppName), out firstLine, out contentLines);
-
-                TaskDialog dialog = new TaskDialog();
-                dialog.CustomMainIcon = PKSoft.Resources.Icons.firewall;
-                dialog.WindowTitle = PKSoft.Resources.Messages.TinyWall;
-                dialog.MainInstruction = firstLine;
-                dialog.Content = contentLines;
-                dialog.DefaultButton = 1;
-                dialog.ExpandedControlText = PKSoft.Resources.Messages.UnblockAppShowRelated;
-                dialog.ExpandFooterArea = true;
-                dialog.AllowDialogCancellation = false;
-                dialog.UseCommandLinks = true;
-
-                TaskDialogButton button1 = new TaskDialogButton(101, PKSoft.Resources.Messages.UnblockAppUnblockAllRecommended);
-                TaskDialogButton button2 = new TaskDialogButton(102, PKSoft.Resources.Messages.UnblockAppUnblockOnlySelected);
-                TaskDialogButton button3 = new TaskDialogButton(103, PKSoft.Resources.Messages.UnblockAppCancel);
-                dialog.Buttons = new TaskDialogButton[] { button1, button2, button3 };
-
-                string fileListStr = string.Empty;
-                foreach (FirewallExceptionV3 fwex in exceptions)
-                    fileListStr += fwex.Subject.ToString() + Environment.NewLine;
-                dialog.ExpandedInformation = fileListStr.Trim();
-
-                bool success;
-                if (Utils.IsMetroActive(out success))
-                {
-                    Utils.ShowToastNotif(Resources.Messages.ToastInputNeeded);
-                }
-
-                switch (dialog.Show())
-                {
-                    case 101:
-                        break;
-                    case 102:
-                        // Remove all exceptions with a different subject than the input argument
-                        for (int i = exceptions.Count-1; i >= 0; --i)
-                        {
-                            ExecutableSubject exesub = exceptions[i].Subject as ExecutableSubject;
-                            if (null == exesub)
-                            {
-                                exceptions.RemoveAt(i);
-                                continue;
-                            }
-
-                            if (!exesub.ExecutablePath.Equals(fromSubject.ExecutablePath, StringComparison.OrdinalIgnoreCase))
-                            {
-                                exceptions.RemoveAt(i);
-                                continue;
-                            }
-                        }
-                        exceptions.RemoveRange(1, exceptions.Count - 1);
-                        break;
-                    case 103:
-                        exceptions.Clear();
-                        break;
-                }
+                throw new NotImplementedException();
             }
 
             return exceptions;

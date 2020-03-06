@@ -949,19 +949,31 @@ namespace PKSoft
                     MouseInterceptor.Dispose();
                     MouseInterceptor = null;
 
-                    string filePath = Utils.GetExecutableUnderCursor(x, y, GlobalInstances.Controller);
-                    if (string.IsNullOrEmpty(filePath))
+                    int pid = Utils.GetPidUnderCursor(x, y);
+                    string exePath = Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller);
+                    UwpPackage.Package? appContainer = VersionInfo.Win8OrNewer ? UwpPackage.FindPackageDetails(ProcessManager.GetAppContainerSid(pid)) : null;
+
+                    ExceptionSubject subj;
+                    if (appContainer.HasValue)
+                    {
+                        subj = new AppContainerSubject(appContainer.Value.Sid, appContainer.Value.Name, appContainer.Value.Publisher);
+                    }
+                    else if (string.IsNullOrEmpty(exePath))
                     {
                         ShowBalloonTip(PKSoft.Resources.Messages.CannotGetExecutablePathWhitelisting, ToolTipIcon.Error);
                         return;
                     }
+                    else
+                    {
+                        subj = new ExecutableSubject(exePath);
+                    }
 
-                    WhitelistSubject(new ExecutableSubject(filePath));
+                    WhitelistSubject(subj);
                 });
             });
         }
 
-        internal void WhitelistSubject(ExecutableSubject subject)
+        internal void WhitelistSubject(ExceptionSubject subject)
         {
             List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out DatabaseClasses.Application dummyApp);
             if (exceptions.Count == 0)
