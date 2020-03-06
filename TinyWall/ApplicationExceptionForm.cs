@@ -339,7 +339,7 @@ namespace PKSoft
 
         private void btnProcess_Click(object sender, EventArgs e)
         {
-            List<ProcessesForm.EntryDetails> procList = ProcessesForm.ChooseProcess(this, false);
+            List<ProcessInfo> procList = ProcessesForm.ChooseProcess(this, false);
             if (procList.Count == 0) return;
 
             ExceptionSubject subject;

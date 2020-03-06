@@ -4,10 +4,6 @@ using System.Security;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
-using Microsoft.Win32;
-using Microsoft.Win32.SafeHandles;
-using System.Runtime.ConstrainedExecution;
 using System.Text;
 using TinyWall.Interface;
 using System.ComponentModel;
@@ -16,145 +12,24 @@ namespace PKSoft
 {
     public static class ProcessManager
     {
-        public sealed class SafeProcessHandle : SafeHandleZeroOrMinusOneIsInvalid   // OpenProcess returns 0 on failure
-        {
-            internal SafeProcessHandle() : base(true) { }
-
-            internal SafeProcessHandle(IntPtr handle) : base(true)
-            {
-                SetHandle(handle);
-            }
-
-            [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-            override protected bool ReleaseHandle()
-            {
-                return SafeNativeMethods.CloseHandle(handle);
-            }
-        }
-
-        protected sealed class SafeSnapshotHandle : SafeHandleMinusOneIsInvalid   // CreateToolhelp32Snapshot  returns -1 on failure
-        {
-            internal SafeSnapshotHandle() : base(true) { }
-
-            internal SafeSnapshotHandle(IntPtr handle) : base(true)
-            {
-                SetHandle(handle);
-            }
-
-            [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-            override protected bool ReleaseHandle()
-            {
-                return SafeNativeMethods.CloseHandle(handle);
-            }
-        }
-
-        public sealed class HeapSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
-        {
-            [SuppressUnmanagedCodeSecurity]
-            protected static class NativeMethods
-            {
-                [DllImport("kernel32")]
-                internal static extern IntPtr HeapAlloc(IntPtr heap, uint uFlags, UIntPtr dwBytes);
-
-                [DllImport("kernel32", SetLastError = true)]
-                internal static extern IntPtr GetProcessHeap();
-
-                [DllImport("kernel32", SetLastError = true)]
-                [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-                [return: MarshalAs(UnmanagedType.Bool)]
-                internal static extern bool HeapFree(IntPtr heap, uint flags, IntPtr mem);
-            }
-
-            private static IntPtr ProcessHeap { get; } = NativeMethods.GetProcessHeap();
-
-            public HeapSafeHandle(int nBytes, bool zeroBytes = false)
-                : base(true)
-            {
-                uint flags = zeroBytes ? 0x00000008u : 0u;
-                this.handle = NativeMethods.HeapAlloc(ProcessHeap, flags, (UIntPtr)(uint)nBytes);
-            }
-
-            public HeapSafeHandle(IntPtr ptr, bool ownsHandle)
-                : base(ownsHandle)
-            {
-                this.handle = ptr;
-            }
-
-            public HeapSafeHandle()
-                : base(true)
-            {
-                this.handle = IntPtr.Zero;
-            }
-
-            [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-            [PrePrepareMethod]
-            protected override bool ReleaseHandle()
-            {
-                return NativeMethods.HeapFree(ProcessHeap, 0, handle);
-            }
-        }
-
-        protected sealed class AllocHLocalSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
-        {
-            [SuppressUnmanagedCodeSecurity]
-            private static class NativeMethods
-            {
-                [DllImport("kernel32.dll")]
-                internal static extern IntPtr LocalAlloc(uint uFlags, UIntPtr dwBytes);
-
-                [DllImport("kernel32.dll")]
-                [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-                internal static extern IntPtr LocalFree(IntPtr hMem);
-            }
-
-            public AllocHLocalSafeHandle(int nBytes)
-                : base(true)
-            {
-                this.handle = NativeMethods.LocalAlloc(0, new UIntPtr((uint)nBytes));
-            }
-
-            public AllocHLocalSafeHandle(IntPtr ptr, bool ownsHandle)
-                : base(ownsHandle)
-            {
-                this.handle = ptr;
-            }
-
-            public AllocHLocalSafeHandle()
-                : base(true)
-            {
-                this.handle = IntPtr.Zero;
-            }
-
-            [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-            [PrePrepareMethod]
-            protected override bool ReleaseHandle()
-            {
-                return (IntPtr.Zero == NativeMethods.LocalFree(handle));
-            }
-        }
-
         [SuppressUnmanagedCodeSecurity]
         protected static class SafeNativeMethods
         {
             [DllImport("kernel32", SetLastError = true)]
-            internal static extern SafeProcessHandle OpenProcess(ProcessAccessFlags dwDesiredAccess, bool bInheritHandle, int dwProcessId);
-
-            [DllImport("kernel32", SetLastError = true)]
-            [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-            internal static extern bool CloseHandle(IntPtr hHandle);
+            internal static extern SafeObjectHandle OpenProcess(ProcessAccessFlags dwDesiredAccess, bool bInheritHandle, int dwProcessId);
 
             [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
-            internal static extern bool QueryFullProcessImageName(SafeProcessHandle hProcess, QueryFullProcessImageNameFlags dwFlags, StringBuilder lpExeName, ref int size);
+            internal static extern bool QueryFullProcessImageName(SafeObjectHandle hProcess, QueryFullProcessImageNameFlags dwFlags, StringBuilder lpExeName, ref int size);
 
             [DllImport("ntdll")]
-            internal static extern int NtQueryInformationProcess(SafeProcessHandle hProcess, int processInformationClass, [Out] out PROCESS_BASIC_INFORMATION processInformation, int processInformationLength, out int returnLength);
+            internal static extern int NtQueryInformationProcess(SafeObjectHandle hProcess, int processInformationClass, [Out] out PROCESS_BASIC_INFORMATION processInformation, int processInformationLength, out int returnLength);
 
             [DllImport("kernel32", SetLastError = true)]
-            internal static extern SafeSnapshotHandle CreateToolhelp32Snapshot(SnapshotFlags flags, int id);
+            internal static extern SafeObjectHandle CreateToolhelp32Snapshot(SnapshotFlags flags, int id);
             [DllImport("kernel32", SetLastError = true)]
-            internal static extern bool Process32First(SafeSnapshotHandle hSnapshot, ref PROCESSENTRY32 lppe);
+            internal static extern bool Process32First(SafeObjectHandle hSnapshot, ref PROCESSENTRY32 lppe);
             [DllImport("kernel32", SetLastError = true)]
-            internal static extern bool Process32Next(SafeSnapshotHandle hSnapshot, ref PROCESSENTRY32 lppe);
+            internal static extern bool Process32Next(SafeObjectHandle hSnapshot, ref PROCESSENTRY32 lppe);
 
             [DllImport("user32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
@@ -162,27 +37,23 @@ namespace PKSoft
 
             [DllImport("kernel32", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
-            internal static extern bool GetProcessTimes(SafeProcessHandle hProcess, out long lpCreationTime, out long lpExitTime, out long lpKernelTime, out long lpUserTime);
+            internal static extern bool GetProcessTimes(SafeObjectHandle hProcess, out long lpCreationTime, out long lpExitTime, out long lpKernelTime, out long lpUserTime);
 
             [DllImport("advapi32", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool OpenProcessToken(
-                SafeProcessHandle ProcessToken,
+                SafeObjectHandle ProcessToken,
                 TokenAccessLevels DesiredAccess,
-                out SafeProcessHandle TokenHandle);
+                out SafeObjectHandle TokenHandle);
 
             [DllImport("advapi32", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool GetTokenInformation(
-                SafeProcessHandle TokenHandle,
+                SafeObjectHandle TokenHandle,
                 TokenInformationClass TokenInformationClass,
                 HeapSafeHandle TokenInformation,
                 int TokenInformationLength,
                 out int ReturnLength);
-
-            [DllImport("advapi32", CharSet = CharSet.Unicode, SetLastError = true)]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            internal static extern bool ConvertSidToStringSid(IntPtr Sid, out AllocHLocalSafeHandle StringSid);
         }
 
         protected enum TokenInformationClass
@@ -362,13 +233,13 @@ namespace PKSoft
 
         public static string GetProcessPath(int processId, StringBuilder buffer)
         {
-            using (SafeProcessHandle hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
+            using (var hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
             {
                 return GetProcessPath(hProcess, buffer);
             }
         }
 
-        public static string GetProcessPath(SafeProcessHandle hProcess, StringBuilder buffer)
+        public static string GetProcessPath(SafeObjectHandle hProcess, StringBuilder buffer)
         {
             // This method needs Windows Vista or newer OS
             System.Diagnostics.Debug.Assert(Environment.OSVersion.Version.Major >= 6);
@@ -387,7 +258,7 @@ namespace PKSoft
 
         public static bool GetParentProcess(int processId, ref int parentPid)
         {
-            using (SafeProcessHandle hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
+            using (var hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
             {
                 if (hProcess.IsInvalid)
                     return false;
@@ -409,7 +280,7 @@ namespace PKSoft
 
                     // parentPid might have been reused and thus might not be the actual parent.
                     // Check process creation times to figure it out.
-                    using (SafeProcessHandle hParentProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, parentPid))
+                    using (var hParentProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, parentPid))
                     {
                         if (GetProcessCreationTime(hParentProcess, out long parentCreation) && GetProcessCreationTime(hProcess, out long childCreation))
                         {
@@ -421,7 +292,7 @@ namespace PKSoft
             }
         }
 
-        private static bool GetProcessCreationTime(SafeProcessHandle hProcess, out long creationTime)
+        private static bool GetProcessCreationTime(SafeObjectHandle hProcess, out long creationTime)
         {
             return SafeNativeMethods.GetProcessTimes(hProcess, out creationTime, out _, out _, out _);
         }
@@ -456,7 +327,7 @@ namespace PKSoft
             StringBuilder sbuilder = new StringBuilder(1024);
             foreach (var p in CreateToolhelp32Snapshot())
             {
-                using (SafeProcessHandle hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, p.th32ProcessID))
+                using (var hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, p.th32ProcessID))
                 {
                     ExtendedProcessEntry ret;
                     ret.BaseEntry = p;
@@ -490,9 +361,9 @@ namespace PKSoft
 
         public static string GetAppContainerSid(int pid)
         {
-            using (SafeProcessHandle hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryInformation, false, pid))
+            using (var hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryInformation, false, pid))
             {
-                if (!SafeNativeMethods.OpenProcessToken(hProcess, TokenAccessLevels.TokenQuery, out SafeProcessHandle token))
+                if (!SafeNativeMethods.OpenProcessToken(hProcess, TokenAccessLevels.TokenQuery, out SafeObjectHandle token))
                     return null;
 
                 const int hTokenInfoMemSize = 128;
@@ -507,10 +378,7 @@ namespace PKSoft
                     if (tokenAppContainerInfo.TokenAppContainer == IntPtr.Zero)
                         return null;
 
-                    SafeNativeMethods.ConvertSidToStringSid(tokenAppContainerInfo.TokenAppContainer, out AllocHLocalSafeHandle ptrStrSid);
-                    string strSid = Marshal.PtrToStringUni(ptrStrSid.DangerousGetHandle());
-                    ptrStrSid.Dispose();
-                    return strSid;
+                    return Utils.ConvertSidToStringSid(tokenAppContainerInfo.TokenAppContainer);
                 }
             }
         }

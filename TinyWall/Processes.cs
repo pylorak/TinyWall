@@ -9,20 +9,14 @@ namespace PKSoft
 {
     internal partial class ProcessesForm : Form
     {
-        internal class EntryDetails
-        {
-            public string ExePath;
-            public UwpPackage.Package? Package;
-        }
-
-        private readonly List<EntryDetails> Selection = new List<EntryDetails>();
+        private readonly List<ProcessInfo> Selection = new List<ProcessInfo>();
         private readonly Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
-        internal static List<EntryDetails> ChooseProcess(IWin32Window parent, bool multiSelect)
+        internal static List<ProcessInfo> ChooseProcess(IWin32Window parent, bool multiSelect)
         {
             using (ProcessesForm pf = new ProcessesForm(multiSelect))
             {
-                List<EntryDetails> pathList = new List<EntryDetails>();
+                List<ProcessInfo> pathList = new List<ProcessInfo>();
 
                 if (pf.ShowDialog(parent) == DialogResult.Cancel)
                     return pathList;
@@ -51,7 +45,7 @@ namespace PKSoft
         {
             for (int i = 0; i < listView.SelectedItems.Count; ++i)
             {
-                this.Selection.Add(listView.SelectedItems[i].Tag as EntryDetails);
+                this.Selection.Add(listView.SelectedItems[i].Tag as ProcessInfo);
             }
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
@@ -86,9 +80,8 @@ namespace PKSoft
                 {
                     try
                     {
-                        EntryDetails e = new EntryDetails();
+                        ProcessInfo e = new ProcessInfo(p.Id, packages);
 
-                        e.ExePath = Utils.GetPathOfProcessUseTwService(p.Id, GlobalInstances.Controller);
                         if (string.IsNullOrEmpty(e.ExePath))
                             continue;
 
@@ -111,9 +104,6 @@ namespace PKSoft
                             if (!IconList.Images.ContainsKey(e.ExePath))
                                 IconList.Images.Add(e.ExePath, Utils.GetIconContained(e.ExePath, IconSize.Width, IconSize.Height));
                         }
-
-                        // Detect AppContainers
-                        e.Package = packages.FindPackage(ProcessManager.GetAppContainerSid(p.Id));
 
                         // Add list item
                         ListViewItem li = new ListViewItem(p.ProcessName);

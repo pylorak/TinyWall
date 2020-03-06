@@ -66,6 +66,10 @@ namespace PKSoft
                 int cchBuffer
             );
 
+            [DllImport("advapi32", CharSet = CharSet.Unicode, SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool ConvertSidToStringSid(IntPtr Sid, out AllocHLocalSafeHandle StringSid);
+
             #region WNetGetUniversalName
             internal const int UNIVERSAL_NAME_INFO_LEVEL = 0x00000001;
             internal const int ERROR_MORE_DATA = 234;
@@ -152,6 +156,16 @@ namespace PKSoft
             return servers;
         }
         */
+
+        internal static string ConvertSidToStringSid(IntPtr pSid)
+        {
+            if (!SafeNativeMethods.ConvertSidToStringSid(pSid, out AllocHLocalSafeHandle ptrStrSid))
+                return null;
+
+            string strSid = Marshal.PtrToStringUni(ptrStrSid.DangerousGetHandle());
+            ptrStrSid.Dispose();
+            return strSid;
+        }
 
         internal static bool IsMetroActive(out bool success)
         { // http://stackoverflow.com/questions/12009999/imetromodeislaunchervisible-in-c-sharp-via-pinvoke

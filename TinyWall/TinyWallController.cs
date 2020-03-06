@@ -650,19 +650,15 @@ namespace PKSoft
         // Returns true if the local copy of the settings have been updated.
         private bool LoadSettingsFromServer()
         {
-            bool comError;
-            return LoadSettingsFromServer(out comError, false);
+            return LoadSettingsFromServer(out bool comError, false);
         }
 
         // Returns true if the local copy of the settings have been updated.
         private bool LoadSettingsFromServer(out bool comError, bool force = false)
         {
-            ServerConfiguration config;
-            ServerState state = FirewallState;
-
             Guid inChangeset = force ? Guid.Empty : GlobalInstances.ClientChangeset;
             Guid outChangeset = inChangeset;
-            MessageType ret = GlobalInstances.Controller.GetServerConfig(out config, out state, ref outChangeset);
+            MessageType ret = GlobalInstances.Controller.GetServerConfig(out ServerConfiguration config, out ServerState state, ref outChangeset);
 
             comError = (MessageType.COM_ERROR == ret);
             bool SettingsUpdated = force || (inChangeset != outChangeset);
@@ -736,7 +732,7 @@ namespace PKSoft
         private void mnuWhitelistByProcess_Click(object sender, EventArgs e)
         {
             List<FirewallExceptionV3> exceptions = new List<FirewallExceptionV3>();
-            List<ProcessesForm.EntryDetails> pathList = ProcessesForm.ChooseProcess(null, true);
+            List<ProcessInfo> pathList = ProcessesForm.ChooseProcess(null, true);
 
             foreach (var sel in pathList)
             {
@@ -771,9 +767,8 @@ namespace PKSoft
 
         internal MessageType ApplyFirewallSettings(ServerConfiguration srvConfig, bool showUI = true)
         {
-            ServerState state;
             Guid localChangeset = GlobalInstances.ClientChangeset;
-            MessageType resp = GlobalInstances.Controller.SetServerConfig(ref srvConfig, ref localChangeset, out state);
+            MessageType resp = GlobalInstances.Controller.SetServerConfig(ref srvConfig, ref localChangeset, out ServerState state);
 
             switch (resp)
             {
@@ -893,8 +888,7 @@ namespace PKSoft
 
         private void mnuWhitelistByWindow_Click(object sender, EventArgs e)
         {
-            bool success;
-            bool foregroundIsMetro = VersionInfo.Win8OrNewer && Utils.IsMetroActive(out success);
+            bool foregroundIsMetro = VersionInfo.Win8OrNewer && Utils.IsMetroActive(out bool success);
 
             if (foregroundIsMetro)
             {
@@ -976,7 +970,7 @@ namespace PKSoft
 
         internal void WhitelistSubject(ExceptionSubject subject)
         {
-            List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out DatabaseClasses.Application dummyApp);
+            List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out _);
             if (exceptions.Count == 0)
                 return;
 
@@ -985,8 +979,7 @@ namespace PKSoft
             {
                 using (ApplicationExceptionForm f = new ApplicationExceptionForm(exceptions[0]))
                 {
-                    bool success;
-                    if (Utils.IsMetroActive(out success))
+                    if (Utils.IsMetroActive(out bool success))
                         Utils.ShowToastNotif(Resources.Messages.ToastInputNeeded);
 
                     if (f.ShowDialog() == DialogResult.Cancel)
@@ -1040,16 +1033,14 @@ namespace PKSoft
 
             MessageType resp = ApplyFirewallSettings(confCopy, false);
 
-            bool success;
-            bool metroActive = Utils.IsMetroActive(out success) && !VersionInfo.Win10OrNewer;
+            bool metroActive = Utils.IsMetroActive(out bool success) && !VersionInfo.Win10OrNewer;
             if (!metroActive)
             {
                 switch (resp)
                 {
                     case MessageType.RESPONSE_OK:
                         bool signedAndValid = false;
-                        ExecutableSubject exesub = fwex.Subject as ExecutableSubject;
-                        if (null != exesub)
+                        if (fwex.Subject is ExecutableSubject exesub)
                             signedAndValid = exesub.IsSigned && exesub.CertValid;
 
                         if (signedAndValid)
@@ -1217,10 +1208,7 @@ namespace PKSoft
 
         private void Tray_BalloonTipClicked(object sender, EventArgs e)
         {
-            if (BalloonClickedCallback != null)
-            {
-                BalloonClickedCallback(Tray, new AnyEventArgs(BalloonClickedCallbackArgument));
-            }
+            BalloonClickedCallback?.Invoke(Tray, new AnyEventArgs(BalloonClickedCallbackArgument));
         }
 
         private void LoadDatabase()
@@ -1255,8 +1243,7 @@ namespace PKSoft
 
         private void mnuModeLearn_Click(object sender, EventArgs e)
         {
-            string firstLine, contentLines;
-            Utils.SplitFirstLine(PKSoft.Resources.Messages.YouAreAboutToEnterLearningMode, out firstLine, out contentLines);
+            Utils.SplitFirstLine(PKSoft.Resources.Messages.YouAreAboutToEnterLearningMode, out string firstLine, out string contentLines);
 
             TaskDialog dialog = new TaskDialog();
             dialog.CustomMainIcon = PKSoft.Resources.Icons.firewall;
@@ -1320,8 +1307,7 @@ namespace PKSoft
                 // --- THREAD BARRIER ---
             }
 
-            bool comError;
-            LoadSettingsFromServer(out comError, true);
+            LoadSettingsFromServer(out bool comError, true);
 #if !DEBUG
             if (comError)
             {
