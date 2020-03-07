@@ -39,12 +39,16 @@ struct UwpPackage
 public:
 	wchar_t* Name;
 	wchar_t* Publisher;
+	wchar_t* PublisherId;
 	wchar_t* Sid;
+	bool Tampered;
 
 	UwpPackage(const winrt::Windows::ApplicationModel::Package &package) noexcept :
 		Name(CopyWinrtStr2CoTaskMem(package.Id().Name())),
 		Publisher(CopyWinrtStr2CoTaskMem(package.Id().Publisher())),
-		Sid(NULL)
+		PublisherId(CopyWinrtStr2CoTaskMem(package.Id().PublisherId())),
+		Sid(NULL),
+		Tampered(package.Status().Tampered())
 	{
 		PSID sid = NULL;
 		LPWSTR strSid = NULL;

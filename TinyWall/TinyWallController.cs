@@ -741,7 +741,7 @@ namespace PKSoft
 
                 ExceptionSubject subj;
                 if (sel.Package.HasValue)
-                    subj = new AppContainerSubject(sel.Package.Value.Sid, sel.Package.Value.Name, sel.Package.Value.Publisher);
+                    subj = sel.Package.Value.ToExceptionSubject();
                 else
                     subj = new ExecutableSubject(sel.ExePath);
 
@@ -951,7 +951,7 @@ namespace PKSoft
                     ExceptionSubject subj;
                     if (appContainer.HasValue)
                     {
-                        subj = new AppContainerSubject(appContainer.Value.Sid, appContainer.Value.Name, appContainer.Value.Publisher);
+                        subj = appContainer.Value.ToExceptionSubject();
                     }
                     else if (string.IsNullOrEmpty(exePath))
                     {

@@ -309,7 +309,7 @@ namespace TinyWall.Interface
 
         public override string ToString()
         {
-            return $"Service: {ServiceName}";
+            return $"{ServiceName} ({ExecutableName})";
         }
     }
 
@@ -336,11 +336,15 @@ namespace TinyWall.Interface
         [DataMember(EmitDefaultValue = false)]
         public string Publisher { get; private set; }
 
-        public AppContainerSubject(string sid, string displayName, string publisher)
+        [DataMember(EmitDefaultValue = false)]
+        public string PublisherId { get; private set; }
+
+        public AppContainerSubject(string sid, string displayName, string publisher, string publisherId)
         {
             this.Sid = sid;
             this.DisplayName = displayName;
             this.Publisher = publisher;
+            this.PublisherId = publisherId;
         }
 
         public override bool Equals(ExceptionSubject other)

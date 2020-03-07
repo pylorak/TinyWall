@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.ConstrainedExecution;
 using System.Security;
 using Microsoft.Win32.SafeHandles;
+using TinyWall.Interface;
 
 namespace PKSoft
 {
@@ -13,7 +14,15 @@ namespace PKSoft
         {
             public string Name;
             public string Publisher;
+            public string PublisherId;
             public string Sid;
+            [MarshalAs(UnmanagedType.U1)]
+            public bool Tampered;
+
+            public AppContainerSubject ToExceptionSubject()
+            {
+                return new AppContainerSubject(Sid, Name, Publisher, PublisherId);
+            }
         }
 
         [SuppressUnmanagedCodeSecurity]

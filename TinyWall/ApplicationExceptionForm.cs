@@ -105,27 +105,39 @@ namespace PKSoft
                 }
             }
 
+            var exeSubj = TmpExceptionSettings[0].Subject as ExecutableSubject;
+            var srvSubj = TmpExceptionSettings[0].Subject as ServiceSubject;
+            var uwpSubj = TmpExceptionSettings[0].Subject as AppContainerSubject;
+
             // Update top colored banner
             bool hasSignature = false;
             bool validSignature = false;
-            ExecutableSubject exesub = TmpExceptionSettings[0].Subject as ExecutableSubject;
-            if (null != exesub)
+            if (exeSubj != null)
             {
-                hasSignature = exesub.IsSigned;
-                validSignature = exesub.CertValid;
+                hasSignature = exeSubj.IsSigned;
+                validSignature = exeSubj.CertValid;
+            }
+            else if (uwpSubj != null)
+            {
+                UwpPackage.Package? package = UwpPackage.FindPackageDetails(uwpSubj.Sid);
+                if (package.HasValue)
+                {
+                    hasSignature = true;
+                    validSignature = !package.Value.Tampered;
+                }
             }
 
             if (hasSignature && validSignature)
             {
                 // Recognized app
                 panel1.BackgroundImage = Resources.Icons.green_banner;
-                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.RecognizedApplication, exesub.ExecutableName);
+                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.RecognizedApplication, TmpExceptionSettings[0].Subject.ToString());
             }
             else if (hasSignature && !validSignature)
             {
                 // Recognized, but compromised app
                 panel1.BackgroundImage = Resources.Icons.red_banner;
-                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.CompromisedApplication, exesub.ExecutableName);
+                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.CompromisedApplication, TmpExceptionSettings[0].Subject.ToString());
             }
             else
             {
@@ -144,17 +156,14 @@ namespace PKSoft
                     txtSrvName.Text = Resources.Messages.SubjectTypeGlobal;
                     break;
                 case SubjectType.Executable:
-                    var exeSubj = TmpExceptionSettings[0].Subject as ExecutableSubject;
                     txtAppPath.Text = exeSubj.ExecutablePath;
                     txtSrvName.Text = Resources.Messages.SubjectTypeExecutable;
                     break;
                 case SubjectType.Service:
-                    var srvSubj = TmpExceptionSettings[0].Subject as ServiceSubject;
                     txtAppPath.Text = srvSubj.ServiceName + " (" + srvSubj.ExecutablePath + ")";
                     txtSrvName.Text = Resources.Messages.SubjectTypeService;
                     break;
                 case SubjectType.AppContainer:
-                    var uwpSubj = TmpExceptionSettings[0].Subject as AppContainerSubject;
                     txtAppPath.Text = uwpSubj.DisplayName;
                     txtSrvName.Text = Resources.Messages.SubjectTypeUwpApp;
                     break;
@@ -344,7 +353,7 @@ namespace PKSoft
 
             ExceptionSubject subject;
             if (procList[0].Package.HasValue)
-                subject = new AppContainerSubject(procList[0].Package.Value.Sid, procList[0].Package.Value.Name, procList[0].Package.Value.Publisher);
+                subject = procList[0].Package.Value.ToExceptionSubject();
             else
                 subject = new ExecutableSubject(procList[0].ExePath);
 
@@ -372,7 +381,7 @@ namespace PKSoft
             var packageList = UwpPackagesForm.ChoosePackage(this, false);
             if (packageList.Count == 0) return;
 
-            ReinitFormFromSubject(new AppContainerSubject(packageList[0].Sid, packageList[0].Name, packageList[0].Publisher));
+            ReinitFormFromSubject(packageList[0].ToExceptionSubject());
         }
 
         private void ReinitFormFromSubject(ExceptionSubject subject)

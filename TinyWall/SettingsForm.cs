@@ -163,11 +163,12 @@ namespace PKSoft
 
         private void RebuildExceptionsList()
         {
+            UwpPackage packageList = new UwpPackage();
             ExceptionItems.Clear();
             for (int i = 0; i < TmpConfig.Service.ActiveProfile.AppExceptions.Count; ++i)
             {
                 FirewallExceptionV3 ex = TmpConfig.Service.ActiveProfile.AppExceptions[i];
-                ExceptionItems.Add(ListItemFromAppException(ex));
+                ExceptionItems.Add(ListItemFromAppException(ex, packageList));
             }
             ApplyExceptionFilter();
         }
@@ -207,7 +208,7 @@ namespace PKSoft
             listApplications_SelectedIndexChanged(listApplications, null);
         }
 
-        private ListViewItem ListItemFromAppException(FirewallExceptionV3 ex)
+        private ListViewItem ListItemFromAppException(FirewallExceptionV3 ex, UwpPackage packageList)
         {
             ListViewItem li = new ListViewItem();
             li.Tag = ex;
@@ -236,8 +237,7 @@ namespace PKSoft
                 case SubjectType.AppContainer:
                     li.Text = uwpSubj.DisplayName;
                     li.SubItems.Add(Resources.Messages.SubjectTypeUwpApp);
-                    li.SubItems.Add(uwpSubj.Publisher);
-                    // TODO: set deleted icon if appcontainer does not exist
+                    li.SubItems.Add(uwpSubj.PublisherId + ", " + uwpSubj.Publisher);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -247,6 +247,15 @@ namespace PKSoft
             if (ex.Policy.PolicyType == PolicyType.HardBlock)
             {
                 li.BackColor = System.Drawing.Color.LightPink;
+            }
+
+            if (uwpSubj != null)
+            {
+                if (!packageList.FindPackage(uwpSubj.Sid).HasValue)
+                {
+                    li.ImageKey = "deleted";
+                    li.BackColor = System.Drawing.Color.LightGray;
+                }
             }
 
             if (exeSubj != null)

@@ -72,7 +72,7 @@ namespace PKSoft
             {
                 // Add list item
                 ListViewItem li = new ListViewItem(package.Name);
-                li.SubItems.Add(package.Publisher);
+                li.SubItems.Add(package.PublisherId + ", " + package.Publisher);
                 li.Tag = package;
                 itemColl.Add(li);
             }

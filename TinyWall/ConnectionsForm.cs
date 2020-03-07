@@ -347,7 +347,7 @@ namespace PKSoft
 
                 ExceptionSubject subj;
                 if (pi.Package.HasValue)
-                    subj = new AppContainerSubject(pi.Package.Value.Sid, pi.Package.Value.Name, pi.Package.Value.Publisher);
+                    subj = pi.Package.Value.ToExceptionSubject();
                 else
                     subj = new ExecutableSubject(pi.ExePath);
 
