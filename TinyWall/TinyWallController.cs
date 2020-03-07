@@ -946,7 +946,7 @@ namespace PKSoft
 
                     int pid = Utils.GetPidUnderCursor(x, y);
                     string exePath = Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller);
-                    UwpPackage.Package? appContainer = VersionInfo.Win8OrNewer ? UwpPackage.FindPackageDetails(ProcessManager.GetAppContainerSid(pid)) : null;
+                    UwpPackage.Package? appContainer = UwpPackage.FindPackageDetails(ProcessManager.GetAppContainerSid(pid));
 
                     ExceptionSubject subj;
                     if (appContainer.HasValue)

@@ -552,7 +552,7 @@ namespace PKSoft
                 System.Diagnostics.Debug.Assert(!r.AppContainerSid.Equals("*"));
 
                 // Skip filter if OS is not supported
-                if (!TinyWall.Interface.VersionInfo.Win8OrNewer)
+                if (!TinyWall.Interface.VersionInfo.Win81OrNewer)
                     return;
 
                 if (!LayerIsIcmpError(layer))

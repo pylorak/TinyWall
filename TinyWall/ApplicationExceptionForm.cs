@@ -89,7 +89,7 @@ namespace PKSoft
 
         private void ApplicationExceptionForm_Load(object sender, EventArgs e)
         {
-            btnSelectUwpApp.Enabled = VersionInfo.Win8OrNewer;
+            btnSelectUwpApp.Enabled = VersionInfo.Win81OrNewer;
             UpdateUI();
         }
 

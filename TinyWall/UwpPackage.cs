@@ -77,7 +77,7 @@ namespace PKSoft
 
         public static Package[] GetList()
         {
-            if (!TinyWall.Interface.VersionInfo.Win8OrNewer)
+            if (!TinyWall.Interface.VersionInfo.Win81OrNewer)
                 return new Package[0];
 
             NativeMethods.GetUwpPackageListing(out Package[] packages, out _);
@@ -100,7 +100,7 @@ namespace PKSoft
 
         public static Package? FindPackageDetails(string sid)
         {
-            if (!TinyWall.Interface.VersionInfo.Win8OrNewer)
+            if (!TinyWall.Interface.VersionInfo.Win81OrNewer)
                 return null;
 
             if (string.IsNullOrEmpty(sid))
@@ -120,9 +120,6 @@ namespace PKSoft
 
         public Package? FindPackage(string sid)
         {
-            if (string.IsNullOrEmpty(sid))
-                return null;
-
             return UwpPackage.FindPackageDetails(sid, Packages);
         }
     }
