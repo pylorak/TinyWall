@@ -126,13 +126,13 @@
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="columnHeader1.Width" type="System.Int32, mscorlib">
-    <value>107</value>
+    <value>173</value>
   </data>
   <data name="columnHeader2.Text" xml:space="preserve">
     <value>Path</value>
   </data>
   <data name="columnHeader2.Width" type="System.Int32, mscorlib">
-    <value>430</value>
+    <value>382</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="listView.Location" type="System.Drawing.Point, System.Drawing">
