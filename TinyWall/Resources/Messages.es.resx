@@ -178,12 +178,6 @@ El servidor no responde. TinyWall podría tener bloqueado el acceso a internet, 
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>El archivo de configuración ha sido exportado con éxito.</value>
   </data>
-  <data name="CurrentZone" xml:space="preserve">
-    <value>Zona actual {0}.</value>
-  </data>
-  <data name="Zone" xml:space="preserve">
-    <value>Zona</value>
-  </data>
   <data name="Mode" xml:space="preserve">
     <value>Modo</value>
   </data>

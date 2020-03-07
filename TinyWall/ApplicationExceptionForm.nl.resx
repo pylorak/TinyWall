@@ -120,16 +120,6 @@
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Annuleren</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>126, 13</value>
-  </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Pad uitvoerbaar bestand:</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Service naam:</value>
-  </data>
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Open een bestand...</value>
   </data>
@@ -142,6 +132,7 @@
   <data name="ofd.Title" xml:space="preserve">
     <value>Selecteer uitvoerbaar programmabestand</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
     <value>104, 13</value>
   </data>

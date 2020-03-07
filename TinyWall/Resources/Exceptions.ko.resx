@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="File_and_Printer_Sharing" xml:space="preserve">
     <value>파일 및 프린터 공유</value>
@@ -125,15 +125,6 @@
   </data>
   <data name="Pingable_local_machine" xml:space="preserve">
     <value>핑 가능한 로컬 머신</value>
-  </data>
-  <data name="TinyWall" xml:space="preserve">
-    <value>TinyWall</value>
-  </data>
-  <data name="VPN_L2TP_IPSec" xml:space="preserve">
-    <value>VPN L2TP/IPSec</value>
-  </data>
-  <data name="VPN_PPTP" xml:space="preserve">
-    <value>VPN PPTP</value>
   </data>
   <data name="Windows_DHCP_Client" xml:space="preserve">
     <value>Windows DHCP 클라이언트</value>

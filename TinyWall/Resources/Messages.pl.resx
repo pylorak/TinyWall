@@ -173,12 +173,6 @@ Wybierz z menu "Podnieś uprawnienia do Administratora"  i spróbuj ponownie.</v
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>Plik konfiguracyjny został eksportowany z powodzeniem.</value>
   </data>
-  <data name="CurrentZone" xml:space="preserve">
-    <value>Aktualny obszar: {0}</value>
-  </data>
-  <data name="Zone" xml:space="preserve">
-    <value>Obszar</value>
-  </data>
   <data name="Mode" xml:space="preserve">
     <value>Tryb</value>
   </data>

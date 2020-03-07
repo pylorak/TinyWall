@@ -123,12 +123,6 @@
   <data name="btnOK.Text" xml:space="preserve">
     <value>Aplicar</value>
   </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Ruta del ejecutable:</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Nombre del servicio:</value>
-  </data>
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Buscar un archivo...</value>
   </data>

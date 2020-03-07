@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+ï»¿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<!-- 
+  <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,339 +59,313 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-		<xsd:element name="root" msdata:IsDataSet="true">
-			<xsd:complexType>
-				<xsd:choice maxOccurs="unbounded">
-					<xsd:element name="metadata">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" />
-							</xsd:sequence>
-							<xsd:attribute name="name" use="required" type="xsd:string" />
-							<xsd:attribute name="type" type="xsd:string" />
-							<xsd:attribute name="mimetype" type="xsd:string" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="assembly">
-						<xsd:complexType>
-							<xsd:attribute name="alias" type="xsd:string" />
-							<xsd:attribute name="name" type="xsd:string" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="data">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="resheader">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" />
-						</xsd:complexType>
-					</xsd:element>
-				</xsd:choice>
-			</xsd:complexType>
-		</xsd:element>
-	</xsd:schema>
-	<resheader name="resmimetype">
-		<value>text/microsoft-resx</value>
-	</resheader>
-	<resheader name="version">
-		<value>2.0</value>
-	</resheader>
-	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
-    <value>¾÷µ¥ÀÌÆ®¿¡ ÇÊ¿äÇÑ ±ÇÇÑÀ» È¹µæÇÒ ¼ö ¾ø½À´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="TinyWallUpdater" xml:space="preserve">
-    <value>TinyWall ¾÷µ¥ÀÌÆ®</value>
-  <comment></comment></data>
-	<data name="ErrorCheckingForUpdates" xml:space="preserve">
-    <value>¾÷µ¥ÀÌÆ® ¼­¹ö¿¡ ¿¬°áÇÒ ¼ö ¾ø½À´Ï´Ù.
-¼­¹ö°¡ ´Ù¿î »óÅÂÀÏ ¼ö ÀÖ½À´Ï´Ù. ¶Ç´Â TinyWallÀÌ ÀÎÅÍ³Ý¿¡ ¿¬°áÇÒ ¼ö ÀÖ´ÂÁö È®ÀÎÇÏ°í ´Ù½Ã ½ÃµµÇØÁÖ¼¼¿ä.</value>
-  <comment></comment></data>
-	<data name="UpdateAvailable" xml:space="preserve">
-    <value>TinyWallÀÇ »õ·Î¿î ¹öÀü {0} »ç¿ë °¡´É! Áö±Ý ¾÷µ¥ÀÌÆ®ÇÏ½Ã°Ú½À´Ï±î?</value>
-  <comment></comment></data>
-	<data name="DownloadingUpdate" xml:space="preserve">
-    <value>¾÷µ¥ÀÌÆ® ³»·Á¹Þ´Â Áß...</value>
-  <comment></comment></data>
-	<data name="NoUpdateAvailable" xml:space="preserve">
-    <value>TinyWallÀÇ ÃÖ½Å ¹öÀüÀ» »ç¿ë ÁßÀÔ´Ï´Ù. ¾÷µ¥ÀÌÆ®°¡ ÇÊ¿äÇÏÁö ¾Ê½À´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="DownloadInterrupted" xml:space="preserve">
-    <value>´Ù¿î·Îµå°¡ Áß´ÜµÇ¾ú½À´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="StartingUpdate" xml:space="preserve">
-    <value>¾÷µ¥ÀÌÆ® ½ÃÀÛ Áß...</value>
-  <comment></comment></data>
-	<data name="TinyWallIsCurrentlyLocked" xml:space="preserve">
-    <value>TinyWallÀÌ ÇöÀç Àá°Ü ÀÖ½À´Ï´Ù. Àá±ÝÀ» ÇØÁ¦ÇÏ°í ´Ù½Ã ½ÃµµÇÏ¼¼¿ä.</value>
-  <comment></comment></data>
-	<data name="PleaseWaitWhileTinyWallChecksForUpdates" xml:space="preserve">
-    <value>TinyWallÀÌ ¾÷µ¥ÀÌÆ®¸¦ È®ÀÎÇÏ´Â µ¿¾È Àá½Ã ±â´Ù·Á ÁÖ¼¼¿ä.</value>
-  <comment></comment></data>
-	<data name="CouldNotWhitelistProcess" xml:space="preserve">
-    <value>{0}ÀÇ ÇÁ·Î¼¼½º¸¦ Çã¿ëÇÒ ¼ö ¾ø½À´Ï´Ù.</value>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¹ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="TinyWallUpdater" xml:space="preserve">
+    <value>TinyWall ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®</value>
+  </data>
+  <data name="ErrorCheckingForUpdates" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½. ï¿½Ç´ï¿½ TinyWallï¿½ï¿½ ï¿½ï¿½ï¿½Í³Ý¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ù½ï¿½ ï¿½Ãµï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½.</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>TinyWallï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ {0} ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½! ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½Ï½Ã°Ú½ï¿½ï¿½Ï±ï¿½?</value>
+  </data>
+  <data name="DownloadingUpdate" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½Þ´ï¿½ ï¿½ï¿½...</value>
+  </data>
+  <data name="NoUpdateAvailable" xml:space="preserve">
+    <value>TinyWallï¿½ï¿½ ï¿½Ö½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ô´Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="DownloadInterrupted" xml:space="preserve">
+    <value>ï¿½Ù¿ï¿½Îµå°¡ ï¿½ß´ÜµÇ¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="StartingUpdate" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½...</value>
+  </data>
+  <data name="TinyWallIsCurrentlyLocked" xml:space="preserve">
+    <value>TinyWallï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ù½ï¿½ ï¿½Ãµï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</value>
+  </data>
+  <data name="PleaseWaitWhileTinyWallChecksForUpdates" xml:space="preserve">
+    <value>TinyWallï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ù·ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½.</value>
+  </data>
+  <data name="CouldNotWhitelistProcess" xml:space="preserve">
+    <value>{0}ï¿½ï¿½ ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</value>
     <comment>Param0 is a file path.</comment>
   </data>
-	<data name="TinyWall" xml:space="preserve">
-    <value>TinyWall</value>
-  <comment></comment></data>
-	<data name="CouldNotCloseProcess" xml:space="preserve">
-    <value>{0}({1}) ÇÁ·Î¼¼½º¸¦ Á¾·áÇÒ ¼ö ¾ø½À´Ï´Ù.</value>
+  <data name="CouldNotCloseProcess" xml:space="preserve">
+    <value>{0}({1}) ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</value>
     <comment>Param0 is name, param1 is pid of process.</comment>
   </data>
-	<data name="PasswordFieldsDoNotMatch" xml:space="preserve">
-    <value>ºñ¹Ð¹øÈ£ ÀÔ·Â¶õÀÌ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù. ºñ¹Ð¹øÈ£¸¦ È®ÀÎÇØÁÖ¼¼¿ä.</value>
-  <comment></comment></data>
-	<data name="AreYouSureYouWantToRemoveAllExceptions" xml:space="preserve">
-    <value>Á¤¸»·Î ¸ðµç ¹æÈ­º® ¿¹¿Ü¸¦ Á¦°ÅÇÏ½Ã°Ú½À´Ï±î?</value>
-  <comment></comment></data>
-	<data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
-    <value>ÀÌ ÀÛ¾÷À» ¼öÇàÇÏ´Âµ¥ ÇÊ¿äÇÑ °ü¸® ±ÇÇÑÀÌ ¾ø½À´Ï´Ù.
-Æ®·¹ÀÌ ¸Þ´º¿¡¼­ ±ÇÇÑ »ó½ÂÀ» ¼±ÅÃÇÏ°í ´Ù½Ã ½ÃµµÇÏ¼¼¿ä.</value>
-  <comment></comment></data>
-	<data name="TinyWallSettingsFileFilter" xml:space="preserve">
-    <value>TinyWall ¼³Á¤</value>
+  <data name="PasswordFieldsDoNotMatch" xml:space="preserve">
+    <value>ï¿½ï¿½Ð¹ï¿½È£ ï¿½Ô·Â¶ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Ê½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½Ð¹ï¿½È£ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½.</value>
+  </data>
+  <data name="AreYouSureYouWantToRemoveAllExceptions" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½Ü¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï½Ã°Ú½ï¿½ï¿½Ï±ï¿½?</value>
+  </data>
+  <data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
+    <value>ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Âµï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
+Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½Þ´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ù½ï¿½ ï¿½Ãµï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</value>
+  </data>
+  <data name="TinyWallSettingsFileFilter" xml:space="preserve">
+    <value>TinyWall ï¿½ï¿½ï¿½ï¿½</value>
     <comment>File filter description</comment>
   </data>
-	<data name="AllFilesFileFilter" xml:space="preserve">
-    <value>¸ðµç ÆÄÀÏ</value>
+  <data name="AllFilesFileFilter" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</value>
     <comment>File filter description</comment>
   </data>
-	<data name="ConfigurationHasBeenImported" xml:space="preserve">
-    <value>±¸¼º ÆÄÀÏÀ» ¼º°øÀûÀ¸·Î °¡Á®¿Ô½À´Ï´Ù.  »õ·Î¿î ¼³Á¤À» Àû¿ëÇÏ·Á¸é °ü¸® Ã¢¿¡¼­ Àû¿ëÀ» ´©¸£¼¼¿ä.</value>
-  <comment></comment></data>
-	<data name="ConfigurationImportError" xml:space="preserve">
-    <value>±¸¼º ÆÄÀÏÀ» °¡Á®¿Ã ¼ö ¾ø½À´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="ConfigurationHasBeenExported" xml:space="preserve">
-    <value>±¸¼º ÆÄÀÏÀ» ¼º°øÀûÀ¸·Î ³»º¸³Â½À´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="CurrentZone" xml:space="preserve">
-    <value>ÇöÀç ¿µ¿ª: {0}</value>
-    <comment>Param0 is name of zone</comment>
+  <data name="ConfigurationHasBeenImported" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ô½ï¿½ï¿½Ï´ï¿½.  ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¢ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</value>
   </data>
-	<data name="Zone" xml:space="preserve">
-    <value>¿µ¿ª</value>
+  <data name="ConfigurationImportError" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="ConfigurationHasBeenExported" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½</value>
     <comment>Tray text</comment>
   </data>
-	<data name="Mode" xml:space="preserve">
-    <value>¸ðµå</value>
-    <comment>Tray text</comment>
-  </data>
-	<data name="Unlock" xml:space="preserve">
-    <value>Àá±Ý ÇØÁ¦</value>
+  <data name="Unlock" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</value>
     <comment>Tray menu text</comment>
   </data>
-	<data name="Lock" xml:space="preserve">
-    <value>Àá±Ý</value>
+  <data name="Lock" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½</value>
     <comment>Tray menu text</comment>
   </data>
-	<data name="UpdateAvailableBubble" xml:space="preserve">
-    <value>TinyWallÀÇ »õ·Î¿î ¹öÀü {0} »ç¿ë °¡´É! ¾÷µ¥ÀÌÆ® ÀÛ¾÷À» ½ÃÀÛÇÏ·Á¸é ÀÌ ¹öºíÀ» ´©¸£¼¼¿ä.</value>
+  <data name="UpdateAvailableBubble" xml:space="preserve">
+    <value>TinyWallï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ {0} ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</value>
     <comment>Param0 is version number of new version</comment>
   </data>
-	<data name="TheFirewallIsNowOperatingAsRecommended" xml:space="preserve">
-    <value>¹æÈ­º®ÀÌ ÇöÀç ±ÇÀå ¸ðµå·Î ÀÛµ¿ ÁßÀÔ´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="TheFirewallIsNowAllowsOutgoingConnections" xml:space="preserve">
-    <value>¹æÈ­º®ÀÌ ÇöÀç ³ª°¡´Â ¿¬°áÀ» Çã¿ëÇÏÁö¸¸ µé¾î¿À´Â ¿¬°áÀº Â÷´Ü ÁßÀÔ´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="TheFirewallIsNowBlockingAllInAndOut" xml:space="preserve">
-    <value>¹æÈ­º®ÀÌ ÇöÀç ¸ðµç ÀÎ¹Ù¿îµå¿Í ¾Æ¿ô¹Ù¿îµå Æ®·¡ÇÈÀ» Â÷´Ü ÁßÀÔ´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="TheFirewallIsNowDisabled" xml:space="preserve">
-    <value>¹æÈ­º®ÀÌ ÇöÀç ºñÈ°¼ºÈ­µÇ¾ú½À´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="TheTinyWallServiceIsUnavailable" xml:space="preserve">
-    <value>TinyWall ¼­ºñ½º »ç¿ë ºÒ°¡! ¼­ºñ½º°¡ ¼³Ä¡µÇ¾ú°í ½ÃÀÛµÇ¾ú´ÂÁö È®ÀÎÇÑ ´ÙÀ½ ´Ù½Ã ½ÃµµÇØÁÖ¼¼¿ä.</value>
-  <comment></comment></data>
-	<data name="TrafficIn" xml:space="preserve">
-    <value>In</value>
-    <comment>Tray menu text</comment>
+  <data name="TheFirewallIsNowOperatingAsRecommended" xml:space="preserve">
+    <value>ï¿½ï¿½È­ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ûµï¿½ ï¿½ï¿½ï¿½Ô´Ï´ï¿½.</value>
   </data>
-	<data name="TrafficOut" xml:space="preserve">
-    <value>Out</value>
-    <comment>Tray menu text</comment>
+  <data name="TheFirewallIsNowAllowsOutgoingConnections" xml:space="preserve">
+    <value>ï¿½ï¿½È­ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ô´Ï´ï¿½.</value>
   </data>
-	<data name="SettingHaveChangedRetry" xml:space="preserve">
-    <value>È¯°æ ¼³Á¤À» ¼öÁ¤ÇÏ´Â µ¿¾È ±¸¼ºÀÌ º¯°æµÇ¾ú½À´Ï´Ù. ¼³Á¤ÀÌ ¼Õ½ÇµÇÁö ¾Êµµ·Ï ´Ù½Ã º¯°æÇØÁÖ¼¼¿ä.</value>
-  <comment></comment></data>
-	<data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
-    <value>¹æÈ­º® ¼³Á¤ÀÌ ¼º°øÀûÀ¸·Î ¾÷µ¥ÀÌÆ®µÇ¾ú½À´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="Success" xml:space="preserve">
-    <value>¼º°ø.</value>
-  <comment></comment></data>
-	<data name="OtherSettingsPreventEffect" xml:space="preserve">
-    <value>ÀÛ¾÷ÀÌ ¼º°øÇßÁö¸¸ ´Ù¸¥ ¼³Á¤À¸·Î ÀÎÇØ ¿ÏÀüÇÑ È¿°ú°¡ Àû¿ëµÇÁö ¾Ê½À´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="OperationFailed" xml:space="preserve">
-    <value>ÀÛ¾÷ ½ÇÆÐµÊ.</value>
-  <comment></comment></data>
-	<data name="CommunicationWithTheServiceError" xml:space="preserve">
-    <value>TinyWall ¼­ºñ½º¿ÍÀÇ Åë½Å Áß ¿À·ù°¡ ¹ß»ýÇß½À´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="ClickOnAWindowWhitelisting" xml:space="preserve">
-    <value>Çã¿ëÇÒ ÀÀ¿ë ÇÁ·Î±×·¥À» ¼±ÅÃÇÏ·Á¸é ¿­¸° Ã¢ÀÇ ³»ºÎ ¿µ¿ªÀ» ´©¸¨´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="WhitelistingCancelled" xml:space="preserve">
-    <value>Çã¿ëÀÌ Ãë¼ÒµÇ¾ú½À´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="CannotGetExecutablePathWhitelisting" xml:space="preserve">
-    <value>½ÇÇà ÆÄÀÏÀÇ °æ·Î¸¦ È®ÀÎÇÒ ¼ö ¾ø¾î Çã¿ëÀÌ ½ÇÆÐµÇ¾ú½À´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="FirewallRulesForRecognizedChanged" xml:space="preserve">
-    <value>ÀÎ½ÄµÈ {0}ÀÇ ¹æÈ­º® ±ÔÄ¢ÀÌ º¯°æµÇ¾ú½À´Ï´Ù. ¿¹¿Ü¸¦ ÆíÁýÇÏ·Á¸é ÀÌ ÆË¾÷À» ´©¸£¼¼¿ä.</value>
-  <comment></comment></data>
-	<data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
-    <value>ÀÎ½ÄµÇÁö ¾ÊÀº {0}ÀÇ ¹æÈ­º® ±ÔÄ¢ÀÌ º¯°æµÇ¾ú½À´Ï´Ù. ¿¹¿Ü¸¦ ÆíÁýÇÏ·Á¸é ÀÌ ÆË¾÷À» ´©¸£¼¼¿ä.</value>
-  <comment></comment></data>
-	<data name="TinyWallHasBeenUnlocked" xml:space="preserve">
-    <value>TinyWallÀÌ Àá±Ý ÇØÁ¦µÇ¾ú½À´Ï´Ù. ÀÌÁ¦ ±¸¼ºÀ» ¼öÁ¤ÇÏ´Â ¸í·ÉÀ» issueÇÒ ¼ö ÀÖ½À´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="UnlockFailed" xml:space="preserve">
-    <value>Àá±Ý ÇØÁ¦ ½ÇÆÐµÊ. ´Ù¸¥ ¾ÏÈ£·Î ´Ù½Ã ½ÃµµÇÏ¼¼¿ä.</value>
-  <comment></comment></data>
-	<data name="CouldNotElevatePrivileges" xml:space="preserve">
-    <value>±ÇÇÑÀ» »ó½ÂÇÒ ¼ö ¾ø½À´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
-    <value>µ¥ÀÌÅÍº£ÀÌ½º°¡ ´©¶ôµÇ¾ú°Å³ª ¼Õ»óµÇ¾ú½À´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="Stop" xml:space="preserve">
-    <value>ÁßÁö</value>
-  <comment></comment></data>
-	<data name="Start" xml:space="preserve">
-    <value>½ÃÀÛ</value>
-  <comment></comment></data>
-	<data name="SearchingPath" xml:space="preserve">
-    <value>°Ë»ö Áß: {0}</value>
+  <data name="TheFirewallIsNowBlockingAllInAndOut" xml:space="preserve">
+    <value>ï¿½ï¿½È­ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Î¹Ù¿ï¿½ï¿½ï¿½ ï¿½Æ¿ï¿½Ù¿ï¿½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ô´Ï´ï¿½.</value>
+  </data>
+  <data name="TheFirewallIsNowDisabled" xml:space="preserve">
+    <value>ï¿½ï¿½È­ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="TheTinyWallServiceIsUnavailable" xml:space="preserve">
+    <value>TinyWall ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½! ï¿½ï¿½ï¿½ñ½º°ï¿½ ï¿½ï¿½Ä¡ï¿½Ç¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÛµÇ¾ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½Ãµï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½.</value>
+  </data>
+  <data name="SettingHaveChangedRetry" xml:space="preserve">
+    <value>È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Õ½Çµï¿½ï¿½ï¿½ ï¿½Êµï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½.</value>
+  </data>
+  <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
+    <value>ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½.</value>
+  </data>
+  <data name="OtherSettingsPreventEffect" xml:space="preserve">
+    <value>ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="OperationFailed" xml:space="preserve">
+    <value>ï¿½Û¾ï¿½ ï¿½ï¿½ï¿½Ðµï¿½.</value>
+  </data>
+  <data name="CommunicationWithTheServiceError" xml:space="preserve">
+    <value>TinyWall ï¿½ï¿½ï¿½ñ½º¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½ß½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="ClickOnAWindowWhitelisting" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="WhitelistingCancelled" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ÒµÇ¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="CannotGetExecutablePathWhitelisting" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î¸ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÐµÇ¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="FirewallRulesForRecognizedChanged" xml:space="preserve">
+    <value>ï¿½Î½Äµï¿½ {0}ï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½Ä¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½Ü¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ë¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</value>
+  </data>
+  <data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
+    <value>ï¿½Î½Äµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ {0}ï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½Ä¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½Ü¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ë¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</value>
+  </data>
+  <data name="TinyWallHasBeenUnlocked" xml:space="preserve">
+    <value>TinyWallï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ issueï¿½ï¿½ ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="UnlockFailed" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ðµï¿½. ï¿½Ù¸ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½Ãµï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</value>
+  </data>
+  <data name="CouldNotElevatePrivileges" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½Å³ï¿½ ï¿½Õ»ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½</value>
+  </data>
+  <data name="SearchingPath" xml:space="preserve">
+    <value>ï¿½Ë»ï¿½ ï¿½ï¿½: {0}</value>
     <comment>Param0 is a path which is being searched</comment>
   </data>
-	<data name="SearchResults" xml:space="preserve">
-    <value>°Ë»ö °á°ú:</value>
-  <comment></comment></data>
-	<data name="RecognizedApplication" xml:space="preserve">
-    <value>{0} ÀÎ½ÄµÊ</value>
+  <data name="SearchResults" xml:space="preserve">
+    <value>ï¿½Ë»ï¿½ ï¿½ï¿½ï¿½:</value>
+  </data>
+  <data name="RecognizedApplication" xml:space="preserve">
+    <value>{0} ï¿½Î½Äµï¿½</value>
     <comment>Exception details window banner text. Param0 is name of application.</comment>
   </data>
-	<data name="UnknownApplication" xml:space="preserve">
-    <value>¾Ë ¼ö ¾ø´Â ÀÀ¿ë ÇÁ·Î±×·¥</value>
+  <data name="UnknownApplication" xml:space="preserve">
+    <value>ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½</value>
     <comment>Exception details window banner text</comment>
   </data>
-	<data name="Permanent" xml:space="preserve">
-    <value>¿µ±¸ÀûÀ¸·Î</value>
-  <comment></comment></data>
-	<data name="UntilReboot" xml:space="preserve">
-    <value>ÀçºÎÆÃ ¶§±îÁö</value>
-  <comment></comment></data>
-	<data name="XMinutes" xml:space="preserve">
-    <value>{0} ºÐ</value>
+  <data name="Permanent" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</value>
+  </data>
+  <data name="UntilReboot" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</value>
+  </data>
+  <data name="XMinutes" xml:space="preserve">
+    <value>{0} ï¿½ï¿½</value>
     <comment>Param0 is &gt; 1</comment>
   </data>
-	<data name="XHour" xml:space="preserve">
-    <value>{0} ½Ã°£</value>
+  <data name="XHour" xml:space="preserve">
+    <value>{0} ï¿½Ã°ï¿½</value>
     <comment>Param0 is &lt;=1</comment>
   </data>
-	<data name="XHours" xml:space="preserve">
-    <value>{0} ½Ã°£</value>
+  <data name="XHours" xml:space="preserve">
+    <value>{0} ï¿½Ã°ï¿½</value>
     <comment>Param0 is &gt; 1</comment>
   </data>
-	<data name="FirewallModeAllowOut" xml:space="preserve">
-    <value>Àü¼Û Çã¿ë</value>
-  <comment></comment></data>
-	<data name="FirewallModeBlockAll" xml:space="preserve">
-    <value>¸ðµÎ Â÷´Ü</value>
-  <comment></comment></data>
-	<data name="FirewallModeDisabled" xml:space="preserve">
-    <value>ºñÈ°¼ºÈ­µÊ</value>
-  <comment></comment></data>
-	<data name="FirewallModeNormal" xml:space="preserve">
-    <value>Normal</value>
-  <comment></comment></data>
-	<data name="FirewallModeUnknown" xml:space="preserve">
-    <value>¾Ë ¼ö ¾øÀ½</value>
-  <comment></comment></data>
-	<data name="CannotGetPathOfProcess" xml:space="preserve">
-    <value>ÇÁ·Î¼¼½ºÀÇ °æ·Î¸¦ È®ÀÎÇÒ ¼ö ¾ø½À´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="TheFirewallIsNowLearning" xml:space="preserve">
-    <value>¹æÈ­º®ÀÌ ÀÌÁ¦ ¸ðµç Æ®·¹ÇÈÀ» Åë°ú½ÃÅ°¸é¼­ ÇÐ½ÀÇÏ°í ÀÖ½À´Ï´Ù.</value>
-  <comment></comment></data>
-	<data name="FirewallModeLearn" xml:space="preserve">
-    <value>ÀÚµ¿ ÇÐ½À</value>
-  <comment></comment></data>
-	<data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
-    <value>ÀÚµ¿ ÇÐ½ÀÀ» ½ÃÀÛÇÏ½Ã°Ú½À´Ï±î?
-ÀÚµ¿ ÇÐ½À ¸ðµå¿¡¼­ TinyWallÀº ¸ðµç Æ®·¡ÇÈÀ» Çã¿ëÇÏ°í ³×Æ®¿öÅ©¸¦ »ç¿ëÇÑ ÀÀ¿ë ÇÁ·Î±×·¥À» ±â¾ïÇÕ´Ï´Ù. ÇÐ½À ¸ðµå¸¦ Á¾·áÇÏ¸é TinyWallÀÌ ÀÚµ¿À¸·Î ¿¹¿Ü¸¦ Ãß°¡ÇÕ´Ï´Ù. ±×·¯³ª ±¸¼ºÀÇ "Æ¯º° ¿¹¿Ü"¿¡ ´ëÇØ¼­´Â ±ÔÄ¢À» ÇÐ½À ÇÒ ¼ö ¾øÀ½À» ¾Ë¾ÆµÎ¼¼¿ä.
+  <data name="FirewallModeAllowOut" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</value>
+  </data>
+  <data name="FirewallModeBlockAll" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</value>
+  </data>
+  <data name="FirewallModeDisabled" xml:space="preserve">
+    <value>ï¿½ï¿½È°ï¿½ï¿½È­ï¿½ï¿½</value>
+  </data>
+  <data name="FirewallModeUnknown" xml:space="preserve">
+    <value>ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</value>
+  </data>
+  <data name="CannotGetPathOfProcess" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î¸ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="TheFirewallIsNowLearning" xml:space="preserve">
+    <value>ï¿½ï¿½È­ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Å°ï¿½é¼­ ï¿½Ð½ï¿½ï¿½Ï°ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
+  <data name="FirewallModeLearn" xml:space="preserve">
+    <value>ï¿½Úµï¿½ ï¿½Ð½ï¿½</value>
+  </data>
+  <data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
+    <value>ï¿½Úµï¿½ ï¿½Ð½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï½Ã°Ú½ï¿½ï¿½Ï±ï¿½?
+ï¿½Úµï¿½ ï¿½Ð½ï¿½ ï¿½ï¿½å¿¡ï¿½ï¿½ TinyWallï¿½ï¿½ ï¿½ï¿½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½. ï¿½Ð½ï¿½ ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ TinyWallï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ü¸ï¿½ ï¿½ß°ï¿½ï¿½Õ´Ï´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½"ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¢ï¿½ï¿½ ï¿½Ð½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾ÆµÎ¼ï¿½ï¿½ï¿½.
 
-ÇÐ½À ¸ðµå·Î ÁøÀÔÇÏ±â Àü¿¡ ½Ã½ºÅÛ¿¡ ¸Ö¿þ¾î°¡ ¾ø´ÂÁö È®ÀÎÇØÁÖ¼¼¿ä. »õ·Î ¼³Ä¡µÈ ½Ã½ºÅÛ¿¡¼­ ÇÐ½À ¸ðµå¸¦ ½ÇÇàÇÏ´Â °ÍÀÌ °¡Àå ÁÁÀ¸¸ç ÀÌ ¸ðµå¸¦ »ç¿ëÇÏ±â Àü¿¡ ÄÄÇ»ÅÍ¿¡¼­ ¹ÙÀÌ·¯½º¸¦ °Ë»çÇÏ¿© ¹«°áÇÑ »óÅÂ¿¡¼­ ÇÐ½À ¸ðµå¸¦ »ç¿ëÇÏ´Â °ÍÀÌ ÁÁ½À´Ï´Ù.
+ï¿½Ð½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½Û¿ï¿½ ï¿½Ö¿ï¿½ï¿½î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½Ð½ï¿½ ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç»ï¿½Í¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ ï¿½Ð½ï¿½ ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
 
-Áö±Ý ÇÐ½À ¸ðµå·Î ÁøÀÔÇÏ½Ã°Ú½À´Ï±î?</value>
-  <comment></comment></data>
-	<data name="DidYouInitiateTheUninstall" xml:space="preserve">
-    <value>TinyWallÀÇ Á¦°Å/¾÷µ¥ÀÌÆ®¸¦ ½ÃÀÛÇß³ª¿ä?</value>
-  <comment></comment></data>
-	<data name="PortListInvalid" xml:space="preserve">
-    <value>Æ÷Æ® ¸ñ·ÏÀÇ Çü½ÄÀÌ À¯È¿ÇÏÁö ¾Ê½À´Ï´Ù.
-1-65535 ¹üÀ§¿¡¼­ ÇÏ³ª ÀÌ»óÀÇ ¼ýÀÚ¸¦ »ç¿ëÇÒ ¼ö ÀÖ½À´Ï´Ù. (½°Ç¥·Î ±¸ºÐ). º°Ç¥(*)¸¦ »ç¿ëÇØ °¡´ÉÇÑ ¸ðµç Æ÷Æ®¸¦ ³ªÅ¸³¾ ¼öµµ ÀÖ½À´Ï´Ù.</value>
+ï¿½ï¿½ï¿½ï¿½ ï¿½Ð½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï½Ã°Ú½ï¿½ï¿½Ï±ï¿½?</value>
+  </data>
+  <data name="DidYouInitiateTheUninstall" xml:space="preserve">
+    <value>TinyWallï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½ï¿½ï¿½?</value>
+  </data>
+  <data name="PortListInvalid" xml:space="preserve">
+    <value>ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¿ï¿½ï¿½ï¿½ï¿½ ï¿½Ê½ï¿½ï¿½Ï´ï¿½.
+1-65535 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ ï¿½Ì»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½. (ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½). ï¿½ï¿½Ç¥(*)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½.</value>
     <comment>First line is dialog main text. Rest are further information in smaller letters.</comment>
   </data>
-	<data name="UnblockAppCancel" xml:space="preserve">
-    <value>Çã¿ë Ãë¼Ò</value>
-  <comment></comment></data>
-	<data name="UnblockApp" xml:space="preserve">
-    <value>°ü·ÃµÈ ÆÄÀÏ ¹ß°ßµÊ.
-¼±ÅÃÇÑ ½ÇÇà ÆÄÀÏÀº {0}ÀÇ ÀÏºÎÀÏ ¼ö ÀÖ½À´Ï´Ù. ÀÌ ÀÀ¿ë ÇÁ·Î±×·¥À» Á¦ÇÑ¾øÀÌ »ç¿ëÇÏ·Á¸é, ´Ù¸¥ ÆÄÀÏµéµµ Â÷´Ü ÇØÁ¦ÇÏ½Ã±æ ±ÇÀåÇÕ´Ï´Ù.</value>
+  <data name="UnblockAppCancel" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</value>
+  </data>
+  <data name="UnblockApp" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ßµï¿½.
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ {0}ï¿½ï¿½ ï¿½Ïºï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½, ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Ïµéµµ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï½Ã±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.</value>
     <comment>First line is dialog main text. Rest are further information in smaller letters. Param0 is name of the app.</comment>
   </data>
-	<data name="UnblockAppShowRelated" xml:space="preserve">
-    <value>°ü·ÃµÈ ½ÇÇà ÆÄÀÏ Ç¥½Ã/¼û±è</value>
-  <comment></comment></data>
-	<data name="UnblockAppUnblockAllRecommended" xml:space="preserve">
-    <value>¸ðµç ±ÇÀåµÈ ÆÄÀÏ Â÷´Ü ÇØÁ¦</value>
-  <comment></comment></data>
-	<data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
-    <value>¼±ÅÃÇÑ ÆÄÀÏ¸¸ Â÷´Ü ÇØÁ¦</value>
-  <comment></comment></data>
-	<data name="CompromisedApplication" xml:space="preserve">
-    <value>{0}, possibly compromised</value>
-    <comment>Exception details window banner text. Param0 is name of application.</comment>
+  <data name="UnblockAppShowRelated" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½</value>
   </data>
-	<data name="ToastInputNeeded" xml:space="preserve">
-    <value>¹æÈ­º® Çã¿ëÀ» °è¼ÓÇÏ·Á¸é »ç¿ëÀÚÀÇ ÀÔ·ÂÀÌ ÇÊ¿äÇÕ´Ï´Ù.</value>
+  <data name="UnblockAppUnblockAllRecommended" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</value>
+  </data>
+  <data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</value>
+  </data>
+  <data name="ToastInputNeeded" xml:space="preserve">
+    <value>ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Õ´Ï´ï¿½.</value>
     <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
   </data>
-	<data name="ToastAppWhitelisted" xml:space="preserve">
-    <value>¹æÈ­º® Çã¿ë ¸ñ·Ï¿¡ Ãß°¡µÊ.</value>
+  <data name="ToastAppWhitelisted" xml:space="preserve">
+    <value>ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ï¿ï¿½ ï¿½ß°ï¿½ï¿½ï¿½.</value>
     <comment>Keep line short because words do not wrap.</comment>
   </data>
-	<data name="ToastWhitelistFailed" xml:space="preserve">
-    <value>¹æÈ­º® Çã¿ë ½ÇÆÐµÊ.
-´Ù½Ã ½ÃµµÇÒ °æ¿ì ¼º°øÇÒ ¼öµµ ÀÖ½À´Ï´Ù.</value>
+  <data name="ToastWhitelistFailed" xml:space="preserve">
+    <value>ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ðµï¿½.
+ï¿½Ù½ï¿½ ï¿½Ãµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½.</value>
     <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
   </data>
-	<data name="CouldNotApplySettingsInternalError" xml:space="preserve">
-    <value>³»ºÎ ¿À·ù·Î ÀÎÇØ ¹æÈ­º® ¼³Á¤À» Àû¿ëÇÒ ¼ö ¾ø½À´Ï´Ù.</value>
-  <comment></comment></data>
+  <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
+    <value>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</value>
+  </data>
 </root>

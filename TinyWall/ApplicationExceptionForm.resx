@@ -184,7 +184,7 @@
     <value>True</value>
   </data>
   <data name="lblApplication.Location" type="System.Drawing.Point, System.Drawing">
-    <value>58, 60</value>
+    <value>19, 60</value>
   </data>
   <data name="lblApplication.Size" type="System.Drawing.Size, System.Drawing">
     <value>62, 13</value>
@@ -211,7 +211,7 @@
     <value>True</value>
   </data>
   <data name="lblApplicationType.Location" type="System.Drawing.Point, System.Drawing">
-    <value>86, 87</value>
+    <value>19, 87</value>
   </data>
   <data name="lblApplicationType.Size" type="System.Drawing.Size, System.Drawing">
     <value>34, 13</value>
@@ -385,7 +385,7 @@
     <value>True</value>
   </data>
   <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
-    <value>28, 33</value>
+    <value>19, 33</value>
   </data>
   <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
     <value>92, 13</value>

@@ -144,11 +144,11 @@
   <data name="btnAppAdd.Text" xml:space="preserve">
     <value>Anwendung hinzufügen</value>
   </data>
-  <data name="columnHeader1.Text" xml:space="preserve">
+  <data name="columnApp.Text" xml:space="preserve">
     <value>Anwendung</value>
   </data>
-  <data name="columnHeader2.Text" xml:space="preserve">
-    <value>Pfad</value>
+  <data name="columnType.Text" xml:space="preserve">
+    <value>Typ</value>
   </data>
   <data name="tabPage3.Text" xml:space="preserve">
     <value>Ausnahmen von Anwendungen</value>

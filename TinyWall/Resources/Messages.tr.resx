@@ -179,12 +179,6 @@ Sistem menüsünden Yönetici olarak çalıştır'ı seçin ve tekrar deneyin.</
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>Konfigürasyon dosyası başarılı şekilde dışa aktarıldı.</value>
   </data>
-  <data name="CurrentZone" xml:space="preserve">
-    <value>Geçerli bölge: {0}</value>
-  </data>
-  <data name="Zone" xml:space="preserve">
-    <value>Bölge</value>
-  </data>
   <data name="Mode" xml:space="preserve">
     <value>Kip</value>
   </data>

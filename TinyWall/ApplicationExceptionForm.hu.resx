@@ -120,11 +120,11 @@
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Mégse</value>
   </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Fájl elérési útja:</value>
+  <data name="lblApplication.Text" xml:space="preserve">
+    <value>Alkalmazás:</value>
   </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Szolgáltatás neve:</value>
+  <data name="lblApplicationType.Text" xml:space="preserve">
+    <value>Alkalmazás típusa:</value>
   </data>
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Fájl tallózása...</value>
@@ -140,6 +140,9 @@
   </data>
   <data name="label6.Text" xml:space="preserve">
     <value>Kivétel időtartama:</value>
+  </data>
+  <data name="btnSelectUwpApp.Text" xml:space="preserve">
+    <value>Válassz egy UWP appot...</value>
   </data>
   <data name="chkRestrictToLocalNetwork.Text" xml:space="preserve">
     <value>Korlátozás a helyi hálózatra</value>
@@ -186,10 +189,10 @@
   <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
     <value>Csak a megadott portok engedélyezése</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Tűzfal kivételek megadása/módosítása - TinyWall</value>
-  </data>
   <data name="chkInheritToChildren.Text" xml:space="preserve">
     <value>Szabály alkalmazása alprogramokra</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Tűzfal kivételek megadása/módosítása - TinyWall</value>
   </data>
 </root>

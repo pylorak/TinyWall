@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
     <value>Konnte die Rechte für die Aktuaklisierung nicht anheben.</value>
@@ -173,9 +173,6 @@
   </data>
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>Die Konfigurationsdatei wurde erfolgreich exportiert.</value>
-  </data>
-  <data name="CurrentZone" xml:space="preserve">
-    <value>Aktuelle Zone: {0}</value>
   </data>
   <data name="Mode" xml:space="preserve">
     <value>Modus</value>
@@ -348,19 +345,16 @@ Versuchen Sie es nocheinmal.</value>
   <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>Wegen eines internen Fehlers konnten die Einstellungen nicht übernommen werden.</value>
   </data>
-  <data name="AllApplications" xml:space="preserve">
-    <value>Alle Anwendungen</value>
-    <comment>Shown in settings for application exceptions that are global</comment>
-  </data>
   <data name="Default" xml:space="preserve">
     <value>Standard</value>
     <comment>As in, the standard, or default, if nothing else is set.</comment>
   </data>
+  <data name="AllApplications" xml:space="preserve">
+    <value>Alle Anwendungen</value>
+    <comment>Shown in settings for application exceptions that are global</comment>
+  </data>
   <data name="SubjectTypeExecutable" xml:space="preserve">
     <value>Datei</value>
-  </data>
-  <data name="SubjectTypeGlobal" xml:space="preserve">
-    <value />
   </data>
   <data name="SubjectTypeService" xml:space="preserve">
     <value>Dienst</value>

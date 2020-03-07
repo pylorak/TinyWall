@@ -147,12 +147,6 @@
   <data name="btnAppAdd.Text" xml:space="preserve">
     <value>Uygulama ekle</value>
   </data>
-  <data name="columnHeader1.Text" xml:space="preserve">
-    <value>Uygulama dosyası</value>
-  </data>
-  <data name="columnHeader2.Text" xml:space="preserve">
-    <value>Yol</value>
-  </data>
   <data name="label4.Text" xml:space="preserve">
     <value>Filtre:</value>
   </data>

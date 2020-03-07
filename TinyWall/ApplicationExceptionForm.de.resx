@@ -120,21 +120,11 @@
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>15, 60</value>
+  <data name="lblApplication.Text" xml:space="preserve">
+    <value>Anwendung:</value>
   </data>
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>106, 13</value>
-  </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Pfad der Executable:</value>
-  </data>
-  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>77, 13</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Service Name:</value>
+  <data name="lblApplicationType.Text" xml:space="preserve">
+    <value>Typ der Anwendung:</value>
   </data>
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Eine Datei auswählen...</value>
@@ -148,6 +138,7 @@
   <data name="ofd.Title" xml:space="preserve">
     <value>Eine Anwendung auswählen</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
     <value>10, 33</value>
   </data>
@@ -159,6 +150,9 @@
   </data>
   <data name="transparentLabel1.Text" xml:space="preserve">
     <value>Anerkannter Platzhalter</value>
+  </data>
+  <data name="btnSelectUwpApp.Text" xml:space="preserve">
+    <value>Eine UWP App wählen...</value>
   </data>
   <data name="chkRestrictToLocalNetwork.Size" type="System.Drawing.Size, System.Drawing">
     <value>185, 17</value>
@@ -259,10 +253,10 @@
   <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
     <value>Erlaube nur die angegebenen Ports</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Hinzufügen/Ändern einer Firewallausnahme - TinyWall</value>
-  </data>
   <data name="chkInheritToChildren.Text" xml:space="preserve">
     <value>Regeln auf untergeordnete Prozesse anwenden</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Hinzufügen/Ändern einer Firewallausnahme - TinyWall</value>
   </data>
 </root>

@@ -177,12 +177,6 @@
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>配置文件已被成功导出。</value>
   </data>
-  <data name="CurrentZone" xml:space="preserve">
-    <value>当前区域：{0}</value>
-  </data>
-  <data name="Zone" xml:space="preserve">
-    <value>区域</value>
-  </data>
   <data name="Mode" xml:space="preserve">
     <value>模式</value>
   </data>

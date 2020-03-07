@@ -147,12 +147,6 @@
   <data name="btnAppAdd.Text" xml:space="preserve">
     <value>アプリケーションを追加</value>
   </data>
-  <data name="columnHeader1.Text" xml:space="preserve">
-    <value>ファイル</value>
-  </data>
-  <data name="columnHeader2.Text" xml:space="preserve">
-    <value>パス</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
     <value>16, 78</value>

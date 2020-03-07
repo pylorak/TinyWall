@@ -148,12 +148,6 @@
   <data name="btnAppAdd.Text" xml:space="preserve">
     <value>Aggiungi applicazione</value>
   </data>
-  <data name="columnHeader1.Text" xml:space="preserve">
-    <value>Eseguibile</value>
-  </data>
-  <data name="columnHeader2.Text" xml:space="preserve">
-    <value>Percorso</value>
-  </data>
   <data name="label4.Text" xml:space="preserve">
     <value>Filtra:</value>
   </data>

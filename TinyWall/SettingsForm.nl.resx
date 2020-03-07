@@ -144,12 +144,6 @@
   <data name="btnAppAdd.Text" xml:space="preserve">
     <value>Voeg toepassing toe</value>
   </data>
-  <data name="columnHeader1.Text" xml:space="preserve">
-    <value>Programma</value>
-  </data>
-  <data name="columnHeader2.Text" xml:space="preserve">
-    <value>Pad</value>
-  </data>
   <data name="tabPage3.Text" xml:space="preserve">
     <value>Toepassings uitzondering</value>
   </data>

@@ -174,12 +174,6 @@
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>Файл настроек успешно экспортирован.</value>
   </data>
-  <data name="CurrentZone" xml:space="preserve">
-    <value>Текущее местоположение: {0}</value>
-  </data>
-  <data name="Zone" xml:space="preserve">
-    <value>Местоположение</value>
-  </data>
   <data name="Mode" xml:space="preserve">
     <value>Режим</value>
   </data>

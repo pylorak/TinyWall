@@ -123,12 +123,6 @@
   <data name="btnOK.Text" xml:space="preserve">
     <value>确定</value>
   </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>可执行文件路径：</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>服务名称：</value>
-  </data>
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>浏览文件...</value>
   </data>

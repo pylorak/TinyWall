@@ -182,12 +182,6 @@ Selezionare Elevate dal menu, quindi riprovare.
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>La configurazione è stata esportata correttamente.</value>
   </data>
-  <data name="CurrentZone" xml:space="preserve">
-    <value>Zona corrente:  {0}</value>
-  </data>
-  <data name="Zone" xml:space="preserve">
-    <value>Zona</value>
-  </data>
   <data name="Mode" xml:space="preserve">
     <value>Modo</value>
   </data>

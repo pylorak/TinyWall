@@ -153,11 +153,20 @@
   <data name="mnuEnableHostsBlocklist.Text" xml:space="preserve">
     <value>Aktivieren der Blocklist</value>
   </data>
+  <data name="mnuWhitelistByExecutable.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Strg+Shift+E</value>
+  </data>
   <data name="mnuWhitelistByExecutable.Text" xml:space="preserve">
     <value>Whitelist per Anwendung</value>
   </data>
+  <data name="mnuWhitelistByProcess.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Strg+Shift+P</value>
+  </data>
   <data name="mnuWhitelistByProcess.Text" xml:space="preserve">
     <value>Whiteliste per Prozess</value>
+  </data>
+  <data name="mnuWhitelistByWindow.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Strg+Shift+W</value>
   </data>
   <data name="mnuWhitelistByWindow.Text" xml:space="preserve">
     <value>Whitelist per Fenster</value>

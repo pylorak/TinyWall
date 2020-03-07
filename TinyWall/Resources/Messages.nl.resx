@@ -174,10 +174,6 @@ Kies verhoogde rechten vanuit het tray menu en probeer opnieuw.</value>
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>De configuratiebestanden zijn correct geëxporteerd.</value>
   </data>
-  <data name="CurrentZone" xml:space="preserve">
-    <value>Huidige zone: {0}</value>
-    <comment>Param0 is name of zone</comment>
-  </data>
   <data name="Unlock" xml:space="preserve">
     <value>Vrij geven</value>
     <comment>Tray menu text</comment>

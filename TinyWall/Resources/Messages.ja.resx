@@ -183,14 +183,6 @@
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>構成ファイルは正常にエクスポートされました.</value>
   </data>
-  <data name="CurrentZone" xml:space="preserve">
-    <value>現在のゾーン: {0}</value>
-    <comment>Param0 is name of zone</comment>
-  </data>
-  <data name="Zone" xml:space="preserve">
-    <value>ゾーン</value>
-    <comment>Tray text</comment>
-  </data>
   <data name="Mode" xml:space="preserve">
     <value>モード</value>
     <comment>Tray text</comment>

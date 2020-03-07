@@ -120,12 +120,6 @@
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Annulla</value>
   </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Percorso eseguibile:</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Nome servizio:</value>
-  </data>
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Cerca un file...</value>
   </data>

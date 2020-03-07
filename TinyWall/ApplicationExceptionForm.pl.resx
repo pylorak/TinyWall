@@ -120,12 +120,6 @@
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Anuluj</value>
   </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Ścieżka do pliku exe:</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Nazwa usługi:</value>
-  </data>
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Przeglądaj w poszukiwaniu pliku ...</value>
   </data>

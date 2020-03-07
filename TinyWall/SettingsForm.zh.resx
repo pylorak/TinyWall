@@ -147,12 +147,6 @@
   <data name="btnAppAdd.Text" xml:space="preserve">
     <value>添加应用程序</value>
   </data>
-  <data name="columnHeader1.Text" xml:space="preserve">
-    <value>可执行文件</value>
-  </data>
-  <data name="columnHeader2.Text" xml:space="preserve">
-    <value>路名</value>
-  </data>
   <data name="label4.Text" xml:space="preserve">
     <value>过滤：</value>
   </data>

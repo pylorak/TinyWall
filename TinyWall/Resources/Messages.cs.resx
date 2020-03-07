@@ -179,12 +179,6 @@ Zvolte Navýšit v tray menu a akci zkuste znovu.</value>
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>Konfigurační soubor byl úspěšně exportován.</value>
   </data>
-  <data name="CurrentZone" xml:space="preserve">
-    <value>Současná zóna: {0}</value>
-  </data>
-  <data name="Zone" xml:space="preserve">
-    <value>Zóna</value>
-  </data>
   <data name="Mode" xml:space="preserve">
     <value>Mód</value>
   </data>

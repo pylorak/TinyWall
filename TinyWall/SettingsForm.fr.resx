@@ -172,12 +172,6 @@
   <data name="btnAppAdd.Text" xml:space="preserve">
     <value>Ajouter application</value>
   </data>
-  <data name="columnHeader1.Text" xml:space="preserve">
-    <value>Exécutable</value>
-  </data>
-  <data name="columnHeader2.Text" xml:space="preserve">
-    <value>Chemin</value>
-  </data>
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
     <value>35, 13</value>
   </data>

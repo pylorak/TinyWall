@@ -151,12 +151,6 @@
   <data name="btnAppAdd.Text" xml:space="preserve">
     <value>Добавить приложение</value>
   </data>
-  <data name="columnHeader1.Text" xml:space="preserve">
-    <value>Исполняемый файл</value>
-  </data>
-  <data name="columnHeader2.Text" xml:space="preserve">
-    <value>Путь</value>
-  </data>
   <data name="listApplications.Location" type="System.Drawing.Point, System.Drawing">
     <value>14, 97</value>
   </data>

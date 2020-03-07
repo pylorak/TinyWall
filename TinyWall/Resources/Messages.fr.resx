@@ -180,10 +180,6 @@ Sélectionnez Elever dans le menu et réessayez.</value>
   <data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>La configuration a été exportée avec succès.</value>
   </data>
-  <data name="CurrentZone" xml:space="preserve">
-    <value>Zone actuelle : {0}</value>
-    <comment>Param0 is name of zone</comment>
-  </data>
   <data name="Unlock" xml:space="preserve">
     <value>Déverrouiller</value>
     <comment>Tray menu text</comment>
