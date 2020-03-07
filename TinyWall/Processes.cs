@@ -34,6 +34,8 @@ namespace PKSoft
             this.Icon = Resources.Icons.firewall;
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
+
+            this.IconList.Images.Add("store", Resources.Icons.store);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -89,7 +91,8 @@ namespace PKSoft
                         bool skip = false;
                         for (int j = 0; j < itemColl.Count; ++j)
                         {
-                            if (itemColl[j].SubItems[1].Text.ToUpperInvariant().Equals(e.ExePath.ToUpperInvariant()))
+                            ProcessInfo opi = itemColl[j].Tag as ProcessInfo;
+                            if ((e.Package == opi.Package) && (e.ExePath == opi.ExePath))
                             {
                                 skip = true;
                                 break;
@@ -98,19 +101,23 @@ namespace PKSoft
                         if (skip)
                             continue;
 
-                        // Add icon
-                        if (System.IO.Path.IsPathRooted(e.ExePath) && System.IO.File.Exists(e.ExePath))
-                        {
-                            if (!IconList.Images.ContainsKey(e.ExePath))
-                                IconList.Images.Add(e.ExePath, Utils.GetIconContained(e.ExePath, IconSize.Width, IconSize.Height));
-                        }
-
                         // Add list item
-                        ListViewItem li = new ListViewItem(p.ProcessName);
-                        li.ImageKey = e.ExePath;
+                        ListViewItem li = new ListViewItem(e.Package.HasValue ? e.Package.Value.Name : p.ProcessName);
                         li.SubItems.Add(e.ExePath);
                         li.Tag = e;
                         itemColl.Add(li);
+
+                        // Add icon
+                        if (e.Package.HasValue)
+                        {
+                            li.ImageKey = "store";
+                        }
+                        else if (System.IO.Path.IsPathRooted(e.ExePath) && System.IO.File.Exists(e.ExePath))
+                        {
+                            if (!IconList.Images.ContainsKey(e.ExePath))
+                                IconList.Images.Add(e.ExePath, Utils.GetIconContained(e.ExePath, IconSize.Width, IconSize.Height));
+                            li.ImageKey = e.ExePath;
+                        }
                     }
                     catch
                     {

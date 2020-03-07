@@ -29,6 +29,43 @@ namespace PKSoft
             {
                 return new AppContainerSubject(Sid, Name, Publisher, PublisherId);
             }
+
+            public override int GetHashCode()
+            {
+                return Name.GetHashCode()
+                    ^ Publisher.GetHashCode()
+                    ^ PublisherId.GetHashCode()
+                    ^ Sid.GetHashCode()
+                    ^ Tampered.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (!(obj is Package))
+                    return false;
+
+                return Equals((Package)obj);
+            }
+
+            public bool Equals(Package other)
+            {
+                return
+                    (Name == other.Name)
+                    && (Publisher == other.Publisher)
+                    && (PublisherId == other.PublisherId)
+                    && (Sid == other.Sid)
+                    && (Tampered == other.Tampered);
+            }
+
+            public static bool operator ==(Package o1, Package o2)
+            {
+                return o1.Equals(o2);
+            }
+
+            public static bool operator !=(Package o1, Package o2)
+            {
+                return !o1.Equals(o2);
+            }
         }
 
         [SuppressUnmanagedCodeSecurity]

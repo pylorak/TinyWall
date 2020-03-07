@@ -24,6 +24,8 @@ namespace PKSoft
             this.IconList.ImageSize = IconSize;
             this.Icon = Resources.Icons.firewall;
             this.Controller = ctrl;
+
+            this.IconList.Images.Add("store", Resources.Icons.store);
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -172,13 +174,18 @@ namespace PKSoft
                 };
 
                 // Construct list item
-                string name = System.IO.Path.GetFileName(appPath);
+                string name = e.Package.HasValue ? e.Package.Value.Name : System.IO.Path.GetFileName(appPath);
                 string title = (procId != 0) ? $"{name} ({procId})" : name;
                 ListViewItem li = new ListViewItem(title);
                 li.Tag = e;
                 li.ToolTipText = appPath;
 
-                if (System.IO.Path.IsPathRooted(appPath) && System.IO.File.Exists(appPath))
+                // Add icon
+                if (e.Package.HasValue)
+                {
+                    li.ImageKey = "store";
+                }
+                else if (System.IO.Path.IsPathRooted(appPath) && System.IO.File.Exists(appPath))
                 {
                     if (!IconList.Images.ContainsKey(appPath))
                     {
