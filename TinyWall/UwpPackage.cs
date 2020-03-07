@@ -26,7 +26,7 @@ namespace PKSoft
         public static Package[] GetList()
         {
             if (!TinyWall.Interface.VersionInfo.Win8OrNewer)
-                throw new NotSupportedException();
+                return new Package[0];
 
             NativeMethods.GetUwpPackageListing(out Package[] packages, out _);
             return packages;
@@ -48,6 +48,9 @@ namespace PKSoft
 
         public static Package? FindPackageDetails(string sid)
         {
+            if (!TinyWall.Interface.VersionInfo.Win8OrNewer)
+                return null;
+
             if (string.IsNullOrEmpty(sid))
                 return null;
 

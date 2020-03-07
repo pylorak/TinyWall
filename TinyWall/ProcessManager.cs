@@ -361,6 +361,9 @@ namespace PKSoft
 
         public static string GetAppContainerSid(int pid)
         {
+            if (!VersionInfo.Win8OrNewer)
+                return null;
+
             using (var hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryInformation, false, pid))
             {
                 if (!SafeNativeMethods.OpenProcessToken(hProcess, TokenAccessLevels.TokenQuery, out SafeObjectHandle token))
