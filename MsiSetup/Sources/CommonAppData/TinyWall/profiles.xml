@@ -1079,41 +1079,23 @@
             <d6p1:string>CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US</d6p1:string>
           </CertificateSubjects>
           <Policy i:type="TcpUdpPolicy">
-            <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
-            <AllowedLocalUdpListenerPorts>*</AllowedLocalUdpListenerPorts>
-            <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
-            <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
-          </Policy>
-          <Subject i:type="ExecutableSubject">
-            <ExecutablePath>{folder:sys32}\WWAHost.exe</ExecutablePath>
-          </Subject>
-        </SubjectIdentity>
-        <SubjectIdentity>
-          <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-            <d6p1:string>CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US</d6p1:string>
-          </CertificateSubjects>
-          <Policy i:type="TcpUdpPolicy">
-            <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
-            <AllowedLocalUdpListenerPorts>*</AllowedLocalUdpListenerPorts>
-            <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
-            <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
-          </Policy>
-          <Subject i:type="ExecutableSubject">
-            <ExecutablePath>{folder:windows}\SysWOW64\WWAHost.exe</ExecutablePath>
-          </Subject>
-        </SubjectIdentity>
-        <SubjectIdentity>
-          <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-            <d6p1:string>CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US</d6p1:string>
-          </CertificateSubjects>
-          <Policy i:type="TcpUdpPolicy">
-            <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
-            <AllowedLocalUdpListenerPorts>*</AllowedLocalUdpListenerPorts>
             <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
             <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
           </Policy>
           <Subject i:type="ExecutableSubject">
             <ExecutablePath>{folder:windows}\WinStore\WSHost.exe</ExecutablePath>
+          </Subject>
+        </SubjectIdentity>
+        <SubjectIdentity>
+          <Policy i:type="TcpUdpPolicy">
+            <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
+            <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
+          </Policy>
+          <Subject i:type="AppContainerSubject">
+            <DisplayName>Microsoft.Windows.CloudExperienceHost</DisplayName>
+            <Publisher>CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US</Publisher>
+            <PublisherId>cw5n1h2txyewy</PublisherId>
+            <Sid>S-1-15-2-2434737943-167758768-3180539153-984336765-1107280622-3591121930-2677285773</Sid>
           </Subject>
         </SubjectIdentity>
       </Components>
@@ -1127,7 +1109,7 @@
           <d4p1:Value i:nil="true" />
         </d4p1:KeyValueOfstringstring>
       </Flags>
-      <Name>Windows_Store_and_Apps</Name>
+      <Name>Windows_Store_Update</Name>
     </Application>
     <Application>
       <Components>
