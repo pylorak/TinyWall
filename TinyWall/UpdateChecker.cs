@@ -93,7 +93,7 @@ namespace PKSoft
             UpdateModule UpdateModule = UpdateChecker.GetMainAppModule(this.Descriptor);
             Version oldVersion = new Version(System.Windows.Forms.Application.ProductVersion);
             Version newVersion = new Version(UpdateModule.ComponentVersion);
-            if (newVersion > oldVersion)
+            if ((newVersion > oldVersion) && ((newVersion.Major < 3) || (IntPtr.Size == 8)))
             {
                 string prompt = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.UpdateAvailable, UpdateModule.ComponentVersion);
                 if (Utils.ShowMessageBox(prompt, PKSoft.Resources.Messages.TinyWallUpdater, TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No, TaskDialogIcon.Warning) == DialogResult.Yes)

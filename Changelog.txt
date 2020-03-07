@@ -1,6 +1,11 @@
 TinyWall Changelog
 ---------------------
 
+2.1.15 - Maintenance release (07.03.2020.)
+- Only offer upgrade to v3.0 if running on a 64-bit system.
+
+---------------------
+
 2.1.14 - Maintenance release (02.01.2020.)
 - Fix communication error with Service when update info is available (2.1.13 regression)
 
