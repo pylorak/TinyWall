@@ -10,6 +10,7 @@ TinyWall Changelog
     - Apps no longer disconnect when firewall reloads
     - Connections window need not be open to register blocked applications
     - Multicast support for local network detection
+    - Support for UWP (Windows Store) apps
     - Support for machine-global exceptions
     - Increased protection against code-identity spoofing attacks
     - Ability to automatically apply rules to child-processes
@@ -17,11 +18,12 @@ TinyWall Changelog
 - GUI improvements
     - Manual app detection gives instant first results
     - Live update of traffic rate in tray menu
-    - Processes window remembers size
+    - Processes & Services windows remember size
     - Much improved loading time of Processes window
     - Don't list duplicate processes in Processes window
     - Improved batch whitelisting from Connections and Processes
     - Make Settings window resizable
+    - Auto-detection of UWP apps
     - Support F5-refresh in Connections window
     - Support Delete key for application exceptions list
     - Eliminate flicker from all lists in the application
