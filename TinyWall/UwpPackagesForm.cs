@@ -12,6 +12,7 @@ namespace PKSoft
     public partial class UwpPackagesForm : Form
     {
         private readonly List<UwpPackage.Package> SelectedPackages = new List<UwpPackage.Package>();
+        private readonly Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
         public UwpPackagesForm(bool multiSelect)
         {
@@ -20,6 +21,9 @@ namespace PKSoft
             this.Icon = Resources.Icons.firewall;
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
+
+            IconList.ImageSize = IconSize;
+            IconList.Images.Add("store", Resources.Icons.store);
         }
 
         internal static List<UwpPackage.Package> ChoosePackage(IWin32Window parent, bool multiSelect)
@@ -73,6 +77,7 @@ namespace PKSoft
                 // Add list item
                 ListViewItem li = new ListViewItem(package.Name);
                 li.SubItems.Add(package.PublisherId + ", " + package.Publisher);
+                li.ImageKey = "store";
                 li.Tag = package;
                 itemColl.Add(li);
             }

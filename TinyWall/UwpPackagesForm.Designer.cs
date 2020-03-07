@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UwpPackagesForm));
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.listView = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.IconList = new System.Windows.Forms.ImageList(this.components);
             this.SuspendLayout();
             // 
             // btnCancel
@@ -63,6 +65,7 @@
             this.listView.HideSelection = false;
             this.listView.MultiSelect = false;
             this.listView.Name = "listView";
+            this.listView.SmallImageList = this.IconList;
             this.listView.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
@@ -77,6 +80,12 @@
             // columnHeader2
             // 
             resources.ApplyResources(this.columnHeader2, "columnHeader2");
+            // 
+            // IconList
+            // 
+            this.IconList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            resources.ApplyResources(this.IconList, "IconList");
+            this.IconList.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // UwpPackagesForm
             // 
@@ -104,5 +113,6 @@
         private System.Windows.Forms.ListView listView;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ImageList IconList;
     }
 }

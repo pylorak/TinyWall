@@ -238,6 +238,7 @@ namespace PKSoft
                     li.Text = uwpSubj.DisplayName;
                     li.SubItems.Add(Resources.Messages.SubjectTypeUwpApp);
                     li.SubItems.Add(uwpSubj.PublisherId + ", " + uwpSubj.Publisher);
+                    li.ImageKey = "store";
                     break;
                 default:
                     throw new NotImplementedException();
@@ -565,6 +566,7 @@ namespace PKSoft
             IconList.Images.Add("deleted", Resources.Icons.delete);
             IconList.Images.Add("network-drive", Resources.Icons.network_drive_small);
             IconList.Images.Add("window", Resources.Icons.window);
+            IconList.Images.Add("store", Resources.Icons.store);
 
             lblVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0} {1}", lblVersion.Text, System.Windows.Forms.Application.ProductVersion.ToString());
 
