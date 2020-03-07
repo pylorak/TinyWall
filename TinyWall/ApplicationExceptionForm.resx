@@ -126,10 +126,10 @@
     <value>MiddleLeft</value>
   </data>
   <data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>432, 553</value>
+    <value>422, 553</value>
   </data>
   <data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>90, 33</value>
+    <value>100, 33</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="btnCancel.TabIndex" type="System.Int32, mscorlib">
@@ -157,10 +157,10 @@
     <value>MiddleLeft</value>
   </data>
   <data name="btnOK.Location" type="System.Drawing.Point, System.Drawing">
-    <value>336, 553</value>
+    <value>316, 553</value>
   </data>
   <data name="btnOK.Size" type="System.Drawing.Size, System.Drawing">
-    <value>90, 33</value>
+    <value>100, 33</value>
   </data>
   <data name="btnOK.TabIndex" type="System.Int32, mscorlib">
     <value>900</value>

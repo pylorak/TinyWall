@@ -78,7 +78,7 @@
             // 
             resources.ApplyResources(this.columnHeader2, "columnHeader2");
             // 
-            // UwpPackages
+            // UwpPackagesForm
             // 
             this.AcceptButton = this.btnOK;
             resources.ApplyResources(this, "$this");
@@ -89,7 +89,7 @@
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.Name = "UwpPackages";
+            this.Name = "UwpPackagesForm";
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.UwpPackages_FormClosing);
             this.Load += new System.EventHandler(this.UwpPackages_Load);
