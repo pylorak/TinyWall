@@ -14,6 +14,17 @@
 #pragma comment(lib, "Advapi32.lib")
 #include <sddl.h>
 
+#pragma comment(lib, "Kernel32.lib")
+#include <VersionHelpers.h>
+
+
+enum class PackageTamperedState
+{
+	TAMPERED_UNKNOWN,
+	TAMPERED_NO,
+	TAMPERED_YES,
+};
+
 static wchar_t* CopyWinrtStr2CoTaskMem(const winrt::hstring &src) noexcept
 {
 	size_t numchars = (size_t)src.size() + 1;
@@ -41,15 +52,18 @@ public:
 	wchar_t* Publisher;
 	wchar_t* PublisherId;
 	wchar_t* Sid;
-	bool Tampered;
+	PackageTamperedState Tampered;
 
 	UwpPackage(const winrt::Windows::ApplicationModel::Package &package) noexcept :
 		Name(CopyWinrtStr2CoTaskMem(package.Id().Name())),
 		Publisher(CopyWinrtStr2CoTaskMem(package.Id().Publisher())),
 		PublisherId(CopyWinrtStr2CoTaskMem(package.Id().PublisherId())),
 		Sid(NULL),
-		Tampered(package.Status().Tampered())
+		Tampered(PackageTamperedState::TAMPERED_UNKNOWN)
 	{
+		if (IsWindows10OrGreater())
+			Tampered = package.Status().Tampered() ? PackageTamperedState::TAMPERED_YES : PackageTamperedState::TAMPERED_NO;
+
 		PSID sid = NULL;
 		LPWSTR strSid = NULL;
 

@@ -120,10 +120,10 @@ namespace PKSoft
             else if (uwpSubj != null)
             {
                 UwpPackage.Package? package = UwpPackage.FindPackageDetails(uwpSubj.Sid);
-                if (package.HasValue)
+                if (package.HasValue && (package.Value.Tampered != UwpPackage.TamperedState.Unknown))
                 {
                     hasSignature = true;
-                    validSignature = !package.Value.Tampered;
+                    validSignature = (package.Value.Tampered == UwpPackage.TamperedState.No);
                 }
             }
 

@@ -9,6 +9,13 @@ namespace PKSoft
 {
     public class UwpPackage
     {
+        public enum TamperedState
+        {
+            Unknown,
+            No,
+            Yes
+        }
+
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct Package
         {
@@ -16,8 +23,7 @@ namespace PKSoft
             public string Publisher;
             public string PublisherId;
             public string Sid;
-            [MarshalAs(UnmanagedType.U1)]
-            public bool Tampered;
+            public TamperedState Tampered;
 
             public AppContainerSubject ToExceptionSubject()
             {
