@@ -42,6 +42,7 @@ namespace PKSoft
             this.Icon = Resources.Icons.firewall;
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
+            this.btnSelectUwpApp.Enabled = VersionInfo.IsUwpSupported;
 
             this.TmpExceptionSettings.Add(fwex ?? new FirewallExceptionV3(GlobalSubject.Instance, new UnrestrictedPolicy()));
 
@@ -89,7 +90,6 @@ namespace PKSoft
 
         private void ApplicationExceptionForm_Load(object sender, EventArgs e)
         {
-            btnSelectUwpApp.Enabled = VersionInfo.Win81OrNewer;
             UpdateUI();
         }
 

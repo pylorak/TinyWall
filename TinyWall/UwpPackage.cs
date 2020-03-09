@@ -77,7 +77,7 @@ namespace PKSoft
 
         public static Package[] GetList()
         {
-            if (!TinyWall.Interface.VersionInfo.Win81OrNewer)
+            if (!TinyWall.Interface.VersionInfo.IsUwpSupported)
                 return new Package[0];
 
             NativeMethods.GetUwpPackageListing(out Package[] packages, out _);
@@ -100,7 +100,7 @@ namespace PKSoft
 
         public static Package? FindPackageDetails(string sid)
         {
-            if (!TinyWall.Interface.VersionInfo.Win81OrNewer)
+            if (!TinyWall.Interface.VersionInfo.IsUwpSupported)
                 return null;
 
             if (string.IsNullOrEmpty(sid))

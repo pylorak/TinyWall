@@ -361,7 +361,7 @@ namespace PKSoft
 
         public static string GetAppContainerSid(int pid)
         {
-            if (!VersionInfo.Win81OrNewer)
+            if (!VersionInfo.IsUwpSupported)
                 return null;
 
             using (var hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryInformation, false, pid))
