@@ -47,6 +47,7 @@ namespace PKSoft
 
         private void UpdateList()
         {
+            UwpPackage uwpPackages = new UwpPackage();
             List<ListViewItem> itemColl = new List<ListViewItem>();
             Dictionary<int, string> procCache = new Dictionary<int, string>();
 
@@ -62,7 +63,7 @@ namespace PKSoft
                   || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
                 {
                     string path = GetPathFromPidCached(procCache, tcpRow.ProcessId);
-                    ConstructListItem(itemColl, path, null, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now);
+                    ConstructListItem(itemColl, path, null, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now, RuleDirection.Invalid, uwpPackages);
                 }
             }
             tcpTable = NetStat.GetExtendedTcp6Table(false);
@@ -72,7 +73,7 @@ namespace PKSoft
                  || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
                 {
                     string path = GetPathFromPidCached(procCache, tcpRow.ProcessId);
-                    ConstructListItem(itemColl, path, null, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now);
+                    ConstructListItem(itemColl, path, null, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now, RuleDirection.Invalid, uwpPackages);
                 }
             }
 
@@ -83,13 +84,13 @@ namespace PKSoft
                 foreach (UdpRow udpRow in udpTable)
                 {
                     string path = GetPathFromPidCached(procCache, udpRow.ProcessId);
-                    ConstructListItem(itemColl, path, null, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now);
+                    ConstructListItem(itemColl, path, null, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now, RuleDirection.Invalid, uwpPackages);
                 }
                 udpTable = NetStat.GetExtendedUdp6Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
                     string path = GetPathFromPidCached(procCache, udpRow.ProcessId);
-                    ConstructListItem(itemColl, path, null, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now);
+                    ConstructListItem(itemColl, path, null, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now, RuleDirection.Invalid, uwpPackages);
                 }
             }
 
@@ -151,7 +152,7 @@ namespace PKSoft
                 for (int i = 0; i < filteredLog.Count; ++i)
                 {
                     FirewallLogEntry entry = filteredLog[i];
-                    ConstructListItem(itemColl, entry.AppPath, entry.PackageID, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked", entry.Timestamp, entry.Direction);
+                    ConstructListItem(itemColl, entry.AppPath, entry.PackageID, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked", entry.Timestamp, entry.Direction, uwpPackages);
                 }
             }
 
@@ -162,15 +163,14 @@ namespace PKSoft
             list.EndUpdate();
         }
 
-        private void ConstructListItem(List<ListViewItem> itemColl, string appPath, string packageId, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, RuleDirection dir = RuleDirection.Invalid)
+        private void ConstructListItem(List<ListViewItem> itemColl, string appPath, string packageId, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, RuleDirection dir, UwpPackage uwpList)
         {
-            UwpPackage packages = new UwpPackage();
             try
             {
                 ProcessInfo e = new ProcessInfo(procId)
                 {
                     ExePath = appPath,
-                    Package = packages.FindPackage(packageId)
+                    Package = uwpList.FindPackage(packageId)
                 };
 
                 // Construct list item
