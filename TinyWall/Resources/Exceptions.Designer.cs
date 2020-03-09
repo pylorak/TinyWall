@@ -115,6 +115,15 @@ namespace PKSoft.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Windows Defender.
+        /// </summary>
+        internal static string Windows_Defender {
+            get {
+                return ResourceManager.GetString("Windows_Defender", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Windows DHCP Client.
         /// </summary>
         internal static string Windows_DHCP_Client {

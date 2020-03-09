@@ -135,6 +135,9 @@
   <data name="VPN_PPTP" xml:space="preserve">
     <value>VPN PPTP</value>
   </data>
+  <data name="Windows_Defender" xml:space="preserve">
+    <value>Windows Defender</value>
+  </data>
   <data name="Windows_DHCP_Client" xml:space="preserve">
     <value>Windows DHCP Client</value>
   </data>
