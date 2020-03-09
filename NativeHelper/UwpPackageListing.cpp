@@ -90,6 +90,7 @@ DLLEXPORT void DLLCALLCONV GetUwpPackageListing(UwpPackage **ret, int *size)
 	{
 		*ret = NULL;
 		*size = 0;
+		return;
 	}
 
 	winrt::Windows::Management::Deployment::PackageManager manager;
