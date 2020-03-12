@@ -63,9 +63,12 @@ namespace TinyWall.Interface
 
             TwMessage resp = Endpoint.QueueMessageSimple(MessageType.PUT_SETTINGS, serverConfig, changeset);
 
-            serverConfig = (ServerConfiguration)resp.Arguments[0];
-            changeset = (Guid)resp.Arguments[1];
-            serverState = (ServerState)resp.Arguments[2];
+            if (resp.Arguments[0] is ServerConfiguration tmp)
+            {
+                serverConfig = tmp;
+                changeset = (Guid)resp.Arguments[1];
+                serverState = (ServerState)resp.Arguments[2];
+            }
 
             return resp.Type;
         }
