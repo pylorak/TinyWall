@@ -148,6 +148,7 @@
         <SubjectIdentity>
           <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
             <d6p1:string>CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US</d6p1:string>
+            <d6p1:string>CN=Microsoft Corporation, OU=MOPR, O=Microsoft Corporation, L=Redmond, S=Washington, C=US</d6p1:string>
           </CertificateSubjects>
           <Policy i:type="TcpUdpPolicy">
             <AllowedLocalTcpListenerPorts></AllowedLocalTcpListenerPorts>
