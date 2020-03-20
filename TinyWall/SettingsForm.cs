@@ -475,7 +475,7 @@ namespace PKSoft
         {
             try
             {
-                ProcessStartInfo psi = new ProcessStartInfo(@"http://tinywall.pados.hu/donation/donate.php");
+                ProcessStartInfo psi = new ProcessStartInfo(@"https://tinywall.pados.hu/donate.php");
                 psi.UseShellExecute = true;
                 Process.Start(psi);
             }
