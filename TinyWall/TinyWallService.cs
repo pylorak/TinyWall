@@ -293,8 +293,14 @@ namespace PKSoft
                         procTree.Add(p2.BaseEntry.th32ProcessID, p2);
                     }
 
+                    // This list will hold parents that we already checked for a process.
+                    // Used to avoid inf. loop when parent-PID info is unreliable.
+                    HashSet<int> pidsChecked = new HashSet<int>();
+
                     foreach (var pair in procTree)
                     {
+                        pidsChecked.Clear();
+
                         string procPath = pair.Value.ImagePath;
 
                         // Skip if we have no path
@@ -323,6 +329,12 @@ namespace PKSoft
                             if (parentEntry.BaseEntry.th32ProcessID == 0)
                                 // We reached top of process tree (with idle process)
                                 break;
+
+                            if (pidsChecked.Contains(parentEntry.BaseEntry.th32ProcessID))
+                                // We've been here before, damn it. Avoid looping eternally...
+                                break;
+
+                            pidsChecked.Add(parentEntry.BaseEntry.th32ProcessID);
 
                             if (string.IsNullOrEmpty(parentEntry.ImagePath))
                                 // We cannot get the path, so let's skip this parent
@@ -1625,6 +1637,10 @@ namespace PKSoft
                 if (string.IsNullOrEmpty(path))
                     return;
 
+                // This list will hold parents that we already checked for a process.
+                // Used to avoid inf. loop when parent-PID info is unreliable.
+                HashSet<int> pidsChecked = new HashSet<int>();
+
                 lock (InheritanceGuard)
                 {
                     // Skip if we have a user-defined rule for this path
@@ -1641,6 +1657,12 @@ namespace PKSoft
                         if (parentPid == 0)
                             // We reached top of process tree (with idle process)
                             break;
+
+                        if (pidsChecked.Contains(parentPid))
+                            // We've been here before, damn it. Avoid looping eternally...
+                            break;
+
+                        pidsChecked.Add(parentPid);
 
                         string parentPath = ProcessManager.GetProcessPath(parentPid, ProcessStartWatcher_Sbuilder)?.ToLowerInvariant();
                         if (string.IsNullOrEmpty(parentPath))
