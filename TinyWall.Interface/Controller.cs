@@ -82,7 +82,11 @@ namespace TinyWall.Interface
         {
             try
             {
-                return f.Value.Arguments[0] as List<FirewallLogEntry>;
+                if ((f.Value.Arguments != null) && (f.Value.Arguments.Length > 0) && (f.Value.Arguments[0] is List<FirewallLogEntry> ret))
+                    return ret;
+                else
+                    // TODO: Do we want to show an error to the user?
+                    return new List<FirewallLogEntry>();
             }
             finally
             {
