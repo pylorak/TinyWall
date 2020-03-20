@@ -141,9 +141,6 @@
   <data name="Windows_Remote_Desktop" xml:space="preserve">
     <value>Vzdálená plocha</value>
   </data>
-  <data name="Windows_Store_and_Apps" xml:space="preserve">
-    <value>Windows Store &amp; aplikace</value>
-  </data>
   <data name="Windows_Time_Sync" xml:space="preserve">
     <value>Synchronizace času</value>
   </data>

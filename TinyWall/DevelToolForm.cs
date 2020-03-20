@@ -166,7 +166,7 @@ namespace PKSoft
                 txtUpdateTWInstaller.Text = ofd.FileName;
             }
         }
-        
+
         private void btnUpdateDatabaseBrowse_Click(object sender, EventArgs e)
         {
             ofd.Filter = "All files (*)|*";
@@ -245,6 +245,15 @@ namespace PKSoft
             MessageBox.Show(this, "Update created.", "Success.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        private static int CountOccurence(string haystack, char needle)
+        {
+            int count = 0;
+            foreach (char c in haystack)
+                if (c == needle) count++;
+
+            return count;
+        }
+
         private void btnAddPrimaries_Click(object sender, EventArgs e)
         {
             ofd.Filter = "XML resources (*.resx)|*.resx|All files (*)|*";
@@ -256,6 +265,9 @@ namespace PKSoft
             for (int i = 0; i < ofd.FileNames.Length; ++i)
             {
                 string primary = ofd.FileNames[i];
+                if (CountOccurence(Path.GetFileName(primary), '.') != 1)
+                    continue;   // This is not a primary at all...
+
                 string dir = Path.GetDirectoryName(primary);
                 string primaryBase = Path.GetFileNameWithoutExtension(primary);
                 string primaryBasePath = Path.Combine(dir, primaryBase);

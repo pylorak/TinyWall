@@ -141,9 +141,6 @@
   <data name="Windows_Remote_Desktop" xml:space="preserve">
     <value>Acesso a Desktop Remoto do Windows</value>
   </data>
-  <data name="Windows_Store_and_Apps" xml:space="preserve">
-    <value>Loja do Windows &amp; Apps</value>
-  </data>
   <data name="Windows_Time_Sync" xml:space="preserve">
     <value>Acerto de Hora Online do Windows</value>
   </data>

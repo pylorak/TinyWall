@@ -141,9 +141,6 @@
   <data name="Windows_Remote_Desktop" xml:space="preserve">
     <value>Windows 원격 데스크톱</value>
   </data>
-  <data name="Windows_Store_and_Apps" xml:space="preserve">
-    <value>Windows 스토어 &amp; 앱</value>
-  </data>
   <data name="Windows_Time_Sync" xml:space="preserve">
     <value>Windows 시간 동기화</value>
   </data>
