@@ -53,7 +53,6 @@ namespace PKSoft
 
         private bool RunService = false;
         private ServerState VisibleState = new ServerState();
-        private DateTime LastUpdateCheck = DateTime.MinValue;
 
         private Engine WfpEngine;
         private DevicePathMapper NtPathMapper = new DevicePathMapper();
@@ -1111,6 +1110,55 @@ namespace PKSoft
             }
         }
 
+        private DateTime? LastUpdateCheck_ = null;
+        private const string LastUpdateCheck_FILENAME = "updatecheck";
+        private DateTime LastUpdateCheck
+        {
+            get
+            {
+                if (!LastUpdateCheck_.HasValue)
+                {
+                    try
+                    {
+                        string filePath = Path.Combine(ServiceSettings21.AppDataPath, LastUpdateCheck_FILENAME);
+                        using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        using (StreamReader sr = new StreamReader(fs, Encoding.UTF8))
+                        {
+                            LastUpdateCheck_ = DateTime.Parse(sr.ReadLine());
+                        }
+                    }
+                    catch { }
+                }
+
+                if (!LastUpdateCheck_.HasValue)
+                    LastUpdateCheck_ = DateTime.MinValue;
+                if (LastUpdateCheck_.Value > DateTime.Now)
+                    LastUpdateCheck_ = DateTime.MinValue;
+
+                return LastUpdateCheck_.Value;
+            }
+
+            set
+            {
+                LastUpdateCheck_ = value;
+
+                try
+                {
+                    string filePath = Path.Combine(ServiceSettings21.AppDataPath, LastUpdateCheck_FILENAME);
+                    using (var afu = new AtomicFileUpdater(filePath))
+                    {
+                        using (FileStream fs = new FileStream(afu.TemporaryFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                        using (StreamWriter sw = new StreamWriter(fs, Encoding.UTF8))
+                        {
+                            sw.WriteLine(value.ToString("O"));
+                        }
+                        afu.Commit();
+                    }
+                }
+                catch { }
+            }
+        }
+
         private void UpdaterMethod()
         {
             try
@@ -1126,7 +1174,7 @@ namespace PKSoft
             }
             finally
             {
-                LastUpdateCheck = DateTime.Now;    // TODO do not invalidate client config just because LastUpdateCheck
+                LastUpdateCheck = DateTime.Now;
                 GlobalInstances.ServerChangeset = Guid.NewGuid();
                 ActiveConfig.Service.Save(ConfigSavePath);
             }
