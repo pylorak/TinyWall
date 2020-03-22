@@ -1,7 +1,13 @@
 TinyWall Changelog
 ---------------------
 
-3.0.0 - Major update (soon to be released)
+3.0.1 - Maintenance release (22.03.2020.)
+- Fix whitelist ineffective on some executables with overtight permissions
+- Fix whitelisted file cannot connect if its rule was loaded while the file was missing
+
+---------------------
+
+3.0.0 - Major update (22.03.2020.)
 - Firewall technology improvements
     - Completely rebuilt firewall on top of Windows Filtering Platform
     - Full support for File and Printer Sharing and Network Browser
@@ -56,7 +62,12 @@ TinyWall Changelog
     - Whitelisting from a network share temporarily not supported
 
 ---------------------
-    
+
+2.1.15 - Maintenance release (07.03.2020.)
+- Only offer upgrade to v3.0 if running on a 64-bit system.
+
+---------------------
+
 2.1.14 - Maintenance release (02.01.2020.)
 - Fix communication error with Service when update info is available (2.1.13 regression)
 
@@ -69,7 +80,7 @@ TinyWall Changelog
 
 2.1.12 - Maintenance release (23.08.2019.)
 - Fix user may not get notified of updates for a very long time
-    
+
 ---------------------
 
 2.1.11 - Maintenance release (28.07.2019.)
