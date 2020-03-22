@@ -593,6 +593,8 @@ namespace PKSoft
                             conditions.Add(new AppIdFilterCondition(r.Application));
                         }
                         catch (WfpException e) when (
+                            (e.ErrorCode == 2) ||
+                            (e.ErrorCode == 3) ||
                             (e.ErrorCode == 5)
                         )
                         {
