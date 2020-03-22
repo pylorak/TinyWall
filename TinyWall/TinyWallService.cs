@@ -585,8 +585,20 @@ namespace PKSoft
                 if (!string.IsNullOrEmpty(r.Application))
                 {
                     System.Diagnostics.Debug.Assert(!r.Application.Equals("*"));
+
                     if (!LayerIsIcmpError(layer))
-                        conditions.Add(new AppIdFilterCondition(r.Application));
+                    {
+                        try
+                        {
+                            conditions.Add(new AppIdFilterCondition(r.Application));
+                        }
+                        catch (WfpException e) when (
+                            (e.ErrorCode == 5)
+                        )
+                        {
+                            conditions.Add(new AppIdFilterCondition(NtPathMapper.ToNtPath(r.Application), false, true));
+                        }
+                    }
                     else
                         return;
                 }
@@ -1679,11 +1691,12 @@ namespace PKSoft
             {
                 uint pid = (uint)(e.NewEvent["ProcessID"]);
                 string path = ProcessManager.GetProcessPath(unchecked((int)pid), ProcessStartWatcher_Sbuilder)?.ToLowerInvariant();
-                List<FirewallExceptionV3> newExceptions = new List<FirewallExceptionV3>();
 
                 // Skip if we have no path
                 if (string.IsNullOrEmpty(path))
                     return;
+
+                List<FirewallExceptionV3> newExceptions = new List<FirewallExceptionV3>();
 
                 // This list will hold parents that we already checked for a process.
                 // Used to avoid inf. loop when parent-PID info is unreliable.

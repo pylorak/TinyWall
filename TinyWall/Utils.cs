@@ -795,6 +795,18 @@ namespace PKSoft
             return devicePath;
         }
 
+        public string ToNtPath(string devicePath)
+        {
+            var drives = Cache;
+
+            foreach (var drive in drives)
+            {
+                if (devicePath.StartsWith(drive.DriverLetter, StringComparison.InvariantCultureIgnoreCase))
+                    return ReplaceFirst(devicePath, drive.DriverLetter, drive.DevicePath, sbuilder);
+            }
+            return devicePath;
+        }
+
         private static string GetDevicePath(DriveInfo driveInfo)
         {
             var devicePathBuilder = new StringBuilder(128);
