@@ -1,22 +1,19 @@
 Future development ideas:
-- Find out why Show Blocked Connections on Win7@Robert Benaroya didn't work
+- Bring WF in recommended state
+- Detect other firewall software
 - Inspect broken whitelisting from network shares
 - WHOIS query to Connections' remote addresses
 - Implement DataContracts round-tripping
 - Add block reason to Connections window
 - Don' let multiple windows open at the same time.
-- Add support for UWP apps
 - Add support for WSL
 - Context-menu whitelisting
 - Remove RuleDef.Application field
 - Compile new port block list from Docs/MalwarePorts/
-- Boot-time filters
 - Simplify use-case of networked installers
 - Add "Open folder" to Processes and Connections windows
 - avast.setup
 - Checkboxes in mode menu
-- Batch-cleanup exceptions with invalid file paths
-- Option to also allow descendent programs
 - Connections window auto refresh checkbox
 - Connections window always on top checkbox
 - VirusTotal integration
