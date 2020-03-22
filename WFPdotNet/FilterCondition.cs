@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.ConstrainedExecution;
 using System.Security;
 using System.Security.AccessControl;
+using System.Text;
 
 namespace WFPdotNet
 {
@@ -350,16 +351,39 @@ namespace WFPdotNet
                 [Out] out FwpmMemorySafeHandle appId);
         }
 
-        private FwpmMemorySafeHandle appIdNativeMem;
+        private SafeHandle appIdNativeMem;
+        private SafeHandle appIdDataNativeMem;
 
-        public AppIdFilterCondition(string filePath, bool bBeforeProxying = false)
+        public AppIdFilterCondition(string filePath, bool bBeforeProxying = false, bool alreadyKernelFormat = false)
         {
             if (bBeforeProxying && !VersionInfo.Win8OrNewer)
                 throw new NotSupportedException("FWPM_CONDITION_ALE_ORIGINAL_APP_ID (set by bBeforeProxying) requires Windows 8 or newer.");
 
-            uint err = NativeMethods.FwpmGetAppIdFromFileName0(filePath, out appIdNativeMem);
-            if (0 != err)
-                throw new WfpException(err, "FwpmGetAppIdFromFileName0");
+            if (!alreadyKernelFormat)
+            {
+                uint err = NativeMethods.FwpmGetAppIdFromFileName0(filePath, out FwpmMemorySafeHandle tmpHandle);
+                appIdNativeMem = tmpHandle;
+                if (0 != err)
+                    throw new WfpException(err, "FwpmGetAppIdFromFileName0");
+            }
+            else
+            {
+                // Get unicode bytes with null-terminator
+                filePath = filePath.ToLowerInvariant();                     // WFP will only match if lowercase
+                int nBytes = Encoding.Unicode.GetByteCount(filePath) + 2;   // +2 for the null-terminator
+                var bytes = new byte[nBytes];
+                Encoding.Unicode.GetBytes(filePath, 0, filePath.Length, bytes, 0);
+
+                // Get the bytes into an unmanaged pointer
+                appIdDataNativeMem = new AllocHGlobalSafeHandle(nBytes);
+                System.Runtime.InteropServices.Marshal.Copy(bytes, 0, appIdDataNativeMem.DangerousGetHandle(), nBytes);
+
+                // Get the blob into an unmanaged pointer
+                Interop.FWP_BYTE_BLOB blob;
+                blob.data = appIdDataNativeMem.DangerousGetHandle();
+                blob.size = (uint)nBytes;
+                appIdNativeMem = PInvokeHelper.StructToHGlobal(blob);
+            }
 
             _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
             _nativeStruct.fieldKey = bBeforeProxying ? ConditionKeys.FWPM_CONDITION_ALE_ORIGINAL_APP_ID : ConditionKeys.FWPM_CONDITION_ALE_APP_ID;
@@ -373,6 +397,8 @@ namespace WFPdotNet
             {
                 appIdNativeMem?.Dispose();
                 appIdNativeMem = null;
+                appIdDataNativeMem?.Dispose();
+                appIdDataNativeMem = null;
             }
 
             base.Dispose(disposing);
