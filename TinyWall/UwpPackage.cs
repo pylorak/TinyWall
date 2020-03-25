@@ -75,9 +75,24 @@ namespace PKSoft
             internal static extern void GetUwpPackageListing([Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] out Package[] list, out int size);
         }
 
+        private static bool IsGetUwpPackageListingSupported()
+        {
+            try
+            {
+                NativeMethods.GetUwpPackageListing(out Package[] packages, out _);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool PlatformSupport { get; } = IsGetUwpPackageListingSupported();
+
         public static Package[] GetList()
         {
-            if (!TinyWall.Interface.VersionInfo.IsUwpSupported)
+            if (!PlatformSupport)
                 return new Package[0];
 
             NativeMethods.GetUwpPackageListing(out Package[] packages, out _);
@@ -100,7 +115,7 @@ namespace PKSoft
 
         public static Package? FindPackageDetails(string sid)
         {
-            if (!TinyWall.Interface.VersionInfo.IsUwpSupported)
+            if (!PlatformSupport)
                 return null;
 
             if (string.IsNullOrEmpty(sid))

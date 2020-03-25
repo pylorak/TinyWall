@@ -42,7 +42,7 @@ namespace PKSoft
             this.Icon = Resources.Icons.firewall;
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
-            this.btnSelectUwpApp.Enabled = VersionInfo.IsUwpSupported;
+            this.btnSelectUwpApp.Enabled = UwpPackage.PlatformSupport;
 
             this.TmpExceptionSettings.Add(fwex ?? new FirewallExceptionV3(GlobalSubject.Instance, new UnrestrictedPolicy()));
 

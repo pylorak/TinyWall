@@ -83,22 +83,22 @@ public:
 
 DLLEXPORT void DLLCALLCONV GetUwpPackageListing(UwpPackage **ret, int *size) 
 {
+	static_assert(std::is_standard_layout<UwpPackage>::value);
+	static_assert(std::is_trivially_copyable<UwpPackage>::value);
+
 	const int MAX_NUM_ELEM = 1024;
 
-	UwpPackage *const arrBegin = (UwpPackage*)CoTaskMemAlloc(sizeof(UwpPackage) * MAX_NUM_ELEM);
+	winrt::Windows::Management::Deployment::PackageManager manager;
+	winrt::Windows::Foundation::Collections::IIterable<winrt::Windows::ApplicationModel::Package> collection = manager.FindPackagesForUser(winrt::hstring());
+	winrt::Windows::Foundation::Collections::IIterator<winrt::Windows::ApplicationModel::Package> packages = collection.First();
+
+	UwpPackage* const arrBegin = (UwpPackage*)CoTaskMemAlloc(sizeof(UwpPackage) * MAX_NUM_ELEM);
 	if (!arrBegin)
 	{
 		*ret = NULL;
 		*size = 0;
 		return;
 	}
-
-	winrt::Windows::Management::Deployment::PackageManager manager;
-	winrt::Windows::Foundation::Collections::IIterable<winrt::Windows::ApplicationModel::Package> collection = manager.FindPackagesForUser(winrt::hstring());
-	winrt::Windows::Foundation::Collections::IIterator<winrt::Windows::ApplicationModel::Package> packages = collection.First();
-
-	static_assert(std::is_standard_layout<UwpPackage>::value);
-	static_assert(std::is_trivially_copyable<UwpPackage>::value);
 
 	int n = 0;
 	UwpPackage *pPackage = arrBegin;

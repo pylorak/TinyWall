@@ -119,7 +119,5 @@ namespace TinyWall.Interface
         public static string WindowsVersionString { get; } = GetWindowsVersionString();
 
         public static bool IsWinServer { get; } = SafeNativeMethods.IsWindowsServer();
-
-        public static bool IsUwpSupported { get; } = (Win81OrNewer && !IsWinServer) || Win10OrNewer;
     }
 }
