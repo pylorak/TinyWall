@@ -1264,7 +1264,11 @@ namespace PKSoft
             string tmpFilePath = (string)file;
 
             FileLocker.UnlockFile(DatabaseClasses.AppDatabase.DBPath);
-            File.Copy(tmpFilePath, DatabaseClasses.AppDatabase.DBPath, true);
+            using (var afu = new AtomicFileUpdater(DatabaseClasses.AppDatabase.DBPath))
+            {
+                File.Copy(tmpFilePath, afu.TemporaryFilePath, true);
+                afu.Commit();
+            }
             FileLocker.LockFile(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
             NotifyController(MessageType.DATABASE_UPDATED);
             Q.Enqueue(new TwMessage(MessageType.REINIT), null);

@@ -46,7 +46,11 @@ namespace PKSoft
             // We keep a copy of the hosts file for ourself, so that
             // we can re-install it any time without a net connection.
             FileLocker.UnlockFile(HOSTS_BACKUP);
-            File.Copy(path, HOSTS_BACKUP, true);
+            using (var afu = new AtomicFileUpdater(HOSTS_BACKUP))
+            {
+                File.Copy(path, afu.TemporaryFilePath, true);
+                afu.Commit();
+            }
             FileLocker.LockFile(HOSTS_BACKUP, FileAccess.Read, FileShare.Read);
         }
 
