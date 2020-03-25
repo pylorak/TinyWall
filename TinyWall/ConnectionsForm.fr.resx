@@ -188,7 +188,7 @@
 		<value>312, 17</value>
 	</data>
 	<data name="chkShowBlocked.Text" xml:space="preserve">
-    <value>Voir applications bloquées (durant les 2 denrièremes minutes)</value>
+    <value>Voir applications bloquées (durant les 2 dernières minutes)</value>
   </data>
 	<data name="$this.Text" xml:space="preserve">
     <value>Connexions - TinyWall</value>
