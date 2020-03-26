@@ -215,14 +215,6 @@ namespace PKSoft
             }
             catch { }
 
-            try
-            {
-                // Remove user settings
-                string UserDir = ControllerSettings.UserDataPath;
-                Directory.Delete(UserDir, true);
-            }
-            catch { }
-
             return 0;
         }
 
