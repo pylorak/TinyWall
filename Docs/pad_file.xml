@@ -13,7 +13,7 @@
 		<State_Province />
 		<Zip_Postal_Code />
 		<Country>Hungary</Country>
-		<Company_WebSite_URL>http://tinywall.pados.hu</Company_WebSite_URL>
+		<Company_WebSite_URL>https://tinywall.pados.hu</Company_WebSite_URL>
 		<Contact_Info>
 			<Author_First_Name>Károly</Author_First_Name>
 			<Author_Last_Name>Pados</Author_Last_Name>
@@ -34,9 +34,9 @@
 	</Company_Info>
 	<Program_Info>
 		<Program_Name>TinyWall</Program_Name>
-		<Program_Version>3.0.1</Program_Version>
+		<Program_Version>3.0.2</Program_Version>
 		<Program_Release_Month>03</Program_Release_Month>
-		<Program_Release_Day>22</Program_Release_Day>
+		<Program_Release_Day>26</Program_Release_Day>
 		<Program_Release_Year>2020</Program_Release_Year>
 		<Program_Cost_Dollars>0</Program_Cost_Dollars>
 		<Program_Cost_Other_Code />
@@ -46,14 +46,14 @@
 		<Program_Install_Support>Install and Uninstall</Program_Install_Support>
 		<Program_OS_Support>Win7 x64,WinOther,WinVista,WinVista x64,Other, Win10</Program_OS_Support>
 		<Program_Language>English,Dutch,French,German,Hungarian,Italian,Japanese,Portuguese,Russian,Spanish,Polish,Turkish</Program_Language>
-		<Program_Change_Info>See http://tinywall.pados.hu/changelog.txt</Program_Change_Info>
+		<Program_Change_Info>See https://tinywall.pados.hu/changelog.txt</Program_Change_Info>
 		<Program_Specific_Category>Utilities</Program_Specific_Category>
 		<Program_Category_Class>Security &amp; Privacy::Access Control</Program_Category_Class>
 		<Program_System_Requirements>Microsoft .Net Framework 3.5 SP1</Program_System_Requirements>
 		<File_Info>
-			<File_Size_Bytes>1433600</File_Size_Bytes>
-			<File_Size_K>1400</File_Size_K>
-			<File_Size_MB>1.36</File_Size_MB>
+			<File_Size_Bytes>1441792</File_Size_Bytes>
+			<File_Size_K>1408</File_Size_K>
+			<File_Size_MB>1.37</File_Size_MB>
 		</File_Info>
 		<Expire_Info>
 			<Has_Expire_Info>N</Has_Expire_Info>
@@ -90,14 +90,14 @@ Other key features include:
 	</Program_Descriptions>
 	<Web_Info>
 		<Application_URLs>
-			<Application_Info_URL>http://tinywall.pados.hu/</Application_Info_URL>
-			<Application_Order_URL>http://tinywall.pados.hu/</Application_Order_URL>
-			<Application_Screenshot_URL>http://tinywall.pados.hu/PAD/tinywall_menu.jpg</Application_Screenshot_URL>
-			<Application_Icon_URL>http://tinywall.pados.hu/PAD/tinywall_icon.gif</Application_Icon_URL>
-			<Application_XML_File_URL>http://tinywall.pados.hu/PAD/pad_file.xml</Application_XML_File_URL>
+			<Application_Info_URL>https://tinywall.pados.hu/</Application_Info_URL>
+			<Application_Order_URL>https://tinywall.pados.hu/</Application_Order_URL>
+			<Application_Screenshot_URL>https://tinywall.pados.hu/PAD/tinywall_menu.jpg</Application_Screenshot_URL>
+			<Application_Icon_URL>https://tinywall.pados.hu/PAD/tinywall_icon.gif</Application_Icon_URL>
+			<Application_XML_File_URL>https://tinywall.pados.hu/PAD/pad_file.xml</Application_XML_File_URL>
 		</Application_URLs>
 		<Download_URLs>
-			<Primary_Download_URL>http://tinywall.pados.hu/ccount/click.php?id=4</Primary_Download_URL>
+			<Primary_Download_URL>https://tinywall.pados.hu/ccount/click.php?id=4</Primary_Download_URL>
 			<Secondary_Download_URL />
 			<Additional_Download_URL_1 />
 			<Additional_Download_URL_2 />

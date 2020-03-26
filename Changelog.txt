@@ -1,6 +1,15 @@
 TinyWall Changelog
 ---------------------
 
+3.0.2 - Maintenance release (26.03.2020.)
+- Test for UWP support instead of OS-version checking
+- Install hosts and database updates atomically
+- Keep Windows Firewall settings as desired when enabled & changed externally
+- Fix user GUI settings not migrated (effective starting with v3.0.3)
+- Fix possible GUI crash when user selects Elevate
+
+---------------------
+
 3.0.1 - Maintenance release (22.03.2020.)
 - Fix whitelist ineffective on some executables with overtight permissions
 - Fix whitelisted file cannot connect if its rule was loaded while the file was missing
