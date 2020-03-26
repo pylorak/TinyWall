@@ -36,7 +36,7 @@ namespace PKSoft
             }
             catch
             {
-                // Don't do anything, we are running in a trusted contex.
+                // Don't do anything, we are running in a trusted context.
             }
 
             this.Icon = Resources.Icons.firewall;

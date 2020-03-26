@@ -10,7 +10,6 @@ using System.ServiceProcess;
 using System.Threading;
 using TinyWall.Interface;
 using TinyWall.Interface.Internal;
-using NetFwTypeLib;
 using WFPdotNet;
 using WFPdotNet.Interop;
 
@@ -1014,79 +1013,6 @@ namespace PKSoft
             return ret;
         }
 
-        private static INetFwPolicy2 GetFwPolicy2()
-        {
-            Type tNetFwPolicy2 = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
-            return (INetFwPolicy2)Activator.CreateInstance(tNetFwPolicy2);
-        }
-
-        private static INetFwRule CreateFwRule(string name, NET_FW_ACTION_ action, NET_FW_RULE_DIRECTION_ dir)
-        {
-            Type tNetFwRule = Type.GetTypeFromProgID("HNetCfg.FwRule");
-            INetFwRule rule = (INetFwRule)Activator.CreateInstance(tNetFwRule);
-
-            rule.Name = name;
-            rule.Action = action;
-            rule.Direction = dir;
-            rule.Grouping = "TinyWall";
-            rule.Profiles = (int)NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PRIVATE | (int)NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PUBLIC | (int)NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_DOMAIN;
-            rule.Enabled = true;
-            if ((NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN == dir) && (NET_FW_ACTION_.NET_FW_ACTION_ALLOW == action))
-                rule.EdgeTraversal = true;
-
-            return rule;
-        }
-
-        private void DisableMpsSvc()
-        {
-            try
-            {
-                INetFwPolicy2 fwPolicy2 = GetFwPolicy2();
-
-                // Disable Windows Firewall notifications
-                fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PRIVATE] = true;
-                fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PUBLIC] = true;
-                fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_DOMAIN] = true;
-
-                // Add new rules
-                string newRuleId = $"TinyWall Compat [{Utils.RandomString(6)}]";
-                fwPolicy2.Rules.Add(CreateFwRule(newRuleId, NET_FW_ACTION_.NET_FW_ACTION_ALLOW, NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN));
-                fwPolicy2.Rules.Add(CreateFwRule(newRuleId, NET_FW_ACTION_.NET_FW_ACTION_ALLOW, NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT));
-
-                // Remove earlier rules
-                INetFwRules rules = fwPolicy2.Rules;
-                foreach (INetFwRule rule in rules)
-                {
-                    string ruleName = rule.Name;
-                    if (!string.IsNullOrEmpty(ruleName) && ruleName.Contains("TinyWall") && (ruleName != newRuleId))
-                        rules.Remove(rule.Name);
-                }
-            }
-            catch { }
-        }
-
-        private void RestoreMpsSvc()
-        {
-            try
-            {
-                INetFwPolicy2 fwPolicy2 = GetFwPolicy2();
-
-                // Enable Windows Firewall notifications
-                fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PRIVATE] = false;
-                fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_PUBLIC] = false;
-                fwPolicy2.NotificationsDisabled[NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_DOMAIN] = false;
-
-                // Remove earlier rules
-                INetFwRules rules = fwPolicy2.Rules;
-                foreach (INetFwRule rule in rules)
-                {
-                    if ((rule.Grouping != null) && rule.Grouping.Equals("TinyWall"))
-                        rules.Remove(rule.Name);
-                }
-            }
-            catch { }
-        }
-
         // This method completely reinitializes the firewall.
         private void InitFirewall()
         {
@@ -1097,7 +1023,6 @@ namespace PKSoft
 
             ReapplySettings();
             InstallFirewallRules();
-            ThreadPool.QueueUserWorkItem((WaitCallback)delegate (object state) { DisableMpsSvc(); });
         }
 
 
@@ -1671,6 +1596,7 @@ namespace PKSoft
                 WfpEngine.EventMatchAnyKeywords = InboundEventMatchKeyword.FWPM_NET_EVENT_KEYWORD_INBOUND_BCAST | InboundEventMatchKeyword.FWPM_NET_EVENT_KEYWORD_INBOUND_MCAST;
             }
 
+            using (WindowsFirewall WinDefFirewall = new WindowsFirewall())
             using (ManagementEventWatcher ProcessStartWatcher = new ManagementEventWatcher(StartQuery))
             using (WfpEngine = new Engine("TinyWall Session", "", FWPM_SESSION_FLAGS.None, 5000))
             using (var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback, null))
@@ -1915,8 +1841,6 @@ namespace PKSoft
             CommitLearnedRules();
             ActiveConfig.Service.Save(ConfigSavePath);
             FileLocker.UnlockAll();
-
-            RestoreMpsSvc();
 
             FirewallThreadThrottler?.Dispose();
 

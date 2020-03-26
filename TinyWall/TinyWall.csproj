@@ -225,6 +225,7 @@
       <DependentUpon>UwpPackagesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="WfpSublayerKeys.cs" />
+    <Compile Include="WindowsFirewall.cs" />
     <EmbeddedResource Include="AppFinderForm.de.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
     </EmbeddedResource>
