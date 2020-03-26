@@ -1181,10 +1181,10 @@ namespace PKSoft
         {
             try
             {
-                Utils.StartProcess(TinyWall.Interface.Internal.Utils.ExecutablePath, "/desktop", true);
+                Utils.StartProcess(TinyWall.Interface.Internal.Utils.ExecutablePath, null, true);
                 System.Windows.Forms.Application.Exit();
             }
-            catch (Win32Exception)
+            catch
             {
                 ShowBalloonTip(PKSoft.Resources.Messages.CouldNotElevatePrivileges, ToolTipIcon.Error);
             }
