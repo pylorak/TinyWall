@@ -1865,7 +1865,8 @@ namespace PKSoft
         internal readonly static string[] ServiceDependencies = new string[]
         {
             "eventlog",
-            "Winmgmt"
+            "Winmgmt",
+            "BFE"
         };
 
         internal const string SERVICE_NAME = "TinyWall";
