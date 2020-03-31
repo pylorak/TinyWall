@@ -45,16 +45,14 @@ namespace PKSoft
             {
                 // Release managed resources
 
-                serviceInstaller.Dispose();
-                serviceProcessInstaller.Dispose();
+                serviceInstaller?.Dispose();
+                serviceProcessInstaller?.Dispose();
             }
 
             // Release unmanaged resources.
             // Set large fields to null.
             // Call Dispose on your base class.
 
-            serviceInstaller = null;
-            serviceProcessInstaller = null;
             base.Dispose(disposing);
         }
     }
