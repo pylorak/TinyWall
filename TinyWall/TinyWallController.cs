@@ -467,7 +467,17 @@ namespace PKSoft
                 // On some systems the WMI query fails. We disable traffic monitoring on those systems.
                 mnuTrafficRate.Visible = false;
                 toolStripMenuItem1.Visible = false;
-                TrafficTimer.Change(Timeout.Infinite, Timeout.Infinite);
+
+                try
+                {
+                    TrafficTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                }
+                catch(ObjectDisposedException)
+                {
+                    // We might be executing while Timer.Dispose(wh) has already been called.
+                    // Calling Timer.Change(...) above then can result in an ObjectDisposedException
+                    // due to a race condition, which we can safely ignore.
+                }
             }
         }
 
