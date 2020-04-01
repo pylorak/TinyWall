@@ -486,6 +486,45 @@ namespace ScmWrapper
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
+        internal void SetLoadOrderGroup(string serviceName, string group)
+        {
+            IntPtr service = IntPtr.Zero;
+
+            try
+            {
+                // Open the service
+                service = OpenService(serviceName,
+                    ServiceAccessRights.SERVICE_CHANGE_CONFIG |
+                    ServiceAccessRights.SERVICE_QUERY_CONFIG);
+
+                var result = NativeMethods.ChangeServiceConfig(
+                    service,
+                    SERVICE_NO_CHANGE,
+                    SERVICE_NO_CHANGE,
+                    SERVICE_NO_CHANGE,
+                    null,
+                    group,
+                    IntPtr.Zero,
+                    null,
+                    null,
+                    null,
+                    null);
+
+                if (result == false)
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
+
+            }
+            finally
+            {
+                // Clean up
+                if (service != IntPtr.Zero)
+                {
+                    NativeMethods.CloseServiceHandle(service);
+                }
+            }
+        }
+
+        [SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
         internal uint GetStartupMode(string serviceName)
         {
             IntPtr service = IntPtr.Zero;

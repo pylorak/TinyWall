@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
 using System.Configuration.Install;
 using System.ServiceProcess;
 
@@ -37,6 +37,20 @@ namespace PKSoft
                 serviceInstaller?.Dispose();
                 serviceProcessInstaller?.Dispose();
             }
+        }
+
+        public override void Install(IDictionary stateSaver)
+        {
+            base.Install(stateSaver);
+
+            try
+            {
+                using (var scm = new ScmWrapper.ServiceControlManager())
+                {
+                    scm.SetLoadOrderGroup(TinyWallService.SERVICE_NAME, @"NetworkProvider");
+                }
+            }
+            catch { }
         }
 
         protected override void Dispose(bool disposing)
