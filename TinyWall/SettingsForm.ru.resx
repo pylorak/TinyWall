@@ -187,14 +187,20 @@
   <data name="tabPage2.Text" xml:space="preserve">
     <value>Специальные исключения</value>
   </data>
+  <data name="label11.Location" type="System.Drawing.Point, System.Drawing">
+    <value>24, 49</value>
+  </data>
   <data name="label11.Size" type="System.Drawing.Size, System.Drawing">
     <value>35, 13</value>
   </data>
   <data name="label11.Text" xml:space="preserve">
     <value>Язык</value>
   </data>
+  <data name="comboLanguages.Location" type="System.Drawing.Point, System.Drawing">
+    <value>80, 46</value>
+  </data>
   <data name="chkEnableBlocklists.Location" type="System.Drawing.Point, System.Drawing">
-    <value>308, 48</value>
+    <value>308, 71</value>
   </data>
   <data name="chkEnableBlocklists.Size" type="System.Drawing.Size, System.Drawing">
     <value>164, 17</value>
@@ -203,7 +209,7 @@
     <value>Включить лист блокировки</value>
   </data>
   <data name="chkLockHostsFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>24, 94</value>
+    <value>308, 48</value>
   </data>
   <data name="chkLockHostsFile.Size" type="System.Drawing.Size, System.Drawing">
     <value>245, 17</value>
@@ -212,7 +218,7 @@
     <value>Предотвращение изменение файлов хоста</value>
   </data>
   <data name="chkHostsBlocklist.Location" type="System.Drawing.Point, System.Drawing">
-    <value>308, 94</value>
+    <value>328, 117</value>
   </data>
   <data name="chkHostsBlocklist.Size" type="System.Drawing.Size, System.Drawing">
     <value>402, 17</value>
@@ -221,7 +227,7 @@
     <value>Список заблокированных Domain-based вредоносных програм и рекламы</value>
   </data>
   <data name="chkAutoUpdateCheck.Location" type="System.Drawing.Point, System.Drawing">
-    <value>24, 48</value>
+    <value>24, 71</value>
   </data>
   <data name="chkAutoUpdateCheck.Size" type="System.Drawing.Size, System.Drawing">
     <value>223, 17</value>
@@ -230,7 +236,7 @@
     <value>Автоматически проверять обновления</value>
   </data>
   <data name="chkBlockMalwarePorts.Location" type="System.Drawing.Point, System.Drawing">
-    <value>308, 71</value>
+    <value>328, 94</value>
   </data>
   <data name="chkBlockMalwarePorts.Size" type="System.Drawing.Size, System.Drawing">
     <value>327, 17</value>
@@ -272,13 +278,16 @@
     <value>Защита паролем</value>
   </data>
   <data name="chkAskForExceptionDetails.Location" type="System.Drawing.Point, System.Drawing">
-    <value>24, 71</value>
+    <value>24, 94</value>
   </data>
   <data name="chkAskForExceptionDetails.Size" type="System.Drawing.Size, System.Drawing">
     <value>233, 17</value>
   </data>
   <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
     <value>Подробная информация об исключениях</value>
+  </data>
+  <data name="chkEnableHotkeys.Location" type="System.Drawing.Point, System.Drawing">
+    <value>24, 117</value>
   </data>
   <data name="tabPage1.Text" xml:space="preserve">
     <value>Важные</value>
@@ -329,7 +338,7 @@
     <value>Обновление</value>
   </data>
   <data name="btnWeb.Text" xml:space="preserve">
-    <value>Посетить вебсайт</value>
+    <value>      Посетить вебсайт</value>
   </data>
   <data name="tabPage4.Text" xml:space="preserve">
     <value>Обслуживание</value>
