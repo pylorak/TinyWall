@@ -596,6 +596,14 @@ namespace PKSoft
                 syncCtx.Send(method, null);
         }
 
+        internal static void Invoke(Control ctrl, MethodInvoker method)
+        {
+            if (ctrl.InvokeRequired)
+                ctrl.BeginInvoke(method);
+            else
+                method.Invoke();
+        }
+
         internal static void SplitFirstLine(string str, out string firstLine, out string restLines)
         {
             string[] lines = str.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);

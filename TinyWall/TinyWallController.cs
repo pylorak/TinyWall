@@ -269,8 +269,6 @@ namespace PKSoft
         private ManagementObjectSearcher TrafficStatsSearcher;
         private ulong bytesRxTotal = 0;
         private ulong bytesTxTotal = 0;
-        private string rxDisplay = string.Empty;
-        private string txDisplay = string.Empty;
 
         private EventHandler<AnyEventArgs> BalloonClickedCallback;
         private object BalloonClickedCallbackArgument;
@@ -347,7 +345,7 @@ namespace PKSoft
 
         private void TrayMenu_Closed(object sender, ToolStripDropDownClosedEventArgs e)
         {
-            ShowTraffixRate = false;
+            IncreaseTrafficRate = false;
         }
 
         protected override void Dispose(bool disposing)
@@ -420,6 +418,8 @@ namespace PKSoft
 
         private void TrafficTimerTick(object state)
         {
+            string rxDisplay;
+            string txDisplay;
             ulong bytesRxNewTotal = 0;
             ulong bytesTxNewTotal = 0;
             DateTime newTimestamp = DateTime.Now;
@@ -465,34 +465,37 @@ namespace PKSoft
                 else
                     txDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}KiB/s", KBytesTxPerSec);
 
-                UpdateTrafficRateText();
+                UpdateTrafficRateText(rxDisplay, txDisplay);
             }
             catch
             {
-                // On some systems the WMI query fails. We disable traffic monitoring on those systems.
-                mnuTrafficRate.Visible = false;
-                toolStripMenuItem1.Visible = false;
+                UpdateTrafficRateText(null, null);
+            }
 
-                try
+            void UpdateTrafficRateText(string rxTxt, string txTxt)
+            {
+                if (!IncreaseTrafficRate)
+                    return;
+
+                bool show = (rxTxt != null);
+                string text = show ? string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", PKSoft.Resources.Messages.TrafficIn, rxTxt, PKSoft.Resources.Messages.TrafficOut, txTxt) : null;
+                Utils.Invoke(TrayMenu, (MethodInvoker)delegate
                 {
-                    TrafficTimer.Change(Timeout.Infinite, Timeout.Infinite);
-                }
-                catch(ObjectDisposedException)
-                {
-                    // We might be executing while Timer.Dispose(wh) has already been called.
-                    // Calling Timer.Change(...) above then can result in an ObjectDisposedException
-                    // due to a race condition, which we can safely ignore.
-                }
+                    if (show)
+                        mnuTrafficRate.Text = text;
+                    mnuTrafficRate.Visible = show;
+                    toolStripMenuItem1.Visible = show;
+                });
             }
         }
 
-        private bool _ShowTraffixRate = false;
-        private bool ShowTraffixRate
+        private bool _IncreaseTrafficRate = false;
+        private bool IncreaseTrafficRate
         {
-            get { return _ShowTraffixRate; }
+            get { return _IncreaseTrafficRate; }
             set
             {
-                _ShowTraffixRate = value;
+                _IncreaseTrafficRate = value;
 
                 // Update more often while visible
                 if (value)
@@ -500,21 +503,6 @@ namespace PKSoft
                 else
                     TrafficTimer.Change(5000, 5000);
             }
-        }
-
-        private void UpdateTrafficRateText()
-        {
-            if (!ShowTraffixRate)
-                return;
-
-            string text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", PKSoft.Resources.Messages.TrafficIn, rxDisplay, PKSoft.Resources.Messages.TrafficOut, txDisplay);
-            if (TrayMenu.InvokeRequired)
-                TrayMenu.BeginInvoke((MethodInvoker)delegate
-                {
-                   mnuTrafficRate.Text = text;
-                });
-            else
-                mnuTrafficRate.Text = text;
         }
 
         private void StartUpdate(object sender, AnyEventArgs e)
@@ -728,7 +716,7 @@ namespace PKSoft
                 }
             }
 
-            ShowTraffixRate = true;
+            IncreaseTrafficRate = true;
 
             bool locked = GlobalInstances.Controller.IsServerLocked;
             this.Locked = locked;
@@ -1313,7 +1301,7 @@ namespace PKSoft
                 // BEGIN
                 TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, 0, Timeout.Infinite);
                 UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(10));
-                ShowTraffixRate = false;
+                IncreaseTrafficRate = false;
                 mnuElevate.Visible = !Utils.RunningAsAdmin();
                 mnuModeDisabled.Image = Resources.Icons.shield_grey_small.ToBitmap();
                 mnuModeAllowOutgoing.Image = Resources.Icons.shield_red_small.ToBitmap();
