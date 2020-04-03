@@ -371,7 +371,6 @@ namespace PKSoft
                 }
                 TrafficStatsSearcher.Dispose();
 
-                Tray.Visible = false;
                 components.Dispose();
             }
 
@@ -527,6 +526,7 @@ namespace PKSoft
 
         private void mnuQuit_Click(object sender, EventArgs e)
         {
+            Tray.Visible = false;
             ExitThread();
         }
 
