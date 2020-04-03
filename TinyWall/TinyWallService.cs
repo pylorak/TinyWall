@@ -1585,7 +1585,6 @@ namespace PKSoft
             GlobalInstances.ServerPipe = new PipeServerEndpoint(new PipeDataReceived(PipeServerDataReceived));
 
             // Listen to network configuration changes
-            WqlEventQuery StartQuery = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace");
             NetworkChange.NetworkAddressChanged += NetworkChange_NetworkAddressChanged;
             NetworkChange.NetworkAvailabilityChanged += NetworkChange_NetworkAvailabilityChanged;
 
@@ -1597,12 +1596,19 @@ namespace PKSoft
             }
 
             using (WindowsFirewall WinDefFirewall = new WindowsFirewall())
-            using (ManagementEventWatcher ProcessStartWatcher = new ManagementEventWatcher(StartQuery))
+            using (ManagementEventWatcher ProcessStartWatcher = new ManagementEventWatcher(new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace")))
             using (WfpEngine = new Engine("TinyWall Session", "", FWPM_SESSION_FLAGS.None, 5000))
             using (var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback, null))
             {
                 ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
-                ProcessStartWatcher.Start();
+                try
+                {
+                    ProcessStartWatcher.Start();
+                }
+                catch 
+                {
+                    Utils.Log("Error accessing WMI. Subprocess monitoring will be inactive.", Utils.LOG_ID_SERVICE);
+                }
 
                 RunService = true;
                 while (RunService)
