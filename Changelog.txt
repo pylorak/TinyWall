@@ -1,6 +1,13 @@
 TinyWall Changelog
 ---------------------
 
+3.0.3 - Maintenance release (01.04.2020.)
+- Fix potential GUI crash during whitelisting in error case
+- Fix potential GUI crash due to race while GUI is closing
+- Fix tray icon sometimes wrongly showing Unknown state after a fresh boot
+
+---------------------
+
 3.0.2 - Maintenance release (26.03.2020.)
 - Test for UWP support instead of OS-version checking
 - Install hosts and database updates atomically
