@@ -8,6 +8,9 @@ namespace PKSoft
 {
     static class Program
     {
+        internal static bool RestartOnQuit { get; set; }
+        internal static System.Globalization.CultureInfo DefaultOsCulture { get; set; }
+
         private static int StartDevelTool()
         {
             System.Windows.Forms.Application.EnableVisualStyles();
@@ -52,7 +55,11 @@ namespace PKSoft
             // Start controller application
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-            System.Windows.Forms.Application.Run(new TinyWallController(opts));
+            do
+            {
+                RestartOnQuit = false;
+                System.Windows.Forms.Application.Run(new TinyWallController(opts));
+            } while (RestartOnQuit);
             return 0;
         }
 
@@ -84,6 +91,8 @@ namespace PKSoft
             app.Components[0].Policy = rp;
             TinyWall.Interface.Internal.SerializationHelper.SaveToXMLFile(app, @"C:\Users\Dev\ownCloud\TinyWall\TinyWall3\TinyWall\Database\Special\Special File and printer sharing.xml3");
             */
+            if (DefaultOsCulture == null)
+                DefaultOsCulture = Thread.CurrentThread.CurrentUICulture;
 
 #if DEBUG
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(CurrentDomain_AssemblyLoad);

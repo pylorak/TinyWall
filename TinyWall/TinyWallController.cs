@@ -310,16 +310,21 @@ namespace PKSoft
             this.StartupOpts = opts;
 
             ActiveConfig.Controller = ControllerSettings.Load();
-            if (!ActiveConfig.Controller.Language.Equals("auto", StringComparison.InvariantCultureIgnoreCase))
+            try
             {
-                try
+                if (!ActiveConfig.Controller.Language.Equals("auto", StringComparison.InvariantCultureIgnoreCase))
                 {
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo(ActiveConfig.Controller.Language);
                     System.Windows.Forms.Application.CurrentCulture = Thread.CurrentThread.CurrentUICulture;
                 }
-                catch { }
+                else
+                {
+                    Thread.CurrentThread.CurrentUICulture = Program.DefaultOsCulture;
+                    System.Windows.Forms.Application.CurrentCulture = Program.DefaultOsCulture;
+                }
             }
-
+            catch { }
+ 
             InitializeComponent();
             System.Windows.Forms.Application.Idle += Application_Idle;
             Tray.Visible = true;
@@ -860,6 +865,8 @@ namespace PKSoft
 
                     if (sf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
+                        var oldLang = ActiveConfig.Controller.Language;
+
                         // Save settings
                         ActiveConfig.Controller = sf.TmpConfig.Controller;
                         ActiveConfig.Controller.Save();
@@ -884,6 +891,12 @@ namespace PKSoft
                                 // the other settings too and we want to avoid multiple popups.
                                 FirewallState.HasPassword = !string.IsNullOrEmpty(passwd);
                             }
+                        }
+
+                        if (oldLang != ActiveConfig.Controller.Language)
+                        {
+                            Program.RestartOnQuit = true;
+                            ExitThread();
                         }
                     }
                 }
