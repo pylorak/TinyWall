@@ -16,6 +16,7 @@ namespace PKSoft
     {
         internal bool autowhitelist = false;
         internal bool updatenow = false;
+        internal bool startup = false;
 
         internal StartUpMode ProgramMode = StartUpMode.Invalid;
     }

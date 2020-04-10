@@ -447,7 +447,7 @@ namespace PKSoft
                 if (string.IsNullOrEmpty(ApplicationPath))
                     runKey.DeleteValue(ApplicationName, false);
                 else
-                    runKey.SetValue(ApplicationName, ApplicationPath);
+                    runKey.SetValue(ApplicationName, $"\"{ApplicationPath}\" /startup");
             }
         }
 

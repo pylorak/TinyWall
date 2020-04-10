@@ -95,8 +95,8 @@
     <CustomAction Id='InstallCustom' FileKey='TinyWallEXE' ExeCommand='/install' Return='check' Execute='commit' Impersonate='no' />
     <CustomAction Id='InstallCustomRollback' FileKey='TinyWallEXE' ExeCommand='/uninstall' Return='check' Execute='rollback' Impersonate='no' />
     <CustomAction Id='UninstallCustom' FileKey='TinyWallEXE' ExeCommand='/uninstall' Return='check' Execute='deferred' Impersonate='no' />
-    <CustomAction Id='StartControllerAndDetect' FileKey='TinyWallEXE' ExeCommand='/desktop /autowhitelist' Return='asyncNoWait' Execute='commit' />
-    <CustomAction Id='StartController' FileKey='TinyWallEXE' ExeCommand='/desktop' Return='asyncNoWait' Execute='commit' />
+    <CustomAction Id='StartControllerAndDetect' FileKey='TinyWallEXE' ExeCommand='/autowhitelist' Return='asyncNoWait' Execute='commit' />
+    <CustomAction Id='StartController' FileKey='TinyWallEXE' ExeCommand='' Return='asyncNoWait' Execute='commit' />
 
     <!-- Sequencing -->
     <InstallExecuteSequence>
@@ -287,7 +287,7 @@
           <Component Id="ProgramMenuDir" Guid="{14A26A5D-7F56-485F-98DE-9407F1E93F57}" Win64="$(var.Win64)">
             <RemoveFolder Id='ProgramMenuDir' On='uninstall' />
             <RegistryValue Root='HKCU' Key='Software\[ProductName]' Type='string' Value='' KeyPath='yes' />
-            <Shortcut Id="ControllerShortcut" Icon="TinyWallIcon.exe" Directory="ProgramMenuDir" Name="TinyWall Controller" Arguments="/desktop" Target="[INSTALLDIR]TinyWall.exe">
+            <Shortcut Id="ControllerShortcut" Icon="TinyWallIcon.exe" Directory="ProgramMenuDir" Name="TinyWall Controller" Target="[INSTALLDIR]TinyWall.exe">
               <ShortcutProperty Key="{9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3}, 5" Value="KPados.TinyWall.Controller" /> <!-- System.AppUserModel.ID -->
               <ShortcutProperty Key="{9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3}, 12" Value="1" />                         <!-- System.AppUserModel.StartPinOption, http://support.microsoft.com/kb/2745126/en-us -->
               <ShortcutProperty Key="{9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3}, 8" Value="1" />                          <!-- System.AppUserModel.ExcludeFromShowInNewInstall -->

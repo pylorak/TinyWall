@@ -127,8 +127,6 @@ namespace PKSoft
 
             // Parse comman-line options
             CmdLineArgs opts = new CmdLineArgs();
-            if (Utils.ArrayContains(args, "/desktop"))
-                opts.ProgramMode = StartUpMode.Controller;
             if (!Environment.UserInteractive || Utils.ArrayContains(args, "/service"))
                 opts.ProgramMode = StartUpMode.Service;
             if (Utils.ArrayContains(args, "/selfhosted"))
@@ -145,6 +143,7 @@ namespace PKSoft
 
             opts.autowhitelist = Utils.ArrayContains(args, "/autowhitelist");
             opts.updatenow = Utils.ArrayContains(args, "/updatenow");
+            opts.startup = Utils.ArrayContains(args, "/startup");
 
             switch (opts.ProgramMode)
             {
