@@ -262,6 +262,8 @@ namespace PKSoft
         private ServerState FirewallState;
         private System.Threading.Timer UpdateTimer;
         private DateTime LastUpdateNotification = DateTime.MinValue;
+        private System.Windows.Forms.Timer ServiceTimer = null;
+        private DateTime AppStarted = DateTime.Now;
 
         // Traffic rate monitoring
         private System.Threading.Timer TrafficTimer;
@@ -325,7 +327,10 @@ namespace PKSoft
  
             InitializeComponent();
             System.Windows.Forms.Application.Idle += Application_Idle;
-            Tray.Visible = true;
+            using (var p = Process.GetCurrentProcess())
+            {
+                ProcessManager.WakeMessageQueues(p);
+            }
         }
 
         private void Application_Idle(object sender, EventArgs e)
@@ -1299,6 +1304,8 @@ namespace PKSoft
 
                 // --------------- CODE BETWEEN HERE MUST NOT USE DATABASE, SINCE IT IS BEING LOADED PARALLEL ---------------
                 // BEGIN
+                TrayMenu.Closed += TrayMenu_Closed;
+                Tray.ContextMenuStrip = TrayMenu;
                 TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, 0, Timeout.Infinite);
                 UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(10));
                 IncreaseTrafficRate = false;
@@ -1323,28 +1330,45 @@ namespace PKSoft
             if (comError)
             {
                 if (TinyWallDoctor.EnsureServiceInstalledAndRunning())
-                {
                     LoadSettingsFromServer(out comError, true);
-                    UpdateDisplay();
-                }
                 else
-                {
                     MessageBox.Show(PKSoft.Resources.Messages.TheTinyWallServiceIsUnavailable, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
             }
 #endif
-            if (StartupOpts.autowhitelist)
-            {
-                AutoWhitelist();
-            }
 
-            if (StartupOpts.updatenow)
+           if ((FirewallState.Mode != FirewallMode.Unknown) || (!StartupOpts.startup))
             {
-                StartUpdate(null, null);
-            }
+                Tray.Visible = true;
 
-            TrayMenu.Closed += TrayMenu_Closed;
-            Tray.ContextMenuStrip = TrayMenu;
+                if (StartupOpts.autowhitelist)
+                {
+                    AutoWhitelist();
+                }
+
+                if (StartupOpts.updatenow)
+                {
+                    StartUpdate(null, null);
+                }
+            }
+            else
+            {
+                // Keep on trying to reach the service
+                ServiceTimer = new System.Windows.Forms.Timer(components);
+                ServiceTimer.Tick += ServiceTimer_Tick;
+                ServiceTimer.Interval = 2000;
+                ServiceTimer.Enabled = true;
+            }
+        }
+
+        private void ServiceTimer_Tick(object sender, EventArgs e)
+        {
+            LoadSettingsFromServer(out bool comError, true);
+            bool maxTimeElapsed = (DateTime.Now - AppStarted) > TimeSpan.FromSeconds(10);
+            if (!comError || maxTimeElapsed)
+            {
+                ServiceTimer.Enabled = false;
+                Tray.Visible = true;
+            }
         }
     }
 

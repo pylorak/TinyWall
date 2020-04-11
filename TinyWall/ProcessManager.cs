@@ -338,6 +338,15 @@ namespace PKSoft
             }
         }
 
+        public static void WakeMessageQueues(Process p)
+        {
+            foreach (ProcessThread thread in p.Threads)
+            {
+                const uint WM_NULL = 0;
+                SafeNativeMethods.PostThreadMessage(thread.Id, WM_NULL, UIntPtr.Zero, IntPtr.Zero);
+            }
+        }
+
         public static void TerminateProcess(Process p, int timeoutMs)
         {
             if (p.MainWindowHandle == IntPtr.Zero)

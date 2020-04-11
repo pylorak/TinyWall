@@ -53,7 +53,7 @@ namespace TinyWall.Interface.Internal
                 // In case of a communication error,
                 // retry a small number of times.
                 TwMessage response = new TwMessage();
-                for (int i = 0; i < 3; ++i)
+                for (int i = 0; i < 2; ++i)
                 {
                     response = SenderProcessor(msg);
                     if (response.Type != MessageType.COM_ERROR)
