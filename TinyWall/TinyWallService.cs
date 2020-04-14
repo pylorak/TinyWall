@@ -1880,6 +1880,7 @@ namespace PKSoft
 
         private TinyWallServer Server;
         private Thread FirewallWorkerThread;
+        private bool IsComputerShuttingDown;
 
         internal TinyWallService()
         {
@@ -1907,10 +1908,14 @@ namespace PKSoft
             finally
             {
 #if !DEBUG
-                // Set service state to stopped or else we will be restarted by the SCM when our process ends
-                using (var srvManager = new ScmWrapper.ServiceControlManager())
+                Thread.MemoryBarrier();
+                if (!IsComputerShuttingDown)    // cannot set service state if a shutdown is already in progress
                 {
-                    srvManager.SetServiceState(ServiceName, ServiceHandle, ScmWrapper.State.SERVICE_STOPPED, 0);
+                    // Set service state to stopped or else we will be restarted by the SCM when our process ends
+                    using (var srvManager = new ScmWrapper.ServiceControlManager())
+                    {
+                        srvManager.SetServiceState(ServiceName, ServiceHandle, ScmWrapper.State.SERVICE_STOPPED, 0);
+                    }
                 }
                 Process.GetCurrentProcess().Kill();
 #endif
@@ -1929,8 +1934,10 @@ namespace PKSoft
             FirewallWorkerThread.Start();
         }
 
-        private void StopServer()
+        private void StopServer(bool computerShutdown)
         {
+            IsComputerShuttingDown = computerShutdown;
+            Thread.MemoryBarrier();
             Server.RequestStop();
             FirewallWorkerThread.Join(10000);
         }
@@ -1938,13 +1945,13 @@ namespace PKSoft
         // Executed when service is stopped manually.
         protected override void OnStop()
         {
-            StopServer();
+            StopServer(false);
         }
 
         // Executed on computer shutdown.
         protected override void OnShutdown()
         {
-            StopServer();
+            StopServer(true);
         }
 
 #if DEBUG
