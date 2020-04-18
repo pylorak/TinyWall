@@ -482,11 +482,10 @@ namespace PKSoft
                     return;
 
                 bool show = (rxTxt != null);
-                string text = show ? string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", PKSoft.Resources.Messages.TrafficIn, rxTxt, PKSoft.Resources.Messages.TrafficOut, txTxt) : null;
                 Utils.Invoke(TrayMenu, (MethodInvoker)delegate
                 {
                     if (show)
-                        mnuTrafficRate.Text = text;
+                        mnuTrafficRate.Text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", PKSoft.Resources.Messages.TrafficIn, rxTxt, PKSoft.Resources.Messages.TrafficOut, txTxt);
                     mnuTrafficRate.Visible = show;
                     toolStripMenuItem1.Visible = show;
                 });
