@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+	<!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,258 +59,258 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
     <value>No se pudieron obtener los privilegios necesarios para realizar la actualización.</value>
   </data>
-  <data name="TinyWallUpdater" xml:space="preserve">
+	<data name="TinyWallUpdater" xml:space="preserve">
     <value>Actualizador de TinyWall</value>
   </data>
-  <data name="ErrorCheckingForUpdates" xml:space="preserve">
-    <value>Imposible acceder al servidor de actualización. 
-El servidor no responde. TinyWall podría tener bloqueado el acceso a internet, resolverlo y volver a intentarlo.</value>
+	<data name="ErrorCheckingForUpdates" xml:space="preserve">
+    <value>Imposible acceder al servidor de actualizaciones. 
+El servidor puede estar caído, verificar que TinyWall no tenga bloqueado el acceso a Internet y volver a intentarlo.</value>
   </data>
-  <data name="UpdateAvailable" xml:space="preserve">
-    <value>La nueva versión {0} de TinyWall está disponible. Actualizarla ahora?</value>
+	<data name="UpdateAvailable" xml:space="preserve">
+    <value>La nueva versión {0} de TinyWall está disponible. ¿Actualizar ahora?</value>
   </data>
-  <data name="DownloadingUpdate" xml:space="preserve">
+	<data name="DownloadingUpdate" xml:space="preserve">
     <value>Descargando actualización...</value>
   </data>
-  <data name="NoUpdateAvailable" xml:space="preserve">
-    <value>Esta es la última versión de TinyWall. No hay más acualizaciones.</value>
+	<data name="NoUpdateAvailable" xml:space="preserve">
+    <value>Esta es la última versión de TinyWall. No hay más actualizaciones.</value>
   </data>
-  <data name="DownloadInterrupted" xml:space="preserve">
+	<data name="DownloadInterrupted" xml:space="preserve">
     <value>Descarga interrumpida.</value>
   </data>
-  <data name="StartingUpdate" xml:space="preserve">
+	<data name="StartingUpdate" xml:space="preserve">
     <value>Comenzando actualización...</value>
   </data>
-  <data name="TinyWallIsCurrentlyLocked" xml:space="preserve">
+	<data name="TinyWallIsCurrentlyLocked" xml:space="preserve">
     <value>TinyWall está bloqueado. Desbloquear y reintentar.</value>
   </data>
-  <data name="PleaseWaitWhileTinyWallChecksForUpdates" xml:space="preserve">
+	<data name="PleaseWaitWhileTinyWallChecksForUpdates" xml:space="preserve">
     <value>Esperar mientras TinyWall busca las actualizaciones disponibles.</value>
   </data>
-  <data name="CouldNotWhitelistProcess" xml:space="preserve">
-    <value>No se puede añadir a la lista blanca el proceso {0}.</value>
+	<data name="CouldNotWhitelistProcess" xml:space="preserve">
+    <value>No se pudo añadir a la lista blanca el proceso {0}.</value>
   </data>
-  <data name="CouldNotCloseProcess" xml:space="preserve">
-    <value>No se puede terminar el proceso {0}({1}).</value>
+	<data name="CouldNotCloseProcess" xml:space="preserve">
+    <value>No se pudo cerrar el proceso {0}({1}).</value>
   </data>
-  <data name="PasswordFieldsDoNotMatch" xml:space="preserve">
-    <value>Los campos de la contraseña no coinciden. Volver a rellenarlos.</value>
+	<data name="PasswordFieldsDoNotMatch" xml:space="preserve">
+    <value>Los campos contraseña no coinciden. Verificar.</value>
   </data>
-  <data name="AreYouSureYouWantToRemoveAllExceptions" xml:space="preserve">
-    <value>Se eliminarán todas las excepciones del cortafuegos, continuar?</value>
+	<data name="AreYouSureYouWantToRemoveAllExceptions" xml:space="preserve">
+    <value>Se eliminarán todas las excepciones del cortafuegos, ¿continuar?</value>
   </data>
-  <data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
-    <value>No hay suficientes privilegios para realizar la operación. Revisarlos y volver a intentarlo.</value>
+	<data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
+    <value>No hay suficientes privilegios para realizar la operación. Seleccionar Elevar privilegios del menú y reintentar.</value>
   </data>
-  <data name="TinyWallSettingsFileFilter" xml:space="preserve">
+	<data name="TinyWallSettingsFileFilter" xml:space="preserve">
     <value>Opciones de TinyWall</value>
   </data>
-  <data name="AllFilesFileFilter" xml:space="preserve">
+	<data name="AllFilesFileFilter" xml:space="preserve">
     <value>Todos los archivos</value>
   </data>
-  <data name="ConfigurationHasBeenImported" xml:space="preserve">
-    <value>El archivo de configuración ha sido importado con éxito. Pulsar Aplicar en la Consola para guardar los nuevos ajustes.</value>
+	<data name="ConfigurationHasBeenImported" xml:space="preserve">
+    <value>El archivo de configuración ha sido importado con éxito. Pulsar Aplicar en la ventana de configuración para guardar los nuevos ajustes.</value>
   </data>
-  <data name="ConfigurationImportError" xml:space="preserve">
+	<data name="ConfigurationImportError" xml:space="preserve">
     <value>No se pudo importar el archivo de configuración.</value>
   </data>
-  <data name="ConfigurationHasBeenExported" xml:space="preserve">
+	<data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>El archivo de configuración ha sido exportado con éxito.</value>
   </data>
-  <data name="Mode" xml:space="preserve">
+	<data name="Mode" xml:space="preserve">
     <value>Modo</value>
   </data>
-  <data name="Unlock" xml:space="preserve">
-    <value>Abrir</value>
+	<data name="Unlock" xml:space="preserve">
+    <value>Desbloquear</value>
   </data>
-  <data name="Lock" xml:space="preserve">
-    <value>Bloqueo</value>
+	<data name="Lock" xml:space="preserve">
+    <value>Bloquear</value>
   </data>
-  <data name="UpdateAvailableBubble" xml:space="preserve">
+	<data name="UpdateAvailableBubble" xml:space="preserve">
     <value>La nueva versión {0} de TinyWall está disponible. Pinchar en el cuadro para comenzar la descarga.</value>
   </data>
-  <data name="TheFirewallIsNowOperatingAsRecommended" xml:space="preserve">
+	<data name="TheFirewallIsNowOperatingAsRecommended" xml:space="preserve">
     <value>El cortafuegos está trabajando en el modo recomendado.</value>
   </data>
-  <data name="TheFirewallIsNowAllowsOutgoingConnections" xml:space="preserve">
+	<data name="TheFirewallIsNowAllowsOutgoingConnections" xml:space="preserve">
     <value>El cortafuegos permite conexiones salientes pero bloquea las entrantes.</value>
   </data>
-  <data name="TheFirewallIsNowBlockingAllInAndOut" xml:space="preserve">
+	<data name="TheFirewallIsNowBlockingAllInAndOut" xml:space="preserve">
     <value>El cortafuegos bloquea todo el tráfico entrante y saliente.</value>
   </data>
-  <data name="TheFirewallIsNowDisabled" xml:space="preserve">
+	<data name="TheFirewallIsNowDisabled" xml:space="preserve">
     <value>El cortafuegos está desactivado.</value>
   </data>
-  <data name="TheTinyWallServiceIsUnavailable" xml:space="preserve">
-    <value>El servicio de TinyWall no está disponible. Asegurarse de que está instalado y ejecutandose y reintentar.</value>
+	<data name="TheTinyWallServiceIsUnavailable" xml:space="preserve">
+    <value>El servicio de TinyWall no está disponible. Verificar que está instalado y en ejecución y reintentar.</value>
   </data>
-  <data name="TrafficIn" xml:space="preserve">
+	<data name="TrafficIn" xml:space="preserve">
     <value>Entrada</value>
   </data>
-  <data name="TrafficOut" xml:space="preserve">
+	<data name="TrafficOut" xml:space="preserve">
     <value>Salida</value>
   </data>
-  <data name="SettingHaveChangedRetry" xml:space="preserve">
-    <value>El fichero de configuración ha sido modificado mientras modificaba las preferencias. Para evitar que éstas se pierdan, por favor, vuelva a introducirlas.</value>
+	<data name="SettingHaveChangedRetry" xml:space="preserve">
+    <value>La configuración ha sido modificada mientras se modificaban las preferencias. Para evitar pérdidas de ajustes, por favor volver a cambiarlas.</value>
   </data>
-  <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
+	<data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
     <value>Los ajustes de cortafuegos han sido actualizados con éxito.</value>
   </data>
-  <data name="Success" xml:space="preserve">
-    <value>Conseguido.</value>
+	<data name="Success" xml:space="preserve">
+    <value>Éxito.</value>
   </data>
-  <data name="OtherSettingsPreventEffect" xml:space="preserve">
-    <value>La operación fue satisfactoria, pero alguna configuración bloquea que se aplique.</value>
+	<data name="OtherSettingsPreventEffect" xml:space="preserve">
+    <value>La operación fue satisfactoria, pero otros ajustes no permiten que se aplique.</value>
   </data>
-  <data name="OperationFailed" xml:space="preserve">
-    <value>Operación fallida</value>
+	<data name="OperationFailed" xml:space="preserve">
+    <value>Operación fallida.</value>
   </data>
-  <data name="CommunicationWithTheServiceError" xml:space="preserve">
+	<data name="CommunicationWithTheServiceError" xml:space="preserve">
     <value>La comunicación con el servicio de TinyWall falló.</value>
   </data>
-  <data name="ClickOnAWindowWhitelisting" xml:space="preserve">
-    <value>Pinchar dentro de una ventana abierta para añadirla la lista blanca.</value>
+	<data name="ClickOnAWindowWhitelisting" xml:space="preserve">
+    <value>Pinchar dentro de una ventana abierta para añadirla a la lista blanca.</value>
   </data>
-  <data name="WhitelistingCancelled" xml:space="preserve">
-    <value>Lista blanca cancelada.</value>
+	<data name="WhitelistingCancelled" xml:space="preserve">
+    <value>Permitir cancelado.</value>
   </data>
-  <data name="CannotGetExecutablePathWhitelisting" xml:space="preserve">
-    <value>No se puede encontrar la ruta del ejecutable. La lista blanca falló.</value>
+	<data name="CannotGetExecutablePathWhitelisting" xml:space="preserve">
+    <value>No se puede obtener la ruta del ejecutable. Permitir falló.</value>
   </data>
-  <data name="FirewallRulesForRecognizedChanged" xml:space="preserve">
-    <value>Las reglas del cortafuegos reconocidas para {0} han cambiado. Pinchar en este popup para modificar la excepción.</value>
+	<data name="FirewallRulesForRecognizedChanged" xml:space="preserve">
+    <value>Las reglas del cortafuegos reconocidas para {0} han cambiado. Pinchar en esta notificación para modificar la excepción.</value>
   </data>
-  <data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
-    <value>Las reglas del cortafuegos no reconocidas para {0} han cambiado. Pinchar en este popup para modificar la excepción.</value>
+	<data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
+    <value>Las reglas del cortafuegos no reconocidas para {0} han cambiado. Pinchar en esta notificación para modificar la excepción.</value>
   </data>
-  <data name="TinyWallHasBeenUnlocked" xml:space="preserve">
+	<data name="TinyWallHasBeenUnlocked" xml:space="preserve">
     <value>TinyWall está desbloqueado. Se pueden ejecutar comandos que modifiquen la configuración.</value>
   </data>
-  <data name="UnlockFailed" xml:space="preserve">
-    <value>Falla la apertura. Intentarlo con otra contraseña.</value>
+	<data name="UnlockFailed" xml:space="preserve">
+    <value>Fallo de desbloqueo. Reintentar con otra contraseña.</value>
   </data>
-  <data name="CouldNotElevatePrivileges" xml:space="preserve">
-    <value>Se necesitan más privilegios.</value>
+	<data name="CouldNotElevatePrivileges" xml:space="preserve">
+    <value>No se pudo elevar privilegios.</value>
   </data>
-  <data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
+	<data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
     <value>La base de datos falta o está corrupta.</value>
   </data>
-  <data name="Stop" xml:space="preserve">
+	<data name="Stop" xml:space="preserve">
     <value>Parar</value>
   </data>
-  <data name="Start" xml:space="preserve">
-    <value>Comenzar</value>
+	<data name="Start" xml:space="preserve">
+    <value>Iniciar</value>
   </data>
-  <data name="SearchingPath" xml:space="preserve">
+	<data name="SearchingPath" xml:space="preserve">
     <value>Buscando: {0}</value>
   </data>
-  <data name="SearchResults" xml:space="preserve">
+	<data name="SearchResults" xml:space="preserve">
     <value>Resultados de búsqueda:</value>
   </data>
-  <data name="RecognizedApplication" xml:space="preserve">
-    <value>Reconocer {0}</value>
+	<data name="RecognizedApplication" xml:space="preserve">
+    <value>Reconocido {0}</value>
   </data>
-  <data name="UnknownApplication" xml:space="preserve">
-    <value>Aplicación desconocida</value>
+	<data name="UnknownApplication" xml:space="preserve">
+    <value>Programa desconocido</value>
   </data>
-  <data name="Permanent" xml:space="preserve">
+	<data name="Permanent" xml:space="preserve">
     <value>Permanente</value>
   </data>
-  <data name="UntilReboot" xml:space="preserve">
-    <value>Hasta el reinicio</value>
+	<data name="UntilReboot" xml:space="preserve">
+    <value>Hasta reinicio</value>
   </data>
-  <data name="XMinutes" xml:space="preserve">
+	<data name="XMinutes" xml:space="preserve">
     <value>{0} minutos</value>
   </data>
-  <data name="XHour" xml:space="preserve">
+	<data name="XHour" xml:space="preserve">
     <value>{0} hora</value>
   </data>
-  <data name="XHours" xml:space="preserve">
+	<data name="XHours" xml:space="preserve">
     <value>{0} horas</value>
   </data>
-  <data name="FirewallModeAllowOut" xml:space="preserve">
-    <value>Permitir redireccionar</value>
+	<data name="FirewallModeAllowOut" xml:space="preserve">
+    <value>Permitir saliente</value>
   </data>
-  <data name="FirewallModeBlockAll" xml:space="preserve">
+	<data name="FirewallModeBlockAll" xml:space="preserve">
     <value>Bloquear todo</value>
   </data>
-  <data name="FirewallModeDisabled" xml:space="preserve">
+	<data name="FirewallModeDisabled" xml:space="preserve">
     <value>Desactivado</value>
   </data>
-  <data name="FirewallModeUnknown" xml:space="preserve">
+	<data name="FirewallModeUnknown" xml:space="preserve">
     <value>Desconocido</value>
   </data>
-  <data name="CannotGetPathOfProcess" xml:space="preserve">
+	<data name="CannotGetPathOfProcess" xml:space="preserve">
     <value>No se puede encontrar la ruta del proceso.</value>
   </data>
-  <data name="TheFirewallIsNowLearning" xml:space="preserve">
+	<data name="TheFirewallIsNowLearning" xml:space="preserve">
     <value>El cortafuegos está aprendiendo mientras permite todo el tráfico.</value>
   </data>
-  <data name="FirewallModeLearn" xml:space="preserve">
+	<data name="FirewallModeLearn" xml:space="preserve">
     <value>Auto aprendizaje</value>
   </data>
-  <data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
+	<data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
     <value>¿Comenzar el auto aprendizaje?
 En este modo TinyWall admite todo el tráfico y recuerda qué aplicaciones han utilizado la red. Cuando se cierra el modo de aprendizaje, TinyWall añadirá excepciones al cortafuegos automáticamente. Pero para "Excepciones especiales" las reglas aprendidas no se tendrán en cuenta.
 
@@ -318,42 +318,57 @@ Antes de ejecutar el modo auto aprendizaje, asegurarse de que el sistema está l
 
 ¿Activar el modo auto aprendizaje ahora?</value>
   </data>
-  <data name="DidYouInitiateTheUninstall" xml:space="preserve">
-    <value>¿Se incició la desinstalación de TinyWall?</value>
+	<data name="DidYouInitiateTheUninstall" xml:space="preserve">
+    <value>¿Se inició la desinstalación/actualización de TinyWall?</value>
   </data>
-  <data name="PortListInvalid" xml:space="preserve">
+	<data name="PortListInvalid" xml:space="preserve">
     <value>El formato de la lista de puertos es inválido.
 Se pueden utilizar uno o más números entre 1-65535, separados por comas. El asterisco (*) sustituye cualquier número de puerto.</value>
   </data>
-  <data name="UnblockAppCancel" xml:space="preserve">
-    <value>Cancelar lista blanca</value>
+	<data name="UnblockAppCancel" xml:space="preserve">
+    <value>Cancelar permitir</value>
   </data>
-  <data name="UnblockApp" xml:space="preserve">
-    <value>Relación de archivos encontrados
-El archivo selecionado es parte de {0}. Para asegurarse que esta aplicación puede utilizarse sin limitaciones, es recomendable desbloquear algunos archivos.</value>
+	<data name="UnblockApp" xml:space="preserve">
+    <value>Archivos relacionados encontrados.
+El ejecutable seleccionado podría ser parte de {0}. Para asegurarse que esta aplicación puede utilizarse sin limitaciones, es recomendable desbloquear otros archivos también.</value>
   </data>
-  <data name="UnblockAppShowRelated" xml:space="preserve">
-    <value>Mostrar/ocultar relación de ejecutables</value>
+	<data name="UnblockAppShowRelated" xml:space="preserve">
+    <value>Mostrar/ocultar ejecutables relacionados</value>
   </data>
-  <data name="UnblockAppUnblockAllRecommended" xml:space="preserve">
+	<data name="UnblockAppUnblockAllRecommended" xml:space="preserve">
     <value>Desbloquear todos los archivos recomendados</value>
   </data>
-  <data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
+	<data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
     <value>Desbloquear solo los archivos seleccionados</value>
   </data>
-  <data name="CompromisedApplication" xml:space="preserve">
+	<data name="CompromisedApplication" xml:space="preserve">
     <value>{0}, posiblemente comprometido</value>
   </data>
-  <data name="ToastInputNeeded" xml:space="preserve">
-    <value>Es necesaria su intervención para continuar con la lista blanca.</value>
+	<data name="ToastInputNeeded" xml:space="preserve">
+    <value>Es necesaria intervención para continuar con el permiso.</value>
   </data>
-  <data name="ToastAppWhitelisted" xml:space="preserve">
+	<data name="ToastAppWhitelisted" xml:space="preserve">
     <value>Añadido a la lista blanca del cortafuegos</value>
   </data>
-  <data name="ToastWhitelistFailed" xml:space="preserve">
-    <value>Ha fallado la inserción en la lista blanca. Si lo desea puede intentarlo de nuevo.</value>
+	<data name="ToastWhitelistFailed" xml:space="preserve">
+    <value>Ha fallado la inserción en la lista blanca. Reintentar podría funcionar.</value>
   </data>
-  <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
+	<data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>No ha sido posible aplicar la configuración del cortafuegos debido a un error interno.</value>
   </data>
+	<data name="Default" xml:space="preserve">
+		<value>Estándar</value>
+	</data>
+	<data name="AllApplications" xml:space="preserve">
+		<value>Todos los programas</value>
+	</data>
+	<data name="SubjectTypeExecutable" xml:space="preserve">
+		<value>Ejecutable</value>
+	</data>
+	<data name="SubjectTypeService" xml:space="preserve">
+		<value>Servicio</value>
+	</data>
+	<data name="SubjectTypeUwpApp" xml:space="preserve">
+		<value>Aplicación UWP</value>
+	</data>
 </root>

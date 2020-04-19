@@ -1,7 +1,7 @@
 ﻿Localizations:
 -----------------------------------------------
 German - Mirko Rolfes, Harald Klausner, Caner Merten
-Spanish - Toño Puente Garcia, David Acevedo
+Spanish - Toño Puente Garcia, David Acevedo, Xak
 French - Vincent Queuille, Oliver C., Barbara Pados
 Hungarian - Gál Gergely, Robert Cartman
 Japanese - Misato Okaneya, Tilt
