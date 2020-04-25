@@ -169,6 +169,9 @@
   <data name="chkRestrictToLocalNetwork.Text" xml:space="preserve">
     <value>Ограничить локальную сеть</value>
   </data>
+  <data name="chkInheritToChildren.Text" xml:space="preserve">
+    <value>Применить те же правила к дочерним процессам</value>
+  </data>
   <data name="radBlock.Size" type="System.Drawing.Size, System.Drawing">
     <value>158, 17</value>
   </data>

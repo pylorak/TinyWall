@@ -289,6 +289,9 @@
   <data name="chkEnableHotkeys.Location" type="System.Drawing.Point, System.Drawing">
     <value>24, 117</value>
   </data>
+  <data name="chkEnableHotkeys.Text" xml:space="preserve">
+    <value>Включить глобальные горячие клавиши</value>
+  </data>
   <data name="tabPage1.Text" xml:space="preserve">
     <value>Важные</value>
   </data>
