@@ -1,16 +1,20 @@
 Future development ideas:
-- Bring WF in recommended state
+- Logs dir
+- Install log
+- Block traffic while screensaver is active
+- Better hosts handling
+- Unified dialog boxes
+- Use task scheduler for autostart
+- WSL support
+- Alternate path formats support
 - Detect other firewall software
 - Inspect broken whitelisting from network shares
 - WHOIS query to Connections' remote addresses
 - Implement DataContracts round-tripping
 - Add block reason to Connections window
-- Don' let multiple windows open at the same time.
-- Add support for WSL
 - Context-menu whitelisting
 - Remove RuleDef.Application field
 - Compile new port block list from Docs/MalwarePorts/
-- Simplify use-case of networked installers
 - Add "Open folder" to Processes and Connections windows
 - avast.setup
 - Checkboxes in mode menu
