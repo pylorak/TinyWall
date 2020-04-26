@@ -9,22 +9,8 @@ namespace PKSoft
 {
     internal partial class ProcessesForm : Form
     {
-        private readonly List<ProcessInfo> Selection = new List<ProcessInfo>();
+        internal readonly List<ProcessInfo> Selection = new List<ProcessInfo>();
         private readonly Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
-
-        internal static List<ProcessInfo> ChooseProcess(IWin32Window parent, bool multiSelect)
-        {
-            using (ProcessesForm pf = new ProcessesForm(multiSelect))
-            {
-                List<ProcessInfo> pathList = new List<ProcessInfo>();
-
-                if (pf.ShowDialog(parent) == DialogResult.Cancel)
-                    return pathList;
-
-                pathList.AddRange(pf.Selection);
-                return pathList;
-            }
-        }
 
         internal ProcessesForm(bool multiSelect)
         {

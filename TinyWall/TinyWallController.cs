@@ -258,12 +258,12 @@ namespace PKSoft
         #endregion
 
         private MouseInterceptor MouseInterceptor;
-        private SettingsForm ShownSettings;
         private ServerState FirewallState;
         private System.Threading.Timer UpdateTimer;
         private DateTime LastUpdateNotification = DateTime.MinValue;
-        private System.Windows.Forms.Timer ServiceTimer = null;
+        private System.Windows.Forms.Timer ServiceTimer;
         private DateTime AppStarted = DateTime.Now;
+        private List<Form> ActiveForms = new List<Form>();
 
         // Traffic rate monitoring
         private System.Threading.Timer TrafficTimer;
@@ -730,17 +730,50 @@ namespace PKSoft
 
         private void mnuWhitelistByExecutable_Click(object sender, EventArgs e)
         {
-            if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+            if (FlashIfOpen(typeof(SettingsForm)))
                 return;
 
-            WhitelistSubject(new ExecutableSubject(ofd.FileName));
+            using (var dummy = new Form())
+            {
+                try
+                {
+                    ActiveForms.Add(dummy);
+                    if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                        return;
+                }
+                finally
+                {
+                    ActiveForms.Remove(dummy);
+                }
+                WhitelistSubject(new ExecutableSubject(ofd.FileName));
+            }
         }
 
         private void mnuWhitelistByProcess_Click(object sender, EventArgs e)
         {
-            List<FirewallExceptionV3> exceptions = new List<FirewallExceptionV3>();
-            List<ProcessInfo> pathList = ProcessesForm.ChooseProcess(null, true);
+            if (FlashIfOpen(typeof(SettingsForm)))
+                return;
 
+            List<ProcessInfo> pathList = new List<ProcessInfo>();
+            using (ProcessesForm pf = new ProcessesForm(true))
+            {
+                try
+                {
+                    ActiveForms.Add(pf);
+
+                    if (pf.ShowDialog(null) == DialogResult.Cancel)
+                        return;
+
+                    pathList.AddRange(pf.Selection);
+                }
+                finally
+                {
+                    ActiveForms.Remove(pf);
+                }
+            }
+            if (pathList.Count == 0) return;
+
+            List<FirewallExceptionV3> exceptions = new List<FirewallExceptionV3>();
             foreach (var sel in pathList)
             {
                 if (string.IsNullOrEmpty(sel.ExePath))
@@ -831,6 +864,26 @@ namespace PKSoft
             }
         }
 
+        public bool FlashIfOpen(Type formType)
+        {
+            foreach(var openForm in ActiveForms)
+            {
+                if (openForm.GetType() == formType)
+                {
+                    openForm.Activate();
+                    openForm.BringToFront();
+                    WindowFlasher.Flash(openForm.Handle, 2);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        public bool FlashIfOpen(Form frm)
+        {
+            return FlashIfOpen(frm.GetType());
+        }
+
         private void mnuManage_Click(object sender, EventArgs e)
         {
             if (Locked)
@@ -839,22 +892,20 @@ namespace PKSoft
                 return;
             }
 
-            // If the settings form is already visible, do not load it but bring it to the foreground
-            if (this.ShownSettings != null)
+            // The settings form should not be used with other windows at the same time
+            if (ActiveForms.Count != 0)
             {
-                this.ShownSettings.Activate();
-                this.ShownSettings.BringToFront();
+                FlashIfOpen(ActiveForms[0]);
                 return;
             }
 
-            try
+            LoadSettingsFromServer();
+
+            using (var sf = new SettingsForm(Utils.DeepClone(ActiveConfig.Service), Utils.DeepClone(ActiveConfig.Controller)))
             {
-                LoadSettingsFromServer();
-
-                using (this.ShownSettings = new SettingsForm(Utils.DeepClone(ActiveConfig.Service), Utils.DeepClone(ActiveConfig.Controller)))
+                ActiveForms.Add(sf);
+                try
                 {
-                    SettingsForm sf = this.ShownSettings;
-
                     if (sf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
                         var oldLang = ActiveConfig.Controller.Language;
@@ -892,12 +943,12 @@ namespace PKSoft
                         }
                     }
                 }
-            }
-            finally
-            {
-                this.ShownSettings = null;
-                ApplyControllerSettings();
-                UpdateDisplay();
+                finally
+                {
+                    ActiveForms.Remove(sf);
+                    ApplyControllerSettings();
+                    UpdateDisplay();
+                }
             }
         }
 
@@ -1207,9 +1258,22 @@ namespace PKSoft
 
         private void mnuConnections_Click(object sender, EventArgs e)
         {
+            if (FlashIfOpen(typeof(SettingsForm)))
+                return;
+            if (FlashIfOpen(typeof(ConnectionsForm)))
+                return;
+
             using (ConnectionsForm cf = new ConnectionsForm(this))
             {
-                cf.ShowDialog();
+                try
+                {
+                    ActiveForms.Add(cf);
+                    cf.ShowDialog();
+                }
+                finally
+                {
+                    ActiveForms.Remove(cf);
+                }
             }
         }
 

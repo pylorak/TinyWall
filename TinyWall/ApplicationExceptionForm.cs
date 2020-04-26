@@ -348,7 +348,14 @@ namespace PKSoft
 
         private void btnProcess_Click(object sender, EventArgs e)
         {
-            List<ProcessInfo> procList = ProcessesForm.ChooseProcess(this, false);
+            List<ProcessInfo> procList = new List<ProcessInfo>();
+            using (ProcessesForm pf = new ProcessesForm(false))
+            {
+                    if (pf.ShowDialog(this) == DialogResult.Cancel)
+                        return;
+
+                procList.AddRange(pf.Selection);
+            }
             if (procList.Count == 0) return;
 
             ExceptionSubject subject;
