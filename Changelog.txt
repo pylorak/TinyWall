@@ -1,6 +1,19 @@
 TinyWall Changelog
 ---------------------
 
+3.0.4 - Maintenance release (26.04.2020.)
+- Make language changes take effect without a GUI restart
+- Handle WMI errors gracefully in service
+- Wait longer for service availability after loading desktop
+- Avoid harmless exception being logged during system shutdown
+- Prevent opening the Manage window when other windows are active
+- Fix wrongly positioned GUI elements in Dutch and Russian localizations
+- Fix potential race condition of UI timer during exit
+- Fix traffic rate text ignores selected GUI language
+- Updated Spanish and Russian localizations
+
+---------------------
+
 3.0.3 - Maintenance release (01.04.2020.)
 - Fix potential GUI crash during whitelisting in error case
 - Fix potential GUI crash due to race while GUI is closing
