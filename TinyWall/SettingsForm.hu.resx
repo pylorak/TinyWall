@@ -153,6 +153,9 @@
   <data name="columnType.Text" xml:space="preserve">
     <value>Típus</value>
   </data>
+  <data name="columnDetails.Text" xml:space="preserve">
+		<value>Részletek</value>
+	</data>
   <data name="label4.Text" xml:space="preserve">
     <value>Szűrő:</value>
   </data>

@@ -334,4 +334,16 @@
   <data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
     <value>Разблокировать только выделенные файлы</value>
   </data>
+  <data name="AllApplications" xml:space="preserve">
+    <value>все приложения</value>
+  </data>
+  <data name="SubjectTypeExecutable" xml:space="preserve">
+    <value>Файл</value>
+  </data>
+  <data name="SubjectTypeService" xml:space="preserve">
+    <value>Сервис</value>
+  </data>
+  <data name="SubjectTypeUwpApp" xml:space="preserve">
+    <value>Пакет</value>
+  </data>
 </root>

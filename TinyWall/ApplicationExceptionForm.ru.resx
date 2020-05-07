@@ -136,6 +136,12 @@
   <data name="txtAppPath.Size" type="System.Drawing.Size, System.Drawing">
     <value>178, 20</value>
   </data>
+  <data name="lblApplication.Text" xml:space="preserve">
+    <value>Приложение:</value>
+  </data>
+  <data name="lblApplicationType.Text" xml:space="preserve">
+    <value>Тип:</value>
+  </data>
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Выбрать файл...</value>
   </data>
@@ -162,6 +168,9 @@
   </data>
   <data name="cmbTimer.Size" type="System.Drawing.Size, System.Drawing">
     <value>176, 21</value>
+  </data>
+  <data name="btnSelectUwpApp.Text" xml:space="preserve">
+    <value>Выбрать пакет приложения...</value>
   </data>
   <data name="chkRestrictToLocalNetwork.Size" type="System.Drawing.Size, System.Drawing">
     <value>169, 17</value>

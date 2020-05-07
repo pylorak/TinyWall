@@ -126,11 +126,26 @@
   <data name="Pingable_local_machine" xml:space="preserve">
     <value>Видимость для локальных компьютеров</value>
   </data>
+  <data name="Windows_Defender" xml:space="preserve">
+    <value>Защитник Windows</value>
+  </data>
+  <data name="Windows_DHCP_Client" xml:space="preserve">
+    <value>Windows DHCP клиент</value>
+  </data>
+  <data name="Windows_DNS_Client" xml:space="preserve">
+    <value>Windows DNS клиент</value>
+  </data>
+  <data name="Windows_Network_Discovery" xml:space="preserve">
+    <value>Обнаружение сети</value>
+  </data>
   <data name="Windows_Remote_Assistance" xml:space="preserve">
     <value>Удаленный помощник Windows</value>
   </data>
   <data name="Windows_Remote_Desktop" xml:space="preserve">
     <value>Удаленный рабочий стол Windows </value>
+  </data>
+  <data name="Windows_Store_Update" xml:space="preserve">
+    <value>Обновления магазина Windows</value>
   </data>
   <data name="Windows_Time_Sync" xml:space="preserve">
     <value>Windows служба синхронизации времени</value>
