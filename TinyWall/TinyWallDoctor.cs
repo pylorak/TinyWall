@@ -13,7 +13,7 @@ namespace PKSoft
 {
     internal static class TinyWallDoctor
     {
-        internal static bool IsServiceRunning()
+        internal static bool IsServiceRunning(string logContext, bool installing)
         {
 #if !DEBUG
             try
@@ -23,8 +23,9 @@ namespace PKSoft
                     return (sc.Status == ServiceControllerStatus.Running) || (sc.Status == ServiceControllerStatus.StartPending);
                 }
             }
-            catch
+            catch(Exception e)
             {
+                if (!installing) Utils.LogException(e, logContext);
                 return false;
             }
 #else
@@ -51,9 +52,9 @@ namespace PKSoft
 #endif
         }
 
-        internal static bool EnsureServiceInstalledAndRunning()
+        internal static bool EnsureServiceInstalledAndRunning(string logContext, bool installing)
         {
-            if (TinyWallDoctor.IsServiceRunning())
+            if (TinyWallDoctor.IsServiceRunning(logContext, installing))
                 return true;
 
             if (Utils.RunningAsAdmin())
@@ -63,14 +64,13 @@ namespace PKSoft
                 {
                     ManagedInstallerClass.InstallHelper(new string[] { "/i", TinyWall.Interface.Internal.Utils.ExecutablePath });
                 }
-                catch { }
+                catch(Exception e)
+                {
+                    Utils.LogException(e, logContext);
+                }
 
                 // Ensure dependencies
-                try
-                {
-                    TinyWallDoctor.EnsureHealth();
-                }
-                catch { }
+                TinyWallDoctor.EnsureHealth(logContext);
 
                 // Start service
                 try
@@ -84,8 +84,9 @@ namespace PKSoft
                         }
                     }
                 }
-                catch
+                catch (Exception e)
                 {
+                    Utils.LogException(e, logContext);
                     return false;
                 }
             }
@@ -100,7 +101,11 @@ namespace PKSoft
                         return (p.ExitCode == 0);
                     }
                 }
-                catch { return false; }
+                catch (Exception e)
+                {
+                    Utils.LogException(e, logContext);
+                    return false;
+                }
             }
 
             return true;
@@ -135,7 +140,7 @@ namespace PKSoft
             // Stop service
             try
             {
-                if (TinyWallDoctor.IsServiceRunning())
+                if (TinyWallDoctor.IsServiceRunning(Utils.LOG_ID_INSTALLER, false))
                 {
                     using (Controller twController = new Controller("TinyWallController"))
                     {
@@ -161,12 +166,16 @@ namespace PKSoft
                         while (!IsServiceStopped() && ((DateTime.Now - startTs) < TimeSpan.FromSeconds(5)))
                             System.Threading.Thread.Sleep(200);
                         if (!IsServiceStopped())
+                        {
+                            Utils.Log("Failed to stop service during uninstall.", Utils.LOG_ID_INSTALLER);
                             return -1;
+                        }
                     }
                 }
             }
-            catch
+            catch (Exception e)
             {
+                Utils.LogException(e, Utils.LOG_ID_INSTALLER);
                 return -1;
             }
 
@@ -183,49 +192,61 @@ namespace PKSoft
                             ProcessManager.TerminateProcess(p, 2000);
                         }
                     }
-                    catch { }
+                    catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_INSTALLER); }
                 }
             }
 
-            // Remove persistent WFP objects
-            using (var WfpEngine = new Engine("TinyWall Uninstall Session", "", FWPM_SESSION_FLAGS.None, 5000))
-            using (Transaction trx = WfpEngine.BeginTransaction())
+            try
             {
-                TinyWallServer.DeleteWfpObjects(WfpEngine, true);
-                trx.Commit();
+                // Remove persistent WFP objects
+                using (var WfpEngine = new Engine("TinyWall Uninstall Session", "", FWPM_SESSION_FLAGS.None, 5000))
+                using (Transaction trx = WfpEngine.BeginTransaction())
+                {
+                    TinyWallServer.DeleteWfpObjects(WfpEngine, true);
+                    trx.Commit();
+                }
             }
+            catch (Exception e)
+            {
+                Utils.LogException(e, Utils.LOG_ID_INSTALLER);
+                return -1;
+            }
+
 
             try
             {
                 // Disable automatic start of controller
                 Utils.RunAtStartup("TinyWall Controller", null);
             }
-            catch { }
+            catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_INSTALLER); }
 
             try
             {
                 // Put back the user's original hosts file
                 HostsFileManager.DisableHostsFile();
             }
-            catch { }
+            catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_INSTALLER); }
 
             try
             {
                 ManagedInstallerClass.InstallHelper(new string[] { "/u", TinyWall.Interface.Internal.Utils.ExecutablePath });
             }
-            catch { }
+            catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_INSTALLER); }
 
             return 0;
         }
 
-        internal static void EnsureHealth()
+        internal static void EnsureHealth(string logContext)
         {
             // Ensure that TinyWall's dependencies can be started
             try
             {
                 EnsureServiceDependencies();
             }
-            catch { }
+            catch (Exception e)
+            {
+                Utils.LogException(e, logContext);
+            }
 
             // Ensure that TinyWall itself can be started
             try
@@ -236,15 +257,20 @@ namespace PKSoft
                     scm.SetRestartOnFailure(TinyWallService.SERVICE_NAME, true);
                 }
             }
-            catch
-            { }
+            catch (Exception e)
+            {
+                Utils.LogException(e, logContext);
+            }
 
             // Ensure that controller will be started for users
             try
             {
                 Utils.RunAtStartup("TinyWall Controller", TinyWall.Interface.Internal.Utils.ExecutablePath);
             }
-            catch { }
+            catch (Exception e)
+            {
+                Utils.LogException(e, logContext);
+            }
         }
 
         private static void EnsureServiceDependencies()

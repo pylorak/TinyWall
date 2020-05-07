@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Configuration.Install;
 using System.ServiceProcess;
 
@@ -32,8 +33,9 @@ namespace PKSoft
                 this.Installers.Add(serviceProcessInstaller);
                 this.Installers.Add(serviceInstaller);
             }
-            catch
+            catch(Exception e)
             {
+                Utils.LogException(e, Utils.LOG_ID_INSTALLER);
                 serviceInstaller?.Dispose();
                 serviceProcessInstaller?.Dispose();
             }

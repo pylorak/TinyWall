@@ -646,9 +646,10 @@ namespace PKSoft
         internal static Version TinyWallVersion { get; } = typeof(Utils).Assembly.GetName().Version;
 
         private readonly static object logLocker = new object();
-        internal static readonly string LOG_ID_SERVICE = "service";
-        internal static readonly string LOG_ID_CLIENT = "client";
-        internal static void LogCrash(Exception e, string logname)
+        internal static readonly string LOG_ID_SERVICE   = "service";
+        internal static readonly string LOG_ID_GUI       = "gui";
+        internal static readonly string LOG_ID_INSTALLER = "installer";
+        internal static void LogException(Exception e, string logname)
         {
             Utils.Log(
                 string.Join(
@@ -662,43 +663,59 @@ namespace PKSoft
         }
         internal static void Log(string info, string logname)
         {
-            lock (logLocker)
+            try
             {
-                // First, remove deprecated log files if any is found
-                // TODO: This can probably be removed in the future
-                string[] old_logs = new string[] {
-                    Path.Combine(Utils.AppDataPath, "errorlog")
-                };
-                foreach (string file in old_logs) {
-                    try {
-                        if (File.Exists(file))
-                            File.Delete(file);
-                    }
-                    catch { }
-                }
-
-                // Name of the current log file
-                string logfile = Path.Combine(Utils.AppDataPath, $"{logname}.log");
-
-                // Only log if log file has not yet reached a certain size
-                if (File.Exists(logfile))
+                lock (logLocker)
                 {
-                    FileInfo fi = new FileInfo(logfile);
-                    if (fi.Length > 512 * 1024)
+                    // First, remove deprecated log files if any is found
+                    // TODO: This can probably be removed in the future
+                    string[] old_logs = new string[] {
+                        Path.Combine(Utils.AppDataPath, "errorlog"),
+                        Path.Combine(Utils.AppDataPath, "service.log"),
+                        Path.Combine(Utils.AppDataPath, "client.log"),
+                    };
+
+                    foreach (string file in old_logs)
                     {
-                        // Truncate file back to zero
-                        using (var fs = new FileStream(logfile, FileMode.Truncate, FileAccess.Write)) { }
+                        try
+                        {
+                            if (File.Exists(file))
+                                File.Delete(file);
+                        }
+                        catch { }
+                    }
+
+                    // Name of the current log file
+                    string logdir = Path.Combine(Utils.AppDataPath, "logs");
+                    string logfile = Path.Combine(logdir, $"{logname}.log");
+
+                    if (!Directory.Exists(logdir))
+                        Directory.CreateDirectory(logdir);
+
+                    // Only log if log file has not yet reached a certain size
+                    if (File.Exists(logfile))
+                    {
+                        FileInfo fi = new FileInfo(logfile);
+                        if (fi.Length > 512 * 1024)
+                        {
+                            // Truncate file back to zero
+                            using (var fs = new FileStream(logfile, FileMode.Truncate, FileAccess.Write)) { }
+                        }
+                    }
+
+                    // Do the logging
+                    using (StreamWriter sw = new StreamWriter(logfile, true, Encoding.UTF8))
+                    {
+                        sw.WriteLine();
+                        sw.WriteLine("------- " + DateTime.Now.ToString(CultureInfo.InvariantCulture) + " -------");
+                        sw.WriteLine(info);
+                        sw.WriteLine();
                     }
                 }
-
-                // Do the logging
-                using (StreamWriter sw = new StreamWriter(logfile, true, Encoding.UTF8))
-                {
-                    sw.WriteLine();
-                    sw.WriteLine("------- " + DateTime.Now.ToString(CultureInfo.InvariantCulture) + " -------");
-                    sw.WriteLine(info);
-                    sw.WriteLine();
-                }
+            }
+            catch
+            {
+                // Ignore exceptions - logging should not itself cause new problems
             }
         }
 

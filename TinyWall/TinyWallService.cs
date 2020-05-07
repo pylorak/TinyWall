@@ -1137,7 +1137,7 @@ namespace PKSoft
             }
             catch (Exception e)
             {
-                Utils.LogCrash(e, Utils.LOG_ID_SERVICE);
+                Utils.LogException(e, Utils.LOG_ID_SERVICE);
             }
         }
 
@@ -1295,7 +1295,7 @@ namespace PKSoft
                             }
                             catch (Exception e)
                             {
-                                Utils.LogCrash(e, Utils.LOG_ID_SERVICE);
+                                Utils.LogException(e, Utils.LOG_ID_SERVICE);
                             }
                         }
                         VisibleState.HasPassword = ServiceLocker.HasPassword;
@@ -1567,8 +1567,7 @@ namespace PKSoft
 
 #if !DEBUG
             // Basic software health checks
-            try { TinyWallDoctor.EnsureHealth(); }
-            catch { }
+            TinyWallDoctor.EnsureHealth(Utils.LOG_ID_SERVICE);
 #endif
 
             // Lock configuration if we have a password
@@ -1852,8 +1851,7 @@ namespace PKSoft
 
 #if !DEBUG
             // Basic software health checks
-            try { TinyWallDoctor.EnsureHealth(); }
-            catch { }
+            TinyWallDoctor.EnsureHealth(Utils.LOG_ID_SERVICE);
 #else
             using (var wfp = new Engine("TinyWall Cleanup Session", "", FWPM_SESSION_FLAGS.None, 5000))
             using (var trx = wfp.BeginTransaction())
@@ -1891,10 +1889,6 @@ namespace PKSoft
             this.CanStop = false;
 #endif
         }
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            Utils.LogCrash(e.ExceptionObject as Exception, Utils.LOG_ID_SERVICE);
-        }
 
         private void FirewallWorkerMethod()
         {
@@ -1925,10 +1919,6 @@ namespace PKSoft
         // Entry point for Windows service.
         protected override void OnStart(string[] args)
         {
-#if !DEBUG
-            // Register an unhandled exception handler
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-#endif
             // Initialization on a new thread prevents stalling the SCM
             FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod));
             FirewallWorkerThread.Start();

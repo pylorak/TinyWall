@@ -302,11 +302,6 @@ namespace PKSoft
 
         public TinyWallController(CmdLineArgs opts)
         {
-#if !DEBUG
-            // Register an unhandled exception handler
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-#endif
-
             this.StartupOpts = opts;
 
             ActiveConfig.Controller = ControllerSettings.Load();
@@ -341,11 +336,6 @@ namespace PKSoft
                 System.Windows.Forms.Application.Idle -= Application_Idle;
                 InitController();
             }
-        }
-
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            Utils.LogCrash(e.ExceptionObject as Exception, Utils.LOG_ID_CLIENT);
         }
 
         private void TrayMenu_Closed(object sender, ToolStripDropDownClosedEventArgs e)
@@ -713,7 +703,7 @@ namespace PKSoft
             e.Cancel = false;
             if (FirewallState.Mode == TinyWall.Interface.FirewallMode.Unknown)
             {
-                if (!TinyWallDoctor.IsServiceRunning())
+                if (!TinyWallDoctor.IsServiceRunning(Utils.LOG_ID_GUI, false))
                 {
                     ShowBalloonTip(PKSoft.Resources.Messages.TheTinyWallServiceIsUnavailable, ToolTipIcon.Error, 10000);
                     e.Cancel = true;
@@ -1392,7 +1382,7 @@ namespace PKSoft
 #if !DEBUG
             if (comError)
             {
-                if (TinyWallDoctor.EnsureServiceInstalledAndRunning())
+                if (TinyWallDoctor.EnsureServiceInstalledAndRunning(Utils.LOG_ID_GUI, false))
                     LoadSettingsFromServer(out comError, true);
                 else
                     MessageBox.Show(PKSoft.Resources.Messages.TheTinyWallServiceIsUnavailable, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);

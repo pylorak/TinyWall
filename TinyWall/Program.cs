@@ -65,7 +65,7 @@ namespace PKSoft
 
         private static int InstallService()
         {
-            return TinyWallDoctor.EnsureServiceInstalledAndRunning() ? 0 : -1;
+            return TinyWallDoctor.EnsureServiceInstalledAndRunning(Utils.LOG_ID_INSTALLER, true) ? 0 : -1;
         }
 
         private static int UninstallService()
@@ -144,6 +144,47 @@ namespace PKSoft
             opts.autowhitelist = Utils.ArrayContains(args, "/autowhitelist");
             opts.updatenow = Utils.ArrayContains(args, "/updatenow");
             opts.startup = Utils.ArrayContains(args, "/startup");
+
+#if !DEBUG
+            // Register an unhandled exception handler - lol
+
+            void UnhandledException_Gui(object sender, UnhandledExceptionEventArgs e)
+            {
+                Utils.LogException((Exception)e.ExceptionObject, Utils.LOG_ID_GUI);
+            }
+            void UnhandledException_Service(object sender, UnhandledExceptionEventArgs e)
+            {
+                Utils.LogException((Exception)e.ExceptionObject, Utils.LOG_ID_SERVICE);
+            }
+            void UnhandledException_Installer(object sender, UnhandledExceptionEventArgs e)
+            {
+                Utils.LogException((Exception)e.ExceptionObject, Utils.LOG_ID_INSTALLER);
+            }
+
+            switch (opts.ProgramMode)
+            {
+                case StartUpMode.Install:
+                    AppDomain.CurrentDomain.UnhandledException += UnhandledException_Installer;
+                    break;
+                case StartUpMode.Uninstall:
+                    AppDomain.CurrentDomain.UnhandledException += UnhandledException_Installer;
+                    break;
+                case StartUpMode.Controller:
+                    AppDomain.CurrentDomain.UnhandledException += UnhandledException_Gui;
+                    break;
+                case StartUpMode.DevelTool:
+                    AppDomain.CurrentDomain.UnhandledException += UnhandledException_Gui;
+                    break;
+                case StartUpMode.SelfHosted:
+                    AppDomain.CurrentDomain.UnhandledException += UnhandledException_Gui;
+                    AppDomain.CurrentDomain.UnhandledException += UnhandledException_Service;
+                    break;
+                case StartUpMode.Service:
+                    AppDomain.CurrentDomain.UnhandledException += UnhandledException_Service;
+                    break;
+            }
+#endif
+
 
             switch (opts.ProgramMode)
             {
