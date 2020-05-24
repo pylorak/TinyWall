@@ -45,18 +45,42 @@
     <div class="row">
       <div class="twelvecol">
       <p>This page presents a user-friendly overview of TinyWall's version history. <br/>
-      A detailed <a href="http://tinywall.pados.hu/changelog.txt" title="TinyWall changelog">changelog can be found here</a>.</p>
+      A detailed <a href="https://tinywall.pados.hu/changelog.txt" title="TinyWall changelog">changelog can be found here</a>.</p>
+    </div>
+    <div class="row">
+      <div class="eightcol">
+        <h2 style="display:block">Version 3.0</h2>
+        <p>Upgrade note: Your firewall rules will be kept, but GUI settings will be lost after upgrading from an earlier version.</p>
+        <p>TinyWall 3.0 is a major upgrade that focuses on a complete overhaul of the firewall engine and its capabilities. This allows multiple new features to be added in the current release, resolves previous known issues, and paves the way for future enhacements. The GUI is left mostly intact on the surface, but has also seen multiple fine-tunings and improvements. Some of the major improvements in version 3.0 include:
+        </p>
+        <ul>
+        <li>Independence from Windows (Defender) Firewall. TinyWall 3.0 is now a standalone firewall that can be run without or side-by-side with Windows' own built-in firewall.</li>
+        <li>Enhanced security through boot-time filtering. Firewall rules are in effect even before TinyWall is loaded on boot, right from the start of the networking stack.</li>
+        <li>Support for and automatic handling of UWP applications.</li>
+        <li>Added raw- and promiscous-socket filtering, undermining apps that try to monitor or create raw network traffic.</li>
+        <li>Full support for Windows File Sharing. The workaround that used to exist for earlier Tinywall versions is no longer necessary.</li>
+        <li>Resolved issue where running apps are disconnected when firewall protection feature is triggered.</li>
+        <li>Support for automatically allowing child-processes of whitelisted executables. For instance, this simplifies whitelisting most online installers, among many other cases.</li>
+        <li>Blocked connections can be listed even if the Connections window is opened after an application's attempt to connect.</li>
+        <li>Over a dozen user interface improvements, ranging from bugfixes to new hotkeys, better performance, unified batch operations, more useful defaults etc.</li>
+        <li>Revised installer with an updated look, option to specify installation path, increased security, and faster installation times.</li>
+        <li>... and many more improvements listed in the full <a href="https://tinywall.pados.hu/changelog.txt" title="TinyWall changelog">changelog</a>.</li>
+        </ul>
+      </div>
+      <div class="fourcol last">
+        <br/><br/><br/><br/><br/><br/>
       </div>
     </div>
     <div class="row">
       <div class="eightcol">
         <h2>Version 2.1</h2>
+        <p>Upgrade note: Your firewall rules will reset when upgrading to this version the first time. To keep your settings, please export them before and import them after the upgrade.</p>
         <ul>
-        <li>All previously reported issues fixed.</li>
         <li>Removed automatic network zone switching.</li>
-        <li>Enhanced support for Windows 8 and Metro applications.</li>
+        <li>Enhanced support for and Metro applications</li>
+        <li>Support for whitelisting on network drives</li>
         <li>Multi-user/multi-session support.</li>
-        <li>New Dutch, German, Hungarian, Spanish and Russian translations.</li>
+        <li>Lots of new translations.</li>
         <li>Better authenticode verification support.</li>
         <li>Improved startup performance.</li>
         <li>Ability to disable global shortcuts, as well as numerous other usability enhancements.</li>
@@ -69,6 +93,7 @@
     <div class="row">
       <div class="eightcol">
         <h2>Version 2.0</h2>
+        <p>Upgrade note: It is vital that you uninstall TinyWall 1.0 before upgrading to this version.</p>
         <p>TinyWall 2.0 incorporates a wide range of new features, many which has been requested by the user community. All aspects of the application are improved, including security, user friendliness, compatibility, performance and stability. TinyWall 2.0 features:</p>
         <ul>
         <li>Easier first-time setup. The search for most recognized applications has become blazing-fast and TinyWall will automatically whitelist known and trusted applications when starting for the first time.</li>
