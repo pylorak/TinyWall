@@ -63,17 +63,7 @@ namespace PKSoft
 
         private void ExpandRule(RuleDef r, List<RuleDef> results)
         {
-            if (r.Direction == RuleDirection.InOut)
-            {
-                RuleDef tmp = r.DeepCopy();
-                tmp.Direction = RuleDirection.In;
-                ExpandRule(tmp, results);
-
-                tmp = r.DeepCopy();
-                tmp.Direction = RuleDirection.Out;
-                ExpandRule(tmp, results);
-            }
-            else if (r.Protocol == Protocol.TcpUdp)
+            if (r.Protocol == Protocol.TcpUdp)
             {
                 RuleDef tmp = r.DeepCopy();
                 tmp.Protocol = Protocol.TCP;
@@ -83,81 +73,46 @@ namespace PKSoft
                 tmp.Protocol = Protocol.UDP;
                 ExpandRule(tmp, results);
             }
-            else if (r.Protocol == Protocol.ICMP)
+            else if ((r.RemoteAddresses != null) && r.RemoteAddresses.Contains("LocalSubnet"))
             {
-                RuleDef tmp = r.DeepCopy();
-                tmp.Protocol = Protocol.ICMPv4;
-                ExpandRule(tmp, results);
-
-                tmp = r.DeepCopy();
-                tmp.Protocol = Protocol.ICMPv6;
-                ExpandRule(tmp, results);
-            }
-            else if (!string.IsNullOrEmpty(r.IcmpTypesAndCodes) && r.IcmpTypesAndCodes.Contains(","))
-            {
-                string[] list = r.IcmpTypesAndCodes.Split(',');
-                foreach (var e in list)
+                StringBuilder sb = new StringBuilder(512);
+                foreach (var addr in InterfaceAddreses) // TODO: Use StringBuilder.AppendJoin() starting with .NET Core
                 {
-                    RuleDef tmp = r.DeepCopy();
-                    tmp.IcmpTypesAndCodes = e;
-                    ExpandRule(tmp, results);
+                    sb.Append(addr.SubnetFirstIp.ToString()); sb.Append(',');
                 }
+                sb.Append("255.255.255.255"); sb.Append(',');
+                sb.Append(IpAddrMask.LinkLocal.ToString()); sb.Append(',');
+                sb.Append(IpAddrMask.IPv6LinkLocal.ToString()); sb.Append(',');
+                sb.Append(IpAddrMask.LinkLocalMulticast.ToString()); sb.Append(',');
+                sb.Append(IpAddrMask.AdminScopedMulticast.ToString()); sb.Append(',');
+                sb.Append(IpAddrMask.IPv6LinkLocalMulticast.ToString()); sb.Append(',');
+                sb.Length--;
+                r.RemoteAddresses = r.RemoteAddresses.Replace("LocalSubnet", sb.ToString());
+                ExpandRule(r, results);
             }
-            else if (!string.IsNullOrEmpty(r.RemoteAddresses) && r.RemoteAddresses.Contains(","))
+            else if ((r.RemoteAddresses != null) && r.RemoteAddresses.Contains("DefaultGateway"))
             {
-                string[] addresses = r.RemoteAddresses.Split(',');
-                foreach (var addr in addresses)
-                {
-                    RuleDef tmp = r.DeepCopy();
-                    tmp.RemoteAddresses = addr.Trim();
-                    ExpandRule(tmp, results);
-                }
-            }
-            else if (Utils.EqualsCaseInsensitive(r.RemoteAddresses, "LocalSubnet"))
-            {
-                RuleDef tmp;
-                foreach (var addr in InterfaceAddreses)
-                {
-                    tmp = r.DeepCopy();
-                    tmp.RemoteAddresses = addr.SubnetFirstIp.ToString();
-                    ExpandRule(tmp, results);
-                }
-                tmp = r.DeepCopy();
-                tmp.RemoteAddresses = "255.255.255.255";
-                ExpandRule(tmp, results);
-                tmp = r.DeepCopy();
-                tmp.RemoteAddresses = IpAddrMask.LinkLocal.ToString();
-                ExpandRule(tmp, results);
-                tmp = r.DeepCopy();
-                tmp.RemoteAddresses = IpAddrMask.IPv6LinkLocal.ToString();
-                ExpandRule(tmp, results);
-                tmp = r.DeepCopy();
-                tmp.RemoteAddresses = IpAddrMask.LinkLocalMulticast.ToString();
-                ExpandRule(tmp, results);
-                tmp = r.DeepCopy();
-                tmp.RemoteAddresses = IpAddrMask.AdminScopedMulticast.ToString();
-                ExpandRule(tmp, results);
-                tmp = r.DeepCopy();
-                tmp.RemoteAddresses = IpAddrMask.IPv6LinkLocalMulticast.ToString();
-                ExpandRule(tmp, results);
-            }
-            else if (Utils.EqualsCaseInsensitive(r.RemoteAddresses, "DefaultGateway"))
-            {
+                StringBuilder sb = new StringBuilder(512);
                 foreach (var addr in GatewayAddresses)
                 {
-                    RuleDef tmp = r.DeepCopy();
-                    tmp.RemoteAddresses = addr.Address.ToString();
-                    ExpandRule(tmp, results);
+                    sb.Append(addr.Address.ToString()); sb.Append(',');
                 }
+                if (sb.Length > 0)
+                    sb.Length--;
+                r.RemoteAddresses = r.RemoteAddresses.Replace("DefaultGateway", sb.ToString());
+                ExpandRule(r, results);
             }
-            else if (Utils.EqualsCaseInsensitive(r.RemoteAddresses, "DNS"))
+            else if ((r.RemoteAddresses != null) && r.RemoteAddresses.Contains("DNS"))
             {
+                StringBuilder sb = new StringBuilder(512);
                 foreach (var addr in DnsAddresses)
                 {
-                    RuleDef tmp = r.DeepCopy();
-                    tmp.RemoteAddresses = addr.Address.ToString();
-                    ExpandRule(tmp, results);
+                    sb.Append(addr.Address.ToString()); sb.Append(',');
                 }
+                if (sb.Length > 0)
+                    sb.Length--;
+                r.RemoteAddresses = r.RemoteAddresses.Replace("DNS", sb.ToString());
+                ExpandRule(r, results);
             }
             else
             {
@@ -619,16 +574,27 @@ namespace PKSoft
                 }
             }
 
-            if (!string.IsNullOrEmpty(r.RemoteAddresses) && !LayerIsAleAuthListen(layer))
+            if (!string.IsNullOrEmpty(r.RemoteAddresses))
             {
                 System.Diagnostics.Debug.Assert(!r.RemoteAddresses.Equals("*"));
 
-                IpAddrMask remote = IpAddrMask.Parse(r.RemoteAddresses);
-                if (remote.IsIPv6 == LayerIsV6Stack(layer))
-                    conditions.Add(new IpFilterCondition(remote.Address, (byte)remote.PrefixLen, RemoteOrLocal.Remote));
-                else
+                bool validAddressFound = false;
+                string[] addresses = r.RemoteAddresses.Split(',');
+                foreach (var addr in addresses)
+                {
+                    IpAddrMask remote = IpAddrMask.Parse(addr);
+                    if (remote.IsIPv6 == LayerIsV6Stack(layer))
+                    {
+                        validAddressFound = true;
+                        conditions.Add(new IpFilterCondition(remote.Address, (byte)remote.PrefixLen, RemoteOrLocal.Remote));
+                    }
+                }
+
+                if (!validAddressFound)
+                {
                     // Break. We don't want to add this filter to this layer.
                     return;
+                }
             }
 
             // We never want to affect loopback traffic
@@ -636,7 +602,6 @@ namespace PKSoft
 
             if (r.Protocol != Protocol.Any)
             {
-                System.Diagnostics.Debug.Assert(r.Protocol != Protocol.ICMP);
                 System.Diagnostics.Debug.Assert(r.Protocol != Protocol.TcpUdp);
                 if (LayerIsAleAuthConnect(layer) || LayerIsAleAuthRecvAccept(layer))
                     conditions.Add(new ProtocolFilterCondition((byte)r.Protocol));
@@ -833,28 +798,28 @@ namespace PKSoft
 
         private void ConstructFilter(RuleDef r)
         {
-            switch (r.Direction)
+            // Also, relevant info:
+            // https://networkengineering.stackexchange.com/questions/58903/how-to-handle-icmp-in-ipv6-or-icmpv6-in-ipv4
+
+            if ((r.Direction & RuleDirection.Out) != 0)
             {
-                case RuleDirection.Out:
-                    ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V6);
-                    ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V4);
-                    if ((r.Protocol == Protocol.Any) || (r.Protocol == Protocol.ICMPv4) || (r.Protocol == Protocol.ICMPv6))
-                    {
-                        ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6);
-                        ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4);
-                    }
-                    break;
-                case RuleDirection.In:
-                    ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6);
-                    ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4);
-                    if ((r.Protocol == Protocol.Any) || (r.Protocol == Protocol.ICMPv4) || (r.Protocol == Protocol.ICMPv6))
-                    {
-                        ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V6);
-                        ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V4);
-                    }
-                    break;
-                default:
-                    throw new ArgumentException("Unsupported direction parameter.");
+                ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V6);
+                ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V4);
+
+                if ((r.Protocol == Protocol.Any) || (r.Protocol == Protocol.ICMPv6))
+                    ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6);
+                if ((r.Protocol == Protocol.Any) || (r.Protocol == Protocol.ICMPv4))
+                    ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4);
+            }
+            if ((r.Direction & RuleDirection.In) != 0)
+            { 
+                ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6);
+                ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4);
+
+                if ((r.Protocol == Protocol.Any) || (r.Protocol == Protocol.ICMPv6))
+                    ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V6);
+                if ((r.Protocol == Protocol.Any) || (r.Protocol == Protocol.ICMPv4))
+                    ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V4);
             }
         }
 

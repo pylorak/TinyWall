@@ -16,7 +16,6 @@
 
         // Virtual protocols (>1023)
         Any = 1024,
-        ICMP,
         TcpUdp
     }
 }

@@ -16,12 +16,13 @@ namespace TinyWall.Interface
         BLOCKED_LOCAL_BIND = 5159
     }
 
+    [Flags]
     public enum RuleDirection
     {
-        Invalid,
-        In,
-        Out,
-        InOut
+        Invalid = 0,
+        In = 1,
+        Out = 2,
+        InOut = In | Out
     }
 
     [Serializable]
