@@ -54,6 +54,7 @@ namespace PKSoft
         private ServerState VisibleState = new ServerState();
 
         private Engine WfpEngine;
+        private ManagementEventWatcher ProcessStartWatcher;
         private DevicePathMapper NtPathMapper = new DevicePathMapper();
 
         private List<IpAddrMask> InterfaceAddreses = new List<IpAddrMask>();
@@ -403,6 +404,19 @@ namespace PKSoft
                 ChildInheritance.Clear();
                 ChildInheritedSubjectExes.Clear();
                 rules = AssembleActiveRules(rawSocketExceptions);
+
+                try
+                {
+                    if (ChildInheritance.Count > 0)
+                        ProcessStartWatcher.Start();
+                    else
+                        ProcessStartWatcher.Stop();
+                }
+                catch
+                {
+                    // TODO: Add nonce-flag and log only if it has not been logged already
+                    // Utils.Log("WMI error. Subprocess monitoring will be disabled.", Utils.LOG_ID_SERVICE);
+                }
             }
 
             using (Transaction trx = WfpEngine.BeginTransaction())
@@ -1595,19 +1609,11 @@ namespace PKSoft
             }
 
             using (WindowsFirewall WinDefFirewall = new WindowsFirewall())
-            using (ManagementEventWatcher ProcessStartWatcher = new ManagementEventWatcher(new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace")))
+            using (ProcessStartWatcher = new ManagementEventWatcher(new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace")))
             using (WfpEngine = new Engine("TinyWall Session", "", FWPM_SESSION_FLAGS.None, 5000))
             using (var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback, null))
             {
                 ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
-                try
-                {
-                    ProcessStartWatcher.Start();
-                }
-                catch 
-                {
-                    Utils.Log("Error accessing WMI. Subprocess monitoring will be inactive.", Utils.LOG_ID_SERVICE);
-                }
 
                 RunService = true;
                 while (RunService)
