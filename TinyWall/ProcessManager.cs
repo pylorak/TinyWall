@@ -251,7 +251,11 @@ namespace PKSoft
 
             int size = buffer.Capacity;
             if (SafeNativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.Win32Format, buffer, ref size))
+            {
+                for (int i = 0; i < buffer.Length; ++i)
+                    buffer[i] = char.ToLowerInvariant(buffer[i]);
                 return buffer.ToString();
+            }
             else
                 return null;
         }

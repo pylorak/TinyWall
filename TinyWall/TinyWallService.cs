@@ -1598,7 +1598,7 @@ namespace PKSoft
             using (var throttler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest, true, false))
             {
                 uint pid = (uint)(e.NewEvent["ProcessID"]);
-                string path = ProcessManager.GetProcessPath(unchecked((int)pid), ProcessStartWatcher_Sbuilder)?.ToLowerInvariant();
+                string path = ProcessManager.GetProcessPath(unchecked((int)pid), ProcessStartWatcher_Sbuilder);
 
                 // Skip if we have no path
                 if (string.IsNullOrEmpty(path))
@@ -1633,7 +1633,7 @@ namespace PKSoft
 
                         pidsChecked.Add(parentPid);
 
-                        string parentPath = ProcessManager.GetProcessPath(parentPid, ProcessStartWatcher_Sbuilder)?.ToLowerInvariant();
+                        string parentPath = ProcessManager.GetProcessPath(parentPid, ProcessStartWatcher_Sbuilder);
                         if (string.IsNullOrEmpty(parentPath))
                             continue;
 
