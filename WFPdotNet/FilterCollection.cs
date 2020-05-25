@@ -67,7 +67,7 @@ namespace WFPdotNet
                         throw new WfpException(err, "FwpmFilterEnum0");
 
                     // Dereference each pointer in the current batch
-                    IntPtr[] ptrList = PInvokeHelper.PtrToStructureArray<IntPtr>(entries.DangerousGetHandle(), numEntriesReturned, (uint)Marshal.SizeOf(typeof(IntPtr)));
+                    IntPtr[] ptrList = PInvokeHelper.PtrToStructureArray<IntPtr>(entries.DangerousGetHandle(), numEntriesReturned, (uint)IntPtr.Size);
                     for (int i = 0; i < numEntriesReturned; ++i)
                     {
                         Interop.FWPM_FILTER0 filt0 = (Interop.FWPM_FILTER0)Marshal.PtrToStructure(ptrList[i], typeof(Interop.FWPM_FILTER0));

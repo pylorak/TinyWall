@@ -67,7 +67,7 @@ namespace WFPdotNet
                         throw new WfpException(err, "FwpmProviderEnum0");
 
                     // Dereference each pointer in the current batch
-                    IntPtr[] ptrList = PInvokeHelper.PtrToStructureArray<IntPtr>(entries.DangerousGetHandle(), numEntriesReturned, (uint)Marshal.SizeOf(typeof(IntPtr)));
+                    IntPtr[] ptrList = PInvokeHelper.PtrToStructureArray<IntPtr>(entries.DangerousGetHandle(), numEntriesReturned, (uint)IntPtr.Size);
                     for (int i = 0; i < numEntriesReturned; ++i)
                     {
                         Items.Add((Interop.FWPM_PROVIDER0)Marshal.PtrToStructure(ptrList[i], typeof(Interop.FWPM_PROVIDER0)));
