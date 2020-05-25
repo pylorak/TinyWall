@@ -1560,7 +1560,7 @@ namespace PKSoft
             Q.Enqueue(new TwMessage(MessageType.REINIT), null);
 
             // Fire up pipe
-            GlobalInstances.ServerPipe = new PipeServerEndpoint(new PipeDataReceived(PipeServerDataReceived));
+            GlobalInstances.ServerPipe = new PipeServerEndpoint(new PipeDataReceived(PipeServerDataReceived), "TinyWallController");
 
             // Listen to network configuration changes
             NetworkChange.NetworkAddressChanged += NetworkChange_NetworkAddressChanged;

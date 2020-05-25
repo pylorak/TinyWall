@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.IO.Pipes;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -43,10 +44,8 @@ namespace TinyWall.Interface.Internal
             typeof(UpdateDescriptor),
         };
 
-        public static void SerializeToPipe<T>(Stream pipe, T obj)
+        public static void SerializeToPipe<T>(PipeStream pipe, T obj)
         {
-            string xml;
-
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 XmlWriterSettings settings = new XmlWriterSettings();
@@ -60,30 +59,50 @@ namespace TinyWall.Interface.Internal
                 }
 
                 memoryStream.Position = 0;
-                using (StreamReader reader = new StreamReader(memoryStream, Encoding.UTF8))
-                {
-                    xml = reader.ReadToEnd();
-                }
+                var buf = memoryStream.ToArray();
+                pipe.Write(buf, 0, buf.Length);
+                pipe.Flush();
             }
-
-            BinaryWriter bw = new BinaryWriter(pipe);
-            bw.Write(xml);
-            bw.Flush();
         }
 
-        public static T DeserializeFromPipe<T>(Stream pipe)
+        public static T DeserializeFromPipe<T>(PipeStream pipe, int timeout_ms)
         {
-            BinaryReader br = new BinaryReader(pipe);
-            string xml = br.ReadString();
-
-            using (Stream stream = new MemoryStream())
-            using (StreamWriter writer = new StreamWriter(stream, Encoding.UTF8))
+            using (var memoryStream = new MemoryStream())
+            using (var readDone = new System.Threading.AutoResetEvent(false))
             {
-                writer.Write(xml);
-                writer.Flush();
-                stream.Position = 0;
-                DataContractSerializer serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
-                return (T)serializer.ReadObject(stream);
+                var buf = new byte[4 * 1024];
+                do
+                {
+                    int len = 0;
+                    var res = pipe.BeginRead(buf, 0, buf.Length, delegate (IAsyncResult r)
+                    {
+                        try
+                        {
+                            len = pipe.EndRead(r);
+                            readDone.Set();
+                        }
+                        catch { }
+                    }, null);
+
+                    if (!readDone.WaitOne(timeout_ms))
+                        throw new TimeoutException("Timeout while waiting for answer from service.");
+
+                    memoryStream.Write(buf, 0, len);
+                    timeout_ms = 1000;
+                } while (!pipe.IsMessageComplete);
+
+                memoryStream.Flush();
+                memoryStream.Position = 0;
+
+                var settings = new XmlReaderSettings();
+                settings.IgnoreComments = true;
+                settings.IgnoreProcessingInstructions = true;
+                settings.IgnoreWhitespace = true;
+                using (var reader = XmlReader.Create(memoryStream, settings))
+                {
+                    DataContractSerializer serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
+                    return (T)serializer.ReadObject(reader);
+                }
             }
         }
 

@@ -1,18 +1,17 @@
 ﻿using System;
 using System.IO.Pipes;
 using System.Threading;
-using System.IO;
 
 namespace TinyWall.Interface.Internal
 {
     public class PipeClientEndpoint : Disposable
     {
-        private static readonly string PipeName = "TinyWallController";
+        private readonly Thread m_PipeWorkerThread;
+        private readonly BoundedMessageQueue m_Queue = new BoundedMessageQueue();
+        private readonly string m_PipeName;
 
-        private bool disposed = false;
-        private Thread m_PipeWorkerThread;
-        private BoundedMessageQueue m_Queue = new BoundedMessageQueue();
         private bool m_Run = true;
+        private bool disposed = false;
 
         protected override void Dispose(bool disposing)
         {
@@ -28,15 +27,13 @@ namespace TinyWall.Interface.Internal
                 m_Queue.Dispose();
             }
 
-            m_PipeWorkerThread = null;
-            m_Queue = null;
             disposed = true;
             base.Dispose(disposing);
         }
 
         public PipeClientEndpoint(string clientPipeName)
         {
-            // Start thread that is going to do the actual communication
+            m_PipeName = clientPipeName;
             m_PipeWorkerThread = new Thread(new ThreadStart(PipeClientWorker));
             m_PipeWorkerThread.IsBackground = true;
             m_PipeWorkerThread.Start();
@@ -46,9 +43,7 @@ namespace TinyWall.Interface.Internal
         {
             while (m_Run)
             {
-                TwMessage msg;
-                Future<TwMessage> future;
-                m_Queue.Dequeue(out msg, out future);
+                m_Queue.Dequeue(out TwMessage msg, out Future<TwMessage> future);
 
                 // In case of a communication error,
                 // retry a small number of times.
@@ -70,15 +65,16 @@ namespace TinyWall.Interface.Internal
         {
             try
             {
-                using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", PipeName, PipeDirection.InOut, PipeOptions.WriteThrough))
+                using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", m_PipeName, PipeDirection.InOut, PipeOptions.WriteThrough))
                 {
-                    pipeClient.Connect(500);
+                    pipeClient.Connect(1000);
+                    pipeClient.ReadMode = PipeTransmissionMode.Message;
 
                     // Send command
                     SerializationHelper.SerializeToPipe(pipeClient, msg);
 
                     // Get response
-                    return SerializationHelper.DeserializeFromPipe<TwMessage>(pipeClient);
+                    return SerializationHelper.DeserializeFromPipe<TwMessage>(pipeClient, 20000);
                 }
             }
             catch

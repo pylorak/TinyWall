@@ -12,12 +12,12 @@ namespace PKSoft
 
     internal class PipeServerEndpoint : Disposable
     {
-        private static readonly string PipeName = "TinyWallController";
+        private readonly Thread m_PipeWorkerThread;
+        private readonly PipeDataReceived m_RcvCallback;
+        private readonly string m_PipeName;
 
-        private bool disposed = false;
-        private Thread m_PipeWorkerThread;
-        private PipeDataReceived m_RcvCallback;
         private bool m_Run = true;
+        private bool disposed = false;
 
         protected override void Dispose(bool disposing)
         {
@@ -27,9 +27,9 @@ namespace PKSoft
             m_Run = false;
 
             // Create a dummy connection so that worker thread gets out of the infinite WaitForConnection()
-            using (NamedPipeClientStream npcs = new NamedPipeClientStream(PipeName))
+            using (NamedPipeClientStream npcs = new NamedPipeClientStream(m_PipeName))
             {
-                npcs.Connect(100);
+                npcs.Connect(500);
             }
 
             if (disposing)
@@ -41,17 +41,15 @@ namespace PKSoft
             // Release unmanaged resources.
             // Set large fields to null.
             // Call Dispose on your base class.
-
-            m_PipeWorkerThread = null;
             disposed = true;
             base.Dispose(disposing);
         }
 
-        internal PipeServerEndpoint(PipeDataReceived recvCallback)
+        internal PipeServerEndpoint(PipeDataReceived recvCallback, string serverPipeName)
         {
             m_RcvCallback = recvCallback;
+            m_PipeName = serverPipeName;
 
-            // Start thread that is going to do the actual communication
             m_PipeWorkerThread = new Thread(new ThreadStart(PipeServerWorker));
             m_PipeWorkerThread.IsBackground = true;
             m_PipeWorkerThread.Start();
@@ -70,17 +68,19 @@ namespace PKSoft
                 try
                 {
                     // Create pipe server
-                    using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(PipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.WriteThrough, 2048*10, 2048*10, ps))
+                    using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(m_PipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message, PipeOptions.WriteThrough, 2048*10, 2048*10, ps))
                     {
                         if (!pipeServer.IsConnected)
                         {
                             pipeServer.WaitForConnection();
+                            pipeServer.ReadMode = PipeTransmissionMode.Message;
+
                             if (!AuthAsServer(pipeServer))
                                 throw new InvalidOperationException("Client authentication failed.");
                         }
 
                         // Read msg
-                        TwMessage msg = SerializationHelper.DeserializeFromPipe<TwMessage>(pipeServer);
+                        TwMessage msg = SerializationHelper.DeserializeFromPipe<TwMessage>(pipeServer, 3000);
 
                         // Write response
                         TwMessage resp = m_RcvCallback(msg);
