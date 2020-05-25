@@ -1293,7 +1293,7 @@ namespace PKSoft
                         }
 
                         InstallRules(rules, rawSocketExceptions, true);
-                        FirewallThreadThrottler.Release();
+                        lock (FirewallThreadThrottler.SynchRoot) {FirewallThreadThrottler.Release();}
 
                         return new TwMessage(MessageType.RESPONSE_OK);
                     }
@@ -1536,7 +1536,7 @@ namespace PKSoft
         // Only one thread (this one) is allowed to issue them.
         public void Run()
         {
-            FirewallThreadThrottler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest);
+            FirewallThreadThrottler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest, false, true);
             MinuteTimer = new Timer(new TimerCallback(TimerCallback), null, 60000, 60000);
             LogWatcher.NewLogEntry += LogWatcher_NewLogEntry;
 
@@ -1595,7 +1595,7 @@ namespace PKSoft
 
         private void ProcessStartWatcher_EventArrived(object sender, EventArrivedEventArgs e)
         {
-            using (var throttler = new ThreadThrottler(ThreadPriority.Highest, true))
+            using (var throttler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest, true, false))
             {
                 uint pid = (uint)(e.NewEvent["ProcessID"]);
                 string path = ProcessManager.GetProcessPath(unchecked((int)pid), ProcessStartWatcher_Sbuilder)?.ToLowerInvariant();
@@ -1656,7 +1656,7 @@ namespace PKSoft
 
                 if (newExceptions.Count != 0)
                 {
-                    FirewallThreadThrottler.Request();
+                    lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Request(); }
                     Q.Enqueue(new TwMessage(MessageType.ADD_TEMPORARY_EXCEPTION, newExceptions), null);
                 }
             }
