@@ -1595,70 +1595,77 @@ namespace PKSoft
 
         private void ProcessStartWatcher_EventArrived(object sender, EventArrivedEventArgs e)
         {
-            using (var throttler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest, true, false))
+            try
             {
-                uint pid = (uint)(e.NewEvent["ProcessID"]);
-                string path = ProcessManager.GetProcessPath(unchecked((int)pid), ProcessStartWatcher_Sbuilder);
-
-                // Skip if we have no path
-                if (string.IsNullOrEmpty(path))
-                    return;
-
-                List<FirewallExceptionV3> newExceptions = new List<FirewallExceptionV3>();
-
-                // This list will hold parents that we already checked for a process.
-                // Used to avoid inf. loop when parent-PID info is unreliable.
-                HashSet<int> pidsChecked = new HashSet<int>();
-
-                lock (InheritanceGuard)
+                using (var throttler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest, true, false))
                 {
-                    // Skip if we have a user-defined rule for this path
-                    if (UserSubjectExes.Contains(path))
+                    uint pid = (uint)(e.NewEvent["ProcessID"]);
+                    string path = ProcessManager.GetProcessPath(unchecked((int)pid), ProcessStartWatcher_Sbuilder);
+
+                    // Skip if we have no path
+                    if (string.IsNullOrEmpty(path))
                         return;
 
-                    // Start walking up the process tree
-                    for (int parentPid = unchecked((int)pid); ;)
+                    List<FirewallExceptionV3> newExceptions = new List<FirewallExceptionV3>();
+
+                    // This list will hold parents that we already checked for a process.
+                    // Used to avoid inf. loop when parent-PID info is unreliable.
+                    HashSet<int> pidsChecked = new HashSet<int>();
+
+                    lock (InheritanceGuard)
                     {
-                        if (!ProcessManager.GetParentProcess(parentPid, ref parentPid))
-                            // We reached the top of the process tree (with non-existent parent)
-                            break;
+                        // Skip if we have a user-defined rule for this path
+                        if (UserSubjectExes.Contains(path))
+                            return;
 
-                        if (parentPid == 0)
-                            // We reached top of process tree (with idle process)
-                            break;
-
-                        if (pidsChecked.Contains(parentPid))
-                            // We've been here before, damn it. Avoid looping eternally...
-                            break;
-
-                        pidsChecked.Add(parentPid);
-
-                        string parentPath = ProcessManager.GetProcessPath(parentPid, ProcessStartWatcher_Sbuilder);
-                        if (string.IsNullOrEmpty(parentPath))
-                            continue;
-
-                        // Skip if we have already processed this parent-child combination
-                        if (ChildInheritedSubjectExes.ContainsKey(path) && ChildInheritedSubjectExes[path].Contains(parentPath))
-                            break;
-
-                        if (ChildInheritance.TryGetValue(parentPath, out FirewallExceptionV3 userEx))
+                        // Start walking up the process tree
+                        for (int parentPid = unchecked((int)pid); ;)
                         {
-                            FirewallExceptionV3 ex = new FirewallExceptionV3(new ExecutableSubject(path), userEx.Policy);
-                            newExceptions.Add(ex);
+                            if (!ProcessManager.GetParentProcess(parentPid, ref parentPid))
+                                // We reached the top of the process tree (with non-existent parent)
+                                break;
 
-                            if (!ChildInheritedSubjectExes.ContainsKey(path))
-                                ChildInheritedSubjectExes.Add(path, new HashSet<string>());
-                            ChildInheritedSubjectExes[path].Add(parentPath);
-                            break;
+                            if (parentPid == 0)
+                                // We reached top of process tree (with idle process)
+                                break;
+
+                            if (pidsChecked.Contains(parentPid))
+                                // We've been here before, damn it. Avoid looping eternally...
+                                break;
+
+                            pidsChecked.Add(parentPid);
+
+                            string parentPath = ProcessManager.GetProcessPath(parentPid, ProcessStartWatcher_Sbuilder);
+                            if (string.IsNullOrEmpty(parentPath))
+                                continue;
+
+                            // Skip if we have already processed this parent-child combination
+                            if (ChildInheritedSubjectExes.ContainsKey(path) && ChildInheritedSubjectExes[path].Contains(parentPath))
+                                break;
+
+                            if (ChildInheritance.TryGetValue(parentPath, out FirewallExceptionV3 userEx))
+                            {
+                                FirewallExceptionV3 ex = new FirewallExceptionV3(new ExecutableSubject(path), userEx.Policy);
+                                newExceptions.Add(ex);
+
+                                if (!ChildInheritedSubjectExes.ContainsKey(path))
+                                    ChildInheritedSubjectExes.Add(path, new HashSet<string>());
+                                ChildInheritedSubjectExes[path].Add(parentPath);
+                                break;
+                            }
                         }
                     }
-                }
 
-                if (newExceptions.Count != 0)
-                {
-                    lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Request(); }
-                    Q.Enqueue(new TwMessage(MessageType.ADD_TEMPORARY_EXCEPTION, newExceptions), null);
+                    if (newExceptions.Count != 0)
+                    {
+                        lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Request(); }
+                        Q.Enqueue(new TwMessage(MessageType.ADD_TEMPORARY_EXCEPTION, newExceptions), null);
+                    }
                 }
+            }
+            finally
+            {
+                e.NewEvent.Dispose();
             }
         }
 
