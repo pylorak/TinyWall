@@ -19,7 +19,7 @@ namespace PKSoft
             internal static extern SafeObjectHandle OpenProcess(ProcessAccessFlags dwDesiredAccess, bool bInheritHandle, int dwProcessId);
 
             [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
-            internal static extern bool QueryFullProcessImageName(SafeObjectHandle hProcess, QueryFullProcessImageNameFlags dwFlags, StringBuilder lpExeName, ref int size);
+            internal static extern bool QueryFullProcessImageName(SafeObjectHandle hProcess, QueryFullProcessImageNameFlags dwFlags, [Out] StringBuilder lpExeName, ref int size);
 
             [DllImport("ntdll")]
             internal static extern int NtQueryInformationProcess(SafeObjectHandle hProcess, int processInformationClass, [Out] out PROCESS_BASIC_INFORMATION processInformation, int processInformationLength, out int returnLength);
@@ -27,9 +27,9 @@ namespace PKSoft
             [DllImport("kernel32", SetLastError = true)]
             internal static extern SafeObjectHandle CreateToolhelp32Snapshot(SnapshotFlags flags, int id);
             [DllImport("kernel32", SetLastError = true)]
-            internal static extern bool Process32First(SafeObjectHandle hSnapshot, ref PROCESSENTRY32 lppe);
+            internal static extern bool Process32First(SafeObjectHandle hSnapshot, [In, Out] ref PROCESSENTRY32 lppe);
             [DllImport("kernel32", SetLastError = true)]
-            internal static extern bool Process32Next(SafeObjectHandle hSnapshot, ref PROCESSENTRY32 lppe);
+            internal static extern bool Process32Next(SafeObjectHandle hSnapshot, [In, Out] ref PROCESSENTRY32 lppe);
 
             [DllImport("user32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
