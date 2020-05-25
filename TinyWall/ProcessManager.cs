@@ -147,7 +147,7 @@ namespace PKSoft
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        protected struct PROCESS_BASIC_INFORMATION
+        protected ref struct PROCESS_BASIC_INFORMATION
         {
             // Fore more info, see docs for NtQueryInformationProcess()
             public IntPtr Reserved1;
@@ -272,7 +272,7 @@ namespace PKSoft
                 else
                 {
                     PROCESS_BASIC_INFORMATION pbi = new PROCESS_BASIC_INFORMATION();
-                    int status = SafeNativeMethods.NtQueryInformationProcess(hProcess, 0, out pbi, Marshal.SizeOf(pbi), out int returnLength);
+                    int status = SafeNativeMethods.NtQueryInformationProcess(hProcess, 0, out pbi, Marshal.SizeOf(typeof(PROCESS_BASIC_INFORMATION)), out int returnLength);
                     if (status < 0)
                         throw new Exception($"NTSTATUS: {status}");
 
