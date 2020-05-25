@@ -44,7 +44,7 @@ namespace PKSoft
 
         // Context for auto rule inheritance
         private readonly object InheritanceGuard = new object();
-        private readonly StringBuilder ProcessStartWatcher_Sbuilder = new StringBuilder(1024);
+        private readonly StringBuilder ProcessStartWatcher_Sbuilder = new StringBuilder();
         private HashSet<string> UserSubjectExes = new HashSet<string>();        // All executables with pre-configured rules.
         private Dictionary<string, FirewallExceptionV3> ChildInheritance = new Dictionary<string, FirewallExceptionV3>();
         private Dictionary<string, HashSet<string>> ChildInheritedSubjectExes = new Dictionary<string, HashSet<string>>();   // Executables that have been already auto-whitelisted due to inheritance

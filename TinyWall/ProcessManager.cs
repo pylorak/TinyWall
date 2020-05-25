@@ -217,6 +217,9 @@ namespace PKSoft
             NativeFormat = 1
         }
 
+        private const int MIN_PATH_BUFF_SIZE = 130;
+        private const int MAX_PATH_BUFF_SIZE = 1040;
+
         public static string ExecutablePath { get; } = GetCurrentExecutablePath();
         private static string GetCurrentExecutablePath()
         {
@@ -227,7 +230,7 @@ namespace PKSoft
         }
         public static string GetProcessPath(int processId)
         {
-            var buffer = new StringBuilder(1024);
+            var buffer = new StringBuilder(MIN_PATH_BUFF_SIZE);
             return GetProcessPath(processId, buffer);
         }
 
@@ -244,20 +247,36 @@ namespace PKSoft
             // This method needs Windows Vista or newer OS
             System.Diagnostics.Debug.Assert(Environment.OSVersion.Version.Major >= 6);
 
-            buffer.Length = 0;
-
             if (hProcess.IsInvalid)
                 return null;
 
-            int size = buffer.Capacity;
-            if (SafeNativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.Win32Format, buffer, ref size))
+            buffer.Length = 0;
+            buffer.Capacity = 130;
+            while (true)
             {
-                for (int i = 0; i < buffer.Length; ++i)
-                    buffer[i] = char.ToLowerInvariant(buffer[i]);
-                return buffer.ToString();
+                int size = buffer.Capacity;
+                if (SafeNativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.Win32Format, buffer, ref size))
+                {
+                    for (int i = 0; i < buffer.Length; ++i)
+                        buffer[i] = char.ToLowerInvariant(buffer[i]);
+                    return buffer.ToString();
+                }
+                else
+                {
+                    const int ERROR_INSUFFICIENT_BUFFER = 122;
+                    int error = Marshal.GetLastWin32Error();
+                    if ((ERROR_INSUFFICIENT_BUFFER == error) && (buffer.Capacity < MAX_PATH_BUFF_SIZE))
+                    {
+                        buffer.Length = 0;
+                        buffer.Capacity = MAX_PATH_BUFF_SIZE;
+                        continue;
+                    }
+                    else
+                        break;
+                }
             }
-            else
-                return null;
+
+            return null;
         }
 
         public static bool GetParentProcess(int processId, ref int parentPid)
@@ -328,7 +347,7 @@ namespace PKSoft
 
         public static IEnumerable<ExtendedProcessEntry> CreateToolhelp32SnapshotExtended()
         {
-            StringBuilder sbuilder = new StringBuilder(1024);
+            StringBuilder sbuilder = new StringBuilder(MIN_PATH_BUFF_SIZE);
             foreach (var p in CreateToolhelp32Snapshot())
             {
                 using (var hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, p.th32ProcessID))
