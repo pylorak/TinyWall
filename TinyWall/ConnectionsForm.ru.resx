@@ -197,7 +197,7 @@
     <value>363, 17</value>
   </data>
   <data name="chkShowBlocked.Text" xml:space="preserve">
-    <value>Показать заблокированные приложения (за последние 2 минуты)</value>
+    <value>Показать заблокированные приложения (за последние 5 минуты)</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Соединения - TinyWall</value>

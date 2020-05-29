@@ -179,7 +179,7 @@
     <value>274, 17</value>
   </data>
   <data name="chkShowBlocked.Text" xml:space="preserve">
-    <value>Toon geblokkeerde toepassingen (laatste 2 minuten)</value>
+    <value>Toon geblokkeerde toepassingen (laatste 5 minuten)</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Verbindingen - TinyWall</value>
