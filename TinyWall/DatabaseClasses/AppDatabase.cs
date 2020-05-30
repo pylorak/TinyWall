@@ -122,7 +122,12 @@ namespace PKSoft.DatabaseClasses
                     List<ExceptionSubject> foundSubjects = id.SearchForFile(pathHint);
                     foreach (ExceptionSubject subject in foundSubjects)
                     {
-                        exceptions.Add(id.InstantiateException(subject));
+                        var tmp = id.InstantiateException(subject);
+                        if (fromSubject.Equals(subject))
+                            // Make sure original subject is at index 0
+                            exceptions.Insert(0, tmp);
+                        else
+                            exceptions.Add(tmp);
                     }
                 }
 
