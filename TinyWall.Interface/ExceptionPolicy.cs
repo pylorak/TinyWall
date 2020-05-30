@@ -77,21 +77,30 @@ namespace TinyWall.Interface
         [DataMember(EmitDefaultValue = false)]
         public bool LocalNetworkOnly { get; set; }
 
-        public override bool MergeRulesTo(ref ExceptionPolicy other)
+        public override bool MergeRulesTo(ref ExceptionPolicy target)
         {
-            switch (other.PolicyType)
+            switch (target.PolicyType)
             {
                 case PolicyType.Unrestricted:
-                    UnrestrictedPolicy pol = other as UnrestrictedPolicy;
-                    pol.LocalNetworkOnly |= this.LocalNetworkOnly;
+                {
+                    var other = target as UnrestrictedPolicy;
+                    other.LocalNetworkOnly &= this.LocalNetworkOnly;
                     break;
+                }
                 case PolicyType.HardBlock:
-                    other = HardBlockPolicy.Instance;
+                    // No change to target
                     break;
                 case PolicyType.RuleList:
-                case PolicyType.TcpUdpOnly:
-                    /* No action on purpose */
+                    this.LocalNetworkOnly = false;
+                    target = this;
                     break;
+                case PolicyType.TcpUdpOnly:
+                {
+                    var other = target as TcpUdpPolicy;
+                    this.LocalNetworkOnly &= other.LocalNetworkOnly;
+                    target = this;
+                    break;
+                }
                 default:
                     throw new NotImplementedException();
             }
@@ -140,9 +149,9 @@ namespace TinyWall.Interface
         [DataMember(EmitDefaultValue = false)]
         public string AllowedLocalUdpListenerPorts { get; set; }
 
-        public override bool MergeRulesTo(ref ExceptionPolicy other)
+        public override bool MergeRulesTo(ref ExceptionPolicy target)
         {
-            switch (other.PolicyType)
+            switch (target.PolicyType)
             {
                 case PolicyType.RuleList:
                     /* We could merge into 'other' but we won't, so that
@@ -150,12 +159,13 @@ namespace TinyWall.Interface
                      * */
                     return false;
                 case PolicyType.HardBlock:
-                    other = HardBlockPolicy.Instance;
+                    // No change to target
                     break;
                 case PolicyType.TcpUdpOnly:
-                    return MergeRulesTo(other as TcpUdpPolicy);
+                    return MergeRulesTo(target as TcpUdpPolicy);
                 case PolicyType.Unrestricted:
-                    other = this;
+                    var other = target as UnrestrictedPolicy;
+                    other.LocalNetworkOnly &= this.LocalNetworkOnly;
                     break;
                 default:
                     throw new NotImplementedException();
@@ -166,9 +176,7 @@ namespace TinyWall.Interface
 
         private bool MergeRulesTo(TcpUdpPolicy other)
         {
-            if (this.LocalNetworkOnly != other.LocalNetworkOnly)
-                return false;
-
+            other.LocalNetworkOnly &= this.LocalNetworkOnly;
             other.AllowedRemoteTcpConnectPorts = MergeStringList(this.AllowedRemoteTcpConnectPorts, other.AllowedRemoteTcpConnectPorts);
             other.AllowedRemoteUdpConnectPorts = MergeStringList(this.AllowedRemoteUdpConnectPorts, other.AllowedRemoteUdpConnectPorts);
             other.AllowedLocalTcpListenerPorts = MergeStringList(this.AllowedLocalTcpListenerPorts, other.AllowedLocalTcpListenerPorts);
@@ -229,22 +237,27 @@ namespace TinyWall.Interface
         [DataMember(EmitDefaultValue = false)]
         public List<RuleDef> Rules { get; set; }
 
-        public override bool MergeRulesTo(ref ExceptionPolicy other)
+        public override bool MergeRulesTo(ref ExceptionPolicy target)
         {
-            switch (other.PolicyType)
+            switch (target.PolicyType)
             {
                 case PolicyType.RuleList:
-                    RuleListPolicy polRules = other as RuleListPolicy;
-                    polRules.Rules.AddRange(this.Rules);
+                {
+                    var other = target as RuleListPolicy;
+                    other.Rules.AddRange(this.Rules);
                     break;
+                }
                 case PolicyType.TcpUdpOnly:
                     return false;
                 case PolicyType.HardBlock:
-                    other = HardBlockPolicy.Instance;
+                    // No change to target
                     break;
                 case PolicyType.Unrestricted:
-                    other = this;
+                {
+                    var other = target as UnrestrictedPolicy;
+                    other.LocalNetworkOnly = false;
                     break;
+                }
                 default:
                     throw new NotImplementedException();
             }
