@@ -399,14 +399,11 @@ namespace PKSoft
 
             TmpExceptionSettings = exceptions;
 
-            if (TmpExceptionSettings.Count > 1)
-            {
-                // Multiple known files
-                btnOK_Click(null, null);
-                return;
-            }
-
             UpdateUI();
+
+            if (TmpExceptionSettings.Count > 1)
+                // Multiple known files, just accept them as is
+                this.DialogResult = DialogResult.OK;
         }
 
         private void txtAppPath_TextChanged(object sender, EventArgs e)
