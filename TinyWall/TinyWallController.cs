@@ -735,7 +735,9 @@ namespace PKSoft
                 {
                     ActiveForms.Remove(dummy);
                 }
-                WhitelistSubject(new ExecutableSubject(ofd.FileName));
+
+                var subj = new ExecutableSubject(ofd.FileName);
+                AddExceptions(GlobalInstances.AppDatabase.GetExceptionsForApp(subj, true, out _));
             }
         }
 
@@ -792,7 +794,7 @@ namespace PKSoft
                 exceptions.AddRange(GlobalInstances.AppDatabase.GetExceptionsForApp(subj, true, out _));
             }
 
-            AddExceptionList(exceptions);
+            AddExceptions(exceptions);
         }
 
         internal MessageType ApplyFirewallSettings(ServerConfiguration srvConfig, bool showUI = true)
@@ -954,7 +956,9 @@ namespace PKSoft
                     string filePath = Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller);
                     if (string.IsNullOrEmpty(filePath))
                         throw new Exception();
-                    WhitelistSubject(new ExecutableSubject(filePath));
+
+                    var subj = new ExecutableSubject(filePath);
+                    AddExceptions(GlobalInstances.AppDatabase.GetExceptionsForApp(subj, true, out _));
                 }
                 catch
                 {
@@ -1019,49 +1023,9 @@ namespace PKSoft
                         subj = new ExecutableSubject(exePath);
                     }
 
-                    WhitelistSubject(subj);
+                    AddExceptions(GlobalInstances.AppDatabase.GetExceptionsForApp(subj, true, out _));
                 });
             });
-        }
-
-        internal void WhitelistSubject(ExceptionSubject subject)
-        {
-            List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out _);
-            if (exceptions.Count == 0)
-                return;
-
-            // Did we find any related files?
-            if ((exceptions.Count == 1) && (ActiveConfig.Controller.AskForExceptionDetails))
-            {
-                using (ApplicationExceptionForm f = new ApplicationExceptionForm(exceptions[0]))
-                {
-                    if (Utils.IsMetroActive(out bool success))
-                        Utils.ShowToastNotif(Resources.Messages.ToastInputNeeded);
-
-                    if (f.ShowDialog() == DialogResult.Cancel)
-                        return;
-
-                    exceptions = f.ExceptionSettings;
-                }
-            }
-
-            // Add exceptions, along with other files that belong to this app
-            AddExceptionList(exceptions);
-        }
-
-        internal void AddExceptionList(List<FirewallExceptionV3> list)
-        {
-            LoadSettingsFromServer();
-
-            if (list.Count > 1)
-            {
-                ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
-                confCopy.ActiveProfile.AppExceptions.AddRange(list);
-                confCopy.ActiveProfile.Normalize();
-                ApplyFirewallSettings(confCopy);
-            }
-            else if (list.Count == 1)
-                AddNewException(list[0]);
         }
 
         // Called when a user double-clicks on a popup to edit the most recent exception
@@ -1078,17 +1042,46 @@ namespace PKSoft
             }
 
             // Add exceptions, along with other files that belong to this app
-            AddExceptionList(exceptions);
+            AddExceptions(exceptions, false);
         }
 
-        private void AddNewException(FirewallExceptionV3 fwex)
+        internal void AddExceptions(List<FirewallExceptionV3> list, bool showEditUi = true)
         {
+            if (list.Count == 0)
+                // Nothing to do
+                return;
+
+            LoadSettingsFromServer();
+
+            bool single = (list.Count == 1);
+
+            if (single && ActiveConfig.Controller.AskForExceptionDetails && showEditUi)
+            {
+                using (ApplicationExceptionForm f = new ApplicationExceptionForm(list[0]))
+                {
+                    if (Utils.IsMetroActive(out bool _))
+                        Utils.ShowToastNotif(Resources.Messages.ToastInputNeeded);
+
+                    if (f.ShowDialog() == DialogResult.Cancel)
+                        return;
+
+                    list.Clear();
+                    list.AddRange(f.ExceptionSettings);
+                    single = (list.Count == 1);
+                }
+            }
+
             ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
-            confCopy.ActiveProfile.AppExceptions.Add(fwex);
+            confCopy.ActiveProfile.AppExceptions.AddRange(list);
             confCopy.ActiveProfile.Normalize();
 
+            if (!single)
+            {
+                ApplyFirewallSettings(confCopy, true);
+                return;
+            }
+            
             MessageType resp = ApplyFirewallSettings(confCopy, false);
-
             bool metroActive = Utils.IsMetroActive(out bool success) && !VersionInfo.Win10OrNewer;
             if (!metroActive)
             {
@@ -1096,20 +1089,20 @@ namespace PKSoft
                 {
                     case MessageType.RESPONSE_OK:
                         bool signedAndValid = false;
-                        if (fwex.Subject is ExecutableSubject exesub)
+                        if (list[0].Subject is ExecutableSubject exesub)
                             signedAndValid = exesub.IsSigned && exesub.CertValid;
 
                         if (signedAndValid)
-                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForRecognizedChanged, fwex.Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(fwex));
+                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForRecognizedChanged, list[0].Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(list[0]));
                         else
-                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForUnrecognizedChanged, fwex.Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(fwex));
+                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForUnrecognizedChanged, list[0].Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(list[0]));
                         break;
                     case MessageType.RESPONSE_WARNING:
                         // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
                         ShowBalloonTip(PKSoft.Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
                         break;
                     case MessageType.RESPONSE_ERROR:
-                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CouldNotWhitelistProcess, fwex.Subject.ToString()), ToolTipIcon.Warning);
+                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CouldNotWhitelistProcess, list[0].Subject.ToString()), ToolTipIcon.Warning);
                         break;
                     default:
                         DefaultPopups(resp);
@@ -1122,11 +1115,10 @@ namespace PKSoft
                 switch (resp)
                 {
                     case MessageType.RESPONSE_OK:
-                        string exeList = fwex.Subject.ToString();
-                        Utils.ShowToastNotif(string.Format(Resources.Messages.ToastAppWhitelisted+"\n{0}", exeList));
+                        Utils.ShowToastNotif(string.Format(Resources.Messages.ToastAppWhitelisted + "\n{0}", list[0].Subject.ToString()));
                         break;
                     default:
-                        Utils.ShowToastNotif(Resources.Messages.ToastWhitelistFailed);
+                        Utils.ShowToastNotif(Resources.Messages.ToastWhitelistFailed);  // TODO: replace by Messages.CouldNotWhitelistProcess?
                         break;
                 }
             }

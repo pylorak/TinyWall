@@ -375,7 +375,7 @@ namespace PKSoft
                 exceptions.AddRange(GlobalInstances.AppDatabase.GetExceptionsForApp(subj, true, out _));
             }
 
-            Controller.AddExceptionList(exceptions);
+            Controller.AddExceptions(exceptions);
         }
 
         private void mnuCopyRemoteAddress_Click(object sender, EventArgs e)
