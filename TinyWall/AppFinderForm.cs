@@ -16,9 +16,9 @@ namespace PKSoft
         private bool RunSearch;
         private Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
-        internal ServerConfiguration TmpSettings;
+        internal List<FirewallExceptionV3> SelectedExceptions { get; } = new List<FirewallExceptionV3>();
 
-        internal AppFinderForm(ServerConfiguration zoneSettings)
+        internal AppFinderForm()
         {
             InitializeComponent();
             this.IconList.ImageSize = IconSize;
@@ -26,7 +26,6 @@ namespace PKSoft
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
             this.btnStartDetection.Image = GlobalInstances.ApplyBtnIcon;
-            TmpSettings = zoneSettings;
 
             btnSelectImportant.Visible = false;
         }
@@ -59,6 +58,14 @@ namespace PKSoft
             {
                 if (!_List.ContainsKey(app))
                     _List.Add(app, new List<ExecutableSubject>());
+
+                var subjList = _List[app];
+                foreach (var subj in subjList)
+                {
+                    if (subj.Equals(resolvedSubject))
+                        // Duplicate, so don't add it again
+                        return;
+                }
 
                 _List[app].Add(resolvedSubject);
             }
@@ -306,7 +313,7 @@ namespace PKSoft
                         app = GlobalInstances.AppDatabase.TryGetApp(subject, out FirewallExceptionV3 fwex, false);
                         if ((app != null) && (!subject.IsSigned || subject.CertValid))
                         {
-                            TmpSettings.ActiveProfile.AppExceptions.Add(fwex);
+                            SelectedExceptions.Add(fwex);
                         }
                     }
                 }

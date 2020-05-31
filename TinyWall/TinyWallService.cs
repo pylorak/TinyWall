@@ -1257,11 +1257,10 @@ namespace PKSoft
                 if (!needSave)
                     return false;
 
-                ActiveConfig.Service.ActiveProfile.AppExceptions.AddRange(LearningNewExceptions);
+                ActiveConfig.Service.ActiveProfile.AddExceptions(LearningNewExceptions);
                 LearningNewExceptions.Clear();
             }
 
-            ActiveConfig.Service.ActiveProfile.Normalize();
             GlobalInstances.ServerChangeset = Guid.NewGuid();
             return true;
         }

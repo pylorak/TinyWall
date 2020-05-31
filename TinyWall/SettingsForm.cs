@@ -73,18 +73,19 @@ namespace PKSoft
 
         private void ListApplications_DragDrop(object sender, DragEventArgs e)
         {
+            List<FirewallExceptionV3> list = new List<FirewallExceptionV3>();
+
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
             foreach (string file in files)
             {
                 try
                 {
-                    List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(new ExecutableSubject(file), true, out DatabaseClasses.Application app);
-                    TmpConfig.Service.ActiveProfile.AppExceptions.AddRange(exceptions);
+                    list.AddRange(GlobalInstances.AppDatabase.GetExceptionsForApp(new ExecutableSubject(file), true, out DatabaseClasses.Application app));
                 }
                 catch { }
             }
 
-            TmpConfig.Service.ActiveProfile.Normalize();
+            TmpConfig.Service.ActiveProfile.AddExceptions(list);
             RebuildExceptionsList();
         }
 
@@ -384,8 +385,7 @@ namespace PKSoft
                     // Remove old rule
                     TmpConfig.Service.ActiveProfile.AppExceptions.Remove(oldEx);
                     // Add new rule
-                    TmpConfig.Service.ActiveProfile.AppExceptions.AddRange(f.ExceptionSettings);
-                    TmpConfig.Service.ActiveProfile.Normalize();
+                    TmpConfig.Service.ActiveProfile.AddExceptions(f.ExceptionSettings);
                     RebuildExceptionsList();
                 }
             }
@@ -399,8 +399,7 @@ namespace PKSoft
             {
                 if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {
-                    TmpConfig.Service.ActiveProfile.AppExceptions.AddRange(f.ExceptionSettings);
-                    TmpConfig.Service.ActiveProfile.Normalize();
+                    TmpConfig.Service.ActiveProfile.AddExceptions(f.ExceptionSettings);
                     RebuildExceptionsList();
                 }
             }
@@ -444,12 +443,11 @@ namespace PKSoft
 
         private void btnAppAutoDetect_Click(object sender, EventArgs e)
         {
-            using (AppFinderForm aff = new AppFinderForm(Utils.DeepClone(TmpConfig.Service)))
+            using (AppFinderForm aff = new AppFinderForm())
             {
                 if (aff.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {
-                    TmpConfig.Service = aff.TmpSettings;
-                    TmpConfig.Service.Normalize();
+                    TmpConfig.Service.ActiveProfile.AddExceptions(aff.SelectedExceptions);
                     RebuildExceptionsList();
                 }
             }

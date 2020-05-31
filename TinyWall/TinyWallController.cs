@@ -1072,8 +1072,7 @@ namespace PKSoft
             }
 
             ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
-            confCopy.ActiveProfile.AppExceptions.AddRange(list);
-            confCopy.ActiveProfile.Normalize();
+            confCopy.ActiveProfile.AddExceptions(list);
 
             if (!single)
             {
@@ -1297,8 +1296,7 @@ namespace PKSoft
         {
             // Copy, so that settings are not changed if they cannot be saved
             ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
-            confCopy.ActiveProfile.AppExceptions.AddRange(GlobalInstances.AppDatabase.FastSearchMachineForKnownApps());
-            confCopy.ActiveProfile.Normalize();
+            confCopy.ActiveProfile.AddExceptions(GlobalInstances.AppDatabase.FastSearchMachineForKnownApps());
             ApplyFirewallSettings(confCopy);
         }
 

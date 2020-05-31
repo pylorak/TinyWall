@@ -53,6 +53,40 @@ namespace TinyWall.Interface
             ProfileName = name;
         }
 
+        public void AddExceptions(List<FirewallExceptionV3> newList)
+        {
+            List<FirewallExceptionV3> oldList = new List<FirewallExceptionV3>(AppExceptions);
+
+            foreach (var oldEx in oldList)
+            {
+                foreach (var newEx in newList)
+                {
+                    if (oldEx.Id.Equals(newEx.Id))
+                    {
+                        // With equal exception IDs, keep only the newer one.
+                        // Two exceptions can have the same IDs if the user just edited one.
+                        AppExceptions.Remove(oldEx);
+                    }
+                    else if (oldEx.Subject.Equals(newEx.Subject)
+                        && (oldEx.Timer == AppExceptionTimer.Permanent)
+                        && (newEx.Timer == AppExceptionTimer.Permanent)
+                    )
+                    {
+                        // Merge rules
+                        var newPolicy = newEx.Policy;
+                        if (oldEx.Policy.MergeRulesTo(ref newPolicy))
+                        {
+                            AppExceptions.Remove(oldEx);
+                            newEx.Policy = newPolicy;
+                            newEx.RegenerateId();
+                        }
+                    }
+                }
+            } // for all exceptions
+
+            AppExceptions.AddRange(newList);
+        } // method
+
         public void Normalize()
         {
             for (int i = 0; i < AppExceptions.Count; ++i)
@@ -78,7 +112,6 @@ namespace TinyWall.Interface
                             newer = app1;
                         }
                         AppExceptions.Remove(older);
-                        newer.RegenerateId();
                     }
                     else if (app1.Subject.Equals(app2.Subject)
                         && (app1.Timer == AppExceptionTimer.Permanent)
