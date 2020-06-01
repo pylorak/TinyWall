@@ -1606,17 +1606,17 @@ namespace PKSoft
                     if (string.IsNullOrEmpty(path))
                         return;
 
-                    List<FirewallExceptionV3> newExceptions = new List<FirewallExceptionV3>();
-
-                    // This list will hold parents that we already checked for a process.
-                    // Used to avoid inf. loop when parent-PID info is unreliable.
-                    HashSet<int> pidsChecked = new HashSet<int>();
+                    List<FirewallExceptionV3> newExceptions = null;
 
                     lock (InheritanceGuard)
                     {
                         // Skip if we have a user-defined rule for this path
                         if (UserSubjectExes.Contains(path))
                             return;
+
+                        // This list will hold parents that we already checked for a process.
+                        // Used to avoid inf. loop when parent-PID info is unreliable.
+                        HashSet<int> pidsChecked = new HashSet<int>();
 
                         // Start walking up the process tree
                         for (int parentPid = unchecked((int)pid); ;)
@@ -1646,6 +1646,8 @@ namespace PKSoft
                             if (ChildInheritance.TryGetValue(parentPath, out FirewallExceptionV3 userEx))
                             {
                                 FirewallExceptionV3 ex = new FirewallExceptionV3(new ExecutableSubject(path), userEx.Policy);
+                                if (newExceptions == null)
+                                    newExceptions = new List<FirewallExceptionV3>();
                                 newExceptions.Add(ex);
 
                                 if (!ChildInheritedSubjectExes.ContainsKey(path))
@@ -1656,7 +1658,7 @@ namespace PKSoft
                         }
                     }
 
-                    if (newExceptions.Count != 0)
+                    if (newExceptions != null)
                     {
                         lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Request(); }
                         Q.Enqueue(new TwMessage(MessageType.ADD_TEMPORARY_EXCEPTION, newExceptions), null);
