@@ -499,7 +499,7 @@ namespace PKSoft
 
                 // Update more often while visible
                 if (value)
-                    TrafficTimer.Change(0, 1000);
+                    TrafficTimer.Change(0, 2000);
                 else
                     TrafficTimer.Change(5000, 5000);
             }
@@ -1356,17 +1356,17 @@ namespace PKSoft
                 // BEGIN
                 TrayMenu.Closed += TrayMenu_Closed;
                 Tray.ContextMenuStrip = TrayMenu;
-                TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, 0, Timeout.Infinite);
+                TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, Timeout.Infinite, Timeout.Infinite);
                 UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(10));
-                IncreaseTrafficRate = false;
                 mnuElevate.Visible = !Utils.RunningAsAdmin();
                 mnuModeDisabled.Image = Resources.Icons.shield_grey_small.ToBitmap();
                 mnuModeAllowOutgoing.Image = Resources.Icons.shield_red_small.ToBitmap();
                 mnuModeBlockAll.Image = Resources.Icons.shield_yellow_small.ToBitmap();
                 mnuModeNormal.Image = Resources.Icons.shield_green_small.ToBitmap();
                 mnuModeLearn.Image = Resources.Icons.shield_blue_small.ToBitmap();
-                ApplyControllerSettings();
 
+                IncreaseTrafficRate = false;
+                ApplyControllerSettings();
                 GlobalInstances.Controller = new Controller("TinyWallController");
 
                 barrier.Wait();
