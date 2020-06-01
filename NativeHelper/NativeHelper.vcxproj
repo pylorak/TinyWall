@@ -161,9 +161,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="TrafficMonitor.cpp" />
     <ClCompile Include="UwpPackageListing.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="common.h" />
+    <ClInclude Include="TrafficMonitor.h" />
     <ClInclude Include="UwpPackageListing.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

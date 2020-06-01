@@ -1,8 +1,7 @@
 #ifndef _UwpPackageListing_H_INCLUDED
 #define _UwpPackageListing_H_INCLUDED
 
-#define DLLEXPORT	__declspec(dllexport)
-#define DLLCALLCONV	__stdcall
+#include "common.h"
 
 struct UwpPackage;
 

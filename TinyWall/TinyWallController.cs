@@ -425,7 +425,7 @@ namespace PKSoft
             }
         }
 
-        void UpdateTrafficRateText(int rxRate, int txRate)
+        void UpdateTrafficRateText(long rxRate, long txRate)
         {
             Utils.Invoke(TrayMenu, (MethodInvoker)delegate
             {
