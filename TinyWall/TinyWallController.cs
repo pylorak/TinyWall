@@ -418,6 +418,9 @@ namespace PKSoft
             ulong bytesTxNewTotal = 0;
             DateTime newTimestamp = DateTime.Now;
 
+            if (!Monitor.TryEnter(TrafficTimer))
+                return;
+
             try
             {
                 using (ManagementObjectCollection moc = TrafficStatsSearcher.Get())
@@ -464,6 +467,10 @@ namespace PKSoft
             catch
             {
                 UpdateTrafficRateText(null, null);
+            }
+            finally
+            {
+                Monitor.Exit(TrafficTimer);
             }
 
             void UpdateTrafficRateText(string rxTxt, string txTxt)
