@@ -194,6 +194,7 @@
     </Compile>
     <Compile Include="ThreadBarrier.cs" />
     <Compile Include="TinyWallDoctor.cs" />
+    <Compile Include="TrafficRateMonitor.cs" />
     <Compile Include="UpdateChecker.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Deprecated\FirewallException.cs" />

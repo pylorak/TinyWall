@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Net.NetworkInformation;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Diagnostics;
-using System.Management;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Samples;
@@ -267,10 +265,7 @@ namespace PKSoft
 
         // Traffic rate monitoring
         private System.Threading.Timer TrafficTimer;
-        private DateTime TrafficTimerTs;
-        private ManagementObjectSearcher TrafficStatsSearcher;
-        private ulong bytesRxTotal = 0;
-        private ulong bytesTxTotal = 0;
+        private TrafficRateMonitor TrafficMonitor;
 
         private EventHandler<AnyEventArgs> BalloonClickedCallback;
         private object BalloonClickedCallbackArgument;
@@ -340,7 +335,7 @@ namespace PKSoft
 
         private void TrayMenu_Closed(object sender, ToolStripDropDownClosedEventArgs e)
         {
-            IncreaseTrafficRate = false;
+            UpdateTrafficRate = false;
         }
 
         protected override void Dispose(bool disposing)
@@ -364,7 +359,7 @@ namespace PKSoft
                     TrafficTimer.Dispose(wh);
                     wh.WaitOne();
                 }
-                TrafficStatsSearcher.Dispose();
+                TrafficMonitor?.Dispose();
 
                 components.Dispose();
             }
@@ -412,93 +407,57 @@ namespace PKSoft
 
         private void TrafficTimerTick(object state)
         {
-            string rxDisplay;
-            string txDisplay;
-            ulong bytesRxNewTotal = 0;
-            ulong bytesTxNewTotal = 0;
-            DateTime newTimestamp = DateTime.Now;
-
             if (!Monitor.TryEnter(TrafficTimer))
                 return;
 
             try
             {
-                using (ManagementObjectCollection moc = TrafficStatsSearcher.Get())
-                {
-                    foreach (ManagementObject adapterObject in moc)
-                    {
-                        bytesRxNewTotal += (ulong)adapterObject["BytesReceivedPersec"];
-                        bytesTxNewTotal += (ulong)adapterObject["BytesSentPersec"];
-                        adapterObject.Dispose();
-                    }
-                }
-
-                // If this is the first time we are running
-                if ((bytesRxTotal == 0) && (bytesTxTotal == 0))
-                {
-                    bytesRxTotal = bytesRxNewTotal;
-                    bytesTxTotal = bytesTxNewTotal;
-                }
-
-                TimeSpan timeDiff = newTimestamp - TrafficTimerTs;
-                float RxDiff = (bytesRxNewTotal - bytesRxTotal) / (float)timeDiff.TotalSeconds;
-                float TxDiff = (bytesTxNewTotal - bytesTxTotal) / (float)timeDiff.TotalSeconds;
-                bytesRxTotal = bytesRxNewTotal;
-                bytesTxTotal = bytesTxNewTotal;
-                TrafficTimerTs = newTimestamp;
-
-                float KBytesRxPerSec = RxDiff / 1024;
-                float KBytesTxPerSec = TxDiff / 1024;
-                float MBytesRxPerSec = KBytesRxPerSec / 1024;
-                float MBytesTxPerSec = KBytesTxPerSec / 1024;
-
-                if (MBytesRxPerSec > 1)
-                    rxDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}MiB/s", MBytesRxPerSec);
-                else
-                    rxDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}KiB/s", KBytesRxPerSec);
-
-                if (MBytesTxPerSec > 1)
-                    txDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}MiB/s", MBytesTxPerSec);
-                else
-                    txDisplay = string.Format(CultureInfo.CurrentCulture, "{0:f}KiB/s", KBytesTxPerSec);
-
-                UpdateTrafficRateText(rxDisplay, txDisplay);
+                TrafficMonitor.Update();
+                UpdateTrafficRateText(TrafficMonitor.BytesReceivedPerSec, TrafficMonitor.BytesSentPerSec);
             }
             catch
             {
-                UpdateTrafficRateText(null, null);
+                UpdateTrafficRateText(-1, -1);
             }
             finally
             {
                 Monitor.Exit(TrafficTimer);
             }
-
-            void UpdateTrafficRateText(string rxTxt, string txTxt)
-            {
-                if (!IncreaseTrafficRate)
-                    return;
-
-                bool show = (rxTxt != null);
-                Utils.Invoke(TrayMenu, (MethodInvoker)delegate
-                {
-                    if (show)
-                        mnuTrafficRate.Text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", PKSoft.Resources.Messages.TrafficIn, rxTxt, PKSoft.Resources.Messages.TrafficOut, txTxt);
-                    mnuTrafficRate.Visible = show;
-                    toolStripMenuItem1.Visible = show;
-                });
-            }
         }
 
-        private bool _IncreaseTrafficRate = false;
-        private bool IncreaseTrafficRate
+        void UpdateTrafficRateText(int rxRate, int txRate)
         {
-            get { return _IncreaseTrafficRate; }
+            Utils.Invoke(TrayMenu, (MethodInvoker)delegate
+            {
+                bool show = (rxRate >= 0);
+                mnuTrafficRate.Visible = show;
+                toolStripMenuItem1.Visible = show;
+                if (show)
+                {
+                    float KBytesRxPerSec = (float)rxRate / 1024;
+                    float KBytesTxPerSec = (float)txRate / 1024;
+                    float MBytesRxPerSec = KBytesRxPerSec / 1024;
+                    float MBytesTxPerSec = KBytesTxPerSec / 1024;
+
+                    string rxDisplay = (MBytesRxPerSec > 1) 
+                        ? string.Format(CultureInfo.CurrentCulture, "{0:f} MiB/s", MBytesRxPerSec)
+                        : string.Format(CultureInfo.CurrentCulture, "{0:f} KiB/s", KBytesRxPerSec);
+
+                    string txDisplay = (MBytesTxPerSec > 1)
+                        ? string.Format(CultureInfo.CurrentCulture, "{0:f} MiB/s", MBytesTxPerSec)
+                        : string.Format(CultureInfo.CurrentCulture, "{0:f} KiB/s", KBytesTxPerSec); 
+
+                    mnuTrafficRate.Text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}    {2}: {3}", PKSoft.Resources.Messages.TrafficIn, rxDisplay, PKSoft.Resources.Messages.TrafficOut, txDisplay);
+                }
+            });
+        }
+
+        private bool UpdateTrafficRate
+        {
             set
             {
-                _IncreaseTrafficRate = value;
-
                 // Update more often while visible
-                if (value)
+                if ((TrafficMonitor != null) && value)
                     TrafficTimer.Change(0, 2000);
                 else
                     TrafficTimer.Change(5000, 5000);
@@ -717,7 +676,7 @@ namespace PKSoft
                 }
             }
 
-            IncreaseTrafficRate = true;
+            UpdateTrafficRate = true;
 
             bool locked = GlobalInstances.Controller.IsServerLocked;
             this.Locked = locked;
@@ -1330,12 +1289,6 @@ namespace PKSoft
         {
             mnuTrafficRate.Text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", PKSoft.Resources.Messages.TrafficIn, "...", PKSoft.Resources.Messages.TrafficOut, "...");
 
-            try
-            {
-                TrafficStatsSearcher = new ManagementObjectSearcher(@"select BytesReceivedPersec, BytesSentPersec from Win32_PerfRawData_Tcpip_NetworkInterface");
-            }
-            catch { }
-
             // We will load our database parallel to other things to improve startup performance
             using (ThreadBarrier barrier = new ThreadBarrier(2))
             {
@@ -1365,7 +1318,16 @@ namespace PKSoft
                 mnuModeNormal.Image = Resources.Icons.shield_green_small.ToBitmap();
                 mnuModeLearn.Image = Resources.Icons.shield_blue_small.ToBitmap();
 
-                IncreaseTrafficRate = false;
+                try
+                {
+                    TrafficMonitor = new TrafficRateMonitor();
+                    UpdateTrafficRate = false;
+                }
+                catch 
+                {
+                    UpdateTrafficRateText(-1, -1);
+                }
+
                 ApplyControllerSettings();
                 GlobalInstances.Controller = new Controller("TinyWallController");
 
