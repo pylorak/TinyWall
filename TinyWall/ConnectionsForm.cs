@@ -279,7 +279,7 @@ namespace PKSoft
         private void ConnectionsForm_Load(object sender, EventArgs e)
         {
             Utils.SetDoubleBuffering(list, true);
-            list.ListViewItemSorter = new ListViewItemComparer(8, false);
+            list.ListViewItemSorter = new ListViewItemComparer(8, null, false);
             this.Size = ActiveConfig.Controller.ConnFormWindowSize;
             this.Location = ActiveConfig.Controller.ConnFormWindowLoc;
             this.WindowState = ActiveConfig.Controller.ConnFormWindowState;

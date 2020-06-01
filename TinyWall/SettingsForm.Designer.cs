@@ -203,7 +203,9 @@
             this.listApplications.SmallImageList = this.IconList;
             this.listApplications.UseCompatibleStateImageBehavior = false;
             this.listApplications.View = System.Windows.Forms.View.Details;
+            this.listApplications.VirtualMode = true;
             this.listApplications.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listApplications_ColumnClick);
+            this.listApplications.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.listApplications_RetrieveVirtualItem);
             this.listApplications.SelectedIndexChanged += new System.EventHandler(this.listApplications_SelectedIndexChanged);
             this.listApplications.DoubleClick += new System.EventHandler(this.listApplications_DoubleClick);
             // 

@@ -37,6 +37,7 @@ namespace PKSoft
         internal ConfigContainer TmpConfig;
 
         private List<ListViewItem> ExceptionItems = new List<ListViewItem>();
+        private List<ListViewItem> FilteredExceptionItems = new List<ListViewItem>();
         private bool LoadingSettings;
         private string m_NewPassword;
         private Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
@@ -171,20 +172,23 @@ namespace PKSoft
                 FirewallExceptionV3 ex = TmpConfig.Service.ActiveProfile.AppExceptions[i];
                 ExceptionItems.Add(ListItemFromAppException(ex, packageList));
             }
+
+            ExceptionItems.Sort(listApplications.ListViewItemSorter as ListViewItemComparer);
+
             ApplyExceptionFilter();
         }
 
         private void ApplyExceptionFilter()
         {
             string filter = txtExceptionListFilter.Text.Trim().ToUpperInvariant();
-            List<ListViewItem> icoll = new List<ListViewItem>();
+            FilteredExceptionItems.Clear();
 
             if (string.IsNullOrEmpty(filter))
             {
                 // No filter, add everything
                 for (int i = 0; i < ExceptionItems.Count; ++i)
                 {
-                    icoll.Add(ExceptionItems[i]);
+                    FilteredExceptionItems.Add(ExceptionItems[i]);
                 }
             }
             else
@@ -195,15 +199,13 @@ namespace PKSoft
                     string sub0 = ExceptionItems[i].SubItems[0].Text.ToUpperInvariant();
                     string sub1 = ExceptionItems[i].SubItems[1].Text.ToUpperInvariant();
                     if (sub0.Contains(filter) || sub1.Contains(filter))
-                        icoll.Add(ExceptionItems[i]);
+                        FilteredExceptionItems.Add(ExceptionItems[i]);
                 }
             }
 
             // Update visible list
-            listApplications.BeginUpdate();
-            listApplications.Items.Clear();
-            listApplications.Items.AddRange(icoll.ToArray());
-            listApplications.EndUpdate();
+            listApplications.VirtualListSize = FilteredExceptionItems.Count;
+            listApplications.Refresh();
 
             // Update buttons
             listApplications_SelectedIndexChanged(listApplications, null);
@@ -233,13 +235,13 @@ namespace PKSoft
                 case SubjectType.Global:
                     li.Text = Resources.Messages.AllApplications;
                     li.SubItems.Add(Resources.Messages.SubjectTypeGlobal);
-                    li.ImageKey = "window";
+                    li.ImageIndex = IconList.Images.IndexOfKey("window");
                     break;
                 case SubjectType.AppContainer:
                     li.Text = uwpSubj.DisplayName;
                     li.SubItems.Add(Resources.Messages.SubjectTypeUwpApp);
                     li.SubItems.Add(uwpSubj.PublisherId + ", " + uwpSubj.Publisher);
-                    li.ImageKey = "store";
+                    li.ImageIndex = IconList.Images.IndexOfKey("store");
                     break;
                 default:
                     throw new NotImplementedException();
@@ -255,7 +257,7 @@ namespace PKSoft
             {
                 if (!packageList.FindPackage(uwpSubj.Sid).HasValue)
                 {
-                    li.ImageKey = "deleted";
+                    li.ImageIndex = IconList.Images.IndexOfKey("deleted");
                     li.BackColor = System.Drawing.Color.LightGray;
                 }
             }
@@ -269,17 +271,17 @@ namespace PKSoft
                      * does not work with UNC paths. For workaround see:
                      * http://stackoverflow.com/questions/1842226/how-to-get-the-associated-icon-from-a-network-share-file
                      */
-                    li.ImageKey = "network-drive";
+                    li.ImageIndex = IconList.Images.IndexOfKey("network-drive");
                 }
                 else if (File.Exists(exeSubj.ExecutablePath))
                 {
                     if (!IconList.Images.ContainsKey(exeSubj.ExecutablePath))
                         IconList.Images.Add(exeSubj.ExecutablePath, Utils.GetIconContained(exeSubj.ExecutablePath, IconSize.Width, IconSize.Height));
-                    li.ImageKey = exeSubj.ExecutablePath;
+                    li.ImageIndex = IconList.Images.IndexOfKey(exeSubj.ExecutablePath);
                 }
                 else
                 {
-                    li.ImageKey = "deleted";
+                    li.ImageIndex = IconList.Images.IndexOfKey("deleted");
                     li.BackColor = System.Drawing.Color.LightGray;
                 }
             }
@@ -346,8 +348,8 @@ namespace PKSoft
 
         private void listApplications_SelectedIndexChanged(object sender, EventArgs e)
         {
-            bool AnyItemSelected = listApplications.SelectedItems.Count != 0;
-            bool SingleItemSelected = listApplications.SelectedItems.Count == 1;
+            bool AnyItemSelected = listApplications.SelectedIndices.Count != 0;
+            bool SingleItemSelected = listApplications.SelectedIndices.Count == 1;
             btnAppModify.Enabled = SingleItemSelected;
             btnAppRemove.Enabled = AnyItemSelected;
             btnSubmitAssoc.Enabled = AnyItemSelected;
@@ -355,9 +357,9 @@ namespace PKSoft
 
         private void btnAppRemove_Click(object sender, EventArgs e)
         {
-            for (int i = listApplications.SelectedItems.Count - 1; i >= 0; --i)
+            for (int i = listApplications.SelectedIndices.Count - 1; i >= 0; --i)
             {
-                ListViewItem li = listApplications.SelectedItems[i];
+                ListViewItem li = FilteredExceptionItems[listApplications.SelectedIndices[i]];
                 TmpConfig.Service.ActiveProfile.AppExceptions.Remove((FirewallExceptionV3)li.Tag);
             }
             RebuildExceptionsList();
@@ -374,7 +376,7 @@ namespace PKSoft
         
         private void btnAppModify_Click(object sender, EventArgs e)
         {
-            ListViewItem li = listApplications.SelectedItems[0];
+            ListViewItem li = FilteredExceptionItems[listApplications.SelectedIndices[0]];
             FirewallExceptionV3 oldEx = (FirewallExceptionV3)li.Tag;
             FirewallExceptionV3 newEx = Utils.DeepClone(oldEx);
             newEx.RegenerateId();
@@ -541,7 +543,7 @@ namespace PKSoft
             this.Location = TmpConfig.Controller.SettingsFormWindowLoc;
 
             Utils.SetDoubleBuffering(listApplications, true);
-            listApplications.ListViewItemSorter = new ListViewItemComparer(0);
+            listApplications.ListViewItemSorter = new ListViewItemComparer(0, IconList);
             tabControl1.SelectedIndex = TmpConfig.Controller.SettingsTabIndex;
 
             comboLanguages.Items.Add(new IdWithName("auto", "Automatic"));
@@ -589,11 +591,12 @@ namespace PKSoft
         private void listApplications_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             ListViewItemComparer oldSorter = listApplications.ListViewItemSorter as ListViewItemComparer;
-            ListViewItemComparer newSorter = new ListViewItemComparer(e.Column);
+            ListViewItemComparer newSorter = new ListViewItemComparer(e.Column, IconList);
             if ((oldSorter != null) && (oldSorter.Column == newSorter.Column))
                 newSorter.Ascending = !oldSorter.Ascending;
 
             listApplications.ListViewItemSorter = newSorter;
+            RebuildExceptionsList();
         }
 
         private void chkEnableBlocklists_CheckedChanged(object sender, EventArgs e)
@@ -629,6 +632,11 @@ namespace PKSoft
             ActiveConfig.Controller.SettingsFormWindowSize = this.Size;
             ActiveConfig.Controller.SettingsFormWindowLoc = this.Location;
             ActiveConfig.Controller.Save();
+        }
+
+        private void listApplications_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
+        {
+            e.Item = FilteredExceptionItems[e.ItemIndex];
         }
     }
 }
