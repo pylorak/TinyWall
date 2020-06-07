@@ -63,17 +63,7 @@ namespace PKSoft
 
         private void ExpandRule(RuleDef r, List<RuleDef> results)
         {
-            if (r.Protocol == Protocol.TcpUdp)
-            {
-                RuleDef tmp = r.DeepCopy();
-                tmp.Protocol = Protocol.TCP;
-                ExpandRule(tmp, results);
-
-                tmp = r.DeepCopy();
-                tmp.Protocol = Protocol.UDP;
-                ExpandRule(tmp, results);
-            }
-            else if ((r.RemoteAddresses != null) && r.RemoteAddresses.Contains("LocalSubnet"))
+            if ((r.RemoteAddresses != null) && r.RemoteAddresses.Contains("LocalSubnet"))
             {
                 StringBuilder sb = new StringBuilder(512);
                 foreach (var addr in InterfaceAddreses) // TODO: Use StringBuilder.AppendJoin() starting with .NET Core
@@ -321,7 +311,6 @@ namespace PKSoft
             Transaction trx = useTransaction ? WfpEngine.BeginTransaction() : null;
             try
             {
-
                 // Add new rules
                 foreach (RuleDef r in rules)
                 {
@@ -604,9 +593,16 @@ namespace PKSoft
 
                 if (r.Protocol != Protocol.Any)
                 {
-                    System.Diagnostics.Debug.Assert(r.Protocol != Protocol.TcpUdp);
                     if (LayerIsAleAuthConnect(layer) || LayerIsAleAuthRecvAccept(layer))
-                        conditions.Add(new ProtocolFilterCondition((byte)r.Protocol));
+                    {
+                        if (r.Protocol == Protocol.TcpUdp)
+                        {
+                            conditions.Add(new ProtocolFilterCondition((byte)Protocol.TCP));
+                            conditions.Add(new ProtocolFilterCondition((byte)Protocol.UDP));
+                        }
+                        else
+                            conditions.Add(new ProtocolFilterCondition((byte)r.Protocol));
+                    }
                 }
                 if (!string.IsNullOrEmpty(r.LocalPorts))
                 {
@@ -939,41 +935,69 @@ namespace PKSoft
                 case PolicyType.TcpUdpOnly:
                     {
                         TcpUdpPolicy pol = ex.Policy as TcpUdpPolicy;
-                        if (!string.IsNullOrEmpty(pol.AllowedLocalTcpListenerPorts))
+
+                        // Incoming
+                        if (!string.IsNullOrEmpty(pol.AllowedLocalTcpListenerPorts) && (pol.AllowedLocalTcpListenerPorts == pol.AllowedLocalUdpListenerPorts))
                         {
-                            RuleDef def = new RuleDef(ex.Id, "TCP Listen Ports", ex.Subject, RuleAction.Allow, RuleDirection.In, Protocol.TCP, permitWeight);
+                            RuleDef def = new RuleDef(ex.Id, "TCP/UDP Listen Ports", ex.Subject, RuleAction.Allow, RuleDirection.In, Protocol.TcpUdp, permitWeight);
                             if (!pol.AllowedLocalTcpListenerPorts.Equals("*"))
                                 def.LocalPorts = pol.AllowedLocalTcpListenerPorts;
                             if (pol.LocalNetworkOnly)
                                 def.RemoteAddresses = "LocalSubnet";
                             ExpandRule(def, results);
                         }
-                        if (!string.IsNullOrEmpty(pol.AllowedLocalUdpListenerPorts))
+                        else
                         {
-                            RuleDef def = new RuleDef(ex.Id, "UDP Listen Ports", ex.Subject, RuleAction.Allow, RuleDirection.In, Protocol.UDP, permitWeight);
-                            if (!pol.AllowedLocalUdpListenerPorts.Equals("*"))
-                                def.LocalPorts = pol.AllowedLocalUdpListenerPorts;
-                            if (pol.LocalNetworkOnly)
-                                def.RemoteAddresses = "LocalSubnet";
-                            ExpandRule(def, results);
+                            if (!string.IsNullOrEmpty(pol.AllowedLocalTcpListenerPorts))
+                            {
+                                RuleDef def = new RuleDef(ex.Id, "TCP Listen Ports", ex.Subject, RuleAction.Allow, RuleDirection.In, Protocol.TCP, permitWeight);
+                                if (!pol.AllowedLocalTcpListenerPorts.Equals("*"))
+                                    def.LocalPorts = pol.AllowedLocalTcpListenerPorts;
+                                if (pol.LocalNetworkOnly)
+                                    def.RemoteAddresses = "LocalSubnet";
+                                ExpandRule(def, results);
+                            }
+                            if (!string.IsNullOrEmpty(pol.AllowedLocalUdpListenerPorts))
+                            {
+                                RuleDef def = new RuleDef(ex.Id, "UDP Listen Ports", ex.Subject, RuleAction.Allow, RuleDirection.In, Protocol.UDP, permitWeight);
+                                if (!pol.AllowedLocalUdpListenerPorts.Equals("*"))
+                                    def.LocalPorts = pol.AllowedLocalUdpListenerPorts;
+                                if (pol.LocalNetworkOnly)
+                                    def.RemoteAddresses = "LocalSubnet";
+                                ExpandRule(def, results);
+                            }
                         }
-                        if (!string.IsNullOrEmpty(pol.AllowedRemoteTcpConnectPorts))
+
+                        // Outgoing
+                        if (!string.IsNullOrEmpty(pol.AllowedRemoteTcpConnectPorts) && (pol.AllowedRemoteTcpConnectPorts == pol.AllowedRemoteUdpConnectPorts))
                         {
-                            RuleDef def = new RuleDef(ex.Id, "TCP Outbound Ports", ex.Subject, RuleAction.Allow, RuleDirection.Out, Protocol.TCP, permitWeight);
+                            RuleDef def = new RuleDef(ex.Id, "TCP/UDP Outbound Ports", ex.Subject, RuleAction.Allow, RuleDirection.Out, Protocol.TcpUdp, permitWeight);
                             if (!pol.AllowedRemoteTcpConnectPorts.Equals("*"))
                                 def.RemotePorts = pol.AllowedRemoteTcpConnectPorts;
                             if (pol.LocalNetworkOnly)
                                 def.RemoteAddresses = "LocalSubnet";
                             ExpandRule(def, results);
                         }
-                        if (!string.IsNullOrEmpty(pol.AllowedRemoteUdpConnectPorts))
+                        else
                         {
-                            RuleDef def = new RuleDef(ex.Id, "UDP Outbound Ports", ex.Subject, RuleAction.Allow, RuleDirection.Out, Protocol.UDP, permitWeight);
-                            if (!pol.AllowedRemoteUdpConnectPorts.Equals("*"))
-                                def.RemotePorts = pol.AllowedRemoteUdpConnectPorts;
-                            if (pol.LocalNetworkOnly)
-                                def.RemoteAddresses = "LocalSubnet";
-                            ExpandRule(def, results);
+                            if (!string.IsNullOrEmpty(pol.AllowedRemoteTcpConnectPorts))
+                            {
+                                RuleDef def = new RuleDef(ex.Id, "TCP Outbound Ports", ex.Subject, RuleAction.Allow, RuleDirection.Out, Protocol.TCP, permitWeight);
+                                if (!pol.AllowedRemoteTcpConnectPorts.Equals("*"))
+                                    def.RemotePorts = pol.AllowedRemoteTcpConnectPorts;
+                                if (pol.LocalNetworkOnly)
+                                    def.RemoteAddresses = "LocalSubnet";
+                                ExpandRule(def, results);
+                            }
+                            if (!string.IsNullOrEmpty(pol.AllowedRemoteUdpConnectPorts))
+                            {
+                                RuleDef def = new RuleDef(ex.Id, "UDP Outbound Ports", ex.Subject, RuleAction.Allow, RuleDirection.Out, Protocol.UDP, permitWeight);
+                                if (!pol.AllowedRemoteUdpConnectPorts.Equals("*"))
+                                    def.RemotePorts = pol.AllowedRemoteUdpConnectPorts;
+                                if (pol.LocalNetworkOnly)
+                                    def.RemoteAddresses = "LocalSubnet";
+                                ExpandRule(def, results);
+                            }
                         }
                         break;
                     }
