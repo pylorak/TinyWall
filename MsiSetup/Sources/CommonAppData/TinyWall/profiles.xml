@@ -59,6 +59,7 @@
         <SubjectIdentity>
           <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
             <d6p1:string>E="release+certificates@mozilla.com", CN=Mozilla Corporation, OU=Release Engineering, O=Mozilla Corporation, L=Mountain View, S=California, C=US</d6p1:string>
+            <d6p1:string>E="release+certificates@mozilla.com", CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US</d6p1:string>
           </CertificateSubjects>
           <Policy i:type="TcpUdpPolicy">
             <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
@@ -77,6 +78,7 @@
         <SubjectIdentity>
           <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
             <d6p1:string>E="release+certificates@mozilla.com", CN=Mozilla Corporation, OU=Release Engineering, O=Mozilla Corporation, L=Mountain View, S=California, C=US</d6p1:string>
+            <d6p1:string>E="release+certificates@mozilla.com", CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US</d6p1:string>
           </CertificateSubjects>
           <Policy i:type="TcpUdpPolicy">
             <AllowedLocalTcpListenerPorts></AllowedLocalTcpListenerPorts>
