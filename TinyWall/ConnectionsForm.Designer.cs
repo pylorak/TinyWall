@@ -92,38 +92,47 @@
             // 
             // columnHeader1
             // 
+            this.columnHeader1.Tag = "colProcess";
             resources.ApplyResources(this.columnHeader1, "columnHeader1");
             // 
             // columnHeader2
             // 
+            this.columnHeader2.Tag = "colProtocol";
             resources.ApplyResources(this.columnHeader2, "columnHeader2");
             // 
             // columnHeader3
             // 
+            this.columnHeader3.Tag = "colSrcPort";
             resources.ApplyResources(this.columnHeader3, "columnHeader3");
             // 
             // columnHeader4
             // 
+            this.columnHeader4.Tag = "colLocalAddress";
             resources.ApplyResources(this.columnHeader4, "columnHeader4");
             // 
             // columnHeader5
             // 
+            this.columnHeader5.Tag = "colDstPort";
             resources.ApplyResources(this.columnHeader5, "columnHeader5");
             // 
             // columnHeader6
             // 
+            this.columnHeader6.Tag = "colRemoteAddress";
             resources.ApplyResources(this.columnHeader6, "columnHeader6");
             // 
             // columnHeader7
             // 
+            this.columnHeader7.Tag = "colState";
             resources.ApplyResources(this.columnHeader7, "columnHeader7");
             // 
             // columnHeader8
             // 
+            this.columnHeader8.Tag = "colDirection";
             resources.ApplyResources(this.columnHeader8, "columnHeader8");
             // 
             // columnHeader9
             // 
+            this.columnHeader9.Tag = "colTimestamp";
             resources.ApplyResources(this.columnHeader9, "columnHeader9");
             // 
             // contextMenuStrip1

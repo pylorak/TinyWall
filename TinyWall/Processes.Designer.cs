@@ -58,10 +58,12 @@
             // 
             // columnHeader1
             // 
+            this.columnHeader1.Tag = "colName";
             resources.ApplyResources(this.columnHeader1, "columnHeader1");
             // 
             // columnHeader2
             // 
+            this.columnHeader2.Tag = "colPath";
             resources.ApplyResources(this.columnHeader2, "columnHeader2");
             // 
             // IconList

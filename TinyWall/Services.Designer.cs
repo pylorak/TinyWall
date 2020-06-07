@@ -57,14 +57,17 @@
             // 
             // columnHeader1
             // 
+            this.columnHeader1.Tag = "colDescription";
             resources.ApplyResources(this.columnHeader1, "columnHeader1");
             // 
             // columnHeader2
             // 
+            this.columnHeader2.Tag = "colName";
             resources.ApplyResources(this.columnHeader2, "columnHeader2");
             // 
             // columnHeader3
             // 
+            this.columnHeader3.Tag = "colExecutable";
             resources.ApplyResources(this.columnHeader3, "columnHeader3");
             // 
             // btnOK

@@ -60,6 +60,12 @@ namespace PKSoft
                 this.Location = ActiveConfig.Controller.ProcessesFormWindowLoc;
             this.WindowState = ActiveConfig.Controller.ProcessesFormWindowState;
 
+            foreach (ColumnHeader col in listView.Columns)
+            {
+                if (ActiveConfig.Controller.ProcessesFormColumnWidths.TryGetValue(col.Tag as string, out int width))
+                    col.Width = width;
+            }
+
             List<ListViewItem> itemColl = new List<ListViewItem>();
             UwpPackage packages = new UwpPackage();
 
@@ -143,6 +149,10 @@ namespace PKSoft
                 ActiveConfig.Controller.ProcessesFormWindowSize = this.RestoreBounds.Size;
                 ActiveConfig.Controller.ProcessesFormWindowLoc = this.RestoreBounds.Location;
             }
+
+            ActiveConfig.Controller.ProcessesFormColumnWidths.Clear();
+            foreach (ColumnHeader col in listView.Columns)
+                ActiveConfig.Controller.ProcessesFormColumnWidths.Add(col.Tag as string, col.Width);
 
             ActiveConfig.Controller.Save();
         }

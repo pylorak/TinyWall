@@ -211,14 +211,17 @@
             // 
             // columnApp
             // 
+            this.columnApp.Tag = "colApplication";
             resources.ApplyResources(this.columnApp, "columnApp");
             // 
             // columnType
             // 
+            this.columnType.Tag = "colType";
             resources.ApplyResources(this.columnType, "columnType");
             // 
             // columnDetails
             // 
+            this.columnDetails.Tag = "colDetails";
             resources.ApplyResources(this.columnDetails, "columnDetails");
             // 
             // IconList

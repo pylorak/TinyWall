@@ -273,6 +273,10 @@ namespace PKSoft
             ActiveConfig.Controller.ConnFormShowOpenPorts = this.chkShowListen.Checked;
             ActiveConfig.Controller.ConnFormShowBlocked = this.chkShowBlocked.Checked;
 
+            ActiveConfig.Controller.ConnFormColumnWidths.Clear();
+            foreach (ColumnHeader col in list.Columns)
+                ActiveConfig.Controller.ConnFormColumnWidths.Add(col.Tag as string, col.Width);
+
             ActiveConfig.Controller.Save();
         }
 
@@ -288,6 +292,13 @@ namespace PKSoft
             this.chkShowActive.Checked = ActiveConfig.Controller.ConnFormShowConnections;
             this.chkShowListen.Checked = ActiveConfig.Controller.ConnFormShowOpenPorts;
             this.chkShowBlocked.Checked = ActiveConfig.Controller.ConnFormShowBlocked;
+
+            foreach (ColumnHeader col in list.Columns)
+            {
+                if (ActiveConfig.Controller.ConnFormColumnWidths.TryGetValue(col.Tag as string, out int width))
+                    col.Width = width;
+            }
+
             UpdateList();
         }
 

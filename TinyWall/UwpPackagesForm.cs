@@ -71,6 +71,12 @@ namespace PKSoft
                 this.Location = ActiveConfig.Controller.UwpPackagesFormWindowLoc;
             this.WindowState = ActiveConfig.Controller.UwpPackagesFormWindowState;
 
+            foreach (ColumnHeader col in listView.Columns)
+            {
+                if (ActiveConfig.Controller.UwpPackagesFormColumnWidths.TryGetValue(col.Tag as string, out int width))
+                    col.Width = width;
+            }
+
             List<ListViewItem> itemColl = new List<ListViewItem>();
 
             var packages = UwpPackage.GetList();
@@ -114,6 +120,10 @@ namespace PKSoft
                 ActiveConfig.Controller.UwpPackagesFormWindowSize = this.RestoreBounds.Size;
                 ActiveConfig.Controller.UwpPackagesFormWindowLoc = this.RestoreBounds.Location;
             }
+
+            ActiveConfig.Controller.UwpPackagesFormColumnWidths.Clear();
+            foreach (ColumnHeader col in listView.Columns)
+                ActiveConfig.Controller.UwpPackagesFormColumnWidths.Add(col.Tag as string, col.Width);
 
             ActiveConfig.Controller.Save();
         }

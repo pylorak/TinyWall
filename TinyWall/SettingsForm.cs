@@ -544,6 +544,12 @@ namespace PKSoft
             if (TmpConfig.Controller.SettingsFormWindowLoc.X != 0)
                 this.Location = TmpConfig.Controller.SettingsFormWindowLoc;
 
+            foreach (ColumnHeader col in listApplications.Columns)
+            {
+                if (ActiveConfig.Controller.SettingsFormAppListColumnWidths.TryGetValue(col.Tag as string, out int width))
+                    col.Width = width;
+            }
+
             Utils.SetDoubleBuffering(listApplications, true);
             listApplications.ListViewItemSorter = new ListViewItemComparer(0, IconList);
             tabControl1.SelectedIndex = TmpConfig.Controller.SettingsTabIndex;
@@ -633,6 +639,15 @@ namespace PKSoft
             TmpConfig.Controller.SettingsFormWindowLoc = this.Location;
             ActiveConfig.Controller.SettingsFormWindowSize = this.Size;
             ActiveConfig.Controller.SettingsFormWindowLoc = this.Location;
+
+            TmpConfig.Controller.SettingsFormAppListColumnWidths.Clear();
+            ActiveConfig.Controller.SettingsFormAppListColumnWidths.Clear();
+            foreach (ColumnHeader col in listApplications.Columns)
+            {
+                TmpConfig.Controller.SettingsFormAppListColumnWidths.Add(col.Tag as string, col.Width);
+                ActiveConfig.Controller.SettingsFormAppListColumnWidths.Add(col.Tag as string, col.Width);
+            }
+
             ActiveConfig.Controller.Save();
         }
 

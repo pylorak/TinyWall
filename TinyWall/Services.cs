@@ -100,6 +100,12 @@ namespace PKSoft
                 this.Location = ActiveConfig.Controller.ServicesFormWindowLoc;
             this.WindowState = ActiveConfig.Controller.ServicesFormWindowState;
 
+            foreach (ColumnHeader col in listView.Columns)
+            {
+                if (ActiveConfig.Controller.ServicesFormColumnWidths.TryGetValue(col.Tag as string, out int width))
+                    col.Width = width;
+            }
+
             List<ListViewItem> itemColl = new List<ListViewItem>();
 
             ServiceController[] services = ServiceController.GetServices();
@@ -148,6 +154,10 @@ namespace PKSoft
                 ActiveConfig.Controller.ServicesFormWindowSize = this.RestoreBounds.Size;
                 ActiveConfig.Controller.ServicesFormWindowLoc = this.RestoreBounds.Location;
             }
+
+            ActiveConfig.Controller.ServicesFormColumnWidths.Clear();
+            foreach (ColumnHeader col in listView.Columns)
+                ActiveConfig.Controller.ServicesFormColumnWidths.Add(col.Tag as string, col.Width);
 
             ActiveConfig.Controller.Save();
         }
