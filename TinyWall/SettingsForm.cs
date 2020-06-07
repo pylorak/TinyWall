@@ -346,15 +346,6 @@ namespace PKSoft
             listRecommendedGlobalProfiles_ItemCheck(sender, e);
         }
 
-        private void listApplications_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            bool AnyItemSelected = listApplications.SelectedIndices.Count != 0;
-            bool SingleItemSelected = listApplications.SelectedIndices.Count == 1;
-            btnAppModify.Enabled = SingleItemSelected;
-            btnAppRemove.Enabled = AnyItemSelected;
-            btnSubmitAssoc.Enabled = AnyItemSelected;
-        }
-
         private void btnAppRemove_Click(object sender, EventArgs e)
         {
             for (int i = listApplications.SelectedIndices.Count - 1; i >= 0; --i)
@@ -362,6 +353,8 @@ namespace PKSoft
                 ListViewItem li = FilteredExceptionItems[listApplications.SelectedIndices[i]];
                 TmpConfig.Service.ActiveProfile.AppExceptions.Remove((FirewallExceptionV3)li.Tag);
             }
+
+            listApplications.SelectedIndices.Clear();
             RebuildExceptionsList();
         }
 
@@ -654,6 +647,20 @@ namespace PKSoft
         private void listApplications_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
             e.Item = FilteredExceptionItems[e.ItemIndex];
+        }
+
+        private void listApplications_VirtualItemsSelectionRangeChanged(object sender, ListViewVirtualItemsSelectionRangeChangedEventArgs e)
+        {
+            listApplications_SelectedIndexChanged(sender, null);
+        }
+
+        private void listApplications_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            bool AnyItemSelected = listApplications.SelectedIndices.Count != 0;
+            bool SingleItemSelected = listApplications.SelectedIndices.Count == 1;
+            btnAppModify.Enabled = SingleItemSelected;
+            btnAppRemove.Enabled = AnyItemSelected;
+            btnSubmitAssoc.Enabled = AnyItemSelected;
         }
     }
 }

@@ -207,6 +207,7 @@
             this.listApplications.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listApplications_ColumnClick);
             this.listApplications.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.listApplications_RetrieveVirtualItem);
             this.listApplications.SelectedIndexChanged += new System.EventHandler(this.listApplications_SelectedIndexChanged);
+            this.listApplications.VirtualItemsSelectionRangeChanged += new System.Windows.Forms.ListViewVirtualItemsSelectionRangeChangedEventHandler(this.listApplications_VirtualItemsSelectionRangeChanged);
             this.listApplications.DoubleClick += new System.EventHandler(this.listApplications_DoubleClick);
             // 
             // columnApp
