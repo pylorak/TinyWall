@@ -54,8 +54,10 @@ namespace PKSoft
         private void ProcessesForm_Load(object sender, EventArgs ev)
         {
             this.Icon = Resources.Icons.firewall;
-            this.Size = ActiveConfig.Controller.ProcessesFormWindowSize;
-            this.Location = ActiveConfig.Controller.ProcessesFormWindowLoc;
+            if (ActiveConfig.Controller.ProcessesFormWindowSize.Width != 0)
+                this.Size = ActiveConfig.Controller.ProcessesFormWindowSize;
+            if (ActiveConfig.Controller.ProcessesFormWindowLoc.X != 0)
+                this.Location = ActiveConfig.Controller.ProcessesFormWindowLoc;
             this.WindowState = ActiveConfig.Controller.ProcessesFormWindowState;
 
             List<ListViewItem> itemColl = new List<ListViewItem>();

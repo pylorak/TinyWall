@@ -65,8 +65,10 @@ namespace PKSoft
         private void UwpPackages_Load(object sender, EventArgs e)
         {
             this.Icon = Resources.Icons.firewall;
-            this.Size = ActiveConfig.Controller.UwpPackagesFormWindowSize;
-            this.Location = ActiveConfig.Controller.UwpPackagesFormWindowLoc;
+            if (ActiveConfig.Controller.UwpPackagesFormWindowSize.Width != 0)
+                this.Size = ActiveConfig.Controller.UwpPackagesFormWindowSize;
+            if (ActiveConfig.Controller.UwpPackagesFormWindowLoc.X != 0)
+                this.Location = ActiveConfig.Controller.UwpPackagesFormWindowLoc;
             this.WindowState = ActiveConfig.Controller.UwpPackagesFormWindowState;
 
             List<ListViewItem> itemColl = new List<ListViewItem>();

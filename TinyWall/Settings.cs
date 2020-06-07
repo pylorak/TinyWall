@@ -171,32 +171,32 @@ namespace PKSoft
 
         // Connections window
         public System.Windows.Forms.FormWindowState ConnFormWindowState = System.Windows.Forms.FormWindowState.Normal;
-        public System.Drawing.Point ConnFormWindowLoc = new System.Drawing.Point(150, 150);
-        public System.Drawing.Size ConnFormWindowSize = new System.Drawing.Size((int)(830 * Utils.DpiScalingFactor), (int)(400 * Utils.DpiScalingFactor));
+        public System.Drawing.Point ConnFormWindowLoc = new System.Drawing.Point(0, 0);
+        public System.Drawing.Size ConnFormWindowSize = new System.Drawing.Size(0, 0);
         public bool ConnFormShowConnections = true;
         public bool ConnFormShowOpenPorts = false;
         public bool ConnFormShowBlocked = false;
 
         // Processes window
         public System.Windows.Forms.FormWindowState ProcessesFormWindowState = System.Windows.Forms.FormWindowState.Normal;
-        public System.Drawing.Point ProcessesFormWindowLoc = new System.Drawing.Point(150, 150);
-        public System.Drawing.Size ProcessesFormWindowSize = new System.Drawing.Size((int)(830 * Utils.DpiScalingFactor), (int)(400 * Utils.DpiScalingFactor));
+        public System.Drawing.Point ProcessesFormWindowLoc = new System.Drawing.Point(0, 0);
+        public System.Drawing.Size ProcessesFormWindowSize = new System.Drawing.Size(0, 0);
 
         // Services window
         public System.Windows.Forms.FormWindowState ServicesFormWindowState = System.Windows.Forms.FormWindowState.Normal;
-        public System.Drawing.Point ServicesFormWindowLoc = new System.Drawing.Point(150, 150);
-        public System.Drawing.Size ServicesFormWindowSize = new System.Drawing.Size((int)(830 * Utils.DpiScalingFactor), (int)(400 * Utils.DpiScalingFactor));
+        public System.Drawing.Point ServicesFormWindowLoc = new System.Drawing.Point(0, 0);
+        public System.Drawing.Size ServicesFormWindowSize = new System.Drawing.Size(0, 0);
 
         // UwpPackages window
         public System.Windows.Forms.FormWindowState UwpPackagesFormWindowState = System.Windows.Forms.FormWindowState.Normal;
-        public System.Drawing.Point UwpPackagesFormWindowLoc = new System.Drawing.Point(150, 150);
-        public System.Drawing.Size UwpPackagesFormWindowSize = new System.Drawing.Size((int)(830 * Utils.DpiScalingFactor), (int)(400 * Utils.DpiScalingFactor));
+        public System.Drawing.Point UwpPackagesFormWindowLoc = new System.Drawing.Point(0, 0);
+        public System.Drawing.Size UwpPackagesFormWindowSize = new System.Drawing.Size(0, 0);
 
         // Manage window
         public bool AskForExceptionDetails = false;
         public int SettingsTabIndex;
-        public System.Drawing.Point SettingsFormWindowLoc = new System.Drawing.Point(150, 150);
-        public System.Drawing.Size SettingsFormWindowSize = new System.Drawing.Size((int)(768 * Utils.DpiScalingFactor), (int)(486 * Utils.DpiScalingFactor));
+        public System.Drawing.Point SettingsFormWindowLoc = new System.Drawing.Point(0, 0);
+        public System.Drawing.Size SettingsFormWindowSize = new System.Drawing.Size(0, 0);
 
         // Hotkeys
         public bool EnableGlobalHotkeys = true;
@@ -205,11 +205,15 @@ namespace PKSoft
         {
             get
             {
+#if DEBUG
+                return Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath);
+#else
                 string dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 dir = System.IO.Path.Combine(dir, "TinyWall");
                 if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
                 return dir;
+#endif
             }
         }
 

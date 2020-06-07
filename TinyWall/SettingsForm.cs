@@ -539,8 +539,10 @@ namespace PKSoft
 #if DEBUG
             //DataCollection.StartProfile(ProfileLevel.Global, DataCollection.CurrentId);
 #endif
-            this.Size = TmpConfig.Controller.SettingsFormWindowSize;
-            this.Location = TmpConfig.Controller.SettingsFormWindowLoc;
+            if (TmpConfig.Controller.SettingsFormWindowSize.Width != 0)
+                this.Size = TmpConfig.Controller.SettingsFormWindowSize;
+            if (TmpConfig.Controller.SettingsFormWindowLoc.X != 0)
+                this.Location = TmpConfig.Controller.SettingsFormWindowLoc;
 
             Utils.SetDoubleBuffering(listApplications, true);
             listApplications.ListViewItemSorter = new ListViewItemComparer(0, IconList);

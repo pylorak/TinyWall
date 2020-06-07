@@ -94,8 +94,10 @@ namespace PKSoft
         private void ServicesForm_Load(object sender, EventArgs e)
         {
             this.Icon = Resources.Icons.firewall;
-            this.Size = ActiveConfig.Controller.ServicesFormWindowSize;
-            this.Location = ActiveConfig.Controller.ServicesFormWindowLoc;
+            if (ActiveConfig.Controller.ServicesFormWindowSize.Width != 0)
+                this.Size = ActiveConfig.Controller.ServicesFormWindowSize;
+            if (ActiveConfig.Controller.ServicesFormWindowLoc.X != 0)
+                this.Location = ActiveConfig.Controller.ServicesFormWindowLoc;
             this.WindowState = ActiveConfig.Controller.ServicesFormWindowState;
 
             List<ListViewItem> itemColl = new List<ListViewItem>();

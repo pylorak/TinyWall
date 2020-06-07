@@ -280,8 +280,10 @@ namespace PKSoft
         {
             Utils.SetDoubleBuffering(list, true);
             list.ListViewItemSorter = new ListViewItemComparer(8, null, false);
-            this.Size = ActiveConfig.Controller.ConnFormWindowSize;
-            this.Location = ActiveConfig.Controller.ConnFormWindowLoc;
+            if (ActiveConfig.Controller.ConnFormWindowSize.Width != 0)
+                this.Size = ActiveConfig.Controller.ConnFormWindowSize;
+            if (ActiveConfig.Controller.ConnFormWindowLoc.X != 0)
+                this.Location = ActiveConfig.Controller.ConnFormWindowLoc;
             this.WindowState = ActiveConfig.Controller.ConnFormWindowState;
             this.chkShowActive.Checked = ActiveConfig.Controller.ConnFormShowConnections;
             this.chkShowListen.Checked = ActiveConfig.Controller.ConnFormShowOpenPorts;
