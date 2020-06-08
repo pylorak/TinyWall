@@ -6,8 +6,7 @@ using System.Linq;
 using TinyWall.Interface.Internal;
 using TinyWall.Interface;
 using TinyWall;
-
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace PKSoft
 {
@@ -173,6 +172,7 @@ namespace PKSoft
         public System.Windows.Forms.FormWindowState ConnFormWindowState = System.Windows.Forms.FormWindowState.Normal;
         public System.Drawing.Point ConnFormWindowLoc = new System.Drawing.Point(0, 0);
         public System.Drawing.Size ConnFormWindowSize = new System.Drawing.Size(0, 0);
+        [OptionalField]
         public Dictionary<string, int> ConnFormColumnWidths = new Dictionary<string, int>();
         public bool ConnFormShowConnections = true;
         public bool ConnFormShowOpenPorts = false;
@@ -182,18 +182,21 @@ namespace PKSoft
         public System.Windows.Forms.FormWindowState ProcessesFormWindowState = System.Windows.Forms.FormWindowState.Normal;
         public System.Drawing.Point ProcessesFormWindowLoc = new System.Drawing.Point(0, 0);
         public System.Drawing.Size ProcessesFormWindowSize = new System.Drawing.Size(0, 0);
+        [OptionalField]
         public Dictionary<string, int> ProcessesFormColumnWidths = new Dictionary<string, int>();
 
         // Services window
         public System.Windows.Forms.FormWindowState ServicesFormWindowState = System.Windows.Forms.FormWindowState.Normal;
         public System.Drawing.Point ServicesFormWindowLoc = new System.Drawing.Point(0, 0);
         public System.Drawing.Size ServicesFormWindowSize = new System.Drawing.Size(0, 0);
+        [OptionalField]
         public Dictionary<string, int> ServicesFormColumnWidths = new Dictionary<string, int>();
 
         // UwpPackages window
         public System.Windows.Forms.FormWindowState UwpPackagesFormWindowState = System.Windows.Forms.FormWindowState.Normal;
         public System.Drawing.Point UwpPackagesFormWindowLoc = new System.Drawing.Point(0, 0);
         public System.Drawing.Size UwpPackagesFormWindowSize = new System.Drawing.Size(0, 0);
+        [OptionalField]
         public Dictionary<string, int> UwpPackagesFormColumnWidths = new Dictionary<string, int>();
 
         // Manage window
@@ -201,10 +204,26 @@ namespace PKSoft
         public int SettingsTabIndex;
         public System.Drawing.Point SettingsFormWindowLoc = new System.Drawing.Point(0, 0);
         public System.Drawing.Size SettingsFormWindowSize = new System.Drawing.Size(0, 0);
+        [OptionalField]
         public Dictionary<string, int> SettingsFormAppListColumnWidths = new Dictionary<string, int>();
 
         // Hotkeys
         public bool EnableGlobalHotkeys = true;
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext sc)
+        {
+            if (ConnFormColumnWidths == null)
+                ConnFormColumnWidths = new Dictionary<string, int>();
+            if (ProcessesFormColumnWidths == null)
+                ProcessesFormColumnWidths = new Dictionary<string, int>();
+            if (ServicesFormColumnWidths == null)
+                ServicesFormColumnWidths = new Dictionary<string, int>();
+            if (UwpPackagesFormColumnWidths == null)
+                UwpPackagesFormColumnWidths = new Dictionary<string, int>();
+            if (SettingsFormAppListColumnWidths == null)
+                SettingsFormAppListColumnWidths = new Dictionary<string, int>();
+        }
 
         internal static string UserDataPath
         {
