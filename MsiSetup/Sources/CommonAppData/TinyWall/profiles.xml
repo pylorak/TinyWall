@@ -752,6 +752,7 @@
                 <LocalPorts>68</LocalPorts>
                 <Name>DHCP IPv4 client</Name>
                 <Protocol>UDP</Protocol>
+                <RemoteAddresses>LocalSubnet</RemoteAddresses>
                 <RemotePorts>67</RemotePorts>
               </RuleDef>
               <RuleDef>
@@ -760,6 +761,7 @@
                 <LocalPorts>546</LocalPorts>
                 <Name>DHCP IPv6 client</Name>
                 <Protocol>UDP</Protocol>
+                <RemoteAddresses>LocalSubnet</RemoteAddresses>
                 <RemotePorts>547</RemotePorts>
               </RuleDef>
             </Rules>

@@ -10,8 +10,8 @@
             <LocalPorts>68</LocalPorts>
             <Name>DHCP IPv4 client</Name>
             <Protocol>UDP</Protocol>
-            <RemotePorts>67</RemotePorts>
             <RemoteAddresses>LocalSubnet</RemoteAddresses>
+            <RemotePorts>67</RemotePorts>
           </RuleDef>
           <RuleDef>
             <Action>Allow</Action>
@@ -19,8 +19,8 @@
             <LocalPorts>546</LocalPorts>
             <Name>DHCP IPv6 client</Name>
             <Protocol>UDP</Protocol>
-            <RemotePorts>547</RemotePorts>
             <RemoteAddresses>LocalSubnet</RemoteAddresses>
+            <RemotePorts>547</RemotePorts>
           </RuleDef>
         </Rules>
       </Policy>
