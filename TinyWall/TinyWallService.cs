@@ -611,7 +611,7 @@ namespace PKSoft
                     foreach (var p in ports)
                         conditions.Add(new PortFilterCondition(p, RemoteOrLocal.Local));
                 }
-                if (!string.IsNullOrEmpty(r.RemotePorts) && !LayerIsAleAuthListen(layer))
+                if (!string.IsNullOrEmpty(r.RemotePorts))
                 {
                     System.Diagnostics.Debug.Assert(!r.RemotePorts.Equals("*"));
                     string[] ports = r.RemotePorts.Split(',');
@@ -1006,6 +1006,7 @@ namespace PKSoft
                         RuleListPolicy pol = ex.Policy as RuleListPolicy;
                         foreach (var rule in pol.Rules)
                         {
+                            rule.SetSubject(ex.Subject);
                             rule.ExceptionId = ex.Id;
                             rule.Weight = (rule.Action == RuleAction.Allow) ? permitWeight : blockWeight;
                             ExpandRule(rule, results);

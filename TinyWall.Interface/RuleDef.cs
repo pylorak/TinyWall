@@ -65,7 +65,7 @@ namespace TinyWall.Interface
             return copy;
         }
 
-        public RuleDef(Guid exceptionId, string name, ExceptionSubject subject, RuleAction action, RuleDirection direction, Protocol protocol, ulong weight)
+        public void SetSubject(ExceptionSubject subject)
         {
             if (subject != null)
             {
@@ -74,20 +74,32 @@ namespace TinyWall.Interface
                     case ServiceSubject service:
                         this.Application = service.ExecutablePath;
                         this.ServiceName = service.ServiceName;
+                        this.AppContainerSid = null;
                         break;
                     case ExecutableSubject exe:
                         this.Application = exe.ExecutablePath;
+                        this.ServiceName = null;
+                        this.AppContainerSid = null;
                         break;
                     case AppContainerSubject uwp:
+                        this.Application = null;
+                        this.ServiceName = null;
                         this.AppContainerSid = uwp.Sid;
                         break;
                     case GlobalSubject glob:
+                        this.Application = null;
+                        this.ServiceName = null;
+                        this.AppContainerSid = null;
                         break;
                     default:
                         throw new NotImplementedException();
                 }
             }
+        }
 
+        public RuleDef(Guid exceptionId, string name, ExceptionSubject subject, RuleAction action, RuleDirection direction, Protocol protocol, ulong weight)
+        {
+            SetSubject(subject);
             this.Name = name;
             this.ExceptionId = exceptionId;
             this.Action = action;
