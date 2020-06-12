@@ -134,7 +134,7 @@ namespace PKSoft
                 throw new ArgumentException("Parameter must be of the same AddressFamily as this instance.");
 
             IpAddrMask other = new IpAddrMask(host, this.PrefixLen);
-            return this.SubnetFirstIp.Equals(other.SubnetFirstIp);
+            return this.Subnet.Equals(other.Subnet);
         }
 
         public IPAddress SubnetMask
@@ -154,7 +154,7 @@ namespace PKSoft
             }
         }
 
-        public IpAddrMask SubnetFirstIp
+        public IpAddrMask Subnet
         {
             get
             {
@@ -169,6 +169,21 @@ namespace PKSoft
             }
         }
 
+        public IpAddrMask SubnetFirstIp
+        {
+            get
+            {
+                byte[] addr = Address.GetAddressBytes();
+                byte[] mask = SubnetMask.GetAddressBytes();
+                byte[] ret = new byte[addr.Length];
+                for (int i = 0; i < ret.Length; ++i)
+                {
+                    ret[i] = (byte)(addr[i] & mask[i]);
+                }
+                return new IpAddrMask(new IPAddress(ret));
+            }
+        }
+
         public IpAddrMask SubnetLastIp
         {
             get
@@ -180,7 +195,7 @@ namespace PKSoft
                 {
                     ret[i] = (byte)(addr[i] | ~mask[i]);
                 }
-                return new IpAddrMask(new IPAddress(ret), PrefixLen);
+                return new IpAddrMask(new IPAddress(ret));
             }
         }
 
@@ -216,12 +231,17 @@ namespace PKSoft
         {
             if (IsIPv4)
             {
-                return $"{Address.ToString()}/{PrefixLen}";
+                if (PrefixLen == 32)
+                    return Address.ToString();
+                else
+                    return $"{Address.ToString()}/{PrefixLen}";
             }
             else
             {
                 string addr = Address.ToString();
                 if (addr.Contains("%"))
+                    return addr;
+                else if (PrefixLen == 128)
                     return addr;
                 else
                     return $"{addr}/{PrefixLen}";

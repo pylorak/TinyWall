@@ -68,7 +68,7 @@ namespace PKSoft
                 StringBuilder sb = new StringBuilder(512);
                 foreach (var addr in InterfaceAddreses) // TODO: Use StringBuilder.AppendJoin() starting with .NET Core
                 {
-                    sb.Append(addr.SubnetFirstIp.ToString()); sb.Append(',');
+                    sb.Append(addr.Subnet.ToString()); sb.Append(',');
                 }
                 sb.Append("255.255.255.255"); sb.Append(',');
                 sb.Append(IpAddrMask.LinkLocal.ToString()); sb.Append(',');

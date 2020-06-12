@@ -145,32 +145,6 @@ namespace WFPdotNet
 
         private AllocHGlobalSafeHandle nativeMem;
 
-        public IpFilterCondition(IPAddress addr, RemoteOrLocal peer)
-        {
-            _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
-            _nativeStruct.fieldKey = (peer == RemoteOrLocal.Local) ? ConditionKeys.FWPM_CONDITION_IP_LOCAL_ADDRESS : ConditionKeys.FWPM_CONDITION_IP_REMOTE_ADDRESS;
-
-            byte[] addressBytes = addr.GetAddressBytes();
-            Array.Reverse(addressBytes);
-
-            switch (addr.AddressFamily)
-            {
-                case System.Net.Sockets.AddressFamily.InterNetwork:
-                    _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT32;
-                    _nativeStruct.conditionValue.uint32 = BitConverter.ToUInt32(addressBytes, 0);
-                    break;
-                case System.Net.Sockets.AddressFamily.InterNetworkV6:
-                    nativeMem = new AllocHGlobalSafeHandle(16);
-                    IntPtr ptr = nativeMem.DangerousGetHandle();
-                    _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_BYTE_ARRAY16_TYPE;
-                    _nativeStruct.conditionValue.byteArray16 = ptr;
-                    System.Runtime.InteropServices.Marshal.Copy(addressBytes, 0, ptr, 16);
-                    break;
-                default:
-                    throw new NotSupportedException("Only the IPv4 and Ipv6 address families are supported.");
-            }
-        }
-
         public IpFilterCondition(IPAddress addr, byte subnetLen, RemoteOrLocal peer)
         {
             if (((addr.AddressFamily == AddressFamily.InterNetwork) && (subnetLen > 32))
@@ -185,34 +159,55 @@ namespace WFPdotNet
             switch (addr.AddressFamily)
             {
                 case System.Net.Sockets.AddressFamily.InterNetwork:
-                    // Convert CIDR subnet length to byte array
-                    byte[] maskBytes = new byte[4];
-                    int prefix = subnetLen;
-                    for (int i = 0; i < maskBytes.Length; ++i)
+                    if (subnetLen == 32)
                     {
-                        int s = (prefix < 8) ? prefix : 8;
-                        maskBytes[i] = MaskByteBitsLookup[s];
-                        prefix -= s;
+                        Array.Reverse(addressBytes);
+                        _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT32;
+                        _nativeStruct.conditionValue.uint32 = BitConverter.ToUInt32(addressBytes, 0);
                     }
-                    Array.Reverse(maskBytes);
-                    Array.Reverse(addressBytes);
+                    else
+                    {
+                        // Convert CIDR subnet length to byte array
+                        byte[] maskBytes = new byte[4];
+                        int prefix = subnetLen;
+                        for (int i = 0; i < maskBytes.Length; ++i)
+                        {
+                            int s = (prefix < 8) ? prefix : 8;
+                            maskBytes[i] = MaskByteBitsLookup[s];
+                            prefix -= s;
+                        }
+                        Array.Reverse(maskBytes);
+                        Array.Reverse(addressBytes);
 
-                    Interop.FWP_V4_ADDR_AND_MASK addrAndMask4 = new Interop.FWP_V4_ADDR_AND_MASK();
-                    addrAndMask4.addr = BitConverter.ToUInt32(addressBytes, 0);
-                    addrAndMask4.mask = BitConverter.ToUInt32(maskBytes, 0);
-                    nativeMem = PInvokeHelper.StructToHGlobal<Interop.FWP_V4_ADDR_AND_MASK>(addrAndMask4);
+                        Interop.FWP_V4_ADDR_AND_MASK addrAndMask4 = new Interop.FWP_V4_ADDR_AND_MASK();
+                        addrAndMask4.addr = BitConverter.ToUInt32(addressBytes, 0);
+                        addrAndMask4.mask = BitConverter.ToUInt32(maskBytes, 0);
+                        nativeMem = PInvokeHelper.StructToHGlobal<Interop.FWP_V4_ADDR_AND_MASK>(addrAndMask4);
 
-                    _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_V4_ADDR_MASK;
-                    _nativeStruct.conditionValue.v4AddrMask = nativeMem.DangerousGetHandle();
+                        _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_V4_ADDR_MASK;
+                        _nativeStruct.conditionValue.v4AddrMask = nativeMem.DangerousGetHandle();
+                    }
                     break;
                 case System.Net.Sockets.AddressFamily.InterNetworkV6:
-                    Interop.FWP_V6_ADDR_AND_MASK addrAndMask6 = new Interop.FWP_V6_ADDR_AND_MASK();
-                    addrAndMask6.addr = addressBytes;
-                    addrAndMask6.prefixLength = subnetLen;
-                    nativeMem = PInvokeHelper.StructToHGlobal<Interop.FWP_V6_ADDR_AND_MASK>(addrAndMask6);
-                    
-                    _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_V6_ADDR_MASK;
-                    _nativeStruct.conditionValue.v6AddrMask = nativeMem.DangerousGetHandle();
+                    if (subnetLen == 128)
+                    {
+                        nativeMem = new AllocHGlobalSafeHandle(16);
+                        IntPtr ptr = nativeMem.DangerousGetHandle();
+                        System.Runtime.InteropServices.Marshal.Copy(addressBytes, 0, ptr, 16);
+
+                        _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_BYTE_ARRAY16_TYPE;
+                        _nativeStruct.conditionValue.byteArray16 = ptr;
+                    }
+                    else
+                    {
+                        Interop.FWP_V6_ADDR_AND_MASK addrAndMask6 = new Interop.FWP_V6_ADDR_AND_MASK();
+                        addrAndMask6.addr = addressBytes;
+                        addrAndMask6.prefixLength = subnetLen;
+                        nativeMem = PInvokeHelper.StructToHGlobal<Interop.FWP_V6_ADDR_AND_MASK>(addrAndMask6);
+
+                        _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_V6_ADDR_MASK;
+                        _nativeStruct.conditionValue.v6AddrMask = nativeMem.DangerousGetHandle();
+                    }
                     break;
                 default:
                     throw new NotSupportedException("Only the IPv4 and IPv6 address families are supported.");
