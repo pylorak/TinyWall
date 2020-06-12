@@ -127,16 +127,16 @@
     <value>Protokoll</value>
   </data>
   <data name="columnHeader3.Text" xml:space="preserve">
-    <value>Quellport</value>
+    <value>Lokaler Port</value>
   </data>
   <data name="columnHeader4.Text" xml:space="preserve">
-    <value>Lokale/Quell Adresse</value>
+    <value>Lokale Adresse</value>
   </data>
   <data name="columnHeader5.Text" xml:space="preserve">
-    <value>Zielport</value>
+    <value>Remote Port</value>
   </data>
   <data name="columnHeader6.Text" xml:space="preserve">
-    <value>Remote/Ziel Adresse</value>
+    <value>Remote Adresse</value>
   </data>
   <data name="columnHeader8.Text" xml:space="preserve">
     <value>Richtung</value>

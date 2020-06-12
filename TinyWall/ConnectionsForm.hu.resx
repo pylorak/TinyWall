@@ -127,16 +127,16 @@
     <value>Protokoll</value>
   </data>
   <data name="columnHeader3.Text" xml:space="preserve">
-    <value>Forrás port</value>
+    <value>Helyi port</value>
   </data>
   <data name="columnHeader4.Text" xml:space="preserve">
-    <value>Helyi/Forrás cím</value>
+    <value>Helyi cím</value>
   </data>
   <data name="columnHeader5.Text" xml:space="preserve">
-    <value>Cél port</value>
+    <value>Távoli port</value>
   </data>
   <data name="columnHeader6.Text" xml:space="preserve">
-    <value>Távoli/Cél cím</value>
+    <value>Távoli cím</value>
   </data>
   <data name="columnHeader7.Text" xml:space="preserve">
     <value>Állapot</value>

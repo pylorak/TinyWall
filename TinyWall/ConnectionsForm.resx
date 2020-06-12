@@ -163,25 +163,25 @@
     <value>75</value>
   </data>
   <data name="columnHeader3.Text" xml:space="preserve">
-    <value>Source port</value>
+    <value>Local port</value>
   </data>
   <data name="columnHeader3.Width" type="System.Int32, mscorlib">
     <value>68</value>
   </data>
   <data name="columnHeader4.Text" xml:space="preserve">
-    <value>Local/Source address</value>
+    <value>Local address</value>
   </data>
   <data name="columnHeader4.Width" type="System.Int32, mscorlib">
     <value>160</value>
   </data>
   <data name="columnHeader5.Text" xml:space="preserve">
-    <value>Destination port</value>
+    <value>Remote port</value>
   </data>
   <data name="columnHeader5.Width" type="System.Int32, mscorlib">
     <value>92</value>
   </data>
   <data name="columnHeader6.Text" xml:space="preserve">
-    <value>Remote/Destination address</value>
+    <value>Remote address</value>
   </data>
   <data name="columnHeader6.Width" type="System.Int32, mscorlib">
     <value>160</value>
