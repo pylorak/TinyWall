@@ -62,6 +62,7 @@ namespace PKSoft
         public IpAddrMask(UnicastIPAddressInformation addrInfo)
         {
             Address = addrInfo.Address;
+            //PrefixLen = addrInfo.PrefixLen; // TODO: Use in .Net > 4.5
             if (IsIPv4)
             {
                 PrefixLen = 0;
@@ -236,7 +237,7 @@ namespace PKSoft
             if (slash == -1)
             {
                 addr = IPAddress.Parse(str);
-                prefix = addr.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork ? 32 : 64;
+                prefix = addr.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork ? 32 : 128;
             }
             else
             {
