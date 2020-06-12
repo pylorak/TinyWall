@@ -58,58 +58,9 @@ namespace PKSoft
         private ManagementEventWatcher NetworkInterfaceWatcher;
         private DevicePathMapper NtPathMapper = new DevicePathMapper();
 
-        private List<IpAddrMask> InterfaceAddreses = new List<IpAddrMask>();
+        private List<IpAddrMask> LocalSubnetAddreses = new List<IpAddrMask>();
         private List<IpAddrMask> GatewayAddresses = new List<IpAddrMask>();
         private List<IpAddrMask> DnsAddresses = new List<IpAddrMask>();
-
-        private void ExpandRule(RuleDef r, List<RuleDef> results)
-        {
-            if ((r.RemoteAddresses != null) && r.RemoteAddresses.Contains("LocalSubnet"))
-            {
-                StringBuilder sb = new StringBuilder(512);
-                foreach (var addr in InterfaceAddreses) // TODO: Use StringBuilder.AppendJoin() starting with .NET Core
-                {
-                    sb.Append(addr.Subnet.ToString()); sb.Append(',');
-                }
-                sb.Append("255.255.255.255"); sb.Append(',');
-                sb.Append(IpAddrMask.LinkLocal.ToString()); sb.Append(',');
-                sb.Append(IpAddrMask.IPv6LinkLocal.ToString()); sb.Append(',');
-                sb.Append(IpAddrMask.LinkLocalMulticast.ToString()); sb.Append(',');
-                sb.Append(IpAddrMask.AdminScopedMulticast.ToString()); sb.Append(',');
-                sb.Append(IpAddrMask.IPv6LinkLocalMulticast.ToString()); sb.Append(',');
-                sb.Length--;
-                r.RemoteAddresses = r.RemoteAddresses.Replace("LocalSubnet", sb.ToString());
-                ExpandRule(r, results);
-            }
-            else if ((r.RemoteAddresses != null) && r.RemoteAddresses.Contains("DefaultGateway"))
-            {
-                StringBuilder sb = new StringBuilder(512);
-                foreach (var addr in GatewayAddresses)
-                {
-                    sb.Append(addr.Address.ToString()); sb.Append(',');
-                }
-                if (sb.Length > 0)
-                    sb.Length--;
-                r.RemoteAddresses = r.RemoteAddresses.Replace("DefaultGateway", sb.ToString());
-                ExpandRule(r, results);
-            }
-            else if ((r.RemoteAddresses != null) && r.RemoteAddresses.Contains("DNS"))
-            {
-                StringBuilder sb = new StringBuilder(512);
-                foreach (var addr in DnsAddresses)
-                {
-                    sb.Append(addr.Address.ToString()); sb.Append(',');
-                }
-                if (sb.Length > 0)
-                    sb.Length--;
-                r.RemoteAddresses = r.RemoteAddresses.Replace("DNS", sb.ToString());
-                ExpandRule(r, results);
-            }
-            else
-            {
-                results.Add(r);
-            }
-        }
 
         private List<RuleDef> AssembleActiveRules(List<ExceptionSubject> rawSocketExceptions)
         {
@@ -123,7 +74,7 @@ namespace PKSoft
             {
                 def = new RuleDef(ModeId, "Allow local subnet", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultPermit);
                 def.RemoteAddresses = "LocalSubnet";
-                ExpandRule(def, rules);
+                rules.Add(def);
             }
 
             // Do we want to block known malware ports?
@@ -146,11 +97,11 @@ namespace PKSoft
                     {
                         // Add rule to explicitly allow outgoing connections
                         def = new RuleDef(ModeId, "Allow outbound", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.Out, Protocol.Any, (ulong)FilterWeights.DefaultPermit);
-                        ExpandRule(def, rules);
+                        rules.Add(def);
 
                         // Block rest
                         def = new RuleDef(ModeId, "Block incoming", GlobalSubject.Instance, RuleAction.Block, RuleDirection.In, Protocol.Any, (ulong)FilterWeights.DefaultBlock);
-                        ExpandRule(def, rules);
+                        rules.Add(def);
                         break;
                     }
                 case TinyWall.Interface.FirewallMode.BlockAll:
@@ -160,14 +111,14 @@ namespace PKSoft
 
                         // Block all
                         def = new RuleDef(ModeId, "Block everything", GlobalSubject.Instance, RuleAction.Block, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultBlock);
-                        ExpandRule(def, rules);
+                        rules.Add(def);
                         break;
                     }
                 case TinyWall.Interface.FirewallMode.Learning:
                     {
                         // Add rule to explicitly allow everything
                         def = new RuleDef(ModeId, "Allow everything", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultPermit);
-                        ExpandRule(def, rules);
+                        rules.Add(def);
                         break;
                     }
                 case TinyWall.Interface.FirewallMode.Disabled:
@@ -177,14 +128,14 @@ namespace PKSoft
 
                         // Add rule to explicitly allow everything
                         def = new RuleDef(ModeId, "Allow everything", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultPermit);
-                        ExpandRule(def, rules);
+                        rules.Add(def);
                         break;
                     }
                 case TinyWall.Interface.FirewallMode.Normal:
                     {
                         // Block all by default
                         def = new RuleDef(ModeId, "Block everything", GlobalSubject.Instance, RuleAction.Block, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultBlock);
-                        ExpandRule(def, rules);
+                        rules.Add(def);
                         break;
                     }
             }
@@ -572,13 +523,36 @@ namespace PKSoft
 
                     bool validAddressFound = false;
                     string[] addresses = r.RemoteAddresses.Split(',');
-                    foreach (var addr in addresses)
+
+                    void addIpFilterCondition(IpAddrMask peerAddr, RemoteOrLocal peerType)
                     {
-                        IpAddrMask remote = IpAddrMask.Parse(addr);
-                        if (remote.IsIPv6 == LayerIsV6Stack(layer))
+                        if (peerAddr.IsIPv6 == LayerIsV6Stack(layer))
                         {
                             validAddressFound = true;
-                            conditions.Add(new IpFilterCondition(remote.Address, (byte)remote.PrefixLen, RemoteOrLocal.Remote));
+                            conditions.Add(new IpFilterCondition(peerAddr.Address, (byte)peerAddr.PrefixLen, peerType));
+                        }
+                    }
+
+                    foreach (var ipStr in addresses)
+                    {
+                        if (ipStr == "LocalSubnet")
+                        {
+                            foreach (var addr in LocalSubnetAddreses)
+                                addIpFilterCondition(addr, RemoteOrLocal.Remote);
+                        }
+                        else if (ipStr == "DefaultGateway")
+                        {
+                            foreach (var addr in GatewayAddresses)
+                                addIpFilterCondition(addr, RemoteOrLocal.Remote);
+                        }
+                        else if (ipStr == "DNS")
+                        {
+                            foreach (var addr in DnsAddresses)
+                                addIpFilterCondition(addr, RemoteOrLocal.Remote);
+                        }
+                        else
+                        {
+                            addIpFilterCondition(IpAddrMask.Parse(ipStr), RemoteOrLocal.Remote);
                         }
                     }
 
@@ -915,7 +889,7 @@ namespace PKSoft
                 case PolicyType.HardBlock:
                     {
                         RuleDef def = new RuleDef(ex.Id, "Block", ex.Subject, RuleAction.Block, RuleDirection.InOut, Protocol.Any, blockWeight);
-                        ExpandRule(def, results);
+                        results.Add(def);
                         break;
                     }
                 case PolicyType.Unrestricted:
@@ -923,7 +897,7 @@ namespace PKSoft
                         RuleDef def = new RuleDef(ex.Id, "Full access", ex.Subject, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, permitWeight);
                         if ((ex.Policy as UnrestrictedPolicy).LocalNetworkOnly)
                             def.RemoteAddresses = "LocalSubnet";
-                        ExpandRule(def, results);
+                        results.Add(def);
 
                         if (rawSocketExceptions != null)
                         {
@@ -945,7 +919,7 @@ namespace PKSoft
                                 def.LocalPorts = pol.AllowedLocalTcpListenerPorts;
                             if (pol.LocalNetworkOnly)
                                 def.RemoteAddresses = "LocalSubnet";
-                            ExpandRule(def, results);
+                            results.Add(def);
                         }
                         else
                         {
@@ -956,7 +930,7 @@ namespace PKSoft
                                     def.LocalPorts = pol.AllowedLocalTcpListenerPorts;
                                 if (pol.LocalNetworkOnly)
                                     def.RemoteAddresses = "LocalSubnet";
-                                ExpandRule(def, results);
+                                results.Add(def);
                             }
                             if (!string.IsNullOrEmpty(pol.AllowedLocalUdpListenerPorts))
                             {
@@ -965,7 +939,7 @@ namespace PKSoft
                                     def.LocalPorts = pol.AllowedLocalUdpListenerPorts;
                                 if (pol.LocalNetworkOnly)
                                     def.RemoteAddresses = "LocalSubnet";
-                                ExpandRule(def, results);
+                                results.Add(def);
                             }
                         }
 
@@ -977,7 +951,7 @@ namespace PKSoft
                                 def.RemotePorts = pol.AllowedRemoteTcpConnectPorts;
                             if (pol.LocalNetworkOnly)
                                 def.RemoteAddresses = "LocalSubnet";
-                            ExpandRule(def, results);
+                            results.Add(def);
                         }
                         else
                         {
@@ -988,7 +962,7 @@ namespace PKSoft
                                     def.RemotePorts = pol.AllowedRemoteTcpConnectPorts;
                                 if (pol.LocalNetworkOnly)
                                     def.RemoteAddresses = "LocalSubnet";
-                                ExpandRule(def, results);
+                                results.Add(def);
                             }
                             if (!string.IsNullOrEmpty(pol.AllowedRemoteUdpConnectPorts))
                             {
@@ -997,7 +971,7 @@ namespace PKSoft
                                     def.RemotePorts = pol.AllowedRemoteUdpConnectPorts;
                                 if (pol.LocalNetworkOnly)
                                     def.RemoteAddresses = "LocalSubnet";
-                                ExpandRule(def, results);
+                                results.Add(def);
                             }
                         }
                         break;
@@ -1010,7 +984,7 @@ namespace PKSoft
                             rule.SetSubject(ex.Subject);
                             rule.ExceptionId = ex.Id;
                             rule.Weight = (rule.Action == RuleAction.Allow) ? permitWeight : blockWeight;
-                            ExpandRule(rule, results);
+                            results.Add(rule);
                         }
                         break;
                     }
@@ -1520,7 +1494,7 @@ namespace PKSoft
 
         private void ReenumerateAdresses()
         {
-            InterfaceAddreses.Clear();
+            LocalSubnetAddreses.Clear();
             GatewayAddresses.Clear();
             DnsAddresses.Clear();
 
@@ -1538,7 +1512,7 @@ namespace PKSoft
                     if (am.IsLoopback || am.IsLinkLocal)
                         continue;
 
-                    InterfaceAddreses.Add(am);
+                    LocalSubnetAddreses.Add(am.Subnet);
                 }
 
                 foreach (var uni in props.GatewayAddresses)
@@ -1553,6 +1527,13 @@ namespace PKSoft
                     DnsAddresses.Add(am);
                 }
             }
+
+            LocalSubnetAddreses.Add(new IpAddrMask(IPAddress.Parse("255.255.255.255")));
+            LocalSubnetAddreses.Add(IpAddrMask.LinkLocal);
+            LocalSubnetAddreses.Add(IpAddrMask.IPv6LinkLocal);
+            LocalSubnetAddreses.Add(IpAddrMask.LinkLocalMulticast);
+            LocalSubnetAddreses.Add(IpAddrMask.AdminScopedMulticast);
+            LocalSubnetAddreses.Add(IpAddrMask.IPv6LinkLocalMulticast);
         }
 
         private void LogWatcher_NewLogEntry(FirewallLogWatcher sender, FirewallLogEntry entry)
