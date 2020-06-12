@@ -152,7 +152,7 @@ namespace PKSoft
                 for (int i = 0; i < filteredLog.Count; ++i)
                 {
                     FirewallLogEntry entry = filteredLog[i];
-                    ConstructListItem(itemColl, entry.AppPath, entry.PackageID, (int)entry.ProcessID, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.SourceIP), entry.SourcePort), new IPEndPoint(IPAddress.Parse(entry.DestinationIP), entry.DestinationPort), "Blocked", entry.Timestamp, entry.Direction, uwpPackages);
+                    ConstructListItem(itemColl, entry.AppPath, entry.PackageId, (int)entry.ProcessId, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.LocalIp), entry.LocalPort), new IPEndPoint(IPAddress.Parse(entry.RemoteIp), entry.RemotePort), "Blocked", entry.Timestamp, entry.Direction, uwpPackages);
                 }
             }
 

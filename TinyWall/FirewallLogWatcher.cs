@@ -86,24 +86,24 @@ namespace PKSoft
                 case 5155:
                 case 5158:
                 case 5159:
-                    entry.ProcessID = (UInt64)e.EventRecord.Properties[0].Value;
-                    entry.AppPath = Utils.GetPathOfProcess((int)entry.ProcessID);
-                    entry.SourceIP = (string)e.EventRecord.Properties[2].Value;
-                    entry.SourcePort = int.Parse((string)e.EventRecord.Properties[3].Value);
+                    entry.ProcessId = (UInt64)e.EventRecord.Properties[0].Value;
+                    entry.AppPath = Utils.GetPathOfProcess((int)entry.ProcessId);
+                    entry.LocalIp = (string)e.EventRecord.Properties[2].Value;
+                    entry.LocalPort = int.Parse((string)e.EventRecord.Properties[3].Value);
                     entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[4].Value;
-                    entry.DestinationIP = string.Empty;
-                    entry.DestinationPort = 0;
+                    entry.RemoteIp = string.Empty;
+                    entry.RemotePort = 0;
                     break;
                 case 5152:
                 case 5156:
                 case 5157:
                 default:
-                    entry.ProcessID = (UInt64)e.EventRecord.Properties[0].Value;
-                    entry.AppPath = Utils.GetPathOfProcess((int)entry.ProcessID);
-                    entry.SourceIP = (string)e.EventRecord.Properties[3].Value;
-                    entry.SourcePort = int.Parse((string)e.EventRecord.Properties[4].Value);
-                    entry.DestinationIP = (string)e.EventRecord.Properties[5].Value;
-                    entry.DestinationPort = int.Parse((string)e.EventRecord.Properties[6].Value);
+                    entry.ProcessId = (UInt64)e.EventRecord.Properties[0].Value;
+                    entry.AppPath = Utils.GetPathOfProcess((int)entry.ProcessId);
+                    entry.LocalIp = (string)e.EventRecord.Properties[3].Value;
+                    entry.LocalPort = int.Parse((string)e.EventRecord.Properties[4].Value);
+                    entry.RemoteIp = (string)e.EventRecord.Properties[5].Value;
+                    entry.RemotePort = int.Parse((string)e.EventRecord.Properties[6].Value);
                     entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[7].Value;
                     switch ((string)e.EventRecord.Properties[2].Value)
                     {
@@ -121,10 +121,10 @@ namespace PKSoft
             }
 
             // Replace invalid IP strings with the "unspecified address" IPv6 specifier
-            if (string.IsNullOrEmpty(entry.DestinationIP))
-                entry.DestinationIP = "::";
-            if (string.IsNullOrEmpty(entry.SourceIP))
-                entry.SourceIP = "::";
+            if (string.IsNullOrEmpty(entry.RemoteIp))
+                entry.RemoteIp = "::";
+            if (string.IsNullOrEmpty(entry.LocalIp))
+                entry.LocalIp = "::";
 
             return entry;
         }

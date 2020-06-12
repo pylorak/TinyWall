@@ -1770,23 +1770,23 @@ namespace PKSoft
                 entry.AppPath = NtPathMapper.FromNtPath(data.appId);
             else
                 entry.AppPath = "System";
-            entry.PackageID = data.packageId;
-            entry.DestinationIP = data.remoteAddr?.ToString();
-            entry.SourceIP = data.localAddr?.ToString();
+            entry.PackageId = data.packageId;
+            entry.RemoteIp = data.remoteAddr?.ToString();
+            entry.LocalIp = data.localAddr?.ToString();
             if (data.remotePort.HasValue)
-                entry.DestinationPort = data.remotePort.Value;
+                entry.RemotePort = data.remotePort.Value;
             if (data.direction.HasValue)
                 entry.Direction = data.direction == FwpmDirection.FWP_DIRECTION_OUT ? RuleDirection.Out : RuleDirection.In;
             if (data.ipProtocol.HasValue)
                 entry.Protocol = (Protocol)data.ipProtocol;
             if (data.localPort.HasValue)
-                entry.SourcePort = data.localPort.Value;
+                entry.LocalPort = data.localPort.Value;
 
             // Replace invalid IP strings with the "unspecified address" IPv6 specifier
-            if (string.IsNullOrEmpty(entry.DestinationIP))
-                entry.DestinationIP = "::";
-            if (string.IsNullOrEmpty(entry.SourceIP))
-                entry.SourceIP = "::";
+            if (string.IsNullOrEmpty(entry.RemoteIp))
+                entry.RemoteIp = "::";
+            if (string.IsNullOrEmpty(entry.LocalIp))
+                entry.LocalIp = "::";
 
             lock (FirewallLogEntries)
             {
@@ -1797,11 +1797,11 @@ namespace PKSoft
         private void AutoLearnLogEntry(FirewallLogEntry entry)
         {
             if (  // IPv4
-                ((entry.DestinationIP.Equals("127.0.0.1", StringComparison.Ordinal)
-                && entry.SourceIP.Equals("127.0.0.1", StringComparison.Ordinal)))
+                ((entry.RemoteIp.Equals("127.0.0.1", StringComparison.Ordinal)
+                && entry.LocalIp.Equals("127.0.0.1", StringComparison.Ordinal)))
                || // IPv6
-                ((entry.DestinationIP.Equals("::1", StringComparison.Ordinal)
-                && entry.SourceIP.Equals("::1", StringComparison.Ordinal)))
+                ((entry.RemoteIp.Equals("::1", StringComparison.Ordinal)
+                && entry.LocalIp.Equals("::1", StringComparison.Ordinal)))
                )
             {
                 // Ignore communication within local machine

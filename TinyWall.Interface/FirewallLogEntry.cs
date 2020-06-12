@@ -31,15 +31,15 @@ namespace TinyWall.Interface
         public DateTime Timestamp;
         public EventLogEvent Event;
         [CLSCompliant(false)]
-        public UInt64 ProcessID;
+        public UInt64 ProcessId;
         public Protocol Protocol;
         public RuleDirection Direction;
-        public string SourceIP;
-        public string DestinationIP;
-        public int SourcePort;
-        public int DestinationPort;
+        public string LocalIp;
+        public string RemoteIp;
+        public int LocalPort;
+        public int RemotePort;
         public string AppPath;
-        public string PackageID;
+        public string PackageId;
 
         public override bool Equals(object obj)
         {
@@ -60,15 +60,15 @@ namespace TinyWall.Interface
                 int hash = OFFSET_BASIS;
                 hash = (hash ^ Timestamp.GetHashCode()) * FNV_PRIME;
                 hash = (hash ^ Event.GetHashCode()) * FNV_PRIME;
-                hash = (hash ^ ProcessID.GetHashCode()) * FNV_PRIME;
+                hash = (hash ^ ProcessId.GetHashCode()) * FNV_PRIME;
                 hash = (hash ^ Protocol.GetHashCode()) * FNV_PRIME;
                 hash = (hash ^ Direction.GetHashCode()) * FNV_PRIME;
-                hash = (hash ^ SourceIP.GetHashCode()) * FNV_PRIME;
-                hash = (hash ^ DestinationIP.GetHashCode()) * FNV_PRIME;
-                hash = (hash ^ SourcePort.GetHashCode()) * FNV_PRIME;
-                hash = (hash ^ DestinationPort.GetHashCode()) * FNV_PRIME;
+                hash = (hash ^ LocalIp.GetHashCode()) * FNV_PRIME;
+                hash = (hash ^ RemoteIp.GetHashCode()) * FNV_PRIME;
+                hash = (hash ^ LocalPort.GetHashCode()) * FNV_PRIME;
+                hash = (hash ^ RemotePort.GetHashCode()) * FNV_PRIME;
                 hash = (hash ^ AppPath.GetHashCode()) * FNV_PRIME;
-                hash = (hash ^ PackageID.GetHashCode()) * FNV_PRIME;
+                hash = (hash ^ PackageId.GetHashCode()) * FNV_PRIME;
 
                 return hash;
             }
@@ -80,16 +80,16 @@ namespace TinyWall.Interface
 
             // Return true if the fields match.
             bool eventMatch =
-                this.DestinationIP.Equals(obj.DestinationIP) &&
-                (this.DestinationPort == obj.DestinationPort) &&
+                this.RemoteIp.Equals(obj.RemoteIp) &&
+                (this.RemotePort == obj.RemotePort) &&
                 (this.Event == obj.Event) &&
-                (this.ProcessID == obj.ProcessID) &&
+                (this.ProcessId == obj.ProcessId) &&
                 (this.Protocol == obj.Protocol) &&
                 (this.Direction == obj.Direction) &&
-                this.SourceIP.Equals(obj.SourceIP) &&
+                this.LocalIp.Equals(obj.LocalIp) &&
                 this.AppPath.Equals(obj.AppPath) &&
-                this.AppPath.Equals(obj.PackageID) &&
-                (this.SourcePort == obj.SourcePort);
+                this.AppPath.Equals(obj.PackageId) &&
+                (this.LocalPort == obj.LocalPort);
 
             if (timestampMustMatch)
                 return this.Timestamp.Equals(obj.Timestamp) && eventMatch;
