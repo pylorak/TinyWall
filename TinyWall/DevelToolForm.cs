@@ -163,25 +163,7 @@ namespace PKSoft
             ofd.Filter = "All files (*)|*";
             if (ofd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
-                txtUpdateTWInstaller.Text = ofd.FileName;
-            }
-        }
-
-        private void btnUpdateDatabaseBrowse_Click(object sender, EventArgs e)
-        {
-            ofd.Filter = "All files (*)|*";
-            if (ofd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
-            {
-                txtUpdateDatabase.Text = ofd.FileName;
-            }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            ofd.Filter = "All files (*)|*";
-            if (ofd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
-            {
-                txtUpdateHosts.Text = ofd.FileName;
+                txtUpdateInstallerProjectDir.Text = ofd.FileName;
             }
         }
 
@@ -197,51 +179,84 @@ namespace PKSoft
         private void btnUpdateCreate_Click(object sender, EventArgs e)
         {
             const string PLACEHOLDER = "[Unset]";
+            const string HOSTS_PLACEHOLDER = "[HOSTS_SHA256_PLACEHOLDER]";
             const string DB_OUT_NAME = "database.def";
             const string HOSTS_OUT_NAME = "hosts.def";
             const string XML_OUT_NAME = "update.xml";
+            const string XML_OUT_TEMPLATE_NAME = "update_template.xml";
+            const string MSI_FILENAME = "TinyWall-v3-Installer.msi";
 
-            string installerFilename = Path.GetFileName(txtUpdateTWInstaller.Text);
-            FileVersionInfo installerInfo = FileVersionInfo.GetVersionInfo(txtUpdateTWInstaller.Text);
+            string projectDir = txtUpdateInstallerProjectDir.Text;
+            string msiPath = Path.Combine(projectDir, @"bin\Release\" + MSI_FILENAME);
+            string hostsPath = Path.Combine(projectDir, @"Sources\CommonAppData\TinyWall\hosts.bck");
+            string profilesPath = Path.Combine(projectDir, @"Sources\CommonAppData\TinyWall\profiles.xml");
+
+            string twAssemblyPath = Path.Combine(projectDir, @"Sources\ProgramFiles\TinyWall\TinyWall.exe");
+
+            void showUpdateFileNotFoundMsg(string file)
+            {
+                MessageBox.Show(this, "File\n\n" + msiPath + "\n\nnot found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (!File.Exists(msiPath))
+            {
+                showUpdateFileNotFoundMsg(msiPath);
+                return;
+            }
+            if (!File.Exists(hostsPath))
+            {
+                showUpdateFileNotFoundMsg(hostsPath);
+                return;
+            }
+            if (!File.Exists(profilesPath))
+            {
+                showUpdateFileNotFoundMsg(profilesPath);
+                return;
+            }
+            if (!File.Exists(twAssemblyPath))
+            {
+                showUpdateFileNotFoundMsg(twAssemblyPath);
+                return;
+            }
+
+            FileVersionInfo installerInfo = FileVersionInfo.GetVersionInfo(twAssemblyPath);
 
             UpdateDescriptor update = new UpdateDescriptor();
             update.Modules = new UpdateModule[3];
 
             update.Modules[0] = new UpdateModule();
             update.Modules[0].Component = "TinyWall";
-            try
-            {
-                update.Modules[0].ComponentVersion = installerInfo.ProductVersion.ToString().Trim();
-            }
-            catch
-            {
-                update.Modules[0].ComponentVersion = "0.0.0";
-            }
-            update.Modules[0].DownloadHash = Hasher.HashFile(txtUpdateTWInstaller.Text);
-            update.Modules[0].UpdateURL = txtUpdateURL.Text + installerFilename;
+            update.Modules[0].ComponentVersion = installerInfo.ProductVersion.ToString().Trim();
+            update.Modules[0].DownloadHash = Hasher.HashFile(msiPath);
+            update.Modules[0].UpdateURL = txtUpdateURL.Text + MSI_FILENAME;
 
             update.Modules[1] = new UpdateModule();
             update.Modules[1].Component = "Database";
             update.Modules[1].ComponentVersion = PLACEHOLDER;
-            update.Modules[1].DownloadHash = Hasher.HashFile(txtUpdateDatabase.Text);
+            update.Modules[1].DownloadHash = Hasher.HashFile(profilesPath);
             update.Modules[1].UpdateURL = txtUpdateURL.Text + DB_OUT_NAME;
 
             update.Modules[2] = new UpdateModule();
             update.Modules[2].Component = "HostsFile";
             update.Modules[2].ComponentVersion = PLACEHOLDER;
-            update.Modules[2].DownloadHash = Hasher.HashFile(txtUpdateHosts.Text);
+            update.Modules[2].DownloadHash = Hasher.HashFile(hostsPath);
             update.Modules[2].UpdateURL = txtUpdateURL.Text + HOSTS_OUT_NAME;
 
-            File.Copy(txtUpdateTWInstaller.Text, Path.Combine(txtUpdateOutput.Text, installerFilename), true);
+            File.Copy(msiPath, Path.Combine(txtUpdateOutput.Text, MSI_FILENAME), true);
 
             string dbOut = Path.Combine(txtUpdateOutput.Text, DB_OUT_NAME);
-            Utils.CompressDeflate(txtUpdateDatabase.Text, dbOut);
+            Utils.CompressDeflate(profilesPath, dbOut);
 
             string hostsOut = Path.Combine(txtUpdateOutput.Text, HOSTS_OUT_NAME);
-            Utils.CompressDeflate(txtUpdateHosts.Text, hostsOut);
+            Utils.CompressDeflate(hostsPath, hostsOut);
 
             string updOut = Path.Combine(txtUpdateOutput.Text, XML_OUT_NAME);
             SerializationHelper.SaveToXMLFile(update, updOut);
+
+            update.Modules[2].ComponentVersion = HOSTS_PLACEHOLDER;
+            updOut = Path.Combine(txtUpdateOutput.Text, XML_OUT_TEMPLATE_NAME);
+            SerializationHelper.SaveToXMLFile(update, updOut);
+
             MessageBox.Show(this, "Update created.", "Success.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

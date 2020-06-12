@@ -53,15 +53,9 @@
             this.txtUpdateURL = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.btnUpdateOutputBrowse = new System.Windows.Forms.Button();
-            this.btnUpdateHostsBorwse = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.txtUpdateOutput = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.txtUpdateHosts = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtUpdateTWInstaller = new System.Windows.Forms.TextBox();
-            this.txtUpdateDatabase = new System.Windows.Forms.TextBox();
-            this.btnUpdateDatabaseBrowse = new System.Windows.Forms.Button();
+            this.txtUpdateInstallerProjectDir = new System.Windows.Forms.TextBox();
             this.btnUpdateCreate = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -290,15 +284,9 @@
             this.tabPage4.Controls.Add(this.txtUpdateURL);
             this.tabPage4.Controls.Add(this.label8);
             this.tabPage4.Controls.Add(this.btnUpdateOutputBrowse);
-            this.tabPage4.Controls.Add(this.btnUpdateHostsBorwse);
             this.tabPage4.Controls.Add(this.label7);
             this.tabPage4.Controls.Add(this.txtUpdateOutput);
-            this.tabPage4.Controls.Add(this.label6);
-            this.tabPage4.Controls.Add(this.txtUpdateHosts);
-            this.tabPage4.Controls.Add(this.label3);
-            this.tabPage4.Controls.Add(this.txtUpdateTWInstaller);
-            this.tabPage4.Controls.Add(this.txtUpdateDatabase);
-            this.tabPage4.Controls.Add(this.btnUpdateDatabaseBrowse);
+            this.tabPage4.Controls.Add(this.txtUpdateInstallerProjectDir);
             this.tabPage4.Controls.Add(this.btnUpdateCreate);
             this.tabPage4.Controls.Add(this.label5);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
@@ -337,7 +325,7 @@
             // 
             // btnUpdateOutputBrowse
             // 
-            this.btnUpdateOutputBrowse.Location = new System.Drawing.Point(446, 203);
+            this.btnUpdateOutputBrowse.Location = new System.Drawing.Point(446, 120);
             this.btnUpdateOutputBrowse.Name = "btnUpdateOutputBrowse";
             this.btnUpdateOutputBrowse.Size = new System.Drawing.Size(75, 23);
             this.btnUpdateOutputBrowse.TabIndex = 22;
@@ -345,20 +333,10 @@
             this.btnUpdateOutputBrowse.UseVisualStyleBackColor = true;
             this.btnUpdateOutputBrowse.Click += new System.EventHandler(this.btnUpdateOutputBrowse_Click);
             // 
-            // btnUpdateHostsBorwse
-            // 
-            this.btnUpdateHostsBorwse.Location = new System.Drawing.Point(446, 162);
-            this.btnUpdateHostsBorwse.Name = "btnUpdateHostsBorwse";
-            this.btnUpdateHostsBorwse.Size = new System.Drawing.Size(75, 23);
-            this.btnUpdateHostsBorwse.TabIndex = 21;
-            this.btnUpdateHostsBorwse.Text = "Browse...";
-            this.btnUpdateHostsBorwse.UseVisualStyleBackColor = true;
-            this.btnUpdateHostsBorwse.Click += new System.EventHandler(this.button1_Click);
-            // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(14, 190);
+            this.label7.Location = new System.Drawing.Point(14, 107);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(71, 13);
             this.label7.TabIndex = 20;
@@ -366,70 +344,23 @@
             // 
             // txtUpdateOutput
             // 
-            this.txtUpdateOutput.Location = new System.Drawing.Point(17, 206);
+            this.txtUpdateOutput.Location = new System.Drawing.Point(17, 123);
             this.txtUpdateOutput.Name = "txtUpdateOutput";
             this.txtUpdateOutput.Size = new System.Drawing.Size(423, 20);
             this.txtUpdateOutput.TabIndex = 19;
             this.txtUpdateOutput.Text = "C:\\Users\\Karoly\\Nextcloud\\TinyWall\\TinyWall3\\OnlineUpdate";
             // 
-            // label6
+            // txtUpdateInstallerProjectDir
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(14, 146);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(53, 13);
-            this.label6.TabIndex = 18;
-            this.label6.Text = "Hosts file:";
-            // 
-            // txtUpdateHosts
-            // 
-            this.txtUpdateHosts.Location = new System.Drawing.Point(17, 162);
-            this.txtUpdateHosts.Name = "txtUpdateHosts";
-            this.txtUpdateHosts.Size = new System.Drawing.Size(423, 20);
-            this.txtUpdateHosts.TabIndex = 17;
-            this.txtUpdateHosts.Text = "C:\\Users\\Karoly\\Nextcloud\\TinyWall\\TinyWall3\\MsiSetup\\Sources\\CommonAppData\\TinyW" +
-    "all\\hosts.bck";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(14, 102);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(81, 13);
-            this.label3.TabIndex = 16;
-            this.label3.Text = "Database XML:";
-            // 
-            // txtUpdateTWInstaller
-            // 
-            this.txtUpdateTWInstaller.Location = new System.Drawing.Point(17, 79);
-            this.txtUpdateTWInstaller.Name = "txtUpdateTWInstaller";
-            this.txtUpdateTWInstaller.Size = new System.Drawing.Size(423, 20);
-            this.txtUpdateTWInstaller.TabIndex = 12;
-            this.txtUpdateTWInstaller.Text = "C:\\Users\\Karoly\\Nextcloud\\TinyWall\\TinyWall3\\MsiSetup\\bin\\Release\\TinyWallInstall" +
-    "er.msi";
-            // 
-            // txtUpdateDatabase
-            // 
-            this.txtUpdateDatabase.Location = new System.Drawing.Point(17, 118);
-            this.txtUpdateDatabase.Name = "txtUpdateDatabase";
-            this.txtUpdateDatabase.Size = new System.Drawing.Size(423, 20);
-            this.txtUpdateDatabase.TabIndex = 15;
-            this.txtUpdateDatabase.Text = "C:\\Users\\Karoly\\Nextcloud\\TinyWall\\TinyWall3\\MsiSetup\\Sources\\CommonAppData\\TinyW" +
-    "all\\profiles.xml";
-            // 
-            // btnUpdateDatabaseBrowse
-            // 
-            this.btnUpdateDatabaseBrowse.Location = new System.Drawing.Point(446, 116);
-            this.btnUpdateDatabaseBrowse.Name = "btnUpdateDatabaseBrowse";
-            this.btnUpdateDatabaseBrowse.Size = new System.Drawing.Size(75, 23);
-            this.btnUpdateDatabaseBrowse.TabIndex = 14;
-            this.btnUpdateDatabaseBrowse.Text = "Browse...";
-            this.btnUpdateDatabaseBrowse.UseVisualStyleBackColor = true;
-            this.btnUpdateDatabaseBrowse.Click += new System.EventHandler(this.btnUpdateDatabaseBrowse_Click);
+            this.txtUpdateInstallerProjectDir.Location = new System.Drawing.Point(17, 79);
+            this.txtUpdateInstallerProjectDir.Name = "txtUpdateInstallerProjectDir";
+            this.txtUpdateInstallerProjectDir.Size = new System.Drawing.Size(423, 20);
+            this.txtUpdateInstallerProjectDir.TabIndex = 12;
+            this.txtUpdateInstallerProjectDir.Text = "C:\\Users\\Karoly\\Nextcloud\\TinyWall\\TinyWall3\\MsiSetup";
             // 
             // btnUpdateCreate
             // 
-            this.btnUpdateCreate.Location = new System.Drawing.Point(536, 107);
+            this.btnUpdateCreate.Location = new System.Drawing.Point(574, 79);
             this.btnUpdateCreate.Name = "btnUpdateCreate";
             this.btnUpdateCreate.Size = new System.Drawing.Size(109, 59);
             this.btnUpdateCreate.TabIndex = 11;
@@ -442,9 +373,9 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(14, 63);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(89, 13);
+            this.label5.Size = new System.Drawing.Size(167, 13);
             this.label5.TabIndex = 13;
-            this.label5.Text = "TinyWall installer:";
+            this.label5.Text = "TinyWall installer project directory:";
             // 
             // tabPage3
             // 
@@ -740,15 +671,9 @@
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Button btnUpdateOutputBrowse;
-        private System.Windows.Forms.Button btnUpdateHostsBorwse;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txtUpdateOutput;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox txtUpdateHosts;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtUpdateTWInstaller;
-        private System.Windows.Forms.TextBox txtUpdateDatabase;
-        private System.Windows.Forms.Button btnUpdateDatabaseBrowse;
+        private System.Windows.Forms.TextBox txtUpdateInstallerProjectDir;
         private System.Windows.Forms.Button btnUpdateCreate;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtUpdateURL;
