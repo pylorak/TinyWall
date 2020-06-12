@@ -55,6 +55,7 @@ namespace PKSoft
 
         private Engine WfpEngine;
         private ManagementEventWatcher ProcessStartWatcher;
+        private ManagementEventWatcher NetworkInterfaceWatcher;
         private DevicePathMapper NtPathMapper = new DevicePathMapper();
 
         private List<IpAddrMask> InterfaceAddreses = new List<IpAddrMask>();
@@ -1633,10 +1634,6 @@ namespace PKSoft
             // Fire up pipe
             GlobalInstances.ServerPipe = new PipeServerEndpoint(new PipeDataReceived(PipeServerDataReceived), "TinyWallController");
 
-            // Listen to network configuration changes
-            NetworkChange.NetworkAddressChanged += NetworkChange_NetworkAddressChanged;
-            NetworkChange.NetworkAvailabilityChanged += NetworkChange_NetworkAvailabilityChanged;
-
             // Make sure event collection is enabled
             using (WfpEngine = new Engine("TinyWall Option Session", "", FWPM_SESSION_FLAGS.None, 5000))
             {
@@ -1646,10 +1643,21 @@ namespace PKSoft
 
             using (WindowsFirewall WinDefFirewall = new WindowsFirewall())
             using (ProcessStartWatcher = new ManagementEventWatcher(new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace")))
+            using (NetworkInterfaceWatcher = new ManagementEventWatcher(new WqlEventQuery("SELECT * FROM __InstanceOperationEvent WITHIN 5 WHERE Targetinstance ISA 'Win32_NetworkAdapterConfiguration'")))
             using (WfpEngine = new Engine("TinyWall Session", "", FWPM_SESSION_FLAGS.None, 5000))
             using (var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback, null))
             {
                 ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
+                NetworkInterfaceWatcher.EventArrived += NetworkInterfaceWatcher_EventArrived;
+
+                try
+                {
+                    NetworkInterfaceWatcher.Start();
+                }
+                catch
+                {
+                    Utils.Log("WMI error. Network interface changes will not be monitored", Utils.LOG_ID_SERVICE);
+                }
 
                 RunService = true;
                 while (RunService)
@@ -1662,6 +1670,12 @@ namespace PKSoft
                         future.Value = resp;
                 }
             }
+        }
+
+        private void NetworkInterfaceWatcher_EventArrived(object sender, EventArrivedEventArgs e)
+        {
+            Q.Enqueue(new TwMessage(MessageType.REENUMERATE_ADDRESSES), null);
+            e.NewEvent.Dispose();
         }
 
         private void ProcessStartWatcher_EventArrived(object sender, EventArrivedEventArgs e)
@@ -1740,16 +1754,6 @@ namespace PKSoft
             {
                 e.NewEvent.Dispose();
             }
-        }
-
-        private void NetworkChange_NetworkAvailabilityChanged(object sender, NetworkAvailabilityEventArgs e)
-        {
-            Q.Enqueue(new TwMessage(MessageType.REENUMERATE_ADDRESSES), null);
-        }
-
-        private void NetworkChange_NetworkAddressChanged(object sender, EventArgs e)
-        {
-            Q.Enqueue(new TwMessage(MessageType.REENUMERATE_ADDRESSES), null);
         }
 
         private void WfpNetEventCallback(object context, NetEventData data)
