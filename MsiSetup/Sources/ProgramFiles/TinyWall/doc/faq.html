@@ -45,52 +45,63 @@
     <div class="row">
       <div class="twelvecol last">
         <h3>What are the system requirements to run TinyWall?</h3>
-        <p>TinyWall runs on all versions (including all editions and languages, 32bit and 64bit) of Windows Vista, Windows 7 and Windows 8. However, firewall tampering protection is not active on Windows Vista. Also, Windows Vista users need to install <a href="http://go.microsoft.com/fwlink/?linkid=262043">Microsoft .Net Framework 3.5 SP1 or newer</a> before installing TinyWall.</p>
+        <p>TinyWall runs on Intel- or AMD-based (not ARM) Windows 10 / 8.1 / 8 / 7, as well as on Windows Server 2019 / 2016 / 2012 R2.</p>
       </div>
       <div class="twelvecol last">
         <h3>Who is TinyWall best suited for?</h3>
-        <p>TinyWall was made with single private users, small-office / home-office computers, or family PCs in mind. It offers a secure firewall with a simple user interface and the most commonly needed options. TinyWall is not really suited for headless machines, servers, and networks with more than 5 computers, because it lacks support for a command-line interface, remote management, and centralized control.</p>
+        <p>TinyWall was made with single private users, small-office / home-office computers, or family PCs in mind. It offers a secure firewall with a simple user interface and the most commonly needed options. TinyWall is not really suited for headless machines, servers, and networks with more than 5 computers, because it lacks support for a command-line interface, remote management, and domain-controller integration.</p>
       </div>
       <div class="twelvecol last">
         <h3>How does TinyWall compare to other firewall products?</h3>
-        <p>The traditional task of a firewall is to filter network traffic to ensure that no unwanted network communication takes place. In this regard TinyWall is just as reliable as any other paid firewall. Some other products include a Host-based Intrusion Prevention System (HIPS) which provides additional security, at the cost of incompatibility with some applications and the need for more user intervention. TinyWall does not come with HIPS functionality.</p>
+        <p>A firewall filters network traffic to ensure that no unwanted network communication takes place. In this regard TinyWall is just as reliable as any other paid firewall. Some firewalls on the market come bundled with additional non-firewall modules, such as HIPS, anti-malware or anti-virus. TinyWall does not offer these modules and is purely a firewall.</p>
       </div>
       <div class="twelvecol last">
         <h3>Why do I need a software firewall? I already have a hardware firewall.</h3>
-        <p>Hardware firewalls restrict traffic based on information in the network packets, like ports, hosts and protocols, but they are unable to determine what applications are communicating. If you allow HTTP/80 in your hardware firewall, you will be able to browse the internet, but you’ve also automatically given internet access to all other kinds of software you might not trust. A software firewall allows you to control applications separately.</p>
+        <p>Hardware firewalls restrict traffic based on information in the network packets, like ports, hosts and protocols, but they are unable to determine what applications are communicating. For example, if you allow HTTP/80 in a hardware firewall, you will be able to browse the internet, but you’ve also automatically given internet access to all other kinds of software you might not trust. A software firewall has the advantage that it allows you to control applications separately even if they use the same ports and protocols.</p>
         <p>Additionally, most consumer hardware firewalls are set up to only filter incoming communication. TinyWall will also let you control network traffic originating from your computer.</p>
-      </div>
-      <div class="twelvecol last">
-        <h3>How do I uninstall TinyWall?</h3>
-        <p>The latest version of TinyWall can be uninstalled from the Windows Control Panel just like any other software.</p>
-        <p>If you are using version 1.0.x, in TinyWall's tray menu go to Manage, select the Maintenance tab and click the Uninstall button there. If this button is greyed out, you first need to select Elevate in the tray menu to make sure you have the necessary privileges. If you have any problems uninstalling TinyWall v1, please use <a href="http://tinywall.pados.hu/files/TinyWallCleaner.zip">this utility</a> to remove it. There are no such uninstallation problems for TinyWall v2.</p>
       </div>
       <div class="twelvecol last">
         <h3>Is TinyWall compatible with other security software?</h3>
         <ul>
         <li>TinyWall is compatible with all antivirus file system protections.</li>
         <li>TinyWall is compatible with blocklisting software, such as PeerBlock.</li>
-        <li>Some "web shields" of specific security suites may make you unable to control some application separately using TinyWall, but TinyWall will still continue to function perfectly.</li>
-        <li>With the exception of Windows Firewall, no other firewall software should be active while TinyWall is installed. Even if two firewall products can technically coexist, it is strongly discouraged to avoid user confusion.</li>
-        <li>If you are using HIPS software, make sure not to restrict TinyWall in the HIPS software. This usually needs additional configuration in the HIPS software.</li>
+        <li>Some "web shields" of specific security suites may make you unable to control applications separately using TinyWall.</li>
+        <li>With the exception of Windows Firewall, no other firewall software should be active while TinyWall is installed. This includes standalone firewalls as well as software that provide a nicer interface to Windows Firewall. Note that being able to install two firewalls at the same time does not mean they will work without issues in all cases.</li>
+        <li>If you are using HIPS, anti-malware, or behavioral analysis programs, make sure they are set not to restrict TinyWall. This often needs additional configuration in the other security software.</li>
         <li>If TinyWall is set to do so in its settings, no other software may be used to manage or protect the hosts file.</li>
         </ul>
       </div>
       <div class="twelvecol last">
-        <h3>After installation TinyWall is automatically granted internet access. Why?</h3>
-        <p>This is to enable the automatic update checks and the download of updates for TinyWall. TinyWall does not send any information about the user or the computer over the internet. If you still wish to deny TinyWall access to the internet, disable TinyWall on the Special Exceptions tab.</p>
+        <h3>Will TinyWall report telemetry or send information from my computer?</h3>
+        <p>No. TinyWall checks for updates automatically (you can opt-out) once in a while. During this check the current version of TinyWall running on your computer will be sent. Other than this, no information is collected, neither personal nor anonymized. As examples, TinyWall does not send or otherwise collect telemetry, crash reports, information about your computer, OS or other software, user habits, or IP address.</p>
       </div>
       <div class="twelvecol last">
         <h3>I installed TinyWall and now I cannot access the internet. What happened?</h3>
-        <p>Upon installation TinyWall locks down your PC such that no network communication may take place, except for a few known applications. If you experience connectivity problems in some programs, use one of the "Whitelist by ..." options in the tray menu to unblock specific applications.</p>
+        <p>Upon installation TinyWall locks down your PC such that no network communication may take place, except for a few known applications. If you experience connectivity problems in some programs, use one of the "Whitelist by ..." options in the tray menu to unblock specific applications. Also be sure to check Manage->Special Exceptions if you need anything enabled there.</p>
       </div>
       <div class="twelvecol last">
-        <h3>Why block applications if TinyWall blocks all applications by default anyway?</h3>
-        <p>TinyWall blocks all applications by default in some of its operation modes, including the "Normal" mode which is the standard mode of operation. Explicitly blocking is useful to deny network access for an application even when the firewall mode is set to allow all outgoing communication.</p>
+        <h3>How do I uninstall TinyWall?</h3>
+        <p>You can remove TinyWall using the "Add or Remove Programs" feature of Windows, like traditional software. Like for any security software that integrates more or less deeper with Windows, it is especially important that you do not delete TinyWall's folder by hand instead of properly uninstalling, as you might cause irreparable damage by doing so.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>Can I install TinyWall over a remote connection?</h3>
+        <p>No. After TinyWall is installed, it defaults to blocking network traffic, and the user has to whitelist applications manually one-by-one. If you install TinyWall over a remote connection, you will lock yourself out before getting a chance to whitelist your remote desktop application.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>Am I left unprotected if I close TinyWall's icon in the taskbar?</h3>
+        <p>No. The taskbar icon is only the GUI component of TinyWall and is not responsible for your computer's protection.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>I am trying to whitelist applications by window, but TinyWall doesn't see or register the "click". Why?</h3>
+        <p>You can only whitelist other applications by window if they aren't using higher privileges. If you want to whitelist an admin app using the window method, make sure TinyWall's taskbar is running as admin too. You can easily achieve this by selecting "Elevate" from TinyWall's taskbar context menu.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>Why is there an option to create a blocking rule if TinyWall blocks all applications by default anyway?</h3>
+        <p>If you create a blocking rule, TinyWall will block that application even in operating modes that would normally let programs pass through, such as in the "Allow outgoing" or "Auto-learning" modes.</p>
       </div>
       <div class="twelvecol last">
         <h3>What is the "Unblock LAN traffic" option for?</h3>
-        <p>It is an option to easily allow network traffic from/to the local network. It is most useful if you only wish to limit internet traffic. Normally when TinyWall is operating in "Normal" mode with this option unchecked, it will block all traffic except for whitelisted applications. But if "Unblock LAN traffic" is checked, traffic from/to the LAN will be allowed by default even in "Normal" mode. Basically, if this option is enabled, TinyWall behaves as if the firewall was mostly disabled for the local network, but enabled for the internet.</p>
+        <p>It is an option to easily allow network traffic from/to the local network. It is most useful if you only wish to limit internet traffic. Normally, when TinyWall is operating in "Normal" mode with this option unchecked, it will block all traffic except for whitelisted applications. But if "Unblock LAN traffic" is checked, traffic from/to the LAN will be allowed by default even in "Normal" mode. Basically, if this option is enabled, TinyWall behaves as if the firewall was mostly disabled for the local network, but enabled for the internet.</p>
       </div>
       <div class="twelvecol last">
         <h3>What is the difference between port-based and domain-based blocklists?</h3>
@@ -98,33 +109,27 @@
       </div>
       <div class="twelvecol last">
         <h3>I have whitelisted an application but it still cannot access the network. What is going on?</h3>
-        <p>You might find that even though you have whitelisted the executable of an application, it still cannot connect to the internet. However, the conclusion that TinyWall is not working is probably wrong. This kind of issue is most often caused by whitelisting the wrong executable, or not whitelisting every executable needed for the operation of that particular program. Some applications use multiple executables to connect to the internet. If you do not unblock them all, they still won't be able to access the internet, even though the whitelisting has succeeded.</p>
-        <p>If you do not know which files need to be whitelisted for an application to work, the easiest solution is to use the learning mode of TinyWall. Enter learning mode using the tray menu, use the application for a few minutes, then switch TinyWall back to its "Normal" mode. For maximized security, you should ensure that no other programs are used at the same time and that your computer is free from malware before entering learning mode.</p>
+        <p>You might find that even though you have whitelisted the executable of an application, it still cannot connect to the internet. However, the conclusion that TinyWall is not working is probably wrong. This kind of issue is most often caused by whitelisting the wrong executable, or not whitelisting every executable needed for the operation of a particular program. Some applications use multiple executables to connect to the internet. If you do not unblock them all, they still won't be able to access the internet, even though the whitelisting has succeeded.</p>
       </div>
       <div class="twelvecol last">
-        <h3>Whitelisting does not seem to take effect.<br/>
-        or: Some programs can access the internet even when they shouldn't be able to.</h3>
-        <p>You probably have Avast! Antivirus, AdMuncher, Mailwasher or similar security software installed. In the following passages we use Avast! as an example, but it goes for any software that works similarly.</p>
-        <p>Some shields of avast! work by redirecting other applications to the local computer, then making the internet connection themselves instead of the original program. As a result, avast! needs to be unblocked instead of your browser, for example, to be able to access the internet. The recommended solution is to unblock the "avast! Antivirus" service in TinyWall. However, now that avast! is unblocked, all applications that are redirected to avast! are also unblocked. It is not possible to control those applications one-by-one any more, because they never access the internet, they only communicate locally with your antivirus.</p>
-        <p>A second solution is to disable the corresponding avast! shield (for example, the Web Shield), but this is not recommended because you'd loose that protection of avast!. However, if you want to be able to block/unblock each and every application separately using TinyWall, this is your only choice.</p>
+        <h3>How do I figure out which executables need to be whitelisted for my application?</h3>
+        <p>If whitelisting by window or process does not seem to work for a particular application, it is best to use TinyWall's Connections window. Open the Connections windows, enable showing blocked connections there, and disable other options for clarity. Then try using your program once until it fails to connect to the network again. Refresh TinyWall's Connections window, and check which of the newly blocked executables belong to your program. Whitelist as necessary.</p>
       </div>
       <div class="twelvecol last">
-        <h3>Why can some Windows Store apps access the internet even though they haven't been whitelisted?</h3>
-        <p>Due to the way Microsoft has implemented the Windows Store App core infrastructure, some apps (but not all) share the internet over the same executables (typically WWAHost.exe). This means that if you have whitelisted any app that uses these shared executables, other apps that also use these files will also get internet access. Examples for such applications are the Windows Store App itself, and Skype.</p>
+        <h3>Whitelisting still does not seem to take effect. / Some apps can access the internet even when they shouldn't.</h3>
+        <p>You probably have Avast! Antivirus, AdMuncher, Mailwasher or similar security software installed. These have modules that work by redirecting other applications to the local computer, then making the internet connection themselves instead of the original program. It is best to disable these modules (such as avast! web-shield) in cases like this.</p>
       </div>
       <div class="twelvecol last">
-        <h3>Why does TinyWall not pass all the leak tests I have tried?</h3>
-        <p>Passing some leak tests requires HIPS functionality that TinyWall does not provide. To counter this effect, you can try the following heuristic approach: Do not whitelist Internet Explorer and use an alternative browser instead. This blocks a common HIPS-related attack vector that is often checked by leak tests.</p>
+        <h3>Why doesn't auto-learn learn the rules I need?</h3>
+        <p>To prevent unintentionally learning rules that could make almost every program access the internet, TinyWall's auto-learn function has been restricted from learning rules for system or svchost processes. Furthermore, due to technical limitations in Windows, auto-learn cannot recognize services. As a result, TinyWall's auto-learn mode is mostly only suited to learning traditional desktop applications installed by the user themself.</p>
       </div>
       <div class="twelvecol last">
-        <h3>TinyWall's service crashes, or is often unavailable to its Controller, or I get UAC prompts on boot.</h3>
-        <p>Probably some other security software is interfering with your TinyWall installation. Make sure that the TinyWall Service is not disabled by you or by other software, and that security, control, or sandboxing software on your computer does not limit or restrict TinyWall.</p>
-        <p>Another possible reason could be bugs in TinyWall's service that make it stop or crash for an abnormal reason. If there is a file called "errorlog" in C:\ProgramData\TinyWall, please send this file to me so that I can investigate any issues and make corrections if necessary.</p>
+        <h3>TinyWall crashes, or is often unavailable to its GUI, or I get UAC prompts on boot.</h3>
+        <p>Once you are sure it is not another security software that interfering with TinyWall, send me a mail with the description of your problem. You can find my e-mail address on the very bottom of this page. If there are any logs present in the C:\ProgramData\TinyWall directory, please attach them to your mail.</p>
       </div>
       <div class="twelvecol last">
         <h3>Why does TinyWall seem to use a lot of memory?</h3>
-        <p>Memory analysis of a process, especially .Net processes like TinyWall, is more complicated than looking at the values reported by the Task Manager. First of all, all .Net processes have a somewhat increased memory usage, because of the supporting runtime that gets loaded, but this is perfectly normal and expected. This is how Microsoft designed it. Second, what the Task Manager counts is not the memory reserved by TinyWall itself, but the memory reserved by the .Net runtime, which is higher but not really all used. Third, you'd be mistaken to sum the memory amounts used by the two TinyWall processes. The two processes of TinyWall share a lot of things in memory which are thus loaded only once, but Windows counts them separtately for each process, thereby double-counting a significant portion of TinyWall's memory usage. The end effect of all these is that the actually used amount of memory is less than what is reported to you by such simple tools.</p>
-        <p>Another thing you might want to ask yourself is, whether you are actually interested in how much megabytes TinyWall uses. The answer is probably, no. What you really want to know is whether it will slow down your computer, and the answer to that is too, no.</p>
+        <p>Memory analysis of a process, especially of .Net processes like TinyWall, is more complicated than looking at the values reported by the Task Manager. First of all, all .Net processes have a somewhat increased memory usage, because of the supporting runtime that gets loaded, but this is perfectly normal and expected. This is how Microsoft designed it. Second, what the Task Manager counts is not the memory reserved by TinyWall itself, but the memory reserved by the .Net runtime, which is higher but not really all used. Third, you'd be mistaken to sum the memory used by the two TinyWall processes. The two processes of TinyWall share a lot of things in memory which are thus loaded only once, but Windows counts them separtately for each process, thereby double-counting a significant portion of TinyWall's memory usage. The end effect of all these is that the actually used amount of memory is less than what is reported to you by such simple tools. Besides, what you'd like to know is probably not how many megabytes TinyWall uses, but whether it will slow down your computer. It won't.</p>
       </div>
     </div>
   </div>
