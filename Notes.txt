@@ -1,7 +1,5 @@
 Future development ideas:
 - Option wheteher to allow inbound connection in default rule
-- Logs dir
-- Install log
 - Block traffic while screensaver is active
 - Better hosts handling
 - Unified dialog boxes
@@ -17,7 +15,6 @@ Future development ideas:
 - Remove RuleDef.Application field
 - Compile new port block list from Docs/MalwarePorts/
 - Add "Open folder" to Processes and Connections windows
-- avast.setup
 - Checkboxes in mode menu
 - Connections window auto refresh checkbox
 - Connections window always on top checkbox

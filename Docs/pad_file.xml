@@ -34,9 +34,9 @@
 	</Company_Info>
 	<Program_Info>
 		<Program_Name>TinyWall</Program_Name>
-		<Program_Version>3.0.4</Program_Version>
-		<Program_Release_Month>04</Program_Release_Month>
-		<Program_Release_Day>26</Program_Release_Day>
+		<Program_Version>3.0.5</Program_Version>
+		<Program_Release_Month>06</Program_Release_Month>
+		<Program_Release_Day>14</Program_Release_Day>
 		<Program_Release_Year>2020</Program_Release_Year>
 		<Program_Cost_Dollars>0</Program_Cost_Dollars>
 		<Program_Cost_Other_Code />
@@ -44,16 +44,16 @@
 		<Program_Type>Freeware</Program_Type>
 		<Program_Release_Status>Minor Update</Program_Release_Status>
 		<Program_Install_Support>Install and Uninstall</Program_Install_Support>
-		<Program_OS_Support>Win7 x64,WinOther,WinVista,WinVista x64,Other, Win10</Program_OS_Support>
-		<Program_Language>English,Dutch,French,German,Hungarian,Italian,Japanese,Portuguese,Russian,Spanish,Polish,Turkish</Program_Language>
+		<Program_OS_Support>Win7 x32,Win7 x64,WinOther,Other,Win10</Program_OS_Support>
+		<Program_Language>Chinese,Czech,English,Dutch,French,German,Hungarian,Italian,Japanese,Polish,Portuguese,Russian,Spanish,Turkish</Program_Language>
 		<Program_Change_Info>See https://tinywall.pados.hu/changelog.txt</Program_Change_Info>
 		<Program_Specific_Category>Utilities</Program_Specific_Category>
 		<Program_Category_Class>Security &amp; Privacy::Access Control</Program_Category_Class>
 		<Program_System_Requirements>Microsoft .Net Framework 3.5 SP1</Program_System_Requirements>
 		<File_Info>
-			<File_Size_Bytes>1441792</File_Size_Bytes>
-			<File_Size_K>1408</File_Size_K>
-			<File_Size_MB>1.37</File_Size_MB>
+			<File_Size_Bytes>1486848</File_Size_Bytes>
+			<File_Size_K>1452</File_Size_K>
+			<File_Size_MB>1.41</File_Size_MB>
 		</File_Info>
 		<Expire_Info>
 			<Has_Expire_Info>N</Has_Expire_Info>

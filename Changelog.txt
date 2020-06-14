@@ -1,6 +1,31 @@
 TinyWall Changelog
 ---------------------
 
+3.0.5 - Maintenance release (14.06.2020.)
+- Restore compatibility with 32-bit (x86) Windows systems
+- Remember user-set column widths in lists
+- Keep application list selection and scroll-position after modifications
+- Reduced system load of traffic rate monitor
+- New and performance-optimized firewall rule application
+- Fix not all changes are detected when a network adapter is reconfigured
+- Fix rules for Windows services may get ignored due to wrong SID translation
+- Fix incomplete deserialization of DHCP profile
+- Fix tooltip rule edit not saving correctly
+- Fix two rules merged incorrectly if one of them was Unrestricted
+- Fix "Ask for exception details" not always taken into account
+- Fix UI text contents in Connections window (column headers, and 2 -> 5 mins)
+- Fix WMI leak while monitoring sub-processes
+- Increase traffic rate update interval to 2 seconds
+- Only enable sub-process monitoring if necessary for active rules
+- Optimized sub-process monitoring when enabled
+- Rework inter-process pipe communication
+- Update old WhatsNew and FAQ in installer
+- Updated Brazilian Portuguese and Russian localizations
+- Introduce logging in installer routines
+- Collect all logs to "logs" folder
+
+---------------------
+
 3.0.4 - Maintenance release (26.04.2020.)
 - Make language changes take effect without a GUI restart
 - Handle WMI errors gracefully in service
