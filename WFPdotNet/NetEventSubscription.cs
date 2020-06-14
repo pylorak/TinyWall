@@ -165,7 +165,7 @@ namespace WFPdotNet
         {
             this.EventType = nativeEvent.type;
             this.timeStamp = nativeEvent.header.timeStamp.Local;
-            this.flags = nativeEvent.header.flag;
+            this.flags = nativeEvent.header.flags;
 
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_APP_ID_SET) != 0)
             {

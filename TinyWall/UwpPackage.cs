@@ -69,10 +69,21 @@ namespace PKSoft
         }
 
         [SuppressUnmanagedCodeSecurity]
-        protected static class NativeMethods
+        private static class NativeMethods
         {
-            [DllImport("NativeHelper")]
-            internal static extern void GetUwpPackageListing([Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] out Package[] list, out int size);
+            [DllImport("NativeHelper32", EntryPoint = "GetUwpPackageListing")]
+            private static extern void GetUwpPackageListing32([Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] out Package[] list, out int size);
+
+            [DllImport("NativeHelper64", EntryPoint = "GetUwpPackageListing")]
+            private static extern void GetUwpPackageListing64([Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] out Package[] list, out int size);
+
+            public static void GetUwpPackageListing(out Package[] list, out int size)
+            {
+                if (IntPtr.Size == 8)
+                    GetUwpPackageListing64(out list, out size);
+                else
+                    GetUwpPackageListing32(out list, out size);
+            }
         }
 
         private static bool IsGetUwpPackageListingSupported()

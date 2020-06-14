@@ -163,7 +163,7 @@ namespace WFPdotNet
                     {
                         Array.Reverse(addressBytes);
                         _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT32;
-                        _nativeStruct.conditionValue.uint32 = BitConverter.ToUInt32(addressBytes, 0);
+                        _nativeStruct.conditionValue.value.uint32 = BitConverter.ToUInt32(addressBytes, 0);
                     }
                     else
                     {
@@ -185,7 +185,7 @@ namespace WFPdotNet
                         nativeMem = PInvokeHelper.StructToHGlobal<Interop.FWP_V4_ADDR_AND_MASK>(addrAndMask4);
 
                         _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_V4_ADDR_MASK;
-                        _nativeStruct.conditionValue.v4AddrMask = nativeMem.DangerousGetHandle();
+                        _nativeStruct.conditionValue.value.v4AddrMask = nativeMem.DangerousGetHandle();
                     }
                     break;
                 case System.Net.Sockets.AddressFamily.InterNetworkV6:
@@ -196,7 +196,7 @@ namespace WFPdotNet
                         System.Runtime.InteropServices.Marshal.Copy(addressBytes, 0, ptr, 16);
 
                         _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_BYTE_ARRAY16_TYPE;
-                        _nativeStruct.conditionValue.byteArray16 = ptr;
+                        _nativeStruct.conditionValue.value.byteArray16 = ptr;
                     }
                     else
                     {
@@ -206,7 +206,7 @@ namespace WFPdotNet
                         nativeMem = PInvokeHelper.StructToHGlobal<Interop.FWP_V6_ADDR_AND_MASK>(addrAndMask6);
 
                         _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_V6_ADDR_MASK;
-                        _nativeStruct.conditionValue.v6AddrMask = nativeMem.DangerousGetHandle();
+                        _nativeStruct.conditionValue.value.v6AddrMask = nativeMem.DangerousGetHandle();
                     }
                     break;
                 default:
@@ -269,7 +269,7 @@ namespace WFPdotNet
         {
             _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT16;
-            _nativeStruct.conditionValue.uint16 = portNumber;
+            _nativeStruct.conditionValue.value.uint16 = portNumber;
         }
 
         private void Init(ushort minPort, ushort maxPort)
@@ -278,13 +278,13 @@ namespace WFPdotNet
 
             Interop.FWP_RANGE0 range = new Interop.FWP_RANGE0();
             range.valueLow.type = Interop.FWP_DATA_TYPE.FWP_UINT16;
-            range.valueLow.uint16 = minPort;
+            range.valueLow.value.uint16 = minPort;
             range.valueHigh.type = Interop.FWP_DATA_TYPE.FWP_UINT16;
-            range.valueHigh.uint16 = maxPort;
+            range.valueHigh.value.uint16 = maxPort;
 
             rangeNativeMem = PInvokeHelper.StructToHGlobal<Interop.FWP_RANGE0>(range);
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_RANGE_TYPE;
-            _nativeStruct.conditionValue.rangeValue = rangeNativeMem.DangerousGetHandle();
+            _nativeStruct.conditionValue.value.rangeValue = rangeNativeMem.DangerousGetHandle();
         }
 
         protected override void Dispose(bool disposing)
@@ -330,7 +330,7 @@ namespace WFPdotNet
             _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
             _nativeStruct.fieldKey = ConditionKeys.FWPM_CONDITION_IP_PROTOCOL;
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT8;
-            _nativeStruct.conditionValue.uint8 = proto;
+            _nativeStruct.conditionValue.value.uint8 = proto;
         }
     }
 
@@ -383,7 +383,7 @@ namespace WFPdotNet
             _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
             _nativeStruct.fieldKey = bBeforeProxying ? ConditionKeys.FWPM_CONDITION_ALE_ORIGINAL_APP_ID : ConditionKeys.FWPM_CONDITION_ALE_APP_ID;
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_BYTE_BLOB_TYPE;
-            _nativeStruct.conditionValue.byteBlob = appIdNativeMem.DangerousGetHandle();
+            _nativeStruct.conditionValue.value.byteBlob = appIdNativeMem.DangerousGetHandle();
         }
 
         protected override void Dispose(bool disposing)
@@ -424,7 +424,7 @@ namespace WFPdotNet
             _nativeStruct.matchType = matchType;
             _nativeStruct.fieldKey = fieldKey;
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_SECURITY_DESCRIPTOR_TYPE;
-            _nativeStruct.conditionValue.sd = byteBlobNativeMem.DangerousGetHandle();
+            _nativeStruct.conditionValue.value.sd = byteBlobNativeMem.DangerousGetHandle();
         }
 
         protected override void Dispose(bool disposing)
@@ -583,7 +583,7 @@ namespace WFPdotNet
             _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
             _nativeStruct.fieldKey = ConditionKeys.FWPM_CONDITION_ALE_PACKAGE_ID;
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_SID;
-            _nativeStruct.conditionValue.sd = sidNativeMem.DangerousGetHandle();
+            _nativeStruct.conditionValue.value.sd = sidNativeMem.DangerousGetHandle();
         }
 
         public static PackageIdFilterCondition FromPackageFamilyName(string packageFamilyName)
@@ -643,7 +643,7 @@ namespace WFPdotNet
             _nativeStruct.matchType = matchType;
             _nativeStruct.fieldKey = ConditionKeys.FWPM_CONDITION_FLAGS;
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT32;
-            _nativeStruct.conditionValue.uint32 = (uint)flags;
+            _nativeStruct.conditionValue.value.uint32 = (uint)flags;
         }
     }
 

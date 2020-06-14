@@ -130,7 +130,7 @@ namespace WFPdotNet
             {
                 Interop.FWP_VALUE0 val = (Interop.FWP_VALUE0)Marshal.PtrToStructure(nativeMem.DangerousGetHandle(), typeof(Interop.FWP_VALUE0));
                 System.Diagnostics.Debug.Assert(val.type == Interop.FWP_DATA_TYPE.FWP_UINT32);
-                return val.uint32;
+                return val.value.uint32;
             }
             finally
             {
@@ -142,7 +142,7 @@ namespace WFPdotNet
         {
             Interop.FWP_VALUE0 vs = new Interop.FWP_VALUE0();
             vs.type = Interop.FWP_DATA_TYPE.FWP_UINT32;
-            vs.uint32 = val;
+            vs.value.uint32 = val;
 
             uint err = NativeMethods.FwpmEngineSetOption0(_nativeEngineHandle, opt, ref vs);
             if (0 != err)

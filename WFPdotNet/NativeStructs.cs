@@ -135,53 +135,51 @@ namespace WFPdotNet.Interop
         public byte prefixLength;
     }
 
-    [StructLayout(LayoutKind.Explicit)]
-    public unsafe struct FWP_VALUE0
+    public struct FWP_VALUE0
     {
-#if X86_64
-        const int PTRSIZE = 8;
-#else
-        const int PTRSIZE = 4;
-#endif
-
-        [FieldOffset(0)]
         public FWP_DATA_TYPE type;
-        [FieldOffset(PTRSIZE)]
-        public byte uint8;
-        [FieldOffset(PTRSIZE)]
-        public ushort uint16;
-        [FieldOffset(PTRSIZE)]
-        public uint uint32;
-        [FieldOffset(PTRSIZE)]
-        public IntPtr uint64;
-        [FieldOffset(PTRSIZE)]
-        public sbyte int8;
-        [FieldOffset(PTRSIZE)]
-        public short int16;
-        [FieldOffset(PTRSIZE)]
-        public int int32;
-        [FieldOffset(PTRSIZE)]
-        public IntPtr int64;
-        [FieldOffset(PTRSIZE)]
-        public float float32;
-        [FieldOffset(PTRSIZE)]
-        public double* double64;
-        [FieldOffset(PTRSIZE)]
-        public byte* byteArray16;
-        [FieldOffset(PTRSIZE)]
-        public FWP_BYTE_BLOB* byteBlob;
-        [FieldOffset(PTRSIZE)]
-        public IntPtr sid;  // SID*
-        [FieldOffset(PTRSIZE)]
-        public IntPtr sd;   // FWP_BYTE_BLOB*
-        [FieldOffset(PTRSIZE)]
-        public IntPtr tokenInformation;
-        [FieldOffset(PTRSIZE)]
-        public IntPtr tokenAccessInformation;   // FWP_BYTE_BLOB*
-        [FieldOffset(PTRSIZE)]
-        public IntPtr unicodeString;
-        [FieldOffset(PTRSIZE)]
-        public IntPtr byteArray6;   // byte*
+        public AnonymousUnion value;
+
+        [StructLayout(LayoutKind.Explicit)]
+        public unsafe struct AnonymousUnion
+        {
+            [FieldOffset(0)]
+            public byte uint8;
+            [FieldOffset(0)]
+            public ushort uint16;
+            [FieldOffset(0)]
+            public uint uint32;
+            [FieldOffset(0)]
+            public IntPtr uint64;
+            [FieldOffset(0)]
+            public sbyte int8;
+            [FieldOffset(0)]
+            public short int16;
+            [FieldOffset(0)]
+            public int int32;
+            [FieldOffset(0)]
+            public IntPtr int64;
+            [FieldOffset(0)]
+            public float float32;
+            [FieldOffset(0)]
+            public double* double64;
+            [FieldOffset(0)]
+            public byte* byteArray16;
+            [FieldOffset(0)]
+            public FWP_BYTE_BLOB* byteBlob;
+            [FieldOffset(0)]
+            public IntPtr sid;  // SID*
+            [FieldOffset(0)]
+            public IntPtr sd;   // FWP_BYTE_BLOB*
+            [FieldOffset(0)]
+            public IntPtr tokenInformation;
+            [FieldOffset(0)]
+            public IntPtr tokenAccessInformation;   // FWP_BYTE_BLOB*
+            [FieldOffset(0)]
+            public IntPtr unicodeString;
+            [FieldOffset(0)]
+            public IntPtr byteArray6;   // byte*
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -219,59 +217,57 @@ namespace WFPdotNet.Interop
         FWP_DATA_TYPE_MAX
     }
 
-    [StructLayout(LayoutKind.Explicit)]
-    public unsafe struct FWP_CONDITION_VALUE0
+    public struct FWP_CONDITION_VALUE0
     {
-#if X86_64
-        const int PTRSIZE = 8;
-#else
-        const int PTRSIZE = 4;
-#endif
-
-        [FieldOffset(0)]
         public FWP_DATA_TYPE type;
-        [FieldOffset(PTRSIZE)]
-        public byte uint8;
-        [FieldOffset(PTRSIZE)]
-        public ushort uint16;
-        [FieldOffset(PTRSIZE)]
-        public uint uint32;
-        [FieldOffset(PTRSIZE)]
-        public ulong* uint64;
-        [FieldOffset(PTRSIZE)]
-        public sbyte int8;
-        [FieldOffset(PTRSIZE)]
-        public short int16;
-        [FieldOffset(PTRSIZE)]
-        public int int32;
-        [FieldOffset(PTRSIZE)]
-        public long* int64;
-        [FieldOffset(PTRSIZE)]
-        public float float32;
-        [FieldOffset(PTRSIZE)]
-        public double* double64;
-        [FieldOffset(PTRSIZE)]
-        public IntPtr byteArray16;
-        [FieldOffset(PTRSIZE)]
-        public IntPtr byteBlob;
-        [FieldOffset(PTRSIZE)]
-        public IntPtr sid;  // SID*
-        [FieldOffset(PTRSIZE)]
-        public IntPtr sd;   // FWP_BYTE_BLOB*
-        [FieldOffset(PTRSIZE)]
-        public IntPtr tokenInformation;
-        [FieldOffset(PTRSIZE)]
-        public FWP_BYTE_BLOB* tokenAccessInformation;
-        [FieldOffset(PTRSIZE)]
-        public IntPtr unicodeString;
-        [FieldOffset(PTRSIZE)]
-        public byte* byteArray6;
-        [FieldOffset(PTRSIZE)]
-        public IntPtr v4AddrMask;   // FWP_V4_ADDR_AND_MASK*
-        [FieldOffset(PTRSIZE)]
-        public IntPtr v6AddrMask;   // FWP_V6_ADDR_AND_MASK*
-        [FieldOffset(PTRSIZE)]
-        public IntPtr rangeValue;   // FWP_RANGE0*
+        public AnonymousUnion value;
+
+        [StructLayout(LayoutKind.Explicit)]
+        public unsafe struct AnonymousUnion
+        {
+            [FieldOffset(0)]
+            public byte uint8;
+            [FieldOffset(0)]
+            public ushort uint16;
+            [FieldOffset(0)]
+            public uint uint32;
+            [FieldOffset(0)]
+            public ulong* uint64;
+            [FieldOffset(0)]
+            public sbyte int8;
+            [FieldOffset(0)]
+            public short int16;
+            [FieldOffset(0)]
+            public int int32;
+            [FieldOffset(0)]
+            public long* int64;
+            [FieldOffset(0)]
+            public float float32;
+            [FieldOffset(0)]
+            public double* double64;
+            [FieldOffset(0)]
+            public IntPtr byteArray16;
+            [FieldOffset(0)]
+            public IntPtr byteBlob;
+            [FieldOffset(0)]
+            public IntPtr sid;  // SID*
+            [FieldOffset(0)]
+            public IntPtr sd;   // FWP_BYTE_BLOB*
+            [FieldOffset(0)]
+            public IntPtr tokenInformation;
+            [FieldOffset(0)]
+            public FWP_BYTE_BLOB* tokenAccessInformation;
+            [FieldOffset(0)]
+            public IntPtr unicodeString;
+            [FieldOffset(0)]
+            public byte* byteArray6;
+            [FieldOffset(0)]
+            public IntPtr v4AddrMask;   // FWP_V4_ADDR_AND_MASK*
+            [FieldOffset(0)]
+            public IntPtr v6AddrMask;   // FWP_V6_ADDR_AND_MASK*
+            [FieldOffset(0)]
+            public IntPtr rangeValue;   // FWP_RANGE0*
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -502,11 +498,6 @@ namespace WFPdotNet.Interop
         FWP_IP_VERSION_MAX = (FWP_IP_VERSION_NONE + 1)
     }
 
-#if X86_64
-    [StructLayout(LayoutKind.Sequential, Size = 144)]
-#else
-    [StructLayout(LayoutKind.Sequential, Size = 128)]
-#endif
     public struct FWPM_NET_EVENT_HEADER1
     {
         public FILETIME timeStamp;
@@ -520,6 +511,40 @@ namespace WFPdotNet.Interop
         public uint scopeId;
         public FWP_BYTE_BLOB appId;
         public IntPtr userId;
+        public AnonymousUnion1 reserved;
+
+        [StructLayout(LayoutKind.Explicit)]
+        public struct AnonymousUnion1
+        {
+            [FieldOffset(0)]
+            public AnonymousStruct1 reserved;
+        }
+
+        public struct AnonymousStruct1
+        {
+            public FWP_AF reserved1;
+            public AnonymousUnion2 reserved;
+
+            [StructLayout(LayoutKind.Explicit)]
+            public struct AnonymousUnion2
+            {
+                [FieldOffset(0)]
+                public AnonymousStruct2 reserved;
+
+                public unsafe struct AnonymousStruct2
+                {
+                    public fixed byte reserved2[6];
+                    public fixed byte reserved3[6];
+                    public int reserved4;
+                    public int reserved5;
+                    public short reserved6;
+                    public int reserved7;
+                    public int reserved8;
+                    public short reserved9;
+                    public long reserved10;
+                }
+            }
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -538,15 +563,10 @@ namespace WFPdotNet.Interop
         FWP_AF_NONE  = (FWP_AF_ETHER + 1)
     }
 
-#if X86_64
-    [StructLayout(LayoutKind.Sequential, Size = 104)]
-#else
-    [StructLayout(LayoutKind.Sequential, Size = 80)]
-#endif
     public struct FWPM_NET_EVENT_HEADER2
     {
         public FILETIME timeStamp;
-        public NetEventHeaderValidField flag;
+        public NetEventHeaderValidField flags;
         public FWP_IP_VERSION ipVersion;
         public byte ipProtocol;
         public InternetworkAddr localAddr;

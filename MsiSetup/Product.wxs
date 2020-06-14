@@ -57,7 +57,8 @@
       <ComponentRef Id='MainExecutableConfig' />
       <ComponentRef Id='InterfaceLib' />
       <ComponentRef Id='WfpDotNetLib' />
-      <ComponentRef Id='NativeHelperLib' />
+      <ComponentRef Id='NativeHelper32Lib' />
+      <ComponentRef Id='NativeHelper64Lib' />
       <ComponentRef Id='NetFwTypeLib' />
       <ComponentRef Id='Toaster' />
       <ComponentRef Id='ProgramMenuDir' />
@@ -154,8 +155,11 @@
           <Component Id="WfpDotNetLib" Guid="{B17459BC-D330-490B-A8D5-E1689B9A559F}" Win64="$(var.Win64)">
             <File Id="WfpDotNetDLL" Source="Sources\ProgramFiles\TinyWall\WFPdotNet.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
           </Component>
-          <Component Id="NativeHelperLib" Guid="{EA385EA2-67A9-4011-9F94-9DEFF2D4D3D1}" Win64="$(var.Win64)">
-            <File Id="NativeHelperDLL" Source="Sources\ProgramFiles\TinyWall\NativeHelper.dll" Vital="yes" KeyPath="yes" Checksum="yes" />
+          <Component Id="NativeHelper32Lib" Guid="{5146CE20-A9FB-4EE4-8CEF-646B314B36EE}" Win64="$(var.Win64)">
+            <File Id="NativeHelper32DLL" Source="Sources\ProgramFiles\TinyWall\NativeHelper32.dll" Vital="yes" KeyPath="yes" Checksum="yes" />
+          </Component>
+          <Component Id="NativeHelper64Lib" Guid="{1592EA47-86FB-4390-B11D-8395A2ADC769}" Win64="$(var.Win64)">
+            <File Id="NativeHelper64DLL" Source="Sources\ProgramFiles\TinyWall\NativeHelper64.dll" Vital="yes" KeyPath="yes" Checksum="yes" />
           </Component>
           <Component Id="NetFwTypeLib" Guid="{7AB618A2-D50A-499A-93B9-101AEF6BC809}" Win64="$(var.Win64)">
             <File Id="NetFwTypeLibDLL" Source="Sources\ProgramFiles\TinyWall\Interop.NetFwTypeLib.dll" Vital="yes" KeyPath="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />

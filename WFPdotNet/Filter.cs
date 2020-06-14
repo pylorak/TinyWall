@@ -42,7 +42,7 @@ namespace WFPdotNet
 
             _weightHandle = new AllocHGlobalSafeHandle(sizeof(ulong));
             _nativeStruct.weight.type = Interop.FWP_DATA_TYPE.FWP_UINT64;
-            _nativeStruct.weight.uint64 = _weightHandle.DangerousGetHandle();
+            _nativeStruct.weight.value.uint64 = _weightHandle.DangerousGetHandle();
 
             _conditions = new List<FilterCondition>();
             _conditionsHandle = new AllocHGlobalSafeHandle();
@@ -62,7 +62,7 @@ namespace WFPdotNet
             _nativeStruct = filt0;
 
             // TODO: Do we really not need to own these SafeHandles ???
-            _weightHandle = new AllocHGlobalSafeHandle(_nativeStruct.weight.uint64, false);
+            _weightHandle = new AllocHGlobalSafeHandle(_nativeStruct.weight.value.uint64, false);
             _conditionsHandle = new AllocHGlobalSafeHandle(_nativeStruct.filterConditions, false);
 
             if (_nativeStruct.providerKey != IntPtr.Zero)
@@ -176,8 +176,8 @@ namespace WFPdotNet
         }
         public ulong Weight
         {
-            get { return (ulong)System.Runtime.InteropServices.Marshal.PtrToStructure(_nativeStruct.weight.uint64, typeof(ulong)); }
-            set { System.Runtime.InteropServices.Marshal.StructureToPtr(value, _nativeStruct.weight.uint64, false); }
+            get { return (ulong)System.Runtime.InteropServices.Marshal.PtrToStructure(_nativeStruct.weight.value.uint64, typeof(ulong)); }
+            set { System.Runtime.InteropServices.Marshal.StructureToPtr(value, _nativeStruct.weight.value.uint64, false); }
         }
         public List<FilterCondition> Conditions
         {

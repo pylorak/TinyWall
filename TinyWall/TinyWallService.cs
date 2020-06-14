@@ -608,7 +608,7 @@ namespace PKSoft
                             {
                                 FWP_CONDITION_VALUE0 cv = new FWP_CONDITION_VALUE0();
                                 cv.type = FWP_DATA_TYPE.FWP_UINT16;
-                                cv.uint16 = icmpType;
+                                cv.value.uint16 = icmpType;
                                 conditions.Add(new FilterCondition(ConditionKeys.FWPM_CONDITION_ICMP_TYPE, FieldMatchType.FWP_MATCH_EQUAL, cv));
                             }
                             // ICMP Code
@@ -616,7 +616,7 @@ namespace PKSoft
                             {
                                 FWP_CONDITION_VALUE0 cv = new FWP_CONDITION_VALUE0();
                                 cv.type = FWP_DATA_TYPE.FWP_UINT16;
-                                cv.uint16 = icmpCode;
+                                cv.value.uint16 = icmpCode;
                                 conditions.Add(new FilterCondition(ConditionKeys.FWPM_CONDITION_ICMP_CODE, FieldMatchType.FWP_MATCH_EQUAL, cv));
                             }
                         }
@@ -627,7 +627,7 @@ namespace PKSoft
                             {
                                 FWP_CONDITION_VALUE0 cv = new FWP_CONDITION_VALUE0();
                                 cv.type = FWP_DATA_TYPE.FWP_UINT16;
-                                cv.uint16 = icmpType;
+                                cv.value.uint16 = icmpType;
                                 conditions.Add(new FilterCondition(ConditionKeys.FWPM_CONDITION_ORIGINAL_ICMP_TYPE, FieldMatchType.FWP_MATCH_EQUAL, cv));
                             }
                             // Matching on ICMP Code not possible
