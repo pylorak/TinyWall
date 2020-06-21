@@ -235,6 +235,7 @@ namespace PKSoft
                 case SubjectType.Global:
                     li.Text = Resources.Messages.AllApplications;
                     li.SubItems.Add(Resources.Messages.SubjectTypeGlobal);
+                    li.SubItems.Add(string.Empty);
                     li.ImageIndex = IconList.Images.IndexOfKey("window");
                     break;
                 case SubjectType.AppContainer:
