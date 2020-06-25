@@ -1,6 +1,11 @@
 TinyWall Changelog
 ---------------------
 
+3.0.6 - Maintenance release (25.06.2020.)
+- Fix GUI crash if an "All applications" rule is present
+
+---------------------
+
 3.0.5 - Maintenance release (14.06.2020.)
 - Restore compatibility with 32-bit (x86) Windows systems
 - Remember user-set column widths in lists
