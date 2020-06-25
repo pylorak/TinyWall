@@ -457,7 +457,7 @@ namespace WFPdotNet
         {
         }
 
-        private string GetServiceSidFromName(string serviceName)
+        private static string GetServiceSidFromName(string serviceName)
         {
 #if false
             /*

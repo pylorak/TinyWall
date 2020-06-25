@@ -431,9 +431,12 @@ namespace PKSoft
                 return;
             }
 
+            btnBatchSign.Enabled = false;
             SignFiles(txtSignDir.Text, "*.dll");
             SignFiles(txtSignDir.Text, "*.exe");
             SignFiles(txtSignDir.Text, "*.msi");
+            btnBatchSign.Enabled = true;
+
             MessageBox.Show(this, "Done signing!");
         }
 
@@ -443,7 +446,7 @@ namespace PKSoft
             for (int i = 0; i < files.Length; ++i)
             {
 //                string signParams = string.Format("sign /ac C:/Users/Dev/Desktop/scca.crt /ph /f \"{0}\" /p \"{1}\" /d TinyWall /du \"http://tinywall.pados.hu\" /tr \"{2}\" \"{3}\"",
-                string signParams =   string.Format("sign /ph /f \"{0}\" /p \"{1}\" /d TinyWall /du \"http://tinywall.pados.hu\" /tr \"{2}\" \"{3}\"",
+                string signParams =   string.Format("sign /ph /f \"{0}\" /p \"{1}\" /d TinyWall /du \"http://tinywall.pados.hu\" /tr \"{2}\" /td sha1 /fd sha1 \"{3}\"",
                         txtCert.Text,
                         txtCertPass.Text,
                         txtTimestampingServ.Text,
@@ -455,7 +458,7 @@ namespace PKSoft
                 bool signed = false;
                 for (int retry = 0; retry < 3; ++retry)
                 {
-                    using (Process p = Utils.StartProcess(txtSigntool.Text, signParams, false))
+                    using (Process p = Utils.StartProcess(txtSigntool.Text, signParams, false, true))
                     {
                         p.WaitForExit();
                         signed = signed || (p.ExitCode == 0);

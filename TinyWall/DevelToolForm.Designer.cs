@@ -499,7 +499,7 @@
             this.txtTimestampingServ.Name = "txtTimestampingServ";
             this.txtTimestampingServ.Size = new System.Drawing.Size(329, 20);
             this.txtTimestampingServ.TabIndex = 13;
-            this.txtTimestampingServ.Text = "http://timestamp.comodoca.com/rfc3161";
+            this.txtTimestampingServ.Text = "http://timestamp.digicert.com";
             // 
             // label14
             // 
