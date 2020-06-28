@@ -125,11 +125,11 @@
   </data>
   <data name="ErrorCheckingForUpdates" xml:space="preserve">
     <value>Non è possibile accedere al server di aggiornamento.
-Il server potrebbe essere assente o assicurarsi che a TinyWall è stato concesso l'accesso a internet, quindi riprovare.
+Il server potrebbe essere assente o assicurarsi che a TinyWall sia stato concesso l'accesso a internet, quindi riprovare.
 </value>
   </data>
   <data name="UpdateAvailable" xml:space="preserve">
-    <value>La versione aggiornata  {0} di TinyWall è disponibile, vuoi aggiornare adesso ?</value>
+    <value>La versione aggiornata {0} di TinyWall è disponibile, vuoi aggiornare adesso ?</value>
   </data>
   <data name="DownloadingUpdate" xml:space="preserve">
     <value>Scaricamento dell'aggiornamento...</value>
@@ -150,7 +150,7 @@ Il server potrebbe essere assente o assicurarsi che a TinyWall è stato concesso
     <value>Verifica degli aggiornamenti in corso...</value>
   </data>
   <data name="CouldNotWhitelistProcess" xml:space="preserve">
-    <value>Impossibile inserire il processo  {0} nella whitelist.</value>
+    <value>Impossibile inserire il processo {0} nella whitelist.</value>
   </data>
   <data name="CouldNotCloseProcess" xml:space="preserve">
     <value>Impossibile chiudere il processo {0}({1}).</value>
@@ -163,7 +163,7 @@ Il server potrebbe essere assente o assicurarsi che a TinyWall è stato concesso
   </data>
   <data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
     <value>Non avete i privilegi necessari per eseguire questa operazione.
-Selezionare Elevate dal menu, quindi riprovare.
+Selezionare Eleva dal menu, quindi riprovare.
 
  </value>
   </data>
@@ -192,7 +192,7 @@ Selezionare Elevate dal menu, quindi riprovare.
     <value>Blocca</value>
   </data>
   <data name="UpdateAvailableBubble" xml:space="preserve">
-    <value>La versione aggiornata  {0} di TinyWall è disponibile, clicca questo fumetto per aggiornare.</value>
+    <value>La versione aggiornata {0} di TinyWall è disponibile, clicca questo fumetto per aggiornare.</value>
   </data>
   <data name="TheFirewallIsNowOperatingAsRecommended" xml:space="preserve">
     <value>Il firewall sta operando nella configurazione raccomandata.</value>
@@ -210,7 +210,7 @@ Selezionare Elevate dal menu, quindi riprovare.
     <value>Servizio di TinyWall assente, verificare che sia avviato correttamente.</value>
   </data>
   <data name="SettingHaveChangedRetry" xml:space="preserve">
-    <value>La configurazione è cambiata mentre applicavi modifiche, applicare le modifiche nuovamente.</value>
+    <value>La configurazione è cambiata mentre stavi apportando modifiche, applicare le modifiche nuovamente.</value>
   </data>
   <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
     <value>Impostazioni del firewall aggiornate con successo.</value>
@@ -306,16 +306,16 @@ Selezionare Elevate dal menu, quindi riprovare.
     <value>Impossibile trovare il percorso del processo.</value>
   </data>
   <data name="TheFirewallIsNowLearning" xml:space="preserve">
-    <value>Il firewall stra apprendendo le regole del traffico.</value>
+    <value>Il firewall sta apprendendo le regole del traffico.</value>
   </data>
   <data name="FirewallModeLearn" xml:space="preserve">
     <value>Autoapprendimento</value>
   </data>
   <data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
     <value>Sei sicuro di che voler iniziare l'apprendimento automatico?
-Nella modalità di apprendimento automatico sarà consentito tutto il traffico e verranno salvate le regole  delle applicazioni che hanno utilizzato la rete. Quando si esce da modalità di apprendimento verranno aggiunte automaticamente le eccezioni. Si noti, tuttavia, che le regole non possono essere imparate per "Eccezioni speciali" della configurazione.
+Nella modalità di apprendimento automatico sarà consentito tutto il traffico e verranno salvate le regole delle applicazioni che hanno utilizzato la rete. Quando si esce da modalità di apprendimento verranno aggiunte automaticamente le eccezioni. Si noti, tuttavia, che le regole non possono essere apprese per "Eccezioni speciali" della configurazione.
 
-Prima di entrare in modalità di apprendimento, assicurarsi che il sistema sia privo di qualsiasi malware. È meglio eseguire la modalità di apprendimento sui sistemi appena installati e si consiglia di controllare il computer di virus prima di utilizzare questa modalità.
+Prima di entrare in modalità di apprendimento, assicurarsi che il sistema sia privo di qualsiasi malware. È meglio eseguire la modalità di apprendimento sui sistemi appena installati e si consiglia di controllare il computer da virus prima di utilizzare questa modalità.
 
 Si desidera entrare ora in modalità di apprendimento?
 </value>

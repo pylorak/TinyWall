@@ -145,7 +145,7 @@
     <value>Blocca</value>
   </data>
   <data name="mnuElevate.Text" xml:space="preserve">
-    <value>Elevato</value>
+    <value>Eleva</value>
   </data>
   <data name="mnuAllowLocalSubnet.Text" xml:space="preserve">
     <value>Sblocca traffico LAN</value>
