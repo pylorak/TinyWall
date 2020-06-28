@@ -22,6 +22,7 @@ namespace PKSoft
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
 
             this.IconList.Images.Add("store", Resources.Icons.store);
+            this.IconList.Images.Add("system", Resources.Icons.windows_small);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -105,6 +106,10 @@ namespace PKSoft
                         if (e.Package.HasValue)
                         {
                             li.ImageKey = "store";
+                        }
+                        else if (e.ExePath == "System")
+                        {
+                            li.ImageKey = "system";
                         }
                         else if (System.IO.Path.IsPathRooted(e.ExePath) && System.IO.File.Exists(e.ExePath))
                         {

@@ -26,6 +26,7 @@ namespace PKSoft
             this.Controller = ctrl;
 
             this.IconList.Images.Add("store", Resources.Icons.store);
+            this.IconList.Images.Add("system", Resources.Icons.windows_small);
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -184,6 +185,10 @@ namespace PKSoft
                 if (e.Package.HasValue)
                 {
                     li.ImageKey = "store";
+                }
+                else if (appPath == "System")
+                {
+                    li.ImageKey = "system";
                 }
                 else if (System.IO.Path.IsPathRooted(appPath) && System.IO.File.Exists(appPath))
                 {

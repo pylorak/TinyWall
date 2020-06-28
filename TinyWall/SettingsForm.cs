@@ -280,6 +280,10 @@ namespace PKSoft
                         IconList.Images.Add(exeSubj.ExecutablePath, Utils.GetIconContained(exeSubj.ExecutablePath, IconSize.Width, IconSize.Height));
                     li.ImageIndex = IconList.Images.IndexOfKey(exeSubj.ExecutablePath);
                 }
+                else if (exeSubj.ExecutablePath == "System")
+                {
+                    li.ImageIndex = IconList.Images.IndexOfKey("system");
+                }
                 else
                 {
                     li.ImageIndex = IconList.Images.IndexOfKey("deleted");
@@ -569,6 +573,7 @@ namespace PKSoft
             IconList.Images.Add("network-drive", Resources.Icons.network_drive_small);
             IconList.Images.Add("window", Resources.Icons.window);
             IconList.Images.Add("store", Resources.Icons.store);
+            IconList.Images.Add("system", Resources.Icons.windows_small);
 
             lblVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0} {1}", lblVersion.Text, System.Windows.Forms.Application.ProductVersion.ToString());
 
