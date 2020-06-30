@@ -162,4 +162,7 @@
   <data name="Windows_Update" xml:space="preserve">
     <value>Windows Update</value>
   </data>
+  <data name="WSL_2" xml:space="preserve">
+    <value>WSL 2</value>
+  </data>
 </root>

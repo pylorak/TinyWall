@@ -61,5 +61,12 @@ namespace PKSoft.DatabaseClasses
 
             return Flags[flag];
         }
+
+        [OnDeserialized()]
+        internal void OnDeserializedMethod(StreamingContext context)
+        {
+            if (Components == null)
+                Components = new List<SubjectIdentity>();
+        }
     }
 }

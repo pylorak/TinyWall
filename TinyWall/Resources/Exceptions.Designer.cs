@@ -194,5 +194,14 @@ namespace PKSoft.Resources {
                 return ResourceManager.GetString("Windows_Update", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WSL 2.
+        /// </summary>
+        internal static string WSL_2 {
+            get {
+                return ResourceManager.GetString("WSL_2", resourceCulture);
+            }
+        }
     }
 }

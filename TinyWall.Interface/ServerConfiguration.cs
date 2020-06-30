@@ -53,6 +53,17 @@ namespace TinyWall.Interface
             ProfileName = name;
         }
 
+        public bool HasSpecialException(string name)
+        {
+            foreach (string appName in SpecialExceptions)
+            {
+                if (string.Equals(name, appName, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+
+            return false;
+        }
+
         public void AddExceptions(List<FirewallExceptionV3> newList)
         {
             List<FirewallExceptionV3> oldList = new List<FirewallExceptionV3>(AppExceptions);

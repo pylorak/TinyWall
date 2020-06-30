@@ -277,6 +277,7 @@ namespace PKSoft
                 if (VisibleState.Mode != FirewallMode.Disabled)
                 {
                     InstallRawSocketPermits(rawSocketExceptions);
+                    InstallWsl2Filters(ActiveConfig.Service.ActiveProfile.HasSpecialException("WSL_2"));
                 }
 
                 trx?.Commit();
@@ -677,6 +678,55 @@ namespace PKSoft
                     TINYWALL_PROVIDER_KEY,
                     FilterActions.FWP_ACTION_BLOCK,
                     (ulong)FilterWeights.RawSocketBlock
+                ))
+                {
+                    f.LayerKey = GetLayerKey(layer);
+                    f.SublayerKey = GetSublayerKey(layer);
+                    f.Conditions.AddRange(conditions);
+
+                    InstallWfpFilter(f);
+                }
+            }
+            finally
+            {
+                for (int i = 0; i < conditions.Count; ++i)
+                    conditions[i].Dispose();
+            }
+        }
+
+        private void InstallWsl2Filters(bool permit)
+        {
+            try
+            {
+                InstallWsl2Filters(permit, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V4);
+                InstallWsl2Filters(permit, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V6);
+                InstallWsl2Filters(permit, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4);
+                InstallWsl2Filters(permit, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6);
+                InstallWsl2Filters(permit, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4);
+                InstallWsl2Filters(permit, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6);
+                InstallWsl2Filters(permit, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V4);
+                InstallWsl2Filters(permit, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V6);
+            }
+            catch { }
+        }
+
+        private void InstallWsl2Filters(bool permit, LayerKeyEnum layer)
+        {
+            List<FilterCondition> conditions = new List<FilterCondition>();
+
+            FilterActions action = permit ? FilterActions.FWP_ACTION_PERMIT : FilterActions.FWP_ACTION_BLOCK;
+            ulong weight = (ulong)(permit ? FilterWeights.UserPermit : FilterWeights.UserBlock);
+
+            try
+            {
+                conditions.Add(new LocalInterfaceCondition("vEthernet (WSL)"));
+
+                using (Filter f = new Filter(
+                    "Allow WSL2",
+                    string.Empty,
+                    TINYWALL_PROVIDER_KEY,
+                    action,
+                    weight
                 ))
                 {
                     f.LayerKey = GetLayerKey(layer);

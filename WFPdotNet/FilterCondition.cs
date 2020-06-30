@@ -653,4 +653,47 @@ namespace WFPdotNet
         SIO_RCVALL_MCAST = (uint)2550136834u,
         SIO_RCVALL_IGMPMCAST = (uint)2550136835u
     }
+
+    public sealed class LocalInterfaceCondition : FilterCondition
+    {
+        [SuppressUnmanagedCodeSecurity]
+        internal static class NativeMethods
+        {
+            [DllImport("Iphlpapi", SetLastError = false, CharSet = CharSet.Unicode)]
+            internal static extern int ConvertInterfaceAliasToLuid(string stringSid, [Out] out ulong InterfaceLuid);
+        }
+
+        private AllocHGlobalSafeHandle nativeMem;
+
+        public LocalInterfaceCondition(string ifAlias)
+        {
+            nativeMem = new AllocHGlobalSafeHandle(sizeof(ulong));
+
+            int err = NativeMethods.ConvertInterfaceAliasToLuid(ifAlias, out ulong luid);
+            if (0 != err)
+                throw new Win32Exception(err);
+
+            IntPtr ptrLuid = nativeMem.DangerousGetHandle();
+            unsafe
+            {
+                *(ulong*)ptrLuid = luid;
+            }
+
+            _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
+            _nativeStruct.fieldKey = ConditionKeys.FWPM_CONDITION_IP_LOCAL_INTERFACE;
+            _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT64;
+            _nativeStruct.conditionValue.value.uint64 = ptrLuid;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                nativeMem?.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+    }
+
 }

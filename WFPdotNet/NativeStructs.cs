@@ -232,7 +232,7 @@ namespace WFPdotNet.Interop
             [FieldOffset(0)]
             public uint uint32;
             [FieldOffset(0)]
-            public ulong* uint64;
+            public IntPtr uint64;
             [FieldOffset(0)]
             public sbyte int8;
             [FieldOffset(0)]

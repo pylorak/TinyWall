@@ -1286,5 +1286,18 @@
       </Flags>
       <Name>VPN_PPTP</Name>
     </Application>
+    <Application>
+      <Flags xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+        <d4p1:KeyValueOfstringstring>
+          <d4p1:Key>TWUI:SPECIAL</d4p1:Key>
+          <d4p1:Value i:nil="true" />
+        </d4p1:KeyValueOfstringstring>
+        <d4p1:KeyValueOfstringstring>
+          <d4p1:Key>TWSRV:FLAG</d4p1:Key>
+          <d4p1:Value i:nil="true" />
+        </d4p1:KeyValueOfstringstring>
+      </Flags>
+      <Name>WSL_2</Name>
+    </Application>
   </KnownApplications>
 </AppDatabase>
