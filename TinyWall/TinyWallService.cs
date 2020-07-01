@@ -46,7 +46,7 @@ namespace PKSoft
         private readonly object InheritanceGuard = new object();
         private readonly StringBuilder ProcessStartWatcher_Sbuilder = new StringBuilder();
         private HashSet<string> UserSubjectExes = new HashSet<string>();        // All executables with pre-configured rules.
-        private Dictionary<string, FirewallExceptionV3> ChildInheritance = new Dictionary<string, FirewallExceptionV3>();
+        private Dictionary<string, List<FirewallExceptionV3>> ChildInheritance = new Dictionary<string, List<FirewallExceptionV3>>();
         private Dictionary<string, HashSet<string>> ChildInheritedSubjectExes = new Dictionary<string, HashSet<string>>();   // Executables that have been already auto-whitelisted due to inheritance
         private ThreadThrottler FirewallThreadThrottler;
 
@@ -170,7 +170,10 @@ namespace PKSoft
                         UserSubjectExes.Add(exePath);
                         if (ex.ChildProcessesInherit)
                         {
-                            ChildInheritance.Add(exePath, ex);
+                            // We might have multiple rules with the same exePath, so we maintain a list of exceptions
+                            if (!ChildInheritance.ContainsKey(exePath))
+                                ChildInheritance.Add(exePath, new List<FirewallExceptionV3>());
+                            ChildInheritance[exePath].Add(ex);
                         }
                     }
 
@@ -240,11 +243,12 @@ namespace PKSoft
                                 // We have already processed this parent-child combination
                                 break;
 
-                            if (ChildInheritance.TryGetValue(parentEntry.ImagePath, out FirewallExceptionV3 userEx))
+                            if (ChildInheritance.TryGetValue(parentEntry.ImagePath, out List<FirewallExceptionV3> exList))
                             {
-                                FirewallExceptionV3 ex = Utils.DeepClone(userEx);
-                                ex.Subject = new ExecutableSubject(procPath);
-                                GetRulesForException(ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
+                                var subj = new ExecutableSubject(procPath);
+                                foreach (var userEx in exList)
+                                    GetRulesForException(new FirewallExceptionV3(subj, userEx.Policy), rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
+
                                 if (!ChildInheritedSubjectExes.ContainsKey(procPath))
                                     ChildInheritedSubjectExes.Add(procPath, new HashSet<string>());
                                 ChildInheritedSubjectExes[procPath].Add(parentEntry.ImagePath);
@@ -1759,12 +1763,13 @@ namespace PKSoft
                             if (ChildInheritedSubjectExes.ContainsKey(path) && ChildInheritedSubjectExes[path].Contains(parentPath))
                                 break;
 
-                            if (ChildInheritance.TryGetValue(parentPath, out FirewallExceptionV3 userEx))
+                            if (ChildInheritance.TryGetValue(parentPath, out List<FirewallExceptionV3> exList))
                             {
-                                FirewallExceptionV3 ex = new FirewallExceptionV3(new ExecutableSubject(path), userEx.Policy);
                                 if (newExceptions == null)
                                     newExceptions = new List<FirewallExceptionV3>();
-                                newExceptions.Add(ex);
+
+                                foreach (var userEx in exList)
+                                    newExceptions.Add(new FirewallExceptionV3(new ExecutableSubject(path), userEx.Policy));
 
                                 if (!ChildInheritedSubjectExes.ContainsKey(path))
                                     ChildInheritedSubjectExes.Add(path, new HashSet<string>());
