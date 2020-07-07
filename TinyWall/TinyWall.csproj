@@ -91,6 +91,7 @@
     <Compile Include="Deprecated\SerializationHelper.cs" />
     <Compile Include="IconTools.cs" />
     <Compile Include="IpAddrMask.cs" />
+    <Compile Include="PathMapper.cs" />
     <Compile Include="Pbkdf2.cs" />
     <Compile Include="Privilege.cs" />
     <Compile Include="ProcessInfo.cs" />

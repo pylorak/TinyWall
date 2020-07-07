@@ -1,5 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Collections.Generic;
 using System.Security;
+using System.Text;
 using System.Runtime.InteropServices;
 using System.Runtime.ConstrainedExecution;
 using Microsoft.Win32.SafeHandles;
@@ -113,6 +116,76 @@ namespace PKSoft
         protected override bool ReleaseHandle()
         {
             return (IntPtr.Zero == NativeMethods.LocalFree(handle));
+        }
+    }
+
+    public sealed class FindVolumeSafeHandle : SafeHandleMinusOneIsInvalid
+    {
+        [SuppressUnmanagedCodeSecurity]
+        private static class NativeMethods
+        {
+            [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
+            internal static extern IntPtr FindFirstVolume([Out] StringBuilder lpszVolumeName, int cchBufferLength);
+
+            [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool FindNextVolume(IntPtr hFindVolume, [Out] StringBuilder lpszVolumeName, int cchBufferLength);
+
+            [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool FindVolumeClose(IntPtr hFindVolume);
+        }
+
+        public FindVolumeSafeHandle()
+            : base(true)
+        {
+            SetHandleAsInvalid();
+        }
+
+        private FindVolumeSafeHandle(IntPtr handle)
+            : base(true)
+        {
+            this.handle = handle;
+        }
+
+        public static IEnumerable<string> EnumerateVolumes()
+        {
+            const int ERROR_NO_MORE_FILES = 18;
+            StringBuilder sb = new StringBuilder(64);
+
+            using (var safeHandle = FindFirstVolume(sb))
+            {
+                if (safeHandle.IsInvalid)
+                    throw new Win32Exception();
+
+                yield return sb.ToString();
+
+                while(safeHandle.FindNextVolume(sb))
+                {
+                    yield return sb.ToString();
+                }
+
+                int errno = Marshal.GetLastWin32Error();
+                if (errno == ERROR_NO_MORE_FILES)
+                    yield break;
+                else
+                    throw new Win32Exception(errno);
+            }
+        }
+
+        private static FindVolumeSafeHandle FindFirstVolume(StringBuilder dst)
+        {
+            return new FindVolumeSafeHandle(NativeMethods.FindFirstVolume(dst, dst.Capacity));
+        }
+
+        private bool FindNextVolume(StringBuilder dst)
+        {
+            return NativeMethods.FindNextVolume(handle, dst, dst.Capacity);
+        }
+
+        protected override bool ReleaseHandle()
+        {
+            return NativeMethods.FindVolumeClose(handle);
         }
     }
 }

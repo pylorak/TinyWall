@@ -322,7 +322,7 @@ namespace PKSoft
 
         public static IEnumerable<PROCESSENTRY32> CreateToolhelp32Snapshot()
         {
-            const int ERROR_NO_MORE_FILES = 0x12;
+            const int ERROR_NO_MORE_FILES = 18;
 
             PROCESSENTRY32 pe32 = new PROCESSENTRY32 { };
             pe32.dwSize = (uint)Marshal.SizeOf(typeof(PROCESSENTRY32));

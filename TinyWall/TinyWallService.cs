@@ -56,7 +56,7 @@ namespace PKSoft
         private Engine WfpEngine;
         private ManagementEventWatcher ProcessStartWatcher;
         private ManagementEventWatcher NetworkInterfaceWatcher;
-        private DevicePathMapper NtPathMapper = new DevicePathMapper();
+        private PathMapper NtPathMapper = new PathMapper();
 
         private List<IpAddrMask> LocalSubnetAddreses = new List<IpAddrMask>();
         private List<IpAddrMask> GatewayAddresses = new List<IpAddrMask>();
