@@ -255,11 +255,12 @@ namespace PKSoft
             while (true)
             {
                 int size = buffer.Capacity;
-                if (SafeNativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.Win32Format, buffer, ref size))
+                if (SafeNativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.NativeFormat, buffer, ref size))
                 {
                     for (int i = 0; i < buffer.Length; ++i)
                         buffer[i] = char.ToLowerInvariant(buffer[i]);
-                    return buffer.ToString();
+
+                    return GlobalInstances.PathConverter.ConvertPathIgnoreErrors(buffer.ToString(), PathFormat.Win32);
                 }
                 else
                 {
