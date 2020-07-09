@@ -6,7 +6,9 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Threading;
+using Microsoft.Win32;
 using PKSoft;
+using TinyWall.Interface.Internal;
 
 public enum PathFormat
 {
@@ -163,13 +165,37 @@ public sealed class PathMapper : IDisposable
         ret = ReplaceLeading(ret, @"GLOBALROOT\", string.Empty, sb);
         ret = ReplaceLeading(ret, @"\Device\Mup\", @"\\", sb);
 
-        if ((ret.Length >=2) && (ret[0] == '\\') && (ret[1] == '\\'))
-        {   // UNC path, like \\server\share\directory\file
-            if (target == PathFormat.Win32)
-                return ret;
+        if (NetworkPath.IsNetworkPath(ret))
+        {   // UNC path (like \\server\share\directory\file), or mounted network drive
+
+            // Convert a mapped drive to a UNC path
+            if (!NetworkPath.IsUncPath(ret))
+            {
+                char driveLetter = char.ToUpperInvariant(ret[0]);
+                using (var networkKey = Registry.CurrentUser.OpenSubKey("Network", false))
+                {
+                    var subkeys = networkKey.GetSubKeyNames();
+                    foreach (var sk in subkeys)
+                    {
+                        if ((sk.Length == 1) && (char.ToUpperInvariant(sk[0]) == driveLetter))
+                        {
+                            using (var driveKey = networkKey.OpenSubKey(sk, false))
+                            {
+                                ret = Path.Combine((string)driveKey.GetValue("RemotePath"), ret.Substring(3));
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!NetworkPath.IsUncPath(ret))
+                throw new DriveNotFoundException();
 
             switch (target)
             {
+                case PathFormat.Win32:
+                    return ret;
                 case PathFormat.NativeNt:
                     return @"\Device\Mup\" + ret.Substring(2);
                 default:

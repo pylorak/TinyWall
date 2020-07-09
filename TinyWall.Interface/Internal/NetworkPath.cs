@@ -31,12 +31,7 @@ namespace TinyWall.Interface.Internal
 
         public static bool IsUncPath(string path)
         {
-            Uri uri = null;
-            if (!Uri.TryCreate(path, UriKind.Absolute, out uri))
-            {
-                return false;
-            }
-            return uri.IsUnc;
+            return (path.Length > 2) && (path[0] == '\\') && (path[1] == '\\');
         }
 
         public static string GetUncPath(string localPath)

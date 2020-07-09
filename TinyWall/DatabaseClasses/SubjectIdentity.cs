@@ -125,7 +125,8 @@ namespace PKSoft.DatabaseClasses
             return
                 path.Equals("*")  // All files
                 || path.Equals("System", StringComparison.OrdinalIgnoreCase)    // System-process
-                || Path.IsPathRooted(path) && (File.Exists(path));  // File path on filesystem
+                || Path.IsPathRooted(path) && (File.Exists(path)  // File path on filesystem
+                || TinyWall.Interface.Internal.NetworkPath.IsNetworkPath(path));    // Network resource
         }
 
         public bool DoesExecutableSatisfy(ExceptionSubject subject)

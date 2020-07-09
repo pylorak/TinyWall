@@ -372,7 +372,7 @@ namespace PKSoft
             if (ofd.ShowDialog(this) != System.Windows.Forms.DialogResult.OK)
                 return;
 
-            ReinitFormFromSubject(new ExecutableSubject(ofd.FileName));
+            ReinitFormFromSubject(new ExecutableSubject(GlobalInstances.PathConverter.ConvertPathIgnoreErrors(ofd.FileName, PathFormat.Win32)));
         }
 
         private void btnChooseService_Click(object sender, EventArgs e)

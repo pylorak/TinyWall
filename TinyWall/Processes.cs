@@ -23,6 +23,7 @@ namespace PKSoft
 
             this.IconList.Images.Add("store", Resources.Icons.store);
             this.IconList.Images.Add("system", Resources.Icons.windows_small);
+            this.IconList.Images.Add("network-drive", Resources.Icons.network_drive_small);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -110,6 +111,10 @@ namespace PKSoft
                         else if (e.ExePath == "System")
                         {
                             li.ImageKey = "system";
+                        }
+                        else if (TinyWall.Interface.Internal.NetworkPath.IsNetworkPath(e.ExePath))
+                        {
+                            li.ImageKey = "network-drive";
                         }
                         else if (System.IO.Path.IsPathRooted(e.ExePath) && System.IO.File.Exists(e.ExePath))
                         {

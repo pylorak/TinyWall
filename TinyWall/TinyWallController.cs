@@ -702,7 +702,7 @@ namespace PKSoft
                     ActiveForms.Remove(dummy);
                 }
 
-                var subj = new ExecutableSubject(ofd.FileName);
+                var subj = new ExecutableSubject(GlobalInstances.PathConverter.ConvertPathIgnoreErrors(ofd.FileName, PathFormat.Win32));
                 AddExceptions(GlobalInstances.AppDatabase.GetExceptionsForApp(subj, true, out _));
             }
         }

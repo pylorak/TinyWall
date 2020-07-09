@@ -35,10 +35,6 @@ namespace PKSoft
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool IsImmersiveProcess(IntPtr hProcess);
 
-            [DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            internal static extern bool PathIsNetworkPath(string pszPath);
-
             [DllImport("dnsapi.dll", EntryPoint = "DnsFlushResolverCache")]
             internal static extern uint DnsFlushResolverCache();
 
@@ -68,21 +64,6 @@ namespace PKSoft
             [DllImport("advapi32", CharSet = CharSet.Unicode, SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool ConvertSidToStringSid(IntPtr Sid, out AllocHLocalSafeHandle StringSid);
-
-            #region WNetGetUniversalName
-            internal const int UNIVERSAL_NAME_INFO_LEVEL = 0x00000001;
-            internal const int ERROR_MORE_DATA = 234;
-            internal const int ERROR_NOT_CONNECTED = 2250;
-            internal const int NOERROR = 0;
-
-            [DllImport("mpr.dll", CharSet = CharSet.Unicode)]
-            [return: MarshalAs(UnmanagedType.U4)]
-            internal static extern int WNetGetUniversalName(
-                string lpLocalPath,
-                [MarshalAs(UnmanagedType.U4)] int dwInfoLevel,
-                IntPtr lpBuffer,
-                [MarshalAs(UnmanagedType.U4)] ref int lpBufferSize);
-            #endregion
 
             #region IsMetroActive
             [ComImport, Guid("2246EA2D-CAEA-4444-A3C4-6DE827E44313"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]

@@ -27,6 +27,7 @@ namespace PKSoft
 
             this.IconList.Images.Add("store", Resources.Icons.store);
             this.IconList.Images.Add("system", Resources.Icons.windows_small);
+            this.IconList.Images.Add("network-drive", Resources.Icons.network_drive_small);
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -189,6 +190,10 @@ namespace PKSoft
                 else if (appPath == "System")
                 {
                     li.ImageKey = "system";
+                }
+                else if (NetworkPath.IsNetworkPath(appPath))
+                {
+                    li.ImageKey = "network-drive";
                 }
                 else if (System.IO.Path.IsPathRooted(appPath) && System.IO.File.Exists(appPath))
                 {
