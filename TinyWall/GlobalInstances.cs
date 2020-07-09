@@ -12,6 +12,7 @@ namespace PKSoft
         internal static Controller Controller;
         internal static Guid ClientChangeset;
         internal static Guid ServerChangeset;
+        internal static PathMapper PathConverter = new PathMapper();
 
         private static Bitmap _ApplyBtnIcon = null;
         internal static Bitmap ApplyBtnIcon

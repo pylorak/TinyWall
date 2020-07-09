@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading;
 using PKSoft;
 
-public enum DriveType
+public enum PathFormat
 {
-    Network,
-    Local,
+    NativeNt,
+    Volume,
+    Win32
 }
 
 public sealed class PathMapper : IDisposable
@@ -33,7 +34,6 @@ public sealed class PathMapper : IDisposable
     }
 
     private StringBuilder sbuilder = new StringBuilder(260);
-    public DriveCache[] Cache { get; private set; }
     private ManagementEventWatcher DriveWatcher;
     private ManualResetEvent CacheReadyEvent = new ManualResetEvent(false);
     private readonly object locker = new object();
@@ -57,129 +57,224 @@ public sealed class PathMapper : IDisposable
         RebuildCache();
     }
 
+    private DriveCache[] _cache;
+    public DriveCache[] Cache
+    {
+        get
+        {
+            DriveCache[] ret = null;
+            CacheReadyEvent.WaitOne();
+            lock (locker)
+            {
+                ret = _cache;
+            }
+            return ret;
+        }
+
+        private set
+        {
+            lock(locker)
+            {
+                _cache = value;
+            }
+            CacheReadyEvent.Set();
+        }
+    }
+
     private void RebuildCache()
     {
         ThreadPool.QueueUserWorkItem(delegate (object arg)
         {
             const int MAX_PATH = 260;
 
-            lock (locker)
+            StringBuilder sb = new StringBuilder(MAX_PATH);
+            char[] buf = new char[MAX_PATH];
+            List<DriveCache> newCache = new List<DriveCache>();
+
+            foreach (var vol in FindVolumeSafeHandle.EnumerateVolumes())
             {
-                StringBuilder sb = new StringBuilder(MAX_PATH);
-                char[] buf = new char[MAX_PATH];
-                List<DriveCache> newCache = new List<DriveCache>();
+                var cacheEntry = new DriveCache();
 
-                foreach (var vol in FindVolumeSafeHandle.EnumerateVolumes())
+                if ( (vol[0] != '\\')
+                    || (vol[1] != '\\')
+                    || (vol[2] != '?')
+                    || (vol[3] != '\\')
+                    || (vol[vol.Length - 1] != '\\') )
                 {
-                    var cacheEntry = new DriveCache();
+                    continue;
+                }
+                cacheEntry.Volume = vol;
 
-                    if ( (vol[0] != '\\')
-                        || (vol[1] != '\\')
-                        || (vol[2] != '?')
-                        || (vol[3] != '\\')
-                        || (vol[vol.Length - 1] != '\\') )
-                    {
-                        continue;
-                    }
-                    cacheEntry.Volume = vol;
-
-                    string qddInput = vol.Substring(4, vol.Length - 5); // Also remove trailing backslash
-                    int charCount = QueryDosDevice(qddInput, sb, sb.Capacity);
-                    if (charCount > 0)
-                    {
-                        sb.Append('\\');
-                        cacheEntry.Device = sb.ToString();
-                    }
-
-                    if (GetVolumePathNamesForVolumeName(vol, buf, buf.Length, out int expectedChars))
-                    {
-                        cacheEntry.PathNames = new List<string>();
-                        int startIdx = 0;
-                        int numChars = 0;
-                        for (int i = 0; i < expectedChars; ++i)
-                        {
-                            if ((buf[i] == '\0') && (numChars > 0))
-                            {
-                                cacheEntry.PathNames.Add(new string(buf, startIdx, numChars));
-                                startIdx = i + 1;
-                                numChars = 0;
-                            }
-                            else
-                                ++numChars;
-                        }
-                    }
-
-                    newCache.Add(cacheEntry);
+                string qddInput = vol.Substring(4, vol.Length - 5); // Also remove trailing backslash
+                int charCount = QueryDosDevice(qddInput, sb, sb.Capacity);
+                if (charCount > 0)
+                {
+                    sb.Append('\\');
+                    cacheEntry.Device = sb.ToString();
                 }
 
-                Cache = newCache.ToArray();
+                if (GetVolumePathNamesForVolumeName(vol, buf, buf.Length, out int expectedChars))
+                {
+                    cacheEntry.PathNames = new List<string>();
+                    int startIdx = 0;
+                    int numChars = 0;
+                    for (int i = 0; i < expectedChars; ++i)
+                    {
+                        if ((buf[i] == '\0') && (numChars > 0))
+                        {
+                            cacheEntry.PathNames.Add(new string(buf, startIdx, numChars));
+                            startIdx = i + 1;
+                            numChars = 0;
+                        }
+                        else
+                            ++numChars;
+                    }
+                }
+
+                newCache.Add(cacheEntry);
             }
-            CacheReadyEvent.Set();
+
+            Cache = newCache.ToArray();
         }, null);
     }
 
-    private DriveCache[] GetCache()
+    public string ConvertPathIgnoreErrors(string path, PathFormat target)
     {
-        DriveCache[] ret = null;
-        CacheReadyEvent.WaitOne();
-        lock (locker)
+        try
         {
-            ret = Cache;
+            return ConvertPath(path, target);
         }
-        return ret;
-    }
-
-    public string FromNtPath(string devicePath)
-    {
-        var drives = GetCache();
-
-        foreach (var drive in drives)
+        catch
         {
-            if (devicePath.StartsWith(drive.Device, StringComparison.InvariantCultureIgnoreCase))
-                return ReplaceFirst(devicePath, drive.Device, drive.PathNames[0], sbuilder);
+            return path;
         }
-        return devicePath;
     }
 
-    public string ToNtPath(string devicePath)
+    public string ConvertPath(string path, PathFormat target)
     {
-        var drives = GetCache();
+        string ret = path;
+        StringBuilder sb = new StringBuilder();
 
-        foreach (var drive in drives)
-        {
-            if (devicePath.StartsWith(drive.PathNames[0], StringComparison.InvariantCultureIgnoreCase))
-                return ReplaceFirst(devicePath, drive.PathNames[0], drive.Device, sbuilder);
+        ret = ReplaceLeading(ret, @"\SystemRoot", Environment.GetFolderPath(Environment.SpecialFolder.System), sb);
+        ret = ReplaceLeading(ret, @"\\?\", string.Empty, sb);
+        ret = ReplaceLeading(ret, @"\\.\", string.Empty, sb);
+        ret = ReplaceLeading(ret, @"\??\", string.Empty, sb);
+        ret = ReplaceLeading(ret, @"UNC\",@"\\", sb);
+        ret = ReplaceLeading(ret, @"GLOBALROOT\", string.Empty, sb);
+        ret = ReplaceLeading(ret, @"\Device\Mup\", @"\\", sb);
+
+        if ((ret.Length >=2) && (ret[0] == '\\') && (ret[1] == '\\'))
+        {   // UNC path, like \\server\share\directory\file
+            if (target == PathFormat.Win32)
+                return ret;
+
+            switch (target)
+            {
+                case PathFormat.NativeNt:
+                    return @"\Device\Mup\" + ret.Substring(2);
+                default:
+                    throw new NotSupportedException();
+            }
         }
-        return devicePath;
+        else if ((ret.Length >= 3) && char.IsLetter(ret[0]) && (ret[1] == ':') && (ret[2] == '\\'))
+        {   // Win32 drive letter format, like C:\Windows\explorer.exe
+
+            if (target == PathFormat.Win32)
+                return ret;
+
+            var dc = Cache;
+            for (int i = 0; i < dc.Length; ++i)
+            {
+                for (int j = 0; j < dc[i].PathNames.Count; ++j)
+                {
+                    if (ret.StartsWith(dc[i].PathNames[j], StringComparison.OrdinalIgnoreCase))
+                    {
+                        string trailing = ret.Substring(dc[i].PathNames[j].Length);
+                        switch (target)
+                        {
+                            case PathFormat.NativeNt:
+                                return Path.Combine(dc[i].Device, trailing);
+                            case PathFormat.Volume:
+                                return Path.Combine(dc[i].Volume, trailing);
+                            default:
+                                throw new NotSupportedException();
+                        }
+                    }
+                }
+            }
+
+            throw new DriveNotFoundException();
+        }
+        else if (ret.StartsWith("Volume{", StringComparison.OrdinalIgnoreCase))
+        {   // Volume GUID path, like \\?\Volume{26a21bda-a627-11d7-9931-806e6f6e6963}\Windows\explorer.exe
+
+            if (target == PathFormat.Volume)
+                return path;
+
+            ret = @"\\?\" + ret;
+            var dc = Cache;
+            for (int i = 0; i < dc.Length; ++i)
+            {
+                if (ret.StartsWith(dc[i].Volume, StringComparison.OrdinalIgnoreCase))
+                {
+                    string trailing = ret.Substring(dc[i].Volume.Length);
+                    switch (target)
+                    {
+                        case PathFormat.NativeNt:
+                            return Path.Combine(dc[i].Device, trailing);
+                        case PathFormat.Win32:
+                            if (dc[i].PathNames.Count > 0)
+                                return Path.Combine(dc[i].PathNames[0], trailing);
+                            else
+                                throw new NotSupportedException();
+                        default:
+                            throw new NotSupportedException();
+                    }
+                }
+            }
+
+            throw new DriveNotFoundException();
+        }
+        else
+        {   // Assume native NT device path, like \Device\HarddiskVolume1\Windows\explorer.exe
+            if (target == PathFormat.NativeNt)
+                return path;
+
+            var dc = Cache;
+            for (int i = 0; i < dc.Length; ++i)
+            {
+                if (ret.StartsWith(dc[i].Device, StringComparison.OrdinalIgnoreCase))
+                {
+                    string trailing = ret.Substring(dc[i].Device.Length);
+                    switch (target)
+                    {
+                        case PathFormat.Volume:
+                            return Path.Combine(dc[i].Volume, trailing);
+                        case PathFormat.Win32:
+                            if (dc[i].PathNames.Count > 0)
+                                return Path.Combine(dc[i].PathNames[0], trailing);
+                            else
+                                throw new DriveNotFoundException();
+                        default:
+                            throw new NotSupportedException();
+                    }
+                }
+            }
+
+            throw new DriveNotFoundException();
+        }
     }
 
-    private static string GetDevicePath(DriveInfo driveInfo)
+    private static string ReplaceLeading(string haystack, string needle, string replacement, StringBuilder sb)
     {
-        var devicePathBuilder = new StringBuilder(128);
-        string ret = QueryDosDevice(GetDriveLetter(driveInfo), devicePathBuilder, devicePathBuilder.Capacity + 1) != 0
-            ? devicePathBuilder.ToString()
-            : null;
-        return ret;
-    }
-
-    private static string GetDriveLetter(DriveInfo driveInfo)
-    {
-        return driveInfo.Name.Substring(0, 2);
-    }
-
-    private static string ReplaceFirst(string text, string search, string replace, StringBuilder sb)
-    {
-        int pos = text.IndexOf(search, StringComparison.InvariantCultureIgnoreCase);
-        if (pos < 0)
-            return text;
+        int pos = haystack.IndexOf(needle, StringComparison.OrdinalIgnoreCase);
+        if (pos != 0)
+            return haystack;
         else
         {
-            //return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
-            int tmp = pos + search.Length;
             sb.Length = 0;
-            sb.Append(text, 0, pos);
-            sb.Append(replace);
-            sb.Append(text, tmp, text.Length - tmp);
+            sb.Append(replacement);
+            sb.Append(haystack, needle.Length, haystack.Length - needle.Length);
             return sb.ToString();
         }
     }

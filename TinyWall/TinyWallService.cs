@@ -56,7 +56,6 @@ namespace PKSoft
         private Engine WfpEngine;
         private ManagementEventWatcher ProcessStartWatcher;
         private ManagementEventWatcher NetworkInterfaceWatcher;
-        private PathMapper NtPathMapper = new PathMapper();
 
         private List<IpAddrMask> LocalSubnetAddreses = new List<IpAddrMask>();
         private List<IpAddrMask> GatewayAddresses = new List<IpAddrMask>();
@@ -514,7 +513,7 @@ namespace PKSoft
                                 (e.ErrorCode == 5)
                             )
                             {
-                                conditions.Add(new AppIdFilterCondition(NtPathMapper.ToNtPath(r.Application), false, true));
+                                conditions.Add(new AppIdFilterCondition(GlobalInstances.PathConverter.ConvertPathIgnoreErrors(r.Application, PathFormat.NativeNt), false, true));
                             }
                         }
                         else
@@ -1807,7 +1806,7 @@ namespace PKSoft
             entry.Event = eventType;
 
             if (!string.IsNullOrEmpty(data.appId))
-                entry.AppPath = NtPathMapper.FromNtPath(data.appId);
+                entry.AppPath = GlobalInstances.PathConverter.ConvertPathIgnoreErrors(data.appId, PathFormat.Win32);
             else
                 entry.AppPath = "System";
             entry.PackageId = data.packageId;
@@ -1932,7 +1931,7 @@ namespace PKSoft
                 MinuteTimer = null;
             }
 
-            NtPathMapper.Dispose();
+            GlobalInstances.PathConverter.Dispose();
             LogWatcher.Dispose();
             CommitLearnedRules();
             ActiveConfig.Service.Save(ConfigSavePath);
