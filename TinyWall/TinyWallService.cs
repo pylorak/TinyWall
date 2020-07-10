@@ -1931,7 +1931,6 @@ namespace PKSoft
                 MinuteTimer = null;
             }
 
-            GlobalInstances.PathConverter.Dispose();
             LogWatcher.Dispose();
             CommitLearnedRules();
             ActiveConfig.Service.Save(ConfigSavePath);
@@ -1950,6 +1949,7 @@ namespace PKSoft
                 trx.Commit();
             }
 #endif
+            GlobalInstances.Cleanup();
         }
     }
 

@@ -14,6 +14,13 @@ namespace PKSoft
         internal static Guid ServerChangeset;
         internal static PathMapper PathConverter = new PathMapper();
 
+        public static void Cleanup()
+        {
+            PathConverter?.Dispose();
+            Controller?.Dispose();
+            ServerPipe?.Dispose();
+        }
+
         private static Bitmap _ApplyBtnIcon = null;
         internal static Bitmap ApplyBtnIcon
         {

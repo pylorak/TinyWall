@@ -37,6 +37,9 @@
         DATABASE_UPDATED,
 
         // Service-to-service only (>4095)
-        ADD_TEMPORARY_EXCEPTION = 4096
+        ADD_TEMPORARY_EXCEPTION = 4096,
+
+        // Client-to-client only
+        WAKE_CLIENT_SENDER_QUEUE = 8192
     }
 }

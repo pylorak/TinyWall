@@ -23,6 +23,7 @@ namespace TinyWall.Interface.Internal
             if (disposing)
             {
                 // Release managed resources
+                QueueMessageSimple(MessageType.WAKE_CLIENT_SENDER_QUEUE);
                 m_PipeWorkerThread.Join(TimeSpan.FromMilliseconds(2000));
                 m_Queue.Dispose();
             }
@@ -44,6 +45,11 @@ namespace TinyWall.Interface.Internal
             while (m_Run)
             {
                 m_Queue.Dequeue(out TwMessage msg, out Future<TwMessage> future);
+                if (msg.Type == MessageType.WAKE_CLIENT_SENDER_QUEUE)
+                {
+                    future.Value = new TwMessage(MessageType.RESPONSE_OK);
+                    continue;
+                }
 
                 // In case of a communication error,
                 // retry a small number of times.

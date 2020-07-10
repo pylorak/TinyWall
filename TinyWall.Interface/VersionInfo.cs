@@ -94,7 +94,7 @@ namespace TinyWall.Interface
                 string releaseId = (winver.Major >= 10) ? Registry.ReadRegString(Registry.HKEY_LOCAL_MACHINE, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", RegWow64Options.KEY_WOW64_64KEY) : null;
                 string bitness = Is64BitOs ? "64" : "32";
 
-                string ret = $"{product} {bitness}-bits {winver.Major}.{winver.Minor}.{build}";
+                string ret = $"{product} {bitness}-bit {winver.Major}.{winver.Minor}.{build}";
                 if (!string.IsNullOrEmpty(releaseId))
                     ret += $" (v{releaseId})";
 

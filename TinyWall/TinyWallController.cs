@@ -362,6 +362,7 @@ namespace PKSoft
                 TrafficMonitor?.Dispose();
 
                 components.Dispose();
+                GlobalInstances.Cleanup();
             }
 
             base.Dispose(disposing);

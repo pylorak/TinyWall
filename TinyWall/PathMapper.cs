@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Diagnostics;
 using System.Management;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -20,13 +21,15 @@ public enum PathFormat
 public sealed class PathMapper : IDisposable
 {
     [SuppressUnmanagedCodeSecurity]
-    [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
-    private static extern int QueryDosDevice(string lpDeviceName, [Out] StringBuilder lpTargetPath, int ucchMax);
+    private static class NativeMethods
+    {
+        [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern int QueryDosDevice(string lpDeviceName, [Out] StringBuilder lpTargetPath, int ucchMax);
 
-    [SuppressUnmanagedCodeSecurity]
-    [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool GetVolumePathNamesForVolumeName(string lpszVolumeName, [Out] char[] lpszVolumePathNames, int cchBufferLength, out int lpcchReturnLength);
+        [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetVolumePathNamesForVolumeName(string lpszVolumeName, [Out] char[] lpszVolumePathNames, int cchBufferLength, out int lpcchReturnLength);
+    }
 
     public struct DriveCache
     {
@@ -35,15 +38,16 @@ public sealed class PathMapper : IDisposable
         public List<string> PathNames;
     }
 
-    private StringBuilder sbuilder = new StringBuilder(260);
     private ManagementEventWatcher DriveWatcher;
     private ManualResetEvent CacheReadyEvent = new ManualResetEvent(false);
     private readonly object locker = new object();
+    private bool disposed = false;
 
     public PathMapper()
     {
         try
         {
+            // TODO: Use WM_DEVICECHANGE instead of WMI
             WqlEventQuery insertQuery = new WqlEventQuery("SELECT * FROM __InstanceOperationEvent WITHIN 5 WHERE Targetinstance ISA 'Win32_MountPoint'");
             DriveWatcher = new ManagementEventWatcher(insertQuery);
             DriveWatcher.EventArrived += Watcher_EventArrived;
@@ -108,14 +112,14 @@ public sealed class PathMapper : IDisposable
                 cacheEntry.Volume = vol;
 
                 string qddInput = vol.Substring(4, vol.Length - 5); // Also remove trailing backslash
-                int charCount = QueryDosDevice(qddInput, sb, sb.Capacity);
+                int charCount = NativeMethods.QueryDosDevice(qddInput, sb, sb.Capacity);
                 if (charCount > 0)
                 {
                     sb.Append('\\');
                     cacheEntry.Device = sb.ToString();
                 }
 
-                if (GetVolumePathNamesForVolumeName(vol, buf, buf.Length, out int expectedChars))
+                if (NativeMethods.GetVolumePathNamesForVolumeName(vol, buf, buf.Length, out int expectedChars))
                 {
                     cacheEntry.PathNames = new List<string>();
                     int startIdx = 0;
@@ -168,9 +172,9 @@ public sealed class PathMapper : IDisposable
         if (NetworkPath.IsNetworkPath(ret))
         {   // UNC path (like \\server\share\directory\file), or mounted network drive
 
-            // Convert a mapped drive to a UNC path
             if (!NetworkPath.IsUncPath(ret))
             {
+                // Convert a mapped drive to a UNC path
                 char driveLetter = char.ToUpperInvariant(ret[0]);
                 using (var networkKey = Registry.CurrentUser.OpenSubKey("Network", false))
                 {
@@ -187,10 +191,11 @@ public sealed class PathMapper : IDisposable
                         }
                     }
                 }
-            }
 
-            if (!NetworkPath.IsUncPath(ret))
-                throw new DriveNotFoundException();
+                // If conversion failed
+                if (!NetworkPath.IsUncPath(ret))
+                    throw new DriveNotFoundException();
+            }
 
             switch (target)
             {
@@ -307,8 +312,57 @@ public sealed class PathMapper : IDisposable
 
     public void Dispose()
     {
+        if (disposed) return;
+
         DriveWatcher?.Dispose();
         CacheReadyEvent.WaitOne();
         CacheReadyEvent.Close();
+
+        disposed = true;
     }
+
+#if DEBUG
+    private void TestConversion(string path)
+    {
+        string NO_RESULT = "---";
+        string win32Result = NO_RESULT;
+        string ntResult = NO_RESULT;
+        string volumeResult = NO_RESULT;
+
+        try { win32Result = ConvertPath(path, PathFormat.Win32); } catch { }
+        try { ntResult = ConvertPath(path, PathFormat.NativeNt); } catch { }
+        try { volumeResult = ConvertPath(path, PathFormat.Volume); } catch { }
+
+        string output = path + ":" + Environment.NewLine
+            + "    Win32:  " + win32Result + Environment.NewLine
+            + "    Nt:     " + ntResult + Environment.NewLine
+            + "    Volume: " + volumeResult + Environment.NewLine;
+
+        Debug.WriteLine(output);
+    }
+
+    // TODO: Automatically compare with expected outcomes
+    public void RunTests()
+    {
+        string NETMOUNT_DRIVE = @"X:\";
+        string NONEXISTENT_DRIVE = @"N:\";
+        string VOLUME = @"\\?\Volume{56c747c3-83d9-11e4-91b2-806e6f6e6963}\";
+        string DIR_MOUNTPOINT = @"d:\c_drive\";
+
+        TestConversion(@"\\server\share\dir\file.txt");
+        TestConversion(@"\\.\UNC\server\share\dir\file.txt");
+        TestConversion(NETMOUNT_DRIVE + @"tmp");
+        TestConversion(NONEXISTENT_DRIVE + @"tmp");
+
+        TestConversion(@"c:\windows\explorer.exe");
+        TestConversion(@"\\?\c:\windows\explorer.exe");
+        TestConversion(DIR_MOUNTPOINT + @"windows\explorer.exe");
+        TestConversion(@"\\?\UNC\c:\windows\explorer.exe");
+
+        TestConversion(VOLUME + @"Windows\explorer.exe");
+        TestConversion(@"\Device\HarddiskVolume1\Windows\explorer.exe");
+        TestConversion(@"\SystemRoot\explorer.exe");
+        TestConversion(@"\Device\Mup\server\share\dir\file.txt");
+    }
+#endif
 }
