@@ -243,6 +243,11 @@ namespace PKSoft
             {
                 EnsureServiceDependencies();
             }
+            catch (InvalidOperationException e)
+            {
+                if (!Utils.IsSystemShuttingDown())
+                    Utils.LogException(e, logContext);
+            }
             catch (Exception e)
             {
                 Utils.LogException(e, logContext);
@@ -256,6 +261,12 @@ namespace PKSoft
                     scm.SetStartupMode(TinyWallService.SERVICE_NAME, ServiceStartMode.Automatic);
                     scm.SetRestartOnFailure(TinyWallService.SERVICE_NAME, true);
                 }
+            }
+            catch (System.ComponentModel.Win32Exception e)
+            {
+                const int E_FAIL = -2147467259;
+                if (!(Utils.IsSystemShuttingDown() && (e.ErrorCode == E_FAIL)))
+                    Utils.LogException(e, logContext);
             }
             catch (Exception e)
             {

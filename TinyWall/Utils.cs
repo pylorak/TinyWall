@@ -38,6 +38,9 @@ namespace PKSoft
             [DllImport("dnsapi.dll", EntryPoint = "DnsFlushResolverCache")]
             internal static extern uint DnsFlushResolverCache();
 
+            [DllImport("User32.dll", SetLastError = true)]
+            internal static extern int GetSystemMetrics(int nIndex);
+
             [DllImport("kernel32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool GetNamedPipeClientProcessId(IntPtr Pipe, out long ClientProcessId);
@@ -136,6 +139,12 @@ namespace PKSoft
             return servers;
         }
         */
+
+        internal static bool IsSystemShuttingDown()
+        {
+            const int SM_SHUTTINGDOWN = 0x2000;
+            return 0 != SafeNativeMethods.GetSystemMetrics(SM_SHUTTINGDOWN);
+        }
 
         internal static string ConvertSidToStringSid(IntPtr pSid)
         {
