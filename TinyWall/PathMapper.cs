@@ -40,6 +40,7 @@ public sealed class PathMapper : IDisposable
 
     private ManagementEventWatcher DriveWatcher;
     private ManualResetEvent CacheReadyEvent = new ManualResetEvent(false);
+    private readonly string SystemRoot = Environment.GetFolderPath(Environment.SpecialFolder.System);
     private readonly object locker = new object();
     private bool disposed = false;
 
@@ -158,16 +159,15 @@ public sealed class PathMapper : IDisposable
 
     public string ConvertPath(string path, PathFormat target)
     {
-        string ret = path;
-        StringBuilder sb = new StringBuilder();
-
-        ret = ReplaceLeading(ret, @"\SystemRoot", Environment.GetFolderPath(Environment.SpecialFolder.System), sb);
-        ret = ReplaceLeading(ret, @"\\?\", string.Empty, sb);
-        ret = ReplaceLeading(ret, @"\\.\", string.Empty, sb);
-        ret = ReplaceLeading(ret, @"\??\", string.Empty, sb);
-        ret = ReplaceLeading(ret, @"UNC\",@"\\", sb);
-        ret = ReplaceLeading(ret, @"GLOBALROOT\", string.Empty, sb);
-        ret = ReplaceLeading(ret, @"\Device\Mup\", @"\\", sb);
+        StringBuilder sb = new StringBuilder(path);
+        ReplaceLeading(sb, @"\SystemRoot", SystemRoot);
+        ReplaceLeading(sb, @"\\?\", string.Empty);
+        ReplaceLeading(sb, @"\\.\", string.Empty);
+        ReplaceLeading(sb, @"\??\", string.Empty);
+        ReplaceLeading(sb, @"UNC\", @"\\");
+        ReplaceLeading(sb, @"GLOBALROOT\", string.Empty);
+        ReplaceLeading(sb, @"\Device\Mup\", @"\\");
+        string ret = sb.ToString();
 
         if (NetworkPath.IsNetworkPath(ret))
         {   // UNC path (like \\server\share\directory\file), or mounted network drive
@@ -296,18 +296,27 @@ public sealed class PathMapper : IDisposable
         }
     }
 
-    private static string ReplaceLeading(string haystack, string needle, string replacement, StringBuilder sb)
+    private static void ReplaceLeading(StringBuilder text, string needle, string replacement)
     {
-        int pos = haystack.IndexOf(needle, StringComparison.OrdinalIgnoreCase);
-        if (pos != 0)
-            return haystack;
-        else
+        if (!StringBuilderBeginsWithCaseInsensitive(text, needle))
+            return;
+
+        text.Remove(0, needle.Length);
+        text.Insert(0, replacement);
+    }
+
+    private static bool StringBuilderBeginsWithCaseInsensitive(StringBuilder sb, string search)
+    {
+        if (sb.Length < search.Length)
+            return false;
+
+        for (int i = 0; i < search.Length; ++i)
         {
-            sb.Length = 0;
-            sb.Append(replacement);
-            sb.Append(haystack, needle.Length, haystack.Length - needle.Length);
-            return sb.ToString();
+            if (!char.ToUpperInvariant(sb[i]).Equals(char.ToUpperInvariant(search[i])))
+                return false;
         }
+
+        return true;
     }
 
     public void Dispose()
