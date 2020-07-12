@@ -225,8 +225,9 @@ Viele Grüße</globalSetting>
     <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" ignoreDuringExportAndImport="False" uniqueID="624b3eea-50e4-44f2-97d5-ba9035418fd7">
       <file filePath="Forms\UwpPackagesForm.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\UwpPackagesForm.resx" uniqueID="7f9467d0-78d1-41ce-8cdf-a0353420587e" />
       <file filePath="Forms\UwpPackagesForm.de.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\UwpPackagesForm.de.resx" uniqueID="efe95808-be64-4890-b7ed-0cd6bb4d1466" />
-      <file filePath="Forms\UwpPackagesForm.es.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\UwpPackagesForm.es.resx" uniqueID="00000000-0000-0000-0000-000000000000" />
+      <file filePath="Forms\UwpPackagesForm.es.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\UwpPackagesForm.es.resx" uniqueID="15A2F257-1864-4250-AE79-D1D4F63A30AB" />
       <file filePath="Forms\UwpPackagesForm.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\UwpPackagesForm.hu.resx" uniqueID="6b25a39c-926f-438d-b31c-a755b033cbdb" />
+      <file filePath="Forms\UwpPackagesForm.ru.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\UwpPackagesForm.ru.resx" uniqueID="33FF318C-2389-44AA-9E0C-09914BD0AB39" />
       <remarks>
       </remarks>
     </fileGroup>

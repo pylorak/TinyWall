@@ -1,6 +1,19 @@
 TinyWall Changelog
 ---------------------
 
+3.0.7 - Maintenance release (12.07.2020.)
+- Add support for WSL
+- Add support for WSL 2
+- Add support for whitelisting from network shares and network drives
+- Fix autolearn doesn't detect short-lived processes
+- Fix autolearn handling of non-win32 file paths
+- Fix service crash if multiple exceptions with the same path apply to child processes
+- Don't log expected exceptions during system shutdown
+- Don't show System process as a missing app, and add icon for it
+- Updated Italian localization
+
+---------------------
+
 3.0.6 - Maintenance release (25.06.2020.)
 - Fix GUI crash if an "All applications" rule is present
 
@@ -118,7 +131,7 @@ TinyWall Changelog
 - Deprecation notes
     - Windows Vista no longer supported
     - 32-bit systems no longer supported
-    - Whitelisting from a network share temporarily not supported
+    - Temporarily remove support for network drives (added back in 3.0.7)
 
 ---------------------
 
