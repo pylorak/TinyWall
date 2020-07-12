@@ -61,7 +61,18 @@ public sealed class PathMapper : IDisposable
 
     private void Watcher_EventArrived(object sender, EventArrivedEventArgs e)
     {
-        RebuildCache();
+        try
+        {
+            RebuildCache();
+        }
+        catch (Exception ex)
+        {
+            PKSoft.Utils.LogException(ex, PKSoft.Utils.LOG_ID_SERVICE);
+        }
+        finally
+        {
+            e.NewEvent.Dispose();
+        }
     }
 
     private DriveCache[] _cache;
