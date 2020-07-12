@@ -253,7 +253,7 @@ namespace PKSoft
             string updOut = Path.Combine(txtUpdateOutput.Text, XML_OUT_NAME);
             SerializationHelper.SaveToXMLFile(update, updOut);
 
-            update.Modules[2].ComponentVersion = HOSTS_PLACEHOLDER;
+            update.Modules[2].DownloadHash = HOSTS_PLACEHOLDER;
             updOut = Path.Combine(txtUpdateOutput.Text, XML_OUT_TEMPLATE_NAME);
             SerializationHelper.SaveToXMLFile(update, updOut);
 
