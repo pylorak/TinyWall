@@ -172,17 +172,11 @@
     <value>Atualizar</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="chkShowListen.Location" type="System.Drawing.Point, System.Drawing">
-    <value>185, 315</value>
-  </data>
   <data name="chkShowListen.Text" xml:space="preserve">
     <value>Exibir só as portas abertas</value>
   </data>
   <data name="chkShowActive.Text" xml:space="preserve">
     <value>Só exibir as conexões ativas</value>
-  </data>
-  <data name="chkShowBlocked.Location" type="System.Drawing.Point, System.Drawing">
-    <value>352, 315</value>
   </data>
   <data name="chkShowBlocked.Text" xml:space="preserve">
     <value>Exibir os aplicativos bloqueados (nos últimos 5 minutos)</value>
