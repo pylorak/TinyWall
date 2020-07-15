@@ -30,7 +30,11 @@ namespace PKSoft
                 WFEventWatcher.EventRecordWritten += new EventHandler<EventRecordWrittenEventArgs>(WFEventWatcher_EventRecordWritten);
                 WFEventWatcher.Enabled = true;
             }
-            catch { }
+            catch(Exception e)
+            {
+                Utils.Log("Cannot monitor Windows Firewall. Is the 'eventlog' service running? For details see next log entry.", Utils.LOG_ID_SERVICE);
+                Utils.LogException(e, Utils.LOG_ID_SERVICE);
+            }
         }
 
         private static void WFEventWatcher_EventRecordWritten(object sender, EventRecordWrittenEventArgs e)

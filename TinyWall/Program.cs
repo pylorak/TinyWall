@@ -37,10 +37,6 @@ namespace PKSoft
                 }
 
                 tw.ServiceName = TinyWallService.SERVICE_NAME;
-                if (!EventLog.SourceExists("TinyWallService"))
-                    EventLog.CreateEventSource("TinyWallService", null);
-                tw.EventLog.Source = "TinyWallService";
-
 #if DEBUG
                 tw.Start(null);
 #else

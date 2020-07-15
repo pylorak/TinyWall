@@ -1336,14 +1336,24 @@ namespace PKSoft
                     }
                 case MessageType.MODE_SWITCH:
                     {
-                        VisibleState.Mode = (TinyWall.Interface.FirewallMode)req.Arguments[0];
+                        FirewallMode newMode = (TinyWall.Interface.FirewallMode)req.Arguments[0];
 
                         if (CommitLearnedRules())
                             ActiveConfig.Service.Save(ConfigSavePath);
 
-                        InstallFirewallRules();
+                        try
+                        {
+                            LogWatcher.Enabled = (FirewallMode.Learning == newMode);
+                        }
+                        catch(Exception e)
+                        {
+                            Utils.Log("Cannot enter auto-learn mode. Is the 'eventlog' service running? For details see next log entry.", Utils.LOG_ID_SERVICE);
+                            Utils.LogException(e, Utils.LOG_ID_SERVICE);
+                            return new TwMessage(MessageType.RESPONSE_ERROR);
+                        }
 
-                        LogWatcher.Enabled = (VisibleState.Mode == FirewallMode.Learning);
+                        VisibleState.Mode = newMode;
+                        InstallFirewallRules();
 
                         if (
                                (VisibleState.Mode != TinyWall.Interface.FirewallMode.Disabled)
@@ -1958,7 +1968,6 @@ namespace PKSoft
     {
         internal readonly static string[] ServiceDependencies = new string[]
         {
-            "eventlog",
             "Winmgmt",
             "BFE"
         };
