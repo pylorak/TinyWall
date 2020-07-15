@@ -643,6 +643,9 @@
     <EmbeddedResource Include="UwpPackagesForm.ru.resx">
       <DependentUpon>UwpPackagesForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UwpPackagesForm.pt-BR.resx">
+      <DependentUpon>UwpPackagesForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>

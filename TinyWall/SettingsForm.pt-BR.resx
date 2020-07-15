@@ -245,7 +245,7 @@
     <value>Todos os direitos reservados.</value>
   </data>
 	<data name="groupBox2.Text" xml:space="preserve">
-    <value>Sobre o Programa (Traduzido por MCHAL.zetalk.com e Serfalas)</value>
+    <value>Sobre o TinyWall (Traduzido por MCHAL [zetalk.com] e Serfalas)</value>
   </data>
 	<data name="btnUpdate.Text" xml:space="preserve">
     <value>Procurar atualização</value>
@@ -259,4 +259,13 @@
 	<data name="$this.Text" xml:space="preserve">
     <value>Configuração do TinyWall</value>
   </data>
+	<data name="columnApp.Text" xml:space="preserve">
+		<value>Aplicativo</value>
+	</data>
+	<data name="columnType.Text" xml:space="preserve">
+		<value>Tipo</value>
+	</data>
+	<data name="columnDetails.Text" xml:space="preserve">
+		<value>Detalhes</value>
+	</data>
 </root>

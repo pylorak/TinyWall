@@ -373,4 +373,25 @@ O executável selecionado é parte de {0}. Para que este aplicativo possa ser us
 	<data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>Não foi possível aplicar as configurações do firewall devido a um erro interno.</value>
   </data>
+	<data name="TinyWall" xml:space="preserve">
+		<value>TinyWall</value>
+	</data>
+	<data name="FirewallModeNormal" xml:space="preserve">
+		<value>Normal</value>
+	</data>
+	<data name="Default" xml:space="preserve">
+		<value>Padrão</value>
+	</data>
+	<data name="AllApplications" xml:space="preserve">
+		<value>Todos os aplicativos</value>
+	</data>
+	<data name="SubjectTypeExecutable" xml:space="preserve">
+		<value>Executável</value>
+	</data>
+	<data name="SubjectTypeService" xml:space="preserve">
+		<value>Serviço</value>
+	</data>
+	<data name="SubjectTypeUwpApp" xml:space="preserve">
+		<value>Aplicativo da PUW</value>
+	</data>
 </root>
