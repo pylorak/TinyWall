@@ -44,7 +44,26 @@ public sealed class PathMapper : IDisposable
     private readonly object locker = new object();
     private bool disposed = false;
 
-    public PathMapper()
+
+    private static volatile PathMapper _instance;
+    private static readonly object _singletonLock = new object();
+    public static PathMapper Instance
+    {
+        get
+        {
+            if (_instance != null) return _instance;
+
+            lock (_singletonLock)
+            {
+                if (_instance == null)
+                    _instance = new PathMapper();
+            }
+
+            return _instance;
+        }
+    }
+
+    private PathMapper()
     {
         try
         {
@@ -333,11 +352,12 @@ public sealed class PathMapper : IDisposable
     public void Dispose()
     {
         if (disposed) return;
-
+        
         DriveWatcher?.Dispose();
         CacheReadyEvent.WaitOne();
         CacheReadyEvent.Close();
 
+        _instance = null;
         disposed = true;
     }
 

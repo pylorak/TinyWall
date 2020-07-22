@@ -363,6 +363,7 @@ namespace PKSoft
 
                 components.Dispose();
                 GlobalInstances.Cleanup();
+                PathMapper.Instance.Dispose();
             }
 
             base.Dispose(disposing);
@@ -703,7 +704,7 @@ namespace PKSoft
                     ActiveForms.Remove(dummy);
                 }
 
-                var subj = new ExecutableSubject(GlobalInstances.PathConverter.ConvertPathIgnoreErrors(ofd.FileName, PathFormat.Win32));
+                var subj = new ExecutableSubject(PathMapper.Instance.ConvertPathIgnoreErrors(ofd.FileName, PathFormat.Win32));
                 AddExceptions(GlobalInstances.AppDatabase.GetExceptionsForApp(subj, true, out _));
             }
         }
@@ -1330,7 +1331,7 @@ namespace PKSoft
                 }
 
                 ApplyControllerSettings();
-                GlobalInstances.Controller = new Controller("TinyWallController");
+                GlobalInstances.InitClient();
 
                 barrier.Wait();
                 // END

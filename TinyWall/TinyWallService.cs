@@ -31,6 +31,7 @@ namespace PKSoft
         private static readonly Guid TINYWALL_PROVIDER_KEY = new Guid("{66CA412C-4453-4F1E-A973-C16E433E34D0}");
 
         private BoundedMessageQueue Q = new BoundedMessageQueue();
+        private PipeServerEndpoint ServerPipe;
 
         private Timer MinuteTimer;
         private DateTime LastControllerCommandTime = DateTime.Now;
@@ -513,7 +514,7 @@ namespace PKSoft
                                 (e.ErrorCode == 5)
                             )
                             {
-                                conditions.Add(new AppIdFilterCondition(GlobalInstances.PathConverter.ConvertPathIgnoreErrors(r.Application, PathFormat.NativeNt), false, true));
+                                conditions.Add(new AppIdFilterCondition(PathMapper.Instance.ConvertPathIgnoreErrors(r.Application, PathFormat.NativeNt), false, true));
                             }
                         }
                         else
@@ -1676,7 +1677,7 @@ namespace PKSoft
             Q.Enqueue(new TwMessage(MessageType.REINIT), null);
 
             // Fire up pipe
-            GlobalInstances.ServerPipe = new PipeServerEndpoint(new PipeDataReceived(PipeServerDataReceived), "TinyWallController");
+            ServerPipe = new PipeServerEndpoint(new PipeDataReceived(PipeServerDataReceived), "TinyWallController");
 
             // Make sure event collection is enabled
             using (WfpEngine = new Engine("TinyWall Option Session", "", FWPM_SESSION_FLAGS.None, 5000))
@@ -1816,7 +1817,7 @@ namespace PKSoft
             entry.Event = eventType;
 
             if (!string.IsNullOrEmpty(data.appId))
-                entry.AppPath = GlobalInstances.PathConverter.ConvertPathIgnoreErrors(data.appId, PathFormat.Win32);
+                entry.AppPath = PathMapper.Instance.ConvertPathIgnoreErrors(data.appId, PathFormat.Win32);
             else
                 entry.AppPath = "System";
             entry.PackageId = data.packageId;
@@ -1916,6 +1917,8 @@ namespace PKSoft
 
         public void Dispose()
         {
+            ServerPipe?.Dispose();
+
             // Check all exceptions if any one has expired
             {
                 List<FirewallExceptionV3> exs = ActiveConfig.Service.ActiveProfile.AppExceptions;
@@ -1960,6 +1963,7 @@ namespace PKSoft
             }
 #endif
             GlobalInstances.Cleanup();
+            PathMapper.Instance.Dispose();
         }
     }
 

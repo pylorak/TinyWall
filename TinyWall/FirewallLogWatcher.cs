@@ -87,7 +87,7 @@ namespace PKSoft
                 case 5158:
                 case 5159:
                     entry.ProcessId = (UInt64)e.EventRecord.Properties[0].Value;
-                    entry.AppPath = GlobalInstances.PathConverter.ConvertPathIgnoreErrors((string)e.EventRecord.Properties[1].Value, PathFormat.Win32);
+                    entry.AppPath = PathMapper.Instance.ConvertPathIgnoreErrors((string)e.EventRecord.Properties[1].Value, PathFormat.Win32);
                     entry.LocalIp = (string)e.EventRecord.Properties[2].Value;
                     entry.LocalPort = int.Parse((string)e.EventRecord.Properties[3].Value);
                     entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[4].Value;
@@ -99,7 +99,7 @@ namespace PKSoft
                 case 5157:
                 default:
                     entry.ProcessId = (UInt64)e.EventRecord.Properties[0].Value;
-                    entry.AppPath = GlobalInstances.PathConverter.ConvertPathIgnoreErrors((string)e.EventRecord.Properties[1].Value, PathFormat.Win32);
+                    entry.AppPath = PathMapper.Instance.ConvertPathIgnoreErrors((string)e.EventRecord.Properties[1].Value, PathFormat.Win32);
                     entry.LocalIp = (string)e.EventRecord.Properties[3].Value;
                     entry.LocalPort = int.Parse((string)e.EventRecord.Properties[4].Value);
                     entry.RemoteIp = (string)e.EventRecord.Properties[5].Value;

@@ -8,17 +8,20 @@ namespace PKSoft
     internal static class GlobalInstances
     {
         internal static AppDatabase AppDatabase;
-        internal static PipeServerEndpoint ServerPipe;
         internal static Controller Controller;
         internal static Guid ClientChangeset;
         internal static Guid ServerChangeset;
-        internal static PathMapper PathConverter = new PathMapper();
 
         public static void Cleanup()
         {
-            PathConverter?.Dispose();
             Controller?.Dispose();
-            ServerPipe?.Dispose();
+            Controller = null;
+        }
+
+        public static void InitClient()
+        {
+            if (Controller == null)
+                Controller = new Controller("TinyWallController");
         }
 
         private static Bitmap _ApplyBtnIcon = null;
