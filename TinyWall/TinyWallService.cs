@@ -1709,10 +1709,18 @@ namespace PKSoft
                 {
                     Q.Dequeue(out TwMessage msg, out Future<TwMessage> future);
 
-                    TwMessage resp;
-                    resp = ProcessCmd(msg);
-                    if (null != future)
-                        future.Value = resp;
+                    try
+                    {
+                        TwMessage resp = ProcessCmd(msg);
+                        if (null != future)
+                            future.Value = resp;
+                    }
+                    catch(Exception e)
+                    {
+                        Utils.LogException(e, Utils.LOG_ID_SERVICE);
+                        if (null != future)
+                            future.Value = new TwMessage(MessageType.RESPONSE_ERROR, null);
+                    }
                 }
             }
         }
