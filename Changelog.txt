@@ -130,7 +130,7 @@ TinyWall Changelog
     - Only check updates over HTTPS
 - Deprecation notes
     - Windows Vista no longer supported
-    - 32-bit systems no longer supported
+    - 32-bit systems no longer supported (support added back in 3.0.5)
     - Temporarily remove support for network drives (added back in 3.0.7)
 
 ---------------------

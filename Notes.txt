@@ -4,8 +4,6 @@ Future development ideas:
 - Better hosts handling
 - Unified dialog boxes
 - Use task scheduler for autostart
-- WSL support
-- Alternate path formats support
 - Detect other firewall software
 - Inspect broken whitelisting from network shares
 - WHOIS query to Connections' remote addresses
