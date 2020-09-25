@@ -647,7 +647,7 @@ namespace PKSoft
                 SettingsUpdated = true;
             }
 
-            // See if there is a new notifaction for the client
+            // See if there is a new notification for the client
             if (SettingsUpdated)
             {
                 for (int i = 0; i < FirewallState.ClientNotifs.Count; ++i)
@@ -1377,7 +1377,7 @@ namespace PKSoft
         private void ServiceTimer_Tick(object sender, EventArgs e)
         {
             LoadSettingsFromServer(out bool comError, true);
-            bool maxTimeElapsed = (DateTime.Now - AppStarted) > TimeSpan.FromSeconds(10);
+            bool maxTimeElapsed = (DateTime.Now - AppStarted) > TimeSpan.FromSeconds(90);
             if (!comError || maxTimeElapsed)
             {
                 ServiceTimer.Enabled = false;
