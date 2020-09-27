@@ -97,7 +97,10 @@ namespace PKSoft
             if (ActiveConfig.Controller.ServicesFormWindowSize.Width != 0)
                 this.Size = ActiveConfig.Controller.ServicesFormWindowSize;
             if (ActiveConfig.Controller.ServicesFormWindowLoc.X != 0)
+            {
                 this.Location = ActiveConfig.Controller.ServicesFormWindowLoc;
+                Utils.FixupFormPosition(this);
+            }
             this.WindowState = ActiveConfig.Controller.ServicesFormWindowState;
 
             foreach (ColumnHeader col in listView.Columns)

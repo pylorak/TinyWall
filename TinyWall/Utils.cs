@@ -579,6 +579,14 @@ namespace PKSoft
                 );
         }
 
+        internal static void FixupFormPosition(Form form)
+        {
+            // Place window to top-left corner of working area if window is too much off-screen
+            Rectangle formVisibleArea = Rectangle.Intersect(SystemInformation.VirtualScreen, form.Bounds);
+            if ((formVisibleArea.Width < 100) || (formVisibleArea.Height < 100))
+                form.Location = Screen.PrimaryScreen.WorkingArea.Location;
+        }
+
         internal static void Invoke(SynchronizationContext syncCtx, SendOrPostCallback method)
         {
             if (syncCtx != null)

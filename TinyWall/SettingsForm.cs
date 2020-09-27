@@ -540,7 +540,10 @@ namespace PKSoft
             if (TmpConfig.Controller.SettingsFormWindowSize.Width != 0)
                 this.Size = TmpConfig.Controller.SettingsFormWindowSize;
             if (TmpConfig.Controller.SettingsFormWindowLoc.X != 0)
+            {
                 this.Location = TmpConfig.Controller.SettingsFormWindowLoc;
+                Utils.FixupFormPosition(this);
+            }
 
             foreach (ColumnHeader col in listApplications.Columns)
             {

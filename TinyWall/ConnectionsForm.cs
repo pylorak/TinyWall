@@ -297,7 +297,10 @@ namespace PKSoft
             if (ActiveConfig.Controller.ConnFormWindowSize.Width != 0)
                 this.Size = ActiveConfig.Controller.ConnFormWindowSize;
             if (ActiveConfig.Controller.ConnFormWindowLoc.X != 0)
+            {
                 this.Location = ActiveConfig.Controller.ConnFormWindowLoc;
+                Utils.FixupFormPosition(this);
+            }
             this.WindowState = ActiveConfig.Controller.ConnFormWindowState;
             this.chkShowActive.Checked = ActiveConfig.Controller.ConnFormShowConnections;
             this.chkShowListen.Checked = ActiveConfig.Controller.ConnFormShowOpenPorts;

@@ -68,7 +68,10 @@ namespace PKSoft
             if (ActiveConfig.Controller.UwpPackagesFormWindowSize.Width != 0)
                 this.Size = ActiveConfig.Controller.UwpPackagesFormWindowSize;
             if (ActiveConfig.Controller.UwpPackagesFormWindowLoc.X != 0)
+            {
                 this.Location = ActiveConfig.Controller.UwpPackagesFormWindowLoc;
+                Utils.FixupFormPosition(this);
+            }
             this.WindowState = ActiveConfig.Controller.UwpPackagesFormWindowState;
 
             foreach (ColumnHeader col in listView.Columns)
