@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+	<!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,113 +59,131 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="mnuModeNormal.Text" xml:space="preserve">
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="mnuModeNormal.Text" xml:space="preserve">
     <value>Protezione normale</value>
   </data>
-  <data name="mnuModeBlockAll.Text" xml:space="preserve">
+	<data name="mnuModeBlockAll.Text" xml:space="preserve">
     <value>Blocca tutto</value>
   </data>
-  <data name="mnuModeAllowOutgoing.Text" xml:space="preserve">
+	<data name="mnuModeAllowOutgoing.Text" xml:space="preserve">
     <value>Permetti traffico in uscita</value>
   </data>
-  <data name="mnuModeDisabled.Text" xml:space="preserve">
+	<data name="mnuModeDisabled.Text" xml:space="preserve">
     <value>Disabilita firewall</value>
   </data>
-  <data name="mnuModeLearn.Text" xml:space="preserve">
+	<data name="mnuModeLearn.Text" xml:space="preserve">
     <value>Autoapprendimento</value>
   </data>
-  <data name="mnuMode.Text" xml:space="preserve">
+	<data name="mnuMode.Text" xml:space="preserve">
     <value>Cambia modalità</value>
   </data>
-  <data name="mnuManage.Text" xml:space="preserve">
+	<data name="mnuManage.Text" xml:space="preserve">
     <value>Imposta</value>
   </data>
-  <data name="mnuConnections.Text" xml:space="preserve">
+	<data name="mnuConnections.Text" xml:space="preserve">
     <value>Mostra connessioni</value>
   </data>
-  <data name="mnuLock.Text" xml:space="preserve">
+	<data name="mnuLock.Text" xml:space="preserve">
     <value>Blocca</value>
   </data>
-  <data name="mnuElevate.Text" xml:space="preserve">
+	<data name="mnuElevate.Text" xml:space="preserve">
     <value>Eleva</value>
   </data>
-  <data name="mnuAllowLocalSubnet.Text" xml:space="preserve">
+	<data name="mnuAllowLocalSubnet.Text" xml:space="preserve">
     <value>Sblocca traffico LAN</value>
   </data>
-  <data name="mnuEnableHostsBlocklist.Text" xml:space="preserve">
+	<data name="mnuEnableHostsBlocklist.Text" xml:space="preserve">
     <value>Abilita blocklist</value>
   </data>
-  <data name="mnuWhitelistByExecutable.Text" xml:space="preserve">
+	<data name="mnuWhitelistByExecutable.Text" xml:space="preserve">
     <value>Autorizza per eseguibile</value>
   </data>
-  <data name="mnuWhitelistByProcess.Text" xml:space="preserve">
+	<data name="mnuWhitelistByProcess.Text" xml:space="preserve">
     <value>Autorizza per processo</value>
   </data>
-  <data name="mnuWhitelistByWindow.Text" xml:space="preserve">
+	<data name="mnuWhitelistByWindow.Text" xml:space="preserve">
     <value>Autorizza per finestra programma</value>
   </data>
-  <data name="mnuQuit.Text" xml:space="preserve">
+	<data name="mnuQuit.Text" xml:space="preserve">
     <value>Esci</value>
   </data>
-  <data name="ofd.Filter" xml:space="preserve">
+	<data name="ofd.Filter" xml:space="preserve">
     <value>Tutti i file|*.*</value>
   </data>
+	<data name="Tray.Text" xml:space="preserve">
+		<value>TinyWall</value>
+	</data>
+	<data name="mnuTrafficRate.Text" xml:space="preserve">
+		<value>&lt;Tasso di traffico&gt;</value>
+	</data>
+	<data name="mnuWhitelistByExecutable.ShortcutKeyDisplayString" xml:space="preserve">
+		<value>Ctrl+Shift+E</value>
+	</data>
+	<data name="mnuWhitelistByProcess.ShortcutKeyDisplayString" xml:space="preserve">
+		<value>Ctrl+Shift+P</value>
+	</data>
+	<data name="mnuWhitelistByWindow.ShortcutKeyDisplayString" xml:space="preserve">
+		<value>Ctrl+Shift+W</value>
+	</data>
+	<data name="$this.Text" xml:space="preserve">
+		<value>Controllore TinyWall</value>
+	</data>
 </root>
