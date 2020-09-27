@@ -1,6 +1,20 @@
 TinyWall Changelog
 ---------------------
 
+3.0.8 - Maintenance release (27.09.2020.)
+- Add workaround for "grey icon on Win7" issue
+  Note: On affected systems icon will appear with considerable delay after boot. This is expected.
+- Fix WMI leak when mountpoints change
+- Fix GUI crash if mountpoints change after changing the GUI language
+- Fix service crash if pipe command results in uncaught exception
+- Fix windows are potentially invisible if virtual desktop size changes
+- Fix text placement in pt-BR localization
+- Make dependency on eventlog service optional
+- Updated Italian localization
+- Updated application database
+
+---------------------
+
 3.0.7 - Maintenance release (12.07.2020.)
 - Add support for WSL
 - Add support for WSL 2
