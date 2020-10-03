@@ -556,6 +556,7 @@ namespace PKSoft
             tabControl1.SelectedIndex = TmpConfig.Controller.SettingsTabIndex;
 
             comboLanguages.Items.Add(new IdWithName("auto", "Automatic"));
+            comboLanguages.Items.Add(new IdWithName("bg", "български"));
             comboLanguages.Items.Add(new IdWithName("cs", "Čeština"));
             comboLanguages.Items.Add(new IdWithName("de", "Deutsch"));
             comboLanguages.Items.Add(new IdWithName("en", "English"));

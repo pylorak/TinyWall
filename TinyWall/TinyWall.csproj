@@ -211,6 +211,9 @@
     <EmbeddedResource Include="AppFinderForm.de.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="AppFinderForm.bg.resx">
+      <DependentUpon>AppFinderForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AppFinderForm.fr.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -253,6 +256,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AppFinderForm.zh.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationExceptionForm.bg.resx">
+      <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ApplicationExceptionForm.de.resx">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
@@ -299,6 +305,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ApplicationExceptionForm.zh.resx">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConnectionsForm.bg.resx">
+      <DependentUpon>ConnectionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionsForm.es.resx">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
@@ -350,6 +359,9 @@
       <DependentUpon>DevelToolForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.bg.resx">
+      <DependentUpon>TinyWallController.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.es.resx">
       <DependentUpon>TinyWallController.cs</DependentUpon>
     </EmbeddedResource>
@@ -391,6 +403,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.zh.resx">
       <DependentUpon>TinyWallController.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PasswordForm.bg.resx">
+      <DependentUpon>PasswordForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PasswordForm.es.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
@@ -434,6 +449,9 @@
     <EmbeddedResource Include="PasswordForm.zh.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Processes.bg.resx">
+      <DependentUpon>Processes.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Processes.es.resx">
       <DependentUpon>Processes.cs</DependentUpon>
     </EmbeddedResource>
@@ -476,6 +494,7 @@
     <EmbeddedResource Include="Processes.zh.resx">
       <DependentUpon>Processes.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Exceptions.bg.resx"/>
     <EmbeddedResource Include="Resources\Exceptions.es.resx" />
     <EmbeddedResource Include="Resources\Exceptions.hu.resx" />
     <EmbeddedResource Include="Resources\Exceptions.de.resx" />
@@ -502,6 +521,7 @@
     <EmbeddedResource Include="PasswordForm.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Messages.bg.resx" />
     <EmbeddedResource Include="Resources\Messages.es.resx" />
     <EmbeddedResource Include="Resources\Messages.hu.resx" />
     <EmbeddedResource Include="Resources\Messages.de.resx" />
@@ -520,6 +540,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Messages.ru.resx" />
     <EmbeddedResource Include="Resources\Messages.zh.resx" />
+    <EmbeddedResource Include="Services.bg.resx">
+      <DependentUpon>Services.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Services.es.resx">
       <DependentUpon>Services.cs</DependentUpon>
     </EmbeddedResource>
@@ -571,6 +594,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Services.zh.resx">
       <DependentUpon>Services.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsForm.bg.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.es.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
@@ -629,6 +655,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UwpPackagesForm.resx">
+      <DependentUpon>UwpPackagesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UwpPackagesForm.bg.resx">
       <DependentUpon>UwpPackagesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UwpPackagesForm.de.resx">
