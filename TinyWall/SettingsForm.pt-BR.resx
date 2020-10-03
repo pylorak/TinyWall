@@ -182,7 +182,7 @@
     <value>Impedir a modificação do arquivo de servidores (hosts)</value>
   </data>
 	<data name="chkHostsBlocklist.Text" xml:space="preserve">
-    <value>Lista de bloqueio de malware e anúncios com base em domínios</value>
+    <value>Lista de bloqueio de malfeitores e anúncios com base em domínios</value>
   </data>
 	<data name="chkAutoUpdateCheck.Text" xml:space="preserve">
     <value>Procurar atualização automaticamente</value>
@@ -245,7 +245,7 @@
     <value>Todos os direitos reservados.</value>
   </data>
 	<data name="groupBox2.Text" xml:space="preserve">
-    <value>Sobre o TinyWall (Traduzido por MCHAL [zetalk.com] e Serfalas)</value>
+    <value>Sobre o TinyWall (Traduzido por MCHAL [zetatalk.com] e Serfalas)</value>
   </data>
 	<data name="btnUpdate.Text" xml:space="preserve">
     <value>Procurar atualização</value>

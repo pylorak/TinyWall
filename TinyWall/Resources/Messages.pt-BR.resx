@@ -145,7 +145,7 @@
     <value>O TinyWall está bloqueado. Desbloqueie-o e tente de novo.</value>
   </data>
 	<data name="PleaseWaitWhileTinyWallChecksForUpdates" xml:space="preserve">
-    <value>Favor aguardar o TinyWall verificar se há atualização.</value>
+    <value>Aguarde enquanto o TinyWall verifica se há atualização.</value>
   </data>
 	<data name="CouldNotWhitelistProcess" xml:space="preserve">
     <value>Não foi possível incluir na lista branca o executável {0}.</value>
@@ -156,7 +156,7 @@
     <comment>Param0 is name, param1 is pid of process.</comment>
   </data>
 	<data name="PasswordFieldsDoNotMatch" xml:space="preserve">
-    <value>As senhas são diferentes. Favor verificar e tente de novo.</value>
+    <value>As senhas são diferentes. Favor verificar e tentar de novo.</value>
   </data>
 	<data name="AreYouSureYouWantToRemoveAllExceptions" xml:space="preserve">
     <value>Quer mesmo remover todas as exceções de controle do firewall?</value>
@@ -239,7 +239,7 @@
     <value>Erro na tentativa de comunicação com o serviço do TinyWall. </value>
   </data>
 	<data name="ClickOnAWindowWhitelisting" xml:space="preserve">
-    <value>Clique na área interna de qualquer janela aberta para escolher o aplicativo de inclusão na lista branca. </value>
+    <value>Clique na área interna de qualquer janela aberta para escolher o aplicativo para inclusão na lista branca. </value>
   </data>
 	<data name="WhitelistingCancelled" xml:space="preserve">
     <value>Inclusão na lista branca cancelada.</value>
@@ -345,7 +345,7 @@ Você pode usar um ou mais números entre 1 e 65535, separados por vírgula. Pod
     <value>Cancelar criação de lista branca</value>
   </data>
 	<data name="UnblockApp" xml:space="preserve">
-    <value>Arquivos correlatos encontrados.
+    <value>Arquivos correlatos achados.
 O executável selecionado é parte de {0}. Para que este aplicativo possa ser usado sem limitações, é recomendável desbloquear outros arquivos também.</value>
     <comment>First line is dialog main text. Rest are further information in smaller letters. Param0 is name of the app.</comment>
   </data>
