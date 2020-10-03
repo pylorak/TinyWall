@@ -9,7 +9,7 @@ German - Mirko Rolfes, Harald Klausner, Caner Merten
 Hungarian - Gál Gergely, Robert Cartman
 Italian - Stefano Scotti
 Japanese - Misato Okaneya, Tilt
-Polish - Kamil Nęcek
+Polish - Kamil Nęcek, Tomek
 Portuguese - Milton Chaves de Almeida
 Russian - Дмитрий Вожегов, Kuznetsov Igor
 Spanish - Toño Puente Garcia, David Acevedo, Xak
