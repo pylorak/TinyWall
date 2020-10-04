@@ -164,16 +164,16 @@ namespace TinyWall.Interface
         }
 
         [NonSerialized]
-        private bool? _CertValid;
+        private WinTrust.SignatureVerifyResult? _CertStatus;
         public bool CertValid
         {
             get
             {
-                if (!_CertValid.HasValue)
+                if (!_CertStatus.HasValue)
                 {
-                    _CertValid = WinTrust.VerifyFileAuthenticode(this.ExecutablePath);
+                    _CertStatus = WinTrust.VerifyFileAuthenticode(this.ExecutablePath);
                 }
-                return _CertValid.Value;
+                return WinTrust.SignatureVerifyResult.SIGNATURE_VALID == _CertStatus;
             }
         }
 
@@ -181,7 +181,11 @@ namespace TinyWall.Interface
         {
             get
             {
-                return !string.IsNullOrEmpty(this.CertSubject);
+                if (!_CertStatus.HasValue)
+                {
+                    _CertStatus = WinTrust.VerifyFileAuthenticode(this.ExecutablePath);
+                }
+                return WinTrust.SignatureVerifyResult.SIGNATURE_MISSING != _CertStatus;
             }
         }
 
