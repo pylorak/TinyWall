@@ -308,7 +308,7 @@ namespace PKSoft.Obsolete
             get
             {
                 if (!m_IsSignatureValid.HasValue)
-                    m_IsSignatureValid = TinyWall.Interface.Internal.WinTrust.VerifyFileAuthenticode(Executable) == TinyWall.Interface.Internal.WinTrust.SignatureVerifyResult.SIGNATURE_VALID;
+                    m_IsSignatureValid = TinyWall.Interface.Internal.WinTrust.VerifyFileAuthenticode(Executable) == TinyWall.Interface.Internal.WinTrust.VerifyResult.SIGNATURE_VALID;
 
                 return m_IsSignatureValid.Value;
             }
