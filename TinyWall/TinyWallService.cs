@@ -700,21 +700,25 @@ namespace PKSoft
 
         private void InstallWsl2Filters(bool permit)
         {
+            const string ifAlias = "vEthernet (WSL)";
             try
             {
-                InstallWsl2Filters(permit, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V4);
-                InstallWsl2Filters(permit, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V6);
-                InstallWsl2Filters(permit, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4);
-                InstallWsl2Filters(permit, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6);
-                InstallWsl2Filters(permit, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4);
-                InstallWsl2Filters(permit, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6);
-                InstallWsl2Filters(permit, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V4);
-                InstallWsl2Filters(permit, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V6);
+                if (LocalInterfaceCondition.InterfaceAliasExists(ifAlias))
+                {
+                    InstallWsl2Filters(permit, ifAlias, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V4);
+                    InstallWsl2Filters(permit, ifAlias, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_CONNECT_V6);
+                    InstallWsl2Filters(permit, ifAlias, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4);
+                    InstallWsl2Filters(permit, ifAlias, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6);
+                    InstallWsl2Filters(permit, ifAlias, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4);
+                    InstallWsl2Filters(permit, ifAlias, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6);
+                    InstallWsl2Filters(permit, ifAlias, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V4);
+                    InstallWsl2Filters(permit, ifAlias, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V6);
+                }
             }
             catch { }
         }
 
-        private void InstallWsl2Filters(bool permit, LayerKeyEnum layer)
+        private void InstallWsl2Filters(bool permit, string ifAlias, LayerKeyEnum layer)
         {
             List<FilterCondition> conditions = new List<FilterCondition>();
 
@@ -723,7 +727,7 @@ namespace PKSoft
 
             try
             {
-                conditions.Add(new LocalInterfaceCondition("vEthernet (WSL)"));
+                conditions.Add(new LocalInterfaceCondition(ifAlias));
 
                 using (Filter f = new Filter(
                     "Allow WSL2",

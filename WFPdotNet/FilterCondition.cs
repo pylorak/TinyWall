@@ -354,7 +354,7 @@ namespace WFPdotNet
             if (bBeforeProxying && !VersionInfo.Win8OrNewer)
                 throw new NotSupportedException("FWPM_CONDITION_ALE_ORIGINAL_APP_ID (set by bBeforeProxying) requires Windows 8 or newer.");
 
-            if (!alreadyKernelFormat)
+            if (!alreadyKernelFormat && System.IO.File.Exists(filePath))
             {
                 uint err = NativeMethods.FwpmGetAppIdFromFileName0(filePath, out FwpmMemorySafeHandle tmpHandle);
                 appIdNativeMem = tmpHandle;
@@ -661,6 +661,19 @@ namespace WFPdotNet
         {
             [DllImport("Iphlpapi", SetLastError = false, CharSet = CharSet.Unicode)]
             internal static extern int ConvertInterfaceAliasToLuid(string stringSid, [Out] out ulong InterfaceLuid);
+        }
+
+        public static bool InterfaceAliasExists(string ifAlias)
+        {
+            const int ERROR_INVALID_PARAMETER = 87;
+
+            int err = NativeMethods.ConvertInterfaceAliasToLuid(ifAlias, out ulong luid);
+            if (err == 0)
+                return true;
+            if (err == ERROR_INVALID_PARAMETER)
+                return false;
+            else
+                throw new Win32Exception(err);
         }
 
         private AllocHGlobalSafeHandle nativeMem;

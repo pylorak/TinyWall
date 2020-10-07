@@ -204,7 +204,7 @@ namespace PKSoft
             if (other == null)
                 return false;
 
-            return (PrefixLen == other.PrefixLen) && (Address.Equals(other.Address));
+            return (PrefixLen == other.PrefixLen) && Address.Equals(other.Address);
         }
 
         public override bool Equals(Object obj)

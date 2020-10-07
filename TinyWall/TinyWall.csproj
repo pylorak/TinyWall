@@ -494,7 +494,7 @@
     <EmbeddedResource Include="Processes.zh.resx">
       <DependentUpon>Processes.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Exceptions.bg.resx"/>
+    <EmbeddedResource Include="Resources\Exceptions.bg.resx" />
     <EmbeddedResource Include="Resources\Exceptions.es.resx" />
     <EmbeddedResource Include="Resources\Exceptions.hu.resx" />
     <EmbeddedResource Include="Resources\Exceptions.de.resx" />
