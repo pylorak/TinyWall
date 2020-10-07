@@ -263,7 +263,11 @@ namespace PKSoft
                     for (int i = 0; i < buffer.Length; ++i)
                         buffer[i] = char.ToLowerInvariant(buffer[i]);
 
-                    return PathMapper.Instance.ConvertPathIgnoreErrors(buffer.ToString(), PathFormat.Win32);
+                    string path = buffer.ToString();
+                    if (path == "registry")
+                        return path;
+                    else
+                        return PathMapper.Instance.ConvertPathIgnoreErrors(buffer.ToString(), PathFormat.Win32);
                 }
                 else
                 {
