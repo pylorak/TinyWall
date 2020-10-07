@@ -179,6 +179,12 @@ public sealed class PathMapper : IDisposable
     {
         try
         {
+            if (   path.Equals("registry", StringComparison.OrdinalIgnoreCase)
+                || path.Equals("system", StringComparison.OrdinalIgnoreCase))
+            {
+                return path;
+            }
+
             return ConvertPath(path, target);
         }
         catch
