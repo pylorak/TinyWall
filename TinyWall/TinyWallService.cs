@@ -58,9 +58,9 @@ namespace PKSoft
         private ManagementEventWatcher ProcessStartWatcher;
         private ManagementEventWatcher NetworkInterfaceWatcher;
 
-        private List<IpAddrMask> LocalSubnetAddreses = new List<IpAddrMask>();
-        private List<IpAddrMask> GatewayAddresses = new List<IpAddrMask>();
-        private List<IpAddrMask> DnsAddresses = new List<IpAddrMask>();
+        private HashSet<IpAddrMask> LocalSubnetAddreses = new HashSet<IpAddrMask>();
+        private HashSet<IpAddrMask> GatewayAddresses = new HashSet<IpAddrMask>();
+        private HashSet<IpAddrMask> DnsAddresses = new HashSet<IpAddrMask>();
 
         private List<RuleDef> AssembleActiveRules(List<ExceptionSubject> rawSocketExceptions)
         {
@@ -1549,8 +1549,8 @@ namespace PKSoft
                     }
                 case MessageType.REENUMERATE_ADDRESSES:
                     {
-                        ReenumerateAdresses();
-                        InstallFirewallRules();
+                        if (ReenumerateAdresses())  // returns true if anything changed
+                            InstallFirewallRules();
                         return new TwMessage(MessageType.RESPONSE_OK);
                     }
                 default:
@@ -1560,11 +1560,11 @@ namespace PKSoft
             }
         }
 
-        private void ReenumerateAdresses()
+        private bool ReenumerateAdresses()
         {
-            LocalSubnetAddreses.Clear();
-            GatewayAddresses.Clear();
-            DnsAddresses.Clear();
+            HashSet<IpAddrMask> newLocalSubnetAddreses = new HashSet<IpAddrMask>();
+            HashSet<IpAddrMask> newGatewayAddresses = new HashSet<IpAddrMask>();
+            HashSet<IpAddrMask> newDnsAddresses = new HashSet<IpAddrMask>();
 
             NetworkInterface[] coll = NetworkInterface.GetAllNetworkInterfaces();
             foreach (var iface in coll)
@@ -1580,28 +1580,42 @@ namespace PKSoft
                     if (am.IsLoopback || am.IsLinkLocal)
                         continue;
 
-                    LocalSubnetAddreses.Add(am.Subnet);
+                    newLocalSubnetAddreses.Add(am.Subnet);
                 }
 
                 foreach (var uni in props.GatewayAddresses)
                 {
                     IpAddrMask am = new IpAddrMask(uni);
-                    GatewayAddresses.Add(am);
+                    newGatewayAddresses.Add(am);
                 }
 
                 foreach (var uni in props.DnsAddresses)
                 {
                     IpAddrMask am = new IpAddrMask(uni);
-                    DnsAddresses.Add(am);
+                    newDnsAddresses.Add(am);
                 }
             }
 
-            LocalSubnetAddreses.Add(new IpAddrMask(IPAddress.Parse("255.255.255.255")));
-            LocalSubnetAddreses.Add(IpAddrMask.LinkLocal);
-            LocalSubnetAddreses.Add(IpAddrMask.IPv6LinkLocal);
-            LocalSubnetAddreses.Add(IpAddrMask.LinkLocalMulticast);
-            LocalSubnetAddreses.Add(IpAddrMask.AdminScopedMulticast);
-            LocalSubnetAddreses.Add(IpAddrMask.IPv6LinkLocalMulticast);
+            newLocalSubnetAddreses.Add(new IpAddrMask(IPAddress.Parse("255.255.255.255")));
+            newLocalSubnetAddreses.Add(IpAddrMask.LinkLocal);
+            newLocalSubnetAddreses.Add(IpAddrMask.IPv6LinkLocal);
+            newLocalSubnetAddreses.Add(IpAddrMask.LinkLocalMulticast);
+            newLocalSubnetAddreses.Add(IpAddrMask.AdminScopedMulticast);
+            newLocalSubnetAddreses.Add(IpAddrMask.IPv6LinkLocalMulticast);
+
+            if (   !LocalSubnetAddreses.SetEquals(newLocalSubnetAddreses)
+                || !GatewayAddresses.SetEquals(newGatewayAddresses)
+                || !DnsAddresses.SetEquals(newDnsAddresses))
+            {
+                LocalSubnetAddreses = newLocalSubnetAddreses;
+                GatewayAddresses = newGatewayAddresses;
+                DnsAddresses = newDnsAddresses;
+                Debug.WriteLine("REENUM true");
+                return true;
+            }
+
+            Debug.WriteLine("REENUM false");
+            return false;
         }
 
         private void LogWatcher_NewLogEntry(FirewallLogWatcher sender, FirewallLogEntry entry)
