@@ -79,12 +79,12 @@ namespace PKSoft
             if (disposing)
             {
                 // Release managed resources
-                NativeMethods.PdhCloseQuery(hQuery);
             }
 
             // Release unmanaged resources.
             // Set large fields to null.
             // Call Dispose on your base class.
+            NativeMethods.PdhCloseQuery(hQuery);
             buffer = null;
             disposed = true;
             base.Dispose(disposing);
