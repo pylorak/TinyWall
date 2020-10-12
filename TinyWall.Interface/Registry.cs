@@ -25,16 +25,16 @@ namespace TinyWall.Interface
                 KEY_READ = 0x20019
             }
 
-            [DllImport("advapi32", CharSet = CharSet.Auto)]
+            [DllImport("advapi32", CharSet = CharSet.Unicode)]
             internal static extern int RegOpenKeyEx(IntPtr hKey, string subKey, uint ulOptions, uint samDesired, out IntPtr hkResult);
 
-            [DllImport("advapi32", SetLastError = true, CharSet = CharSet.Auto)]
+            [DllImport("advapi32", CharSet = CharSet.Unicode)]
             internal static extern uint RegQueryValueEx(IntPtr hKey, string lpValueName, IntPtr lpReserved, ref RegistryValueKind lpType, StringBuilder lpData, ref uint lpcbData);
 
-            [DllImport("advapi32", CharSet = CharSet.Auto, BestFitMapping = false)]
+            [DllImport("advapi32", CharSet = CharSet.Unicode)]
             internal static extern int RegQueryValueEx(IntPtr hKey, string lpValueName, int[] lpReserved, ref RegistryValueKind lpType, [Out] char[] lpData, ref int lpcbData);
     
-            [DllImport("advapi32", SetLastError = true)]
+            [DllImport("advapi32")]
             internal static extern int RegCloseKey(IntPtr hKey);
         }
 

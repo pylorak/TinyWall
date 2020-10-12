@@ -102,6 +102,18 @@ namespace PKSoft
             KEY_WOW64_32KEY = 0x0200u,
             KEY_WOW64_64KEY = 0x0100u,
         }
+
+        [SuppressUnmanagedCodeSecurity]
+        private static class NativeMethods
+        {
+            [DllImport("advapi32"),
+             ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+            public static extern int RegCloseKey(IntPtr hKey);
+
+            [DllImport("advapi32", CharSet = CharSet.Unicode)]
+            public static extern int RegOpenKeyEx(IntPtr hKey, string subKey, uint ulOptions, uint samDesired, out SafeRegistryHandle hkResult);
+        }
+
         internal SafeRegistryHandle() : base(true) { }
 
         internal SafeRegistryHandle(IntPtr hndl, bool ownsHandle) : base(ownsHandle)
@@ -109,18 +121,9 @@ namespace PKSoft
             SetHandle(hndl);
         }
 
-        [DllImport("advapi32"),
-         SuppressUnmanagedCodeSecurity,
-         ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
-        private static extern int RegCloseKey(IntPtr hKey);
-
-        [DllImport("advapi32", CharSet = CharSet.Unicode),
-         SuppressUnmanagedCodeSecurity]
-        private static extern int RegOpenKeyEx(IntPtr hKey, string subKey, uint ulOptions, uint samDesired, out SafeRegistryHandle hkResult);
-
         public static SafeRegistryHandle Open(RegistryBaseKey baseKey, string subKey, RegistryRights access)
         {
-            int err = RegOpenKeyEx(new IntPtr((int)baseKey), subKey, 0, (uint)access, out SafeRegistryHandle safeHandle);
+            int err = NativeMethods.RegOpenKeyEx(new IntPtr((int)baseKey), subKey, 0, (uint)access, out SafeRegistryHandle safeHandle);
             if (0 == err)
                 return safeHandle;
             else
@@ -161,7 +164,7 @@ namespace PKSoft
 
         override protected bool ReleaseHandle()
         {
-            return (0 == RegCloseKey(handle));
+            return (0 == NativeMethods.RegCloseKey(handle));
         }
     }
 
