@@ -80,11 +80,13 @@ namespace PKSoft
                         }
 
                         // Read msg
-                        TwMessage msg = SerializationHelper.DeserializeFromPipe<TwMessage>(pipeServer, 3000);
-
-                        // Write response
-                        TwMessage resp = m_RcvCallback(msg);
-                        SerializationHelper.SerializeToPipe(pipeServer, resp);
+                        TwMessage msg = new TwMessage(MessageType.COM_ERROR);
+                        if (SerializationHelper.DeserializeFromPipe<TwMessage>(pipeServer, 3000, ref msg))
+                        {
+                            // Write response
+                            TwMessage resp = m_RcvCallback(msg);
+                            SerializationHelper.SerializeToPipe(pipeServer, resp);
+                        }
                     } //using
                 }
                 catch { }

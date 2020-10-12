@@ -65,8 +65,10 @@ namespace TinyWall.Interface.Internal
             }
         }
 
-        public static T DeserializeFromPipe<T>(PipeStream pipe, int timeout_ms)
+        public static bool DeserializeFromPipe<T>(PipeStream pipe, int timeout_ms, ref T result)
         {
+            bool pipeClosed = false;
+
             using (var memoryStream = new MemoryStream())
             using (var readDone = new System.Threading.AutoResetEvent(false))
             {
@@ -79,6 +81,8 @@ namespace TinyWall.Interface.Internal
                         try
                         {
                             len = pipe.EndRead(r);
+                            if (len == 0)
+                                pipeClosed = true;
                             readDone.Set();
                         }
                         catch { }
@@ -86,6 +90,9 @@ namespace TinyWall.Interface.Internal
 
                     if (!readDone.WaitOne(timeout_ms))
                         throw new TimeoutException("Timeout while waiting for answer from service.");
+
+                    if (pipeClosed)
+                        return false;
 
                     memoryStream.Write(buf, 0, len);
                     timeout_ms = 1000;
@@ -101,9 +108,11 @@ namespace TinyWall.Interface.Internal
                 using (var reader = XmlReader.Create(memoryStream, settings))
                 {
                     DataContractSerializer serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
-                    return (T)serializer.ReadObject(reader);
+                    result = (T)serializer.ReadObject(reader);
                 }
             }
+
+            return true;
         }
 
 

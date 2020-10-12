@@ -80,7 +80,9 @@ namespace TinyWall.Interface.Internal
                     SerializationHelper.SerializeToPipe(pipeClient, msg);
 
                     // Get response
-                    return SerializationHelper.DeserializeFromPipe<TwMessage>(pipeClient, 20000);
+                    TwMessage ret = new TwMessage(MessageType.COM_ERROR);
+                    SerializationHelper.DeserializeFromPipe<TwMessage>(pipeClient, 20000, ref ret);
+                    return ret;
                 }
             }
             catch
