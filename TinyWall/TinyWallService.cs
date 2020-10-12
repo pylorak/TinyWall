@@ -56,7 +56,7 @@ namespace PKSoft
 
         private Engine WfpEngine;
         private ManagementEventWatcher ProcessStartWatcher;
-        private ManagementEventWatcher NetworkInterfaceWatcher;
+        private IpInterfaceWatcher NetworkInterfaceWatcher;
 
         private HashSet<IpAddrMask> LocalSubnetAddreses = new HashSet<IpAddrMask>();
         private HashSet<IpAddrMask> GatewayAddresses = new HashSet<IpAddrMask>();
@@ -1706,21 +1706,12 @@ namespace PKSoft
 
             using (WindowsFirewall WinDefFirewall = new WindowsFirewall())
             using (ProcessStartWatcher = new ManagementEventWatcher(new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace")))
-            using (NetworkInterfaceWatcher = new ManagementEventWatcher(new WqlEventQuery("SELECT * FROM __InstanceOperationEvent WITHIN 5 WHERE Targetinstance ISA 'Win32_NetworkAdapterConfiguration'")))
+            using (NetworkInterfaceWatcher = new IpInterfaceWatcher())
             using (WfpEngine = new Engine("TinyWall Session", "", FWPM_SESSION_FLAGS.None, 5000))
             using (var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback, null))
             {
                 ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
-                NetworkInterfaceWatcher.EventArrived += NetworkInterfaceWatcher_EventArrived;
-
-                try
-                {
-                    NetworkInterfaceWatcher.Start();
-                }
-                catch
-                {
-                    Utils.Log("WMI error. Network interface changes will not be monitored", Utils.LOG_ID_SERVICE);
-                }
+                NetworkInterfaceWatcher.InterfaceChanged += NetworkInterfaceWatcher_EventArrived;
 
                 RunService = true;
                 while (RunService)
@@ -1733,7 +1724,7 @@ namespace PKSoft
                         if (null != future)
                             future.Value = resp;
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Utils.LogException(e, Utils.LOG_ID_SERVICE);
                         if (null != future)
@@ -1743,10 +1734,9 @@ namespace PKSoft
             }
         }
 
-        private void NetworkInterfaceWatcher_EventArrived(object sender, EventArrivedEventArgs e)
+        private void NetworkInterfaceWatcher_EventArrived(IpInterfaceWatcher sender)
         {
             Q.Enqueue(new TwMessage(MessageType.REENUMERATE_ADDRESSES), null);
-            e.NewEvent.Dispose();
         }
 
         private void ProcessStartWatcher_EventArrived(object sender, EventArrivedEventArgs e)

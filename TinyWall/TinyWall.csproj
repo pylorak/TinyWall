@@ -84,6 +84,7 @@
     <Compile Include="ApplicationExceptionForm.Designer.cs">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="BlockingPcQueue.cs" />
     <Compile Include="CircularBuffer.cs" />
     <Compile Include="DatabaseClasses\AppDatabase.cs" />
     <Compile Include="DatabaseClasses\Application.cs" />
@@ -91,11 +92,13 @@
     <Compile Include="Deprecated\SerializationHelper.cs" />
     <Compile Include="IconTools.cs" />
     <Compile Include="IpAddrMask.cs" />
+    <Compile Include="IpInterfaceWatcher.cs" />
     <Compile Include="PathMapper.cs" />
     <Compile Include="Pbkdf2.cs" />
     <Compile Include="Privilege.cs" />
     <Compile Include="ProcessInfo.cs" />
     <Compile Include="ProcessManager.cs" />
+    <Compile Include="RegistryWatcher.cs" />
     <Compile Include="SafeHandles.cs" />
     <Compile Include="ThreadThrottler.cs" />
     <Compile Include="TinyWallController.cs" />
