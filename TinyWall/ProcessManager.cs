@@ -260,9 +260,6 @@ namespace PKSoft
                     if (buffer.Length == 0)
                         return string.Empty;
 
-                    for (int i = 0; i < buffer.Length; ++i)
-                        buffer[i] = char.ToLowerInvariant(buffer[i]);
-
                     return PathMapper.Instance.ConvertPathIgnoreErrors(buffer.ToString(), PathFormat.Win32);
                 }
                 else

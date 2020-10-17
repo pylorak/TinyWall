@@ -46,9 +46,9 @@ namespace PKSoft
         // Context for auto rule inheritance
         private readonly object InheritanceGuard = new object();
         private readonly StringBuilder ProcessStartWatcher_Sbuilder = new StringBuilder();
-        private HashSet<string> UserSubjectExes = new HashSet<string>();        // All executables with pre-configured rules.
-        private Dictionary<string, List<FirewallExceptionV3>> ChildInheritance = new Dictionary<string, List<FirewallExceptionV3>>();
-        private Dictionary<string, HashSet<string>> ChildInheritedSubjectExes = new Dictionary<string, HashSet<string>>();   // Executables that have been already auto-whitelisted due to inheritance
+        private HashSet<string> UserSubjectExes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);        // All executables with pre-configured rules.
+        private Dictionary<string, List<FirewallExceptionV3>> ChildInheritance = new Dictionary<string, List<FirewallExceptionV3>>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, HashSet<string>> ChildInheritedSubjectExes = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);   // Executables that have been already auto-whitelisted due to inheritance
         private ThreadThrottler FirewallThreadThrottler;
 
         private bool RunService = false;
@@ -166,7 +166,7 @@ namespace PKSoft
                 {
                     if (ex.Subject is ExecutableSubject exe)
                     {
-                        string exePath = exe.ExecutablePath.ToLowerInvariant();
+                        string exePath = exe.ExecutablePath;
                         UserSubjectExes.Add(exePath);
                         if (ex.ChildProcessesInherit)
                         {
@@ -188,7 +188,7 @@ namespace PKSoft
                     {
                         var p2 = p;
                         if (!string.IsNullOrEmpty(p.ImagePath))
-                            p2.ImagePath = p.ImagePath.ToLowerInvariant();
+                            p2.ImagePath = p.ImagePath;
                         procTree.Add(p2.BaseEntry.th32ProcessID, p2);
                     }
 
