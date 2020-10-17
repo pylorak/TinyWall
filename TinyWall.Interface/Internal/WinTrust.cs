@@ -69,13 +69,14 @@ namespace TinyWall.Interface.Internal
         }
         private enum WinVerifyTrustResult : uint
         {
-            TRUST_SUCCESS = 0,
-            TRUST_E_NOSIGNATURE = 0x800B0100,
-            TRUST_E_SUBJECT_NOT_TRUSTED = 0x800B0004,
-            TRUST_E_PROVIDER_UNKNOWN = 0x800B0001,
-            TRUST_E_ACTION_UNKNOWN = 0x800B0002,
-            TRUST_E_SUBJECT_FORM_UNKNOWN = 0x800B0003,
-            CRYPT_E_SECURITY_SETTINGS = 0x80092026
+            TRUST_SUCCESS = 0u,
+            TRUST_E_NOSIGNATURE = 0x800B0100u,
+            TRUST_E_SUBJECT_NOT_TRUSTED = 0x800B0004u,
+            TRUST_E_PROVIDER_UNKNOWN = 0x800B0001u,
+            TRUST_E_ACTION_UNKNOWN = 0x800B0002u,
+            TRUST_E_SUBJECT_FORM_UNKNOWN = 0x800B0003u,
+            CRYPT_E_SECURITY_SETTINGS = 0x80092026u,
+            CRYPT_E_FILE_ERROR = 0x80092003u
         };
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -179,6 +180,8 @@ namespace TinyWall.Interface.Internal
                 {
                     case WinVerifyTrustResult.TRUST_SUCCESS:
                         return VerifyResult.SIGNATURE_VALID;
+                    case WinVerifyTrustResult.CRYPT_E_FILE_ERROR:
+                        return VerifyResult.SIGNATURE_MISSING;
                     default:
                         uint dwLastError;
                         unchecked { dwLastError = (uint)Marshal.GetLastWin32Error(); }
