@@ -51,6 +51,7 @@ namespace PKSoft
             m_PipeName = serverPipeName;
 
             m_PipeWorkerThread = new Thread(new ThreadStart(PipeServerWorker));
+            m_PipeWorkerThread.Name = "ServerPipeWorker";
             m_PipeWorkerThread.IsBackground = true;
             m_PipeWorkerThread.Start();
         }

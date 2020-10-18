@@ -36,6 +36,7 @@ namespace TinyWall.Interface.Internal
         {
             m_PipeName = clientPipeName;
             m_PipeWorkerThread = new Thread(new ThreadStart(PipeClientWorker));
+            m_PipeWorkerThread.Name = "ClientPipeWorker";
             m_PipeWorkerThread.IsBackground = true;
             m_PipeWorkerThread.Start();
         }

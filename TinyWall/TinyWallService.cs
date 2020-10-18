@@ -2040,6 +2040,7 @@ namespace PKSoft
         {
             // Initialization on a new thread prevents stalling the SCM
             FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod));
+            FirewallWorkerThread.Name = "ServiceMain";
             FirewallWorkerThread.Start();
         }
 

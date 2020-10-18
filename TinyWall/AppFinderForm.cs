@@ -40,6 +40,7 @@ namespace PKSoft
 
                 RunSearch = true;
                 SearcherThread = new Thread(SearcherWorkerMethod);
+                SearcherThread.Name = "AppFinder";
                 SearcherThread.IsBackground = true;
                 SearcherThread.Start();
             }
