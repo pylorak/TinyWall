@@ -90,6 +90,7 @@
     <Compile Include="DatabaseClasses\Application.cs" />
     <Compile Include="DatabaseClasses\SubjectIdentity.cs" />
     <Compile Include="Deprecated\SerializationHelper.cs" />
+    <Compile Include="HierarchicalStopwatch.cs" />
     <Compile Include="IconTools.cs" />
     <Compile Include="IpAddrMask.cs" />
     <Compile Include="IpInterfaceWatcher.cs" />
