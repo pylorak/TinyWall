@@ -284,13 +284,16 @@ namespace PKSoft
             set
             {
                 m_Locked = value;
+                FirewallState.Locked = value;
                 if (m_Locked)
                 {
                     mnuLock.Text = PKSoft.Resources.Messages.Unlock;
+                    mnuLock.Visible = false;
                 }
                 else
                 {
                     mnuLock.Text = PKSoft.Resources.Messages.Lock;
+                    mnuLock.Visible = FirewallState.HasPassword;
                 }
             }
         }
@@ -541,9 +544,6 @@ namespace PKSoft
             // Find out if we are locked and if we have a password
             this.Locked = FirewallState.Locked;
 
-            // Do we have a password at all?
-            mnuLock.Visible = FirewallState.HasPassword;
-
             mnuAllowLocalSubnet.Checked = ActiveConfig.Service.ActiveProfile.AllowLocalSubnet;
             mnuEnableHostsBlocklist.Checked = ActiveConfig.Service.Blocklists.EnableBlocklists;
         }
@@ -590,24 +590,36 @@ namespace PKSoft
 
         private void mnuModeDisabled_Click(object sender, EventArgs e)
         {
+            if (!EnsureUnlockedServer())
+                return;
+
             SetMode(TinyWall.Interface.FirewallMode.Disabled);
             UpdateDisplay();
         }
 
         private void mnuModeNormal_Click(object sender, EventArgs e)
         {
+            if (!EnsureUnlockedServer())
+                return;
+
             SetMode(TinyWall.Interface.FirewallMode.Normal);
             UpdateDisplay();
         }
 
         private void mnuModeBlockAll_Click(object sender, EventArgs e)
         {
+            if (!EnsureUnlockedServer())
+                return;
+
             SetMode(TinyWall.Interface.FirewallMode.BlockAll);
             UpdateDisplay();
         }
 
         private void mnuAllowOutgoing_Click(object sender, EventArgs e)
         {
+            if (!EnsureUnlockedServer())
+                return;
+
             SetMode(TinyWall.Interface.FirewallMode.AllowOutgoing);
             UpdateDisplay();
         }
@@ -680,15 +692,16 @@ namespace PKSoft
 
             UpdateTrafficRate = true;
 
-            bool locked = GlobalInstances.Controller.IsServerLocked;
-            this.Locked = locked;
-            FirewallState.Locked = locked;
+            this.Locked = GlobalInstances.Controller.IsServerLocked;
             UpdateDisplay();
         }
 
         private void mnuWhitelistByExecutable_Click(object sender, EventArgs e)
         {
             if (FlashIfOpen(typeof(SettingsForm)))
+                return;
+
+            if (!EnsureUnlockedServer())
                 return;
 
             using (var dummy = new Form())
@@ -712,6 +725,9 @@ namespace PKSoft
         private void mnuWhitelistByProcess_Click(object sender, EventArgs e)
         {
             if (FlashIfOpen(typeof(SettingsForm)))
+                return;
+
+            if (!EnsureUnlockedServer())
                 return;
 
             List<ProcessInfo> pathList = new List<ProcessInfo>();
@@ -767,6 +783,9 @@ namespace PKSoft
 
         internal MessageType ApplyFirewallSettings(ServerConfiguration srvConfig, bool showUI = true)
         {
+            if (!EnsureUnlockedServer(showUI))
+                return MessageType.RESPONSE_LOCKED;
+
             Guid localChangeset = GlobalInstances.ClientChangeset;
             MessageType resp = GlobalInstances.Controller.SetServerConfig(ref srvConfig, ref localChangeset, out ServerState state);
 
@@ -815,7 +834,6 @@ namespace PKSoft
                     break;
                 case MessageType.RESPONSE_LOCKED:
                     ShowBalloonTip(PKSoft.Resources.Messages.TinyWallIsCurrentlyLocked, ToolTipIcon.Warning);
-                    Locked = true;
                     break;
                 case MessageType.COM_ERROR:
                 default:
@@ -846,11 +864,8 @@ namespace PKSoft
 
         private void mnuManage_Click(object sender, EventArgs e)
         {
-            if (Locked)
-            {
-                DefaultPopups(MessageType.RESPONSE_LOCKED);
+            if (!EnsureUnlockedServer())
                 return;
-            }
 
             // The settings form should not be used with other windows at the same time
             if (ActiveForms.Count != 0)
@@ -914,6 +929,9 @@ namespace PKSoft
 
         private void mnuWhitelistByWindow_Click(object sender, EventArgs e)
         {
+            if (!EnsureUnlockedServer())
+                return;
+
             bool foregroundIsMetro = VersionInfo.Win8OrNewer && Utils.IsMetroActive(out bool success);
 
             if (foregroundIsMetro)
@@ -1091,42 +1109,45 @@ namespace PKSoft
             }
         }
 
-        private void mnuLock_Click(object sender, EventArgs e)
+        internal bool EnsureUnlockedServer(bool showUi = true)
         {
-            if (Locked)
+            Locked = GlobalInstances.Controller.IsServerLocked;
+            if (!Locked)
+                return true;
+
+            using (PasswordForm pf = new PasswordForm())
             {
-                using (PasswordForm pf = new PasswordForm())
+                pf.BringToFront();
+                pf.Activate();
+                if (pf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    pf.BringToFront();
-                    pf.Activate();
-                    if (pf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    MessageType resp = GlobalInstances.Controller.TryUnlockServer(pf.PassHash);
+                    switch (resp)
                     {
-                        MessageType resp = GlobalInstances.Controller.TryUnlockServer(pf.PassHash);
-                        switch (resp)
-                        {
-                            case MessageType.RESPONSE_OK:
-                                this.Locked = false;
-                                FirewallState.Locked = false;
-                                ShowBalloonTip(PKSoft.Resources.Messages.TinyWallHasBeenUnlocked, ToolTipIcon.Info);
-                                break;
-                            case MessageType.RESPONSE_ERROR:
+                        case MessageType.RESPONSE_OK:
+                            this.Locked = false;
+                            return true;
+                        case MessageType.RESPONSE_ERROR:
+                            if (showUi)
                                 ShowBalloonTip(PKSoft.Resources.Messages.UnlockFailed, ToolTipIcon.Error);
-                                break;
-                            default:
+                            break;
+                        default:
+                            if (showUi)
                                 DefaultPopups(resp);
-                                break;
-                        }
+                            break;
                     }
                 }
             }
-            else
+
+            return false;
+        }
+
+        private void mnuLock_Click(object sender, EventArgs e)
+        {
+            MessageType lockResp = GlobalInstances.Controller.LockServer();
+            if ((lockResp == MessageType.RESPONSE_OK) || (lockResp== MessageType.RESPONSE_LOCKED))
             {
-                MessageType lockResp = GlobalInstances.Controller.LockServer();
-                if ((lockResp == MessageType.RESPONSE_OK) || (lockResp== MessageType.RESPONSE_LOCKED))
-                {
-                    this.Locked = true;
-                    FirewallState.Locked = true;
-                }
+                this.Locked = true;
             }
 
             UpdateDisplay();
@@ -1134,6 +1155,9 @@ namespace PKSoft
 
         private void mnuAllowLocalSubnet_Click(object sender, EventArgs e)
         {
+            if (!EnsureUnlockedServer())
+                return;
+
             LoadSettingsFromServer();
 
             // Copy, so that settings are not changed if they cannot be saved
@@ -1146,6 +1170,9 @@ namespace PKSoft
 
         private void mnuEnableHostsBlocklist_Click(object sender, EventArgs e)
         {
+            if (!EnsureUnlockedServer())
+                return;
+
             LoadSettingsFromServer();
 
             // Copy, so that settings are not changed if they cannot be saved
@@ -1270,6 +1297,9 @@ namespace PKSoft
 
         private void mnuModeLearn_Click(object sender, EventArgs e)
         {
+            if (!EnsureUnlockedServer())
+                return;
+
             Utils.SplitFirstLine(PKSoft.Resources.Messages.YouAreAboutToEnterLearningMode, out string firstLine, out string contentLines);
 
             TaskDialog dialog = new TaskDialog();

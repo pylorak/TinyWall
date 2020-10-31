@@ -1470,7 +1470,6 @@ namespace PKSoft
                 case MessageType.UNLOCK:
                     {
                         bool success = ServiceLocker.Unlock((string)req.Arguments[0]);
-                        GlobalInstances.ServerChangeset = Guid.NewGuid();
                         if (success)
                             return new TwMessage(MessageType.RESPONSE_OK);
                         else
@@ -1479,7 +1478,6 @@ namespace PKSoft
                 case MessageType.LOCK:
                     {
                         ServiceLocker.Locked = true;
-                        GlobalInstances.ServerChangeset = Guid.NewGuid();
                         return new TwMessage(MessageType.RESPONSE_OK);
                     }
                 case MessageType.GET_PROCESS_PATH:

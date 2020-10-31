@@ -369,6 +369,9 @@ namespace PKSoft
 
         private void mnuUnblock_Click(object sender, EventArgs e)
         {
+            if (!Controller.EnsureUnlockedServer())
+                return;
+
             List<FirewallExceptionV3> exceptions = new List<FirewallExceptionV3>();
 
             foreach (ListViewItem li in list.SelectedItems)

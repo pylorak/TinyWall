@@ -192,7 +192,7 @@ Select Elevate from the tray menu and try again.</value>
   </data>
   <data name="Unlock" xml:space="preserve">
     <value>Unlock</value>
-    <comment>Tray menu text</comment>
+    <comment>Deprecated; Tray menu text</comment>
   </data>
   <data name="Lock" xml:space="preserve">
     <value>Lock</value>
@@ -260,6 +260,7 @@ Select Elevate from the tray menu and try again.</value>
   </data>
   <data name="TinyWallHasBeenUnlocked" xml:space="preserve">
     <value>TinyWall has been unlocked. You may now issue commands that modify the configuration.</value>
+    <comment>Deprecated</comment>
   </data>
   <data name="UnlockFailed" xml:space="preserve">
     <value>Unlock failed. Try again with another passphrase.</value>
