@@ -354,7 +354,7 @@ namespace WFPdotNet
             if (bBeforeProxying && !VersionInfo.Win8OrNewer)
                 throw new NotSupportedException("FWPM_CONDITION_ALE_ORIGINAL_APP_ID (set by bBeforeProxying) requires Windows 8 or newer.");
 
-            if (!alreadyKernelFormat && System.IO.File.Exists(filePath))
+            if (!alreadyKernelFormat && (System.IO.File.Exists(filePath) || filePath.Equals("System", StringComparison.OrdinalIgnoreCase)))
             {
                 uint err = NativeMethods.FwpmGetAppIdFromFileName0(filePath, out FwpmMemorySafeHandle tmpHandle);
                 appIdNativeMem = tmpHandle;
