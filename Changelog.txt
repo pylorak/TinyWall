@@ -1,6 +1,19 @@
 TinyWall Changelog
 ---------------------
 
+3.0.9 - Maintenance release (01.11.2020.)
+- Automatically ask for passphrase when needed, and remove now redundant "Unlock" menu item
+- Fix child process monitoring not working (3.0.7 regression)
+- Fix memory leak in traffic rate monitor
+- Fix service becomes temporarily unresponsive when network parameters change
+- Fix missing signature could be incorrectly detected as an invalid signature
+- Reduce dependency on WMI
+- Add runtime profiling feature
+- Updated Brazilian Portuguese and Polish localizations
+- New Bulgarian localization
+
+---------------------
+
 3.0.8 - Maintenance release (27.09.2020.)
 - Add workaround for "grey icon on Win7" issue
   Note: On affected systems icon will appear with considerable delay after boot. This is expected.
