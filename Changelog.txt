@@ -1,6 +1,11 @@
 TinyWall Changelog
 ---------------------
 
+3.0.10 - Maintenance release (04.11.2020.)
+- Fix invalid WFP rules created for "System" on some machines (3.0.9 regression)
+
+---------------------
+
 3.0.9 - Maintenance release (01.11.2020.)
 - Automatically ask for passphrase when needed, and remove now redundant "Unlock" menu item
 - Fix child process monitoring not working (3.0.7 regression)
