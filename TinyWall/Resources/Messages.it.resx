@@ -267,7 +267,7 @@ Selezionare Eleva dal menu, quindi riprovare.
     <value>Risultati ricerca:</value>
   </data>
 	<data name="RecognizedApplication" xml:space="preserve">
-    <value>Riconosciuti{0}</value>
+    <value>Riconosciuta {0}</value>
   </data>
 	<data name="UnknownApplication" xml:space="preserve">
     <value>Applicazione sconosciuta</value>

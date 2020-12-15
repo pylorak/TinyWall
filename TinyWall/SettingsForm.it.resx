@@ -202,7 +202,7 @@
     <value>Protezione password</value>
   </data>
 	<data name="chkAskForExceptionDetails.Text" xml:space="preserve">
-    <value>Notifica i dettagli dell'eccezione</value>
+    <value>Chiedi dettagli sulle eccezioni</value>
   </data>
 	<data name="tabPage1.Text" xml:space="preserve">
     <value>Generale</value>

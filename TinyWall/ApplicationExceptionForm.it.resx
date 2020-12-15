@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<!-- 
+  <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,150 +59,184 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-		<xsd:element name="root" msdata:IsDataSet="true">
-			<xsd:complexType>
-				<xsd:choice maxOccurs="unbounded">
-					<xsd:element name="metadata">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" />
-							</xsd:sequence>
-							<xsd:attribute name="name" use="required" type="xsd:string" />
-							<xsd:attribute name="type" type="xsd:string" />
-							<xsd:attribute name="mimetype" type="xsd:string" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="assembly">
-						<xsd:complexType>
-							<xsd:attribute name="alias" type="xsd:string" />
-							<xsd:attribute name="name" type="xsd:string" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="data">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="resheader">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" />
-						</xsd:complexType>
-					</xsd:element>
-				</xsd:choice>
-			</xsd:complexType>
-		</xsd:element>
-	</xsd:schema>
-	<resheader name="resmimetype">
-		<value>text/microsoft-resx</value>
-	</resheader>
-	<resheader name="version">
-		<value>2.0</value>
-	</resheader>
-	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<data name="btnCancel.Text" xml:space="preserve">
-    <value>Annulla</value>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="label7.Text" xml:space="preserve">
+    <value>Uscita TCP:</value>
   </data>
-	<data name="btnBrowse.Text" xml:space="preserve">
-    <value>Cerca un file...</value>
-  </data>
-	<data name="btnProcess.Text" xml:space="preserve">
+  <data name="btnProcess.Text" xml:space="preserve">
     <value>Seleziona un processo...</value>
   </data>
-	<data name="btnChooseService.Text" xml:space="preserve">
-    <value>Scegli un servizio...</value>
-  </data>
-	<data name="ofd.Title" xml:space="preserve">
-    <value>Seleziona l'eseguibile dell'applicazione</value>
-  </data>
-	<data name="label6.Text" xml:space="preserve">
-    <value>Durata dell'eccezione:</value>
-  </data>
-	<data name="transparentLabel1.Text" xml:space="preserve">
-    <value>Segnalibri conosciuti</value>
-  </data>
-	<data name="chkRestrictToLocalNetwork.Text" xml:space="preserve">
+  <data name="chkRestrictToLocalNetwork.Text" xml:space="preserve">
     <value>Restringi al network locale</value>
   </data>
-	<data name="radBlock.Text" xml:space="preserve">
-    <value>Blocca sempre tutto il traffico</value>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Aggiungi/Modifica eccezione - TinyWall</value>
   </data>
-	<data name="radTcpUdpOut.Text" xml:space="preserve">
-    <value>Permetti connessioni UDP e TCP in uscita</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="radOnlySpecifiedPorts.Size" type="System.Drawing.Size, System.Drawing">
+    <value>166, 17</value>
   </data>
-	<data name="radTcpUdpUnrestricted.Text" xml:space="preserve">
+  <data name="radTcpUdpUnrestricted.Text" xml:space="preserve">
     <value>Traffico UDP e TCP senza restrizioni</value>
   </data>
-	<data name="radUnrestricted.Text" xml:space="preserve">
+  <data name="radTcpUdpUnrestricted.Size" type="System.Drawing.Size, System.Drawing">
+    <value>197, 17</value>
+  </data>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
+  <data name="txtListenPortTCP.Location" type="System.Drawing.Point, System.Drawing">
+    <value>88, 101</value>
+  </data>
+  <data name="chkInheritToChildren.Size" type="System.Drawing.Size, System.Drawing">
+    <value>208, 17</value>
+  </data>
+  <data name="radUnrestricted.Text" xml:space="preserve">
     <value>Nessuna restrizione</value>
   </data>
-	<data name="label5.Text" xml:space="preserve">
+  <data name="label4.Text" xml:space="preserve">
+    <value>Entrata UDP:</value>
+  </data>
+  <data name="btnSelectUwpApp.Text" xml:space="preserve">
+    <value>Scegli un'app UWP...</value>
+  </data>
+  <data name="txtListenPortUDP.AccessibleName" xml:space="preserve">
+    <value>UDP in ingresso</value>
+  </data>
+  <data name="lblApplication.Text" xml:space="preserve">
+    <value>Applicazione:</value>
+  </data>
+  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>112, 13</value>
+  </data>
+  <data name="chkInheritToChildren.Text" xml:space="preserve">
+    <value>Applica le stesse regole ai processi figli</value>
+  </data>
+  <data name="txtOutboundPortUDP.AccessibleName" xml:space="preserve">
+    <value>UDP in uscita</value>
+  </data>
+  <data name="ofd.Title" xml:space="preserve">
+    <value>Seleziona l'eseguibile dell'applicazione</value>
+  </data>
+  <data name="radTcpUdpOut.Text" xml:space="preserve">
+    <value>Permetti connessioni UDP e TCP in uscita</value>
+  </data>
+  <data name="txtListenPortTCP.AccessibleName" xml:space="preserve">
+    <value>TCP in ingresso</value>
+  </data>
+  <data name="txtOutboundPortTCP.Location" type="System.Drawing.Point, System.Drawing">
+    <value>88, 61</value>
+  </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value>Uscita UDP:</value>
+  </data>
+  <data name="lblApplicationType.Text" xml:space="preserve">
+    <value>Tipo:</value>
+  </data>
+  <data name="radUnrestricted.Size" type="System.Drawing.Size, System.Drawing">
+    <value>117, 17</value>
+  </data>
+  <data name="btnChooseService.Text" xml:space="preserve">
+    <value>Scegli un servizio...</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
     <value>Aprire le seguenti porte, inoltre le restrizioni di cui sopra. (Elenco separato da virgole)
 </value>
   </data>
-	<data name="txtListenPortUDP.AccessibleName" xml:space="preserve">
-    <value>UDP in ingresso</value>
+  <data name="lblApplicationType.Size" type="System.Drawing.Size, System.Drawing">
+    <value>31, 13</value>
   </data>
-	<data name="txtListenPortTCP.AccessibleName" xml:space="preserve">
-    <value>TCP in ingresso</value>
+  <data name="radBlock.Text" xml:space="preserve">
+    <value>Blocca sempre tutto il traffico</value>
   </data>
-	<data name="txtOutboundPortUDP.AccessibleName" xml:space="preserve">
-    <value>UDP in uscita</value>
+  <data name="radBlock.Size" type="System.Drawing.Size, System.Drawing">
+    <value>161, 17</value>
   </data>
-	<data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
-    <value>TCP in uscita</value>
+  <data name="lblApplication.Size" type="System.Drawing.Size, System.Drawing">
+    <value>70, 13</value>
   </data>
-	<data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
+  <data name="label6.Text" xml:space="preserve">
+    <value>Durata dell'eccezione:</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>Entrata TCP:</value>
+  </data>
+  <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
     <value>Permetti solo porte specificate</value>
   </data>
-	<data name="$this.Text" xml:space="preserve">
-    <value>Aggiungi/Modifica eccezione - TinyWall</value>
+  <data name="radTcpUdpOut.Size" type="System.Drawing.Size, System.Drawing">
+    <value>223, 17</value>
   </data>
-	<data name="btnOK.Text" xml:space="preserve">
-		<value>OK</value>
-	</data>
-	<data name="lblApplication.Text" xml:space="preserve">
-		<value>Applicazione:</value>
-	</data>
-	<data name="lblApplicationType.Text" xml:space="preserve">
-		<value>Tipo:</value>
-	</data>
-	<data name="ofd.Filter" xml:space="preserve">
-		<value>*.exe|*.exe|*.*|*.*</value>
-	</data>
-	<data name="btnSelectUwpApp.Text" xml:space="preserve">
-		<value>Scegli un'app UWP...</value>
-	</data>
-	<data name="label3.Text" xml:space="preserve">
-		<value>Entrata TCP:</value>
-	</data>
-	<data name="label4.Text" xml:space="preserve">
-		<value>Entrata UPD:</value>
-	</data>
-	<data name="label7.Text" xml:space="preserve">
-		<value>Uscita TCP:</value>
-	</data>
-	<data name="label8.Text" xml:space="preserve">
-		<value>Uscita TCP</value>
-	</data>
-	<data name="chkInheritToChildren.Text" xml:space="preserve">
-		<value>Applica le stesse regole hai processi figli</value>
-	</data>
+  <data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
+    <value>TCP in uscita</value>
+  </data>
+  <data name="transparentLabel1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>184, 24</value>
+  </data>
+  <data name="chkRestrictToLocalNetwork.Size" type="System.Drawing.Size, System.Drawing">
+    <value>150, 17</value>
+  </data>
+  <data name="transparentLabel1.Text" xml:space="preserve">
+    <value>Segnalibri conosciuti</value>
+  </data>
+  <data name="btnBrowse.Text" xml:space="preserve">
+    <value>Cerca un file...</value>
+  </data>
 </root>
