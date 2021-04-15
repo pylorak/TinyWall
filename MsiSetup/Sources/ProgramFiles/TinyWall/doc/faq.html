@@ -88,6 +88,10 @@
         <p>No. After TinyWall is installed, it defaults to blocking network traffic, and the user has to whitelist applications manually one-by-one. If you install TinyWall over a remote connection, you will lock yourself out before getting a chance to whitelist your remote desktop application.</p>
       </div>
       <div class="twelvecol last">
+        <h3>If I install TinyWall, should I disable Windows (Defender) Firewall?</h3>
+        <p>From a security or feature point of view, with TinyWall there is no difference if you enable or disable Windows' built-in firewall. TinyWall will provide the same protections and functions either way, uninhibited. For completely other reasons though, it is recommended you leave Windows Firewall enabled. One of the reasons is, if you disable Windows Firewall, Windows will (falsely) think no firewall is installed and will nag you to enable its built-in firewall. By leaving it turned on, you can avoid this annoyance. A second reason to leave Windows Firewall on is, if you ever decide to uninstall TinyWall in the future, you might forget to re-enable Windows Firewall and you'd be left without any protection. There is no such concern if you leave it enabled the whole time.</p>
+      </div>
+      <div class="twelvecol last">
         <h3>Am I left unprotected if I close TinyWall's icon in the taskbar?</h3>
         <p>No. The taskbar icon is only the GUI component of TinyWall and is not responsible for your computer's protection.</p>
       </div>
@@ -105,7 +109,7 @@
       </div>
       <div class="twelvecol last">
         <h3>What is the difference between port-based and domain-based blocklists?</h3>
-        <p>Port-based blocklist is implemented as a firewall rule and blocks traffic based on port numbers irrespective of the remote host. Its goal is to undermine some common and known malware that use specific ports. It usually affects only specific (malicious) applications. Domain-based blocklist is implemented as a custom hosts file and blocks specific remote hosts irrespective of the port number. Its goal is to block certain hosts no matter what application tries to communicate with them, and in addition to malware it will also block some forms of internet advertising.</p>
+        <p>Domain-based blocklist is implemented as a custom hosts file and blocks specific remote hosts irrespective of the port number. Its goal is to block certain hosts no matter what application tries to communicate with them, and in addition to malware it will also block some forms of internet advertising. It is recommended to turn the domain-based blocklist on.Port-based blocklist is implemented as a firewall rule and blocks traffic based on port numbers irrespective of the remote host. Its goal is to undermine some common and known malware that use specific ports. Though it usually affects only specific (malicious) applications, the option for port-based blocklist is only kept around for compatbility with older installations and its use is not recommended anymore.</p>
       </div>
       <div class="twelvecol last">
         <h3>I have whitelisted an application but it still cannot access the network. What is going on?</h3>
@@ -114,6 +118,20 @@
       <div class="twelvecol last">
         <h3>How do I figure out which executables need to be whitelisted for my application?</h3>
         <p>If whitelisting by window or process does not seem to work for a particular application, it is best to use TinyWall's Connections window. Open the Connections windows, enable showing blocked connections there, and disable other options for clarity. Then try using your program once until it fails to connect to the network again. Refresh TinyWall's Connections window, and check which of the newly blocked executables belong to your program. Whitelist as necessary.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>What is the basic way to create rules in TinyWall?</h3>
+        <p>First, check if there is a built-in "Special Exception" for your use-case in TinyWall's configuration, and enable it if there is.</p>
+        <p>If your application is a traditional desktop application (not a Windows service or an app managed by the Windows Store):</p>
+          <ol>
+          <li>Unblocking your application using the "by window" method from TinyWall's icon. Use the "Elevate" option first if your application is running with admin privileges.</li>
+          <li>If the application still fails to access the network, open TinyWall's Connections window to check what was blocked, and unblock anything related to your application in question. Ignore everything else there.</li>
+          </ol>
+        <p>If your application is installed as a Windows service or is an app managed by the Windows Store:</p>
+          <ol>
+          <li>Open TinyWall's configuration window, and click the "Add application" button.</li>
+          <li>Based on your application's type, use the "Choose a service" or "Pick a UWP app" buttons correspondingly.</li>
+          </ol>
       </div>
       <div class="twelvecol last">
         <h3>Whitelisting still does not seem to take effect. / Some apps can access the internet even when they shouldn't.</h3>
@@ -125,11 +143,11 @@
       </div>
       <div class="twelvecol last">
         <h3>TinyWall crashes, or is often unavailable to its GUI, or I get UAC prompts on boot.</h3>
-        <p>Once you are sure it is not another security software that interfering with TinyWall, send me a mail with the description of your problem. You can find my e-mail address on the very bottom of this page. If there are any logs present in the C:\ProgramData\TinyWall directory, please attach them to your mail.</p>
+        <p>Once you are sure it is not another security software that is interfering with TinyWall, send me a mail with the description of your problem. You can find my e-mail address on the very bottom of this page. If there are any logs present in the C:\ProgramData\TinyWall directory, please attach them to your mail.</p>
       </div>
       <div class="twelvecol last">
         <h3>Why does TinyWall seem to use a lot of memory?</h3>
-        <p>Memory analysis of a process, especially of .Net processes like TinyWall, is more complicated than looking at the values reported by the Task Manager. First of all, all .Net processes have a somewhat increased memory usage, because of the supporting runtime that gets loaded, but this is perfectly normal and expected. This is how Microsoft designed it. Second, what the Task Manager counts is not the memory reserved by TinyWall itself, but the memory reserved by the .Net runtime, which is higher but not really all used. Third, you'd be mistaken to sum the memory used by the two TinyWall processes. The two processes of TinyWall share a lot of things in memory which are thus loaded only once, but Windows counts them separtately for each process, thereby double-counting a significant portion of TinyWall's memory usage. The end effect of all these is that the actually used amount of memory is less than what is reported to you by such simple tools. Besides, what you'd like to know is probably not how many megabytes TinyWall uses, but whether it will slow down your computer. It won't.</p>
+        <p>Memory analysis of a process, especially of .Net processes like TinyWall, is more complicated than looking at the values reported by the Task Manager. First of all, all .Net processes have a somewhat increased memory usage, because of the supporting runtime that gets loaded, but this is perfectly normal and expected. This is how Microsoft designed it, and it happens with all .Net programs. Second, what the Task Manager counts is not the memory reserved by TinyWall itself, but the memory reserved by the .Net runtime, which is higher but not really all used. Third, you'd be mistaken to sum the memory used by the two TinyWall processes. The two processes of TinyWall share a lot of things in memory which are thus loaded only once, but Windows counts them separtately for each process, thereby double-counting a significant portion of TinyWall's memory usage. The end effect of all these is that the actually used amount of memory is less than what is reported to you by such simple tools. Besides, what you'd like to know is probably not how many megabytes TinyWall uses, but whether it will slow down your computer. It won't.</p>
       </div>
     </div>
   </div>
