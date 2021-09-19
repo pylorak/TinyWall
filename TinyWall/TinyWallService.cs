@@ -1467,6 +1467,11 @@ namespace PKSoft
                         InitFirewall();
                         return new TwMessage(MessageType.RESPONSE_OK);
                     }
+                case MessageType.RELOAD_WFP_FILTERS:
+                    {
+                        InstallFirewallRules();
+                        return new TwMessage(MessageType.RESPONSE_OK);
+                    }
                 case MessageType.UNLOCK:
                     {
                         bool success = ServiceLocker.Unlock((string)req.Arguments[0]);
@@ -1686,15 +1691,18 @@ namespace PKSoft
 
                 FirewallThreadThrottler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest, false, true);
                 MinuteTimer = new Timer(new TimerCallback(TimerCallback), null, 60000, 60000);
-                LogWatcher.NewLogEntry += (FirewallLogWatcher sender, FirewallLogEntry entry) => { AutoLearnLogEntry(entry); };
+                LogWatcher.NewLogEntry += (FirewallLogWatcher sender, FirewallLogEntry entry) =>
+                {
+                    AutoLearnLogEntry(entry);
+                };
 
                 // Fire up file protections as soon as possible
                 FileLocker.LockFile(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
                 FileLocker.LockFile(PasswordManager.PasswordFilePath, FileAccess.Read, FileShare.Read);
 
 #if !DEBUG
-            // Basic software health checks
-            TinyWallDoctor.EnsureHealth(Utils.LOG_ID_SERVICE);
+                // Basic software health checks
+                TinyWallDoctor.EnsureHealth(Utils.LOG_ID_SERVICE);
 #endif
 
                 // Lock configuration if we have a password
@@ -1706,6 +1714,12 @@ namespace PKSoft
 
                 // Issue load command
                 Q.Enqueue(new TwMessage(MessageType.REINIT), null);
+
+                // If mount points change, we need to update WFP rules due to Win32->Kernel path format mapping
+                PathMapper.Instance.MountPointsChanged += (object sender, EventArgs args) =>
+                {
+                    Q.Enqueue(new TwMessage(MessageType.RELOAD_WFP_FILTERS), null);
+                };
 
                 // Fire up pipe
                 ServerPipe = new PipeServerEndpoint(new PipeDataReceived(PipeServerDataReceived), "TinyWallController");
