@@ -128,11 +128,17 @@
   <data name="columnHeader1.Width" type="System.Int32, mscorlib">
     <value>173</value>
   </data>
+  <data name="columnHeader3.Text" xml:space="preserve">
+    <value>Service</value>
+  </data>
+  <data name="columnHeader3.Width" type="System.Int32, mscorlib">
+    <value>124</value>
+  </data>
   <data name="columnHeader2.Text" xml:space="preserve">
     <value>Path</value>
   </data>
   <data name="columnHeader2.Width" type="System.Int32, mscorlib">
-    <value>382</value>
+    <value>252</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="listView.Location" type="System.Drawing.Point, System.Drawing">
@@ -241,6 +247,12 @@
     <value>columnHeader1</value>
   </data>
   <data name="&gt;&gt;columnHeader1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;columnHeader3.Name" xml:space="preserve">
+    <value>columnHeader3</value>
+  </data>
+  <data name="&gt;&gt;columnHeader3.Type" xml:space="preserve">
     <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;columnHeader2.Name" xml:space="preserve">

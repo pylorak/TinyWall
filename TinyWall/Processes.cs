@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
-using TinyWall.Interface;
+using System.Linq;
 
 namespace PKSoft
 {
@@ -73,6 +73,7 @@ namespace PKSoft
 
             List<ListViewItem> itemColl = new List<ListViewItem>();
             UwpPackage packages = new UwpPackage();
+            ServicePidMap service_pids = new ServicePidMap();
 
             Process[] procs = Process.GetProcesses();
             for (int i = 0; i < procs.Length; ++i)
@@ -81,7 +82,7 @@ namespace PKSoft
                 {
                     try
                     {
-                        ProcessInfo e = new ProcessInfo(p.Id, packages);
+                        ProcessInfo e = new ProcessInfo(p.Id, packages, service_pids);
 
                         if (string.IsNullOrEmpty(e.ExePath))
                             continue;
@@ -91,7 +92,7 @@ namespace PKSoft
                         for (int j = 0; j < itemColl.Count; ++j)
                         {
                             ProcessInfo opi = itemColl[j].Tag as ProcessInfo;
-                            if ((e.Package == opi.Package) && (e.ExePath == opi.ExePath))
+                            if ((e.Package == opi.Package) && (e.ExePath == opi.ExePath) && (e.Services.SetEquals(opi.Services)))
                             {
                                 skip = true;
                                 break;
@@ -102,6 +103,7 @@ namespace PKSoft
 
                         // Add list item
                         ListViewItem li = new ListViewItem(e.Package.HasValue ? e.Package.Value.Name : p.ProcessName);
+                        li.SubItems.Add(string.Join(", ", e.Services.ToArray()));
                         li.SubItems.Add(e.ExePath);
                         li.Tag = e;
                         itemColl.Add(li);

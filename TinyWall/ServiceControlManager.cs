@@ -75,6 +75,29 @@ namespace ScmWrapper
         internal String lpDisplayName;
     };
 
+    [StructLayout(LayoutKind.Sequential)]
+    internal sealed class SERVICE_STATUS_PROCESS
+    {
+        [MarshalAs(UnmanagedType.U4)]
+        internal uint dwServiceType;
+        [MarshalAs(UnmanagedType.U4)]
+        internal uint dwCurrentState;
+        [MarshalAs(UnmanagedType.U4)]
+        internal uint dwControlsAccepted;
+        [MarshalAs(UnmanagedType.U4)]
+        internal uint dwWin32ExitCode;
+        [MarshalAs(UnmanagedType.U4)]
+        internal uint dwServiceSpecificExitCode;
+        [MarshalAs(UnmanagedType.U4)]
+        internal uint dwCheckPoint;
+        [MarshalAs(UnmanagedType.U4)]
+        internal uint dwWaitHint;
+        [MarshalAs(UnmanagedType.U4)]
+        internal uint dwProcessId;
+        [MarshalAs(UnmanagedType.U4)]
+        internal uint dwServiceFlags;
+    }
+
     struct SERVICE_FAILURE_ACTIONS 
     {
         [MarshalAs(UnmanagedType.U4)]
@@ -105,6 +128,11 @@ namespace ScmWrapper
         SERVICE_CONTINUE_PENDING = 0x00000005,
         SERVICE_PAUSE_PENDING = 0x00000006,
         SERVICE_PAUSED = 0x00000007,
+    }
+
+    public enum ServiceInfoLevel : int
+    {
+        SC_STATUS_PROCESS_INFO = 0
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -184,6 +212,15 @@ namespace ScmWrapper
 
         [DllImport("advapi32.dll", SetLastError = true)]
         internal static extern bool QueryServiceStatus(IntPtr hServiceStatus, ref SERVICE_STATUS lpServiceStatus);
+
+        [DllImport("advapi32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool QueryServiceStatusEx(
+            IntPtr hService,
+            ServiceInfoLevel InfoLevel,
+            IntPtr lpBuffer,
+            uint cbBufSize,
+            out uint pcbBytesNeeded);
     }
 
     #endregion
@@ -545,8 +582,45 @@ namespace ScmWrapper
                     throw new Win32Exception(Marshal.GetLastWin32Error());
 
                 QUERY_SERVICE_CONFIG query_srv_config = (QUERY_SERVICE_CONFIG)Marshal.PtrToStructure(buff, typeof(QUERY_SERVICE_CONFIG));
-
                 return query_srv_config.dwStartType;
+            }
+            finally
+            {
+                // Clean up
+                if (service != IntPtr.Zero)
+                {
+                    NativeMethods.CloseServiceHandle(service);
+                }
+
+                if (buff != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(buff);
+                }
+            }
+        }
+
+        [SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
+        internal uint GetServicePid(string serviceName)
+        {
+            IntPtr service = IntPtr.Zero;
+            IntPtr buff = IntPtr.Zero;
+
+            try
+            {
+                // Open the service
+                service = OpenService(serviceName,
+                    ServiceAccessRights.SERVICE_QUERY_STATUS);
+
+                uint structSize;
+                var result = NativeMethods.QueryServiceStatusEx(service, ServiceInfoLevel.SC_STATUS_PROCESS_INFO, IntPtr.Zero, 0, out structSize);
+                buff = Marshal.AllocHGlobal((int)structSize);
+
+                result = NativeMethods.QueryServiceStatusEx(service, ServiceInfoLevel.SC_STATUS_PROCESS_INFO, buff, structSize, out structSize);
+                if (result == false)
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
+
+                SERVICE_STATUS_PROCESS query_srv_status = (SERVICE_STATUS_PROCESS)Marshal.PtrToStructure(buff, typeof(SERVICE_STATUS_PROCESS));
+                return query_srv_status.dwProcessId;
             }
             finally
             {

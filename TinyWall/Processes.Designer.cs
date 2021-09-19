@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProcessesForm));
             this.listView = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.IconList = new System.Windows.Forms.ImageList(this.components);
             this.btnOK = new System.Windows.Forms.Button();
@@ -43,6 +44,7 @@
             resources.ApplyResources(this.listView, "listView");
             this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
+            this.columnHeader3,
             this.columnHeader2});
             this.listView.FullRowSelect = true;
             this.listView.HideSelection = false;
@@ -60,6 +62,11 @@
             // 
             this.columnHeader1.Tag = "colName";
             resources.ApplyResources(this.columnHeader1, "columnHeader1");
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Tag = "colService";
+            resources.ApplyResources(this.columnHeader3, "columnHeader3");
             // 
             // columnHeader2
             // 
@@ -116,5 +123,6 @@
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.ImageList IconList;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
     }
 }

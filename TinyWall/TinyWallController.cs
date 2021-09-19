@@ -750,32 +750,40 @@ namespace PKSoft
             if (pathList.Count == 0) return;
 
             List<FirewallExceptionV3> exceptions = new List<FirewallExceptionV3>();
-            foreach (var sel in pathList)
+            foreach (var sel in pathList)   // for each selection item from the Processes window list
             {
                 if (string.IsNullOrEmpty(sel.ExePath))
                     continue;
 
-                ExceptionSubject subj;
+                List<ExceptionSubject> subjects = new List<ExceptionSubject>();
                 if (sel.Package.HasValue)
-                    subj = sel.Package.Value.ToExceptionSubject();
-                else
-                    subj = new ExecutableSubject(sel.ExePath);
-
-                // Check if we already have an exception for this file
-                bool found = false;
-                foreach (var ex in exceptions)
+                    subjects.Add(sel.Package.Value.ToExceptionSubject());
+                else if (sel.Services.Count > 0)
                 {
-                    if (ex.Subject.Equals(subj))
-                    {
-                        found = true;
-                        break;
-                    }
+                    foreach (var srv in sel.Services)
+                        subjects.Add(new ServiceSubject(sel.ExePath, srv));
                 }
-                if (found)
-                    continue;
+                else
+                    subjects.Add(new ExecutableSubject(sel.ExePath));
 
-                // Try to recognize app based on this file
-                exceptions.AddRange(GlobalInstances.AppDatabase.GetExceptionsForApp(subj, true, out _));
+                foreach (var subj in subjects)
+                {
+                    // Check if we already have an exception for this subject
+                    bool found = false;
+                    foreach (var ex in exceptions)
+                    {
+                        if (ex.Subject.Equals(subj))
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found)
+                        continue;
+
+                    // Try to recognize app based on this file
+                    exceptions.AddRange(GlobalInstances.AppDatabase.GetExceptionsForApp(subj, true, out _));
+                }
             }
 
             AddExceptions(exceptions);

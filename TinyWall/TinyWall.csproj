@@ -101,6 +101,7 @@
     <Compile Include="ProcessManager.cs" />
     <Compile Include="RegistryWatcher.cs" />
     <Compile Include="SafeHandles.cs" />
+    <Compile Include="ServicePidMap.cs" />
     <Compile Include="ThreadThrottler.cs" />
     <Compile Include="TinyWallController.cs" />
     <Compile Include="CmdLineArgs.cs" />
