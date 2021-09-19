@@ -20,7 +20,7 @@ namespace PKSoft
         private enum FilterWeights : ulong
         {
             Blocklist = 9000000,
-            RawSockePermit = 8000000,
+            RawSocketPermit = 8000000,
             RawSocketBlock = 7000000,
             UserBlock = 6000000,
             UserPermit = 5000000,
@@ -787,7 +787,7 @@ namespace PKSoft
                         string.Empty,
                         TINYWALL_PROVIDER_KEY,
                         FilterActions.FWP_ACTION_PERMIT,
-                        (ulong)FilterWeights.RawSockePermit
+                        (ulong)FilterWeights.RawSocketPermit
                     ))
                     {
                         f.LayerKey = GetLayerKey(layer);
@@ -1639,11 +1639,6 @@ namespace PKSoft
             }
         }
 
-        private void LogWatcher_NewLogEntry(FirewallLogWatcher sender, FirewallLogEntry entry)
-        {
-            AutoLearnLogEntry(entry);
-        }
-
         internal static void DeleteWfpObjects(Engine wfp, bool removeLayersAndProvider)
         {
             // WARNING! This method is super-slow if not executed inside a WFP transaction!
@@ -1691,7 +1686,7 @@ namespace PKSoft
 
                 FirewallThreadThrottler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest, false, true);
                 MinuteTimer = new Timer(new TimerCallback(TimerCallback), null, 60000, 60000);
-                LogWatcher.NewLogEntry += LogWatcher_NewLogEntry;
+                LogWatcher.NewLogEntry += (FirewallLogWatcher sender, FirewallLogEntry entry) => { AutoLearnLogEntry(entry); };
 
                 // Fire up file protections as soon as possible
                 FileLocker.LockFile(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
