@@ -172,7 +172,7 @@
           </Component>
           <Directory Id="LOCDIR_bg" Name="bg">
             <Component Id="LocSatelliteLib_bg" Guid="{ED49577C-871B-4AA4-81D7-E4B879237DBB}" Win64="$(var.Win64)">
-              <File Id="LocSatelliteDLL_bg" Source="Sources\ProgramFiles\TinyWall\es\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+              <File Id="LocSatelliteDLL_bg" Source="Sources\ProgramFiles\TinyWall\bg\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
             </Component>
           </Directory>
           <Directory Id="LOCDIR_es" Name="es">
