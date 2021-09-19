@@ -47,7 +47,7 @@ namespace PKSoft
         internal FirewallLogWatcher()
         {
             // Create event notifier
-            EventLogQuery evquery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=5154 or EventID=5155 or EventID=5157 or EventID=5152 or EventID=5159 or EventID=5156 or EventID=5158)]]");
+            EventLogQuery evquery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=5154 or EventID=5155 or EventID=5157 or EventID=5159 or EventID=5156 or EventID=5158)]]");
             LogWatcher = new EventLogWatcher(evquery);
             LogWatcher.Enabled = false;
             LogWatcher.EventRecordWritten += new EventHandler<EventRecordWrittenEventArgs>(LogWatcher_EventRecordWritten);
@@ -94,7 +94,6 @@ namespace PKSoft
                     entry.RemoteIp = string.Empty;
                     entry.RemotePort = 0;
                     break;
-                case 5152:
                 case 5156:
                 case 5157:
                 default:
