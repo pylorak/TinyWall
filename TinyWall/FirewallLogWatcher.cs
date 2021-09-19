@@ -100,18 +100,22 @@ namespace PKSoft
                 default:
                     entry.ProcessId = (UInt64)e.EventRecord.Properties[0].Value;
                     entry.AppPath = PathMapper.Instance.ConvertPathIgnoreErrors((string)e.EventRecord.Properties[1].Value, PathFormat.Win32);
-                    entry.LocalIp = (string)e.EventRecord.Properties[3].Value;
-                    entry.LocalPort = int.Parse((string)e.EventRecord.Properties[4].Value);
-                    entry.RemoteIp = (string)e.EventRecord.Properties[5].Value;
-                    entry.RemotePort = int.Parse((string)e.EventRecord.Properties[6].Value);
                     entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[7].Value;
                     switch ((string)e.EventRecord.Properties[2].Value)
                     {
                         case "%%14592":
                             entry.Direction = RuleDirection.In;
+                            entry.RemoteIp = (string)e.EventRecord.Properties[3].Value;
+                            entry.RemotePort = int.Parse((string)e.EventRecord.Properties[4].Value);
+                            entry.LocalIp = (string)e.EventRecord.Properties[5].Value;
+                            entry.LocalPort = int.Parse((string)e.EventRecord.Properties[6].Value);
                             break;
                         case "%%14593":
                             entry.Direction = RuleDirection.Out;
+                            entry.LocalIp = (string)e.EventRecord.Properties[3].Value;
+                            entry.LocalPort = int.Parse((string)e.EventRecord.Properties[4].Value);
+                            entry.RemoteIp = (string)e.EventRecord.Properties[5].Value;
+                            entry.RemotePort = int.Parse((string)e.EventRecord.Properties[6].Value);
                             break;
                         default:
                             entry.Direction = RuleDirection.Invalid;
