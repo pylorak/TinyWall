@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Configuration.Install;
 using System.Diagnostics;
-using System.IO;
-using System.Security.Principal;
 using System.ServiceProcess;
 using TinyWall.Interface;
 using WFPdotNet;
 using WFPdotNet.Interop;
+using TaskScheduler;
 
 namespace PKSoft
 {
     internal static class TinyWallDoctor
     {
+        private static readonly string CONTROLLER_START_TASKSCH_NAME = "TinyWall Controller";
+
         internal static bool IsServiceRunning(string logContext, bool installing)
         {
 #if !DEBUG
@@ -216,7 +217,9 @@ namespace PKSoft
             try
             {
                 // Disable automatic start of controller
-                Utils.RunAtStartup("TinyWall Controller", null);
+                var taskService = new TaskSchedulerClass();
+                taskService.Connect();
+                taskService.GetFolder(@"\").DeleteTask(CONTROLLER_START_TASKSCH_NAME, 0);
             }
             catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_INSTALLER); }
 
@@ -276,7 +279,25 @@ namespace PKSoft
             // Ensure that controller will be started for users
             try
             {
-                Utils.RunAtStartup("TinyWall Controller", TinyWall.Interface.Internal.Utils.ExecutablePath);
+                const string USERS_GROUP_SID = "S-1-5-32-545";
+                const int TASK_CREATE_OR_UPDATE = 6;
+                var taskService = new TaskSchedulerClass();
+                taskService.Connect();
+                var td = taskService.NewTask(0);
+                td.Settings.Enabled = true;
+                td.Principal.GroupId = USERS_GROUP_SID;
+                td.Principal.LogonType = _TASK_LOGON_TYPE.TASK_LOGON_INTERACTIVE_TOKEN_OR_PASSWORD;
+                td.Principal.RunLevel = _TASK_RUNLEVEL.TASK_RUNLEVEL_HIGHEST;
+                td.Settings.Compatibility = _TASK_COMPATIBILITY.TASK_COMPATIBILITY_V2;
+                td.Settings.Enabled = true;
+                td.Settings.StopIfGoingOnBatteries = false;
+                td.Settings.Hidden = false;
+                td.Settings.DisallowStartIfOnBatteries = false;
+                td.Settings.ExecutionTimeLimit = "PT0S";
+                td.Triggers.Create(_TASK_TRIGGER_TYPE2.TASK_TRIGGER_LOGON);
+                var act = td.Actions.Create(_TASK_ACTION_TYPE.TASK_ACTION_EXEC) as IExecAction;
+                act.Path = TinyWall.Interface.Internal.Utils.ExecutablePath;
+                taskService.GetFolder(@"\").RegisterTaskDefinition(CONTROLLER_START_TASKSCH_NAME, td, TASK_CREATE_OR_UPDATE, null, null, _TASK_LOGON_TYPE.TASK_LOGON_NONE);
             }
             catch (Exception e)
             {

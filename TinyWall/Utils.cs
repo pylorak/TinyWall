@@ -12,7 +12,6 @@ using System.Security.Principal;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
-using Microsoft.Win32;
 using Microsoft.Samples;
 
 namespace PKSoft
@@ -427,17 +426,6 @@ namespace PKSoft
             }
 
             return false;
-        }
-
-        internal static void RunAtStartup(string ApplicationName, string ApplicationPath)
-        {
-            using (RegistryKey runKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", RegistryKeyPermissionCheck.ReadWriteSubTree, System.Security.AccessControl.RegistryRights.FullControl))
-            {
-                if (string.IsNullOrEmpty(ApplicationPath))
-                    runKey.DeleteValue(ApplicationName, false);
-                else
-                    runKey.SetValue(ApplicationName, $"\"{ApplicationPath}\" /startup");
-            }
         }
 
         internal static Process StartProcess(string path, string args, bool asAdmin, bool hideWindow = false)
