@@ -356,6 +356,10 @@ namespace WFPdotNet
 
             if (!alreadyKernelFormat && (System.IO.File.Exists(filePath) || filePath.Equals("System", StringComparison.OrdinalIgnoreCase)))
             {
+                // NOTE: FwpmGetAppIdFromFileName0() will sometimes create invalid AppIds depending on
+                //       international characters and casing. To avoid this, it is recommended to
+                //       avoid calling FwpmGetAppIdFromFileName0() completely by passing in paths already
+                //       in kernel format.
                 uint err = NativeMethods.FwpmGetAppIdFromFileName0(filePath, out FwpmMemorySafeHandle tmpHandle);
                 appIdNativeMem = tmpHandle;
                 if (0 != err)

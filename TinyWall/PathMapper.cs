@@ -177,14 +177,15 @@ public sealed class PathMapper : IDisposable
 
     public string ConvertPathIgnoreErrors(string path, PathFormat target)
     {
+        if (string.IsNullOrEmpty(path)
+            || path.Equals("registry", StringComparison.OrdinalIgnoreCase)
+            || path.Equals("system", StringComparison.OrdinalIgnoreCase))
+        {
+            return path;
+        }
+
         try
         {
-            if (   path.Equals("registry", StringComparison.OrdinalIgnoreCase)
-                || path.Equals("system", StringComparison.OrdinalIgnoreCase))
-            {
-                return path;
-            }
-
             return ConvertPath(path, target);
         }
         catch

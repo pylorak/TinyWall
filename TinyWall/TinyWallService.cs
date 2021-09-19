@@ -62,7 +62,7 @@ namespace PKSoft
         private HashSet<IpAddrMask> GatewayAddresses = new HashSet<IpAddrMask>();
         private HashSet<IpAddrMask> DnsAddresses = new HashSet<IpAddrMask>();
 
-        private List<RuleDef> AssembleActiveRules(List<ExceptionSubject> rawSocketExceptions)
+        private List<RuleDef> AssembleActiveRules(List<RuleDef> rawSocketExceptions)
         {
             using (var timer = new HierarchicalStopwatch("AssembleActiveRules()"))
             {
@@ -263,11 +263,21 @@ namespace PKSoft
                     }   // if (ChildInheritance ...
                 }
 
+                // Convert all paths to kernel-format
+                foreach (var r in rules)
+                {
+                    r.Application = PathMapper.Instance.ConvertPathIgnoreErrors(r.Application, PathFormat.NativeNt);
+                }
+                foreach (var r in rawSocketExceptions)
+                {
+                    r.Application = PathMapper.Instance.ConvertPathIgnoreErrors(r.Application, PathFormat.NativeNt);
+                }
+
                 return rules;
             }
         }
 
-        private void InstallRules(List<RuleDef> rules, List<ExceptionSubject> rawSocketExceptions, bool useTransaction)
+        private void InstallRules(List<RuleDef> rules, List<RuleDef> rawSocketExceptions, bool useTransaction)
         {
             Transaction trx = useTransaction ? WfpEngine.BeginTransaction() : null;
             try
@@ -305,7 +315,7 @@ namespace PKSoft
                 LastRuleReloadTime = DateTime.Now;
 
                 List<RuleDef> rules;
-                List<ExceptionSubject> rawSocketExceptions = new List<ExceptionSubject>();
+                List<RuleDef> rawSocketExceptions = new List<RuleDef>();
                 lock (InheritanceGuard)
                 {
                     UserSubjectExes.Clear();
@@ -515,20 +525,7 @@ namespace PKSoft
                         System.Diagnostics.Debug.Assert(!r.Application.Equals("*"));
 
                         if (!LayerIsIcmpError(layer))
-                        {
-                            try
-                            {
-                                conditions.Add(new AppIdFilterCondition(r.Application));
-                            }
-                            catch (WfpException e) when (
-                                (e.ErrorCode == 2) ||
-                                (e.ErrorCode == 3) ||
-                                (e.ErrorCode == 5)
-                            )
-                            {
-                                conditions.Add(new AppIdFilterCondition(PathMapper.Instance.ConvertPathIgnoreErrors(r.Application, PathFormat.NativeNt), false, true));
-                            }
-                        }
+                            conditions.Add(new AppIdFilterCondition(r.Application, false, true));
                         else
                             return;
                     }
@@ -763,13 +760,13 @@ namespace PKSoft
             }
         }
 
-        private void InstallRawSocketPermits(List<ExceptionSubject> rawSocketExceptions)
+        private void InstallRawSocketPermits(List<RuleDef> rawSocketExceptions)
         {
             InstallRawSocketPermits(rawSocketExceptions, LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4);
             InstallRawSocketPermits(rawSocketExceptions, LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6);
         }
 
-        private void InstallRawSocketPermits(List<ExceptionSubject> rawSocketExceptions, LayerKeyEnum layer)
+        private void InstallRawSocketPermits(List<RuleDef> rawSocketExceptions, LayerKeyEnum layer)
         {
             foreach (var subj in rawSocketExceptions)
             {
@@ -777,10 +774,13 @@ namespace PKSoft
 
                 try
                 {
-                    if ((subj is ExecutableSubject exe) && !string.IsNullOrEmpty(exe.ExecutablePath))
-                        conditions.Add(new AppIdFilterCondition(exe.ExecutablePath));
-                    if ((subj is ServiceSubject srv) && !string.IsNullOrEmpty(srv.ServiceName))
-                        conditions.Add(new ServiceNameFilterCondition(srv.ServiceName));
+                    if (!string.IsNullOrEmpty(subj.Application))
+                        conditions.Add(new AppIdFilterCondition(subj.Application, false, true));
+                    if (!string.IsNullOrEmpty(subj.ServiceName))
+                        conditions.Add(new ServiceNameFilterCondition(subj.ServiceName));
+
+                    if (conditions.Count == 0)
+                        return;
 
                     using (Filter f = new Filter(
                         "Raw socket permit",
@@ -941,7 +941,7 @@ namespace PKSoft
             return exceptions;
         }
 
-        private void GetRulesForException(FirewallExceptionV3 ex, List<RuleDef> results, List<ExceptionSubject> rawSocketExceptions, ulong permitWeight, ulong blockWeight)
+        private void GetRulesForException(FirewallExceptionV3 ex, List<RuleDef> results, List<RuleDef> rawSocketExceptions, ulong permitWeight, ulong blockWeight)
         {
             if (ex.Id == Guid.Empty)
             {
@@ -972,7 +972,7 @@ namespace PKSoft
                         if (rawSocketExceptions != null)
                         {
                             // Make exception for promiscuous mode
-                            rawSocketExceptions.Add(ex.Subject);
+                            rawSocketExceptions.Add(def);
                         }
 
                         break;
@@ -1420,7 +1420,7 @@ namespace PKSoft
                 case MessageType.ADD_TEMPORARY_EXCEPTION:
                     {
                         List<RuleDef> rules = new List<RuleDef>();
-                        List<ExceptionSubject> rawSocketExceptions = new List<ExceptionSubject>();
+                        List<RuleDef> rawSocketExceptions = new List<RuleDef>();
                         List<FirewallExceptionV3> exceptions = req.Arguments[0] as List<FirewallExceptionV3>;
 
                         foreach (var ex in exceptions)
