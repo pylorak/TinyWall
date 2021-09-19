@@ -154,6 +154,7 @@ namespace PKSoft
                 for (int i = 0; i < filteredLog.Count; ++i)
                 {
                     FirewallLogEntry entry = filteredLog[i];
+                    entry.AppPath = TinyWall.Interface.Internal.Utils.GetExactPath(entry.AppPath);   // correct path capitalization
                     ConstructListItem(itemColl, entry.AppPath, entry.PackageId, (int)entry.ProcessId, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.LocalIp), entry.LocalPort), new IPEndPoint(IPAddress.Parse(entry.RemoteIp), entry.RemotePort), "Blocked", entry.Timestamp, entry.Direction, uwpPackages);
                 }
             }
