@@ -87,7 +87,7 @@ namespace PKSoft
                 case 5158:
                 case 5159:
                     entry.ProcessId = (UInt64)e.EventRecord.Properties[0].Value;
-                    entry.AppPath = PathMapper.Instance.ConvertPathIgnoreErrors((string)e.EventRecord.Properties[1].Value, PathFormat.Win32);
+                    entry.AppPath = (string)e.EventRecord.Properties[1].Value;
                     entry.LocalIp = (string)e.EventRecord.Properties[2].Value;
                     entry.LocalPort = int.Parse((string)e.EventRecord.Properties[3].Value);
                     entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[4].Value;
@@ -98,7 +98,7 @@ namespace PKSoft
                 case 5157:
                 default:
                     entry.ProcessId = (UInt64)e.EventRecord.Properties[0].Value;
-                    entry.AppPath = PathMapper.Instance.ConvertPathIgnoreErrors((string)e.EventRecord.Properties[1].Value, PathFormat.Win32);
+                    entry.AppPath = (string)e.EventRecord.Properties[1].Value;
                     entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[7].Value;
                     switch ((string)e.EventRecord.Properties[2].Value)
                     {
@@ -122,6 +122,12 @@ namespace PKSoft
                     }
                     break;
             }
+
+            // Convert path to Win32 format
+            entry.AppPath = PathMapper.Instance.ConvertPathIgnoreErrors(entry.AppPath, PathFormat.Win32);
+
+            // Correct casing of app path
+            entry.AppPath = TinyWall.Interface.Internal.Utils.GetExactPath(entry.AppPath);
 
             // Replace invalid IP strings with the "unspecified address" IPv6 specifier
             if (string.IsNullOrEmpty(entry.RemoteIp))
