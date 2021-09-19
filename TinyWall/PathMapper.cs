@@ -44,6 +44,7 @@ public sealed class PathMapper : IDisposable
     private readonly object locker = new object();
     private bool disposed = false;
 
+    public event EventHandler MountPointsChanged;
 
     private static volatile PathMapper _instance;
     private static readonly object _singletonLock = new object();
@@ -92,6 +93,12 @@ public sealed class PathMapper : IDisposable
         {
             e.NewEvent.Dispose();
         }
+
+        try
+        {
+            MountPointsChanged?.Invoke(this, EventArgs.Empty);
+        }
+        catch { }
     }
 
     private DriveCache[] _cache;
