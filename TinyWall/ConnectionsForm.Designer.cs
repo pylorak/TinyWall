@@ -33,6 +33,7 @@
             this.btnClose = new System.Windows.Forms.Button();
             this.list = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -70,6 +71,7 @@
             resources.ApplyResources(this.list, "list");
             this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
+            this.columnHeader10,
             this.columnHeader2,
             this.columnHeader3,
             this.columnHeader4,
@@ -94,6 +96,11 @@
             // 
             this.columnHeader1.Tag = "colProcess";
             resources.ApplyResources(this.columnHeader1, "columnHeader1");
+            // 
+            // columnHeader10
+            // 
+            this.columnHeader10.Tag = "colService";
+            resources.ApplyResources(this.columnHeader10, "columnHeader10");
             // 
             // columnHeader2
             // 
@@ -285,5 +292,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuRemoteAddressOnTheWeb;
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.ColumnHeader columnHeader9;
+        private System.Windows.Forms.ColumnHeader columnHeader10;
     }
 }

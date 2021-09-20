@@ -722,35 +722,10 @@ namespace PKSoft
             }
         }
 
-        private void mnuWhitelistByProcess_Click(object sender, EventArgs e)
+        public void WhitelistProcesses(List<ProcessInfo> list)
         {
-            if (FlashIfOpen(typeof(SettingsForm)))
-                return;
-
-            if (!EnsureUnlockedServer())
-                return;
-
-            List<ProcessInfo> pathList = new List<ProcessInfo>();
-            using (ProcessesForm pf = new ProcessesForm(true))
-            {
-                try
-                {
-                    ActiveForms.Add(pf);
-
-                    if (pf.ShowDialog(null) == DialogResult.Cancel)
-                        return;
-
-                    pathList.AddRange(pf.Selection);
-                }
-                finally
-                {
-                    ActiveForms.Remove(pf);
-                }
-            }
-            if (pathList.Count == 0) return;
-
-            List<FirewallExceptionV3> exceptions = new List<FirewallExceptionV3>();
-            foreach (var sel in pathList)   // for each selection item from the Processes window list
+            var exceptions = new List<FirewallExceptionV3>();
+            foreach (var sel in list)
             {
                 if (string.IsNullOrEmpty(sel.ExePath))
                     continue;
@@ -787,6 +762,34 @@ namespace PKSoft
             }
 
             AddExceptions(exceptions);
+        }
+
+        private void mnuWhitelistByProcess_Click(object sender, EventArgs e)
+        {
+            if (FlashIfOpen(typeof(SettingsForm)))
+                return;
+
+            if (!EnsureUnlockedServer())
+                return;
+
+            var selection = new List<ProcessInfo>();
+            using (var pf = new ProcessesForm(true))
+            {
+                try
+                {
+                    ActiveForms.Add(pf);
+
+                    if (pf.ShowDialog(null) == DialogResult.Cancel)
+                        return;
+
+                    selection.AddRange(pf.Selection);
+                }
+                finally
+                {
+                    ActiveForms.Remove(pf);
+                }
+            }
+            WhitelistProcesses(selection);
         }
 
         internal MessageType ApplyFirewallSettings(ServerConfiguration srvConfig, bool showUI = true)
