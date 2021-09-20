@@ -25,7 +25,7 @@ namespace PKSoft
             internal static extern IntPtr WindowFromPoint(Point pt);
 
             [DllImport("user32.dll", SetLastError = true)]
-            internal static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
+            internal static extern int GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
             [DllImport("user32.dll")]
             internal static extern IntPtr GetForegroundWindow();
@@ -42,7 +42,7 @@ namespace PKSoft
 
             [DllImport("kernel32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
-            internal static extern bool GetNamedPipeClientProcessId(IntPtr Pipe, out long ClientProcessId);
+            internal static extern bool GetNamedPipeClientProcessId(IntPtr Pipe, out ulong ClientProcessId);
 
             [DllImport("Wer.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
             internal static extern void WerAddExcludedApplication(
@@ -168,7 +168,8 @@ namespace PKSoft
                     // launcherVisible flag is valid
                     success = true;
 
-                    using (Process p = Process.GetProcessById(Utils.GetForegroundProcessPid()))
+                    var pid = Utils.GetForegroundProcessPid();
+                    using (Process p = Process.GetProcessById(unchecked((int)pid)))
                     {
                         return launcherVisible || Utils.IsImmersiveProcess(p);
                     }
@@ -189,10 +190,10 @@ namespace PKSoft
             Utils.StartProcess(Path.Combine(Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath), "Toaster.exe"), args, false, true);
         }
 
-        internal static int GetForegroundProcessPid()
+        internal static uint GetForegroundProcessPid()
         {
             IntPtr hwnd = SafeNativeMethods.GetForegroundWindow();
-            SafeNativeMethods.GetWindowThreadProcessId(hwnd, out int pid);
+            SafeNativeMethods.GetWindowThreadProcessId(hwnd, out uint pid);
             return pid;
         }
 
@@ -254,7 +255,7 @@ namespace PKSoft
             }
         }
 
-        internal static string GetPathOfProcessUseTwService(int pid, TinyWall.Interface.Controller controller)
+        internal static string GetPathOfProcessUseTwService(uint pid, TinyWall.Interface.Controller controller)
         {
             // Shortcut for special case
             if ((pid == 0) || (pid == 4))
@@ -267,7 +268,7 @@ namespace PKSoft
             return ret;
         }
 
-        internal static string GetPathOfProcess(int pid)
+        internal static string GetPathOfProcess(uint pid)
         {
             // Shortcut for special case
             if ((pid == 0) || (pid == 4))
@@ -280,9 +281,9 @@ namespace PKSoft
             return ret;
         }
 
-        internal static int GetPidUnderCursor(int x, int y)
+        internal static uint GetPidUnderCursor(int x, int y)
         {
-            SafeNativeMethods.GetWindowThreadProcessId(SafeNativeMethods.WindowFromPoint(new System.Drawing.Point(x, y)), out int procId);
+            SafeNativeMethods.GetWindowThreadProcessId(SafeNativeMethods.WindowFromPoint(new System.Drawing.Point(x, y)), out uint procId);
             return procId;
         }
 

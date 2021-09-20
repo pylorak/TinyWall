@@ -47,7 +47,7 @@ namespace PKSoft.netstat
             internal uint remoteAddr;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
             internal byte[] remotePort;
-            internal int owningPid;
+            internal uint owningPid;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -76,7 +76,7 @@ namespace PKSoft.netstat
             internal byte[] remotePort;
 
             internal TcpState state;
-            internal int owningPid;
+            internal uint owningPid;
         }
 
         internal enum UdpTableType
@@ -99,7 +99,7 @@ namespace PKSoft.netstat
             internal uint localAddr;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
             internal byte[] localPort;
-            internal int owningPid;
+            internal uint owningPid;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -119,7 +119,7 @@ namespace PKSoft.netstat
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
             internal byte[] localPort;
 
-            internal int owningPid;
+            internal uint owningPid;
         }
     }
 }

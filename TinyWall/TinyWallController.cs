@@ -949,7 +949,7 @@ namespace PKSoft
             {
                 try
                 {
-                    int pid = Utils.GetForegroundProcessPid();
+                    uint pid = Utils.GetForegroundProcessPid();
                     string filePath = Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller);
                     if (string.IsNullOrEmpty(filePath))
                         throw new Exception();
@@ -1001,7 +1001,7 @@ namespace PKSoft
                     MouseInterceptor.Dispose();
                     MouseInterceptor = null;
 
-                    int pid = Utils.GetPidUnderCursor(x, y);
+                    uint pid = Utils.GetPidUnderCursor(x, y);
                     string exePath = Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller);
                     UwpPackage.Package? appContainer = UwpPackage.FindPackageDetails(ProcessManager.GetAppContainerSid(pid));
 

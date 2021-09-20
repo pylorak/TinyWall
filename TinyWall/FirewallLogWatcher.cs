@@ -86,20 +86,20 @@ namespace PKSoft
                 case 5155:
                 case 5158:
                 case 5159:
-                    entry.ProcessId = (UInt64)e.EventRecord.Properties[0].Value;
+                    entry.ProcessId = (uint)(ulong)e.EventRecord.Properties[0].Value;
                     entry.AppPath = (string)e.EventRecord.Properties[1].Value;
                     entry.LocalIp = (string)e.EventRecord.Properties[2].Value;
                     entry.LocalPort = int.Parse((string)e.EventRecord.Properties[3].Value);
-                    entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[4].Value;
+                    entry.Protocol = (Protocol)(uint)e.EventRecord.Properties[4].Value;
                     entry.RemoteIp = string.Empty;
                     entry.RemotePort = 0;
                     break;
                 case 5156:
                 case 5157:
                 default:
-                    entry.ProcessId = (UInt64)e.EventRecord.Properties[0].Value;
+                    entry.ProcessId = (uint)(ulong)e.EventRecord.Properties[0].Value;
                     entry.AppPath = (string)e.EventRecord.Properties[1].Value;
-                    entry.Protocol = (Protocol)(UInt32)e.EventRecord.Properties[7].Value;
+                    entry.Protocol = (Protocol)(uint)e.EventRecord.Properties[7].Value;
                     switch ((string)e.EventRecord.Properties[2].Value)
                     {
                         case "%%14592":

@@ -16,7 +16,7 @@ namespace PKSoft
         protected static class SafeNativeMethods
         {
             [DllImport("kernel32", SetLastError = true)]
-            internal static extern SafeObjectHandle OpenProcess(ProcessAccessFlags dwDesiredAccess, bool bInheritHandle, int dwProcessId);
+            internal static extern SafeObjectHandle OpenProcess(ProcessAccessFlags dwDesiredAccess, bool bInheritHandle, uint dwProcessId);
 
             [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
             internal static extern bool QueryFullProcessImageName(SafeObjectHandle hProcess, QueryFullProcessImageNameFlags dwFlags, [Out] StringBuilder lpExeName, ref int size);
@@ -163,11 +163,11 @@ namespace PKSoft
         {
             public uint dwSize;
             public uint cntUsage;
-            public int th32ProcessID;
+            public uint th32ProcessID;
             public IntPtr th32DefaultHeapID;
             public uint th32ModuleID;
             public uint cntThreads;
-            public int th32ParentProcessID;
+            public uint th32ParentProcessID;
             public int pcPriClassBase;
             public uint dwFlags;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)] public string szExeFile;
@@ -225,16 +225,17 @@ namespace PKSoft
         {
             using (var proc = Process.GetCurrentProcess())
             {
-                return ProcessManager.GetProcessPath(proc.Id);
+                uint pid = unchecked((uint)proc.Id);
+                return ProcessManager.GetProcessPath(pid);
             }
         }
-        public static string GetProcessPath(int processId)
+        public static string GetProcessPath(uint processId)
         {
             var buffer = new StringBuilder(MIN_PATH_BUFF_SIZE);
             return GetProcessPath(processId, buffer);
         }
 
-        public static string GetProcessPath(int processId, StringBuilder buffer)
+        public static string GetProcessPath(uint processId, StringBuilder buffer)
         {
             using (var hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
             {
@@ -280,7 +281,7 @@ namespace PKSoft
             return null;
         }
 
-        public static bool GetParentProcess(int processId, ref int parentPid)
+        public static bool GetParentProcess(uint processId, ref uint parentPid)
         {
             using (var hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
             {
@@ -300,7 +301,7 @@ namespace PKSoft
                     if (status < 0)
                         throw new Exception($"NTSTATUS: {status}");
 
-                    parentPid = pbi.InheritedFromUniqueProcessId.ToInt32();
+                    parentPid = unchecked((uint)pbi.InheritedFromUniqueProcessId.ToInt32());
 
                     // parentPid might have been reused and thus might not be the actual parent.
                     // Check process creation times to figure it out.
@@ -392,7 +393,7 @@ namespace PKSoft
             }
         }
 
-        public static string GetAppContainerSid(int pid)
+        public static string GetAppContainerSid(uint pid)
         {
             if (!UwpPackage.PlatformSupport)
                 return null;

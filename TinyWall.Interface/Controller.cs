@@ -134,7 +134,7 @@ namespace TinyWall.Interface
             return Endpoint.QueueMessageSimple(MessageType.LOCK).Type;
         }
 
-        public string TryGetProcessPath(int pid)
+        public string TryGetProcessPath(uint pid)
         {
             TwMessage resp = Endpoint.QueueMessageSimple(MessageType.GET_PROCESS_PATH, pid);
             if (resp.Type == MessageType.RESPONSE_OK)

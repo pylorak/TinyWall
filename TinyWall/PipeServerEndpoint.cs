@@ -97,11 +97,10 @@ namespace PKSoft
         private bool AuthAsServer(PipeStream stream)
         {
 #if !DEBUG
-            long clientPid;
-            if (!Utils.SafeNativeMethods.GetNamedPipeClientProcessId(stream.SafePipeHandle.DangerousGetHandle(), out clientPid))
+            if (!Utils.SafeNativeMethods.GetNamedPipeClientProcessId(stream.SafePipeHandle.DangerousGetHandle(), out ulong clientPid))
                 return false;
 
-            string clientFilePath = Utils.GetPathOfProcess((int)clientPid);
+            string clientFilePath = Utils.GetPathOfProcess((uint)clientPid);
 
             return clientFilePath.Equals(ProcessManager.ExecutablePath, StringComparison.OrdinalIgnoreCase);
 #else

@@ -9,7 +9,7 @@ namespace PKSoft.netstat
         private IPEndPoint localEndPoint;
         private IPEndPoint remoteEndPoint;
         private TcpState state;
-        private int processId;
+        private uint processId;
 
         internal TcpRow(SafeNativeMethods.Tcp4Row tcpRow)
         {
@@ -55,7 +55,7 @@ namespace PKSoft.netstat
             get { return this.state; }
         }
 
-        internal int ProcessId
+        internal uint ProcessId
         {
             get { return this.processId; }
         }

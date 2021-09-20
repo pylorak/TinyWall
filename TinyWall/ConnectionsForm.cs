@@ -36,7 +36,7 @@ namespace PKSoft
             this.Close();
         }
 
-        private string GetPathFromPidCached(Dictionary<int, string> cache, int pid, string path = null)
+        private string GetPathFromPidCached(Dictionary<uint, string> cache, uint pid, string path = null)
         {
             if (cache.ContainsKey(pid))
                 return cache[pid];
@@ -52,10 +52,10 @@ namespace PKSoft
         {
             Future<TwMessage> fwLogRequest = GlobalInstances.Controller.BeginReadFwLog();
 
-            UwpPackage uwpPackages = new UwpPackage();
-            List<ListViewItem> itemColl = new List<ListViewItem>();
-            Dictionary<int, string> procCache = new Dictionary<int, string>();
-            ServicePidMap servicePids = new ServicePidMap();
+            var uwpPackages = new UwpPackage();
+            var itemColl = new List<ListViewItem>();
+            var procCache = new Dictionary<uint, string>();
+            var servicePids = new ServicePidMap();
 
             // Retrieve IP tables while waiting for log entries
 
@@ -99,65 +99,88 @@ namespace PKSoft
             }
 
             // Finished reading tables, continues with log processing
-
-            // Add new log entries
             List<FirewallLogEntry> fwLog = GlobalInstances.Controller.EndReadFwLog(fwLogRequest);
-            List<FirewallLogEntry> filteredLog = new List<FirewallLogEntry>();
-            TimeSpan refSpan = TimeSpan.FromMinutes(5);
-            for (int i = 0; i < fwLog.Count; ++i)
-            {
-                FirewallLogEntry newEntry = fwLog[i];
-
-                // Ignore log entries older than refSpan
-                TimeSpan span = now - newEntry.Timestamp;
-                if (span > refSpan)
-                    continue;
-
-                switch (newEntry.Event)
-                {
-                    case EventLogEvent.ALLOWED_LISTEN:
-                    case EventLogEvent.ALLOWED_CONNECTION:
-                    case EventLogEvent.ALLOWED_LOCAL_BIND:
-                    case EventLogEvent.ALLOWED:
-                        {
-                            newEntry.Event = EventLogEvent.ALLOWED;
-                            break;
-                        }
-                    case EventLogEvent.BLOCKED_LISTEN:
-                    case EventLogEvent.BLOCKED_CONNECTION:
-                    case EventLogEvent.BLOCKED_LOCAL_BIND:
-                    case EventLogEvent.BLOCKED_PACKET:
-                    case EventLogEvent.BLOCKED:
-                        {
-                            bool matchFound = false;
-                            newEntry.Event = EventLogEvent.BLOCKED;
-
-                            for (int j = 0; j < filteredLog.Count; ++j)
-                            {
-                                FirewallLogEntry oldEntry = filteredLog[j];
-                                if (oldEntry.Equals(newEntry, false))
-                                {
-                                    matchFound = true;
-                                    oldEntry.Timestamp = newEntry.Timestamp;
-                                    break;
-                                }
-                            }
-
-                            if (!matchFound)
-                                filteredLog.Add(newEntry);
-                            break;
-                        }
-                }
-            }
 
             // Show log entries if requested by user
             if (chkShowBlocked.Checked)
             {
+                // Try to resolve PIDs heuristically
+                var ProcessPathInfoMap = new Dictionary<string, List<ProcessManager.ExtendedProcessEntry>>();
+                foreach (var p in ProcessManager.CreateToolhelp32SnapshotExtended())
+                {
+                    if (string.IsNullOrEmpty(p.ImagePath))
+                        continue;
+
+                    var key = p.ImagePath.ToLowerInvariant();
+                    if (!ProcessPathInfoMap.ContainsKey(key))
+                        ProcessPathInfoMap.Add(key, new List<ProcessManager.ExtendedProcessEntry>());
+                    ProcessPathInfoMap[key].Add(p);
+                }
+
+                foreach (var e in fwLog)
+                {
+                    var key = e.AppPath.ToLowerInvariant();
+                    if (!ProcessPathInfoMap.ContainsKey(key))
+                        continue;
+
+                    var p = ProcessPathInfoMap[key];
+                    if ((p.Count == 1) && (p[0].CreationTime < e.Timestamp.ToFileTime()))
+                        e.ProcessId = p[0].BaseEntry.th32ProcessID;
+                }
+
+                List<FirewallLogEntry> filteredLog = new List<FirewallLogEntry>();
+                TimeSpan refSpan = TimeSpan.FromMinutes(5);
+                for (int i = 0; i < fwLog.Count; ++i)
+                {
+                    FirewallLogEntry newEntry = fwLog[i];
+
+                    // Ignore log entries older than refSpan
+                    TimeSpan span = now - newEntry.Timestamp;
+                    if (span > refSpan)
+                        continue;
+
+                    switch (newEntry.Event)
+                    {
+                        case EventLogEvent.ALLOWED_LISTEN:
+                        case EventLogEvent.ALLOWED_CONNECTION:
+                        case EventLogEvent.ALLOWED_LOCAL_BIND:
+                        case EventLogEvent.ALLOWED:
+                            {
+                                newEntry.Event = EventLogEvent.ALLOWED;
+                                break;
+                            }
+                        case EventLogEvent.BLOCKED_LISTEN:
+                        case EventLogEvent.BLOCKED_CONNECTION:
+                        case EventLogEvent.BLOCKED_LOCAL_BIND:
+                        case EventLogEvent.BLOCKED_PACKET:
+                        case EventLogEvent.BLOCKED:
+                            {
+                                bool matchFound = false;
+                                newEntry.Event = EventLogEvent.BLOCKED;
+
+                                for (int j = 0; j < filteredLog.Count; ++j)
+                                {
+                                    FirewallLogEntry oldEntry = filteredLog[j];
+                                    if (oldEntry.Equals(newEntry, false))
+                                    {
+                                        matchFound = true;
+                                        oldEntry.Timestamp = newEntry.Timestamp;
+                                        break;
+                                    }
+                                }
+
+                                if (!matchFound)
+                                    filteredLog.Add(newEntry);
+                                break;
+                            }
+                    }
+                }
+
                 for (int i = 0; i < filteredLog.Count; ++i)
                 {
                     FirewallLogEntry entry = filteredLog[i];
                     entry.AppPath = TinyWall.Interface.Internal.Utils.GetExactPath(entry.AppPath);   // correct path capitalization
-                    ConstructListItem(itemColl, entry.AppPath, entry.PackageId, (int)entry.ProcessId, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.LocalIp), entry.LocalPort), new IPEndPoint(IPAddress.Parse(entry.RemoteIp), entry.RemotePort), "Blocked", entry.Timestamp, entry.Direction, uwpPackages, servicePids);
+                    ConstructListItem(itemColl, entry.AppPath, entry.PackageId, entry.ProcessId, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.LocalIp), entry.LocalPort), new IPEndPoint(IPAddress.Parse(entry.RemoteIp), entry.RemotePort), "Blocked", entry.Timestamp, entry.Direction, uwpPackages, servicePids);
                 }
             }
 
@@ -168,7 +191,7 @@ namespace PKSoft
             list.EndUpdate();
         }
 
-        private void ConstructListItem(List<ListViewItem> itemColl, string appPath, string packageId, int procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, RuleDirection dir, UwpPackage uwpList, ServicePidMap servicePidMap)
+        private void ConstructListItem(List<ListViewItem> itemColl, string appPath, string packageId, uint procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, RuleDirection dir, UwpPackage uwpList, ServicePidMap servicePidMap)
         {
             try
             {
@@ -176,12 +199,12 @@ namespace PKSoft
                 {
                     ExePath = appPath,
                     Package = uwpList.FindPackage(packageId),
-                    Services = servicePidMap.GetServicesInPid((uint)procId)
-            };
+                    Services = servicePidMap.GetServicesInPid(procId)
+                };
 
                 // Construct list item
                 string name = e.Package.HasValue ? e.Package.Value.Name : System.IO.Path.GetFileName(appPath);
-                string title = (procId != 0) ? $"{name} ({procId})" : $"{name} (?)";
+                string title = (procId != 0) ? $"{name} ({procId})" : $"{name}";
                 ListViewItem li = new ListViewItem(title);
                 li.Tag = e;
                 li.ToolTipText = appPath;
@@ -210,7 +233,7 @@ namespace PKSoft
                 }
 
                 if (e.Pid == 0)
-                    li.SubItems.Add("?");
+                    li.SubItems.Add(string.Empty);
                 else
                     li.SubItems.Add(string.Join(", ", e.Services.ToArray()));
                 li.SubItems.Add(protocol);
@@ -345,7 +368,7 @@ namespace PKSoft
 
                 try
                 {
-                    using (Process proc = Process.GetProcessById(pi.Pid))
+                    using (Process proc = Process.GetProcessById(unchecked((int)pi.Pid)))
                     {
                         try
                         {

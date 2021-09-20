@@ -31,7 +31,7 @@ namespace TinyWall.Interface
         public DateTime Timestamp;
         public EventLogEvent Event;
         [CLSCompliant(false)]
-        public UInt64 ProcessId;
+        public uint ProcessId;
         public Protocol Protocol;
         public RuleDirection Direction;
         public string LocalIp;

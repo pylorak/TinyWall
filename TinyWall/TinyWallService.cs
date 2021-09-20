@@ -187,7 +187,7 @@ namespace PKSoft
                         timer.NewSubTask("Rule inheritance processing");
 
                         StringBuilder sbuilder = new StringBuilder(1024);
-                        Dictionary<int, ProcessManager.ExtendedProcessEntry> procTree = new Dictionary<int, ProcessManager.ExtendedProcessEntry>();
+                        var procTree = new Dictionary<uint, ProcessManager.ExtendedProcessEntry>();
                         foreach (var p in ProcessManager.CreateToolhelp32SnapshotExtended())
                         {
                             var p2 = p;
@@ -198,7 +198,7 @@ namespace PKSoft
 
                         // This list will hold parents that we already checked for a process.
                         // Used to avoid inf. loop when parent-PID info is unreliable.
-                        HashSet<int> pidsChecked = new HashSet<int>();
+                        var pidsChecked = new HashSet<uint>();
 
                         foreach (var pair in procTree)
                         {
@@ -1490,7 +1490,7 @@ namespace PKSoft
                     }
                 case MessageType.GET_PROCESS_PATH:
                     {
-                        int pid = (int)req.Arguments[0];
+                        var pid = (uint)req.Arguments[0];
                         string path = Utils.GetPathOfProcess(pid);
                         if (string.IsNullOrEmpty(path))
                             return new TwMessage(MessageType.RESPONSE_ERROR);
@@ -1781,7 +1781,7 @@ namespace PKSoft
                 using (var throttler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest, true, false))
                 {
                     uint pid = (uint)(e.NewEvent["ProcessID"]);
-                    string path = ProcessManager.GetProcessPath(unchecked((int)pid), ProcessStartWatcher_Sbuilder);
+                    string path = ProcessManager.GetProcessPath(pid, ProcessStartWatcher_Sbuilder);
 
                     // Skip if we have no path
                     if (string.IsNullOrEmpty(path))
@@ -1797,10 +1797,10 @@ namespace PKSoft
 
                         // This list will hold parents that we already checked for a process.
                         // Used to avoid inf. loop when parent-PID info is unreliable.
-                        HashSet<int> pidsChecked = new HashSet<int>();
+                        var pidsChecked = new HashSet<uint>();
 
                         // Start walking up the process tree
-                        for (int parentPid = unchecked((int)pid); ;)
+                        for (var parentPid = pid; ;)
                         {
                             if (!ProcessManager.GetParentProcess(parentPid, ref parentPid))
                                 // We reached the top of the process tree (with non-existent parent)

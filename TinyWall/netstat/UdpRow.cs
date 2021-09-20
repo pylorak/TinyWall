@@ -7,7 +7,7 @@ namespace PKSoft.netstat
     {
         private IPVersion ipVersion;
         private IPEndPoint localEndPoint;
-        private int processId;
+        private uint processId;
 
         internal UdpRow(SafeNativeMethods.Udp4Row udpRow)
         {
@@ -33,7 +33,7 @@ namespace PKSoft.netstat
             get { return this.localEndPoint; }
         }
 
-        internal int ProcessId
+        internal uint ProcessId
         {
             get { return this.processId; }
         }
