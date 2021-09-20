@@ -2023,6 +2023,7 @@ namespace PKSoft
     {
         internal readonly static string[] ServiceDependencies = new string[]
         {
+            "Schedule",
             "Winmgmt",
             "BFE"
         };

@@ -299,6 +299,11 @@ namespace PKSoft
                 act.Path = TinyWall.Interface.Internal.Utils.ExecutablePath;
                 taskService.GetFolder(@"\").RegisterTaskDefinition(CONTROLLER_START_TASKSCH_NAME, td, TASK_CREATE_OR_UPDATE, null, null, _TASK_LOGON_TYPE.TASK_LOGON_NONE);
             }
+            catch (System.Runtime.InteropServices.COMException e)
+            {
+                if (!Utils.IsSystemShuttingDown())
+                    Utils.LogException(e, logContext);
+            }
             catch (Exception e)
             {
                 Utils.LogException(e, logContext);
