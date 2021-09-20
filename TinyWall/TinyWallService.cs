@@ -1166,10 +1166,13 @@ namespace PKSoft
                     try
                     {
                         string filePath = Path.Combine(ServiceSettings21.AppDataPath, LastUpdateCheck_FILENAME);
-                        using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                        using (StreamReader sr = new StreamReader(fs, Encoding.UTF8))
+                        if (File.Exists(filePath))
                         {
-                            LastUpdateCheck_ = DateTime.Parse(sr.ReadLine());
+                            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                            using (StreamReader sr = new StreamReader(fs, Encoding.UTF8))
+                            {
+                                LastUpdateCheck_ = DateTime.Parse(sr.ReadLine());
+                            }
                         }
                     }
                     catch { }
