@@ -47,7 +47,7 @@ namespace PKSoft
 
             try
             {
-                using (var scm = new ScmWrapper.ServiceControlManager())
+                using (var scm = new ServiceControlManager())
                 {
                     scm.SetLoadOrderGroup(TinyWallService.SERVICE_NAME, @"NetworkProvider");
                 }

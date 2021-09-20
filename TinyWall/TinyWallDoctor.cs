@@ -259,7 +259,7 @@ namespace PKSoft
             // Ensure that TinyWall itself can be started
             try
             {
-                using (ScmWrapper.ServiceControlManager scm = new ScmWrapper.ServiceControlManager())
+                using (ServiceControlManager scm = new ServiceControlManager())
                 {
                     scm.SetStartupMode(TinyWallService.SERVICE_NAME, ServiceStartMode.Automatic);
                     scm.SetRestartOnFailure(TinyWallService.SERVICE_NAME, true);
@@ -318,7 +318,7 @@ namespace PKSoft
             }
 
             // Enable services we need
-            using (ScmWrapper.ServiceControlManager scm = new ScmWrapper.ServiceControlManager())
+            using (ServiceControlManager scm = new ServiceControlManager())
             {
                 foreach (string srv in deps)
                 {

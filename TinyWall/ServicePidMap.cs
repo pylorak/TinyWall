@@ -10,17 +10,19 @@ namespace PKSoft
 
         public ServicePidMap()
         {
-            ScmWrapper.ServiceControlManager scm = new ScmWrapper.ServiceControlManager();
-            var services = ServiceController.GetServices();
-            foreach (var service in services)
+            using (var scm = new ServiceControlManager())
             {
-                if (service.Status != ServiceControllerStatus.Running)
-                    continue;
+                var services = ServiceController.GetServices();
+                foreach (var service in services)
+                {
+                    if (service.Status != ServiceControllerStatus.Running)
+                        continue;
 
-                uint pid = scm.GetServicePid(service.ServiceName);
-                if (!Cache.ContainsKey(pid))
-                    Cache.Add(pid, new HashSet<string>());
-                Cache[pid].Add(service.ServiceName);
+                    uint pid = scm.GetServicePid(service.ServiceName);
+                    if (!Cache.ContainsKey(pid))
+                        Cache.Add(pid, new HashSet<string>());
+                    Cache[pid].Add(service.ServiceName);
+                }
             }
         }
 

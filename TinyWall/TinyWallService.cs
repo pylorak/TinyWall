@@ -2060,9 +2060,9 @@ namespace PKSoft
                 if (!IsComputerShuttingDown)    // cannot set service state if a shutdown is already in progress
                 {
                     // Set service state to stopped or else we will be restarted by the SCM when our process ends
-                    using (var srvManager = new ScmWrapper.ServiceControlManager())
+                    using (var srvManager = new ServiceControlManager())
                     {
-                        srvManager.SetServiceState(ServiceName, ServiceHandle, ScmWrapper.State.SERVICE_STOPPED, 0);
+                        srvManager.SetServiceState(ServiceName, ServiceHandle, ServiceState.SERVICE_STOPPED, 0);
                     }
                 }
                 Process.GetCurrentProcess().Kill();

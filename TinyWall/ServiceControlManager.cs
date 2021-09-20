@@ -7,7 +7,7 @@ using System.ServiceProcess;
 using Microsoft.Win32.SafeHandles;
 using TinyWall.Interface.Internal;
 
-namespace ScmWrapper
+namespace PKSoft
 {
     #region Win32 API Declarations
 
@@ -55,71 +55,54 @@ namespace ScmWrapper
     [StructLayout(LayoutKind.Sequential)]
     struct QUERY_SERVICE_CONFIG
     {
-        [MarshalAs(UnmanagedType.U4)]
-        internal UInt32 dwServiceType;
-        [MarshalAs(UnmanagedType.U4)]
-        internal UInt32 dwStartType;
-        [MarshalAs(UnmanagedType.U4)]
-        internal UInt32 dwErrorControl;
+        internal uint dwServiceType;
+        internal uint dwStartType;
+        internal uint dwErrorControl;
         [MarshalAs(UnmanagedType.LPTStr)]
-        internal String lpBinaryPathName;
+        internal string lpBinaryPathName;
         [MarshalAs(UnmanagedType.LPTStr)]
-        internal String lpLoadOrderGroup;
-        [MarshalAs(UnmanagedType.U4)]
-        internal UInt32 dwTagID;
+        internal string lpLoadOrderGroup;
+        internal uint dwTagID;
         [MarshalAs(UnmanagedType.LPTStr)]
-        internal String lpDependencies;
+        internal string lpDependencies;
         [MarshalAs(UnmanagedType.LPTStr)]
-        internal String lpServiceStartName;
+        internal string lpServiceStartName;
         [MarshalAs(UnmanagedType.LPTStr)]
-        internal String lpDisplayName;
+        internal string lpDisplayName;
     };
 
     [StructLayout(LayoutKind.Sequential)]
     internal sealed class SERVICE_STATUS_PROCESS
     {
-        [MarshalAs(UnmanagedType.U4)]
         internal uint dwServiceType;
-        [MarshalAs(UnmanagedType.U4)]
         internal uint dwCurrentState;
-        [MarshalAs(UnmanagedType.U4)]
         internal uint dwControlsAccepted;
-        [MarshalAs(UnmanagedType.U4)]
         internal uint dwWin32ExitCode;
-        [MarshalAs(UnmanagedType.U4)]
         internal uint dwServiceSpecificExitCode;
-        [MarshalAs(UnmanagedType.U4)]
         internal uint dwCheckPoint;
-        [MarshalAs(UnmanagedType.U4)]
         internal uint dwWaitHint;
-        [MarshalAs(UnmanagedType.U4)]
         internal uint dwProcessId;
-        [MarshalAs(UnmanagedType.U4)]
         internal uint dwServiceFlags;
     }
 
     struct SERVICE_FAILURE_ACTIONS 
     {
-        [MarshalAs(UnmanagedType.U4)]
-        internal UInt32 dwResetPeriod;
+        internal uint dwResetPeriod;
         [MarshalAs(UnmanagedType.LPStr)]
-        internal String lpRebootMsg;
+        internal string lpRebootMsg;
         [MarshalAs(UnmanagedType.LPStr)]
-        internal String lpCommand;
-        [MarshalAs(UnmanagedType.U4)]
-        internal UInt32 cActions;
+        internal string lpCommand;
+        internal uint cActions;
         internal IntPtr lpsaActions;
     }
 
     struct SC_ACTION
     {
-        [MarshalAs(UnmanagedType.U4)]
         internal SC_ACTION_TYPE Type;
-        [MarshalAs(UnmanagedType.U4)]
-        internal UInt32 Delay;
+        internal uint Delay;
     }
 
-    public enum State : int
+    public enum ServiceState : int
     {
         SERVICE_STOPPED = 0x00000001,
         SERVICE_START_PENDING = 0x00000002,
@@ -139,7 +122,7 @@ namespace ScmWrapper
     public struct SERVICE_STATUS
     {
         public int serviceType;
-        public State currentState;
+        public ServiceState currentState;
         public int controlsAccepted;
         public int win32ExitCode;
         public int serviceSpecificExitCode;
@@ -158,10 +141,6 @@ namespace ScmWrapper
             string databaseName,
             ServiceControlAccessRights desiredAccess);
 
-        [DllImport("advapi32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool CloseServiceHandle(IntPtr hSCObject);
-
         [DllImport("advapi32.dll", SetLastError = true, CharSet=CharSet.Unicode)]
         internal static extern IntPtr OpenService(
             SafeServiceHandle hSCManager,
@@ -171,10 +150,10 @@ namespace ScmWrapper
         [DllImport("advapi32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool QueryServiceConfig(
-            IntPtr hService,
+            SafeServiceHandle hService,
             IntPtr intPtrQueryConfig,
-            UInt32 cbBufSize,
-            out UInt32 pcbBytesNeeded);
+            uint cbBufSize,
+            out uint pcbBytesNeeded);
 
         /*
         [DllImport("advapi32.dll", SetLastError = true)]
@@ -189,10 +168,10 @@ namespace ScmWrapper
         [DllImport("advapi32.dll", SetLastError = true, CharSet=CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool ChangeServiceConfig(
-            IntPtr hService,
-            UInt32 nServiceType,
-            UInt32 nStartType,
-            UInt32 nErrorControl,
+            SafeServiceHandle hService,
+            uint nServiceType,
+            uint nStartType,
+            uint nErrorControl,
             string lpBinaryPathName,
             string lpLoadOrderGroup,
             IntPtr lpdwTagId,
@@ -203,7 +182,7 @@ namespace ScmWrapper
 
         [DllImport("advapi32.dll", SetLastError = true)]
         internal static extern int ChangeServiceConfig2(
-            IntPtr hService,
+            SafeServiceHandle hService,
             ServiceConfig2InfoLevel dwInfoLevel,
             IntPtr lpInfo);
 
@@ -211,12 +190,12 @@ namespace ScmWrapper
         internal static extern bool SetServiceStatus(IntPtr hServiceStatus, ref SERVICE_STATUS lpServiceStatus);
 
         [DllImport("advapi32.dll", SetLastError = true)]
-        internal static extern bool QueryServiceStatus(IntPtr hServiceStatus, ref SERVICE_STATUS lpServiceStatus);
+        internal static extern bool QueryServiceStatus(SafeServiceHandle hServiceStatus, ref SERVICE_STATUS lpServiceStatus);
 
         [DllImport("advapi32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool QueryServiceStatusEx(
-            IntPtr hService,
+            SafeServiceHandle hService,
             ServiceInfoLevel InfoLevel,
             IntPtr lpBuffer,
             uint cbBufSize,
@@ -227,6 +206,15 @@ namespace ScmWrapper
 
     internal class SafeServiceHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
+        [System.Security.SuppressUnmanagedCodeSecurity]
+        private static class NativeMethods
+        {
+            [DllImport("advapi32.dll", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool CloseServiceHandle(IntPtr hSCObject);
+
+        }
+
         // Create a SafeHandle, informing the base class
         // that this SafeHandle instance "owns" the handle,
         // and therefore SafeHandle should call
@@ -235,6 +223,11 @@ namespace ScmWrapper
         private SafeServiceHandle()
             : base(true)
         {
+        }
+
+        internal SafeServiceHandle(IntPtr handle) : base(true)
+        {
+            SetHandle(handle);
         }
 
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
@@ -259,20 +252,13 @@ namespace ScmWrapper
         private bool disposed = false;
         private SafeServiceHandle SCManager;
 
-        internal bool SetServiceState(string serviceName, IntPtr privateHndl, State state, int exitCode)
+        internal bool SetServiceState(string serviceName, IntPtr privateHndl, ServiceState state, int exitCode)
         {
-            IntPtr serviceHndl = OpenService(serviceName, ServiceAccessRights.SERVICE_QUERY_STATUS);
-
             SERVICE_STATUS status = new SERVICE_STATUS();
-            try
+            using (var serviceHndl = OpenService(serviceName, ServiceAccessRights.SERVICE_QUERY_STATUS))
             {
                 if (!NativeMethods.QueryServiceStatus(serviceHndl, ref status))
                     throw new Win32Exception();
-            }
-            finally
-            {
-                if (IntPtr.Zero != serviceHndl)
-                    NativeMethods.CloseServiceHandle(serviceHndl);
             }
 
             status.currentState = state;
@@ -286,7 +272,7 @@ namespace ScmWrapper
         /// Calls the Win32 OpenService function and performs error checking.
         /// </summary>
         /// <exception cref="ComponentModel.Win32Exception">"Unable to open the requested Service."</exception>
-        private IntPtr OpenService(string serviceName, ServiceAccessRights desiredAccess)
+        private SafeServiceHandle OpenService(string serviceName, ServiceAccessRights desiredAccess)
         {
             // Open the service
             IntPtr service = NativeMethods.OpenService(
@@ -298,7 +284,7 @@ namespace ScmWrapper
             if (service == IntPtr.Zero)
                 throw new Win32Exception(Marshal.GetLastWin32Error());
 
-            return service;
+            return new SafeServiceHandle(service);
         }
 
         /// <summary>
@@ -388,17 +374,16 @@ namespace ScmWrapper
         internal void SetRestartOnFailure(string serviceName, bool restartOnFailure)
         {
             const uint delay = 1000;
+            const int MAX_ACTIONS = 2;
+            int SC_ACTION_SIZE = Marshal.SizeOf(typeof(SC_ACTION));
 
-            IntPtr service = IntPtr.Zero;
-            IntPtr failureActionsPtr = IntPtr.Zero;
-            IntPtr actionPtr = IntPtr.Zero;
-
-            try
+            // Open the service
+            using (var failureActionsPtr = new AllocHLocalSafeHandle(Marshal.SizeOf(typeof(SERVICE_FAILURE_ACTIONS))))
+            using (var actionPtr = new AllocHLocalSafeHandle(SC_ACTION_SIZE * MAX_ACTIONS))
+            using (var service = OpenService(serviceName,
+                ServiceAccessRights.SERVICE_CHANGE_CONFIG |
+                ServiceAccessRights.SERVICE_START))
             {
-                // Open the service
-                service = OpenService(serviceName,
-                    ServiceAccessRights.SERVICE_CHANGE_CONFIG |
-                    ServiceAccessRights.SERVICE_START);
 
                 SERVICE_FAILURE_ACTIONS failureActions = new SERVICE_FAILURE_ACTIONS();
                 int actionCount;
@@ -407,25 +392,22 @@ namespace ScmWrapper
                 {
                     actionCount = 2;
 
-                    // Allocate memory for the individual actions
-                    actionPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(SC_ACTION)) * actionCount);
-
                     // Set up the restart action
                     SC_ACTION action1 = new SC_ACTION();
                     action1.Type = SC_ACTION_TYPE.SC_ACTION_RESTART;
                     action1.Delay = delay;
-                    Marshal.StructureToPtr(action1, actionPtr, false);
+                    Marshal.StructureToPtr(action1, actionPtr.DangerousGetHandle(), false);
 
                     // Set up the "do nothing" action
                     SC_ACTION action2 = new SC_ACTION();
                     action2.Type = SC_ACTION_TYPE.SC_ACTION_NONE;
                     action2.Delay = delay;
-                    Marshal.StructureToPtr(action2, (IntPtr)((Int64)actionPtr + Marshal.SizeOf(typeof(SC_ACTION))), false);
+                    Marshal.StructureToPtr(action2, (IntPtr)((Int64)actionPtr.DangerousGetHandle() + SC_ACTION_SIZE), false);
 
                     // Set up the failure actions
                     failureActions.dwResetPeriod = 0;
                     failureActions.cActions = (uint)actionCount;
-                    failureActions.lpsaActions = actionPtr;
+                    failureActions.lpsaActions = actionPtr.DangerousGetHandle();
                     failureActions.lpRebootMsg = null;
                     failureActions.lpCommand = null;
                 }
@@ -433,29 +415,25 @@ namespace ScmWrapper
                 {
                     actionCount = 1;
 
-                    // Allocate memory for the individual actions
-                    actionPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(SC_ACTION)) * actionCount);
-
                     // Set up the "do nothing" action
                     SC_ACTION action1 = new SC_ACTION();
                     action1.Type = SC_ACTION_TYPE.SC_ACTION_NONE;
                     action1.Delay = delay;
-                    Marshal.StructureToPtr(action1, actionPtr, false);
+                    Marshal.StructureToPtr(action1, actionPtr.DangerousGetHandle(), false);
 
                     // Set up the failure actions
                     failureActions.dwResetPeriod = 0;
                     failureActions.cActions = (uint)actionCount;
-                    failureActions.lpsaActions = actionPtr;
+                    failureActions.lpsaActions = actionPtr.DangerousGetHandle();
                 }
 
-                failureActionsPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(SERVICE_FAILURE_ACTIONS)));
-                Marshal.StructureToPtr(failureActions, failureActionsPtr, false);
+                Marshal.StructureToPtr(failureActions, failureActionsPtr.DangerousGetHandle(), false);
 
                 // Make the change
                 int changeResult = NativeMethods.ChangeServiceConfig2(
                     service,
                     ServiceConfig2InfoLevel.SERVICE_CONFIG_FAILURE_ACTIONS,
-                    failureActionsPtr);
+                    failureActionsPtr.DangerousGetHandle());
 
                 // Check that the change occurred
                 if (changeResult == 0)
@@ -463,38 +441,15 @@ namespace ScmWrapper
                     throw new Win32Exception(Marshal.GetLastWin32Error());
                 }
             }
-            finally
-            {
-                // Clean up
-                if (failureActionsPtr != IntPtr.Zero)
-                {
-                    Marshal.FreeHGlobal(failureActionsPtr);
-                }
-
-                if (actionPtr != IntPtr.Zero)
-                {
-                    Marshal.FreeHGlobal(actionPtr);
-                }
-
-                if (service != IntPtr.Zero)
-                {
-                    NativeMethods.CloseServiceHandle(service);
-                }
-            }
         }
         
         [SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
         internal void SetStartupMode(string serviceName, ServiceStartMode mode)
         {
-            IntPtr service = IntPtr.Zero;
-
-            try
+            using (var service = OpenService(serviceName,
+                ServiceAccessRights.SERVICE_CHANGE_CONFIG |
+                ServiceAccessRights.SERVICE_QUERY_CONFIG))
             {
-                // Open the service
-                service = OpenService(serviceName,
-                    ServiceAccessRights.SERVICE_CHANGE_CONFIG |
-                    ServiceAccessRights.SERVICE_QUERY_CONFIG);
-
                 var result = NativeMethods.ChangeServiceConfig(
                     service,
                     SERVICE_NO_CHANGE,
@@ -510,30 +465,16 @@ namespace ScmWrapper
 
                 if (result == false)
                     throw new Win32Exception(Marshal.GetLastWin32Error());
-
-            }
-            finally
-            {
-                // Clean up
-                if (service != IntPtr.Zero)
-                {
-                    NativeMethods.CloseServiceHandle(service);
-                }
             }
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
         internal void SetLoadOrderGroup(string serviceName, string group)
         {
-            IntPtr service = IntPtr.Zero;
-
-            try
+            using (var service = OpenService(serviceName,
+                ServiceAccessRights.SERVICE_CHANGE_CONFIG |
+                ServiceAccessRights.SERVICE_QUERY_CONFIG))
             {
-                // Open the service
-                service = OpenService(serviceName,
-                    ServiceAccessRights.SERVICE_CHANGE_CONFIG |
-                    ServiceAccessRights.SERVICE_QUERY_CONFIG);
-
                 var result = NativeMethods.ChangeServiceConfig(
                     service,
                     SERVICE_NO_CHANGE,
@@ -549,52 +490,26 @@ namespace ScmWrapper
 
                 if (result == false)
                     throw new Win32Exception(Marshal.GetLastWin32Error());
-
-            }
-            finally
-            {
-                // Clean up
-                if (service != IntPtr.Zero)
-                {
-                    NativeMethods.CloseServiceHandle(service);
-                }
             }
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
         internal uint GetStartupMode(string serviceName)
         {
-            IntPtr service = IntPtr.Zero;
-            IntPtr buff = IntPtr.Zero;
-
-            try
+            // Open the service
+            using (var service = OpenService(serviceName, ServiceAccessRights.SERVICE_QUERY_CONFIG))
             {
-                // Open the service
-                service = OpenService(serviceName,
-                    ServiceAccessRights.SERVICE_QUERY_CONFIG);
-
                 uint structSize;
                 var result = NativeMethods.QueryServiceConfig(service, IntPtr.Zero, 0, out structSize);
-                buff = Marshal.AllocHGlobal((int)structSize);
 
-                result = NativeMethods.QueryServiceConfig(service, buff, structSize, out structSize);
-                if (result == false)
-                    throw new Win32Exception(Marshal.GetLastWin32Error());
-
-                QUERY_SERVICE_CONFIG query_srv_config = (QUERY_SERVICE_CONFIG)Marshal.PtrToStructure(buff, typeof(QUERY_SERVICE_CONFIG));
-                return query_srv_config.dwStartType;
-            }
-            finally
-            {
-                // Clean up
-                if (service != IntPtr.Zero)
+                using (var buff = new AllocHLocalSafeHandle((int)structSize))
                 {
-                    NativeMethods.CloseServiceHandle(service);
-                }
+                    result = NativeMethods.QueryServiceConfig(service, buff.DangerousGetHandle(), structSize, out structSize);
+                    if (result == false)
+                        throw new Win32Exception(Marshal.GetLastWin32Error());
 
-                if (buff != IntPtr.Zero)
-                {
-                    Marshal.FreeHGlobal(buff);
+                    QUERY_SERVICE_CONFIG query_srv_config = (QUERY_SERVICE_CONFIG)Marshal.PtrToStructure(buff.DangerousGetHandle(), typeof(QUERY_SERVICE_CONFIG));
+                    return query_srv_config.dwStartType;
                 }
             }
         }
@@ -602,37 +517,19 @@ namespace ScmWrapper
         [SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
         internal uint GetServicePid(string serviceName)
         {
-            IntPtr service = IntPtr.Zero;
-            IntPtr buff = IntPtr.Zero;
-
-            try
+            using (var service = OpenService(serviceName, ServiceAccessRights.SERVICE_QUERY_STATUS))
             {
-                // Open the service
-                service = OpenService(serviceName,
-                    ServiceAccessRights.SERVICE_QUERY_STATUS);
-
                 uint structSize;
                 var result = NativeMethods.QueryServiceStatusEx(service, ServiceInfoLevel.SC_STATUS_PROCESS_INFO, IntPtr.Zero, 0, out structSize);
-                buff = Marshal.AllocHGlobal((int)structSize);
 
-                result = NativeMethods.QueryServiceStatusEx(service, ServiceInfoLevel.SC_STATUS_PROCESS_INFO, buff, structSize, out structSize);
-                if (result == false)
-                    throw new Win32Exception(Marshal.GetLastWin32Error());
-
-                SERVICE_STATUS_PROCESS query_srv_status = (SERVICE_STATUS_PROCESS)Marshal.PtrToStructure(buff, typeof(SERVICE_STATUS_PROCESS));
-                return query_srv_status.dwProcessId;
-            }
-            finally
-            {
-                // Clean up
-                if (service != IntPtr.Zero)
+                using (var buff = new AllocHLocalSafeHandle((int)structSize))
                 {
-                    NativeMethods.CloseServiceHandle(service);
-                }
+                    result = NativeMethods.QueryServiceStatusEx(service, ServiceInfoLevel.SC_STATUS_PROCESS_INFO, buff.DangerousGetHandle(), structSize, out structSize);
+                    if (result == false)
+                        throw new Win32Exception(Marshal.GetLastWin32Error());
 
-                if (buff != IntPtr.Zero)
-                {
-                    Marshal.FreeHGlobal(buff);
+                    SERVICE_STATUS_PROCESS query_srv_status = (SERVICE_STATUS_PROCESS)Marshal.PtrToStructure(buff.DangerousGetHandle(), typeof(SERVICE_STATUS_PROCESS));
+                    return query_srv_status.dwProcessId;
                 }
             }
         }
