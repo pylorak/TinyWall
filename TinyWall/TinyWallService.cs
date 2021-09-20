@@ -1864,7 +1864,7 @@ namespace PKSoft
                 return;
 
             FirewallLogEntry entry = new FirewallLogEntry();
-            entry.Timestamp = DateTime.Now;
+            entry.Timestamp = data.timeStamp;
             entry.Event = eventType;
 
             if (!string.IsNullOrEmpty(data.appId))
