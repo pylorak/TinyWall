@@ -82,8 +82,8 @@ namespace PKSoft
                 {
                     try
                     {
-                        uint pid = unchecked((uint)p.Id);
-                        ProcessInfo e = new ProcessInfo(pid, packages, service_pids);
+                        var pid = unchecked((uint)p.Id);
+                        var e = ProcessInfo.Create(pid, packages, service_pids);
 
                         if (string.IsNullOrEmpty(e.ExePath))
                             continue;

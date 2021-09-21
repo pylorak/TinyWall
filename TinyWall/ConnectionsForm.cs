@@ -66,8 +66,9 @@ namespace PKSoft
                 if ((chkShowListen.Checked && (tcpRow.State == TcpState.Listen))
                   || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
                 {
-                    string path = GetPathFromPidCached(procCache, tcpRow.ProcessId);
-                    ConstructListItem(itemColl, path, null, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now, RuleDirection.Invalid, uwpPackages, servicePids);
+                    var path = GetPathFromPidCached(procCache, tcpRow.ProcessId);
+                    var pi = ProcessInfo.Create(tcpRow.ProcessId, path, uwpPackages, servicePids);
+                    ConstructListItem(itemColl, pi, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now, RuleDirection.Invalid);
                 }
             }
             tcpTable = NetStat.GetExtendedTcp6Table(false);
@@ -76,8 +77,9 @@ namespace PKSoft
                 if ((chkShowListen.Checked && (tcpRow.State == TcpState.Listen))
                  || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
                 {
-                    string path = GetPathFromPidCached(procCache, tcpRow.ProcessId);
-                    ConstructListItem(itemColl, path, null, tcpRow.ProcessId, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now, RuleDirection.Invalid, uwpPackages, servicePids);
+                    var path = GetPathFromPidCached(procCache, tcpRow.ProcessId);
+                    var pi = ProcessInfo.Create(tcpRow.ProcessId, path, uwpPackages, servicePids);
+                    ConstructListItem(itemColl, pi, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now, RuleDirection.Invalid);
                 }
             }
 
@@ -87,14 +89,16 @@ namespace PKSoft
                 UdpTable udpTable = NetStat.GetExtendedUdp4Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
-                    string path = GetPathFromPidCached(procCache, udpRow.ProcessId);
-                    ConstructListItem(itemColl, path, null, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now, RuleDirection.Invalid, uwpPackages, servicePids);
+                    var path = GetPathFromPidCached(procCache, udpRow.ProcessId);
+                    var pi = ProcessInfo.Create(udpRow.ProcessId, path, uwpPackages, servicePids);
+                    ConstructListItem(itemColl, pi, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now, RuleDirection.Invalid);
                 }
                 udpTable = NetStat.GetExtendedUdp6Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
-                    string path = GetPathFromPidCached(procCache, udpRow.ProcessId);
-                    ConstructListItem(itemColl, path, null, udpRow.ProcessId, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now, RuleDirection.Invalid, uwpPackages, servicePids);
+                    var path = GetPathFromPidCached(procCache, udpRow.ProcessId);
+                    var pi = ProcessInfo.Create(udpRow.ProcessId, path, uwpPackages, servicePids);
+                    ConstructListItem(itemColl, pi, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now, RuleDirection.Invalid);
                 }
             }
 
@@ -180,7 +184,8 @@ namespace PKSoft
                 {
                     FirewallLogEntry entry = filteredLog[i];
                     entry.AppPath = TinyWall.Interface.Internal.Utils.GetExactPath(entry.AppPath);   // correct path capitalization
-                    ConstructListItem(itemColl, entry.AppPath, entry.PackageId, entry.ProcessId, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.LocalIp), entry.LocalPort), new IPEndPoint(IPAddress.Parse(entry.RemoteIp), entry.RemotePort), "Blocked", entry.Timestamp, entry.Direction, uwpPackages, servicePids);
+                    var pi = ProcessInfo.Create(entry.ProcessId, entry.AppPath, entry.PackageId, uwpPackages, servicePids);
+                    ConstructListItem(itemColl, pi, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.LocalIp), entry.LocalPort), new IPEndPoint(IPAddress.Parse(entry.RemoteIp), entry.RemotePort), "Blocked", entry.Timestamp, entry.Direction);
                 }
             }
 
@@ -191,45 +196,38 @@ namespace PKSoft
             list.EndUpdate();
         }
 
-        private void ConstructListItem(List<ListViewItem> itemColl, string appPath, string packageId, uint procId, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, RuleDirection dir, UwpPackage uwpList, ServicePidMap servicePidMap)
+        private void ConstructListItem(List<ListViewItem> itemColl, ProcessInfo e, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, RuleDirection dir)
         {
             try
             {
-                ProcessInfo e = new ProcessInfo(procId)
-                {
-                    ExePath = appPath,
-                    Package = uwpList.FindPackage(packageId),
-                    Services = servicePidMap.GetServicesInPid(procId)
-                };
-
                 // Construct list item
-                string name = e.Package.HasValue ? e.Package.Value.Name : System.IO.Path.GetFileName(appPath);
-                string title = (procId != 0) ? $"{name} ({procId})" : $"{name}";
+                string name = e.Package.HasValue ? e.Package.Value.Name : System.IO.Path.GetFileName(e.ExePath);
+                string title = (e.Pid != 0) ? $"{name} ({e.Pid})" : $"{name}";
                 ListViewItem li = new ListViewItem(title);
                 li.Tag = e;
-                li.ToolTipText = appPath;
+                li.ToolTipText = e.ExePath;
 
                 // Add icon
                 if (e.Package.HasValue)
                 {
                     li.ImageKey = "store";
                 }
-                else if (appPath == "System")
+                else if (e.ExePath == "System")
                 {
                     li.ImageKey = "system";
                 }
-                else if (NetworkPath.IsNetworkPath(appPath))
+                else if (NetworkPath.IsNetworkPath(e.ExePath))
                 {
                     li.ImageKey = "network-drive";
                 }
-                else if (System.IO.Path.IsPathRooted(appPath) && System.IO.File.Exists(appPath))
+                else if (System.IO.Path.IsPathRooted(e.ExePath) && System.IO.File.Exists(e.ExePath))
                 {
-                    if (!IconList.Images.ContainsKey(appPath))
+                    if (!IconList.Images.ContainsKey(e.ExePath))
                     {
                         // Get icon
-                        IconList.Images.Add(appPath, Utils.GetIconContained(appPath, IconSize.Width, IconSize.Height));
+                        IconList.Images.Add(e.ExePath, Utils.GetIconContained(e.ExePath, IconSize.Width, IconSize.Height));
                     }
-                    li.ImageKey = appPath;
+                    li.ImageKey = e.ExePath;
                 }
 
                 if (e.Pid == 0)

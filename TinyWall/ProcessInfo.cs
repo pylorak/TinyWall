@@ -9,19 +9,40 @@ namespace PKSoft
         public UwpPackage.Package? Package;
         public HashSet<string> Services;
 
-        public ProcessInfo(uint pid)
+        private ProcessInfo(uint pid, string path, UwpPackage.Package? package, HashSet<string> services)
         {
             Pid = pid;
+            ExePath = path;
+            Package = package;
+            Services = services;
         }
 
-        public ProcessInfo(uint pid, UwpPackage uwp, ServicePidMap service_pids = null)
+        public static ProcessInfo Create(uint pid, UwpPackage uwp, ServicePidMap servicePids)
         {
-            Pid = pid;
-            ExePath = Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller);
-            if (uwp != null)
-                Package = uwp.FindPackage(ProcessManager.GetAppContainerSid(pid));
-            if (service_pids != null)
-                Services = service_pids.GetServicesInPid(pid);
+            return new ProcessInfo(
+                pid,
+                Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller),
+                uwp.FindPackage(ProcessManager.GetAppContainerSid(pid)),
+                servicePids.GetServicesInPid(pid)
+            );
+        }
+        public static ProcessInfo Create(uint pid, string path, UwpPackage uwp, ServicePidMap servicePids)
+        {
+            return new ProcessInfo(
+                pid,
+                path,
+                uwp.FindPackage(ProcessManager.GetAppContainerSid(pid)),
+                servicePids.GetServicesInPid(pid)
+            );
+        }
+        public static ProcessInfo Create(uint pid, string path, string packageId, UwpPackage uwp, ServicePidMap servicePids)
+        {
+            return new ProcessInfo(
+                pid,
+                path,
+                uwp.FindPackage(packageId),
+                servicePids.GetServicesInPid(pid)
+            );
         }
     }
 }
