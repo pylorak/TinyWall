@@ -5,14 +5,14 @@ namespace PKSoft
     internal class ProcessInfo
     {
         public uint Pid;
-        public string ExePath;
+        public string Path;
         public UwpPackage.Package? Package;
         public HashSet<string> Services;
 
         private ProcessInfo(uint pid, string path, UwpPackage.Package? package, HashSet<string> services)
         {
             Pid = pid;
-            ExePath = path;
+            Path = path;
             Package = package;
             Services = services;
         }

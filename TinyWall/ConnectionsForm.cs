@@ -201,33 +201,33 @@ namespace PKSoft
             try
             {
                 // Construct list item
-                string name = e.Package.HasValue ? e.Package.Value.Name : System.IO.Path.GetFileName(e.ExePath);
+                string name = e.Package.HasValue ? e.Package.Value.Name : System.IO.Path.GetFileName(e.Path);
                 string title = (e.Pid != 0) ? $"{name} ({e.Pid})" : $"{name}";
                 ListViewItem li = new ListViewItem(title);
                 li.Tag = e;
-                li.ToolTipText = e.ExePath;
+                li.ToolTipText = e.Path;
 
                 // Add icon
                 if (e.Package.HasValue)
                 {
                     li.ImageKey = "store";
                 }
-                else if (e.ExePath == "System")
+                else if (e.Path == "System")
                 {
                     li.ImageKey = "system";
                 }
-                else if (NetworkPath.IsNetworkPath(e.ExePath))
+                else if (NetworkPath.IsNetworkPath(e.Path))
                 {
                     li.ImageKey = "network-drive";
                 }
-                else if (System.IO.Path.IsPathRooted(e.ExePath) && System.IO.File.Exists(e.ExePath))
+                else if (System.IO.Path.IsPathRooted(e.Path) && System.IO.File.Exists(e.Path))
                 {
-                    if (!IconList.Images.ContainsKey(e.ExePath))
+                    if (!IconList.Images.ContainsKey(e.Path))
                     {
                         // Get icon
-                        IconList.Images.Add(e.ExePath, Utils.GetIconContained(e.ExePath, IconSize.Width, IconSize.Height));
+                        IconList.Images.Add(e.Path, Utils.GetIconContained(e.Path, IconSize.Width, IconSize.Height));
                     }
-                    li.ImageKey = e.ExePath;
+                    li.ImageKey = e.Path;
                 }
 
                 if (e.Pid == 0)
@@ -433,7 +433,7 @@ namespace PKSoft
                 ListViewItem li = list.SelectedItems[0];
 
                 const string urlTemplate = @"https://www.virustotal.com/latest-scan/{0}";
-                string hash = Hasher.HashFile((li.Tag as ProcessInfo).ExePath);
+                string hash = Hasher.HashFile((li.Tag as ProcessInfo).Path);
                 string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, hash);
                 Utils.StartProcess(url, string.Empty, false);
             }
@@ -451,7 +451,7 @@ namespace PKSoft
                 ListViewItem li = list.SelectedItems[0];
 
                 const string urlTemplate = @"http://www.processlibrary.com/search/?q={0}";
-                string filename = System.IO.Path.GetFileName((li.Tag as ProcessInfo).ExePath);
+                string filename = System.IO.Path.GetFileName((li.Tag as ProcessInfo).Path);
                 string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, filename);
                 Utils.StartProcess(url, string.Empty, false);
             }
@@ -467,7 +467,7 @@ namespace PKSoft
                 ListViewItem li = list.SelectedItems[0];
 
                 const string urlTemplate = @"www.google.com/search?q={0}";
-                string filename = System.IO.Path.GetFileName((li.Tag as ProcessInfo).ExePath);
+                string filename = System.IO.Path.GetFileName((li.Tag as ProcessInfo).Path);
                 string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, filename);
                 Utils.StartProcess(url, string.Empty, false);
             }

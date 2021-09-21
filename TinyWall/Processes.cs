@@ -85,7 +85,7 @@ namespace PKSoft
                         var pid = unchecked((uint)p.Id);
                         var e = ProcessInfo.Create(pid, packages, service_pids);
 
-                        if (string.IsNullOrEmpty(e.ExePath))
+                        if (string.IsNullOrEmpty(e.Path))
                             continue;
 
                         // Scan list of already added items to prevent duplicates
@@ -93,7 +93,7 @@ namespace PKSoft
                         for (int j = 0; j < itemColl.Count; ++j)
                         {
                             ProcessInfo opi = itemColl[j].Tag as ProcessInfo;
-                            if ((e.Package == opi.Package) && (e.ExePath == opi.ExePath) && (e.Services.SetEquals(opi.Services)))
+                            if ((e.Package == opi.Package) && (e.Path == opi.Path) && (e.Services.SetEquals(opi.Services)))
                             {
                                 skip = true;
                                 break;
@@ -105,7 +105,7 @@ namespace PKSoft
                         // Add list item
                         ListViewItem li = new ListViewItem(e.Package.HasValue ? e.Package.Value.Name : p.ProcessName);
                         li.SubItems.Add(string.Join(", ", e.Services.ToArray()));
-                        li.SubItems.Add(e.ExePath);
+                        li.SubItems.Add(e.Path);
                         li.Tag = e;
                         itemColl.Add(li);
 
@@ -114,19 +114,19 @@ namespace PKSoft
                         {
                             li.ImageKey = "store";
                         }
-                        else if (e.ExePath == "System")
+                        else if (e.Path == "System")
                         {
                             li.ImageKey = "system";
                         }
-                        else if (TinyWall.Interface.Internal.NetworkPath.IsNetworkPath(e.ExePath))
+                        else if (TinyWall.Interface.Internal.NetworkPath.IsNetworkPath(e.Path))
                         {
                             li.ImageKey = "network-drive";
                         }
-                        else if (System.IO.Path.IsPathRooted(e.ExePath) && System.IO.File.Exists(e.ExePath))
+                        else if (System.IO.Path.IsPathRooted(e.Path) && System.IO.File.Exists(e.Path))
                         {
-                            if (!IconList.Images.ContainsKey(e.ExePath))
-                                IconList.Images.Add(e.ExePath, Utils.GetIconContained(e.ExePath, IconSize.Width, IconSize.Height));
-                            li.ImageKey = e.ExePath;
+                            if (!IconList.Images.ContainsKey(e.Path))
+                                IconList.Images.Add(e.Path, Utils.GetIconContained(e.Path, IconSize.Width, IconSize.Height));
+                            li.ImageKey = e.Path;
                         }
                     }
                     catch

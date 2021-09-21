@@ -727,7 +727,7 @@ namespace PKSoft
             var exceptions = new List<FirewallExceptionV3>();
             foreach (var sel in list)
             {
-                if (string.IsNullOrEmpty(sel.ExePath))
+                if (string.IsNullOrEmpty(sel.Path))
                     continue;
 
                 List<ExceptionSubject> subjects = new List<ExceptionSubject>();
@@ -736,10 +736,10 @@ namespace PKSoft
                 else if (sel.Services.Count > 0)
                 {
                     foreach (var srv in sel.Services)
-                        subjects.Add(new ServiceSubject(sel.ExePath, srv));
+                        subjects.Add(new ServiceSubject(sel.Path, srv));
                 }
                 else
-                    subjects.Add(new ExecutableSubject(sel.ExePath));
+                    subjects.Add(new ExecutableSubject(sel.Path));
 
                 foreach (var subj in subjects)
                 {

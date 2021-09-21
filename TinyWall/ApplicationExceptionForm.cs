@@ -362,7 +362,7 @@ namespace PKSoft
             if (procList[0].Package.HasValue)
                 subject = procList[0].Package.Value.ToExceptionSubject();
             else
-                subject = new ExecutableSubject(procList[0].ExePath);
+                subject = new ExecutableSubject(procList[0].Path);
 
             ReinitFormFromSubject(subject);
         }
