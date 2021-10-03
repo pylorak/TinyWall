@@ -22,8 +22,6 @@ namespace PKSoft
 
             try
             {
-                // Prevent flickering, only if our assembly 
-                // has reflection permission. 
                 Type type = transparentLabel1.GetType();
                 BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
                 MethodInfo method = type.GetMethod("SetStyle", flags);
