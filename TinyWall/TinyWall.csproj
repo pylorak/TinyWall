@@ -9,6 +9,7 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <OutDir>bin\$(Configuration)\</OutDir>
     <RootNamespace>PKSoft</RootNamespace>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
   <PropertyGroup>
     <Product>TinyWall</Product>
@@ -17,10 +18,6 @@
     <Description>A free, lightweight and non-intrusive firewall.</Description>
     <Copyright>Copyright © 2011 Károly Pados</Copyright>
     <Version>3.0.10</Version>
-  </PropertyGroup>
-  <PropertyGroup>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -38,6 +35,31 @@
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\pylorak.Windows.Services\pylorak.Windows.Services.csproj" />
+    <ProjectReference Include="..\TinyWall.Interface\TinyWall.Interface.csproj" />
+    <ProjectReference Include="..\WFPdotNet\WFPdotNet.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="NetFwTypeLib">
+      <Guid>{58FBCF7C-E7A9-467C-80B3-FC65E8FCCA08}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="TaskScheduler">
+      <Guid>{E34CB9F1-C7F7-424C-BE29-027DCC09363A}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <ItemGroup>
 
@@ -128,7 +150,48 @@
     <Compile Update="UwpPackagesForm.Designer.cs">
       <DependentUpon>UwpPackagesForm.cs</DependentUpon>
     </Compile>
-    
+
+    <EmbeddedResource Update="AppFinderForm.resx">
+      <DependentUpon>AppFinderForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="DevelToolForm.resx">
+      <DependentUpon>DevelToolForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ApplicationExceptionForm.resx">
+      <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ConnectionsForm.resx">
+      <DependentUpon>ConnectionsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PasswordForm.resx">
+      <DependentUpon>PasswordForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Services.resx">
+      <DependentUpon>Services.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="MainForm.resx">
+      <DependentUpon>TinyWallController.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Processes.resx">
+      <DependentUpon>Processes.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UwpPackagesForm.resx">
+      <DependentUpon>UwpPackagesForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+
     <EmbeddedResource Update="AppFinderForm.de.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -168,10 +231,6 @@
     <EmbeddedResource Update="AppFinderForm.cs.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="AppFinderForm.resx">
-      <DependentUpon>AppFinderForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Update="AppFinderForm.ru.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -210,10 +269,6 @@
     </EmbeddedResource>
     <EmbeddedResource Update="ApplicationExceptionForm.pt-BR.resx">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="ApplicationExceptionForm.resx">
-      <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="ApplicationExceptionForm.ru.resx">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
@@ -266,19 +321,11 @@
     <EmbeddedResource Update="ConnectionsForm.pt-BR.resx">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="ConnectionsForm.resx">
-      <DependentUpon>ConnectionsForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Update="ConnectionsForm.ru.resx">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="ConnectionsForm.zh.resx">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="DevelToolForm.resx">
-      <DependentUpon>DevelToolForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="MainForm.bg.resx">
       <DependentUpon>TinyWallController.cs</DependentUpon>
@@ -415,9 +462,6 @@
     <EmbeddedResource Update="Processes.zh.resx">
       <DependentUpon>Processes.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="PasswordForm.resx">
-      <DependentUpon>PasswordForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Update="Services.bg.resx">
       <DependentUpon>Services.cs</DependentUpon>
     </EmbeddedResource>
@@ -457,16 +501,6 @@
     <EmbeddedResource Update="Services.pt-BR.resx">
       <DependentUpon>Services.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Services.resx">
-      <DependentUpon>Services.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="MainForm.resx">
-      <DependentUpon>TinyWallController.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Processes.resx">
-      <DependentUpon>Processes.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Update="Services.ru.resx">
       <DependentUpon>Services.cs</DependentUpon>
     </EmbeddedResource>
@@ -478,19 +512,15 @@
     </EmbeddedResource>
     <EmbeddedResource Update="SettingsForm.es.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="SettingsForm.hu.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="SettingsForm.de.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="SettingsForm.fr.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="SettingsForm.it.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
@@ -506,34 +536,21 @@
     </EmbeddedResource>
     <EmbeddedResource Update="SettingsForm.ja.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="SettingsForm.nl.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="SettingsForm.pl.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="SettingsForm.pt-BR.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Update="SettingsForm.resx">
-      <DependentUpon>SettingsForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="SettingsForm.ru.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="SettingsForm.zh.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Update="UwpPackagesForm.resx">
-      <DependentUpon>UwpPackagesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="UwpPackagesForm.bg.resx">
       <DependentUpon>UwpPackagesForm.cs</DependentUpon>
@@ -553,37 +570,6 @@
     <EmbeddedResource Update="UwpPackagesForm.pt-BR.resx">
       <DependentUpon>UwpPackagesForm.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="app.manifest">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="TinyWall.key.snk" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\pylorak.Windows.Services\pylorak.Windows.Services.csproj" />
-    <ProjectReference Include="..\TinyWall.Interface\TinyWall.Interface.csproj" />
-    <ProjectReference Include="..\WFPdotNet\WFPdotNet.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="NetFwTypeLib">
-      <Guid>{58FBCF7C-E7A9-467C-80B3-FC65E8FCCA08}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="TaskScheduler">
-      <Guid>{E34CB9F1-C7F7-424C-BE29-027DCC09363A}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\windows_small.png" />
+    
   </ItemGroup>
 </Project>
