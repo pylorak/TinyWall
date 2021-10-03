@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
-using System.ServiceProcess;
 using System.IO;
 using System.Net;
+using pylorak.Windows.Services;
 
 namespace PKSoft
 {
@@ -36,9 +36,9 @@ namespace PKSoft
                     return -1;
                 }
 
-                tw.ServiceName = TinyWallService.SERVICE_NAME;
 #if DEBUG
-                tw.Start(null);
+                tw.Start(new string[0]);
+                tw.StartedEvent.WaitOne();
 #else
                 ServiceBase.Run(tw);
 #endif
@@ -200,6 +200,7 @@ namespace PKSoft
                         StartService(srv);
                         int ret = StartController(opts);
                         srv.Stop();
+                        srv.StoppedEvent.WaitOne();
                         return ret;
                     }
                 case StartUpMode.Service:
@@ -207,8 +208,8 @@ namespace PKSoft
                     {
                         StartService(srv);
 #if DEBUG
-                        Console.WriteLine("Press ENTER to end this process...");
-                        Console.ReadLine();
+                        Console.WriteLine("Kill process to terminate...");
+                        srv.StoppedEvent.WaitOne();
 #endif
                     }
                     return 0;

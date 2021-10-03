@@ -2022,7 +2022,7 @@ namespace PKSoft
     }
 
 
-    internal sealed class TinyWallService : ServiceBase
+    internal sealed class TinyWallService : pylorak.Windows.Services.ServiceBase
     {
         internal readonly static string[] ServiceDependencies = new string[]
         {
@@ -2039,13 +2039,19 @@ namespace PKSoft
         private bool IsComputerShuttingDown;
 
         internal TinyWallService()
+            : base()
         {
-            this.CanShutdown = true;
+            this.AcceptedControls = pylorak.Windows.Services.ServiceAcceptedControl.SERVICE_ACCEPT_SHUTDOWN;
+            this.AcceptedControls |= pylorak.Windows.Services.ServiceAcceptedControl.SERVICE_ACCEPT_STOP;
+            this.AcceptedControls |= pylorak.Windows.Services.ServiceAcceptedControl.SERVICE_ACCEPT_POWEREVENT;
 #if DEBUG
-            this.CanStop = true;
-#else
-            this.CanStop = false;
+            this.AcceptedControls |= pylorak.Windows.Services.ServiceAcceptedControl.SERVICE_ACCEPT_STOP;
 #endif
+        }
+
+        public override string ServiceName
+        {
+            get { return SERVICE_NAME; }
         }
 
         private void FirewallWorkerMethod()
@@ -2081,33 +2087,28 @@ namespace PKSoft
             FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod));
             FirewallWorkerThread.Name = "ServiceMain";
             FirewallWorkerThread.Start();
+            FinishStateChange();
         }
 
-        private void StopServer(bool computerShutdown)
+        private void StopServer()
         {
-            IsComputerShuttingDown = computerShutdown;
             Thread.MemoryBarrier();
             Server.RequestStop();
             FirewallWorkerThread.Join(10000);
+            FinishStateChange();
         }
 
         // Executed when service is stopped manually.
         protected override void OnStop()
         {
-            StopServer(false);
+            StopServer();
         }
 
         // Executed on computer shutdown.
         protected override void OnShutdown()
         {
-            StopServer(true);
+            IsComputerShuttingDown = true;
+            StartStateChange(pylorak.Windows.Services.ServiceState.StopPending);
         }
-
-#if DEBUG
-        internal void Start(string[] args)
-        {
-            this.OnStart(args);
-        }
-#endif
     }
 }
