@@ -40,26 +40,23 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="AppFinderForm.cs" />
-    <Compile Update="AppFinderForm.Designer.cs">
-      <DependentUpon>AppFinderForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="ApplicationExceptionForm.cs" />
-    <Compile Update="ApplicationExceptionForm.Designer.cs">
-      <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="ConnectionsForm.cs" />
-    <Compile Update="ConnectionsForm.Designer.cs">
-      <DependentUpon>ConnectionsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Controls\TaskDialog\TaskDialogCommonDialog.cs" />
-    <Compile Update="DevelToolForm.cs" />
-    <Compile Update="DevelToolForm.Designer.cs">
-      <DependentUpon>DevelToolForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Installer\TinyWallInstaller.cs">
-      <SubType>Component</SubType>
-    </Compile>
+
+    <EmbeddedResource Update="Resources\Exceptions.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Exceptions.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Icons.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Icons.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Messages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+
     <Compile Update="Resources\Exceptions.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -70,34 +67,68 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Icons.resx</DependentUpon>
     </Compile>
-    <Compile Update="PasswordForm.cs" />
-    <Compile Update="PasswordForm.Designer.cs">
-      <DependentUpon>PasswordForm.cs</DependentUpon>
-    </Compile>
     <Compile Update="Resources\Messages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
-    <Compile Update="Services.cs" />
+
+    <Compile Update="AppFinderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ApplicationExceptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ConnectionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="DevelToolForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="PasswordForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Services.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Processes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="SettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UwpPackagesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+
+    <Compile Update="AppFinderForm.Designer.cs">
+      <DependentUpon>AppFinderForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ApplicationExceptionForm.Designer.cs">
+      <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="ConnectionsForm.Designer.cs">
+      <DependentUpon>ConnectionsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="DevelToolForm.Designer.cs">
+      <DependentUpon>DevelToolForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="PasswordForm.Designer.cs">
+      <DependentUpon>PasswordForm.cs</DependentUpon>
+    </Compile>
     <Compile Update="Services.Designer.cs">
       <DependentUpon>Services.cs</DependentUpon>
     </Compile>
-    <Compile Update="Processes.cs" />
     <Compile Update="Processes.Designer.cs">
       <DependentUpon>Processes.cs</DependentUpon>
     </Compile>
-    <Compile Update="SettingsForm.cs" />
     <Compile Update="SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Update="Installer\ServiceInstaller.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="UwpPackagesForm.cs" />
     <Compile Update="UwpPackagesForm.Designer.cs">
       <DependentUpon>UwpPackagesForm.cs</DependentUpon>
     </Compile>
+    
     <EmbeddedResource Update="AppFinderForm.de.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -384,23 +415,8 @@
     <EmbeddedResource Update="Processes.zh.resx">
       <DependentUpon>Processes.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Exceptions.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Exceptions.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Icons.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Icons.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Update="PasswordForm.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Messages.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Services.bg.resx">
       <DependentUpon>Services.cs</DependentUpon>
@@ -541,114 +557,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="TinyWall.key.snk" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\firewall.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\w7uacshield.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\shield_grey_small.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\shield_green_small.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\shield_yellow_small.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\shield_red_small.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\info.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\exit.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\manage.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\process.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\executable.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\add.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\remove.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\modify.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\accept.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\cancel.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\window.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\lock.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\lock_small.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\submit.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\export.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\import.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\uninstall.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\update.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\web.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\connections.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\green_banner.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\green_banner.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\blue_banner.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\shield_disabled_small.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\delete.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\shield_blue_small.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\red_banner.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\store.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\network_drive_small.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\img\donate.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\pylorak.Windows.Services\pylorak.Windows.Services.csproj" />
