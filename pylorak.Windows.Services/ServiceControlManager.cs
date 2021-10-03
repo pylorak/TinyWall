@@ -259,10 +259,16 @@ namespace pylorak.Windows.Services
 
             SERVICE_STATUS_PROCESS query_srv_status = (SERVICE_STATUS_PROCESS)Marshal.PtrToStructure(buff.DangerousGetHandle(), typeof(SERVICE_STATUS_PROCESS));
 
-            if (query_srv_status.dwCurrentState == ServiceState.Stopped)
-                return null;
-            else
-                return query_srv_status.dwProcessId;
+            switch (query_srv_status.dwCurrentState)
+            {
+                case ServiceState.Running:
+                case ServiceState.PausePending:
+                case ServiceState.Paused:
+                case ServiceState.ContinuePending:
+                    return query_srv_status.dwProcessId;
+                default:
+                    return null;
+            }
         }
 
         protected virtual void Dispose(bool disposing)
