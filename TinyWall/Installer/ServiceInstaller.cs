@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Configuration.Install;
 using System.ServiceProcess;
+using pylorak.Windows.Services;
 
 namespace PKSoft
 {
@@ -16,7 +17,7 @@ namespace PKSoft
         {
             try
             {
-                serviceProcessInstaller = new System.ServiceProcess.ServiceProcessInstaller();
+                serviceProcessInstaller = new ServiceProcessInstaller();
                 serviceProcessInstaller.Account = ServiceAccount.LocalSystem;
                 serviceProcessInstaller.Username = null;
                 serviceProcessInstaller.Password = null;

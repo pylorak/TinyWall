@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ServiceProcess;
+using pylorak.Windows.Services;
 
 namespace PKSoft
 {
@@ -18,10 +19,13 @@ namespace PKSoft
                     if (service.Status != ServiceControllerStatus.Running)
                         continue;
 
-                    uint pid = scm.GetServicePid(service.ServiceName);
-                    if (!Cache.ContainsKey(pid))
-                        Cache.Add(pid, new HashSet<string>());
-                    Cache[pid].Add(service.ServiceName);
+                    uint pid = scm.GetServicePid(service.ServiceName) ?? 0;
+                    if (pid != 0)
+                    {
+                        if (!Cache.ContainsKey(pid))
+                            Cache.Add(pid, new HashSet<string>());
+                        Cache[pid].Add(service.ServiceName);
+                    }
                 }
             }
         }

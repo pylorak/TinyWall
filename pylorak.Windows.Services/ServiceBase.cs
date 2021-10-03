@@ -294,7 +294,7 @@ namespace pylorak.Windows.Services
             }
         }
 
-        private void SetServiceStatePending(ServiceState newState, int checkpoint = 0, int waitHintMs = 0)
+        protected void SetServiceStatePending(ServiceState newState, int checkpoint = 0, int waitHintMs = 0)
         {
             if (!IsStateChangePending(newState))
                 throw new ArgumentException("Must specify a pending state.", nameof(newState));
@@ -308,7 +308,7 @@ namespace pylorak.Windows.Services
             UpdateServiceStatus();
         }
 
-        private void SetServiceStateReached(ServiceState newState, int win32ExitCode = 0, int serviceSpecificExitCode = 0)
+        protected void SetServiceStateReached(ServiceState newState, int win32ExitCode = 0, int serviceSpecificExitCode = 0)
         {
             const int ERROR_SERVICE_SPECIFIC_ERROR = 1066;
             if ((serviceSpecificExitCode != 0) && (win32ExitCode != ERROR_SERVICE_SPECIFIC_ERROR))
@@ -448,7 +448,7 @@ namespace pylorak.Windows.Services
                         StartStateChange(ServiceState.ContinuePending);
                     break;
                 case ServiceControlCommand.SERVICE_CONTROL_PRESHUTDOWN:
-                // Fall-though
+                // Fall-through
                 case ServiceControlCommand.SERVICE_CONTROL_SHUTDOWN:
                     InvokeDelegateAsync(ShutdownCommandHandler, true);
                     break;

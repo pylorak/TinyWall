@@ -6,12 +6,12 @@ using System.Text;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Management;
-using System.ServiceProcess;
 using System.Threading;
 using TinyWall.Interface;
 using TinyWall.Interface.Internal;
 using WFPdotNet;
 using WFPdotNet.Interop;
+using pylorak.Windows.Services;
 
 namespace PKSoft
 {
@@ -2069,11 +2069,7 @@ namespace PKSoft
                 Thread.MemoryBarrier();
                 if (!IsComputerShuttingDown)    // cannot set service state if a shutdown is already in progress
                 {
-                    // Set service state to stopped or else we will be restarted by the SCM when our process ends
-                    using (var srvManager = new ServiceControlManager())
-                    {
-                        srvManager.SetServiceState(ServiceName, ServiceHandle, ServiceState.SERVICE_STOPPED, 0);
-                    }
+                    SetServiceStateReached(ServiceState.Stopped);
                 }
                 Process.GetCurrentProcess().Kill();
 #endif
