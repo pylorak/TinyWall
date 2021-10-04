@@ -412,7 +412,7 @@ namespace PKSoft
         private void mnuCopyRemoteAddress_Click(object sender, EventArgs e)
         {
             ListViewItem li = list.SelectedItems[0];
-            string clipboardData = li.SubItems[5].Text;
+            string clipboardData = li.SubItems[6].Text;
 
             IDataObject dataObject = new DataObject();
             dataObject.SetData(DataFormats.UnicodeText, false, clipboardData);
@@ -484,7 +484,7 @@ namespace PKSoft
                 ListViewItem li = list.SelectedItems[0];
 
                 const string urlTemplate = @"www.google.com/search?q={0}";
-                string address = li.SubItems[5].Text;
+                string address = li.SubItems[6].Text;
                 string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, address);
                 Utils.StartProcess(url, string.Empty, false);
             }
