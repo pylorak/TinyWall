@@ -116,6 +116,10 @@
         <p>If this option is activated, TinyWall will block internet-related network traffic during the time your monitor is turned off due to inactivity. Applications will not be blocked from using the local network (LAN), so services like file sharing or a media center will continue working when the monitor is off, assuming the necessary whitelisting rules are present. However, internet wlll not be blocked when the monitor is turned off in TinyWall's disabled or autolearning modes, or if the monitor is turned off manually by the user instead of entering its power-save automatically.</p>
       </div>
       <div class="twelvecol last">
+        <h3>How do I get WireShark to work with TinyWall?</h3>
+        <p>You need to whitelist the System process and give it "Unrestricted" access, then reboot the computer. For details and explanation, please refer to <a href="https://www.patreon.com/posts/how-to-use-with-37211929">this</a> online post. Note that a similar procedure might be needed for other software too that do networking inside the Windows kernel.</p>
+      </div>
+      <div class="twelvecol last">
         <h3>I have whitelisted an application but it still cannot access the network. What is going on?</h3>
         <p>You might find that even though you have whitelisted the executable of an application, it still cannot connect to the internet. However, the conclusion that TinyWall is not working is probably wrong. This kind of issue is most often caused by whitelisting the wrong executable, or not whitelisting every executable needed for the operation of a particular program. Some applications use multiple executables to connect to the internet. If you do not unblock them all, they still won't be able to access the internet, even though the whitelisting has succeeded.</p>
       </div>
