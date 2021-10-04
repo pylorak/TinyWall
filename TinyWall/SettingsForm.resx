@@ -699,6 +699,36 @@
   <data name="&gt;&gt;tabPage2.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
+  <data name="chkDisplayOffBlock.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="chkDisplayOffBlock.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="chkDisplayOffBlock.Location" type="System.Drawing.Point, System.Drawing">
+    <value>104, 140</value>
+  </data>
+  <data name="chkDisplayOffBlock.Size" type="System.Drawing.Size, System.Drawing">
+    <value>216, 17</value>
+  </data>
+  <data name="chkDisplayOffBlock.TabIndex" type="System.Int32, mscorlib">
+    <value>45</value>
+  </data>
+  <data name="chkDisplayOffBlock.Text" xml:space="preserve">
+    <value>Block internet during display power-save</value>
+  </data>
+  <data name="&gt;&gt;chkDisplayOffBlock.Name" xml:space="preserve">
+    <value>chkDisplayOffBlock</value>
+  </data>
+  <data name="&gt;&gt;chkDisplayOffBlock.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;chkDisplayOffBlock.Parent" xml:space="preserve">
+    <value>tabPage1</value>
+  </data>
+  <data name="&gt;&gt;chkDisplayOffBlock.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="chkEnableHotkeys.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -724,7 +754,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;chkEnableHotkeys.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="comboLanguages.Location" type="System.Drawing.Point, System.Drawing">
     <value>165, 46</value>
@@ -745,7 +775,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;comboLanguages.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="label11.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -772,7 +802,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;label11.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="chkEnableBlocklists.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -799,7 +829,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;chkEnableBlocklists.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="chkLockHostsFile.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -826,7 +856,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;chkLockHostsFile.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="chkHostsBlocklist.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -853,7 +883,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;chkHostsBlocklist.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="chkAutoUpdateCheck.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -880,7 +910,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;chkAutoUpdateCheck.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="chkBlockMalwarePorts.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -907,7 +937,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;chkBlockMalwarePorts.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="label9.Location" type="System.Drawing.Point, System.Drawing">
     <value>249, 60</value>
@@ -1075,7 +1105,7 @@
     <value>5</value>
   </data>
   <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>104, 154</value>
+    <value>104, 177</value>
   </data>
   <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
     <value>508, 125</value>
@@ -1096,7 +1126,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>9</value>
   </data>
   <data name="chkAskForExceptionDetails.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1123,7 +1153,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;chkAskForExceptionDetails.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>10</value>
   </data>
   <data name="tabPage1.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>

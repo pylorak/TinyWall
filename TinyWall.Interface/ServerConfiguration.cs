@@ -45,6 +45,9 @@ namespace TinyWall.Interface
         [DataMember(EmitDefaultValue = false)]
         public List<FirewallExceptionV3> AppExceptions { get; set; } = new List<FirewallExceptionV3>();
 
+        [DataMember(EmitDefaultValue = false)]
+        public bool DisplayOffBlock { get; set; } = false;
+
         public ServerProfileConfiguration()
         { }
 

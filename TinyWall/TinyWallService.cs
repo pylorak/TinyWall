@@ -52,6 +52,7 @@ namespace PKSoft
         private ThreadThrottler FirewallThreadThrottler;
 
         private bool RunService = false;
+        private bool DisplayCurrentlyOn = true;
         private ServerState VisibleState = new ServerState();
 
         private Engine WfpEngine;
@@ -66,6 +67,7 @@ namespace PKSoft
         {
             using (var timer = new HierarchicalStopwatch("AssembleActiveRules()"))
             {
+                bool displayBlockActive = ActiveConfig.Service.ActiveProfile.DisplayOffBlock && !DisplayCurrentlyOn;
                 List<RuleDef> rules = new List<RuleDef>();
                 Guid ModeId = Guid.NewGuid();
                 RuleDef def;
@@ -99,6 +101,8 @@ namespace PKSoft
                         {
                             // Add rule to explicitly allow outgoing connections
                             def = new RuleDef(ModeId, "Allow outbound", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.Out, Protocol.Any, (ulong)FilterWeights.DefaultPermit);
+                            if (displayBlockActive)
+                                def.RemoteAddresses = "LocalSubnet";
                             rules.Add(def);
 
                             // Block rest
@@ -268,9 +272,17 @@ namespace PKSoft
                 {
                     r.Application = PathMapper.Instance.ConvertPathIgnoreErrors(r.Application, PathFormat.NativeNt);
                 }
-                foreach (var r in rawSocketExceptions)
+
+                if (displayBlockActive)
                 {
-                    r.Application = PathMapper.Instance.ConvertPathIgnoreErrors(r.Application, PathFormat.NativeNt);
+                    // Modify all allow-rules to only allow local subnet
+                    foreach (var r in rules)
+                    {
+                        if (r.Action == RuleAction.Allow)
+                        {
+                            r.RemoteAddresses = "LocalSubnet";
+                        }
+                    }
                 }
 
                 return rules;
@@ -1581,6 +1593,16 @@ namespace PKSoft
                             InstallFirewallRules();
                         return new TwMessage(MessageType.RESPONSE_OK);
                     }
+                case MessageType.DISPLAY_POWER_EVENT:
+                    {
+                        bool turnOn = (bool)req.Arguments[0];
+                        if (turnOn != DisplayCurrentlyOn)
+                        {
+                            DisplayCurrentlyOn = turnOn;
+                            InstallFirewallRules();
+                        }
+                        return new TwMessage(MessageType.RESPONSE_OK);
+                    }
                 default:
                     {
                         return new TwMessage(MessageType.RESPONSE_ERROR);
@@ -1684,9 +1706,15 @@ namespace PKSoft
             }
         }
 
+        public TinyWallServer()
+        {
+            // Make sure the very-first command is a REINIT
+            Q.Enqueue(new TwMessage(MessageType.REINIT), null);
+        }
+
         // Entry point for thread that actually issues commands to Windows Firewall.
         // Only one thread (this one) is allowed to issue them.
-        public void Run()
+        public void Run(ServiceBase service)
         {
             using (var timer = new HierarchicalStopwatch("Service Run()"))
             {
@@ -1715,9 +1743,6 @@ namespace PKSoft
                 // Discover network configuration
                 ReenumerateAdresses();
 
-                // Issue load command
-                Q.Enqueue(new TwMessage(MessageType.REINIT), null);
-
                 // If mount points change, we need to update WFP rules due to Win32->Kernel path format mapping
                 PathMapper.Instance.MountPointsChanged += (object sender, EventArgs args) =>
                 {
@@ -1741,9 +1766,11 @@ namespace PKSoft
                 using (NetworkInterfaceWatcher = new IpInterfaceWatcher())
                 using (WfpEngine = new Engine("TinyWall Session", "", FWPM_SESSION_FLAGS.None, 5000))
                 using (var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback, null))
+                using (var DisplayOffSubscription = SafeHandlePowerSettingNotification.CreateForService(service.ServiceHandle, PowerSetting.GUID_CONSOLE_DISPLAY_STATE))
                 {
                     ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
                     NetworkInterfaceWatcher.InterfaceChanged += NetworkInterfaceWatcher_EventArrived;
+                    service.FinishStateChange();
 
                     RunService = true;
                     while (RunService)
@@ -1966,6 +1993,13 @@ namespace PKSoft
             future.WaitValue();
         }
 
+        public void DisplayPowerEvent(bool turnOn)
+        {
+            TwMessage req = new TwMessage(MessageType.DISPLAY_POWER_EVENT, turnOn);
+            Future<TwMessage> future = new Future<TwMessage>();
+            Q.Enqueue(req, future);
+        }
+
         public void Dispose()
         {
             using (var timer = new HierarchicalStopwatch("TinyWallService.Dispose()"))
@@ -2022,7 +2056,7 @@ namespace PKSoft
     }
 
 
-    internal sealed class TinyWallService : pylorak.Windows.Services.ServiceBase
+    internal sealed class TinyWallService : ServiceBase
     {
         internal readonly static string[] ServiceDependencies = new string[]
         {
@@ -2041,11 +2075,10 @@ namespace PKSoft
         internal TinyWallService()
             : base()
         {
-            this.AcceptedControls = pylorak.Windows.Services.ServiceAcceptedControl.SERVICE_ACCEPT_SHUTDOWN;
-            this.AcceptedControls |= pylorak.Windows.Services.ServiceAcceptedControl.SERVICE_ACCEPT_STOP;
-            this.AcceptedControls |= pylorak.Windows.Services.ServiceAcceptedControl.SERVICE_ACCEPT_POWEREVENT;
+            this.AcceptedControls = ServiceAcceptedControl.SERVICE_ACCEPT_SHUTDOWN;
+            this.AcceptedControls |= ServiceAcceptedControl.SERVICE_ACCEPT_POWEREVENT;
 #if DEBUG
-            this.AcceptedControls |= pylorak.Windows.Services.ServiceAcceptedControl.SERVICE_ACCEPT_STOP;
+            this.AcceptedControls |= ServiceAcceptedControl.SERVICE_ACCEPT_STOP;
 #endif
         }
 
@@ -2060,7 +2093,7 @@ namespace PKSoft
             {
                 using (Server = new TinyWallServer())
                 {
-                    Server.Run();
+                    Server.Run(this);
                 }
             }
             finally
@@ -2083,7 +2116,6 @@ namespace PKSoft
             FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod));
             FirewallWorkerThread.Name = "ServiceMain";
             FirewallWorkerThread.Start();
-            FinishStateChange();
         }
 
         private void StopServer()
@@ -2104,7 +2136,25 @@ namespace PKSoft
         protected override void OnShutdown()
         {
             IsComputerShuttingDown = true;
-            StartStateChange(pylorak.Windows.Services.ServiceState.StopPending);
+            StartStateChange(ServiceState.StopPending);
+        }
+
+        protected override void OnPowerEvent(PowerEventData data)
+        {
+            if (data.Event == PowerEventType.PowerSettingChange)
+            {
+                if (data.Setting == PowerSetting.GUID_CONSOLE_DISPLAY_STATE)
+                {
+                    if (data.PayloadInt == 0)
+                        Server.DisplayPowerEvent(false);
+                    else if (data.PayloadInt == 1)
+                        Server.DisplayPowerEvent(true);
+                    else
+                    {
+                        // Dimming event... ignore
+                    }
+                }
+            }
         }
     }
 }

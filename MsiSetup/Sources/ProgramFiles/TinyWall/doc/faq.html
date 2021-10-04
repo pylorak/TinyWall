@@ -109,7 +109,11 @@
       </div>
       <div class="twelvecol last">
         <h3>What is the difference between port-based and domain-based blocklists?</h3>
-        <p>Domain-based blocklist is implemented as a custom hosts file and blocks specific remote hosts irrespective of the port number. Its goal is to block certain hosts no matter what application tries to communicate with them, and in addition to malware it will also block some forms of internet advertising. It is recommended to turn the domain-based blocklist on.Port-based blocklist is implemented as a firewall rule and blocks traffic based on port numbers irrespective of the remote host. Its goal is to undermine some common and known malware that use specific ports. Though it usually affects only specific (malicious) applications, the option for port-based blocklist is only kept around for compatbility with older installations and its use is not recommended anymore.</p>
+        <p>Domain-based blocklist is implemented as a custom hosts file and blocks specific remote hosts irrespective of the port number. Its goal is to block certain hosts no matter what application tries to communicate with them, and in addition to malware it will also block some forms of internet advertising. It is recommended to turn the domain-based blocklist on. Port-based blocklist is implemented as a firewall rule and blocks traffic based on port numbers irrespective of the remote host. Its goal is to undermine some common and known malware that use specific ports. Though it usually affects only specific (malicious) applications, the option for port-based blocklist is only kept around for compatbility with older installations and its use is not recommended anymore.</p>
+      </div>
+      <div class="twelvecol last">
+        <h3>What does "Block internet during display power-save" do?</h3>
+        <p>If this option is activated, TinyWall will block internet-related network traffic during the time your monitor is turned off due to inactivity. Applications will not be blocked from using the local network (LAN), so services like file sharing or a media center will continue working when the monitor is off, assuming the necessary whitelisting rules are present. However, internet wlll not be blocked when the monitor is turned off in TinyWall's disabled or autolearning modes, or if the monitor is turned off manually by the user instead of entering its power-save automatically.</p>
       </div>
       <div class="twelvecol last">
         <h3>I have whitelisted an application but it still cannot access the network. What is going on?</h3>
@@ -124,7 +128,7 @@
         <p>First, check if there is a built-in "Special Exception" for your use-case in TinyWall's configuration, and enable it if there is.</p>
         <p>If your application is a traditional desktop application (not a Windows service or an app managed by the Windows Store):</p>
           <ol>
-          <li>Unblocking your application using the "by window" method from TinyWall's icon. Use the "Elevate" option first if your application is running with admin privileges.</li>
+          <li>Unblock your application using the "by window" method from TinyWall's icon. You might need to use the "Elevate" option first if the application you want to unblock is running with admin privileges.</li>
           <li>If the application still fails to access the network, open TinyWall's Connections window to check what was blocked, and unblock anything related to your application in question. Ignore everything else there.</li>
           </ol>
         <p>If your application is installed as a Windows service or is an app managed by the Windows Store:</p>

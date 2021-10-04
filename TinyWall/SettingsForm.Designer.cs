@@ -54,6 +54,7 @@
             this.listOptionalGlobalProfiles = new System.Windows.Forms.CheckedListBox();
             this.listRecommendedGlobalProfiles = new System.Windows.Forms.CheckedListBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.chkDisplayOffBlock = new System.Windows.Forms.CheckBox();
             this.chkEnableHotkeys = new System.Windows.Forms.CheckBox();
             this.comboLanguages = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
@@ -282,6 +283,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.chkDisplayOffBlock);
             this.tabPage1.Controls.Add(this.chkEnableHotkeys);
             this.tabPage1.Controls.Add(this.comboLanguages);
             this.tabPage1.Controls.Add(this.label11);
@@ -295,6 +297,12 @@
             resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // chkDisplayOffBlock
+            // 
+            resources.ApplyResources(this.chkDisplayOffBlock, "chkDisplayOffBlock");
+            this.chkDisplayOffBlock.Name = "chkDisplayOffBlock";
+            this.chkDisplayOffBlock.UseVisualStyleBackColor = true;
             // 
             // chkEnableHotkeys
             // 
@@ -612,5 +620,6 @@
         private System.Windows.Forms.CheckBox chkEnableHotkeys;
         private System.Windows.Forms.LinkLabel lblLinkAttributions;
         private System.Windows.Forms.ColumnHeader columnType;
+        private System.Windows.Forms.CheckBox chkDisplayOffBlock;
     }
 }

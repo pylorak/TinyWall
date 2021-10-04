@@ -124,6 +124,7 @@ namespace PKSoft
                 }
 
                 // Fill Machine Settings tab
+                chkDisplayOffBlock.Checked = TmpConfig.Service.ActiveProfile.DisplayOffBlock;
                 chkLockHostsFile.Checked = TmpConfig.Service.LockHostsFile;
                 chkHostsBlocklist.Checked = TmpConfig.Service.Blocklists.EnableHostsBlocklist;
                 chkBlockMalwarePorts.Checked = TmpConfig.Service.Blocklists.EnablePortBlocklist;
@@ -318,6 +319,7 @@ namespace PKSoft
             TmpConfig.Service.Blocklists.EnablePortBlocklist = chkBlockMalwarePorts.Checked;
             TmpConfig.Service.Blocklists.EnableHostsBlocklist = chkHostsBlocklist.Checked;
             TmpConfig.Service.Blocklists.EnableBlocklists = chkEnableBlocklists.Checked;
+            TmpConfig.Service.ActiveProfile.DisplayOffBlock = chkDisplayOffBlock.Checked;
 
             TmpConfig.Controller.Language = (comboLanguages.SelectedItem as IdWithName).Id;
 
