@@ -152,8 +152,10 @@ namespace PKSoft
             [Flags]
             internal enum AuditingInformationEnum : uint
             {
+                POLICY_AUDIT_EVENT_UNCHANGED = 0,
                 POLICY_AUDIT_EVENT_SUCCESS = 1,
                 POLICY_AUDIT_EVENT_FAILURE = 2,
+                POLICY_AUDIT_EVENT_NONE = 4,
             }
 
             [StructLayout(LayoutKind.Sequential)]
@@ -177,10 +179,15 @@ namespace PKSoft
             NativeMethods.AUDIT_POLICY_INFORMATION pol = new NativeMethods.AUDIT_POLICY_INFORMATION();
             pol.AuditCategoryGuid = guid;
             pol.AuditSubCategoryGuid = guid;
-            if (success)
-                pol.AuditingInformation |= NativeMethods.AuditingInformationEnum.POLICY_AUDIT_EVENT_SUCCESS;
-            if (failure)
-                pol.AuditingInformation |= NativeMethods.AuditingInformationEnum.POLICY_AUDIT_EVENT_FAILURE;
+            if (success || failure)
+            {
+                if (success)
+                    pol.AuditingInformation |= NativeMethods.AuditingInformationEnum.POLICY_AUDIT_EVENT_SUCCESS;
+                if (failure)
+                    pol.AuditingInformation |= NativeMethods.AuditingInformationEnum.POLICY_AUDIT_EVENT_FAILURE;
+            }
+            else
+                pol.AuditingInformation = NativeMethods.AuditingInformationEnum.POLICY_AUDIT_EVENT_NONE;
 
             if (!NativeMethods.AuditSetSystemPolicy(ref pol, 1))
                 throw new Win32Exception(Marshal.GetLastWin32Error());
