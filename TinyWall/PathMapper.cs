@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
-using System.Management;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
@@ -38,13 +37,11 @@ public sealed class PathMapper : IDisposable
         public List<string> PathNames;
     }
 
-    private ManagementEventWatcher DriveWatcher;
-    private ManualResetEvent CacheReadyEvent = new ManualResetEvent(false);
+    private readonly ManualResetEvent CacheReadyEvent = new ManualResetEvent(false);
     private readonly string SystemRoot = Environment.GetFolderPath(Environment.SpecialFolder.System);
     private readonly object locker = new object();
+    private DateTime LastUpdateTime = DateTime.MinValue;
     private bool disposed = false;
-
-    public event EventHandler MountPointsChanged;
 
     private static volatile PathMapper _instance;
     private static readonly object _singletonLock = new object();
@@ -64,55 +61,29 @@ public sealed class PathMapper : IDisposable
         }
     }
 
-    private PathMapper()
+    public PathMapper()
     {
-        try
-        {
-            // TODO: Use WM_DEVICECHANGE instead of WMI
-            WqlEventQuery insertQuery = new WqlEventQuery("SELECT * FROM __InstanceOperationEvent WITHIN 5 WHERE Targetinstance ISA 'Win32_MountPoint'");
-            DriveWatcher = new ManagementEventWatcher(insertQuery);
-            DriveWatcher.EventArrived += Watcher_EventArrived;
-            DriveWatcher.Start();
-        }
-        catch { }
-
         RebuildCache();
     }
 
-    private void Watcher_EventArrived(object sender, EventArrivedEventArgs e)
-    {
-        try
-        {
-            RebuildCache();
-        }
-        catch (Exception ex)
-        {
-            PKSoft.Utils.LogException(ex, PKSoft.Utils.LOG_ID_SERVICE);
-        }
-        finally
-        {
-            e.NewEvent.Dispose();
-        }
-
-        try
-        {
-            MountPointsChanged?.Invoke(this, EventArgs.Empty);
-        }
-        catch { }
-    }
+    public bool AutoUpdate { get; set; } = true;
 
     private DriveCache[] _cache;
     public DriveCache[] Cache
     {
         get
         {
-            DriveCache[] ret = null;
+            if (AutoUpdate || (_cache == null))
+            {
+                if ((DateTime.Now - LastUpdateTime).TotalSeconds > 5)
+                    RebuildCache();
+            }
+
             CacheReadyEvent.WaitOne();
             lock (locker)
             {
-                ret = _cache;
+                return _cache;
             }
-            return ret;
         }
 
         private set
@@ -120,66 +91,78 @@ public sealed class PathMapper : IDisposable
             lock(locker)
             {
                 _cache = value;
+                LastUpdateTime = DateTime.Now;
             }
             CacheReadyEvent.Set();
         }
     }
 
-    private void RebuildCache()
+    public void RebuildCache(bool blocking = false)
     {
+        CacheReadyEvent.Reset();
         ThreadPool.QueueUserWorkItem(delegate (object arg)
         {
-            const int MAX_PATH = 260;
-
-            StringBuilder sb = new StringBuilder(MAX_PATH);
-            char[] buf = new char[MAX_PATH];
-            List<DriveCache> newCache = new List<DriveCache>();
-
-            foreach (var vol in FindVolumeSafeHandle.EnumerateVolumes())
+            try
             {
-                var cacheEntry = new DriveCache();
+                const int MAX_PATH = 260;
 
-                if ( (vol[0] != '\\')
-                    || (vol[1] != '\\')
-                    || (vol[2] != '?')
-                    || (vol[3] != '\\')
-                    || (vol[vol.Length - 1] != '\\') )
-                {
-                    continue;
-                }
-                cacheEntry.Volume = vol;
+                StringBuilder sb = new StringBuilder(MAX_PATH);
+                char[] buf = new char[MAX_PATH];
+                List<DriveCache> newCache = new List<DriveCache>();
 
-                string qddInput = vol.Substring(4, vol.Length - 5); // Also remove trailing backslash
-                int charCount = NativeMethods.QueryDosDevice(qddInput, sb, sb.Capacity);
-                if (charCount > 0)
+                foreach (var vol in FindVolumeSafeHandle.EnumerateVolumes())
                 {
-                    sb.Append('\\');
-                    cacheEntry.Device = sb.ToString();
-                }
+                    var cacheEntry = new DriveCache();
 
-                if (NativeMethods.GetVolumePathNamesForVolumeName(vol, buf, buf.Length, out int expectedChars))
-                {
-                    cacheEntry.PathNames = new List<string>();
-                    int startIdx = 0;
-                    int numChars = 0;
-                    for (int i = 0; i < expectedChars; ++i)
+                    if ((vol[0] != '\\')
+                        || (vol[1] != '\\')
+                        || (vol[2] != '?')
+                        || (vol[3] != '\\')
+                        || (vol[vol.Length - 1] != '\\'))
                     {
-                        if ((buf[i] == '\0') && (numChars > 0))
-                        {
-                            cacheEntry.PathNames.Add(new string(buf, startIdx, numChars));
-                            startIdx = i + 1;
-                            numChars = 0;
-                        }
-                        else
-                            ++numChars;
+                        continue;
                     }
+                    cacheEntry.Volume = vol;
+
+                    string qddInput = vol.Substring(4, vol.Length - 5); // Also remove trailing backslash
+                    int charCount = NativeMethods.QueryDosDevice(qddInput, sb, sb.Capacity);
+                    if (charCount > 0)
+                    {
+                        sb.Append('\\');
+                        cacheEntry.Device = sb.ToString();
+                    }
+
+                    if (NativeMethods.GetVolumePathNamesForVolumeName(vol, buf, buf.Length, out int expectedChars))
+                    {
+                        cacheEntry.PathNames = new List<string>();
+                        int startIdx = 0;
+                        int numChars = 0;
+                        for (int i = 0; i < expectedChars; ++i)
+                        {
+                            if ((buf[i] == '\0') && (numChars > 0))
+                            {
+                                cacheEntry.PathNames.Add(new string(buf, startIdx, numChars));
+                                startIdx = i + 1;
+                                numChars = 0;
+                            }
+                            else
+                                ++numChars;
+                        }
+                    }
+
+                    newCache.Add(cacheEntry);
                 }
 
-                newCache.Add(cacheEntry);
+                Cache = newCache.ToArray();
             }
-
-            Cache = newCache.ToArray();
+            catch
+            {
+                Cache = null;
+            }
         }, null);
+
+        if (blocking)
+            CacheReadyEvent.WaitOne();
     }
 
     public string ConvertPathIgnoreErrors(string path, PathFormat target)
@@ -367,7 +350,6 @@ public sealed class PathMapper : IDisposable
     {
         if (disposed) return;
         
-        DriveWatcher?.Dispose();
         CacheReadyEvent.WaitOne();
         CacheReadyEvent.Close();
 

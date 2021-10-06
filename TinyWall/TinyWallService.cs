@@ -325,6 +325,7 @@ namespace PKSoft
             using (var timer = new HierarchicalStopwatch("InstallFirewallRules()"))
             {
                 LastRuleReloadTime = DateTime.Now;
+                PathMapper.Instance.RebuildCache();
 
                 List<RuleDef> rules;
                 List<RuleDef> rawSocketExceptions = new List<RuleDef>();
@@ -1743,12 +1744,6 @@ namespace PKSoft
                 // Discover network configuration
                 ReenumerateAdresses();
 
-                // If mount points change, we need to update WFP rules due to Win32->Kernel path format mapping
-                PathMapper.Instance.MountPointsChanged += (object sender, EventArgs args) =>
-                {
-                    Q.Enqueue(new TwMessage(MessageType.RELOAD_WFP_FILTERS), null);
-                };
-
                 // Fire up pipe
                 ServerPipe = new PipeServerEndpoint(new PipeDataReceived(PipeServerDataReceived), "TinyWallController");
 
@@ -1767,6 +1762,7 @@ namespace PKSoft
                 using (WfpEngine = new Engine("TinyWall Session", "", FWPM_SESSION_FLAGS.None, 5000))
                 using (var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback, null))
                 using (var DisplayOffSubscription = SafeHandlePowerSettingNotification.Create(service.ServiceHandle, PowerSetting.GUID_CONSOLE_DISPLAY_STATE, DeviceNotifFlags.DEVICE_NOTIFY_SERVICE_HANDLE))
+                using (var DeviceNotifíication = SafeHandleDeviceNotification.Create(service.ServiceHandle, DeviceInterfaceClass.GUID_DEVINTERFACE_VOLUME, DeviceNotifFlags.DEVICE_NOTIFY_SERVICE_HANDLE))
                 {
                     ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
                     NetworkInterfaceWatcher.InterfaceChanged += NetworkInterfaceWatcher_EventArrived;
@@ -1995,9 +1991,12 @@ namespace PKSoft
 
         public void DisplayPowerEvent(bool turnOn)
         {
-            TwMessage req = new TwMessage(MessageType.DISPLAY_POWER_EVENT, turnOn);
-            Future<TwMessage> future = new Future<TwMessage>();
-            Q.Enqueue(req, future);
+            Q.Enqueue(new TwMessage(MessageType.DISPLAY_POWER_EVENT, turnOn), null);
+        }
+
+        public void MountedVolumesChangedEvent()
+        {
+            Q.Enqueue(new TwMessage(MessageType.RELOAD_WFP_FILTERS), null);
         }
 
         public void Dispose()
@@ -2137,6 +2136,32 @@ namespace PKSoft
         {
             IsComputerShuttingDown = true;
             StartStateChange(ServiceState.StopPending);
+        }
+
+        protected override void OnDeviceEvent(DeviceEventData data)
+        {
+            if ((data.Event == DeviceEventType.DeviceArrival) || (data.Event == DeviceEventType.DeviceRemoveComplete))
+            {
+                bool pathMapperRebuildNeeded = false;
+
+                if (data.DeviceType == DeviceBroadcastHdrDevType.DBT_DEVTYP_DEVICEINTERFACE)
+                {
+                    if (data.Class == DeviceInterfaceClass.GUID_DEVINTERFACE_VOLUME)
+                    {
+                        pathMapperRebuildNeeded = true;
+                    }
+                }
+                else if (data.DeviceType == DeviceBroadcastHdrDevType.DBT_DEVTYP_VOLUME)
+                {
+                    pathMapperRebuildNeeded = true;
+                }
+
+                if (pathMapperRebuildNeeded)
+                {
+                    Server?.MountedVolumesChangedEvent();
+                    this.EventLog.WriteEntry("MountedVolumesChangedEvent()", EventLogEntryType.Information);
+                }
+            }
         }
 
         protected override void OnPowerEvent(PowerEventData data)

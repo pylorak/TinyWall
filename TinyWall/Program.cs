@@ -206,6 +206,9 @@ namespace PKSoft
                 case StartUpMode.Service:
                     using (TinyWallService srv = new TinyWallService())
                     {
+#if !DEBUG
+                        PathMapper.Instance.AutoUpdate = false;
+#endif
                         StartService(srv);
 #if DEBUG
                         Console.WriteLine("Kill process to terminate...");

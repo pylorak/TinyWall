@@ -2,6 +2,7 @@ TinyWall Changelog
 ---------------------
 
 3.1.x - Maintenance release (xx.10.2021.)
+- Reduce dependency on WMI and avoid polling by WMI
 - Fix WFP audit logging is not disabled when autolearn mode ends
 - Add option to block internet during display power-save
 - Heuristically determine and show PIDs of blocked processes if possible
