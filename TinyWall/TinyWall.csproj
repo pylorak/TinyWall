@@ -8,7 +8,7 @@
     <NeutralLanguage>en</NeutralLanguage>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <OutDir>bin\$(Configuration)\</OutDir>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <RootNamespace>PKSoft</RootNamespace>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
@@ -63,7 +63,7 @@
   </ItemGroup>
   <ItemGroup>
 
-    <Compile Include="../pylorak.Windows.Services/*.cs" />
+    <Compile Include="../pylorak.Windows.Services/*.cs" LinkBase="pylorak.Windows.Services" />
 
     <EmbeddedResource Update="Resources\Exceptions.resx">
       <Generator>ResXFileCodeGenerator</Generator>
