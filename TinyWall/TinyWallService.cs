@@ -1766,7 +1766,7 @@ namespace PKSoft
                 using (NetworkInterfaceWatcher = new IpInterfaceWatcher())
                 using (WfpEngine = new Engine("TinyWall Session", "", FWPM_SESSION_FLAGS.None, 5000))
                 using (var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback, null))
-                using (var DisplayOffSubscription = SafeHandlePowerSettingNotification.CreateForService(service.ServiceHandle, PowerSetting.GUID_CONSOLE_DISPLAY_STATE))
+                using (var DisplayOffSubscription = SafeHandlePowerSettingNotification.Create(service.ServiceHandle, PowerSetting.GUID_CONSOLE_DISPLAY_STATE, DeviceNotifFlags.DEVICE_NOTIFY_SERVICE_HANDLE))
                 {
                     ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
                     NetworkInterfaceWatcher.InterfaceChanged += NetworkInterfaceWatcher_EventArrived;

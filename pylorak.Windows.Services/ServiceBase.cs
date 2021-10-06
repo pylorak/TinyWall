@@ -18,6 +18,14 @@ namespace pylorak.Windows.Services
         public int PayloadInt;
     }
 
+    public struct DeviceEventData
+    {
+        public DeviceEventType Event;
+        public DeviceBroadcastHdrDevType DeviceType;
+        public Guid Class;  // only for DBT_DEVTYP_DEVICEINTERFACE
+        public string Name; // only for DBT_DEVTYP_DEVICEINTERFACE
+    }
+
     [InstallerType(typeof(System.ServiceProcess.ServiceProcessInstaller))]
     public abstract class ServiceBase : IDisposable
     {
@@ -25,6 +33,7 @@ namespace pylorak.Windows.Services
         private delegate void CommandHandlerDelegate();
         private delegate void StartCommandHandlerDelegate(string[] args);
         private delegate void PowerEventHandlerDelegate(PowerEventData data);
+        private delegate void DeviceEventHandlerDelegate(DeviceEventData data);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct SERVICE_TABLE_ENTRY
@@ -59,6 +68,7 @@ namespace pylorak.Windows.Services
         private readonly CommandHandlerDelegate ContinueCommandHandler;
         private readonly CommandHandlerDelegate ShutdownCommandHandler;
         private readonly PowerEventHandlerDelegate PowerEventHandler;
+        private readonly DeviceEventHandlerDelegate DeviceEventHandler;
         private readonly ManualResetEvent StoppedEventHandle = new ManualResetEvent(true);
         private readonly ManualResetEvent StartedEventHandle = new ManualResetEvent(false);
         private readonly SafeHandleAllocHGlobal UnmanagedServiceName;
@@ -84,6 +94,7 @@ namespace pylorak.Windows.Services
             ContinueCommandHandler = new CommandHandlerDelegate(OnContinueWrapper);
             ShutdownCommandHandler = new CommandHandlerDelegate(OnShutdownWrapper);
             PowerEventHandler = new PowerEventHandlerDelegate(OnPowerEventWrapper);
+            DeviceEventHandler = new DeviceEventHandlerDelegate(OnDeviceEventWrapper);
             UnmanagedServiceName = SafeHandleAllocHGlobal.FromString(ServiceName);
 
             initialized = true;
@@ -401,6 +412,26 @@ namespace pylorak.Windows.Services
             }
         }
 
+        private static void InvokeDelegateAsync(DeviceEventHandlerDelegate d, bool async, DeviceEventData data)
+        {
+            if (async)
+            {
+#if NET35
+                d.BeginInvoke(data, iar =>
+                {
+                    try { d.EndInvoke(iar); }
+                    catch { }
+                }, null);
+#else
+            Task.Run(() => d.Invoke(args));
+#endif
+            }
+            else
+            {
+                d.Invoke(data);
+            }
+        }
+
         private void ProcessPowerEvent(int eventType, IntPtr eventData)
         {
             if (!Enum.IsDefined(typeof(PowerEventType), eventType))
@@ -423,6 +454,28 @@ namespace pylorak.Windows.Services
             InvokeDelegateAsync(PowerEventHandler, true, ped);
         }
 
+        private void ProcessDeviceEvent(int eventType, IntPtr eventData)
+        {
+            if (!Enum.IsDefined(typeof(DeviceEventType), eventType))
+                return;
+
+            DeviceEventData ded = new DeviceEventData();
+            ded.Event = (DeviceEventType)eventType;
+
+            var hdr = (DEV_BROADCAST_HDR)Marshal.PtrToStructure(eventData, typeof(DEV_BROADCAST_HDR));
+            ded.DeviceType = hdr.DeviceType;
+            switch (ded.DeviceType)
+            {
+                case DeviceBroadcastHdrDevType.DBT_DEVTYP_DEVICEINTERFACE:
+                    var tmp = (DEV_BROADCAST_DEVICEINTERFACE)Marshal.PtrToStructure(eventData, typeof(DEV_BROADCAST_DEVICEINTERFACE));
+                    ded.Class = tmp.ClassGuid;
+                    ded.Name = tmp.Name;
+                    break;
+            }
+
+            InvokeDelegateAsync(DeviceEventHandler, true, ded);
+        }
+
         private int ServiceCtrlHandlerEx(int command, int eventType, IntPtr eventData, IntPtr eventContext)
         {
             const int NO_ERROR = 0;
@@ -434,6 +487,9 @@ namespace pylorak.Windows.Services
                     break;
                 case ServiceControlCommand.SERVICE_CONTROL_POWEREVENT:
                     ProcessPowerEvent(eventType, eventData);
+                    break;
+                case ServiceControlCommand.SERVICE_CONTROL_DEVICEEVENT:
+                    ProcessDeviceEvent(eventType, eventData);
                     break;
                 case ServiceControlCommand.SERVICE_CONTROL_STOP:
                     if (!IsStateChangePending(CurrentState))
@@ -480,6 +536,24 @@ namespace pylorak.Windows.Services
         protected virtual void OnPowerEvent(PowerEventData data)
         { }
 
+        protected virtual void OnDeviceEvent(DeviceEventData data)
+        { }
+
+        private void OnDeviceEventWrapper(DeviceEventData data)
+        {
+            try
+            {
+                OnDeviceEvent(data);
+            }
+            catch (Exception e)
+            {
+                WriteEventLogEntry($"OnDeviceEvent() error. {e.Message}", EventLogEntryType.Error);
+
+                // We re-throw the exception so that the advapi32 code can report
+                // ERROR_EXCEPTION_IN_SERVICE as it would for native services.
+                throw;
+            }
+        }
         private void OnPowerEventWrapper(PowerEventData data)
         {
             try
@@ -495,7 +569,6 @@ namespace pylorak.Windows.Services
                 throw;
             }
         }
-
 
         private void OnShutdownWrapper()
         {

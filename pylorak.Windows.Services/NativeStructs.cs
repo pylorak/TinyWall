@@ -5,29 +5,6 @@ namespace pylorak.Windows.Services
 {
     internal delegate int ServiceCtrlHandlerExDelegate(int command, int eventType, IntPtr eventData, IntPtr eventContext);
 
-    public enum PowerEventType
-    {
-        PowerStatusChange = 10,
-        ResumeAutomatic = 18,
-        ResumeUser = 7,
-        Suspend = 4,
-        PowerSettingChange = 32787
-    }
-
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    public struct POWERBROADCAST_SETTING_NODATA
-    {
-        public Guid PowerSetting;
-        public int DataLength;
-    }
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    public struct POWERBROADCAST_SETTING_DWORD
-    {
-        public Guid PowerSetting;
-        public int DataLength;
-        public int Data;
-    }
-
     public enum ServiceControlCommand
     {
         SERVICE_CONTROL_STOP = 0x00000001,
@@ -105,7 +82,7 @@ namespace pylorak.Windows.Services
     }
 
     [Flags]
-    enum ServiceControlAccessRights : int
+    public enum ServiceControlAccessRights : int
     {
         SC_MANAGER_CONNECT = 0x0001, // Required to connect to the service control manager. 
         SC_MANAGER_CREATE_SERVICE = 0x0002, // Required to call the CreateService function to create a service object and add it to the database. 
@@ -117,7 +94,7 @@ namespace pylorak.Windows.Services
     }
 
     [Flags]
-    enum ServiceAccessRights : int
+    public enum ServiceAccessRights : int
     {
         SERVICE_QUERY_CONFIG = 0x0001, // Required to call the QueryServiceConfig and QueryServiceConfig2 functions to query the service configuration. 
         SERVICE_CHANGE_CONFIG = 0x0002, // Required to call the ChangeServiceConfig or ChangeServiceConfig2 function to change the service configuration. Because this grants the caller the right to change the executable file that the system runs, it should be granted only to administrators. 
@@ -131,13 +108,13 @@ namespace pylorak.Windows.Services
         SERVICE_ALL_ACCESS = 0xF01FF // Includes STANDARD_RIGHTS_REQUIRED in addition to all access rights in this table. 
     }
 
-    enum ServiceConfig2InfoLevel : int
+    public enum ServiceConfig2InfoLevel : int
     {
         SERVICE_CONFIG_DESCRIPTION = 0x00000001, // The lpBuffer parameter is a pointer to a SERVICE_DESCRIPTION structure.
         SERVICE_CONFIG_FAILURE_ACTIONS = 0x00000002 // The lpBuffer parameter is a pointer to a SERVICE_FAILURE_ACTIONS structure.
     }
 
-    enum SC_ACTION_TYPE : uint
+    public enum SC_ACTION_TYPE : uint
     {
         SC_ACTION_NONE = 0x00000000, // No action.
         SC_ACTION_RESTART = 0x00000001, // Restart the service.
@@ -146,7 +123,7 @@ namespace pylorak.Windows.Services
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    struct QUERY_SERVICE_CONFIG
+    public struct QUERY_SERVICE_CONFIG
     {
         internal uint dwServiceType;
         internal uint dwStartType;
@@ -165,7 +142,7 @@ namespace pylorak.Windows.Services
     };
 
     [StructLayout(LayoutKind.Sequential)]
-    internal sealed class SERVICE_STATUS_PROCESS
+    public sealed class SERVICE_STATUS_PROCESS
     {
         internal ServiceType dwServiceType;
         internal ServiceState dwCurrentState;
@@ -178,7 +155,7 @@ namespace pylorak.Windows.Services
         internal uint dwServiceFlags;
     }
 
-    struct SERVICE_FAILURE_ACTIONS
+    public struct SERVICE_FAILURE_ACTIONS
     {
         internal uint dwResetPeriod;
         [MarshalAs(UnmanagedType.LPStr)]
@@ -189,14 +166,111 @@ namespace pylorak.Windows.Services
         internal IntPtr lpsaActions;
     }
 
-    struct SC_ACTION
+    public struct SC_ACTION
     {
         internal SC_ACTION_TYPE Type;
         internal uint Delay;
     }
 
+    [Flags]
+    public enum DeviceNotifFlags
+    {
+        DEVICE_NOTIFY_WINDOW_HANDLE = 0,
+        DEVICE_NOTIFY_SERVICE_HANDLE = 1,
+        DEVICE_NOTIFY_ALL_INTERFACE_CLASSES = 4
+    }
+
     public enum ServiceInfoLevel : int
     {
         SC_STATUS_PROCESS_INFO = 0
+    }
+
+    public enum PowerEventType
+    {
+        PowerStatusChange = 10,
+        ResumeAutomatic = 18,
+        ResumeUser = 7,
+        Suspend = 4,
+        PowerSettingChange = 32787
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    public struct POWERBROADCAST_SETTING_NODATA
+    {
+        public Guid PowerSetting;
+        public int DataLength;
+    }
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    public struct POWERBROADCAST_SETTING_DWORD
+    {
+        public Guid PowerSetting;
+        public int DataLength;
+        public int Data;
+    }
+
+    public enum DeviceBroadcastHdrDevType
+    {
+        DBT_DEVTYP_DEVICEINTERFACE = 5,
+        DBT_DEVTYP_HANDLE = 6,
+        DBT_DEVTYP_OEM = 0,
+        DBT_DEVTYP_PORT = 3,
+        DBT_DEVTYP_VOLUME =2
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct DEV_BROADCAST_HDR
+    {
+        public int Size;
+        public DeviceBroadcastHdrDevType DeviceType;
+        public int Reserved;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct DEV_BROADCAST_DEVICEINTERFACE_Filter
+    {
+        public int Size;
+        public DeviceBroadcastHdrDevType DeviceType;
+        public int Reserved;
+        public Guid ClassGuid;
+        public short Name;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    public struct DEV_BROADCAST_DEVICEINTERFACE
+    {
+        public int Size;
+        public DeviceBroadcastHdrDevType DeviceType;
+        public int Reserved;
+        public Guid ClassGuid;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 255)]
+        public string Name;
+    }
+
+    [Flags]
+    public enum DevBroadcastVolumeFlags : short
+    {
+        DBTF_MEDIA = 1,
+        DBTF_NET = 2
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    public struct DEV_BROADCAST_VOLUME
+    {
+        public int Size;
+        public DeviceBroadcastHdrDevType DeviceType;
+        public int Reserved;
+        public uint UnitMask;
+        public DevBroadcastVolumeFlags Flags; 
+    }
+
+    public enum DeviceEventType
+    {
+        DeviceArrival = 0x8000,
+        DeviceRemoveComplete = 0x8004,
+        DeviceQueryRemove = 0x8001,
+        DeviceQueryRemoveFailed = 0x8002,
+        DeviceRemovePending = 0x8003,
+        DeviceTypeSpecific = 0x8005,
+        CustomEvent = 0x8006,
     }
 }
