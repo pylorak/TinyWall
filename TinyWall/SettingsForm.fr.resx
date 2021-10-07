@@ -209,9 +209,12 @@
 		<value>49, 13</value>
 	</data>
 	<data name="label11.Text" xml:space="preserve">
-    <value>Langue :</value>
+    <value>Langue:</value>
   </data>
-	<data name="chkEnableBlocklists.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="chkDisplayOffBlock.Text" xml:space="preserve">
+    <value>Désactiver Internet pendant mode économie d'affichage</value>
+  </data>
+  <data name="chkEnableBlocklists.Size" type="System.Drawing.Size, System.Drawing">
 		<value>162, 17</value>
 	</data>
 	<data name="chkEnableBlocklists.Text" xml:space="preserve">
