@@ -81,7 +81,12 @@ namespace PKSoft
             UpdateModule UpdateModule = UpdateChecker.GetMainAppModule(this.Descriptor);
             Version oldVersion = new Version(System.Windows.Forms.Application.ProductVersion);
             Version newVersion = new Version(UpdateModule.ComponentVersion);
-            if (newVersion > oldVersion)
+
+            bool win10v1903 = VersionInfo.Win10OrNewer && (Environment.OSVersion.Version.Build >= 18362);
+            bool WindowsNew_AnyTwUpdate = win10v1903 && (newVersion > oldVersion);
+            bool WindowsOld_TwMinorFixOnly = (newVersion > oldVersion) && (newVersion.Major == oldVersion.Major) && (newVersion.Minor == oldVersion.Minor);
+
+            if (WindowsNew_AnyTwUpdate || WindowsOld_TwMinorFixOnly)
             {
                 string prompt = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.UpdateAvailable, UpdateModule.ComponentVersion);
                 if (Utils.ShowMessageBox(prompt, PKSoft.Resources.Messages.TinyWallUpdater, TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No, TaskDialogIcon.Warning) == DialogResult.Yes)
