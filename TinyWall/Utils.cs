@@ -139,6 +139,12 @@ namespace PKSoft
         }
         */
 
+        internal static void SetRightToLeft(Control ctrl)
+        {
+            RightToLeft rtl = System.Windows.Forms.Application.CurrentCulture.TextInfo.IsRightToLeft ? RightToLeft.Yes : RightToLeft.No;
+            ctrl.RightToLeft = rtl;
+        }
+
         internal static bool IsSystemShuttingDown()
         {
             const int SM_SHUTTINGDOWN = 0x2000;

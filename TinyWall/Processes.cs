@@ -15,6 +15,7 @@ namespace PKSoft
         internal ProcessesForm(bool multiSelect)
         {
             InitializeComponent();
+            Utils.SetRightToLeft(this);
             this.IconList.ImageSize = IconSize;
             this.listView.MultiSelect = multiSelect;
             this.Icon = Resources.Icons.firewall;

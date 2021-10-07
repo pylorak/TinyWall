@@ -45,6 +45,7 @@ namespace PKSoft
         internal SettingsForm(ServerConfiguration service, ControllerSettings controller)
         {
             InitializeComponent();
+            Utils.SetRightToLeft(this);
             this.IconList.ImageSize = IconSize;
             this.Icon = Resources.Icons.firewall;
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
@@ -565,6 +566,7 @@ namespace PKSoft
             comboLanguages.Items.Add(new IdWithName("es", "Español"));
             comboLanguages.Items.Add(new IdWithName("fr", "Français"));
             comboLanguages.Items.Add(new IdWithName("it", "Italiano"));
+            comboLanguages.Items.Add(new IdWithName("he-IL", "עברית"));
             comboLanguages.Items.Add(new IdWithName("hu", "Magyar"));
             comboLanguages.Items.Add(new IdWithName("nl", "Nederlands"));
             comboLanguages.Items.Add(new IdWithName("pl", "Polski"));

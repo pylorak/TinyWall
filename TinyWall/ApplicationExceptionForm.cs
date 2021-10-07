@@ -19,6 +19,7 @@ namespace PKSoft
         internal ApplicationExceptionForm(FirewallExceptionV3 fwex)
         {
             InitializeComponent();
+            Utils.SetRightToLeft(this);
 
             try
             {

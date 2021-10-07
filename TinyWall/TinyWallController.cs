@@ -317,8 +317,10 @@ namespace PKSoft
                 }
             }
             catch { }
- 
+
             InitializeComponent();
+            Utils.SetRightToLeft(TrayMenu);
+
             System.Windows.Forms.Application.Idle += Application_Idle;
             using (var p = Process.GetCurrentProcess())
             {

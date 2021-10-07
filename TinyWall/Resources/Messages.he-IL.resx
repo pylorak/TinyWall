@@ -1,0 +1,407 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
+    <value>לצערנו אין לך הרשאות ניהול הנחוצות לעדכון. ניתן לנסות פעולה שוב, כמנהל-מערכת.</value>
+  </data>
+	<data name="TinyWallUpdater" xml:space="preserve">
+    <value>עדכון TinyWall</value>
+  </data>
+	<data name="ErrorCheckingForUpdates" xml:space="preserve">
+    <value>לא ניתן לגשת לשרת-העדכונים של TinyWall.
+כדאי לוודא שליישום TinyWall יש רשות לגשת לאינטרנט, שהאינטרנט מחובר, ולנסות שוב.</value>
+  </data>
+	<data name="UpdateAvailable" xml:space="preserve">
+    <value>גרסה חדשה זמינה ({0}), האם לעדכן את TinyWall?</value>
+  </data>
+	<data name="DownloadingUpdate" xml:space="preserve">
+    <value>מוריד עדכון חדש...</value>
+  </data>
+	<data name="NoUpdateAvailable" xml:space="preserve">
+    <value>TinyWall מעודכן לגרסה החדשה ביותר.</value>
+  </data>
+	<data name="DownloadInterrupted" xml:space="preserve">
+    <value>ההורדה הופסקה...</value>
+  </data>
+	<data name="StartingUpdate" xml:space="preserve">
+    <value>ההורדה החלה...</value>
+  </data>
+	<data name="TinyWallIsCurrentlyLocked" xml:space="preserve">
+    <value>TinyWall נעול כרגע. ניתן להסיר את הנעילה ולנסות שוב.</value>
+  </data>
+	<data name="PleaseWaitWhileTinyWallChecksForUpdates" xml:space="preserve">
+    <value>יש להמתין, TinyWall בודק האם קיימים עדכונים זמינים.</value>
+  </data>
+	<data name="CouldNotWhitelistProcess" xml:space="preserve">
+    <value>לא ניתן להוסיף את היישום {0} לרשימת היישומים-המותרים</value>
+    <comment>Param0 is a file path.</comment>
+  </data>
+	<data name="PasswordFieldsDoNotMatch" xml:space="preserve">
+    <value>שדות הסיסמה לא-תואמים. יש לנסות שוב.</value>
+  </data>
+	<data name="AreYouSureYouWantToRemoveAllExceptions" xml:space="preserve">
+    <value>האם להסיר את כל החריגות הקיימות של חומת-האש?</value>
+  </data>
+	<data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
+    <value>יש צורך בהרשאת מנהל-מערכת כדי לבצע פעולה זו. בחירה ב Elevate מהתפריט-הקופץ בתחתית המסך יכולה לעזור, לאחר מכן יש לנסות שוב.</value>
+  </data>
+	<data name="TinyWallSettingsFileFilter" xml:space="preserve">
+    <value>הגדרות TinyWall</value>
+    <comment>File filter description</comment>
+  </data>
+	<data name="AllFilesFileFilter" xml:space="preserve">
+    <value>כל הקבצים</value>
+    <comment>File filter description</comment>
+  </data>
+	<data name="ConfigurationHasBeenImported" xml:space="preserve">
+    <value>קובץ ההגדרות ייובא בהצלחה, יש ללחוץ על שמירה בחלון הניהול וההגדרות החדשות ישמרו.</value>
+  </data>
+	<data name="ConfigurationImportError" xml:space="preserve">
+    <value>לא ניתן לייבא את קובץ ההגדרות.</value>
+  </data>
+	<data name="ConfigurationHasBeenExported" xml:space="preserve">
+    <value>קובץ ההגדרות ייוצא בהצלחה.</value>
+  </data>
+	<data name="Mode" xml:space="preserve">
+    <value>מצב</value>
+    <comment>Tray text</comment>
+  </data>
+	<data name="Unlock" xml:space="preserve">
+    <value>ביטול נעילה</value>
+    <comment>Tray menu text</comment>
+  </data>
+	<data name="Lock" xml:space="preserve">
+    <value>נעילה</value>
+    <comment>Tray menu text</comment>
+  </data>
+	<data name="UpdateAvailableBubble" xml:space="preserve">
+    <value>גרסה חדשה {0} של TinyWall זמינה להורדה. ניתן ללחוץ כאן לעדכון.</value>
+    <comment>Param0 is version number of new version</comment>
+  </data>
+	<data name="TheFirewallIsNowOperatingAsRecommended" xml:space="preserve">
+    <value>חומת-האש פועלת כעת באופן המומלץ ביותר.</value>
+  </data>
+	<data name="TheFirewallIsNowAllowsOutgoingConnections" xml:space="preserve">
+    <value>חומת-האש כעת נותנת רשות לתעבורת-רשת יוצאת, אך חוסמת תעבורת-רשת נכנסת.</value>
+  </data>
+	<data name="TheFirewallIsNowBlockingAllInAndOut" xml:space="preserve">
+    <value>חומת-האש כעת חוסמת את כל תעבורת-הרשת הנכנסת והיוצאת.</value>
+  </data>
+	<data name="TheFirewallIsNowDisabled" xml:space="preserve">
+    <value>חומת-האש מבוטלת כעת.</value>
+  </data>
+	<data name="TheTinyWallServiceIsUnavailable" xml:space="preserve">
+    <value>יישום מסוג-שירות TinyWall לא זמין. יש לוודא כי היישום מסוג-שירות של TinyWall מותקן ורץ. ניתן להשתמש ב services.msc כדי לברר זאת, ולנסות שוב.</value>
+  </data>
+	<data name="TrafficIn" xml:space="preserve">
+    <value>תעבורת-רשת נכנסת</value>
+    <comment>Tray menu text</comment>
+  </data>
+	<data name="TrafficOut" xml:space="preserve">
+    <value>תעבורת-רשת יוצאת</value>
+    <comment>Tray menu text</comment>
+  </data>
+	<data name="SettingHaveChangedRetry" xml:space="preserve">
+    <value>הגדרות היו צריכות להתעדכן באותו הזמן בו ביצעת שינויים בהעדפותיך. עליך לבצע את השינויים שלך שוב, כדי למנוע איבוד מידע.</value>
+  </data>
+	<data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
+    <value>הגדרות חומת-האש עודכנו בהצלחה.</value>
+  </data>
+	<data name="Success" xml:space="preserve">
+    <value>הצלחה.</value>
+  </data>
+	<data name="OtherSettingsPreventEffect" xml:space="preserve">
+    <value>הפעולה הצליחה, אך יש לשים-לב: קיימות הגדרות-אחרות המונעות השפעה מלאה.</value>
+  </data>
+	<data name="OperationFailed" xml:space="preserve">
+    <value>הפעולה לא-הצליחה!</value>
+  </data>
+	<data name="CommunicationWithTheServiceError" xml:space="preserve">
+    <value>היישום מסוג-שירות של TinyWall מדווח על שגיאה.</value>
+  </data>
+	<data name="ClickOnAWindowWhitelisting" xml:space="preserve">
+    <value>באמצעות מצביע העכבר הקלק על חלקו הפנימי של חלון פתוח לבחירתך, כדי להוסיף לרשימת היישומים המותרים.</value>
+  </data>
+	<data name="WhitelistingCancelled" xml:space="preserve">
+    <value>בוטלה פעולת ההוספה לרשימת-היישומים המותרים.</value>
+  </data>
+	<data name="CannotGetExecutablePathWhitelisting" xml:space="preserve">
+    <value>לא ניתן למצא את נתיב קובץ ההרצה של היישום, פעולת ההוספה לרשימת-היישומים המותרים בוטלה.</value>
+  </data>
+	<data name="FirewallRulesForRecognizedChanged" xml:space="preserve">
+    <value>כלל חומת-האש מזוהה {0} השתנה. הקלד על הודעה זו כדי לערוך מחדש את כלל החריגה.</value>
+  </data>
+	<data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
+    <value>כלל חומת-האש מזוהה {0} השתנה. הקלד על הודעה זו כדי לערוך מחדש את כלל החריגה.</value>
+  </data>
+	<data name="TinyWallHasBeenUnlocked" xml:space="preserve">
+    <value>TinyWall פתוח לשינויים, כעת באפשרותך לשנות הגדרות.</value>
+  </data>
+	<data name="UnlockFailed" xml:space="preserve">
+    <value>הסיסמה שהוכנסה לא מאפשרת לפתוח את נעילת TinyWall, ניתן לנסות שוב עם הסיסמה הנכונה.</value>
+  </data>
+	<data name="CouldNotElevatePrivileges" xml:space="preserve">
+    <value>פעולת elevate נכשלה, לא ניתן לקבל הרשאות ניהול.</value>
+  </data>
+	<data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
+    <value>לא ניתן לפתוח את מסד-הנתונים המשמש לשמירת המידע (לא קיים או לא תקין).</value>
+  </data>
+	<data name="Stop" xml:space="preserve">
+    <value>עצירה</value>
+  </data>
+	<data name="Start" xml:space="preserve">
+    <value>התחלה</value>
+  </data>
+	<data name="SearchingPath" xml:space="preserve">
+    <value>חיפוש: {0}</value>
+    <comment>Param0 is a path which is being searched</comment>
+  </data>
+	<data name="SearchResults" xml:space="preserve">
+    <value>תוצאות חיפוש:</value>
+  </data>
+	<data name="RecognizedApplication" xml:space="preserve">
+    <value>כלל מזוהה {0}</value>
+    <comment>Exception details window banner text. Param0 is name of application.</comment>
+  </data>
+	<data name="UnknownApplication" xml:space="preserve">
+    <value>יישום לא ידוע</value>
+    <comment>Exception details window banner text</comment>
+  </data>
+	<data name="Permanent" xml:space="preserve">
+    <value>באופן קבוע</value>
+  </data>
+	<data name="UntilReboot" xml:space="preserve">
+    <value>עד הפעלה מחדש</value>
+  </data>
+	<data name="XMinutes" xml:space="preserve">
+    <value>{0} דקות</value>
+    <comment>Param0 is &gt; 1</comment>
+  </data>
+	<data name="XHour" xml:space="preserve">
+    <value>{0} שעה</value>
+    <comment>Param0 is &lt;=1</comment>
+  </data>
+	<data name="XHours" xml:space="preserve">
+    <value>{0} שעות</value>
+    <comment>Param0 is &gt; 1</comment>
+  </data>
+	<data name="FirewallModeAllowOut" xml:space="preserve">
+    <value>מתן-רשות לתעבורת-רשת יוצאת</value>
+  </data>
+	<data name="FirewallModeBlockAll" xml:space="preserve">
+    <value>חסימת הכול</value>
+  </data>
+	<data name="FirewallModeDisabled" xml:space="preserve">
+    <value>מבוטל</value>
+  </data>
+	<data name="FirewallModeNormal" xml:space="preserve">
+    <value>רגיל</value>
+  </data>
+	<data name="FirewallModeUnknown" xml:space="preserve">
+    <value>לא ידוע</value>
+  </data>
+	<data name="CannotGetPathOfProcess" xml:space="preserve">
+    <value>לא ניתן למצא את הנתיב ליישום.</value>
+  </data>
+	<data name="TheFirewallIsNowLearning" xml:space="preserve">
+    <value>חומת-האש במצב למידה, במצב זה כל תעבורת-הרשת מאופשרת.</value>
+  </data>
+	<data name="FirewallModeLearn" xml:space="preserve">
+    <value>למידה-אוטומטית</value>
+  </data>
+	<data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
+    <value>מצב למידה-אוטומטית: 
+במצב למידה-אוטומטית חומת-האש נותנת-רשות לכל תעבורת-הרשת, וזוכרת את היישומים שהשתמשו ברשת.
+לאחר היציאה ממצב הלמידה-האוטומטית, תתבצע הוספה של כללי-חריגה לכל יישומים אלו באופן אוטומטי.
+יש לשים לב שלא תמיד כל היישומים הנחוצים ימצאו, או ימצאו כללים מיותרים אותם ניתן לערוך לאחר-מכן.
+חשוב לוודא שהמחשב נקי מיישומים זדוניים ווירוסים, כדי שאלו לא יוספו גם הם כחריגים, בדרך-כלל למידה-אוטומטית עדיף לבצע על מחשב חדש לאחר התקנת מערכת-ההפעלה.
+
+האם להפעיל מצב למידה-אוטומטית?</value>
+  </data>
+	<data name="DidYouInitiateTheUninstall" xml:space="preserve">
+    <value>הפעלת עדכון/הסרה של TinyWall?</value>
+  </data>
+	<data name="PortListInvalid" xml:space="preserve">
+    <value>רשימת-הפורטים לא תקינה.
+ניתן להשתמש בתו-הכוכבית (*) המציין כל הפורטים אפשריים, 
+או רשימה מופרדת בפסיקים של מספרים מהתחום 1-65535 בלבד.
+ניתן לתקן את הרשימה ולנסות שוב.</value>
+    <comment>First line is dialog main text. Rest are further information in smaller letters.</comment>
+  </data>
+	<data name="UnblockAppCancel" xml:space="preserve">
+    <value>ביטול רשימת היישומים-המותרים</value>
+  </data>
+	<data name="UnblockApp" xml:space="preserve">
+    <value>קבצי ההרצה שנבחרו יכולים להיות חלק מ {0}, 
+וייתכן שחשובים לפעילותו התקינה של היישום.
+לפי שיקול דעתך, ניתן לבטל גם את חסימתם של קבצים אלו..</value>
+    <comment>First line is dialog main text. Rest are further information in smaller letters. Param0 is name of the app.</comment>
+  </data>
+	<data name="UnblockAppShowRelated" xml:space="preserve">
+    <value>הצגה/הסתרה של קבצי-הרצה הקשורים ליישום</value>
+  </data>
+	<data name="UnblockAppUnblockAllRecommended" xml:space="preserve">
+    <value>Unblock all recommended files</value>
+  </data>
+	<data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
+    <value>Unblock only selected file</value>
+  </data>
+	<data name="CompromisedApplication" xml:space="preserve">
+    <value>{0}, עלול להיות זדוני</value>
+    <comment>Exception details window banner text. Param0 is name of application.</comment>
+  </data>
+	<data name="ToastInputNeeded" xml:space="preserve">
+    <value>פעולת העריכה של רשימת היישומים המותרים ממתינה לתגובתך כדי להמשיך..</value>
+    <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
+  </data>
+	<data name="ToastAppWhitelisted" xml:space="preserve">
+    <value>ערך התווסף בהצלחה לרשימת היישומים המותרים.</value>
+    <comment>Keep line short because words do not wrap.</comment>
+  </data>
+	<data name="ToastWhitelistFailed" xml:space="preserve">
+    <value>לא ניתן לערוך את רשימת היישומים המותרים, יש לנסות שוב.</value>
+    <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
+  </data>
+	<data name="CouldNotApplySettingsInternalError" xml:space="preserve">
+    <value>שגיאה פנימית מונעת מהגדרות חומת-האש לפעול.</value>
+  </data>
+	<data name="Default" xml:space="preserve">
+    <value>ברירת-מחדל</value>
+    <comment>As in, the standard, or default, if nothing else is set.</comment>
+  </data>
+	<data name="AllApplications" xml:space="preserve">
+    <value>כל היישומים</value>
+    <comment>Shown in settings for application exceptions that are global</comment>
+  </data>
+	<data name="SubjectTypeExecutable" xml:space="preserve">
+    <value>קובץ הרצה</value>
+  </data>
+	<data name="SubjectTypeGlobal" xml:space="preserve">
+    <value />
+  </data>
+	<data name="SubjectTypeService" xml:space="preserve">
+    <value>יישום מסוג שירות</value>
+  </data>
+	<data name="SubjectTypeUwpApp" xml:space="preserve">
+    <value>יישום אוניברסלי UWP</value>
+  </data>
+	<data name="CouldNotCloseProcess" xml:space="preserve">
+		<value>לא ניתן לסיים-פעולת יישום {0}({1}).</value>
+	</data>
+</root>

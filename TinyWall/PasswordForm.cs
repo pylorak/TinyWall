@@ -16,6 +16,7 @@ namespace PKSoft
         internal PasswordForm()
         {
             InitializeComponent();
+            Utils.SetRightToLeft(this);
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
         }

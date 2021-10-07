@@ -17,6 +17,7 @@ namespace PKSoft
         public UwpPackagesForm(bool multiSelect)
         {
             InitializeComponent();
+            Utils.SetRightToLeft(this);
             this.listView.MultiSelect = multiSelect;
             this.Icon = Resources.Icons.firewall;
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;

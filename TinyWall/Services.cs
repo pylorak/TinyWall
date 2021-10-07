@@ -26,6 +26,7 @@ namespace PKSoft
         internal ServicesForm()
         {
             InitializeComponent();
+            Utils.SetRightToLeft(this);
             this.Icon = Resources.Icons.firewall;
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;

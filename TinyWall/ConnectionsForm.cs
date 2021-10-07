@@ -22,6 +22,7 @@ namespace PKSoft
         internal ConnectionsForm(TinyWallController ctrl)
         {
             InitializeComponent();
+            Utils.SetRightToLeft(this);
             this.IconList.ImageSize = IconSize;
             this.Icon = Resources.Icons.firewall;
             this.Controller = ctrl;

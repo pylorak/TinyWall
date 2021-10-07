@@ -21,6 +21,7 @@ namespace PKSoft
         internal AppFinderForm()
         {
             InitializeComponent();
+            Utils.SetRightToLeft(this);
             this.IconList.ImageSize = IconSize;
             this.Icon = Resources.Icons.firewall;
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
