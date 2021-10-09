@@ -56,7 +56,9 @@
             this.chkShowListen = new System.Windows.Forms.CheckBox();
             this.chkShowActive = new System.Windows.Forms.CheckBox();
             this.chkShowBlocked = new System.Windows.Forms.CheckBox();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.contextMenuStrip1.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnClose
@@ -244,13 +246,19 @@
             this.chkShowBlocked.UseVisualStyleBackColor = true;
             this.chkShowBlocked.CheckedChanged += new System.EventHandler(this.chkShowBlocked_CheckedChanged);
             // 
+            // tableLayoutPanel1
+            // 
+            resources.ApplyResources(this.tableLayoutPanel1, "tableLayoutPanel1");
+            this.tableLayoutPanel1.Controls.Add(this.chkShowListen, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.chkShowActive, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.chkShowBlocked, 0, 2);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            // 
             // ConnectionsForm
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.chkShowBlocked);
-            this.Controls.Add(this.chkShowActive);
-            this.Controls.Add(this.chkShowListen);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.list);
             this.Controls.Add(this.btnClose);
@@ -260,6 +268,8 @@
             this.Load += new System.EventHandler(this.ConnectionsForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ConnectionsForm_KeyDown);
             this.contextMenuStrip1.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -293,5 +303,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.ColumnHeader columnHeader9;
         private System.Windows.Forms.ColumnHeader columnHeader10;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }

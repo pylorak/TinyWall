@@ -88,6 +88,7 @@
             this.btnWeb = new System.Windows.Forms.Button();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tabPage3.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -96,6 +97,7 @@
             this.tabPage4.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnDonate)).BeginInit();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -283,17 +285,8 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.chkDisplayOffBlock);
-            this.tabPage1.Controls.Add(this.chkEnableHotkeys);
-            this.tabPage1.Controls.Add(this.comboLanguages);
-            this.tabPage1.Controls.Add(this.label11);
-            this.tabPage1.Controls.Add(this.chkEnableBlocklists);
-            this.tabPage1.Controls.Add(this.chkLockHostsFile);
-            this.tabPage1.Controls.Add(this.chkHostsBlocklist);
-            this.tabPage1.Controls.Add(this.chkAutoUpdateCheck);
-            this.tabPage1.Controls.Add(this.chkBlockMalwarePorts);
+            this.tabPage1.Controls.Add(this.tableLayoutPanel1);
             this.tabPage1.Controls.Add(this.groupBox1);
-            this.tabPage1.Controls.Add(this.chkAskForExceptionDetails);
             resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -301,20 +294,22 @@
             // chkDisplayOffBlock
             // 
             resources.ApplyResources(this.chkDisplayOffBlock, "chkDisplayOffBlock");
+            this.tableLayoutPanel1.SetColumnSpan(this.chkDisplayOffBlock, 2);
             this.chkDisplayOffBlock.Name = "chkDisplayOffBlock";
             this.chkDisplayOffBlock.UseVisualStyleBackColor = true;
             // 
             // chkEnableHotkeys
             // 
             resources.ApplyResources(this.chkEnableHotkeys, "chkEnableHotkeys");
+            this.tableLayoutPanel1.SetColumnSpan(this.chkEnableHotkeys, 2);
             this.chkEnableHotkeys.Name = "chkEnableHotkeys";
             this.chkEnableHotkeys.UseVisualStyleBackColor = true;
             // 
             // comboLanguages
             // 
+            resources.ApplyResources(this.comboLanguages, "comboLanguages");
             this.comboLanguages.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboLanguages.FormattingEnabled = true;
-            resources.ApplyResources(this.comboLanguages, "comboLanguages");
             this.comboLanguages.Name = "comboLanguages";
             // 
             // label11
@@ -325,6 +320,7 @@
             // chkEnableBlocklists
             // 
             resources.ApplyResources(this.chkEnableBlocklists, "chkEnableBlocklists");
+            this.tableLayoutPanel1.SetColumnSpan(this.chkEnableBlocklists, 2);
             this.chkEnableBlocklists.Name = "chkEnableBlocklists";
             this.chkEnableBlocklists.UseVisualStyleBackColor = true;
             this.chkEnableBlocklists.CheckedChanged += new System.EventHandler(this.chkEnableBlocklists_CheckedChanged);
@@ -332,6 +328,7 @@
             // chkLockHostsFile
             // 
             resources.ApplyResources(this.chkLockHostsFile, "chkLockHostsFile");
+            this.tableLayoutPanel1.SetColumnSpan(this.chkLockHostsFile, 2);
             this.chkLockHostsFile.Name = "chkLockHostsFile";
             this.chkLockHostsFile.UseVisualStyleBackColor = true;
             // 
@@ -344,6 +341,7 @@
             // chkAutoUpdateCheck
             // 
             resources.ApplyResources(this.chkAutoUpdateCheck, "chkAutoUpdateCheck");
+            this.tableLayoutPanel1.SetColumnSpan(this.chkAutoUpdateCheck, 2);
             this.chkAutoUpdateCheck.Name = "chkAutoUpdateCheck";
             this.chkAutoUpdateCheck.UseVisualStyleBackColor = true;
             // 
@@ -402,6 +400,7 @@
             // chkAskForExceptionDetails
             // 
             resources.ApplyResources(this.chkAskForExceptionDetails, "chkAskForExceptionDetails");
+            this.tableLayoutPanel1.SetColumnSpan(this.chkAskForExceptionDetails, 2);
             this.chkAskForExceptionDetails.Name = "chkAskForExceptionDetails";
             this.chkAskForExceptionDetails.UseVisualStyleBackColor = true;
             // 
@@ -529,6 +528,21 @@
             // 
             this.sfd.DefaultExt = "xml";
             // 
+            // tableLayoutPanel1
+            // 
+            resources.ApplyResources(this.tableLayoutPanel1, "tableLayoutPanel1");
+            this.tableLayoutPanel1.Controls.Add(this.label11, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.chkHostsBlocklist, 4, 3);
+            this.tableLayoutPanel1.Controls.Add(this.chkEnableBlocklists, 3, 1);
+            this.tableLayoutPanel1.Controls.Add(this.chkBlockMalwarePorts, 4, 2);
+            this.tableLayoutPanel1.Controls.Add(this.chkDisplayOffBlock, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.chkLockHostsFile, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.comboLanguages, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.chkEnableHotkeys, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.chkAutoUpdateCheck, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.chkAskForExceptionDetails, 0, 2);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            // 
             // SettingsForm
             // 
             resources.ApplyResources(this, "$this");
@@ -557,6 +571,8 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnDonate)).EndInit();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -621,5 +637,6 @@
         private System.Windows.Forms.LinkLabel lblLinkAttributions;
         private System.Windows.Forms.ColumnHeader columnType;
         private System.Windows.Forms.CheckBox chkDisplayOffBlock;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }
