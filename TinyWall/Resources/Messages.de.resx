@@ -211,7 +211,7 @@
     <value>Das aktuelle Konfiguration hat sich geändert während Sie die Einstellungen geändert haben. Um zu verhindern, dass Sie die Einstellungen verlieren, sollten Sie die Einstellungen erneut vornehmen.</value>
   </data>
   <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
-    <value>Die Firewall-Einstellungen wurde erfolgreich aktualisiert.</value>
+    <value>Die Firewall-Einstellungen wurden erfolgreich aktualisiert.</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>Erfolgreich.</value>
