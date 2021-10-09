@@ -171,30 +171,14 @@
   <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
     <value>Скопировать удаленный адрес</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>61, 4</value>
-  </data>
   <data name="btnRefresh.Text" xml:space="preserve">
     <value>Обновить</value>
-  </data>
-  <data name="chkShowListen.Location" type="System.Drawing.Point, System.Drawing">
-    <value>215, 417</value>
-  </data>
-  <data name="chkShowListen.Size" type="System.Drawing.Size, System.Drawing">
-    <value>162, 17</value>
   </data>
   <data name="chkShowListen.Text" xml:space="preserve">
     <value>Показать открытые порты</value>
   </data>
-  <data name="chkShowActive.Size" type="System.Drawing.Size, System.Drawing">
-    <value>197, 17</value>
-  </data>
   <data name="chkShowActive.Text" xml:space="preserve">
     <value>Показать активные подключения</value>
-  </data>
-  <data name="chkShowBlocked.Size" type="System.Drawing.Size, System.Drawing">
-    <value>363, 17</value>
   </data>
   <data name="chkShowBlocked.Text" xml:space="preserve">
     <value>Показать заблокированные приложения (за последние 5 минуты)</value>

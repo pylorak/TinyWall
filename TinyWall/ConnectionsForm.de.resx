@@ -168,10 +168,6 @@
   <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
     <value>Kopiere die entfernte Adresse.</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>61, 4</value>
-  </data>
   <data name="btnRefresh.Text" xml:space="preserve">
     <value>Aktualisieren</value>
   </data>

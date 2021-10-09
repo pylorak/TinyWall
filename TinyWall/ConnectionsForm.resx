@@ -210,54 +210,6 @@
   <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>110, 17</value>
   </metadata>
-  <data name="mnuUnblock.Size" type="System.Drawing.Size, System.Drawing">
-    <value>186, 22</value>
-  </data>
-  <data name="mnuUnblock.Text" xml:space="preserve">
-    <value>Unblock</value>
-  </data>
-  <data name="mnuCloseProcess.Size" type="System.Drawing.Size, System.Drawing">
-    <value>186, 22</value>
-  </data>
-  <data name="mnuCloseProcess.Text" xml:space="preserve">
-    <value>Kill process</value>
-  </data>
-  <data name="mnuVirusTotal.Size" type="System.Drawing.Size, System.Drawing">
-    <value>220, 22</value>
-  </data>
-  <data name="mnuVirusTotal.Text" xml:space="preserve">
-    <value>On VirusTotal</value>
-  </data>
-  <data name="mnuProcessLibrary.Size" type="System.Drawing.Size, System.Drawing">
-    <value>220, 22</value>
-  </data>
-  <data name="mnuProcessLibrary.Text" xml:space="preserve">
-    <value>On ProcessLibrary</value>
-  </data>
-  <data name="mnuFileNameOnTheWeb.Size" type="System.Drawing.Size, System.Drawing">
-    <value>220, 22</value>
-  </data>
-  <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
-    <value>File name on the web</value>
-  </data>
-  <data name="mnuRemoteAddressOnTheWeb.Size" type="System.Drawing.Size, System.Drawing">
-    <value>220, 22</value>
-  </data>
-  <data name="mnuRemoteAddressOnTheWeb.Text" xml:space="preserve">
-    <value>Remote address on the web</value>
-  </data>
-  <data name="mnuSearch.Size" type="System.Drawing.Size, System.Drawing">
-    <value>186, 22</value>
-  </data>
-  <data name="mnuSearch.Text" xml:space="preserve">
-    <value>Search...</value>
-  </data>
-  <data name="mnuCopyRemoteAddress.Size" type="System.Drawing.Size, System.Drawing">
-    <value>186, 22</value>
-  </data>
-  <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
-    <value>Copy remote address</value>
-  </data>
   <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
     <value>187, 92</value>
   </data>
@@ -294,6 +246,54 @@
   <data name="&gt;&gt;list.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
+  <data name="mnuUnblock.Size" type="System.Drawing.Size, System.Drawing">
+    <value>186, 22</value>
+  </data>
+  <data name="mnuUnblock.Text" xml:space="preserve">
+    <value>Unblock</value>
+  </data>
+  <data name="mnuCloseProcess.Size" type="System.Drawing.Size, System.Drawing">
+    <value>186, 22</value>
+  </data>
+  <data name="mnuCloseProcess.Text" xml:space="preserve">
+    <value>Kill process</value>
+  </data>
+  <data name="mnuSearch.Size" type="System.Drawing.Size, System.Drawing">
+    <value>186, 22</value>
+  </data>
+  <data name="mnuSearch.Text" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="mnuVirusTotal.Size" type="System.Drawing.Size, System.Drawing">
+    <value>220, 22</value>
+  </data>
+  <data name="mnuVirusTotal.Text" xml:space="preserve">
+    <value>On VirusTotal</value>
+  </data>
+  <data name="mnuProcessLibrary.Size" type="System.Drawing.Size, System.Drawing">
+    <value>220, 22</value>
+  </data>
+  <data name="mnuProcessLibrary.Text" xml:space="preserve">
+    <value>On ProcessLibrary</value>
+  </data>
+  <data name="mnuFileNameOnTheWeb.Size" type="System.Drawing.Size, System.Drawing">
+    <value>220, 22</value>
+  </data>
+  <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
+    <value>File name on the web</value>
+  </data>
+  <data name="mnuRemoteAddressOnTheWeb.Size" type="System.Drawing.Size, System.Drawing">
+    <value>220, 22</value>
+  </data>
+  <data name="mnuRemoteAddressOnTheWeb.Text" xml:space="preserve">
+    <value>Remote address on the web</value>
+  </data>
+  <data name="mnuCopyRemoteAddress.Size" type="System.Drawing.Size, System.Drawing">
+    <value>186, 22</value>
+  </data>
+  <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
+    <value>Copy remote address</value>
+  </data>
   <data name="btnRefresh.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
   </data>
@@ -328,13 +328,13 @@
     <value>True</value>
   </data>
   <data name="chkShowListen.Location" type="System.Drawing.Point, System.Drawing">
-    <value>175, 417</value>
+    <value>12, 411</value>
   </data>
   <data name="chkShowListen.Size" type="System.Drawing.Size, System.Drawing">
     <value>106, 17</value>
   </data>
   <data name="chkShowListen.TabIndex" type="System.Int32, mscorlib">
-    <value>30</value>
+    <value>20</value>
   </data>
   <data name="chkShowListen.Text" xml:space="preserve">
     <value>Show open ports</value>
@@ -358,13 +358,13 @@
     <value>True</value>
   </data>
   <data name="chkShowActive.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 417</value>
+    <value>12, 434</value>
   </data>
   <data name="chkShowActive.Size" type="System.Drawing.Size, System.Drawing">
     <value>146, 17</value>
   </data>
   <data name="chkShowActive.TabIndex" type="System.Int32, mscorlib">
-    <value>20</value>
+    <value>30</value>
   </data>
   <data name="chkShowActive.Text" xml:space="preserve">
     <value>Show active connections</value>
@@ -388,7 +388,7 @@
     <value>True</value>
   </data>
   <data name="chkShowBlocked.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 450</value>
+    <value>12, 457</value>
   </data>
   <data name="chkShowBlocked.Size" type="System.Drawing.Size, System.Drawing">
     <value>189, 17</value>

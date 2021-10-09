@@ -117,14 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="btnClose.Location" type="System.Drawing.Point, System.Drawing">
-    <value>758, 388</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="btnClose.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
-  </data>
   <data name="btnClose.Text" xml:space="preserve">
     <value>닫기</value>
   </data>
@@ -179,50 +171,17 @@
   <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
     <value>원격 주소 복사</value>
   </data>
-  <data name="list.Size" type="System.Drawing.Size, System.Drawing">
-    <value>836, 337</value>
-  </data>
-  <data name="list.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="btnRefresh.Location" type="System.Drawing.Point, System.Drawing">
-    <value>662, 388</value>
-  </data>
-  <data name="btnRefresh.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
   <data name="btnRefresh.Text" xml:space="preserve">
     <value>새로 고침</value>
-  </data>
-  <data name="chkShowListen.Location" type="System.Drawing.Point, System.Drawing">
-    <value>175, 364</value>
-  </data>
-  <data name="chkShowListen.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
   </data>
   <data name="chkShowListen.Text" xml:space="preserve">
     <value>열린 포트 표시</value>
   </data>
-  <data name="chkShowActive.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 364</value>
-  </data>
-  <data name="chkShowActive.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
   <data name="chkShowActive.Text" xml:space="preserve">
     <value>활성 연결 표시</value>
   </data>
-  <data name="chkShowBlocked.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 397</value>
-  </data>
-  <data name="chkShowBlocked.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
   <data name="chkShowBlocked.Text" xml:space="preserve">
     <value>차단된 앱 표시 (지난 5 분 동안)</value>
-  </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>860, 433</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>연결 - TinyWall</value>

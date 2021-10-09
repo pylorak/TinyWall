@@ -156,27 +156,14 @@
   <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
     <value>Kopieer remote adres</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>61, 4</value>
-  </data>
   <data name="btnRefresh.Text" xml:space="preserve">
     <value>Vernieuw</value>
-  </data>
-  <data name="chkShowListen.Size" type="System.Drawing.Size, System.Drawing">
-    <value>117, 17</value>
   </data>
   <data name="chkShowListen.Text" xml:space="preserve">
     <value>Toon open poorten</value>
   </data>
-  <data name="chkShowActive.Size" type="System.Drawing.Size, System.Drawing">
-    <value>153, 17</value>
-  </data>
   <data name="chkShowActive.Text" xml:space="preserve">
     <value>Toon actieve verbindingen</value>
-  </data>
-  <data name="chkShowBlocked.Size" type="System.Drawing.Size, System.Drawing">
-    <value>274, 17</value>
   </data>
   <data name="chkShowBlocked.Text" xml:space="preserve">
     <value>Toon geblokkeerde toepassingen (laatste 5 minuten)</value>

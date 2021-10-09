@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -126,24 +126,11 @@
   <data name="txtExceptionListFilter.AccessibleName" xml:space="preserve">
     <value>필터</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="txtExceptionListFilter.TabIndex" type="System.Int32, mscorlib">
-    <value>50</value>
-  </data>
-  <data name="btnAppRemoveAll.TabIndex" type="System.Int32, mscorlib">
-    <value>80</value>
-  </data>
   <data name="btnAppRemoveAll.Text" xml:space="preserve">
     <value>모두 제거</value>
   </data>
-  <data name="btnAppAutoDetect.TabIndex" type="System.Int32, mscorlib">
-    <value>60</value>
-  </data>
   <data name="btnAppAutoDetect.Text" xml:space="preserve">
     <value>감지</value>
-  </data>
-  <data name="btnSubmitAssoc.TabIndex" type="System.Int32, mscorlib">
-    <value>85</value>
   </data>
   <data name="btnSubmitAssoc.Text" xml:space="preserve">
     <value>전송</value>
@@ -151,26 +138,14 @@
   <data name="label3.Text" xml:space="preserve">
     <value>네트워크 액세스 권한을 부여하려는 응용 프로그램의 목록을 편집합니다. 이 목록의 응용 프로그램만 통신할 수 있습니다. 감지 버튼을 사용하여 TinyWall이 일부 소프트웨어를 자동으로 감지하거나 응용 프로그램을 수동으로 추가할 수 있습니다.</value>
   </data>
-  <data name="btnAppRemove.TabIndex" type="System.Int32, mscorlib">
-    <value>75</value>
-  </data>
   <data name="btnAppRemove.Text" xml:space="preserve">
     <value>제거</value>
-  </data>
-  <data name="btnAppModify.TabIndex" type="System.Int32, mscorlib">
-    <value>70</value>
   </data>
   <data name="btnAppModify.Text" xml:space="preserve">
     <value>수정</value>
   </data>
-  <data name="btnAppAdd.TabIndex" type="System.Int32, mscorlib">
-    <value>65</value>
-  </data>
   <data name="btnAppAdd.Text" xml:space="preserve">
     <value>응용 프로그램 추가</value>
-  </data>
-  <data name="listApplications.TabIndex" type="System.Int32, mscorlib">
-    <value>55</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
     <value>필터:</value>
@@ -184,90 +159,29 @@
   <data name="label2.Text" xml:space="preserve">
     <value>옵션</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>106, 72</value>
-  </data>
   <data name="label1.Text" xml:space="preserve">
     <value>권장</value>
-  </data>
-  <data name="listOptionalGlobalProfiles.Size" type="System.Drawing.Size, System.Drawing">
-    <value>238, 229</value>
-  </data>
-  <data name="listOptionalGlobalProfiles.TabIndex" type="System.Int32, mscorlib">
-    <value>95</value>
-  </data>
-  <data name="listRecommendedGlobalProfiles.Location" type="System.Drawing.Point, System.Drawing">
-    <value>109, 91</value>
-  </data>
-  <data name="listRecommendedGlobalProfiles.Size" type="System.Drawing.Size, System.Drawing">
-    <value>238, 229</value>
-  </data>
-  <data name="listRecommendedGlobalProfiles.TabIndex" type="System.Int32, mscorlib">
-    <value>90</value>
   </data>
   <data name="tabPage2.Text" xml:space="preserve">
     <value>특수 예외</value>
   </data>
-  <data name="chkEnableHotkeys.TabIndex" type="System.Int32, mscorlib">
-    <value>35</value>
-  </data>
   <data name="chkEnableHotkeys.Text" xml:space="preserve">
     <value>글로벌 단축키 사용</value>
-  </data>
-  <data name="comboLanguages.Location" type="System.Drawing.Point, System.Drawing">
-    <value>589, 6</value>
-  </data>
-  <data name="comboLanguages.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="label11.Location" type="System.Drawing.Point, System.Drawing">
-    <value>525, 9</value>
   </data>
   <data name="label11.Text" xml:space="preserve">
     <value>언어:</value>
   </data>
-  <data name="chkEnableBlocklists.Location" type="System.Drawing.Point, System.Drawing">
-    <value>369, 48</value>
-  </data>
-  <data name="chkEnableBlocklists.TabIndex" type="System.Int32, mscorlib">
-    <value>20</value>
-  </data>
   <data name="chkEnableBlocklists.Text" xml:space="preserve">
     <value>차단 목록 사용</value>
-  </data>
-  <data name="chkLockHostsFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>104, 94</value>
-  </data>
-  <data name="chkLockHostsFile.TabIndex" type="System.Int32, mscorlib">
-    <value>15</value>
   </data>
   <data name="chkLockHostsFile.Text" xml:space="preserve">
     <value>호스트(hosts) 파일 수정 차단</value>
   </data>
-  <data name="chkHostsBlocklist.Location" type="System.Drawing.Point, System.Drawing">
-    <value>388, 94</value>
-  </data>
-  <data name="chkHostsBlocklist.TabIndex" type="System.Int32, mscorlib">
-    <value>30</value>
-  </data>
   <data name="chkHostsBlocklist.Text" xml:space="preserve">
     <value>도메인 기반 멀웨어 및 차단 목록</value>
   </data>
-  <data name="chkAutoUpdateCheck.Location" type="System.Drawing.Point, System.Drawing">
-    <value>104, 48</value>
-  </data>
-  <data name="chkAutoUpdateCheck.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
   <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
     <value>업데이트 자동 확인</value>
-  </data>
-  <data name="chkBlockMalwarePorts.Location" type="System.Drawing.Point, System.Drawing">
-    <value>388, 71</value>
-  </data>
-  <data name="chkBlockMalwarePorts.TabIndex" type="System.Int32, mscorlib">
-    <value>25</value>
   </data>
   <data name="chkBlockMalwarePorts.Text" xml:space="preserve">
     <value>포트 기반 멀웨어 차단 목록</value>
@@ -281,29 +195,11 @@
   <data name="label7.Text" xml:space="preserve">
     <value>암호:</value>
   </data>
-  <data name="chkChangePassword.TabIndex" type="System.Int32, mscorlib">
-    <value>35</value>
-  </data>
   <data name="chkChangePassword.Text" xml:space="preserve">
     <value>암호 확인</value>
   </data>
-  <data name="txtPasswordAgain.TabIndex" type="System.Int32, mscorlib">
-    <value>45</value>
-  </data>
-  <data name="txtPassword.TabIndex" type="System.Int32, mscorlib">
-    <value>40</value>
-  </data>
-  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
-    <value>34</value>
-  </data>
   <data name="groupBox1.Text" xml:space="preserve">
     <value>암호 보호</value>
-  </data>
-  <data name="chkAskForExceptionDetails.Location" type="System.Drawing.Point, System.Drawing">
-    <value>104, 71</value>
-  </data>
-  <data name="chkAskForExceptionDetails.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
   </data>
   <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
     <value>예외 세부 정보 확인</value>
@@ -311,20 +207,11 @@
   <data name="tabPage1.Text" xml:space="preserve">
     <value>일반</value>
   </data>
-  <data name="btnImport.TabIndex" type="System.Int32, mscorlib">
-    <value>100</value>
-  </data>
   <data name="btnImport.Text" xml:space="preserve">
     <value>가져오기 설정</value>
   </data>
-  <data name="btnExport.TabIndex" type="System.Int32, mscorlib">
-    <value>105</value>
-  </data>
   <data name="btnExport.Text" xml:space="preserve">
     <value>내보내기 설정</value>
-  </data>
-  <data name="lblLinkAttributions.TabIndex" type="System.Int32, mscorlib">
-    <value>131</value>
   </data>
   <data name="btnDonate.AccessibleDescription" xml:space="preserve">
     <value>후원</value>
@@ -332,47 +219,23 @@
   <data name="btnDonate.AccessibleName" xml:space="preserve">
     <value>기부하기</value>
   </data>
-  <data name="lblLinkLicense.TabIndex" type="System.Int32, mscorlib">
-    <value>130</value>
-  </data>
   <data name="lblLinkLicense.Text" xml:space="preserve">
     <value>라이센스</value>
   </data>
   <data name="label10.Text" xml:space="preserve">
     <value>이 무료 프로그램이 맘에 들고 사용하고 계신다면, 호스팅, 하드웨어와 소프트웨어 비용을 충당하기 위해 기부를 고려해주시면 감사하겠습니다.</value>
   </data>
-  <data name="lblAboutHomepageLink.Size" type="System.Drawing.Size, System.Drawing">
-    <value>119, 13</value>
-  </data>
-  <data name="lblAboutHomepageLink.TabIndex" type="System.Int32, mscorlib">
-    <value>125</value>
-  </data>
-  <data name="lblAboutHomepageLink.Text" xml:space="preserve">
-    <value>http://tinywall.pados.hu</value>
-  </data>
   <data name="label6.Text" xml:space="preserve">
     <value>모든 권리 소유.</value>
-  </data>
-  <data name="label12.Size" type="System.Drawing.Size, System.Drawing">
-    <value>182, 13</value>
   </data>
   <data name="label12.Text" xml:space="preserve">
     <value>저작권 © 2011-2015 Károly Pados</value>
   </data>
-  <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
-    <value>120</value>
-  </data>
   <data name="groupBox2.Text" xml:space="preserve">
     <value>제품 정보</value>
   </data>
-  <data name="btnUpdate.TabIndex" type="System.Int32, mscorlib">
-    <value>110</value>
-  </data>
   <data name="btnUpdate.Text" xml:space="preserve">
     <value>업데이트</value>
-  </data>
-  <data name="btnWeb.TabIndex" type="System.Int32, mscorlib">
-    <value>115</value>
   </data>
   <data name="btnWeb.Text" xml:space="preserve">
     <value>홈페이지 방문</value>
