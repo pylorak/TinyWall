@@ -57,6 +57,7 @@ Viele Grüße</globalSetting>
       <file filePath="Forms\AppFinderForm.de.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\AppFinderForm.de.resx" uniqueID="debad23f-1f06-4a66-9d99-a17a227dd57c" />
       <file filePath="Forms\AppFinderForm.es.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\AppFinderForm.es.resx" uniqueID="97125cd9-399d-4e2a-836a-cc727db19944" />
       <file filePath="Forms\AppFinderForm.fr.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\AppFinderForm.fr.resx" uniqueID="16528afb-ce71-4a84-9531-a52a4a85acd3" />
+      <file filePath="Forms\AppFinderForm.he-IL.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\AppFinderForm.he-IL.resx" uniqueID="f834e62b-797b-4906-a131-3357218b5386" />
       <file filePath="Forms\AppFinderForm.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\AppFinderForm.hu.resx" uniqueID="f734e62b-797b-4906-a131-3357218b5386" />
       <file filePath="Forms\AppFinderForm.it.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\AppFinderForm.it.resx" uniqueID="bf7b6c80-3ecb-48f9-a567-cc4dcdfeccca" />
       <file filePath="Forms\AppFinderForm.ja.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\AppFinderForm.ja.resx" uniqueID="1d32d41d-8700-45e5-ba42-545d429d28b0" />
@@ -74,7 +75,8 @@ Viele Grüße</globalSetting>
       <file filePath="Forms\ApplicationExceptionForm.de.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ApplicationExceptionForm.de.resx" uniqueID="ba320f09-9a6c-4640-beca-fc97aecdd202" />
       <file filePath="Forms\ApplicationExceptionForm.es.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ApplicationExceptionForm.es.resx" uniqueID="2a3c2276-fe68-4c68-b318-8b20e906b70c" />
       <file filePath="Forms\ApplicationExceptionForm.fr.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ApplicationExceptionForm.fr.resx" uniqueID="d71b8a79-e9f4-40e5-8b33-8b73812da293" />
-      <file filePath="Forms\ApplicationExceptionForm.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ApplicationExceptionForm.hu.resx" uniqueID="f68b078a-92f2-4cc6-a6d0-6b0b2ed88645" />
+      <file filePath="Forms\ApplicationExceptionForm.he-IL.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ApplicationExceptionForm.he-IL.resx" uniqueID="f68b078a-92f2-4cc6-a6d0-6b0b2ed88645" />
+      <file filePath="Forms\ApplicationExceptionForm.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ApplicationExceptionForm.hu.resx" uniqueID="f78b078a-92f2-4cc6-a6d0-6b0b2ed88645" />
       <file filePath="Forms\ApplicationExceptionForm.it.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ApplicationExceptionForm.it.resx" uniqueID="c0d76dfe-087a-427b-9347-5b6a46003480" />
       <file filePath="Forms\ApplicationExceptionForm.ja.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ApplicationExceptionForm.ja.resx" uniqueID="03a59b4b-0304-4233-ba73-52f503863186" />
       <file filePath="Forms\ApplicationExceptionForm.nl.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ApplicationExceptionForm.nl.resx" uniqueID="6b43a266-c149-4723-9e8e-5d2fa4035498" />
@@ -91,7 +93,8 @@ Viele Grüße</globalSetting>
       <file filePath="Forms\ConnectionsForm.de.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ConnectionsForm.de.resx" uniqueID="9bd7b17d-7fbc-4a49-bacd-5037a48fdc0b" />
       <file filePath="Forms\ConnectionsForm.es.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ConnectionsForm.es.resx" uniqueID="694315db-259d-4f2f-a9d0-c559a9f14257" />
       <file filePath="Forms\ConnectionsForm.fr.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ConnectionsForm.fr.resx" uniqueID="d093daab-2e1a-4c54-add2-0b7a70cc1a8d" />
-      <file filePath="Forms\ConnectionsForm.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ConnectionsForm.hu.resx" uniqueID="7625dd51-c211-40e0-bacd-9c8b6c9c32d1" />
+      <file filePath="Forms\ConnectionsForm.he-IL.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ConnectionsForm.he-IL.resx" uniqueID="7625dd51-c211-40e0-bacd-9c8b6c9c32d1" />
+      <file filePath="Forms\ConnectionsForm.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ConnectionsForm.hu.resx" uniqueID="8625dd51-c211-40e0-bacd-9c8b6c9c32d1" />
       <file filePath="Forms\ConnectionsForm.it.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ConnectionsForm.it.resx" uniqueID="3f22b3e8-913f-4119-b223-873ca59bf333" />
       <file filePath="Forms\ConnectionsForm.ja.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ConnectionsForm.ja.resx" uniqueID="fc3a93bc-5c6e-4b6f-979e-fece744c6665" />
       <file filePath="Forms\ConnectionsForm.nl.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\ConnectionsForm.nl.resx" uniqueID="a515a93b-ecf4-47e1-beb1-d8ef2126f03d" />
@@ -108,7 +111,8 @@ Viele Grüße</globalSetting>
       <file filePath="Exceptions.de.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Exceptions.de.resx" uniqueID="507cb37b-bf8c-485d-ba95-f5850f8f230a" />
       <file filePath="Exceptions.es.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Exceptions.es.resx" uniqueID="f6744e03-4b4e-4d1b-83b1-b77ff634226e" />
       <file filePath="Exceptions.fr.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Exceptions.fr.resx" uniqueID="6456277a-1328-4269-a6b7-f9844ddb7b3a" />
-      <file filePath="Exceptions.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Exceptions.hu.resx" uniqueID="9e969182-0d87-4e1b-9129-6a21d3d406ee" />
+      <file filePath="Exceptions.he-IL.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Exceptions.he-IL.resx" uniqueID="9e969182-0d87-4e1b-9129-6a21d3d406ee" />
+      <file filePath="Exceptions.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Exceptions.hu.resx" uniqueID="ae969182-0d87-4e1b-9129-6a21d3d406ee" />
       <file filePath="Exceptions.it.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Exceptions.it.resx" uniqueID="16fd4855-613d-47bb-a702-de1ed15662b9" />
       <file filePath="Exceptions.ja.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Exceptions.ja.resx" uniqueID="0ca8337d-8ad2-4fb4-99db-392cde9da1d1" />
       <file filePath="Exceptions.nl.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Exceptions.nl.resx" uniqueID="3fcef9b2-7f66-44a6-b75f-0af3ddfece67" />
@@ -125,7 +129,8 @@ Viele Grüße</globalSetting>
       <file filePath="Forms\MainForm.de.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\MainForm.de.resx" uniqueID="7837c404-870b-478c-ae24-f5371b43de98" />
       <file filePath="Forms\MainForm.es.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\MainForm.es.resx" uniqueID="c2897e45-0abd-486c-aa17-7723b0f812f7" />
       <file filePath="Forms\MainForm.fr.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\MainForm.fr.resx" uniqueID="16a2ea60-bd72-426d-8777-226602943b57" />
-      <file filePath="Forms\MainForm.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\MainForm.hu.resx" uniqueID="2379675e-c74d-40f4-a2d6-88e29c97eb62" />
+      <file filePath="Forms\MainForm.he-IL.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\MainForm.he-IL.resx" uniqueID="2379675e-c74d-40f4-a2d6-88e29c97eb62" />
+      <file filePath="Forms\MainForm.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\MainForm.hu.resx" uniqueID="3379675e-c74d-40f4-a2d6-88e29c97eb62" />
       <file filePath="Forms\MainForm.it.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\MainForm.it.resx" uniqueID="5e27b1cb-a5cc-4227-a75a-4fe43712aa71" />
       <file filePath="Forms\MainForm.ja.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\MainForm.ja.resx" uniqueID="031c55da-f2da-4b13-9596-ab15a610c30a" />
       <file filePath="Forms\MainForm.nl.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\MainForm.nl.resx" uniqueID="f9e3b327-002f-4098-b3a0-c5180a6aa525" />
@@ -142,7 +147,8 @@ Viele Grüße</globalSetting>
       <file filePath="Messages.de.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Messages.de.resx" uniqueID="fe342445-2441-4549-9434-26c953da4868" />
       <file filePath="Messages.es.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Messages.es.resx" uniqueID="7527ed2a-f890-4bbd-ab80-44594b7cf5c1" />
       <file filePath="Messages.fr.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Messages.fr.resx" uniqueID="62d80f2e-8b54-40eb-b511-cc51d7cb8a78" />
-      <file filePath="Messages.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Messages.hu.resx" uniqueID="e5701f08-6677-4a21-a60c-20d59b2fdafb" />
+      <file filePath="Messages.he-IL.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Messages.he-IL.resx" uniqueID="e5701f08-6677-4a21-a60c-20d59b2fdafb" />
+      <file filePath="Messages.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Messages.hu.resx" uniqueID="e6701f08-6677-4a21-a60c-20d59b2fdafb" />
       <file filePath="Messages.it.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Messages.it.resx" uniqueID="ea44e6f4-663f-4959-b8ef-939644875ac7" />
       <file filePath="Messages.ja.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Messages.ja.resx" uniqueID="6fc8bb9c-e51d-4546-bd66-5c0fe6f4b8f6" />
       <file filePath="Messages.nl.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Messages.nl.resx" uniqueID="0186f92c-a061-4ef0-8a63-d78de10caf43" />
@@ -159,7 +165,8 @@ Viele Grüße</globalSetting>
       <file filePath="Forms\PasswordForm.de.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\PasswordForm.de.resx" uniqueID="b089cdc9-877a-4976-a4c5-05f8095df3f9" />
       <file filePath="Forms\PasswordForm.es.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\PasswordForm.es.resx" uniqueID="e9133c78-70b2-45a9-9fd4-95261cd009c7" />
       <file filePath="Forms\PasswordForm.fr.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\PasswordForm.fr.resx" uniqueID="bee8c4ab-bf17-4a4d-b619-7caf37f7ee65" />
-      <file filePath="Forms\PasswordForm.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\PasswordForm.hu.resx" uniqueID="94bdc00f-34ce-48eb-a52d-52a65073b706" />
+      <file filePath="Forms\PasswordForm.he-IL.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\PasswordForm.he-IL.resx" uniqueID="94bdc00f-34ce-48eb-a52d-52a65073b706" />
+      <file filePath="Forms\PasswordForm.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\PasswordForm.hu.resx" uniqueID="a4bdc00f-34ce-48eb-a52d-52a65073b706" />
       <file filePath="Forms\PasswordForm.it.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\PasswordForm.it.resx" uniqueID="11cbd64c-6c23-48a9-bce7-800aa6dab267" />
       <file filePath="Forms\PasswordForm.ja.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\PasswordForm.ja.resx" uniqueID="76d69c44-5e49-4c2c-b748-e4f29892169f" />
       <file filePath="Forms\PasswordForm.nl.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\PasswordForm.nl.resx" uniqueID="38e2d559-8058-49c7-88c6-7be66a109a9c" />
@@ -176,7 +183,8 @@ Viele Grüße</globalSetting>
       <file filePath="Forms\Processes.de.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Processes.de.resx" uniqueID="e304d111-166b-492a-a781-fb8e23e03a96" />
       <file filePath="Forms\Processes.es.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Processes.es.resx" uniqueID="0aa405f1-bbb0-4126-894d-a212e971e43a" />
       <file filePath="Forms\Processes.fr.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Processes.fr.resx" uniqueID="03995596-f7a7-4b01-b7b4-ce84013df0b9" />
-      <file filePath="Forms\Processes.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Processes.hu.resx" uniqueID="ad475ca2-2cef-4c4b-8842-3dba86d4eb07" />
+      <file filePath="Forms\Processes.he-IL.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Processes.he-IL.resx" uniqueID="ad475ca2-2cef-4c4b-8842-3dba86d4eb07" />
+      <file filePath="Forms\Processes.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Processes.hu.resx" uniqueID="ad575ca2-2cef-4c4b-8842-3dba86d4eb07" />
       <file filePath="Forms\Processes.it.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Processes.it.resx" uniqueID="44e1c849-ac8a-483f-8f4a-80c662044531" />
       <file filePath="Forms\Processes.ja.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Processes.ja.resx" uniqueID="8ac56af3-e69f-41c9-84e4-f002571022b2" />
       <file filePath="Forms\Processes.nl.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Processes.nl.resx" uniqueID="8df35be6-f6ee-487d-af63-10a9bc88d09f" />
@@ -193,7 +201,8 @@ Viele Grüße</globalSetting>
       <file filePath="Forms\Services.de.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Services.de.resx" uniqueID="2677f49b-410e-4750-89d4-1afcbcc46007" />
       <file filePath="Forms\Services.es.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Services.es.resx" uniqueID="0abd0226-0882-4068-8a19-ec6783222bcb" />
       <file filePath="Forms\Services.fr.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Services.fr.resx" uniqueID="fd401126-f24d-47bc-8a32-0d314cb16cd5" />
-      <file filePath="Forms\Services.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Services.hu.resx" uniqueID="7467190e-3a7e-44b4-ab23-33c5e5fe24d4" />
+      <file filePath="Forms\Services.he-IL.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Services.he-IL.resx" uniqueID="7467190e-3a7e-44b4-ab23-33c5e5fe24d4" />
+      <file filePath="Forms\Services.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Services.hu.resx" uniqueID="8467190e-3a7e-44b4-ab23-33c5e5fe24d4" />
       <file filePath="Forms\Services.it.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Services.it.resx" uniqueID="766efde6-b5c6-4f43-99c0-e1ca10688b3b" />
       <file filePath="Forms\Services.ja.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Services.ja.resx" uniqueID="352a1c18-f06f-4c9c-a9bf-b6144efa1932" />
       <file filePath="Forms\Services.nl.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\Services.nl.resx" uniqueID="7667d948-96c3-439b-be61-bf4d88f135b6" />
@@ -210,7 +219,8 @@ Viele Grüße</globalSetting>
       <file filePath="Forms\SettingsForm.de.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\SettingsForm.de.resx" uniqueID="73e55dd5-8165-4a2e-8b7d-b138d7d0affd" />
       <file filePath="Forms\SettingsForm.es.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\SettingsForm.es.resx" uniqueID="d6646261-9b69-49c1-815f-1e4dc8c2ec84" />
       <file filePath="Forms\SettingsForm.fr.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\SettingsForm.fr.resx" uniqueID="0037d4cf-3294-411e-9bef-7d49e7ba47bc" />
-      <file filePath="Forms\SettingsForm.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\SettingsForm.hu.resx" uniqueID="a5743dfd-a4a4-4a82-ba8a-4cf78b7637ad" />
+      <file filePath="Forms\SettingsForm.he-IL.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\SettingsForm.he-IL.resx" uniqueID="a5743dfd-a4a4-4a82-ba8a-4cf78b7637ad" />
+      <file filePath="Forms\SettingsForm.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\SettingsForm.hu.resx" uniqueID="a6743dfd-a4a4-4a82-ba8a-4cf78b7637ad" />
       <file filePath="Forms\SettingsForm.it.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\SettingsForm.it.resx" uniqueID="b8041716-1989-4b10-a4d2-6638c6b4e46b" />
       <file filePath="Forms\SettingsForm.ja.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\SettingsForm.ja.resx" uniqueID="a37bd82b-84b8-49ff-a633-96ef2bfbb2e3" />
       <file filePath="Forms\SettingsForm.nl.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\SettingsForm.nl.resx" uniqueID="af6d5b21-faaf-4642-925f-b3af295825c9" />
@@ -225,8 +235,9 @@ Viele Grüße</globalSetting>
     <fileGroup name="" projectFolderUniqueID="00000000-0000-0000-0000-000000000000" orderPosition="0" ignoreDuringExportAndImport="False" uniqueID="624b3eea-50e4-44f2-97d5-ba9035418fd7">
       <file filePath="Forms\UwpPackagesForm.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\UwpPackagesForm.resx" uniqueID="7f9467d0-78d1-41ce-8cdf-a0353420587e" />
       <file filePath="Forms\UwpPackagesForm.de.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\UwpPackagesForm.de.resx" uniqueID="efe95808-be64-4890-b7ed-0cd6bb4d1466" />
-      <file filePath="Forms\UwpPackagesForm.es.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\UwpPackagesForm.es.resx" uniqueID="15A2F257-1864-4250-AE79-D1D4F63A30AB" />
-      <file filePath="Forms\UwpPackagesForm.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\UwpPackagesForm.hu.resx" uniqueID="6b25a39c-926f-438d-b31c-a755b033cbdb" />
+      <file filePath="Forms\UwpPackagesForm.es.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\UwpPackagesForm.es.resx" uniqueID="15a2f257-1864-4250-ae79-d1d4f63a30ab" />
+      <file filePath="Forms\UwpPackagesForm.he-IL.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\UwpPackagesForm.he-IL.resx" uniqueID="6b25a39c-926f-438d-b31c-a755b033cbdb" />
+      <file filePath="Forms\UwpPackagesForm.hu.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\UwpPackagesForm.hu.resx" uniqueID="7b25a39c-926f-438d-b31c-a755b033cbdb" />
       <file filePath="Forms\UwpPackagesForm.pt-BR.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\UwpPackagesForm.pt-BR.resx" uniqueID="b6443811-f729-4647-a996-219d9f90ac77" />
       <file filePath="Forms\UwpPackagesForm.ru.resx" absoluteFilePath="C:\Users\Karoly\Nextcloud\TinyWall\TinyWall3\LocalizationPack\Resources\Forms\UwpPackagesForm.ru.resx" uniqueID="33ff318c-2389-44aa-9e0c-09914bd0ab39" />
       <remarks>
