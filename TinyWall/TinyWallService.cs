@@ -99,14 +99,12 @@ namespace PKSoft
                 {
                     case TinyWall.Interface.FirewallMode.AllowOutgoing:
                         {
-                            // Add rule to explicitly allow outgoing connections
-                            def = new RuleDef(ModeId, "Allow outbound", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.Out, Protocol.Any, (ulong)FilterWeights.DefaultPermit);
-                            if (displayBlockActive)
-                                def.RemoteAddresses = "LocalSubnet";
+                            // Block everything
+                            def = new RuleDef(ModeId, "Block everything", GlobalSubject.Instance, RuleAction.Block, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultBlock);
                             rules.Add(def);
 
-                            // Block rest
-                            def = new RuleDef(ModeId, "Block incoming", GlobalSubject.Instance, RuleAction.Block, RuleDirection.In, Protocol.Any, (ulong)FilterWeights.DefaultBlock);
+                            // Allow outgoing
+                            def = new RuleDef(ModeId, "Allow outbound", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.Out, Protocol.Any, (ulong)FilterWeights.DefaultPermit);
                             rules.Add(def);
                             break;
                         }
@@ -1061,7 +1059,10 @@ namespace PKSoft
                     }
                 case PolicyType.RuleList:
                     {
-                        RuleListPolicy pol = ex.Policy as RuleListPolicy;
+                        // The RuleDefs returned can get modified later.
+                        // To avoid changing the original templates we return copies here.
+                        RuleListPolicy pol = Utils.DeepClone(ex.Policy as RuleListPolicy);
+
                         foreach (var rule in pol.Rules)
                         {
                             rule.SetSubject(ex.Subject);
