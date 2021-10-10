@@ -1,7 +1,7 @@
 TinyWall Changelog
 ---------------------
 
-3.1.x - Maintenance release (xx.10.2021.)
+3.1.1 - Important update (11.10.2021.)
 - Add option to block internet during display power-save
 - Heuristically determine and show PIDs of blocked processes if possible
 - Support for showing and whitelisting services in Processes and Connections windows
@@ -43,7 +43,7 @@ TinyWall Changelog
 
 ---------------------
 
-3.0.8 - Maintenance release (27.09.2020.)
+3.0.8 - Important update (27.09.2020.)
 - Add workaround for "grey icon on Win7" issue
   Note: On affected systems icon will appear with considerable delay after boot. This is expected.
 - Fix WMI leak when mountpoints change
@@ -57,7 +57,7 @@ TinyWall Changelog
 
 ---------------------
 
-3.0.7 - Maintenance release (12.07.2020.)
+3.0.7 - Important update (12.07.2020.)
 - Add support for WSL
 - Add support for WSL 2
 - Add support for whitelisting from network shares and network drives
@@ -75,7 +75,7 @@ TinyWall Changelog
 
 ---------------------
 
-3.0.5 - Maintenance release (14.06.2020.)
+3.0.5 - Important update (14.06.2020.)
 - Restore compatibility with 32-bit (x86) Windows systems
 - Remember user-set column widths in lists
 - Keep application list selection and scroll-position after modifications
@@ -231,7 +231,7 @@ TinyWall Changelog
 
 ---------------------
 
-2.1.8 - Maintenance release (10.03.2016.)
+2.1.8 - Important update (10.03.2016.)
 - Fix: Potential GUI crash when whitelisting by window
 - Fix: GUI crash if copying to clipboard which is in use by another app
 - Fix: Connections form GUI scaling issue in German localization
@@ -264,7 +264,7 @@ TinyWall Changelog
 
 ---------------------
 
-2.1.5 - Maintenance release (12.10.2014.)
+2.1.5 - Important update (12.10.2014.)
 - Support for Window Update in Windows 8.1
 - Add support for whitelisting executables on remote network shares
 - Increase service robustness by dry-run testing new rules before save
