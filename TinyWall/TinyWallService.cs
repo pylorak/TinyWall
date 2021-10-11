@@ -77,7 +77,7 @@ namespace PKSoft
                 if (ActiveConfig.Service.ActiveProfile.AllowLocalSubnet)
                 {
                     def = new RuleDef(ModeId, "Allow local subnet", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultPermit);
-                    def.RemoteAddresses = "LocalSubnet";
+                    def.RemoteAddresses = RuleDef.LOCALSUBNET_ID;
                     rules.Add(def);
                 }
 
@@ -278,7 +278,7 @@ namespace PKSoft
                     {
                         if (r.Action == RuleAction.Allow)
                         {
-                            r.RemoteAddresses = "LocalSubnet";
+                            r.RemoteAddresses = RuleDef.LOCALSUBNET_ID;
                         }
                     }
                 }
@@ -560,7 +560,7 @@ namespace PKSoft
 
                     foreach (var ipStr in addresses)
                     {
-                        if (ipStr == "LocalSubnet")
+                        if (ipStr == RuleDef.LOCALSUBNET_ID)
                         {
                             foreach (var addr in LocalSubnetAddreses)
                                 addIpFilterCondition(addr, RemoteOrLocal.Remote);
@@ -977,7 +977,7 @@ namespace PKSoft
                     {
                         RuleDef def = new RuleDef(ex.Id, "Full access", ex.Subject, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, permitWeight);
                         if ((ex.Policy as UnrestrictedPolicy).LocalNetworkOnly)
-                            def.RemoteAddresses = "LocalSubnet";
+                            def.RemoteAddresses = RuleDef.LOCALSUBNET_ID;
                         results.Add(def);
 
                         if (rawSocketExceptions != null)
@@ -999,7 +999,7 @@ namespace PKSoft
                             if (!pol.AllowedLocalTcpListenerPorts.Equals("*"))
                                 def.LocalPorts = pol.AllowedLocalTcpListenerPorts;
                             if (pol.LocalNetworkOnly)
-                                def.RemoteAddresses = "LocalSubnet";
+                                def.RemoteAddresses = RuleDef.LOCALSUBNET_ID;
                             results.Add(def);
                         }
                         else
@@ -1010,7 +1010,7 @@ namespace PKSoft
                                 if (!pol.AllowedLocalTcpListenerPorts.Equals("*"))
                                     def.LocalPorts = pol.AllowedLocalTcpListenerPorts;
                                 if (pol.LocalNetworkOnly)
-                                    def.RemoteAddresses = "LocalSubnet";
+                                    def.RemoteAddresses = RuleDef.LOCALSUBNET_ID;
                                 results.Add(def);
                             }
                             if (!string.IsNullOrEmpty(pol.AllowedLocalUdpListenerPorts))
@@ -1019,7 +1019,7 @@ namespace PKSoft
                                 if (!pol.AllowedLocalUdpListenerPorts.Equals("*"))
                                     def.LocalPorts = pol.AllowedLocalUdpListenerPorts;
                                 if (pol.LocalNetworkOnly)
-                                    def.RemoteAddresses = "LocalSubnet";
+                                    def.RemoteAddresses = RuleDef.LOCALSUBNET_ID;
                                 results.Add(def);
                             }
                         }
@@ -1031,7 +1031,7 @@ namespace PKSoft
                             if (!pol.AllowedRemoteTcpConnectPorts.Equals("*"))
                                 def.RemotePorts = pol.AllowedRemoteTcpConnectPorts;
                             if (pol.LocalNetworkOnly)
-                                def.RemoteAddresses = "LocalSubnet";
+                                def.RemoteAddresses = RuleDef.LOCALSUBNET_ID;
                             results.Add(def);
                         }
                         else
@@ -1042,7 +1042,7 @@ namespace PKSoft
                                 if (!pol.AllowedRemoteTcpConnectPorts.Equals("*"))
                                     def.RemotePorts = pol.AllowedRemoteTcpConnectPorts;
                                 if (pol.LocalNetworkOnly)
-                                    def.RemoteAddresses = "LocalSubnet";
+                                    def.RemoteAddresses = RuleDef.LOCALSUBNET_ID;
                                 results.Add(def);
                             }
                             if (!string.IsNullOrEmpty(pol.AllowedRemoteUdpConnectPorts))
@@ -1051,7 +1051,7 @@ namespace PKSoft
                                 if (!pol.AllowedRemoteUdpConnectPorts.Equals("*"))
                                     def.RemotePorts = pol.AllowedRemoteUdpConnectPorts;
                                 if (pol.LocalNetworkOnly)
-                                    def.RemoteAddresses = "LocalSubnet";
+                                    def.RemoteAddresses = RuleDef.LOCALSUBNET_ID;
                                 results.Add(def);
                             }
                         }

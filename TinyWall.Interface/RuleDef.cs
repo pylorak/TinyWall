@@ -8,6 +8,8 @@ namespace TinyWall.Interface
     [DataContract(Namespace = "TinyWall")]
     public class RuleDef
     {
+        public static readonly string LOCALSUBNET_ID = "LocalSubnet";
+
         [XmlAttribute]
         [DataMember]
         public string Name;
