@@ -1733,11 +1733,6 @@ namespace PKSoft
                 FileLocker.LockFile(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
                 FileLocker.LockFile(PasswordManager.PasswordFilePath, FileAccess.Read, FileShare.Read);
 
-#if !DEBUG
-                // Basic software health checks
-                TinyWallDoctor.EnsureHealth(Utils.LOG_ID_SERVICE);
-#endif
-
                 // Lock configuration if we have a password
                 if (ServiceLocker.HasPassword)
                     ServiceLocker.Locked = true;
@@ -1767,7 +1762,12 @@ namespace PKSoft
                 {
                     ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
                     NetworkInterfaceWatcher.InterfaceChanged += NetworkInterfaceWatcher_EventArrived;
+
                     service.FinishStateChange();
+#if !DEBUG
+                    // Basic software health checks
+                    TinyWallDoctor.EnsureHealth(Utils.LOG_ID_SERVICE);
+#endif
 
                     RunService = true;
                     while (RunService)
