@@ -24,7 +24,7 @@ namespace pylorak.Windows.Services
             ServiceControlAccessRights desiredAccess);
 
         [DllImport("advapi32", SetLastError = true, CharSet = CharSet.Unicode)]
-        public static extern IntPtr OpenService(
+        public static extern SafeServiceHandle OpenService(
             SafeServiceHandle hSCManager,
             string serviceName,
             ServiceAccessRights desiredAccess);

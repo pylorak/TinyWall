@@ -16,16 +16,16 @@ namespace pylorak.Windows.Services
         private SafeServiceHandle OpenService(string serviceName, ServiceAccessRights desiredAccess)
         {
             // Open the service
-            IntPtr service = NativeMethods.OpenService(
+            var service = NativeMethods.OpenService(
                 SCManager,
                 serviceName,
                 desiredAccess);
 
             // Verify if the service is opened
-            if (service == IntPtr.Zero)
-                throw new Win32Exception(Marshal.GetLastWin32Error());
+            if (service.IsInvalid)
+                throw new Win32Exception();
 
-            return new SafeServiceHandle(service);
+            return service;
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
