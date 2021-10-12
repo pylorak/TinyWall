@@ -808,7 +808,7 @@
               <RuleDef>
                 <Action>Allow</Action>
                 <Direction>Out</Direction>
-                <Name>DNS client TCP</Name>
+                <Name>DNS-TCP</Name>
                 <Protocol>TCP</Protocol>
                 <RemoteAddresses>DNS</RemoteAddresses>
                 <RemotePorts>53</RemotePorts>
@@ -816,10 +816,18 @@
               <RuleDef>
                 <Action>Allow</Action>
                 <Direction>InOut</Direction>
-                <Name>DNS client UDP</Name>
+                <Name>DNS-UDP</Name>
                 <Protocol>UDP</Protocol>
                 <RemoteAddresses>DNS</RemoteAddresses>
                 <RemotePorts>53</RemotePorts>
+              </RuleDef>
+              <RuleDef>
+                <Action>Allow</Action>
+                <Direction>Out</Direction>
+                <Name>DoH/DoT</Name>
+                <Protocol>TCP</Protocol>
+                <RemoteAddresses>DNS</RemoteAddresses>
+                <RemotePorts>443,853</RemotePorts>
               </RuleDef>
               <RuleDef>
                 <Action>Allow</Action>
