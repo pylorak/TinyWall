@@ -16,7 +16,7 @@ TinyWall Changelog
 - Fix rule is ineffective for paths with certain international characters
 - Fix Bulgarian translation not loading
 - Fix non-form Korean messages are gibberish due to wrong encoding
-- Updated Italian translation
+- Updated German, Italian and Japanese translations
 - New Hebrew localization
 - GUI layout fixes for various localizations
 - Updated application database

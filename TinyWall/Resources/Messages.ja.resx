@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+	<!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,278 +59,278 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
     <value>アップデートに必要な特権に格上げすることができませんでした.</value>
   </data>
-  <data name="TinyWallUpdater" xml:space="preserve">
+	<data name="TinyWallUpdater" xml:space="preserve">
     <value>TinyWall アップデータ</value>
   </data>
-  <data name="ErrorCheckingForUpdates" xml:space="preserve">
+	<data name="ErrorCheckingForUpdates" xml:space="preserve">
     <value>アップデートサーバにアクセス出来ません.
 サーバがダウンしているか、または TinyWall のインターネットアクセスが許可されていない可能性があります。</value>
   </data>
-  <data name="UpdateAvailable" xml:space="preserve">
+	<data name="UpdateAvailable" xml:space="preserve">
     <value>TinyWall のバージョン {0} が利用可能です. 今すぐにアップデートしますか?</value>
   </data>
-  <data name="DownloadingUpdate" xml:space="preserve">
+	<data name="DownloadingUpdate" xml:space="preserve">
     <value>アップデートのダウンロード...</value>
   </data>
-  <data name="NoUpdateAvailable" xml:space="preserve">
+	<data name="NoUpdateAvailable" xml:space="preserve">
     <value>あなたは最新版の TinyWall を使用しています、アップデートの必要はありません</value>
   </data>
-  <data name="DownloadInterrupted" xml:space="preserve">
+	<data name="DownloadInterrupted" xml:space="preserve">
     <value>ダウンロードを中断しています.</value>
   </data>
-  <data name="StartingUpdate" xml:space="preserve">
+	<data name="StartingUpdate" xml:space="preserve">
     <value>アップデートを開始しています...</value>
   </data>
-  <data name="TinyWallIsCurrentlyLocked" xml:space="preserve">
+	<data name="TinyWallIsCurrentlyLocked" xml:space="preserve">
     <value>TinyWall は現在ロックされています、解除してから再試行してください</value>
   </data>
-  <data name="PleaseWaitWhileTinyWallChecksForUpdates" xml:space="preserve">
+	<data name="PleaseWaitWhileTinyWallChecksForUpdates" xml:space="preserve">
     <value>TinyWall のアップデートを確認しています..お待ちください.</value>
   </data>
-  <data name="CouldNotWhitelistProcess" xml:space="preserve">
+	<data name="CouldNotWhitelistProcess" xml:space="preserve">
     <value>ホワイトリストプロセス {0} を処理できません</value>
     <comment>Param0 is a file path.</comment>
   </data>
-  <data name="CouldNotCloseProcess" xml:space="preserve">
+	<data name="CouldNotCloseProcess" xml:space="preserve">
     <value>プロセス {0}({1}) を閉じることが出来ません.</value>
     <comment>Param0 is name, param1 is pid of process.</comment>
   </data>
-  <data name="PasswordFieldsDoNotMatch" xml:space="preserve">
+	<data name="PasswordFieldsDoNotMatch" xml:space="preserve">
     <value>パスワードに誤りがあります、再入力してください</value>
   </data>
-  <data name="AreYouSureYouWantToRemoveAllExceptions" xml:space="preserve">
+	<data name="AreYouSureYouWantToRemoveAllExceptions" xml:space="preserve">
     <value>本当にすべてのファイアウォール例外を除去しますか?</value>
   </data>
-  <data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
+	<data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
     <value>あなたは、この操作を行うために必要な管理者権限がありません.
 トレイメニューより格上げを選択してから再試行してください</value>
   </data>
-  <data name="TinyWallSettingsFileFilter" xml:space="preserve">
+	<data name="TinyWallSettingsFileFilter" xml:space="preserve">
     <value>TinyWall 設定</value>
     <comment>File filter description</comment>
   </data>
-  <data name="AllFilesFileFilter" xml:space="preserve">
+	<data name="AllFilesFileFilter" xml:space="preserve">
     <value>すべてのファイル</value>
     <comment>File filter description</comment>
   </data>
-  <data name="ConfigurationHasBeenImported" xml:space="preserve">
+	<data name="ConfigurationHasBeenImported" xml:space="preserve">
     <value>構成ファイルは正常にインポートされました。設定を保存するためには、管理ウィンドウの適用を押してください</value>
   </data>
-  <data name="ConfigurationImportError" xml:space="preserve">
+	<data name="ConfigurationImportError" xml:space="preserve">
     <value>構成ファイルをインポートすることができません</value>
   </data>
-  <data name="ConfigurationHasBeenExported" xml:space="preserve">
+	<data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>構成ファイルは正常にエクスポートされました.</value>
   </data>
-  <data name="Mode" xml:space="preserve">
+	<data name="Mode" xml:space="preserve">
     <value>モード</value>
     <comment>Tray text</comment>
   </data>
-  <data name="Unlock" xml:space="preserve">
+	<data name="Unlock" xml:space="preserve">
     <value>ロック解除</value>
     <comment>Tray menu text</comment>
   </data>
-  <data name="Lock" xml:space="preserve">
+	<data name="Lock" xml:space="preserve">
     <value>ロック</value>
     <comment>Tray menu text</comment>
   </data>
-  <data name="UpdateAvailableBubble" xml:space="preserve">
+	<data name="UpdateAvailableBubble" xml:space="preserve">
     <value>TinyWall の新しいバージョン {0} が利用可能です、ここをクリックでアップデートを開始します</value>
     <comment>Param0 is version number of new version</comment>
   </data>
-  <data name="TheFirewallIsNowOperatingAsRecommended" xml:space="preserve">
+	<data name="TheFirewallIsNowOperatingAsRecommended" xml:space="preserve">
     <value>ファイアウォールは現在推奨モードで稼働しています</value>
   </data>
-  <data name="TheFirewallIsNowAllowsOutgoingConnections" xml:space="preserve">
+	<data name="TheFirewallIsNowAllowsOutgoingConnections" xml:space="preserve">
     <value>ファイアウォールは現在送信のみ接続を許可、受信は遮断しています</value>
   </data>
-  <data name="TheFirewallIsNowBlockingAllInAndOut" xml:space="preserve">
+	<data name="TheFirewallIsNowBlockingAllInAndOut" xml:space="preserve">
     <value>ファイアウォールは現在すべての送信/受信トラフィックを遮断しています</value>
   </data>
-  <data name="TheFirewallIsNowDisabled" xml:space="preserve">
+	<data name="TheFirewallIsNowDisabled" xml:space="preserve">
     <value>ファイアウォールは現在無効になっています</value>
   </data>
-  <data name="TheTinyWallServiceIsUnavailable" xml:space="preserve">
+	<data name="TheTinyWallServiceIsUnavailable" xml:space="preserve">
     <value>TinyWall のサービスを利用できません、アプリケーションを再インストールしてから再試行してみてください</value>
   </data>
-  <data name="TrafficIn" xml:space="preserve">
+	<data name="TrafficIn" xml:space="preserve">
     <value>受信</value>
     <comment>Tray menu text</comment>
   </data>
-  <data name="TrafficOut" xml:space="preserve">
+	<data name="TrafficOut" xml:space="preserve">
     <value>送信</value>
     <comment>Tray menu text</comment>
   </data>
-  <data name="SettingHaveChangedRetry" xml:space="preserve">
+	<data name="SettingHaveChangedRetry" xml:space="preserve">
     <value>あなたは設定を変更しましたが、この構成は修正されました。設定を失わないようにするには、再度変更を行ってください。</value>
   </data>
-  <data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
+	<data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
     <value>ファイアウォール設定は正常にアップデートされました</value>
   </data>
-  <data name="Success" xml:space="preserve">
+	<data name="Success" xml:space="preserve">
     <value>完了.</value>
   </data>
-  <data name="OtherSettingsPreventEffect" xml:space="preserve">
+	<data name="OtherSettingsPreventEffect" xml:space="preserve">
     <value>この操作は成功しましたが、他の設定によって完全に適用されていません</value>
   </data>
-  <data name="OperationFailed" xml:space="preserve">
+	<data name="OperationFailed" xml:space="preserve">
     <value>操作に失敗.</value>
   </data>
-  <data name="CommunicationWithTheServiceError" xml:space="preserve">
+	<data name="CommunicationWithTheServiceError" xml:space="preserve">
     <value>TinyWall サービスとの交信中にエラーが発生しました</value>
   </data>
-  <data name="ClickOnAWindowWhitelisting" xml:space="preserve">
+	<data name="ClickOnAWindowWhitelisting" xml:space="preserve">
     <value>アプリケーションで開いているウィンドウ内部をクリックすることでホワイトリストとして選択されます</value>
   </data>
-  <data name="WhitelistingCancelled" xml:space="preserve">
+	<data name="WhitelistingCancelled" xml:space="preserve">
     <value>ホワイトリストへの追加を中止.</value>
   </data>
-  <data name="CannotGetExecutablePathWhitelisting" xml:space="preserve">
+	<data name="CannotGetExecutablePathWhitelisting" xml:space="preserve">
     <value>実行ファイルのパスを取得できません、リストへの追加に失敗</value>
   </data>
-  <data name="FirewallRulesForRecognizedChanged" xml:space="preserve">
+	<data name="FirewallRulesForRecognizedChanged" xml:space="preserve">
     <value>ファイアウォール規則の認識済 {0} が変更されました. ポップアップをクリックで例外を編集</value>
   </data>
-  <data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
+	<data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
     <value>ファイアウォール規則の未認識 {0} が変更されました. ポップアップをクリックで例外を編集</value>
   </data>
-  <data name="TinyWallHasBeenUnlocked" xml:space="preserve">
+	<data name="TinyWallHasBeenUnlocked" xml:space="preserve">
     <value>TinyWall のロックが解除されました、現在は構成を変更するコマンドを実行することができます</value>
   </data>
-  <data name="UnlockFailed" xml:space="preserve">
+	<data name="UnlockFailed" xml:space="preserve">
     <value>ロック解除に失敗. 別のパスフレーズで再試行してみてください</value>
   </data>
-  <data name="CouldNotElevatePrivileges" xml:space="preserve">
+	<data name="CouldNotElevatePrivileges" xml:space="preserve">
     <value>特権の格上げをできません.</value>
   </data>
-  <data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
+	<data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
     <value>データベースを見失ったか，または破損しています</value>
   </data>
-  <data name="Stop" xml:space="preserve">
+	<data name="Stop" xml:space="preserve">
     <value>停止</value>
   </data>
-  <data name="Start" xml:space="preserve">
+	<data name="Start" xml:space="preserve">
     <value>開始</value>
   </data>
-  <data name="SearchingPath" xml:space="preserve">
+	<data name="SearchingPath" xml:space="preserve">
     <value>検索中: {0}</value>
     <comment>Param0 is a path which is being searched</comment>
   </data>
-  <data name="SearchResults" xml:space="preserve">
+	<data name="SearchResults" xml:space="preserve">
     <value>検索結果:</value>
   </data>
-  <data name="RecognizedApplication" xml:space="preserve">
+	<data name="RecognizedApplication" xml:space="preserve">
     <value>認識済 {0}</value>
     <comment>Exception details window banner text. Param0 is name of application.</comment>
   </data>
-  <data name="UnknownApplication" xml:space="preserve">
+	<data name="UnknownApplication" xml:space="preserve">
     <value>不明なアプリケーション</value>
     <comment>Exception details window banner text</comment>
   </data>
-  <data name="Permanent" xml:space="preserve">
+	<data name="Permanent" xml:space="preserve">
     <value>恒久的</value>
   </data>
-  <data name="UntilReboot" xml:space="preserve">
+	<data name="UntilReboot" xml:space="preserve">
     <value>再起動まで</value>
   </data>
-  <data name="XMinutes" xml:space="preserve">
+	<data name="XMinutes" xml:space="preserve">
     <value>{0} 分間</value>
     <comment>Param0 is &gt; 1</comment>
   </data>
-  <data name="XHour" xml:space="preserve">
+	<data name="XHour" xml:space="preserve">
     <value>{0} 時間</value>
     <comment>Param0 is &lt;=1</comment>
   </data>
-  <data name="XHours" xml:space="preserve">
+	<data name="XHours" xml:space="preserve">
     <value>{0} 時間</value>
     <comment>Param0 is &gt; 1</comment>
   </data>
-  <data name="FirewallModeAllowOut" xml:space="preserve">
+	<data name="FirewallModeAllowOut" xml:space="preserve">
     <value>送信を許可</value>
   </data>
-  <data name="FirewallModeBlockAll" xml:space="preserve">
+	<data name="FirewallModeBlockAll" xml:space="preserve">
     <value>すべて遮断</value>
   </data>
-  <data name="FirewallModeDisabled" xml:space="preserve">
+	<data name="FirewallModeDisabled" xml:space="preserve">
     <value>無効化</value>
   </data>
-  <data name="FirewallModeNormal" xml:space="preserve">
+	<data name="FirewallModeNormal" xml:space="preserve">
     <value>標準</value>
   </data>
-  <data name="FirewallModeUnknown" xml:space="preserve">
+	<data name="FirewallModeUnknown" xml:space="preserve">
     <value>不明</value>
   </data>
-  <data name="CannotGetPathOfProcess" xml:space="preserve">
+	<data name="CannotGetPathOfProcess" xml:space="preserve">
     <value>プロセスのパスを取得できません</value>
   </data>
-  <data name="TheFirewallIsNowLearning" xml:space="preserve">
+	<data name="TheFirewallIsNowLearning" xml:space="preserve">
     <value>ファイアウォールは現在すべてのトラフィックに対して学習モードです</value>
   </data>
-  <data name="FirewallModeLearn" xml:space="preserve">
+	<data name="FirewallModeLearn" xml:space="preserve">
     <value>自動学習</value>
   </data>
-  <data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
+	<data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
     <value>本当に自動学習モードにしますか?
 TinyWall の自動学習モードでは、すべての許可されたトラフィックに対して、どのアプリケーションがネットワークを使用したかについて学習します。また学習モードを終了する際、例外は自動的に追加されますが、構成設定の特殊例外項目については学習することが出来ないという点にご注意ください。
 
@@ -338,43 +338,61 @@ TinyWall の自動学習モードでは、すべての許可されたトラフ�
 
 本当に学習モードを有効にしますか?</value>
   </data>
-  <data name="DidYouInitiateTheUninstall" xml:space="preserve">
+	<data name="DidYouInitiateTheUninstall" xml:space="preserve">
     <value>TinyWall のアンインストールを開始しますか?</value>
   </data>
-  <data name="PortListInvalid" xml:space="preserve">
+	<data name="PortListInvalid" xml:space="preserve">
     <value>ポートリストの書式が無効なものです
 利用可能な番号はカンマで区切られた 1-65535 の範囲、またはすべての利用可能なポートを表現するアスタリスク (*) を使用することができます</value>
     <comment>First line is dialog main text. Rest are further information in smaller letters.</comment>
   </data>
-  <data name="UnblockAppCancel" xml:space="preserve">
+	<data name="UnblockAppCancel" xml:space="preserve">
     <value>ホワイトリストへの追加を中止</value>
   </data>
-  <data name="UnblockApp" xml:space="preserve">
+	<data name="UnblockApp" xml:space="preserve">
     <value>関連ファイルを検出
 選択された実行ファイルは {0} の一部です。このアプリケーションを制限なしで使用するために、関連のあるいくつかのファイルを一括でブロック解除することをお勧めします</value>
     <comment>First line is dialog main text. Rest are further information in smaller letters. Param0 is name of the app.</comment>
   </data>
-  <data name="UnblockAppShowRelated" xml:space="preserve">
+	<data name="UnblockAppShowRelated" xml:space="preserve">
     <value>実行形式に関連するファイルを表示/隠す</value>
   </data>
-  <data name="UnblockAppUnblockAllRecommended" xml:space="preserve">
+	<data name="UnblockAppUnblockAllRecommended" xml:space="preserve">
     <value>すべての推奨ファイルのブロックを解除</value>
   </data>
-  <data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
+	<data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
     <value>選択されたファイルのみブロック解除</value>
   </data>
-  <data name="CompromisedApplication" xml:space="preserve">
+	<data name="CompromisedApplication" xml:space="preserve">
     <value>{0}, 感染の可能性有り</value>
   </data>
-  <data name="ToastInputNeeded" xml:space="preserve">
+	<data name="ToastInputNeeded" xml:space="preserve">
     <value>ホワイトリストに登録するには、
 入力が必要です。</value>
   </data>
-  <data name="ToastAppWhitelisted" xml:space="preserve">
+	<data name="ToastAppWhitelisted" xml:space="preserve">
     <value>ホワイト リストに追加</value>
   </data>
-  <data name="ToastWhitelistFailed" xml:space="preserve">
+	<data name="ToastWhitelistFailed" xml:space="preserve">
     <value>ホワイト リストへの登録に失敗しました。
 再度試みてください</value>
   </data>
+	<data name="CouldNotApplySettingsInternalError" xml:space="preserve">
+		<value>内部エラーにより、ファイアウォール設定を適用できませんでした。</value>
+	</data>
+	<data name="Default" xml:space="preserve">
+		<value>既定</value>
+	</data>
+	<data name="AllApplications" xml:space="preserve">
+		<value>すべてのアプリケーション</value>
+	</data>
+	<data name="SubjectTypeExecutable" xml:space="preserve">
+		<value>実行可能形式</value>
+	</data>
+	<data name="SubjectTypeService" xml:space="preserve">
+		<value>サービス</value>
+	</data>
+	<data name="SubjectTypeUwpApp" xml:space="preserve">
+		<value>UWP パッケージ</value>
+	</data>
 </root>
