@@ -132,9 +132,9 @@ public sealed class PathMapper : IDisposable
                         cacheEntry.Device = sb.ToString();
                     }
 
+                    cacheEntry.PathNames = new List<string>();
                     if (NativeMethods.GetVolumePathNamesForVolumeName(vol, buf, buf.Length, out int expectedChars))
                     {
-                        cacheEntry.PathNames = new List<string>();
                         int startIdx = 0;
                         int numChars = 0;
                         for (int i = 0; i < expectedChars; ++i)
