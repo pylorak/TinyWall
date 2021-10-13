@@ -70,19 +70,15 @@ namespace PKSoft
         private readonly SafeIpHlprNotifyHandle NotifyUnicastIpChangeHandle;
         private readonly SafeIpHlprNotifyHandle NotifyRouteChangeHandle;
         private readonly RegistryWatcher DnsChangeNotifier;
-        private readonly BlockingPcQueue<int> TriggerQueue = new BlockingPcQueue<int>();
-        private readonly Thread EventThread;
+        private readonly EventMerger ChangeEventMerger = new EventMerger(1000);
 
-        public delegate void IpInterfaceWatcherDelegate(IpInterfaceWatcher sender);
-        public event IpInterfaceWatcherDelegate InterfaceChanged;
+        public event EventHandler InterfaceChanged;
 
         public IpInterfaceWatcher()
         {
-            int err;
-
             NativeCallback = NotifyIpInterfaceChangeCallback;
 
-            err = NativeMethods.NotifyIpInterfaceChange(ADDRESS_FAMILY.AF_UNSPEC, NativeCallback, IntPtr.Zero, false, out NotifyIpInterfaceChangeHandle);
+            int err = NativeMethods.NotifyIpInterfaceChange(ADDRESS_FAMILY.AF_UNSPEC, NativeCallback, IntPtr.Zero, false, out NotifyIpInterfaceChangeHandle);
             if (err != 0)
                 throw new Win32Exception(err, "NotifyIpInterfaceChange");
 
@@ -118,49 +114,22 @@ namespace PKSoft
             }
             DnsChangeNotifier.RegistryChanged += DnsChangeNotifier_RegistryChanged;
             DnsChangeNotifier.Enabled = true;
-
-            EventThread = new Thread(EventProc);
-            EventThread.Name = "IpInterfaceWatcher";
-            EventThread.IsBackground = true;
-            EventThread.Start();
+            ChangeEventMerger.Event += ChangeEventMerger_Event;
         }
 
-        private void EventProc()
+        private void ChangeEventMerger_Event(object sender, EventArgs e)
         {
-            const int AggregatePeriod = 1000;
-            bool eventConsumed = true;
-            int dummy = 0;
-
-            while (true)
-            {
-                if (TriggerQueue.Dequeue(ref dummy, eventConsumed ? Timeout.Infinite : AggregatePeriod))
-                {   // Item successfully dequeued
-                    eventConsumed = false;
-                }
-                else if(TriggerQueue.IsShutdown)
-                {   // Queue has been shut down
-                    return;
-                }
-                else
-                {   // Timeout during dequeue
-                    eventConsumed = true;
-                    try
-                    {
-                        InterfaceChanged?.Invoke(this);
-                    }
-                    catch { }
-                }
-            }
+            InterfaceChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void DnsChangeNotifier_RegistryChanged(object sender, EventArgs args)
         {
-            TriggerQueue.Enqueue(0);
+            ChangeEventMerger.Pulse();
         }
 
         private void NotifyIpInterfaceChangeCallback(IntPtr CallerContext, IntPtr Row, MIB_NOTIFICATION_TYPE NotificationType)
         {
-            TriggerQueue.Enqueue(0);
+            ChangeEventMerger.Pulse();
         }
 
         private bool disposed = false;
@@ -171,12 +140,11 @@ namespace PKSoft
 
             if (disposing)
             {
-                TriggerQueue.Shutdown();
                 NotifyIpInterfaceChangeHandle.Dispose();
                 NotifyUnicastIpChangeHandle.Dispose();
                 NotifyRouteChangeHandle.Dispose();
                 DnsChangeNotifier.Dispose();
-                EventThread.Join();
+                ChangeEventMerger.Dispose();
             }
 
             disposed = true;

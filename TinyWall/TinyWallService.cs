@@ -1761,18 +1761,19 @@ namespace PKSoft
                 using (var MountPointsEventMerger = new EventMerger(1000))
                 {
                     ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
-                    NetworkInterfaceWatcher.InterfaceChanged += NetworkInterfaceWatcher_EventArrived;
-
+                    NetworkInterfaceWatcher.InterfaceChanged += (object sender, EventArgs args) =>
+                    {
+                        Q.Enqueue(new TwMessage(MessageType.REENUMERATE_ADDRESSES), null);
+                    };
                     MountPointsEventMerger.Event += (object sender, EventArgs args) =>
-                      {
-                          Q.Enqueue(new TwMessage(MessageType.RELOAD_WFP_FILTERS), null);
-                      };
+                    {
+                        Q.Enqueue(new TwMessage(MessageType.RELOAD_WFP_FILTERS), null);
+                    };
                     MountPointsWatcher.RegistryChanged += (object sender, EventArgs args) =>
-                      {
-                          MountPointsEventMerger.Pulse();
-                      };
+                    {
+                        MountPointsEventMerger.Pulse();
+                    };
                     MountPointsWatcher.Enabled = true;
-
                     service.FinishStateChange();
 #if !DEBUG
                     // Basic software health checks
@@ -1801,11 +1802,6 @@ namespace PKSoft
                     }
                 }
             }
-        }
-
-        private void NetworkInterfaceWatcher_EventArrived(IpInterfaceWatcher sender)
-        {
-            Q.Enqueue(new TwMessage(MessageType.REENUMERATE_ADDRESSES), null);
         }
 
         private void ProcessStartWatcher_EventArrived(object sender, EventArrivedEventArgs e)
