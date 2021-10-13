@@ -153,7 +153,7 @@ namespace PKSoft
             }
         }
 
-        private void DnsChangeNotifier_RegistryChanged(RegistryWatcher sender, object userObj)
+        private void DnsChangeNotifier_RegistryChanged(object sender, EventArgs args)
         {
             TriggerQueue.Enqueue(0);
         }

@@ -57,7 +57,6 @@ namespace PKSoft
 
         private Engine WfpEngine;
         private ManagementEventWatcher ProcessStartWatcher;
-        private IpInterfaceWatcher NetworkInterfaceWatcher;
 
         private HashSet<IpAddrMask> LocalSubnetAddreses = new HashSet<IpAddrMask>();
         private HashSet<IpAddrMask> GatewayAddresses = new HashSet<IpAddrMask>();
@@ -1754,14 +1753,25 @@ namespace PKSoft
                 timer.NewSubTask("Init 2");
                 using (WindowsFirewall WinDefFirewall = new WindowsFirewall())
                 using (ProcessStartWatcher = new ManagementEventWatcher(new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace")))
-                using (NetworkInterfaceWatcher = new IpInterfaceWatcher())
                 using (WfpEngine = new Engine("TinyWall Session", "", FWPM_SESSION_FLAGS.None, 5000))
+                using (var NetworkInterfaceWatcher = new IpInterfaceWatcher())
                 using (var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback, null))
                 using (var DisplayOffSubscription = SafeHandlePowerSettingNotification.Create(service.ServiceHandle, PowerSetting.GUID_CONSOLE_DISPLAY_STATE, DeviceNotifFlags.DEVICE_NOTIFY_SERVICE_HANDLE))
-                using (var DeviceNotifíication = SafeHandleDeviceNotification.Create(service.ServiceHandle, DeviceInterfaceClass.GUID_DEVINTERFACE_VOLUME, DeviceNotifFlags.DEVICE_NOTIFY_SERVICE_HANDLE))
+                using (var MountPointsWatcher = new RegistryWatcher(@"HKEY_LOCAL_MACHINE\SYSTEM\MountedDevices", true))
+                using (var MountPointsEventMerger = new EventMerger(1000))
                 {
                     ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
                     NetworkInterfaceWatcher.InterfaceChanged += NetworkInterfaceWatcher_EventArrived;
+
+                    MountPointsEventMerger.Event += (object sender, EventArgs args) =>
+                      {
+                          Q.Enqueue(new TwMessage(MessageType.RELOAD_WFP_FILTERS), null);
+                      };
+                    MountPointsWatcher.RegistryChanged += (object sender, EventArgs args) =>
+                      {
+                          MountPointsEventMerger.Pulse();
+                      };
+                    MountPointsWatcher.Enabled = true;
 
                     service.FinishStateChange();
 #if !DEBUG
@@ -1995,11 +2005,6 @@ namespace PKSoft
             Q.Enqueue(new TwMessage(MessageType.DISPLAY_POWER_EVENT, turnOn), null);
         }
 
-        public void MountedVolumesChangedEvent()
-        {
-            Q.Enqueue(new TwMessage(MessageType.RELOAD_WFP_FILTERS), null);
-        }
-
         public void Dispose()
         {
             using (var timer = new HierarchicalStopwatch("TinyWallService.Dispose()"))
@@ -2137,32 +2142,6 @@ namespace PKSoft
         {
             IsComputerShuttingDown = true;
             StartStateChange(ServiceState.StopPending);
-        }
-
-        protected override void OnDeviceEvent(DeviceEventData data)
-        {
-            if ((data.Event == DeviceEventType.DeviceArrival) || (data.Event == DeviceEventType.DeviceRemoveComplete))
-            {
-                bool pathMapperRebuildNeeded = false;
-
-                if (data.DeviceType == DeviceBroadcastHdrDevType.DBT_DEVTYP_DEVICEINTERFACE)
-                {
-                    if (data.Class == DeviceInterfaceClass.GUID_DEVINTERFACE_VOLUME)
-                    {
-                        pathMapperRebuildNeeded = true;
-                    }
-                }
-                else if (data.DeviceType == DeviceBroadcastHdrDevType.DBT_DEVTYP_VOLUME)
-                {
-                    pathMapperRebuildNeeded = true;
-                }
-
-                if (pathMapperRebuildNeeded)
-                {
-                    Server?.MountedVolumesChangedEvent();
-                    this.EventLog.WriteEntry("MountedVolumesChangedEvent()", EventLogEntryType.Information);
-                }
-            }
         }
 
         protected override void OnPowerEvent(PowerEventData data)

@@ -20,14 +20,12 @@ namespace PKSoft
     {
         private readonly bool WatchSubTree;
         private readonly RegNotifyFilter NotifyFilter;
-        private readonly object UserCtx;
         private readonly ManualResetEvent StopEvent;
         private readonly EventWaitHandle[] EventHandles;
         private readonly SafeRegistryHandle[] WatchedKeys;
         private readonly Thread WatcherThread;
 
-        public delegate void RegistryChangeDelegate(RegistryWatcher sender, object userObj);
-        public event RegistryChangeDelegate RegistryChanged;
+        public event EventHandler RegistryChanged;
 
         private void WatcherProc()
         {
@@ -47,20 +45,19 @@ namespace PKSoft
                 {
                     NativeMethods.RegNotifyChangeKeyValue(WatchedKeys[evIdx].DangerousGetHandle(), WatchSubTree, NotifyFilter, EventHandles[evIdx].SafeWaitHandle.DangerousGetHandle(), true);
                     if (Enabled) 
-                        RegistryChanged?.Invoke(this, UserCtx);
+                        RegistryChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
 
         public RegistryWatcher(string key, bool watchSubTree, RegNotifyFilter notifyFilter = RegNotifyFilter.NameChange | RegNotifyFilter.ValueChange, object userCtx = null) :
-            this(new string[] { key }, watchSubTree, notifyFilter, userCtx)
+            this(new string[] { key }, watchSubTree, notifyFilter)
         { }
 
-        public RegistryWatcher(IEnumerable<string> keys, bool watchSubTree, RegNotifyFilter notifyFilter = RegNotifyFilter.NameChange | RegNotifyFilter.ValueChange, object userCtx = null)
+        public RegistryWatcher(IEnumerable<string> keys, bool watchSubTree, RegNotifyFilter notifyFilter = RegNotifyFilter.NameChange | RegNotifyFilter.ValueChange)
         {
             WatchSubTree = watchSubTree;
             NotifyFilter = notifyFilter;
-            UserCtx = userCtx;
             StopEvent = new ManualResetEvent(false);
 
             // Find out how many keys we have, and at the same time try to open them
