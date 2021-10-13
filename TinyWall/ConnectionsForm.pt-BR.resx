@@ -186,4 +186,7 @@
 	<data name="columnHeader9.Text" xml:space="preserve">
 		<value>Hora e Data</value>
 	</data>
+	<data name="columnHeader10.Text" xml:space="preserve">
+		<value>Serviço</value>
+	</data>
 </root>
