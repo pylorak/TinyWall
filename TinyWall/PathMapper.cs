@@ -28,9 +28,15 @@ public sealed class PathMapper : IDisposable
         [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool GetVolumePathNamesForVolumeName(string lpszVolumeName, [Out] char[] lpszVolumePathNames, int cchBufferLength, out int lpcchReturnLength);
+
+        [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern bool GetVolumePathName(string lpszFileName, [Out] StringBuilder lpszVolumePathName, int ccBufferLength);
+
+        [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern bool GetVolumeNameForVolumeMountPoint(string lpszVolumeMountPoint, [Out] StringBuilder lpszVolumeName, int cchBufferLength);
     }
 
-    public struct DriveCache
+        public struct DriveCache
     {
         public string Device;
         public string Volume;
@@ -165,6 +171,24 @@ public sealed class PathMapper : IDisposable
             CacheReadyEvent.WaitOne();
     }
 
+    private static string GetVolumeMountPointForPath(string path)
+    {
+        if (!Path.IsPathRooted(path))
+            throw new ArgumentException("Input path must be an absolute path.");
+
+        int requiredBufferSize = path.Length + 1;
+        StringBuilder b = new StringBuilder(requiredBufferSize);
+        if (NativeMethods.GetVolumePathName(path, b, requiredBufferSize))
+        {
+            return b.ToString();
+        }
+        else
+        {
+            // Fallback heuristic
+            return Path.GetPathRoot(path);
+        }
+    }
+
     public string ConvertPathIgnoreErrors(string path, PathFormat target)
     {
         if (string.IsNullOrEmpty(path)
@@ -240,12 +264,14 @@ public sealed class PathMapper : IDisposable
             if (target == PathFormat.Win32)
                 return ret;
 
+            var mountPoint = GetVolumeMountPointForPath(ret);
+
             var dc = Cache;
             for (int i = 0; i < dc.Length; ++i)
             {
                 for (int j = 0; j < dc[i].PathNames.Count; ++j)
                 {
-                    if (ret.StartsWith(dc[i].PathNames[j], StringComparison.OrdinalIgnoreCase))
+                    if (mountPoint.Equals(dc[i].PathNames[j], StringComparison.OrdinalIgnoreCase))
                     {
                         string trailing = ret.Substring(dc[i].PathNames[j].Length);
                         switch (target)
