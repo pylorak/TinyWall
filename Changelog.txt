@@ -1,8 +1,16 @@
 TinyWall Changelog
 ---------------------
 
-3.1.2 - Important update (12.10.2021.)
+3.1.2 - Important update (x.10.2021.)
 - Add support for encrypted DNS in Windows 11
+- Add support for whitelisting volumes mounted to mount points
+- Fix Connections list not sorted by timestamp by default (3.1.1 regression)
+- Fix possible null-dereference with VeraCrypt volumes
+- Update Japanese and Portuguese localizations
+
+---------------------
+
+3.1.1 - Important update (11.10.2021.)
 - Add option to block internet during display power-save
 - Heuristically determine and show PIDs of blocked processes if possible
 - Support for showing and whitelisting services in Processes and Connections windows
@@ -16,7 +24,7 @@ TinyWall Changelog
 - Fix rule is ineffective for paths with certain international characters
 - Fix Bulgarian translation not loading
 - Fix non-form Korean messages are gibberish due to wrong encoding
-- Updated German, Italian, Japanese and Portuguese translations
+- Updated German, Italian translations
 - New Hebrew localization
 - GUI layout fixes for various localizations
 - Updated application database

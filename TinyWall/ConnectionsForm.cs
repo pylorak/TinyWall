@@ -323,7 +323,7 @@ namespace PKSoft
         private void ConnectionsForm_Load(object sender, EventArgs e)
         {
             Utils.SetDoubleBuffering(list, true);
-            list.ListViewItemSorter = new ListViewItemComparer(8, null, false);
+            list.ListViewItemSorter = new ListViewItemComparer(9, null, false);
             if (ActiveConfig.Controller.ConnFormWindowSize.Width != 0)
                 this.Size = ActiveConfig.Controller.ConnFormWindowSize;
             if (ActiveConfig.Controller.ConnFormWindowLoc.X != 0)
