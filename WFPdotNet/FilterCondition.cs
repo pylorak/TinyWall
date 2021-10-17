@@ -144,6 +144,8 @@ namespace WFPdotNet
         { 0x00, 0x80, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC, 0xFE, 0xFF };
 
         private AllocHGlobalSafeHandle nativeMem;
+        private readonly bool nativeMemNeedsDestroy;
+        private readonly Type nativeMemNeedsDestroyStructType;
 
         public IpFilterCondition(IPAddress addr, byte subnetLen, RemoteOrLocal peer)
         {
@@ -203,7 +205,9 @@ namespace WFPdotNet
                         Interop.FWP_V6_ADDR_AND_MASK addrAndMask6 = new Interop.FWP_V6_ADDR_AND_MASK();
                         addrAndMask6.addr = addressBytes;
                         addrAndMask6.prefixLength = subnetLen;
-                        nativeMem = PInvokeHelper.StructToHGlobal<Interop.FWP_V6_ADDR_AND_MASK>(addrAndMask6);
+                        nativeMem = PInvokeHelper.StructToHGlobalNeedsDestroy<Interop.FWP_V6_ADDR_AND_MASK>(addrAndMask6);
+                        nativeMemNeedsDestroy = true;
+                        nativeMemNeedsDestroyStructType = typeof(Interop.FWP_V6_ADDR_AND_MASK);
 
                         _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_V6_ADDR_MASK;
                         _nativeStruct.conditionValue.value.v6AddrMask = nativeMem.DangerousGetHandle();
@@ -218,6 +222,11 @@ namespace WFPdotNet
         {
             if (disposing)
             {
+                if (nativeMemNeedsDestroy)
+                {
+                    System.Runtime.InteropServices.Marshal.DestroyStructure(nativeMem.DangerousGetHandle(), nativeMemNeedsDestroyStructType);
+                }
+
                 nativeMem?.Dispose();
                 nativeMem = null;
             }

@@ -96,8 +96,7 @@ namespace WFPdotNet
             _nativeStruct.filterConditions = _conditionsHandle.DangerousGetHandle();
             for (int i = 0; i < _conditions.Count; ++i )
             {
-                IntPtr ptr = new IntPtr(_nativeStruct.filterConditions.ToInt64() + i * condSize);
-                System.Runtime.InteropServices.Marshal.StructureToPtr(_conditions[i].Marshal(), ptr, false);
+                _conditionsHandle.MarshalFromStruct(_conditions[i].Marshal(), i * condSize);
             }
 
             return _nativeStruct;

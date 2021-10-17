@@ -19,7 +19,16 @@ namespace WFPdotNet
         }
 
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.None)]
-        public static AllocHGlobalSafeHandle StructToHGlobal<T>(T obj)
+        public static AllocHGlobalSafeHandle StructToHGlobal<T>(T obj) where T : unmanaged
+        {
+            int size = Marshal.SizeOf(typeof(T));
+            AllocHGlobalSafeHandle safeHandle = new AllocHGlobalSafeHandle(size);
+            Marshal.StructureToPtr(obj, safeHandle.DangerousGetHandle(), false);
+            return safeHandle;
+        }
+
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.None)]
+        public static AllocHGlobalSafeHandle StructToHGlobalNeedsDestroy<T>(T obj)
         {
             int size = Marshal.SizeOf(typeof(T));
             AllocHGlobalSafeHandle safeHandle = new AllocHGlobalSafeHandle(size);

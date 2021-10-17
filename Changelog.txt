@@ -7,6 +7,7 @@ TinyWall Changelog
 - Add workaround for ImDisk issue
 - Fix memory leak when changing service failure action
 - Fix memory leak when verifying authenticode certificate
+- Fix memory leak when using an IPv6 address filter condition
 - Fix Connections list not sorted by timestamp by default (3.1.1 regression)
 - Fix possible null-dereference with VeraCrypt volumes
 - Update Japanese and Portuguese localizations

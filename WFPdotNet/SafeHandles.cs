@@ -308,6 +308,11 @@ namespace WFPdotNet
             this.handle = IntPtr.Zero;
         }
 
+        public void MarshalFromStruct<T>(T obj, int offset = 0) where T : unmanaged
+        {
+            Marshal.StructureToPtr(obj, (IntPtr)(this.handle.ToInt64() + offset), false);  // TODO: Use IntPtr.Add() on .Net4
+        }
+
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         [PrePrepareMethod]
         protected override bool ReleaseHandle()
