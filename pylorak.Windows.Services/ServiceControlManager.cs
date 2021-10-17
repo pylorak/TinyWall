@@ -115,16 +115,13 @@ namespace pylorak.Windows.Services
             int SC_ACTION_SIZE = Marshal.SizeOf(typeof(SC_ACTION));
 
             // Open the service
-            using var failureActionsPtr = SafeHandleAllocHGlobal.Alloc(Marshal.SizeOf(typeof(SERVICE_FAILURE_ACTIONS)));
-            using var actionPtr = SafeHandleAllocHGlobal.Alloc(SC_ACTION_SIZE * MAX_ACTIONS);
             using var service = OpenService(
                 serviceName,
                 ServiceAccessRights.SERVICE_CHANGE_CONFIG |
                 ServiceAccessRights.SERVICE_START);
 
-            SERVICE_FAILURE_ACTIONS failureActions = new SERVICE_FAILURE_ACTIONS();
+            using var actionPtr = SafeHGlobalHandle.Alloc(SC_ACTION_SIZE * MAX_ACTIONS);
             int actionCount;
-
             if (restartOnFailure)
             {
                 actionCount = 2;
@@ -133,20 +130,13 @@ namespace pylorak.Windows.Services
                 SC_ACTION action1 = new SC_ACTION();
                 action1.Type = SC_ACTION_TYPE.SC_ACTION_RESTART;
                 action1.Delay = delay;
-                Marshal.StructureToPtr(action1, actionPtr.DangerousGetHandle(), false);
+                actionPtr.MarshalFromStruct(action1, 0);
 
                 // Set up the "do nothing" action
                 SC_ACTION action2 = new SC_ACTION();
                 action2.Type = SC_ACTION_TYPE.SC_ACTION_NONE;
                 action2.Delay = delay;
-                Marshal.StructureToPtr(action2, (IntPtr)((Int64)actionPtr.DangerousGetHandle() + SC_ACTION_SIZE), false);
-
-                // Set up the failure actions
-                failureActions.dwResetPeriod = 0;
-                failureActions.cActions = (uint)actionCount;
-                failureActions.lpsaActions = actionPtr.DangerousGetHandle();
-                failureActions.lpRebootMsg = null;
-                failureActions.lpCommand = null;
+                actionPtr.MarshalFromStruct(action2, SC_ACTION_SIZE);
             }
             else
             {
@@ -156,26 +146,32 @@ namespace pylorak.Windows.Services
                 SC_ACTION action1 = new SC_ACTION();
                 action1.Type = SC_ACTION_TYPE.SC_ACTION_NONE;
                 action1.Delay = delay;
-                Marshal.StructureToPtr(action1, actionPtr.DangerousGetHandle(), false);
-
-                // Set up the failure actions
-                failureActions.dwResetPeriod = 0;
-                failureActions.cActions = (uint)actionCount;
-                failureActions.lpsaActions = actionPtr.DangerousGetHandle();
+                actionPtr.MarshalFromStruct(action1);
             }
 
+            // Set up the failure actions
+            SERVICE_FAILURE_ACTIONS failureActions = new SERVICE_FAILURE_ACTIONS();
+            failureActions.dwResetPeriod = 0;
+            failureActions.cActions = (uint)actionCount;
+            failureActions.lpsaActions = actionPtr.DangerousGetHandle();
+            failureActions.lpRebootMsg = null;
+            failureActions.lpCommand = null;
+
+            using var failureActionsPtr = SafeHGlobalHandle.Alloc(Marshal.SizeOf(typeof(SERVICE_FAILURE_ACTIONS)));
             Marshal.StructureToPtr(failureActions, failureActionsPtr.DangerousGetHandle(), false);
-
-            // Make the change
-            int changeResult = NativeMethods.ChangeServiceConfig2(
-                service,
-                ServiceConfig2InfoLevel.SERVICE_CONFIG_FAILURE_ACTIONS,
-                failureActionsPtr.DangerousGetHandle());
-
-            // Check that the change occurred
-            if (changeResult == 0)
+            try
             {
-                throw new Win32Exception(Marshal.GetLastWin32Error());
+                // Make the change
+                int changeResult = NativeMethods.ChangeServiceConfig2(
+                    service,
+                    ServiceConfig2InfoLevel.SERVICE_CONFIG_FAILURE_ACTIONS,
+                    failureActionsPtr.DangerousGetHandle());
+                if (changeResult == 0)
+                    throw new Win32Exception();
+            }
+            finally
+            {
+                Marshal.DestroyStructure(failureActionsPtr.DangerousGetHandle(), failureActions.GetType());
             }
         }
 
@@ -235,7 +231,7 @@ namespace pylorak.Windows.Services
             using var service = OpenService(serviceName, ServiceAccessRights.SERVICE_QUERY_CONFIG);
 
             var result = NativeMethods.QueryServiceConfig(service, IntPtr.Zero, 0, out uint structSize);
-            using var buff = SafeHandleAllocHGlobal.Alloc((int)structSize);
+            using var buff = SafeHGlobalHandle.Alloc(structSize);
 
             result = NativeMethods.QueryServiceConfig(service, buff.DangerousGetHandle(), structSize, out structSize);
             if (result == false)
@@ -251,7 +247,7 @@ namespace pylorak.Windows.Services
             using var service = OpenService(serviceName, ServiceAccessRights.SERVICE_QUERY_STATUS);
 
             var result = NativeMethods.QueryServiceStatusEx(service, ServiceInfoLevel.SC_STATUS_PROCESS_INFO, IntPtr.Zero, 0, out uint structSize);
-            using var buff = SafeHandleAllocHGlobal.Alloc((int)structSize);
+            using var buff = SafeHGlobalHandle.Alloc(structSize);
 
             result = NativeMethods.QueryServiceStatusEx(service, ServiceInfoLevel.SC_STATUS_PROCESS_INFO, buff.DangerousGetHandle(), structSize, out structSize);
             if (result == false)

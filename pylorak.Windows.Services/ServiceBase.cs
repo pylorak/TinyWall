@@ -71,7 +71,7 @@ namespace pylorak.Windows.Services
         private readonly DeviceEventHandlerDelegate DeviceEventHandler;
         private readonly ManualResetEvent StoppedEventHandle = new ManualResetEvent(true);
         private readonly ManualResetEvent StartedEventHandle = new ManualResetEvent(false);
-        private readonly SafeHandleAllocHGlobal UnmanagedServiceName;
+        private readonly SafeHGlobalHandle UnmanagedServiceName;
 
         public abstract string ServiceName { get; }
         public IntPtr ServiceHandle { get; private set; }
@@ -95,7 +95,7 @@ namespace pylorak.Windows.Services
             ShutdownCommandHandler = new CommandHandlerDelegate(OnShutdownWrapper);
             PowerEventHandler = new PowerEventHandlerDelegate(OnPowerEventWrapper);
             DeviceEventHandler = new DeviceEventHandlerDelegate(OnDeviceEventWrapper);
-            UnmanagedServiceName = SafeHandleAllocHGlobal.FromString(ServiceName);
+            UnmanagedServiceName = SafeHGlobalHandle.FromString(ServiceName);
 
             initialized = true;
         }
@@ -808,7 +808,7 @@ namespace pylorak.Windows.Services
         {
             int ENTRY_SIZE = Marshal.SizeOf(typeof(SERVICE_TABLE_ENTRY));
             ServiceType serviceType = (services.Length > 1) ? ServiceType.SERVICE_TYPE_WIN32_SHARE_PROCESS : ServiceType.SERVICE_TYPE_WIN32_OWN_PROCESS;
-            using var nativeEntriesTable = SafeHandleAllocHGlobal.Alloc((services.Length + 1) * ENTRY_SIZE);
+            using var nativeEntriesTable = SafeHGlobalHandle.Alloc((services.Length + 1) * ENTRY_SIZE);
             SERVICE_TABLE_ENTRY[] entries = new SERVICE_TABLE_ENTRY[services.Length];
 
             IntPtr entriesPointer = nativeEntriesTable.DangerousGetHandle();
