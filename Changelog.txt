@@ -6,6 +6,7 @@ TinyWall Changelog
 - Add support for whitelisting volumes mounted to mount points
 - Add workaround for ImDisk issue
 - Fix memory leak when changing service failure action
+- Fix memory leak when verifying authenticode certificate
 - Fix Connections list not sorted by timestamp by default (3.1.1 regression)
 - Fix possible null-dereference with VeraCrypt volumes
 - Update Japanese and Portuguese localizations

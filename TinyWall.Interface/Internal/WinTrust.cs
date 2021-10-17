@@ -112,6 +112,7 @@ namespace TinyWall.Interface.Internal
             public string URLReference = null;
             public WinTrustDataProvFlags ProvFlags = WinTrustDataProvFlags.CacheOnlyUrlRetrieval | WinTrustDataProvFlags.RevocationCheckChain;
             public WinTrustDataUIContext UIContext = WinTrustDataUIContext.Execute;
+            private bool disposedValue;
 
             public WinTrustData(String fileName, WinTrustDataRevocationChecks revocationChecks)
             {
@@ -129,23 +130,34 @@ namespace TinyWall.Interface.Internal
                 Marshal.StructureToPtr(wtfiData, FileInfoPtr, false);
             }
 
-            #region IDisposable Support
             protected virtual void Dispose(bool disposing)
             {
-                Marshal.FreeCoTaskMem(FileInfoPtr);
+                if (!disposedValue)
+                {
+                    if (disposing)
+                    {
+                        // TODO: dispose managed state (managed objects)
+                    }
+
+                    Marshal.DestroyStructure(FileInfoPtr, typeof(WinTrustFileInfo));
+                    Marshal.FreeCoTaskMem(FileInfoPtr);
+                    disposedValue = true;
+                }
             }
 
+            // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
             ~WinTrustData()
             {
-                Dispose(false);
+               // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+               Dispose(disposing: false);
             }
 
             public void Dispose()
             {
-                Dispose(true);
+                // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+                Dispose(disposing: true);
                 GC.SuppressFinalize(this);
             }
-            #endregion
         }
 
         private static readonly Guid DRIVER_ACTION_VERIFY                   = new Guid(0xf750e6c3, 0x38ee, 0x11d1, 0x85, 0xe5, 0x0, 0xc0, 0x4f, 0xc2, 0x95, 0xee);
