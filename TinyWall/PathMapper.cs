@@ -9,6 +9,7 @@ using System.Threading;
 using Microsoft.Win32;
 using PKSoft;
 using TinyWall.Interface.Internal;
+using pylorak.Windows.ObjectManager;
 
 public enum PathFormat
 {
@@ -36,18 +37,20 @@ public sealed class PathMapper : IDisposable
         public static extern bool GetVolumeNameForVolumeMountPoint(string lpszVolumeMountPoint, [Out] StringBuilder lpszVolumeName, int cchBufferLength);
     }
 
-        public struct DriveCache
+    public class DriveCache
     {
         public string Device;
-        public string Volume;
-        public List<string> PathNames;
+        public List<string> Volumes;
+        public List<string> Drives;
     }
 
     private readonly ManualResetEvent CacheReadyEvent = new ManualResetEvent(false);
     private readonly string SystemRoot = Environment.GetFolderPath(Environment.SpecialFolder.System);
     private readonly object locker = new object();
+
+    private bool CacheRebuilding;
     private DateTime LastUpdateTime = DateTime.MinValue;
-    private bool disposed = false;
+    private bool disposed;
 
     private static volatile PathMapper _instance;
     private static readonly object _singletonLock = new object();
@@ -98,74 +101,174 @@ public sealed class PathMapper : IDisposable
             {
                 _cache = value;
                 LastUpdateTime = DateTime.Now;
+                CacheReadyEvent.Set();
+                CacheRebuilding = false;
             }
-            CacheReadyEvent.Set();
+        }
+    }
+
+    private List<DriveCache> RebuildCacheImpl_1()
+    {
+        const int MAX_PATH = 260;
+
+        StringBuilder sb = new StringBuilder(MAX_PATH);
+        char[] buf = new char[MAX_PATH];
+        List<DriveCache> newCache = new List<DriveCache>();
+
+        foreach (var vol in FindVolumeSafeHandle.EnumerateVolumes())
+        {
+            var cacheEntry = new DriveCache();
+
+            if ((vol[0] != '\\')
+                || (vol[1] != '\\')
+                || (vol[2] != '?')
+                || (vol[3] != '\\')
+                || (vol[vol.Length - 1] != '\\'))
+            {
+                continue;
+            }
+            cacheEntry.Volumes = new List<string>() { vol };
+
+            string qddInput = vol.Substring(4, vol.Length - 5); // Also remove trailing backslash
+            int charCount = NativeMethods.QueryDosDevice(qddInput, sb, sb.Capacity);
+            if (charCount > 0)
+            {
+                sb.Append('\\');
+                cacheEntry.Device = sb.ToString();
+            }
+
+            cacheEntry.Drives = new List<string>();
+            if (NativeMethods.GetVolumePathNamesForVolumeName(vol, buf, buf.Length, out int expectedChars))
+            {
+                int startIdx = 0;
+                int numChars = 0;
+                for (int i = 0; i < expectedChars; ++i)
+                {
+                    if ((buf[i] == '\0') && (numChars > 0))
+                    {
+                        cacheEntry.Drives.Add(new string(buf, startIdx, numChars));
+                        startIdx = i + 1;
+                        numChars = 0;
+                    }
+                    else
+                        ++numChars;
+                }
+            }
+
+            newCache.Add(cacheEntry);
+        }
+
+        return newCache;
+    }
+
+    private List<DriveCache> RebuildCacheImpl_2(List<DriveCache> newCache)
+    {
+        var SymbolicLinkType = "SymbolicLink";
+
+        using var dir = ObjectManager.OpenDirectoryObjectForRead(@"\GLOBAL??");
+        var linkTargetBuff = new SafeUnicodeStringHandle(512);
+        try
+        {
+            foreach (var objInfo in ObjectManager.QueryDirectory(dir))
+            {
+                // Found a volume GUID?
+                if (objInfo.TypeName.Equals(SymbolicLinkType, StringComparison.Ordinal))
+                {
+                    var name = objInfo.Name;
+                    var target = ObjectManager.QueryLinkTarget(ref linkTargetBuff, objInfo.Name, dir) + @"\";
+
+                    if (name.StartsWith("Volume{", StringComparison.Ordinal))
+                    {
+                        var volumePath = @"\\?\" + name + @"\";
+                        var existingEntryFound = false;
+                        foreach (var cacheEntry in newCache)
+                        {
+                            if (cacheEntry.Device.Equals(target, StringComparison.Ordinal))
+                            {
+                                existingEntryFound = true;
+                                if (!cacheEntry.Volumes.Contains(volumePath))
+                                    cacheEntry.Volumes.Add(volumePath);
+                            }
+                        }
+                        if (!existingEntryFound)
+                        {
+                            newCache.Add(new DriveCache()
+                            {
+                                Device = target,
+                                Volumes = new List<string>() { volumePath },
+                                Drives = new List<string>(),
+                            });
+                        }
+                    }
+
+                    // Found a drive letter?
+                    if ((name.Length == 2) && char.IsLetter(name[0]) && (name[1] == ':'))
+                    {
+                        var drivePath = name + @"\";
+                        var existingEntryFound = false;
+                        foreach (var cacheEntry in newCache)
+                        {
+                            if (cacheEntry.Device.Equals(target, StringComparison.Ordinal))
+                            {
+                                existingEntryFound = true;
+                                if (!cacheEntry.Drives.Contains(drivePath))
+                                    cacheEntry.Drives.Add(drivePath);
+                            }
+                        }
+                        if (!existingEntryFound)
+                        {
+                            newCache.Add(new DriveCache()
+                            {
+                                Device = target,
+                                Volumes = new List<string>(),
+                                Drives = new List<string>() { drivePath },
+                            });
+                        }
+                    }
+                }
+            }
+
+            return newCache;
+        }
+        finally
+        {
+            linkTargetBuff.Dispose();
         }
     }
 
     public void RebuildCache(bool blocking = false)
     {
-        CacheReadyEvent.Reset();
-        ThreadPool.QueueUserWorkItem(delegate (object arg)
+        bool queueWork = false;
+        lock (locker)
         {
-            try
+            if (!CacheRebuilding)
             {
-                const int MAX_PATH = 260;
+                CacheRebuilding = true;
+                CacheReadyEvent.Reset();
+                queueWork = true;
+            }
+        }
 
-                StringBuilder sb = new StringBuilder(MAX_PATH);
-                char[] buf = new char[MAX_PATH];
-                List<DriveCache> newCache = new List<DriveCache>();
-
-                foreach (var vol in FindVolumeSafeHandle.EnumerateVolumes())
+        if (queueWork)
+        {
+            ThreadPool.QueueUserWorkItem(delegate (object arg)
+            {
+                try
                 {
-                    var cacheEntry = new DriveCache();
-
-                    if ((vol[0] != '\\')
-                        || (vol[1] != '\\')
-                        || (vol[2] != '?')
-                        || (vol[3] != '\\')
-                        || (vol[vol.Length - 1] != '\\'))
-                    {
-                        continue;
-                    }
-                    cacheEntry.Volume = vol;
-
-                    string qddInput = vol.Substring(4, vol.Length - 5); // Also remove trailing backslash
-                    int charCount = NativeMethods.QueryDosDevice(qddInput, sb, sb.Capacity);
-                    if (charCount > 0)
-                    {
-                        sb.Append('\\');
-                        cacheEntry.Device = sb.ToString();
-                    }
-
-                    cacheEntry.PathNames = new List<string>();
-                    if (NativeMethods.GetVolumePathNamesForVolumeName(vol, buf, buf.Length, out int expectedChars))
-                    {
-                        int startIdx = 0;
-                        int numChars = 0;
-                        for (int i = 0; i < expectedChars; ++i)
-                        {
-                            if ((buf[i] == '\0') && (numChars > 0))
-                            {
-                                cacheEntry.PathNames.Add(new string(buf, startIdx, numChars));
-                                startIdx = i + 1;
-                                numChars = 0;
-                            }
-                            else
-                                ++numChars;
-                        }
-                    }
-
-                    newCache.Add(cacheEntry);
+                    // We have two different methods to discover drives and volumes.
+                    // We chain them and execute both because each one has limitations:
+                    // RebuildCacheImpl_1 - Cannot discover some types of drives, such as those created by ImDisk
+                    // RebuildCacheImpl_2 - Cannot discover devices mounted to mount points
+                    var tmpCache = RebuildCacheImpl_1();
+                    try { tmpCache = RebuildCacheImpl_2(tmpCache); } catch { }
+                    Cache = tmpCache.ToArray();
                 }
-
-                Cache = newCache.ToArray();
-            }
-            catch
-            {
-                Cache = null;
-            }
-        }, null);
+                catch
+                {
+                    Cache = null;
+                }
+            }, null);
+        }
 
         if (blocking)
             CacheReadyEvent.WaitOne();
@@ -269,17 +372,17 @@ public sealed class PathMapper : IDisposable
             var dc = Cache;
             for (int i = 0; i < dc.Length; ++i)
             {
-                for (int j = 0; j < dc[i].PathNames.Count; ++j)
+                for (int j = 0; j < dc[i].Drives.Count; ++j)
                 {
-                    if (mountPoint.Equals(dc[i].PathNames[j], StringComparison.OrdinalIgnoreCase))
+                    if (mountPoint.Equals(dc[i].Drives[j], StringComparison.OrdinalIgnoreCase))
                     {
-                        string trailing = ret.Substring(dc[i].PathNames[j].Length);
+                        string trailing = ret.Substring(dc[i].Drives[j].Length);
                         switch (target)
                         {
                             case PathFormat.NativeNt:
                                 return Path.Combine(dc[i].Device, trailing);
                             case PathFormat.Volume:
-                                return Path.Combine(dc[i].Volume, trailing);
+                                return Path.Combine(dc[i].Volumes[0], trailing);
                             default:
                                 throw new NotSupportedException();
                         }
@@ -299,20 +402,23 @@ public sealed class PathMapper : IDisposable
             var dc = Cache;
             for (int i = 0; i < dc.Length; ++i)
             {
-                if (ret.StartsWith(dc[i].Volume, StringComparison.OrdinalIgnoreCase))
+                for (int j = 0; j < dc[i].Volumes.Count; ++j)
                 {
-                    string trailing = ret.Substring(dc[i].Volume.Length);
-                    switch (target)
+                    if (ret.StartsWith(dc[i].Volumes[j], StringComparison.OrdinalIgnoreCase))
                     {
-                        case PathFormat.NativeNt:
-                            return Path.Combine(dc[i].Device, trailing);
-                        case PathFormat.Win32:
-                            if (dc[i].PathNames.Count > 0)
-                                return Path.Combine(dc[i].PathNames[0], trailing);
-                            else
+                        string trailing = ret.Substring(dc[i].Volumes[j].Length);
+                        switch (target)
+                        {
+                            case PathFormat.NativeNt:
+                                return Path.Combine(dc[i].Device, trailing);
+                            case PathFormat.Win32:
+                                if (dc[i].Drives.Count > 0)
+                                    return Path.Combine(dc[i].Drives[0], trailing);
+                                else
+                                    throw new NotSupportedException();
+                            default:
                                 throw new NotSupportedException();
-                        default:
-                            throw new NotSupportedException();
+                        }
                     }
                 }
             }
@@ -333,10 +439,10 @@ public sealed class PathMapper : IDisposable
                     switch (target)
                     {
                         case PathFormat.Volume:
-                            return Path.Combine(dc[i].Volume, trailing);
+                            return Path.Combine(dc[i].Volumes[0], trailing);
                         case PathFormat.Win32:
-                            if (dc[i].PathNames.Count > 0)
-                                return Path.Combine(dc[i].PathNames[0], trailing);
+                            if (dc[i].Drives.Count > 0)
+                                return Path.Combine(dc[i].Drives[0], trailing);
                             else
                                 throw new DriveNotFoundException();
                         default:
