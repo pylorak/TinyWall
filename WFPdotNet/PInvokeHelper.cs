@@ -18,24 +18,6 @@ namespace WFPdotNet
             return ret;
         }
 
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.None)]
-        public static AllocHGlobalSafeHandle StructToHGlobal<T>(T obj) where T : unmanaged
-        {
-            int size = Marshal.SizeOf(typeof(T));
-            AllocHGlobalSafeHandle safeHandle = new AllocHGlobalSafeHandle(size);
-            Marshal.StructureToPtr(obj, safeHandle.DangerousGetHandle(), false);
-            return safeHandle;
-        }
-
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.None)]
-        public static AllocHGlobalSafeHandle StructToHGlobalNeedsDestroy<T>(T obj)
-        {
-            int size = Marshal.SizeOf(typeof(T));
-            AllocHGlobalSafeHandle safeHandle = new AllocHGlobalSafeHandle(size);
-            Marshal.StructureToPtr(obj, safeHandle.DangerousGetHandle(), false);
-            return safeHandle;
-        }
-
         [DllImport("advapi32", CharSet = CharSet.Auto)]
         static extern uint GetLengthSid(IntPtr pSid);
 

@@ -236,7 +236,7 @@ namespace WFPdotNet
         {
             _callback = callback;
             _context = context;
-            AllocHGlobalSafeHandle templMemHandle = null;
+            SafeHGlobalHandle templMemHandle = null;
 
             RuntimeHelpers.PrepareConstrainedRegions();
             try
@@ -253,7 +253,7 @@ namespace WFPdotNet
                     templ0.numFilterConditions = 0;
                     templ0.filterCondition = IntPtr.Zero;
 
-                    templMemHandle = PInvokeHelper.StructToHGlobal<Interop.FWPM_NET_EVENT_ENUM_TEMPLATE0>(templ0);
+                    templMemHandle = SafeHGlobalHandle.FromStruct(templ0);
                     subs0.enumTemplate = templMemHandle.DangerousGetHandle();
                 }
 

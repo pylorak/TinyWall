@@ -9,7 +9,7 @@ namespace WFPdotNet
         private Interop.FWPM_SUBLAYER0 _nativeStruct;
 
         private Guid? _providerKey;
-        private AllocHGlobalSafeHandle _providerKeyHandle;
+        private SafeHGlobalHandle _providerKeyHandle;
 
         public Sublayer(string name)
         {
@@ -23,8 +23,8 @@ namespace WFPdotNet
             if (_nativeStruct.providerKey != IntPtr.Zero)
             {
                 // TODO: Do we really not need to own these SafeHandles ???
-                _providerKeyHandle = new AllocHGlobalSafeHandle(_nativeStruct.providerKey, false);
-                _providerKey = (Guid)System.Runtime.InteropServices.Marshal.PtrToStructure(_providerKeyHandle.DangerousGetHandle(), typeof(Guid));
+                //_providerKeyHandle = new AllocHGlobalSafeHandle(_nativeStruct.providerKey, false);
+                _providerKey = (Guid)System.Runtime.InteropServices.Marshal.PtrToStructure(_nativeStruct.providerKey, typeof(Guid));
             }
         }
 
@@ -64,7 +64,7 @@ namespace WFPdotNet
 
                 if (value.HasValue)
                 {
-                    _providerKeyHandle = PInvokeHelper.StructToHGlobal<Guid>(value.Value);
+                    _providerKeyHandle = SafeHGlobalHandle.FromStruct(value.Value);
                     _nativeStruct.providerKey = _providerKeyHandle.DangerousGetHandle();
                 }
                 else

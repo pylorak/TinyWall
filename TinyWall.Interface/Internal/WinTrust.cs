@@ -136,7 +136,7 @@ namespace TinyWall.Interface.Internal
                 {
                     if (disposing)
                     {
-                        // TODO: dispose managed state (managed objects)
+                        // Dispose managed state (managed objects)
                     }
 
                     Marshal.DestroyStructure(FileInfoPtr, typeof(WinTrustFileInfo));

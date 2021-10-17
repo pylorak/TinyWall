@@ -143,9 +143,7 @@ namespace WFPdotNet
         private static readonly byte[] MaskByteBitsLookup = new byte[]
         { 0x00, 0x80, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC, 0xFE, 0xFF };
 
-        private AllocHGlobalSafeHandle nativeMem;
-        private readonly bool nativeMemNeedsDestroy;
-        private readonly Type nativeMemNeedsDestroyStructType;
+        private SafeHGlobalHandle nativeMem;
 
         public IpFilterCondition(IPAddress addr, byte subnetLen, RemoteOrLocal peer)
         {
@@ -184,7 +182,7 @@ namespace WFPdotNet
                         Interop.FWP_V4_ADDR_AND_MASK addrAndMask4 = new Interop.FWP_V4_ADDR_AND_MASK();
                         addrAndMask4.addr = BitConverter.ToUInt32(addressBytes, 0);
                         addrAndMask4.mask = BitConverter.ToUInt32(maskBytes, 0);
-                        nativeMem = PInvokeHelper.StructToHGlobal<Interop.FWP_V4_ADDR_AND_MASK>(addrAndMask4);
+                        nativeMem = SafeHGlobalHandle.FromStruct(addrAndMask4);
 
                         _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_V4_ADDR_MASK;
                         _nativeStruct.conditionValue.value.v4AddrMask = nativeMem.DangerousGetHandle();
@@ -193,7 +191,7 @@ namespace WFPdotNet
                 case System.Net.Sockets.AddressFamily.InterNetworkV6:
                     if (subnetLen == 128)
                     {
-                        nativeMem = new AllocHGlobalSafeHandle(16);
+                        nativeMem = SafeHGlobalHandle.Alloc(16);
                         IntPtr ptr = nativeMem.DangerousGetHandle();
                         System.Runtime.InteropServices.Marshal.Copy(addressBytes, 0, ptr, 16);
 
@@ -205,9 +203,7 @@ namespace WFPdotNet
                         Interop.FWP_V6_ADDR_AND_MASK addrAndMask6 = new Interop.FWP_V6_ADDR_AND_MASK();
                         addrAndMask6.addr = addressBytes;
                         addrAndMask6.prefixLength = subnetLen;
-                        nativeMem = PInvokeHelper.StructToHGlobalNeedsDestroy<Interop.FWP_V6_ADDR_AND_MASK>(addrAndMask6);
-                        nativeMemNeedsDestroy = true;
-                        nativeMemNeedsDestroyStructType = typeof(Interop.FWP_V6_ADDR_AND_MASK);
+                        nativeMem = SafeHGlobalHandle.FromManagedStruct(addrAndMask6);
 
                         _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_V6_ADDR_MASK;
                         _nativeStruct.conditionValue.value.v6AddrMask = nativeMem.DangerousGetHandle();
@@ -222,11 +218,6 @@ namespace WFPdotNet
         {
             if (disposing)
             {
-                if (nativeMemNeedsDestroy)
-                {
-                    System.Runtime.InteropServices.Marshal.DestroyStructure(nativeMem.DangerousGetHandle(), nativeMemNeedsDestroyStructType);
-                }
-
                 nativeMem?.Dispose();
                 nativeMem = null;
             }
@@ -237,7 +228,7 @@ namespace WFPdotNet
     
     public sealed class PortFilterCondition : FilterCondition
     {
-        private AllocHGlobalSafeHandle rangeNativeMem;
+        private SafeHGlobalHandle rangeNativeMem;
 
         private PortFilterCondition(RemoteOrLocal peer)
         {
@@ -291,7 +282,7 @@ namespace WFPdotNet
             range.valueHigh.type = Interop.FWP_DATA_TYPE.FWP_UINT16;
             range.valueHigh.value.uint16 = maxPort;
 
-            rangeNativeMem = PInvokeHelper.StructToHGlobal<Interop.FWP_RANGE0>(range);
+            rangeNativeMem = SafeHGlobalHandle.FromStruct(range);
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_RANGE_TYPE;
             _nativeStruct.conditionValue.value.rangeValue = rangeNativeMem.DangerousGetHandle();
         }
@@ -383,14 +374,14 @@ namespace WFPdotNet
                 Encoding.Unicode.GetBytes(filePath, 0, filePath.Length, bytes, 0);
 
                 // Get the bytes into an unmanaged pointer
-                appIdDataNativeMem = new AllocHGlobalSafeHandle(nBytes);
+                appIdDataNativeMem = SafeHGlobalHandle.Alloc(nBytes);
                 System.Runtime.InteropServices.Marshal.Copy(bytes, 0, appIdDataNativeMem.DangerousGetHandle(), nBytes);
 
                 // Get the blob into an unmanaged pointer
                 Interop.FWP_BYTE_BLOB blob;
                 blob.data = appIdDataNativeMem.DangerousGetHandle();
                 blob.size = (uint)nBytes;
-                appIdNativeMem = PInvokeHelper.StructToHGlobal(blob);
+                appIdNativeMem = SafeHGlobalHandle.FromStruct(blob);
             }
 
             _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
@@ -415,8 +406,8 @@ namespace WFPdotNet
 
     public abstract class SecurityDescriptorFilterCondition : FilterCondition
     {
-        private AllocHGlobalSafeHandle byteBlobNativeMem;
-        private AllocHGlobalSafeHandle sdNativeMem;
+        private SafeHGlobalHandle byteBlobNativeMem;
+        private SafeHGlobalHandle sdNativeMem;
 
         protected SecurityDescriptorFilterCondition() { }
 
@@ -425,14 +416,14 @@ namespace WFPdotNet
             // Get the SD in SDDL self-related form into an unmanaged pointer
             byte[] sdBinaryForm = new byte[sd.BinaryLength];
             sd.GetBinaryForm(sdBinaryForm, 0);
-            sdNativeMem = new AllocHGlobalSafeHandle(sd.BinaryLength);
+            sdNativeMem = SafeHGlobalHandle.Alloc(sd.BinaryLength);
             System.Runtime.InteropServices.Marshal.Copy(sdBinaryForm, 0, sdNativeMem.DangerousGetHandle(), sd.BinaryLength);
 
             //  Create FWP_BYTE_BLOB for the SD
             Interop.FWP_BYTE_BLOB blob = new Interop.FWP_BYTE_BLOB();
             blob.size = (uint)sd.BinaryLength;
             blob.data = sdNativeMem.DangerousGetHandle();
-            byteBlobNativeMem = PInvokeHelper.StructToHGlobal<Interop.FWP_BYTE_BLOB>(blob);
+            byteBlobNativeMem = SafeHGlobalHandle.FromStruct(blob);
 
             _nativeStruct.matchType = matchType;
             _nativeStruct.fieldKey = fieldKey;
@@ -689,11 +680,11 @@ namespace WFPdotNet
                 throw new Win32Exception(err);
         }
 
-        private AllocHGlobalSafeHandle nativeMem;
+        private SafeHGlobalHandle nativeMem;
 
         public LocalInterfaceCondition(string ifAlias)
         {
-            nativeMem = new AllocHGlobalSafeHandle(sizeof(ulong));
+            nativeMem = SafeHGlobalHandle.Alloc(sizeof(ulong));
 
             int err = NativeMethods.ConvertInterfaceAliasToLuid(ifAlias, out ulong luid);
             if (0 != err)

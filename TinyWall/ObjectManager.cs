@@ -34,85 +34,6 @@ namespace pylorak.Windows.ObjectManager
         }
     }
 
-    public sealed class SafeHGlobalHandle : SafeHandleZeroOrMinusOneIsInvalid
-    {
-        [SuppressUnmanagedCodeSecurity]
-        private static class NativeMethods
-        {
-            [DllImport("kernel32")]
-            public static extern IntPtr GlobalAlloc(uint uFlags, UIntPtr dwBytes);
-
-            [DllImport("kernel32")]
-            public static extern IntPtr GlobalFree(IntPtr hMem);
-        }
-
-        private static IntPtr AllocNativeMem(uint nBytes, bool zeroInit = false)
-        {
-            const uint GMEM_ZEROINIT = 0x0040;
-            return NativeMethods.GlobalAlloc(zeroInit ? GMEM_ZEROINIT : 0, new UIntPtr(nBytes));
-        }
-
-        public static SafeHGlobalHandle Alloc(uint nBytes, bool zeroInit = false)
-        {
-            return new SafeHGlobalHandle(AllocNativeMem(nBytes, zeroInit));
-        }
-
-        public static SafeHGlobalHandle Alloc(int nBytes, bool zeroInit = false)
-        {
-            return Alloc((uint)nBytes, zeroInit);
-        }
-
-        public static SafeHGlobalHandle FromString(string? str)
-        {
-            return (str == null)
-                ? new SafeHGlobalHandle()
-                : new SafeHGlobalHandle(Marshal.StringToHGlobalUni(str));
-        }
-
-        public static SafeHGlobalHandle FromStruct<T>(T obj) where T : unmanaged
-        {
-            var size = Marshal.SizeOf(typeof(T));
-            var ret = Alloc(size, true);
-            Marshal.StructureToPtr(obj, ret.handle, false);
-            return ret;
-        }
-
-        public T ToStruct<T>() where T : unmanaged
-        {
-            return (T)Marshal.PtrToStructure(this.handle, typeof(T));
-        }
-
-        public void ForgetAndResize(uint newSize, bool zeroInit = false)
-        {
-            if (this.IsClosed)
-                throw new InvalidOperationException("The SafeHandle is already closed.");
-
-            var newHndl = AllocNativeMem(newSize, zeroInit);
-            if (newHndl == IntPtr.Zero)
-                throw new System.ComponentModel.Win32Exception();
-
-            if (!this.IsInvalid)
-                NativeMethods.GlobalFree(this.handle);
-
-            SetHandle(newHndl);
-        }
-
-        public SafeHGlobalHandle()
-            : this(IntPtr.Zero)
-        { }
-
-        public SafeHGlobalHandle(IntPtr ptr)
-            : base(true)
-        {
-            SetHandle(ptr);
-        }
-
-        protected override bool ReleaseHandle()
-        {
-            return (IntPtr.Zero == NativeMethods.GlobalFree(handle));
-        }
-    }
-
     public class SafeUnicodeStringHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
         public SafeUnicodeStringHandle(string path)
@@ -386,7 +307,7 @@ namespace pylorak.Windows.ObjectManager
             uint bufLen = 512;
             bool restart = true;
 
-            using (var buf = SafeHGlobalHandle.Alloc(bufLen))
+            using (var buf = pylorak.Windows.Services.SafeHGlobalHandle.Alloc(bufLen))
             {
                 while (true)
                 {

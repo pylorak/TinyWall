@@ -44,8 +44,8 @@ namespace WFPdotNet
             _callback = callback;
             _context = context;
             _nativeCallbackDelegate = new NativeMethods.FWPM_FILTER_CHANGE_CALLBACK0(NativeCallbackHandler);
-            AllocHGlobalSafeHandle providerKeyMemHandle = null;
-            AllocHGlobalSafeHandle templMemHandle = null;
+            SafeHGlobalHandle providerKeyMemHandle = null;
+            SafeHGlobalHandle templMemHandle = null;
 
             RuntimeHelpers.PrepareConstrainedRegions();
             try
@@ -57,7 +57,7 @@ namespace WFPdotNet
                 if (layerKey.HasValue)
                 {
                     Interop.FWPM_FILTER_ENUM_TEMPLATE0 templ0 = new Interop.FWPM_FILTER_ENUM_TEMPLATE0();
-                    providerKeyMemHandle = PInvokeHelper.StructToHGlobal<Guid>(providerKey.Value);
+                    providerKeyMemHandle = SafeHGlobalHandle.FromStruct(providerKey.Value);
                     templ0.providerKey = providerKeyMemHandle.DangerousGetHandle();
                     templ0.layerKey = layerKey.Value;
                     templ0.enumType = Interop.FWP_FILTER_ENUM_TYPE.FWP_FILTER_ENUM_FULLY_CONTAINED;
@@ -68,7 +68,7 @@ namespace WFPdotNet
                     templ0.actionMask = 0xFFFFFFFF;
                     templ0.calloutKey = IntPtr.Zero;
 
-                    templMemHandle = PInvokeHelper.StructToHGlobal<Interop.FWPM_FILTER_ENUM_TEMPLATE0>(templ0);
+                    templMemHandle = SafeHGlobalHandle.FromStruct(templ0);
                     subs0.enumTemplate = templMemHandle.DangerousGetHandle();
                 }
 

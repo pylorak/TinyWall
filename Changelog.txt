@@ -1,10 +1,10 @@
 TinyWall Changelog
 ---------------------
 
-3.1.2 - Important update (x.10.2021.)
+3.2.x - not yet released
 - Add support for encrypted DNS in Windows 11
 - Add support for whitelisting volumes mounted to mount points
-- Add workaround for ImDisk issue
+- Add workaround for ImDisk issue (3.1.1 regression)
 - Fix memory leak when changing service failure action
 - Fix memory leak when verifying authenticode certificate
 - Fix memory leak when using an IPv6 address filter condition

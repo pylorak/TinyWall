@@ -28,24 +28,24 @@ namespace WFPdotNet
         private Interop.FWPM_FILTER0 _nativeStruct;
 
         private Guid? _providerKey;
-        AllocHGlobalSafeHandle _providerKeyHandle;
+        SafeHGlobalHandle _providerKeyHandle;
 
-        AllocHGlobalSafeHandle _weightHandle;
+        SafeHGlobalHandle _weightHandle;
 
         private List<FilterCondition> _conditions;
-        AllocHGlobalSafeHandle _conditionsHandle;
+        SafeHGlobalHandle _conditionsHandle;
 
         public Filter()
         {
             _nativeStruct.providerKey = IntPtr.Zero;
             _providerKeyHandle = null;
 
-            _weightHandle = new AllocHGlobalSafeHandle(sizeof(ulong));
+            _weightHandle = SafeHGlobalHandle.Alloc(sizeof(ulong));
             _nativeStruct.weight.type = Interop.FWP_DATA_TYPE.FWP_UINT64;
             _nativeStruct.weight.value.uint64 = _weightHandle.DangerousGetHandle();
 
             _conditions = new List<FilterCondition>();
-            _conditionsHandle = new AllocHGlobalSafeHandle();
+            _conditionsHandle = null;
         }
 
         public Filter(string name, string desc, Guid providerKey, FilterActions action, ulong weight) : this()
@@ -62,14 +62,14 @@ namespace WFPdotNet
             _nativeStruct = filt0;
 
             // TODO: Do we really not need to own these SafeHandles ???
-            _weightHandle = new AllocHGlobalSafeHandle(_nativeStruct.weight.value.uint64, false);
-            _conditionsHandle = new AllocHGlobalSafeHandle(_nativeStruct.filterConditions, false);
+            //_weightHandle = new AllocHGlobalSafeHandle(_nativeStruct.weight.value.uint64, false);
+            //_conditionsHandle = new AllocHGlobalSafeHandle(_nativeStruct.filterConditions, false);
 
             if (_nativeStruct.providerKey != IntPtr.Zero)
             {
                 // TODO: Do we really not need to own these SafeHandles ???
-                _providerKeyHandle = new AllocHGlobalSafeHandle(_nativeStruct.providerKey, false);
-                _providerKey = (Guid)System.Runtime.InteropServices.Marshal.PtrToStructure(_providerKeyHandle.DangerousGetHandle(), typeof(Guid));
+                //_providerKeyHandle = new AllocHGlobalSafeHandle(_nativeStruct.providerKey, false);
+                _providerKey = (Guid)System.Runtime.InteropServices.Marshal.PtrToStructure(_nativeStruct.providerKey, typeof(Guid));
             }
 
             if (getConditions)
@@ -87,12 +87,12 @@ namespace WFPdotNet
 
         public Interop.FWPM_FILTER0 Marshal()
         {
-            _conditionsHandle.Dispose();
+            _conditionsHandle?.Dispose();
 
             _nativeStruct.numFilterConditions = (uint)_conditions.Count;
 
             int condSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(Interop.FWPM_FILTER_CONDITION0));
-            _conditionsHandle = new AllocHGlobalSafeHandle(_conditions.Count * condSize);
+            _conditionsHandle = SafeHGlobalHandle.Alloc(_conditions.Count * condSize);
             _nativeStruct.filterConditions = _conditionsHandle.DangerousGetHandle();
             for (int i = 0; i < _conditions.Count; ++i )
             {
@@ -139,7 +139,7 @@ namespace WFPdotNet
 
                 if (value.HasValue)
                 {
-                    _providerKeyHandle = PInvokeHelper.StructToHGlobal<Guid>(value.Value);
+                    _providerKeyHandle = SafeHGlobalHandle.FromStruct(value.Value);
                     _nativeStruct.providerKey = _providerKeyHandle.DangerousGetHandle();
                 }
                 else

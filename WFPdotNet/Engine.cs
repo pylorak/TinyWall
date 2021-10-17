@@ -17,7 +17,7 @@ namespace WFPdotNet
                 [In, MarshalAs(UnmanagedType.LPWStr)] string serverName,
                 [In] uint authnService,
                 [In] IntPtr authIdentity,
-                [In] AllocHGlobalSafeHandle session,
+                [In] SafeHGlobalHandle session,
                 [Out] out FwpmEngineSafeHandle engineHandle);
 
             [DllImport("FWPUClnt.dll", EntryPoint = "FwpmEngineOpen0")]
@@ -100,7 +100,7 @@ namespace WFPdotNet
 
         public Engine()
         {
-            uint error = NativeMethods.FwpmEngineOpen0(null, (uint)Interop.RPC_C_AUTHN.RPC_C_AUTHN_WINNT, IntPtr.Zero, new AllocHGlobalSafeHandle(IntPtr.Zero, true), out _nativeEngineHandle);
+            uint error = NativeMethods.FwpmEngineOpen0(null, (uint)Interop.RPC_C_AUTHN.RPC_C_AUTHN_WINNT, IntPtr.Zero, new SafeHGlobalHandle(), out _nativeEngineHandle);
             if (0 != error)
                 throw new WfpException(error, "FwpmEngineOpen0");
         }

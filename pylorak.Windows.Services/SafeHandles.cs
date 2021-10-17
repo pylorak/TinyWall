@@ -18,6 +18,10 @@ namespace pylorak.Windows.Services
             public static extern IntPtr GlobalFree(IntPtr hMem);
         }
 
+        private Type? MarshalDestroyType;
+
+        private bool NeedsMarshalDestroy => (MarshalDestroyType != null);
+
         private static IntPtr AllocNativeMem(uint nBytes, bool zeroInit = false)
         {
             const uint GMEM_ZEROINIT = 0x0040;
@@ -45,13 +49,28 @@ namespace pylorak.Windows.Services
         {
             var size = Marshal.SizeOf(typeof(T));
             var ret = Alloc(size, true);
-            Marshal.StructureToPtr(obj, ret.handle, false);
+            ret.MarshalFromStruct(obj);
+            return ret;
+        }
+
+        public static SafeHGlobalHandle FromManagedStruct<T>(T obj)
+        {
+            var size = Marshal.SizeOf(typeof(T));
+            var ret = Alloc(size, true);
+            ret.MarshalFromManagedStruct(obj);
             return ret;
         }
 
         public void MarshalFromStruct<T>(T obj, int offset = 0) where T : unmanaged
         {
-            Marshal.StructureToPtr(obj, (IntPtr)(this.handle.ToInt64() + offset), false);  // TODO: Use IntPtr.Add() on .Net4
+            Marshal.StructureToPtr(obj, (IntPtr)(this.handle.ToInt64() + offset), NeedsMarshalDestroy);  // TODO: Use IntPtr.Add() on .Net4
+            MarshalDestroyType = null;
+        }
+
+        public void MarshalFromManagedStruct<T>(T obj)
+        {
+            Marshal.StructureToPtr(obj, this.handle, NeedsMarshalDestroy);
+            MarshalDestroyType = typeof(T);
         }
 
         public T ToStruct<T>() where T : unmanaged
@@ -69,7 +88,14 @@ namespace pylorak.Windows.Services
                 throw new System.ComponentModel.Win32Exception();
 
             if (!this.IsInvalid)
+            {
+                if (NeedsMarshalDestroy)
+                {
+                    Marshal.DestroyStructure(this.handle, MarshalDestroyType);
+                    MarshalDestroyType = null;
+                }
                 NativeMethods.GlobalFree(this.handle);
+            }
 
             SetHandle(newHndl);
         }
@@ -86,9 +112,17 @@ namespace pylorak.Windows.Services
 
         protected override bool ReleaseHandle()
         {
-            return (IntPtr.Zero == NativeMethods.GlobalFree(handle));
+            if (NeedsMarshalDestroy)
+            {
+                Marshal.DestroyStructure(this.handle, MarshalDestroyType);
+                MarshalDestroyType = null;
+            }
+            bool ret = (IntPtr.Zero == NativeMethods.GlobalFree(handle));
+            SetHandle(IntPtr.Zero);
+            return ret;
         }
     }
+
 
     public sealed class SafeServiceHandle : SafeHandleZeroOrMinusOneIsInvalid
     {

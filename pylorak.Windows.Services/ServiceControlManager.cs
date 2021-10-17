@@ -156,23 +156,15 @@ namespace pylorak.Windows.Services
             failureActions.lpsaActions = actionPtr.DangerousGetHandle();
             failureActions.lpRebootMsg = null;
             failureActions.lpCommand = null;
+            using var failureActionsPtr = SafeHGlobalHandle.FromManagedStruct(failureActions);
 
-            using var failureActionsPtr = SafeHGlobalHandle.Alloc(Marshal.SizeOf(typeof(SERVICE_FAILURE_ACTIONS)));
-            Marshal.StructureToPtr(failureActions, failureActionsPtr.DangerousGetHandle(), false);
-            try
-            {
-                // Make the change
-                int changeResult = NativeMethods.ChangeServiceConfig2(
-                    service,
-                    ServiceConfig2InfoLevel.SERVICE_CONFIG_FAILURE_ACTIONS,
-                    failureActionsPtr.DangerousGetHandle());
-                if (changeResult == 0)
-                    throw new Win32Exception();
-            }
-            finally
-            {
-                Marshal.DestroyStructure(failureActionsPtr.DangerousGetHandle(), failureActions.GetType());
-            }
+            // Make the change
+            int changeResult = NativeMethods.ChangeServiceConfig2(
+                service,
+                ServiceConfig2InfoLevel.SERVICE_CONFIG_FAILURE_ACTIONS,
+                failureActionsPtr.DangerousGetHandle());
+            if (changeResult == 0)
+                throw new Win32Exception();
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
