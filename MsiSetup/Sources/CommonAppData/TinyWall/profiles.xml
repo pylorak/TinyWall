@@ -381,6 +381,7 @@
         <SubjectIdentity>
           <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
             <d6p1:string>CN=Valve, O=Valve, L=Bellevue, S=WA, C=US</d6p1:string>
+            <d6p1:string>CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US</d6p1:string>
           </CertificateSubjects>
           <Policy i:type="TcpUdpPolicy">
             <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
@@ -399,6 +400,7 @@
         <SubjectIdentity>
           <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
             <d6p1:string>CN=Valve, O=Valve, L=Bellevue, S=WA, C=US</d6p1:string>
+            <d6p1:string>CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US</d6p1:string>
           </CertificateSubjects>
           <Policy i:type="TcpUdpPolicy">
             <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
@@ -417,6 +419,7 @@
         <SubjectIdentity>
           <CertificateSubjects xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
             <d6p1:string>CN=Valve, O=Valve, L=Bellevue, S=WA, C=US</d6p1:string>
+            <d6p1:string>CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US</d6p1:string>
           </CertificateSubjects>
           <Policy i:type="TcpUdpPolicy">
             <AllowedLocalTcpListenerPorts>*</AllowedLocalTcpListenerPorts>
