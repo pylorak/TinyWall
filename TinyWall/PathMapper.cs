@@ -274,7 +274,7 @@ public sealed class PathMapper : IDisposable
             CacheReadyEvent.WaitOne();
     }
 
-    private static string GetVolumeMountPointForPath(string path)
+    private static string GetMountPoint(string path)
     {
         if (!Path.IsPathRooted(path))
             throw new ArgumentException("Input path must be an absolute path.");
@@ -367,9 +367,27 @@ public sealed class PathMapper : IDisposable
             if (target == PathFormat.Win32)
                 return ret;
 
-            var mountPoint = GetVolumeMountPointForPath(ret);
-
             var dc = Cache;
+            var mountPoint = GetMountPoint(ret);
+
+            // GetMountPoint() might return a "mount point" that is not real or not
+            // known to the system. This happens for example with directories on ImDisk
+            // drives. In this case we wouldn't be able to map the path.
+            // So we check if the returned mount point is in our list of all known mount
+            // points, and if not, we only map the drive letter.
+            var mountPointFound = false;
+            for (int i = 0; (i < dc.Length) && !mountPointFound; ++i)
+            {
+                for (int j = 0; (j < dc[i].Drives.Count) && !mountPointFound; ++j)
+                {
+                    if (mountPoint.Equals(dc[i].Drives[j], StringComparison.OrdinalIgnoreCase))
+                        mountPointFound = true;
+                }
+            }
+            if (!mountPointFound)
+                mountPoint = mountPoint.Substring(0, 3);
+
+            // And here we do the mapping
             for (int i = 0; i < dc.Length; ++i)
             {
                 for (int j = 0; j < dc[i].Drives.Count; ++j)
