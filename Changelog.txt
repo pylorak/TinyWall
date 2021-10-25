@@ -1,16 +1,19 @@
 TinyWall Changelog
 ---------------------
 
-3.2.x - not yet released
+3.2.2 - Maintenance release (25.10.2021.)
 - Add support for encrypted DNS in Windows 11
-- Add support for whitelisting volumes mounted to mount points
-- Add workaround for ImDisk issue (3.1.1 regression)
+- Add support for whitelisting on mount points
+- Add workaround for ImDisk issue
 - Fix memory leak when changing service failure action
 - Fix memory leak when verifying authenticode certificate
 - Fix memory leak when using an IPv6 address filter condition
 - Fix Connections list not sorted by timestamp by default (3.1.1 regression)
 - Fix possible null-dereference with VeraCrypt volumes
 - Update Japanese and Portuguese localizations
+- Deprecation notes:
+    Windows 7, 8, 8.1, and certain older versions of Windows 10
+    will soon not be supported in a future TinyWall release.
 
 ---------------------
 
@@ -31,10 +34,8 @@ TinyWall Changelog
 - Updated German, Italian translations
 - New Hebrew localization
 - GUI layout fixes for various localizations
+- Updated hosts blocklist
 - Updated application database
-- Deprecation notes:
-    Windows 7, 8, 8.1, and certain older versions of Windows 10
-    will soon not be supported in a future TinyWall release.
 
 ---------------------
 
