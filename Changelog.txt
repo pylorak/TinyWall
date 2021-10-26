@@ -1,6 +1,14 @@
 TinyWall Changelog
 ---------------------
 
+3.2.3 - Maintenance release (26.10.2021.)
+- Fix GUI crash in Connections window if missing file access permissions
+- Deprecation notes:
+    Windows 7, 8, 8.1, and certain older versions of Windows 10
+    will soon not be supported in a future TinyWall release.
+
+---------------------
+
 3.2.2 - Maintenance release (25.10.2021.)
 - Add support for encrypted DNS in Windows 11
 - Add support for whitelisting on mount points
@@ -11,9 +19,6 @@ TinyWall Changelog
 - Fix Connections list not sorted by timestamp by default (3.1.1 regression)
 - Fix possible null-dereference with VeraCrypt volumes
 - Update Japanese and Portuguese localizations
-- Deprecation notes:
-    Windows 7, 8, 8.1, and certain older versions of Windows 10
-    will soon not be supported in a future TinyWall release.
 
 ---------------------
 

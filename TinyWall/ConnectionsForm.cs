@@ -184,7 +184,14 @@ namespace PKSoft
                 for (int i = 0; i < filteredLog.Count; ++i)
                 {
                     FirewallLogEntry entry = filteredLog[i];
-                    entry.AppPath = TinyWall.Interface.Internal.Utils.GetExactPath(entry.AppPath);   // correct path capitalization
+
+                    // Correct path capitalization
+                    // TODO: Do this in the service, and minimize overhead. Right now if GetExactPath() fails,
+                    // for example due to missing file system privileges, capitalization will not be corrected.
+                    // The service has much more privileges, so doing this in the service would allow more paths
+                    // to be corrected.
+                    entry.AppPath = TinyWall.Interface.Internal.Utils.GetExactPath(entry.AppPath);
+
                     var pi = ProcessInfo.Create(entry.ProcessId, entry.AppPath, entry.PackageId, uwpPackages, servicePids);
                     ConstructListItem(itemColl, pi, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.LocalIp), entry.LocalPort), new IPEndPoint(IPAddress.Parse(entry.RemoteIp), entry.RemotePort), "Blocked", entry.Timestamp, entry.Direction);
                 }
