@@ -1,4 +1,6 @@
 Future development ideas:
+- Make chengelog easier to access
+- Merge the two changelogs
 - Option wheteher to allow inbound connection in default rule
 - Block traffic while screensaver is active
 - Better hosts handling
