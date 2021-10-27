@@ -362,17 +362,13 @@ namespace PKSoft
                 if (descriptor != null)
                 {
                     UpdateModule MainAppModule = UpdateChecker.GetMainAppModule(descriptor);
-                    Version newVersion = new Version(MainAppModule.ComponentVersion);
-                    if (newVersion > new Version(System.Windows.Forms.Application.ProductVersion))
+                    if (new Version(MainAppModule.ComponentVersion) > new Version(System.Windows.Forms.Application.ProductVersion))
                     {
-                        if ((newVersion.Major < 3) || (IntPtr.Size == 8))
+                        Utils.Invoke(SyncCtx, (SendOrPostCallback)delegate(object o)
                         {
-                            Utils.Invoke(SyncCtx, (SendOrPostCallback)delegate (object o)
-                            {
-                                string prompt = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.UpdateAvailableBubble, MainAppModule.ComponentVersion);
-                                ShowBalloonTip(prompt, ToolTipIcon.Info, 5000, StartUpdate, MainAppModule.UpdateURL);
-                            });
-                        }
+                            string prompt = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.UpdateAvailableBubble, MainAppModule.ComponentVersion);
+                            ShowBalloonTip(prompt, ToolTipIcon.Info, 5000, StartUpdate, MainAppModule.UpdateURL);
+                        });
                     }
                 }
             }

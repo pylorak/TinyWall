@@ -93,7 +93,7 @@ namespace PKSoft
             UpdateModule UpdateModule = UpdateChecker.GetMainAppModule(this.Descriptor);
             Version oldVersion = new Version(System.Windows.Forms.Application.ProductVersion);
             Version newVersion = new Version(UpdateModule.ComponentVersion);
-            if ((newVersion > oldVersion) && ((newVersion.Major < 3) || (IntPtr.Size == 8)))
+            if (newVersion > oldVersion)
             {
                 string prompt = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.UpdateAvailable, UpdateModule.ComponentVersion);
                 if (Utils.ShowMessageBox(prompt, PKSoft.Resources.Messages.TinyWallUpdater, TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No, TaskDialogIcon.Warning) == DialogResult.Yes)
@@ -200,7 +200,7 @@ namespace PKSoft
 
     internal static class UpdateChecker
     {
-        private const int UPDATER_VERSION = 3;
+        private const string UPDATER_VERSION = @"3_1";
         private const string URL_UPDATE_DESCRIPTOR = @"http://tinywall.pados.hu/updates/UpdVer{0}/update.xml";
 
         internal static UpdateDescriptor GetDescriptor()
@@ -212,6 +212,7 @@ namespace PKSoft
             {
                 using (WebClient HTTPClient = new WebClient())
                 {
+                    HTTPClient.Headers.Add("TW-Version", System.Windows.Forms.Application.ProductVersion);
                     HTTPClient.DownloadFile(url, tmpFile);
                 }
 
