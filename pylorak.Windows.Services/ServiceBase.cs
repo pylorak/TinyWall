@@ -29,15 +29,11 @@ namespace pylorak.Windows.Services
     [InstallerType(typeof(System.ServiceProcess.ServiceProcessInstaller))]
     public abstract class ServiceBase : IDisposable
     {
-        private delegate void ServiceMainDelegate(int argCount, IntPtr argPointer);
-        private delegate void CommandHandlerDelegate();
-        private delegate void StartCommandHandlerDelegate(string[] args);
-        private delegate void PowerEventHandlerDelegate(PowerEventData data);
-        private delegate void DeviceEventHandlerDelegate(DeviceEventData data);
-
         [StructLayout(LayoutKind.Sequential)]
         private struct SERVICE_TABLE_ENTRY
         {
+            public delegate void ServiceMainDelegate(int argCount, IntPtr argPointer);
+
             public IntPtr Name;
             public ServiceMainDelegate? Callback;
 
@@ -53,22 +49,9 @@ namespace pylorak.Windows.Services
             }
         }
 
-        private struct ServiceStartArgsTuple
-        {
-            public string[] Args;
-            public ManualResetEvent StartedEvent;
-        }
-
         private bool disposed;
         private readonly bool initialized;
         private readonly ServiceCtrlHandlerExDelegate ServiceCtrlHandlerExCallback;
-        private readonly StartCommandHandlerDelegate StartCommandHandler;
-        private readonly CommandHandlerDelegate StopCommandHandler;
-        private readonly CommandHandlerDelegate PauseCommandHandler;
-        private readonly CommandHandlerDelegate ContinueCommandHandler;
-        private readonly CommandHandlerDelegate ShutdownCommandHandler;
-        private readonly PowerEventHandlerDelegate PowerEventHandler;
-        private readonly DeviceEventHandlerDelegate DeviceEventHandler;
         private readonly ManualResetEvent StoppedEventHandle = new ManualResetEvent(true);
         private readonly ManualResetEvent StartedEventHandle = new ManualResetEvent(false);
         private readonly SafeHGlobalHandle UnmanagedServiceName;
@@ -79,22 +62,9 @@ namespace pylorak.Windows.Services
         private SERVICE_STATUS Status = new SERVICE_STATUS() { currentState = ServiceState.Stopped };
         private ServiceState PreviousState = ServiceState.Stopped;
 
-#if NET35
-        private Exception? StartExceptionInfo;
-#else
-        private ExceptionDispatchInfo? StartExceptionInfo;
-#endif
-
         protected ServiceBase()
         {
             ServiceCtrlHandlerExCallback = new ServiceCtrlHandlerExDelegate(ServiceCtrlHandlerEx);
-            StartCommandHandler = new StartCommandHandlerDelegate(OnStartWrapper);
-            StopCommandHandler = new CommandHandlerDelegate(OnStopWrapper);
-            PauseCommandHandler = new CommandHandlerDelegate(OnPauseWrapper);
-            ContinueCommandHandler = new CommandHandlerDelegate(OnContinueWrapper);
-            ShutdownCommandHandler = new CommandHandlerDelegate(OnShutdownWrapper);
-            PowerEventHandler = new PowerEventHandlerDelegate(OnPowerEventWrapper);
-            DeviceEventHandler = new DeviceEventHandlerDelegate(OnDeviceEventWrapper);
             UnmanagedServiceName = SafeHGlobalHandle.FromString(ServiceName);
 
             initialized = true;
@@ -204,8 +174,6 @@ namespace pylorak.Windows.Services
 
         protected void StartStateChange(ServiceState newState, string[]? startArgs = null)
         {
-            const bool async = true;
-
             if (!IsStateChangePending(newState))
                 throw new ArgumentException("Must specify a pending state.", nameof(newState));
 
@@ -222,7 +190,7 @@ namespace pylorak.Windows.Services
                     {
                         PreviousState = CurrentState;
                         SetServiceStatePending(newState);
-                        InvokeDelegateAsync(ContinueCommandHandler, async);
+                        ThreadPool.QueueUserWorkItem(_ => OnContinueWrapper());
                     }
                     break;
                 case ServiceState.PausePending:
@@ -231,7 +199,7 @@ namespace pylorak.Windows.Services
                         PreviousState = CurrentState;
                         SetServiceStatePending(newState);
                         StartedEventHandle.Reset();
-                        InvokeDelegateAsync(PauseCommandHandler, async);
+                        ThreadPool.QueueUserWorkItem(_ => OnPauseWrapper());
                     }
                     break;
                 case ServiceState.StartPending:
@@ -241,7 +209,7 @@ namespace pylorak.Windows.Services
                         SetServiceStatePending(newState);
                         StoppedEventHandle.Reset();
                         Debug.Assert(startArgs != null);
-                        InvokeDelegateAsync(StartCommandHandler, async, startArgs!);
+                        ThreadPool.QueueUserWorkItem(_ => OnStartWrapper(startArgs!));
                     }
                     break;
                 case ServiceState.StopPending:
@@ -250,7 +218,7 @@ namespace pylorak.Windows.Services
                         PreviousState = CurrentState;
                         SetServiceStatePending(newState);
                         StartedEventHandle.Reset();
-                        InvokeDelegateAsync(StopCommandHandler, async);
+                        ThreadPool.QueueUserWorkItem(_ => OnStopWrapper());
                     }
                     break;
                 default:
@@ -352,86 +320,6 @@ namespace pylorak.Windows.Services
             StateChangeProgress(Status.checkPoint + 1, milliseconds);
         }
 
-        private static void InvokeDelegateAsync(CommandHandlerDelegate d, bool async)
-        {
-            if (async)
-            {
-#if NET35
-                d.BeginInvoke(iar =>
-                {
-                    try { d.EndInvoke(iar); }
-                    catch { }
-                }, null);
-#else
-            Task.Run(() => d.Invoke());
-#endif
-            }
-            else
-            {
-                d.Invoke();
-            }
-        }
-
-        private static void InvokeDelegateAsync(StartCommandHandlerDelegate d, bool async, string[] args)
-        {
-            if (async)
-            {
-#if NET35
-                d.BeginInvoke(args, iar =>
-            {
-                try { d.EndInvoke(iar); }
-                catch { }
-            }, null);
-#else
-            Task.Run(() => d.Invoke(args));
-#endif
-            }
-            else
-            {
-                d.Invoke(args);
-            }
-        }
-
-        private static void InvokeDelegateAsync(PowerEventHandlerDelegate d, bool async, PowerEventData data)
-        {
-            if (async)
-            {
-#if NET35
-                d.BeginInvoke(data, iar =>
-                {
-                    try { d.EndInvoke(iar); }
-                    catch { }
-                }, null);
-#else
-            Task.Run(() => d.Invoke(args));
-#endif
-            }
-            else
-            {
-                d.Invoke(data);
-            }
-        }
-
-        private static void InvokeDelegateAsync(DeviceEventHandlerDelegate d, bool async, DeviceEventData data)
-        {
-            if (async)
-            {
-#if NET35
-                d.BeginInvoke(data, iar =>
-                {
-                    try { d.EndInvoke(iar); }
-                    catch { }
-                }, null);
-#else
-            Task.Run(() => d.Invoke(args));
-#endif
-            }
-            else
-            {
-                d.Invoke(data);
-            }
-        }
-
         private void ProcessPowerEvent(int eventType, IntPtr eventData)
         {
             if (!Enum.IsDefined(typeof(PowerEventType), eventType))
@@ -451,7 +339,7 @@ namespace pylorak.Windows.Services
                 }
             }
 
-            InvokeDelegateAsync(PowerEventHandler, true, ped);
+            ThreadPool.QueueUserWorkItem(_ => OnPowerEventWrapper(ped));
         }
 
         private void ProcessDeviceEvent(int eventType, IntPtr eventData)
@@ -473,7 +361,7 @@ namespace pylorak.Windows.Services
                     break;
             }
 
-            InvokeDelegateAsync(DeviceEventHandler, true, ded);
+            ThreadPool.QueueUserWorkItem(_ => OnDeviceEventWrapper(ded));
         }
 
         private int ServiceCtrlHandlerEx(int command, int eventType, IntPtr eventData, IntPtr eventContext)
@@ -506,7 +394,7 @@ namespace pylorak.Windows.Services
                 case ServiceControlCommand.SERVICE_CONTROL_PRESHUTDOWN:
                 // Fall-through
                 case ServiceControlCommand.SERVICE_CONTROL_SHUTDOWN:
-                    InvokeDelegateAsync(ShutdownCommandHandler, true);
+                    ThreadPool.QueueUserWorkItem(_ => OnShutdownWrapper());
                     break;
             }
 
@@ -658,32 +546,6 @@ namespace pylorak.Windows.Services
             }
         }
 
-        // Need to execute the start method on a thread pool thread.
-        // Most applications will start asynchronous operations in the
-        // OnStart method. If such a method is executed in MainCallback
-        // thread, the async operations might get canceled immediately.
-        private void ServiceQueuedMainCallback(object state)
-        {
-            var argsBundle = (ServiceStartArgsTuple)state;
-
-            try
-            {
-                WriteEventLogEntry("Starting service...");
-                OnStart(argsBundle.Args);
-            }
-#pragma warning disable CA1031 // Do not catch general exception types
-            catch (Exception e)
-            {
-#if NET35
-                StartExceptionInfo = e;
-#else
-                StartExceptionInfo = ExceptionDispatchInfo.Capture(e);
-#endif
-            }
-#pragma warning restore CA1031 // Do not catch general exception types
-            argsBundle.StartedEvent.Set();
-        }
-
         public void ServiceMain(int argCount, IntPtr argPointer)
         {
             if (!initialized)
@@ -713,40 +575,8 @@ namespace pylorak.Windows.Services
                 SetServiceStateReached(ServiceState.Stopped, e.NativeErrorCode);
                 return;
             }
-#if true
+
             StartStateChange(ServiceState.StartPending, args);
-#else
-            SetServiceStatePending(ServiceState.StartPending);
-
-            // Need to execute the start method on a thread pool thread.
-            // Most applications will start asynchronous operations in the
-            // OnStart method. If such a method is executed in the current
-            // thread, the async operations might get canceled immediately
-            // since NT will terminate this thread right after this function
-            // finishes.
-            var argBundle = new ServiceStartArgsTuple()
-            {
-                Args = args,
-                StartedEvent = new ManualResetEvent(false),
-            };
-            ThreadPool.QueueUserWorkItem(new WaitCallback(this.ServiceQueuedMainCallback), args);
-            argBundle.StartedEvent.WaitOne();
-            argBundle.StartedEvent.Close();
-
-            if (StartExceptionInfo != null)
-            {
-                WriteEventLogEntry("Service failed to start.", EventLogEntryType.Error);
-
-                // Inform SCM that the service could not be started successfully.
-                // (Unless the service has already provided another failure exit code)
-                const int ERROR_EXCEPTION_IN_SERVICE = 1064;
-                SetServiceStateReached(
-                    ServiceState.Stopped,
-                    (Status.win32ExitCode == 0) ? ERROR_EXCEPTION_IN_SERVICE : Status.win32ExitCode,
-                    Status.serviceSpecificExitCode
-                );
-            }
-#endif
         }
 
         private void WriteEventLogEntry(string message, EventLogEntryType errorType = EventLogEntryType.Information)
@@ -815,7 +645,7 @@ namespace pylorak.Windows.Services
             for (int i = 0; i < services.Length; ++i)
             {
                 services[i].Status.serviceType = serviceType;
-                entries[i] = new SERVICE_TABLE_ENTRY(services[i].UnmanagedServiceName.DangerousGetHandle(), new ServiceMainDelegate(services[i].ServiceMain));
+                entries[i] = new SERVICE_TABLE_ENTRY(services[i].UnmanagedServiceName.DangerousGetHandle(), new SERVICE_TABLE_ENTRY.ServiceMainDelegate(services[i].ServiceMain));
                 Marshal.StructureToPtr(entries[i], entriesPointer, true);
                 entriesPointer = (IntPtr)((long)entriesPointer + ENTRY_SIZE);
             }
@@ -852,18 +682,6 @@ namespace pylorak.Windows.Services
                 }
 
                 throw e;
-            }
-
-            foreach (ServiceBase service in services)
-            {
-                if (service.StartExceptionInfo != null)
-                {
-#if NET35
-                    throw new Exception("Exception thrown during service start. See InnerException for details.", service.StartExceptionInfo);
-#else
-                    service.StartExceptionInfo.Throw();
-#endif
-                }
             }
         }
 
