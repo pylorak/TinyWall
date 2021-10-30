@@ -292,7 +292,7 @@
             <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
           </Policy>
           <SearchPaths xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-            <d6p1:string>{reg:SOFTWARE\Seed4.Me VPN:InstallLocation}\bin</d6p1:string>
+            <d6p1:string>{NoTrailingSlash:{reg:SOFTWARE\Seed4.Me VPN:InstallLocation}}\bin</d6p1:string>
           </SearchPaths>
           <Subject i:type="ExecutableSubject">
             <ExecutablePath>Seed4.Me_VPN.exe</ExecutablePath>
@@ -309,7 +309,7 @@
             <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
           </Policy>
           <SearchPaths xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-            <d6p1:string>{reg:SOFTWARE\Seed4.Me VPN:InstallLocation}\bin</d6p1:string>
+            <d6p1:string>{NoTrailingSlash:{reg:SOFTWARE\Seed4.Me VPN:InstallLocation}}\bin</d6p1:string>
           </SearchPaths>
           <Subject i:type="ExecutableSubject">
             <ExecutablePath>Seed4.Me_service.exe</ExecutablePath>
@@ -428,10 +428,10 @@
             <AllowedRemoteUdpConnectPorts>*</AllowedRemoteUdpConnectPorts>
           </Policy>
           <SearchPaths xmlns:d6p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-            <d6p1:string>{reg:SOFTWARE\Wow6432Node\Valve\Steam:InstallPath}\bin</d6p1:string>
-            <d6p1:string>{reg:SOFTWARE\Valve\Steam:InstallPath}\bin</d6p1:string>
-            <d6p1:string>{reg:SOFTWARE\Wow6432Node\Valve\Steam:InstallPath}\bin\cef\cef.win7x64</d6p1:string>
-            <d6p1:string>{reg:SOFTWARE\Valve\Steam:InstallPath}\bin\cef\cef.win7x64</d6p1:string>
+            <d6p1:string>{NoTrailingSlash:{reg:SOFTWARE\Wow6432Node\Valve\Steam:InstallPath}}\bin</d6p1:string>
+            <d6p1:string>{NoTrailingSlash:{reg:SOFTWARE\Valve\Steam:InstallPath}}\bin</d6p1:string>
+            <d6p1:string>{NoTrailingSlash:{reg:SOFTWARE\Wow6432Node\Valve\Steam:InstallPath}}\bin\cef\cef.win7x64</d6p1:string>
+            <d6p1:string>{NoTrailingSlash:{reg:SOFTWARE\Valve\Steam:InstallPath}}\bin\cef\cef.win7x64</d6p1:string>
           </SearchPaths>
           <Subject i:type="ExecutableSubject">
             <ExecutablePath>steamwebhelper.exe</ExecutablePath>
@@ -728,7 +728,7 @@
             <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
           </Policy>
           <Subject i:type="ExecutableSubject">
-            <ExecutablePath>{reg:SOFTWARE\Microsoft\Windows Defender:InstallLocation}\MsMpEng.exe</ExecutablePath>
+            <ExecutablePath>{NoTrailingSlash:{reg:SOFTWARE\Microsoft\Windows Defender:InstallLocation}}\MsMpEng.exe</ExecutablePath>
           </Subject>
         </SubjectIdentity>
         <SubjectIdentity>
@@ -739,7 +739,7 @@
             <AllowedRemoteTcpConnectPorts>*</AllowedRemoteTcpConnectPorts>
           </Policy>
           <Subject i:type="ExecutableSubject">
-            <ExecutablePath>{reg:SOFTWARE\Microsoft\Windows Defender:InstallLocation}\NisSrv.exe</ExecutablePath>
+            <ExecutablePath>{NoTrailingSlash:{reg:SOFTWARE\Microsoft\Windows Defender:InstallLocation}}\NisSrv.exe</ExecutablePath>
           </Subject>
         </SubjectIdentity>
       </Components>

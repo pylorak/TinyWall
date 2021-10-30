@@ -10,7 +10,7 @@
         <Name>Windows Defender Antivirus Service</Name>
       </Policy>
       <Subject i:type="ExecutableSubject">
-        <ExecutablePath>{reg:SOFTWARE\Microsoft\Windows Defender:InstallLocation}\MsMpEng.exe</ExecutablePath>
+        <ExecutablePath>{NoTrailingSlash:{reg:SOFTWARE\Microsoft\Windows Defender:InstallLocation}}\MsMpEng.exe</ExecutablePath>
       </Subject>
     </SubjectIdentity>
     <SubjectIdentity>
@@ -22,7 +22,7 @@
         <Name>Windows Defender Antivirus Network Inspection Service</Name>
       </Policy>
       <Subject i:type="ExecutableSubject">
-        <ExecutablePath>{reg:SOFTWARE\Microsoft\Windows Defender:InstallLocation}\NisSrv.exe</ExecutablePath>
+        <ExecutablePath>{NoTrailingSlash:{reg:SOFTWARE\Microsoft\Windows Defender:InstallLocation}}\NisSrv.exe</ExecutablePath>
       </Subject>
     </SubjectIdentity>
   </Components>

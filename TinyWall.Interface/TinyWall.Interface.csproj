@@ -58,6 +58,7 @@
     <Compile Include="Internal\SerializationHelper.cs" />
     <Compile Include="Internal\Utils.cs" />
     <Compile Include="Internal\WinTrust.cs" />
+    <Compile Include="Parser\ParserNoTrailingSlashVariable.cs" />
     <Compile Include="Registry.cs" />
     <Compile Include="Parser\ParserFolderVariable.cs" />
     <Compile Include="Parser\ParserParentVariable.cs" />
