@@ -2,17 +2,23 @@
 *.dll
 *.msi
 *.zip
+*.suo
+
+/.vs/
+/Assets/
 
 /LocalizationPack/**/*.resx
 /LocalizationPack/**/*.pdf
+/LocalizationPack/ZetaResourceEditor/
 
 /Temp
 /SortRESX
 /TinyWall.suo
 /TinyWall.v11.suo
 
-/TinyWall/obj
-/TinyWall/bin
+/TinyWall/obj/
+/TinyWall/bin/
+/TinyWall/Database.old/
 
 /TinyWall.Interface/obj
 /TinyWall.Interface/bin
@@ -25,5 +31,10 @@
 
 /MsiSetup/obj
 /MsiSetup/bin
+/MsiSetup/Sources/ProgramFiles/
 
-/TinyWall/TaskService
+/NativeHelper/Win32/
+/NativeHelper/x64/
+
+/WFPdotNet/bin/
+/WFPdotNet/obj/
