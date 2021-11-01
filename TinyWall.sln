@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyWall", "TinyWall\TinyWall.csproj", "{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyWall", "TinyWall\TinyWall.csproj", "{16CD254D-9D71-4EA4-ABB4-9DC0AB52E6D2}"
 	ProjectSection(ProjectDependencies) = postProject
 		{062004FD-090C-494D-AEEC-43B62A62C711} = {062004FD-090C-494D-AEEC-43B62A62C711}
 	EndProjectSection
@@ -14,13 +14,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Toaster", "Toaster\Toaster.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyWall.Interface", "TinyWall.Interface\TinyWall.Interface.csproj", "{AC7BE8FE-87D6-44A6-9298-813534203590}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterfaceSample", "InterfaceSample\InterfaceSample.csproj", "{B4C2958E-F719-461C-863E-80ABAFEF4BCA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFPdotNet", "WFPdotNet\WFPdotNet.csproj", "{6766416A-3B7C-4FAA-8D3C-E2B31749763F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NativeHelper", "NativeHelper\NativeHelper.vcxproj", "{062004FD-090C-494D-AEEC-43B62A62C711}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pylorak.Windows.Services", "pylorak.Windows.Services\pylorak.Windows.Services.csproj", "{31FB6AFC-FFA6-4B38-A438-D066FA84E90F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pylorak.Windows.Services", "pylorak.Windows.Services\pylorak.Windows.Services.csproj", "{31FB6AFC-FFA6-4B38-A438-D066FA84E90F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,18 +76,6 @@ Global
 		{AC7BE8FE-87D6-44A6-9298-813534203590}.Release|x64.Build.0 = Release|Any CPU
 		{AC7BE8FE-87D6-44A6-9298-813534203590}.Release|x86.ActiveCfg = Release|Any CPU
 		{AC7BE8FE-87D6-44A6-9298-813534203590}.Release|x86.Build.0 = Release|Any CPU
-		{B4C2958E-F719-461C-863E-80ABAFEF4BCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B4C2958E-F719-461C-863E-80ABAFEF4BCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B4C2958E-F719-461C-863E-80ABAFEF4BCA}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{B4C2958E-F719-461C-863E-80ABAFEF4BCA}.Debug|x64.Build.0 = Debug|Any CPU
-		{B4C2958E-F719-461C-863E-80ABAFEF4BCA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{B4C2958E-F719-461C-863E-80ABAFEF4BCA}.Debug|x86.Build.0 = Debug|Any CPU
-		{B4C2958E-F719-461C-863E-80ABAFEF4BCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B4C2958E-F719-461C-863E-80ABAFEF4BCA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B4C2958E-F719-461C-863E-80ABAFEF4BCA}.Release|x64.ActiveCfg = Release|Any CPU
-		{B4C2958E-F719-461C-863E-80ABAFEF4BCA}.Release|x64.Build.0 = Release|Any CPU
-		{B4C2958E-F719-461C-863E-80ABAFEF4BCA}.Release|x86.ActiveCfg = Release|Any CPU
-		{B4C2958E-F719-461C-863E-80ABAFEF4BCA}.Release|x86.Build.0 = Release|Any CPU
 		{6766416A-3B7C-4FAA-8D3C-E2B31749763F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6766416A-3B7C-4FAA-8D3C-E2B31749763F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6766416A-3B7C-4FAA-8D3C-E2B31749763F}.Debug|x64.ActiveCfg = Debug|Any CPU
