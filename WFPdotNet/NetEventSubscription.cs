@@ -231,7 +231,6 @@ namespace WFPdotNet
 
         protected abstract uint CreateSubscription(FwpmEngineSafeHandle engineHandle, ref Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subscription, IntPtr context, out FwpmNetEventSubscriptionSafeHandle changeHandle);
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "dummy")]
         protected NetEventSubscription(Engine engine, NetEventCallback callback, object context)
         {
             _callback = callback;
@@ -283,6 +282,7 @@ namespace WFPdotNet
         public void Dispose()
         {
             _changeHandle.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 
@@ -306,7 +306,6 @@ namespace WFPdotNet
 
         private NativeMethods.FWPM_NET_EVENT_CALLBACK0 _nativeCallbackDelegate0;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "dummy")]
         internal NetEventSubscription0(Engine engine, NetEventCallback callback, object context) : base(engine, callback, context)
         { }
 
@@ -344,7 +343,6 @@ namespace WFPdotNet
 
         private NativeMethods.FWPM_NET_EVENT_CALLBACK1 _nativeCallbackDelegate0;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "dummy")]
         internal NetEventSubscription1(Engine engine, NetEventCallback callback, object context) : base(engine, callback, context)
         { }
 

@@ -44,18 +44,16 @@ namespace TinyWall.Interface
                 if ((Environment.OSVersion.Version.Major == 5 && Environment.OSVersion.Version.Minor >= 1) ||
                     Environment.OSVersion.Version.Major >= 6)
                 {
-                    using (Process p = Process.GetCurrentProcess())
+                    try
                     {
-                        try
+                        using Process p = Process.GetCurrentProcess();
+                        if (!IsWow64Process(p.Handle, out bool retVal))
                         {
-                            if (!IsWow64Process(p.Handle, out bool retVal))
-                            {
-                                return false;
-                            }
-                            return retVal;
+                            return false;
                         }
-                        catch { return false; }
+                        return retVal;
                     }
+                    catch { return false; }
                 }
                 else
                 {

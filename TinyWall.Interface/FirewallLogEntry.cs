@@ -30,7 +30,6 @@ namespace TinyWall.Interface
     {
         public DateTime Timestamp;
         public EventLogEvent Event;
-        [CLSCompliant(false)]
         public uint ProcessId;
         public Protocol Protocol;
         public RuleDirection Direction;
@@ -43,11 +42,10 @@ namespace TinyWall.Interface
 
         public override bool Equals(object obj)
         {
-            FirewallLogEntry other = obj as FirewallLogEntry;
-            if (null == other)
+            if (obj is FirewallLogEntry other)
+                return Equals(other, true);
+            else
                 return false;
-
-            return this.Equals(other, true);
         }
 
         public override int GetHashCode()
