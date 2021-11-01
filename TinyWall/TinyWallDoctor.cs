@@ -218,7 +218,7 @@ namespace PKSoft
             try
             {
                 // Disable automatic start of controller
-                var taskService = new TaskSchedulerClass();
+                var taskService = new TaskScheduler.TaskScheduler();
                 taskService.Connect();
                 taskService.GetFolder(@"\").DeleteTask(CONTROLLER_START_TASKSCH_NAME, 0);
             }
@@ -282,7 +282,7 @@ namespace PKSoft
             {
                 const string USERS_GROUP_SID = "S-1-5-32-545";
                 const int TASK_CREATE_OR_UPDATE = 6;
-                var taskService = new TaskSchedulerClass();
+                var taskService = new TaskScheduler.TaskScheduler();
                 taskService.Connect();
                 var td = taskService.NewTask(0);
                 td.Settings.Enabled = true;

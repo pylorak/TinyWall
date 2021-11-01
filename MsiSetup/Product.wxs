@@ -45,10 +45,9 @@
 
     <!-- .Net Framework detection -->
     <Condition Message="You need to be running Windows 7 or later to install $(var.ProductName).">VersionNT >= 601</Condition>
-    <PropertyRef Id="NETFRAMEWORK35"/>
-    <PropertyRef Id="NETFRAMEWORK40FULL"/>
-    <Condition Message='This setup requires the .NET Framework 3.5 SP1 or newer to be installed.'>
-      <![CDATA[NETFRAMEWORK35 OR NETFRAMEWORK40FULL]]>
+    <PropertyRef Id="WIX_IS_NETFRAMEWORK_48_OR_LATER_INSTALLED"/>
+    <Condition Message='This application requires .NET Framework 4.8 to be installed.'>
+      <![CDATA[WIX_IS_NETFRAMEWORK_48_OR_LATER_INSTALLED]]>
     </Condition>
 
     <!-- Feature description -->
@@ -59,8 +58,6 @@
       <ComponentRef Id='WfpDotNetLib' />
       <ComponentRef Id='NativeHelper32Lib' />
       <ComponentRef Id='NativeHelper64Lib' />
-      <ComponentRef Id='NetFwTypeLib' />
-      <ComponentRef Id='TaskScheduler' />
       <ComponentRef Id='Toaster' />
       <ComponentRef Id='ProgramMenuDir' />
       <ComponentRef Id='RemoveAppDataDir' />
@@ -161,12 +158,6 @@
           </Component>
           <Component Id="NativeHelper64Lib" Guid="{1592EA47-86FB-4390-B11D-8395A2ADC769}" Win64="$(var.Win64)">
             <File Id="NativeHelper64DLL" Source="Sources\ProgramFiles\TinyWall\NativeHelper64.dll" Vital="yes" KeyPath="yes" Checksum="yes" />
-          </Component>
-          <Component Id="NetFwTypeLib" Guid="{7AB618A2-D50A-499A-93B9-101AEF6BC809}" Win64="$(var.Win64)">
-            <File Id="NetFwTypeLibDLL" Source="Sources\ProgramFiles\TinyWall\Interop.NetFwTypeLib.dll" Vital="yes" KeyPath="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
-          </Component>
-          <Component Id="TaskScheduler" Guid="{997BC5D6-8B0C-42A7-9D58-4B9493B228D1}" Win64="$(var.Win64)">
-            <File Id="TaskSchedulerDLL" Source="Sources\ProgramFiles\TinyWall\Interop.TaskScheduler.dll" Vital="yes" KeyPath="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
           </Component>
           <Component Id="License" Guid="{2F2FF77C-8900-406A-AB6E-6DCFF4B53463}" Win64="$(var.Win64)">
             <File Id="LicenseRTF" Source="Sources\ProgramFiles\TinyWall\License.rtf" KeyPath="yes" />
