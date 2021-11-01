@@ -109,18 +109,8 @@ namespace PKSoft
             // Setup TLS 1.2 & 1.3 support, if supported
             if (ServicePointManager.SecurityProtocol != 0)
             {
-                const SecurityProtocolType _tls12 = (SecurityProtocolType)3072;
-                const SecurityProtocolType _tls13 = (SecurityProtocolType)12288;
-                try
-                {
-                    ServicePointManager.SecurityProtocol |= _tls12;
-                }
-                catch { }
-                try
-                {
-                    ServicePointManager.SecurityProtocol |= _tls13;
-                }
-                catch { }
+                try { ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12; } catch { }
+                try { ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls13; } catch { }
             }
 
             // Parse comman-line options

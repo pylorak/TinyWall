@@ -334,7 +334,7 @@ namespace WFPdotNet
 
         public void MarshalFromStruct<T>(T obj, int offset = 0) where T : unmanaged
         {
-            Marshal.StructureToPtr(obj, (IntPtr)(this.handle.ToInt64() + offset), NeedsMarshalDestroy);  // TODO: Use IntPtr.Add() on .Net4
+            Marshal.StructureToPtr(obj, this.handle + offset, NeedsMarshalDestroy);
             MarshalDestroyType = null;
         }
 

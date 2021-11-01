@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.IO;
+using Microsoft.Win32;
 
 namespace TinyWall.Interface.Internal
 {
@@ -17,6 +18,20 @@ namespace TinyWall.Interface.Internal
                 sb.Append(oct.ToString(@"X2", CultureInfo.InvariantCulture));
 
             return sb.ToString();
+        }
+
+        public static string GetReg64StrValue(RegistryHive hive, string key, string val)
+        {
+            using var baseKey = RegistryKey.OpenBaseKey(hive, RegistryView.Registry64);
+            using var subKey = baseKey?.OpenSubKey(key, false);
+            return subKey?.GetValue(val) as string;
+        }
+
+        public static T OnlyFirst<T>(IEnumerable<T> items)
+        {
+            using IEnumerator<T> iter = items.GetEnumerator();
+            iter.MoveNext();
+            return iter.Current;
         }
 
         /// <summary>
@@ -38,8 +53,7 @@ namespace TinyWall.Interface.Internal
 
                 while (parent != null)
                 {
-                    // TODO: For .NET 4.8+, GetFileSystemInfos() should be replaced with EnumerateFileSystemInfos()
-                    result = Path.Combine(parent.GetFileSystemInfos(dir.Name)[0].Name, result);
+                    result = Path.Combine(OnlyFirst(parent.EnumerateFileSystemInfos(dir.Name)).Name, result);
 
                     dir = parent;
                     parent = parent.Parent;

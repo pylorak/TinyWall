@@ -62,24 +62,7 @@ namespace PKSoft
         public IpAddrMask(UnicastIPAddressInformation addrInfo)
         {
             Address = addrInfo.Address;
-            //PrefixLen = addrInfo.PrefixLen; // TODO: Use in .Net > 4.5
-            if (IsIPv4)
-            {
-                PrefixLen = 0;
-                if (addrInfo.IPv4Mask != null)
-                {
-                    byte[] b = addrInfo.IPv4Mask.GetAddressBytes();
-                    for (int i = 0; i < b.Length; ++i)
-                        PrefixLen += CountBits(b[i]);
-                }
-            }
-            else
-            {
-                if (IsLoopback)
-                    PrefixLen = 128;
-                else
-                    PrefixLen = 64;
-            }
+            PrefixLen = addrInfo.PrefixLength;
         }
 
         public bool IsIPv4

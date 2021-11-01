@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TinyWall.Interface.Internal;
+using Microsoft.Win32;
 
 namespace TinyWall.Interface.Parser
 {
@@ -17,10 +19,7 @@ namespace TinyWall.Interface.Parser
                 string keyPath = tokens[0];
                 string keyValue = tokens[1];
 
-                // TODO: not needed on .NET 4.0
-                // We use a custom function to access 64-bit registry view on dotNet 3.5. 
-                string val = Registry.ReadRegString(Registry.HKEY_LOCAL_MACHINE, keyPath, keyValue, RegWow64Options.KEY_WOW64_64KEY);
-                return val ?? str;
+                return Utils.GetReg64StrValue(RegistryHive.LocalMachine, keyPath, keyValue) ?? str;
             }
             catch
             {

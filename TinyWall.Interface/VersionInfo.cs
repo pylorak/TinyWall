@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Diagnostics;
 using Microsoft.Win32;
+using TinyWall.Interface.Internal;
 
 namespace TinyWall.Interface
 {
@@ -87,9 +88,9 @@ namespace TinyWall.Interface
             Version winver = Environment.OSVersion.Version;
             try
             {
-                string product = Registry.ReadRegString(Registry.HKEY_LOCAL_MACHINE, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName", RegWow64Options.KEY_WOW64_64KEY);
-                string build = Registry.ReadRegString(Registry.HKEY_LOCAL_MACHINE, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuild", RegWow64Options.KEY_WOW64_64KEY);
-                string releaseId = (winver.Major >= 10) ? Registry.ReadRegString(Registry.HKEY_LOCAL_MACHINE, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", RegWow64Options.KEY_WOW64_64KEY) : null;
+                string product = Utils.GetReg64StrValue(RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName");
+                string build = Utils.GetReg64StrValue(RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuild");
+                string releaseId = (winver.Major >= 10) ? Utils.GetReg64StrValue(RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId") : null;
                 string bitness = Is64BitOs ? "64" : "32";
 
                 string ret = $"{product} {bitness}-bit {winver.Major}.{winver.Minor}.{build}";
