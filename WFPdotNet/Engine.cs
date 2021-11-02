@@ -65,7 +65,7 @@ namespace WFPdotNet
             [DllImport("FWPUClnt.dll", EntryPoint = "FwpmFilterAdd0")]
             internal static extern uint FwpmFilterAdd0(
                 [In] FwpmEngineSafeHandle engineHandle,
-                [In] ref WFPdotNet.Interop.FWPM_FILTER0 filter,
+                [In] ref WFPdotNet.Interop.FWPM_FILTER0_NoStrings filter,
                 [In] IntPtr sd,
                 [Out] out ulong id);
 
@@ -247,7 +247,7 @@ namespace WFPdotNet
             if (Guid.Empty == filter.FilterKey)
                 filter.FilterKey = Guid.NewGuid();
 
-            Interop.FWPM_FILTER0 nf = filter.Marshal();
+            var nf = filter.Marshal();
             uint err = NativeMethods.FwpmFilterAdd0(_nativeEngineHandle, ref nf, IntPtr.Zero, out ulong id);
             if (0 != err)
                 throw new WfpException(err, "FwpmFilterAdd0");
@@ -308,7 +308,7 @@ namespace WFPdotNet
                 if (err != 0)
                     throw new WfpException(err, "FwpmFilterGetByKey0");
 
-                Interop.FWPM_FILTER0 nativeFilter = Marshal.PtrToStructure<Interop.FWPM_FILTER0>(nativeMem.DangerousGetHandle());
+                var nativeFilter = Marshal.PtrToStructure<Interop.FWPM_FILTER0_NoStrings>(nativeMem.DangerousGetHandle());
                 return new Filter(nativeFilter, getConditions);
             }
             finally
@@ -326,7 +326,7 @@ namespace WFPdotNet
                 if (err != 0)
                     throw new WfpException(err, "FwpmFilterGetById0");
 
-                Interop.FWPM_FILTER0 nativeFilter = Marshal.PtrToStructure<Interop.FWPM_FILTER0>(nativeMem.DangerousGetHandle());
+                var nativeFilter = Marshal.PtrToStructure<Interop.FWPM_FILTER0_NoStrings>(nativeMem.DangerousGetHandle());
                 return new Filter(nativeFilter, getConditions);
             }
             finally

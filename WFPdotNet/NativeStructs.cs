@@ -10,6 +10,13 @@ namespace WFPdotNet.Interop
         [MarshalAs(UnmanagedType.LPWStr)] public string description;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_DISPLAY_DATA0_NoStrings
+    {
+        public IntPtr name;
+        public IntPtr description;
+    }
+
     [Flags]
     public enum FWPM_SESSION_FLAGS : uint
     {
@@ -335,7 +342,26 @@ namespace WFPdotNet.Interop
         public FWP_VALUE0 effectiveWeight;
     }
 
-    
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_FILTER0_NoStrings
+    {
+        public Guid filterKey;
+        public FWPM_DISPLAY_DATA0_NoStrings displayData;
+        public FilterFlags flags;
+        public IntPtr providerKey;
+        public FWP_BYTE_BLOB providerData;
+        public Guid layerKey;
+        public Guid subLayerKey;
+        public FWP_VALUE0 weight;
+        public uint numFilterConditions;
+        public IntPtr filterConditions;
+        public FWPM_ACTION0 action;
+        public Filter0Context filterContext;
+        public IntPtr reserved;
+        public ulong filterId;
+        public FWP_VALUE0 effectiveWeight;
+    }
+
     public enum FWP_FILTER_ENUM_TYPE : uint
     {
         FWP_FILTER_ENUM_FULLY_CONTAINED = 0,
