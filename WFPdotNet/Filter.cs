@@ -35,16 +35,16 @@ namespace WFPdotNet
         private Interop.FWPM_FILTER0_NoStrings _nativeStruct;
 
         private Guid? _providerKey;
-        SafeHGlobalHandle _providerKeyHandle;
+        private SafeHGlobalHandle _providerKeyHandle;
 
-        SafeHGlobalHandle _weightHandle;
+        private SafeHGlobalHandle _weightHandle;
 
         private List<FilterCondition> _conditions;
-        SafeHGlobalHandle _conditionsHandle;
+        private SafeHGlobalHandle _conditionsHandle;
 
-        SafeHGlobalHandle _displayDataHandle;
-        string _DisplayName;
-        string _DisplayDescription;
+        private SafeHGlobalHandle _displayDataHandle;
+        private string _DisplayName;
+        private string _DisplayDescription;
         private DisplaySyncMode _DisplaySynchNeeded;
 
         public Filter()
@@ -104,19 +104,21 @@ namespace WFPdotNet
         {
             SynchronizeDisplayData();
 
-            int condSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(Interop.FWPM_FILTER_CONDITION0));
-            _conditionsHandle?.Dispose();
-            _conditionsHandle = SafeHGlobalHandle.Alloc(_conditions.Count * condSize);
-            _nativeStruct.filterConditions = _conditionsHandle.DangerousGetHandle();
-            _nativeStruct.numFilterConditions = (uint)_conditions.Count;
-            for (int i = 0; i < _conditions.Count; ++i )
+            if (_conditionsHandle == null)
             {
-                _conditionsHandle.MarshalFromStruct(_conditions[i].Marshal(), i * condSize);
+                int condSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(Interop.FWPM_FILTER_CONDITION0));
+                _conditionsHandle?.Dispose();
+                _conditionsHandle = SafeHGlobalHandle.Alloc(_conditions.Count * condSize);
+                _nativeStruct.filterConditions = _conditionsHandle.DangerousGetHandle();
+                _nativeStruct.numFilterConditions = (uint)_conditions.Count;
+                for (int i = 0; i < _conditions.Count; ++i)
+                {
+                    _conditionsHandle.MarshalFromStruct(_conditions[i].Marshal(), i * condSize);
+                }
             }
 
             return _nativeStruct;
         }
-
 
         public Guid FilterKey
         {
@@ -250,7 +252,14 @@ namespace WFPdotNet
         }
         public List<FilterCondition> Conditions
         {
-            get { return _conditions; }
+            get 
+            {
+                // Invalidate cache
+                _conditionsHandle?.Dispose();
+                _conditionsHandle = null;
+
+                return _conditions; 
+            }
         }
         public FilterActions Action
         {
