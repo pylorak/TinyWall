@@ -501,12 +501,11 @@ namespace WFPdotNet
             for (int i = 0; i < dec.Length; ++i)
             {
                 // 7: Convert each block of hex bytes() to Decimal
-                string hexBlock =sha1[i * 4 + 3].ToString("X2") +
-                    sha1[i * 4 + 2].ToString("X2") +
-                    sha1[i * 4 + 1].ToString("X2") +
-                    sha1[i * 4 + 0].ToString("X2");
-
-                dec[i] = Convert.ToUInt32(hexBlock, 16);
+                dec[i] =
+                    ((uint)sha1[i * 4 + 3] << 24) +
+                    ((uint)sha1[i * 4 + 2] << 16) +
+                    ((uint)sha1[i * 4 + 1] << 8) +
+                    ((uint)sha1[i * 4 + 0] << 0);
             }
 
             // 8: Reverse the Position of the blocks.
