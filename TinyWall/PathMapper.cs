@@ -163,67 +163,63 @@ public sealed class PathMapper : IDisposable
 
     private List<DriveCache> RebuildCacheImpl_2(List<DriveCache> newCache)
     {
-        var SymbolicLinkType = "SymbolicLink";
+        const string SYMBOLIC_LINK_TYPE = "SymbolicLink";
 
         using var dir = ObjectManager.OpenDirectoryObjectForRead(@"\GLOBAL??");
         var linkTargetBuff = new SafeUnicodeStringHandle(512);
         try
         {
-            foreach (var objInfo in ObjectManager.QueryDirectory(dir))
+            foreach (var name in ObjectManager.QueryDirectoryForType(dir, SYMBOLIC_LINK_TYPE))
             {
                 // Found a volume GUID?
-                if (objInfo.TypeName.Equals(SymbolicLinkType, StringComparison.Ordinal))
+                if (name.StartsWith("Volume{", StringComparison.Ordinal))
                 {
-                    var name = objInfo.Name;
-                    var target = ObjectManager.QueryLinkTarget(ref linkTargetBuff, objInfo.Name, dir) + @"\";
-
-                    if (name.StartsWith("Volume{", StringComparison.Ordinal))
+                    var target = ObjectManager.QueryLinkTarget(ref linkTargetBuff, name, dir) + @"\";
+                    var volumePath = @"\\?\" + name + @"\";
+                    var existingEntryFound = false;
+                    foreach (var cacheEntry in newCache)
                     {
-                        var volumePath = @"\\?\" + name + @"\";
-                        var existingEntryFound = false;
-                        foreach (var cacheEntry in newCache)
+                        if (cacheEntry.Device.Equals(target, StringComparison.Ordinal))
                         {
-                            if (cacheEntry.Device.Equals(target, StringComparison.Ordinal))
-                            {
-                                existingEntryFound = true;
-                                if (!cacheEntry.Volumes.Contains(volumePath))
-                                    cacheEntry.Volumes.Add(volumePath);
-                            }
-                        }
-                        if (!existingEntryFound)
-                        {
-                            newCache.Add(new DriveCache()
-                            {
-                                Device = target,
-                                Volumes = new List<string>() { volumePath },
-                                Drives = new List<string>(),
-                            });
+                            existingEntryFound = true;
+                            if (!cacheEntry.Volumes.Contains(volumePath))
+                                cacheEntry.Volumes.Add(volumePath);
                         }
                     }
-
-                    // Found a drive letter?
-                    if ((name.Length == 2) && char.IsLetter(name[0]) && (name[1] == ':'))
+                    if (!existingEntryFound)
                     {
-                        var drivePath = name + @"\";
-                        var existingEntryFound = false;
-                        foreach (var cacheEntry in newCache)
+                        newCache.Add(new DriveCache()
                         {
-                            if (cacheEntry.Device.Equals(target, StringComparison.Ordinal))
-                            {
-                                existingEntryFound = true;
-                                if (!cacheEntry.Drives.Contains(drivePath))
-                                    cacheEntry.Drives.Add(drivePath);
-                            }
-                        }
-                        if (!existingEntryFound)
+                            Device = target,
+                            Volumes = new List<string>() { volumePath },
+                            Drives = new List<string>(),
+                        });
+                    }
+                }
+
+                // Found a drive letter?
+                if ((name.Length == 2) && char.IsLetter(name[0]) && (name[1] == ':'))
+                {
+                    var target = ObjectManager.QueryLinkTarget(ref linkTargetBuff, name, dir) + @"\";
+                    var drivePath = name + @"\";
+                    var existingEntryFound = false;
+                    foreach (var cacheEntry in newCache)
+                    {
+                        if (cacheEntry.Device.Equals(target, StringComparison.Ordinal))
                         {
-                            newCache.Add(new DriveCache()
-                            {
-                                Device = target,
-                                Volumes = new List<string>(),
-                                Drives = new List<string>() { drivePath },
-                            });
+                            existingEntryFound = true;
+                            if (!cacheEntry.Drives.Contains(drivePath))
+                                cacheEntry.Drives.Add(drivePath);
                         }
+                    }
+                    if (!existingEntryFound)
+                    {
+                        newCache.Add(new DriveCache()
+                        {
+                            Device = target,
+                            Volumes = new List<string>(),
+                            Drives = new List<string>() { drivePath },
+                        });
                     }
                 }
             }
