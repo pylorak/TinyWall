@@ -911,7 +911,7 @@ namespace PKSoft
                     ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4);
             }
             if ((r.Direction & RuleDirection.In) != 0)
-            { 
+            {
                 ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6);
                 ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4);
 
@@ -1389,7 +1389,7 @@ namespace PKSoft
                         {
                             LogWatcher.Enabled = (FirewallMode.Learning == newMode);
                         }
-                        catch(Exception e)
+                        catch (Exception e)
                         {
                             Utils.Log("Cannot enter auto-learn mode. Is the 'eventlog' service running? For details see next log entry.", Utils.LOG_ID_SERVICE);
                             Utils.LogException(e, Utils.LOG_ID_SERVICE);
@@ -1446,7 +1446,7 @@ namespace PKSoft
                         }
 
                         InstallRules(rules, rawSocketExceptions, true);
-                        lock (FirewallThreadThrottler.SynchRoot) {FirewallThreadThrottler.Release();}
+                        lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Release(); }
 
                         return new TwMessage(MessageType.RESPONSE_OK);
                     }
@@ -1674,37 +1674,27 @@ namespace PKSoft
         internal static void DeleteWfpObjects(Engine wfp, bool removeLayersAndProvider)
         {
             // WARNING! This method is super-slow if not executed inside a WFP transaction!
-
             using (var timer = new HierarchicalStopwatch("DeleteWfpObjects()"))
             {
-                var layerSet = new HashSet<Guid>();
                 var layerKeys = (LayerKeyEnum[])Enum.GetValues(typeof(LayerKeyEnum));
                 foreach (var layer in layerKeys)
-                    layerSet.Add(GetSublayerKey(layer));
-
-                FilterCollection filters = wfp.GetFilters(false);
-                foreach (var f in filters)
                 {
-                    // Remove filter if created by TinyWall
-                    // Remove filter if in a TinyWall layer (created by a 3rd party)
-                    if ((TINYWALL_PROVIDER_KEY == f.ProviderKey) || layerSet.Contains(f.SublayerKey))
+                    Guid layerKey = GetLayerKey(layer);
+                    Guid subLayerKey = GetSublayerKey(layer);
+
+                    // Remove filters in the sublayer
+                    FilterCollection filters = wfp.GetFilters(false, TINYWALL_PROVIDER_KEY, layerKey);
+                    foreach (var f in filters)
                         wfp.UnregisterFilter(f.FilterKey);
+
+                    // Remove sublayer
+                    if (removeLayersAndProvider)
+                        try { wfp.UnregisterSublayer(subLayerKey); } catch { }
                 }
 
+                // Remove provider
                 if (removeLayersAndProvider)
-                {
-                    // Remove all sublayers
-                    SublayerCollection subLayers = wfp.GetSublayers();
-                    foreach (var sl in subLayers)
-                    {
-                        if (TINYWALL_PROVIDER_KEY == sl.ProviderKey)
-                            wfp.UnregisterSublayer(sl.SublayerKey);
-                    }
-
-                    // Remove provider, ignore if not found
-                    try { wfp.UnregisterProvider(TINYWALL_PROVIDER_KEY); }
-                    catch { }
-                }
+                    try { wfp.UnregisterProvider(TINYWALL_PROVIDER_KEY); } catch { }
             }
         }
 

@@ -211,6 +211,11 @@ namespace WFPdotNet
             return new FilterCollection(this, getFilterConditions);
         }
 
+        public FilterCollection GetFilters(bool getFilterConditions, Guid provider, Guid layer)
+        {
+            return new FilterCollection(this, getFilterConditions, provider, layer);
+        }
+
         public Guid RegisterProvider(ref Interop.FWPM_PROVIDER0 provider)
         {
             if (Guid.Empty == provider.providerKey)

@@ -16,7 +16,7 @@ namespace WFPdotNet
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
             internal static extern uint FwpmFilterCreateEnumHandle0(
                 [In] FwpmEngineSafeHandle engineHandle,
-                [In] IntPtr enumTemplate,
+                [In] Interop.FWPM_FILTER_ENUM_TEMPLATE0 enumTemplate,
                 [Out] out FwpmFilterEnumSafeHandle enumHandle);
 
             [DllImport("FWPUClnt.dll", EntryPoint = "FwpmFilterEnum0")]
@@ -28,8 +28,7 @@ namespace WFPdotNet
                 [Out] out uint numEntriesReturned);
         }
 
-        internal FilterCollection(Engine engine, bool getFilterConditions)
-            : base(new List<Filter>())
+        private void Init(Engine engine, bool getFilterConditions, Interop.FWPM_FILTER_ENUM_TEMPLATE0 template)
         {
             FwpmFilterEnumSafeHandle enumSafeHandle = null;
             FwpmMemorySafeHandle entries = null;
@@ -45,7 +44,7 @@ namespace WFPdotNet
                 try { }
                 finally
                 {
-                    err = NativeMethods.FwpmFilterCreateEnumHandle0(engine.NativePtr, IntPtr.Zero, out enumSafeHandle);
+                    err = NativeMethods.FwpmFilterCreateEnumHandle0(engine.NativePtr, template, out enumSafeHandle);
                     if (0 == err)
                         handleOk = enumSafeHandle.SetEngineReference(engine.NativePtr);
                 }
@@ -84,6 +83,27 @@ namespace WFPdotNet
                 entries?.Dispose();
                 enumSafeHandle?.Dispose();
             }
+        }
+
+        internal FilterCollection(Engine engine, bool getFilterConditions, Guid provider, Guid layer)
+            : base(new List<Filter>())
+        {
+            using var providerGuidHandle = SafeHGlobalHandle.FromStruct(provider);
+            var template = new Interop.FWPM_FILTER_ENUM_TEMPLATE0
+            {
+                providerKey = providerGuidHandle.DangerousGetHandle(),
+                layerKey = layer,
+                flags = Interop.FilterEnumTemplateFlags.FWP_FILTER_ENUM_FLAG_INCLUDE_BOOTTIME | Interop.FilterEnumTemplateFlags.FWP_FILTER_ENUM_FLAG_INCLUDE_DISABLED,
+                numFilterConditions = 0,
+                actionMask = 0xFFFFFFFFu,
+            };
+            Init(engine, getFilterConditions, template);
+        }
+
+        internal FilterCollection(Engine engine, bool getFilterConditions)
+            : base(new List<Filter>())
+        {
+            Init(engine, getFilterConditions, null);
         }
     }
 }

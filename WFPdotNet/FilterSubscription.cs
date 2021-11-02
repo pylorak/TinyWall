@@ -45,31 +45,24 @@ namespace WFPdotNet
             _context = context;
             _nativeCallbackDelegate = new NativeMethods.FWPM_FILTER_CHANGE_CALLBACK0(NativeCallbackHandler);
             SafeHGlobalHandle providerKeyMemHandle = null;
-            SafeHGlobalHandle templMemHandle = null;
 
             RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
                 Interop.FWPM_FILTER_SUBSCRIPTION0 subs0 = new Interop.FWPM_FILTER_SUBSCRIPTION0();
                 subs0.flags = Interop.FilterSubscriptionFlags.FWPM_SUBSCRIPTION_FLAG_NOTIFY_ON_ADD | Interop.FilterSubscriptionFlags.FWPM_SUBSCRIPTION_FLAG_NOTIFY_ON_DELETE;
-                subs0.enumTemplate = IntPtr.Zero;
+                subs0.enumTemplate = null;
 
                 if (layerKey.HasValue)
                 {
-                    Interop.FWPM_FILTER_ENUM_TEMPLATE0 templ0 = new Interop.FWPM_FILTER_ENUM_TEMPLATE0();
                     providerKeyMemHandle = SafeHGlobalHandle.FromStruct(providerKey.Value);
-                    templ0.providerKey = providerKeyMemHandle.DangerousGetHandle();
-                    templ0.layerKey = layerKey.Value;
-                    templ0.enumType = Interop.FWP_FILTER_ENUM_TYPE.FWP_FILTER_ENUM_FULLY_CONTAINED;
-                    templ0.flags = 0;
-                    templ0.providerContextTemplate = IntPtr.Zero;
-                    templ0.numFilterConditions = 0;
-                    templ0.filterCondition = IntPtr.Zero;
-                    templ0.actionMask = 0xFFFFFFFF;
-                    templ0.calloutKey = IntPtr.Zero;
-
-                    templMemHandle = SafeHGlobalHandle.FromStruct(templ0);
-                    subs0.enumTemplate = templMemHandle.DangerousGetHandle();
+                    subs0.enumTemplate = new Interop.FWPM_FILTER_ENUM_TEMPLATE0
+                    {
+                        providerKey = providerKeyMemHandle.DangerousGetHandle(),
+                        layerKey = layerKey.Value,
+                        numFilterConditions = 0,
+                        actionMask = 0xFFFFFFFFu,
+                    };
                 }
 
                 uint err;
@@ -94,7 +87,6 @@ namespace WFPdotNet
             finally
             {
                 providerKeyMemHandle?.Dispose();
-                templMemHandle?.Dispose();
             }
         }
 

@@ -354,7 +354,7 @@ namespace WFPdotNet.Interop
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct FWPM_FILTER_ENUM_TEMPLATE0
+    public class FWPM_FILTER_ENUM_TEMPLATE0 // class on purpose
     {
         public IntPtr providerKey;
         public Guid layerKey;
@@ -377,7 +377,7 @@ namespace WFPdotNet.Interop
     [StructLayout(LayoutKind.Sequential)]
     public struct FWPM_FILTER_SUBSCRIPTION0
     {
-        public IntPtr enumTemplate;
+        public Interop.FWPM_FILTER_ENUM_TEMPLATE0 enumTemplate;
         public FilterSubscriptionFlags flags;
         public Guid sessionKey;
     }
