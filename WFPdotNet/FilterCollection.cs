@@ -67,10 +67,17 @@ namespace WFPdotNet
 
                     // Dereference each pointer in the current batch
                     IntPtr[] ptrList = PInvokeHelper.PtrToStructureArray<IntPtr>(entries.DangerousGetHandle(), numEntriesReturned, (uint)IntPtr.Size);
-                    for (int i = 0; i < numEntriesReturned; ++i)
+
+                    unsafe
                     {
-                        var filt0 = Marshal.PtrToStructure<Interop.FWPM_FILTER0_NoStrings>(ptrList[i]);
-                        Items.Add(new Filter(filt0, getFilterConditions));
+                        PInvokeHelper.AssertUnmanagedType<Interop.FWPM_FILTER0_NoStrings>();
+                        Interop.FWPM_FILTER0_NoStrings filt;
+                        int size = System.Runtime.InteropServices.Marshal.SizeOf<Interop.FWPM_FILTER0_NoStrings>();
+                        for (int i = 0; i < numEntriesReturned; ++i)
+                        {
+                            Buffer.MemoryCopy(ptrList[i].ToPointer(), &filt, size, size);
+                            Items.Add(new Filter(in filt, getFilterConditions));
+                        }
                     }
 
                     // Exit infinite loop if we have exhausted the list

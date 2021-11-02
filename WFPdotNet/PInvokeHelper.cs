@@ -18,6 +18,9 @@ namespace WFPdotNet
             return ret;
         }
 
+        public static void AssertUnmanagedType<T>() where T : unmanaged
+        { }
+
         [DllImport("advapi32", CharSet = CharSet.Auto)]
         static extern uint GetLengthSid(IntPtr pSid);
 

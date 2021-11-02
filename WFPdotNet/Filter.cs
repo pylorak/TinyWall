@@ -71,7 +71,7 @@ namespace WFPdotNet
             this.Weight = weight;
         }
 
-        internal Filter(Interop.FWPM_FILTER0_NoStrings filt0, bool getConditions)
+        internal Filter(in Interop.FWPM_FILTER0_NoStrings filt0, bool getConditions)
         {
             _nativeStruct = filt0;
             _DisplaySynchNeeded = DisplaySyncMode.ToManaged;
@@ -111,9 +111,19 @@ namespace WFPdotNet
                 _conditionsHandle = SafeHGlobalHandle.Alloc(_conditions.Count * condSize);
                 _nativeStruct.filterConditions = _conditionsHandle.DangerousGetHandle();
                 _nativeStruct.numFilterConditions = (uint)_conditions.Count;
-                for (int i = 0; i < _conditions.Count; ++i)
+
+                unsafe
                 {
-                    _conditionsHandle.MarshalFromStruct(_conditions[i].Marshal(), i * condSize);
+                    PInvokeHelper.AssertUnmanagedType<Interop.FWPM_FILTER_CONDITION0>();
+                    IntPtr dst = _conditionsHandle.DangerousGetHandle();
+                    int size = System.Runtime.InteropServices.Marshal.SizeOf<Interop.FWPM_FILTER_CONDITION0>();
+                    for (int i = 0; i < _conditions.Count; ++i)
+                    {
+                        var cond = _conditions[i].Marshal();
+                        Interop.FWPM_FILTER_CONDITION0* src = &cond;
+                        Buffer.MemoryCopy(src, dst.ToPointer(), size, size);
+                        dst += size;
+                    }
                 }
             }
 

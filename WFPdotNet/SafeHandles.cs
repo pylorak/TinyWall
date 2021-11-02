@@ -334,7 +334,14 @@ namespace WFPdotNet
 
         public void MarshalFromStruct<T>(T obj, int offset = 0) where T : unmanaged
         {
-            Marshal.StructureToPtr(obj, this.handle + offset, NeedsMarshalDestroy);
+            if (NeedsMarshalDestroy)
+                Marshal.DestroyStructure(this.handle, MarshalDestroyType);
+
+            int size = Marshal.SizeOf(typeof(T));
+            unsafe
+            {
+                Buffer.MemoryCopy(&obj, (byte*)this.handle.ToPointer() + offset, size, size);
+            }
             MarshalDestroyType = null;
         }
 
