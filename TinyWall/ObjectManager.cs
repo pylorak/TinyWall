@@ -39,8 +39,7 @@ namespace pylorak.Windows.ObjectManager
         public SafeUnicodeStringHandle(string path)
             : base(true)
         {
-            var strBytes = Encoding.Unicode.GetBytes(path);
-            Initialize(strBytes, (ushort)path.Length);
+            Initialize(path, (ushort)path.Length);
         }
 
         public SafeUnicodeStringHandle(ushort charCapacity)
@@ -72,10 +71,10 @@ namespace pylorak.Windows.ObjectManager
             return oa.ToString();
         }
 
-        private void Initialize(byte[] strBytes, ushort capacityInChars)
+        private void Initialize(string str, ushort capacityInChars)
         {
             var capacityInBytes = sizeof(char) * capacityInChars;
-            var lengthInBytes = strBytes?.Length ?? 0;
+            var lengthInBytes = (str?.Length ?? 0) * 2;
             var structLen = Marshal.SizeOf(typeof(NativeMethods.UNICODE_STRING));
             Debug.Assert(capacityInBytes >= lengthInBytes);
 
@@ -95,8 +94,16 @@ namespace pylorak.Windows.ObjectManager
                 SetHandle(pbBuffer);
                 objectName.buffer = (IntPtr)((ulong)pbBuffer + (ulong)structLen);
                 Marshal.StructureToPtr(objectName, pbBuffer, false);
-                if (strBytes != null)
-                    Marshal.Copy(strBytes, 0, objectName.buffer, strBytes.Length);
+                if (str != null)
+                {
+                    unsafe
+                    {
+                        fixed (char* ch = str)
+                        {
+                            Buffer.MemoryCopy(ch, objectName.buffer.ToPointer(), lengthInBytes, lengthInBytes);
+                        }
+                    }
+                }
             }
         }
     }

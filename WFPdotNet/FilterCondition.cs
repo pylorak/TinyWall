@@ -369,18 +369,23 @@ namespace WFPdotNet
             {
                 // Get unicode bytes with null-terminator
                 filePath = filePath.ToLowerInvariant();                     // WFP will only match if lowercase
-                int nBytes = Encoding.Unicode.GetByteCount(filePath) + 2;   // +2 for the null-terminator
-                var bytes = new byte[nBytes];
-                Encoding.Unicode.GetBytes(filePath, 0, filePath.Length, bytes, 0);
+                int nBytes = filePath.Length * 2;
+                int bufSize = nBytes + 2;
 
                 // Get the bytes into an unmanaged pointer
-                appIdDataNativeMem = SafeHGlobalHandle.Alloc(nBytes);
-                System.Runtime.InteropServices.Marshal.Copy(bytes, 0, appIdDataNativeMem.DangerousGetHandle(), nBytes);
+                appIdDataNativeMem = SafeHGlobalHandle.Alloc(bufSize);
+                unsafe
+                {
+                    var dst = (char*)appIdDataNativeMem.DangerousGetHandle();
+                    dst[filePath.Length] = (char)0;
+                    fixed (char* src = filePath)
+                        Buffer.MemoryCopy(src, dst, nBytes, nBytes);
+                }
 
                 // Get the blob into an unmanaged pointer
                 Interop.FWP_BYTE_BLOB blob;
                 blob.data = appIdDataNativeMem.DangerousGetHandle();
-                blob.size = (uint)nBytes;
+                blob.size = (uint)bufSize;
                 appIdNativeMem = SafeHGlobalHandle.FromStruct(blob);
             }
 
