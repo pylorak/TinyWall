@@ -70,7 +70,7 @@ namespace WFPdotNet
                     IntPtr[] ptrList = PInvokeHelper.PtrToStructureArray<IntPtr>(entries.DangerousGetHandle(), numEntriesReturned, (uint)IntPtr.Size);
                     for (int i = 0; i < numEntriesReturned; ++i)
                     {
-                        Items.Add((Interop.FWPM_SESSION0)Marshal.PtrToStructure(ptrList[i], typeof(Interop.FWPM_SESSION0)));
+                        Items.Add(Marshal.PtrToStructure<Interop.FWPM_SESSION0>(ptrList[i]));
                     }
 
                     // Exit infinite loop if we have exhausted the list

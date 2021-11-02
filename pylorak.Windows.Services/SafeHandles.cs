@@ -75,7 +75,7 @@ namespace pylorak.Windows.Services
 
         public T ToStruct<T>() where T : unmanaged
         {
-            return (T)Marshal.PtrToStructure(this.handle, typeof(T));
+            return Marshal.PtrToStructure<T>(this.handle);
         }
 
         public void ForgetAndResize(uint newSize, bool zeroInit = false)

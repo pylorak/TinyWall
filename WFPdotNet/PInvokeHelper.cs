@@ -13,7 +13,7 @@ namespace WFPdotNet
             long ptr = start.ToInt64();
             for (int i = 0; i < numElem; i++, ptr += stride)
             {
-                ret[i] = (T)Marshal.PtrToStructure(new IntPtr(ptr), typeof(T));
+                ret[i] = Marshal.PtrToStructure<T>(new IntPtr(ptr));
             }
             return ret;
         }

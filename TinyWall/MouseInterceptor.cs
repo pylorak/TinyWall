@@ -75,7 +75,7 @@ namespace PKSoft
         {
             if ((nCode >= 0) && (NativeMethods.MouseMessages.WM_LBUTTONDOWN == (NativeMethods.MouseMessages)wParam))
             {
-                NativeMethods.MSLLHOOKSTRUCT hookStruct = (NativeMethods.MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(NativeMethods.MSLLHOOKSTRUCT));
+                NativeMethods.MSLLHOOKSTRUCT hookStruct = Marshal.PtrToStructure<NativeMethods.MSLLHOOKSTRUCT>(lParam);
                 MouseLButtonDown(hookStruct.pt.x, hookStruct.pt.y);
 
                 //Console.WriteLine(hookStruct.pt.x + ", " + hookStruct.pt.y);

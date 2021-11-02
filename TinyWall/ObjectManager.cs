@@ -68,7 +68,7 @@ namespace pylorak.Windows.ObjectManager
 
         public string GetString()
         {
-            var oa = (NativeMethods.UNICODE_STRING)Marshal.PtrToStructure(this.handle, typeof(NativeMethods.UNICODE_STRING));
+            var oa = Marshal.PtrToStructure<NativeMethods.UNICODE_STRING>(this.handle);
             return oa.ToString();
         }
 

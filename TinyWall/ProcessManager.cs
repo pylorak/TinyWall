@@ -411,7 +411,7 @@ namespace PKSoft
                     if (!SafeNativeMethods.GetTokenInformation(hToken, TokenInformationClass.TokenAppContainerSid, hTokenInfo, hTokenInfoMemSize, out _))
                         return null;
 
-                    var tokenAppContainerInfo = (TOKEN_APPCONTAINER_INFORMATION)Marshal.PtrToStructure(hTokenInfo.DangerousGetHandle(), typeof(TOKEN_APPCONTAINER_INFORMATION));
+                    var tokenAppContainerInfo = Marshal.PtrToStructure<TOKEN_APPCONTAINER_INFORMATION>(hTokenInfo.DangerousGetHandle());
                     if (tokenAppContainerInfo.TokenAppContainer == IntPtr.Zero)
                         return null;
 

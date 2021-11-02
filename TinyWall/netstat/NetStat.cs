@@ -24,12 +24,12 @@ namespace PKSoft.netstat
                     IntPtr tableMemPtr = tcpTable.DangerousGetHandle();
                     if (SafeNativeMethods.GetExtendedTcpTable(tableMemPtr, ref tcpTableLength, true, SafeNativeMethods.AfInet, SafeNativeMethods.TcpTableType.OwnerPidAll, 0) == 0)
                     {
-                        SafeNativeMethods.Tcp4Table table = (SafeNativeMethods.Tcp4Table)Marshal.PtrToStructure(tableMemPtr, typeof(SafeNativeMethods.Tcp4Table));
+                        SafeNativeMethods.Tcp4Table table = Marshal.PtrToStructure<SafeNativeMethods.Tcp4Table>(tableMemPtr);
 
                         IntPtr rowPtr = (IntPtr)((long)tableMemPtr + Marshal.SizeOf(table.length));
                         for (int i = 0; i < table.length; ++i)
                         {
-                            tcpRows.Add(new TcpRow((SafeNativeMethods.Tcp4Row)Marshal.PtrToStructure(rowPtr, typeof(SafeNativeMethods.Tcp4Row))));
+                            tcpRows.Add(new TcpRow(Marshal.PtrToStructure<SafeNativeMethods.Tcp4Row>(rowPtr)));
                             rowPtr = (IntPtr)(rowPtr.ToInt64() + Marshal.SizeOf(typeof(SafeNativeMethods.Tcp4Row)));
                         }
                     }
@@ -52,12 +52,12 @@ namespace PKSoft.netstat
                     IntPtr tableMemPtr = tcpTable.DangerousGetHandle();
                     if (SafeNativeMethods.GetExtendedTcpTable(tableMemPtr, ref tcpTableLength, true, SafeNativeMethods.AfInet6, SafeNativeMethods.TcpTableType.OwnerPidAll, 0) == 0)
                     {
-                        SafeNativeMethods.Tcp6Table table = (SafeNativeMethods.Tcp6Table)Marshal.PtrToStructure(tableMemPtr, typeof(SafeNativeMethods.Tcp6Table));
+                        SafeNativeMethods.Tcp6Table table = Marshal.PtrToStructure<SafeNativeMethods.Tcp6Table>(tableMemPtr);
 
                         IntPtr rowPtr = (IntPtr)((long)tableMemPtr + Marshal.SizeOf(table.length));
                         for (int i = 0; i < table.length; ++i)
                         {
-                            tcpRows.Add(new TcpRow((SafeNativeMethods.Tcp6Row)Marshal.PtrToStructure(rowPtr, typeof(SafeNativeMethods.Tcp6Row))));
+                            tcpRows.Add(new TcpRow(Marshal.PtrToStructure<SafeNativeMethods.Tcp6Row>(rowPtr)));
                             rowPtr = (IntPtr)(rowPtr.ToInt64() + Marshal.SizeOf(typeof(SafeNativeMethods.Tcp6Row)));
                         }
                     }
@@ -80,12 +80,12 @@ namespace PKSoft.netstat
                     IntPtr tableMemPtr = udpTable.DangerousGetHandle();
                     if (SafeNativeMethods.GetExtendedUdpTable(tableMemPtr, ref udpTableLength, true, SafeNativeMethods.AfInet, SafeNativeMethods.UdpTableType.OwnerPid, 0) == 0)
                     {
-                        SafeNativeMethods.Udp4Table table = (SafeNativeMethods.Udp4Table)Marshal.PtrToStructure(tableMemPtr, typeof(SafeNativeMethods.Udp4Table));
+                        SafeNativeMethods.Udp4Table table = Marshal.PtrToStructure<SafeNativeMethods.Udp4Table>(tableMemPtr);
 
                         IntPtr rowPtr = (IntPtr)((long)tableMemPtr + Marshal.SizeOf(table.length));
                         for (int i = 0; i < table.length; ++i)
                         {
-                            udpRows.Add(new UdpRow((SafeNativeMethods.Udp4Row)Marshal.PtrToStructure(rowPtr, typeof(SafeNativeMethods.Udp4Row))));
+                            udpRows.Add(new UdpRow(Marshal.PtrToStructure<SafeNativeMethods.Udp4Row>(rowPtr)));
                             rowPtr = (IntPtr)(rowPtr.ToInt64() + Marshal.SizeOf(typeof(SafeNativeMethods.Udp4Row)));
                         }
                     }
@@ -108,12 +108,12 @@ namespace PKSoft.netstat
                     IntPtr tableMemPtr = udpTable.DangerousGetHandle();
                     if (SafeNativeMethods.GetExtendedUdpTable(tableMemPtr, ref udpTableLength, true, SafeNativeMethods.AfInet6, SafeNativeMethods.UdpTableType.OwnerPid, 0) == 0)
                     {
-                        SafeNativeMethods.Udp6Table table = (SafeNativeMethods.Udp6Table)Marshal.PtrToStructure(tableMemPtr, typeof(SafeNativeMethods.Udp6Table));
+                        SafeNativeMethods.Udp6Table table = Marshal.PtrToStructure<SafeNativeMethods.Udp6Table>(tableMemPtr);
 
                         IntPtr rowPtr = (IntPtr)((long)tableMemPtr + Marshal.SizeOf(table.length));
                         for (int i = 0; i < table.length; ++i)
                         {
-                            udpRows.Add(new UdpRow((SafeNativeMethods.Udp6Row)Marshal.PtrToStructure(rowPtr, typeof(SafeNativeMethods.Udp6Row))));
+                            udpRows.Add(new UdpRow(Marshal.PtrToStructure<SafeNativeMethods.Udp6Row>(rowPtr)));
                             rowPtr = (IntPtr)(rowPtr.ToInt64() + Marshal.SizeOf(typeof(SafeNativeMethods.Udp6Row)));
                         }
                     }

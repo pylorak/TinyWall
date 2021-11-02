@@ -70,7 +70,7 @@ namespace WFPdotNet
                     IntPtr[] ptrList = PInvokeHelper.PtrToStructureArray<IntPtr>(entries.DangerousGetHandle(), numEntriesReturned, (uint)IntPtr.Size);
                     for (int i = 0; i < numEntriesReturned; ++i)
                     {
-                        Interop.FWPM_FILTER0 filt0 = (Interop.FWPM_FILTER0)Marshal.PtrToStructure(ptrList[i], typeof(Interop.FWPM_FILTER0));
+                        Interop.FWPM_FILTER0 filt0 = Marshal.PtrToStructure<Interop.FWPM_FILTER0>(ptrList[i]);
                         Items.Add(new Filter(filt0, getFilterConditions));
                     }
 

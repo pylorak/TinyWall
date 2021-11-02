@@ -69,7 +69,7 @@ namespace WFPdotNet
             {
                 // TODO: Do we really not need to own these SafeHandles ???
                 //_providerKeyHandle = new AllocHGlobalSafeHandle(_nativeStruct.providerKey, false);
-                _providerKey = (Guid)System.Runtime.InteropServices.Marshal.PtrToStructure(_nativeStruct.providerKey, typeof(Guid));
+                _providerKey = System.Runtime.InteropServices.Marshal.PtrToStructure<Guid>(_nativeStruct.providerKey);
             }
 
             if (getConditions)
@@ -79,7 +79,7 @@ namespace WFPdotNet
                 for (int i = 0; i < (int)_nativeStruct.numFilterConditions; ++i)
                 {
                     IntPtr ptr = new IntPtr(_nativeStruct.filterConditions.ToInt64() + i * condSize);
-                    FilterCondition cond = new FilterCondition((Interop.FWPM_FILTER_CONDITION0)System.Runtime.InteropServices.Marshal.PtrToStructure(ptr, typeof(Interop.FWPM_FILTER_CONDITION0)));
+                    FilterCondition cond = new FilterCondition(System.Runtime.InteropServices.Marshal.PtrToStructure<Interop.FWPM_FILTER_CONDITION0>(ptr));
                     _conditions.Add(cond);
                 }
             }
@@ -175,7 +175,7 @@ namespace WFPdotNet
         }
         public ulong Weight
         {
-            get { return (ulong)System.Runtime.InteropServices.Marshal.PtrToStructure(_nativeStruct.weight.value.uint64, typeof(ulong)); }
+            get { return System.Runtime.InteropServices.Marshal.PtrToStructure<ulong>(_nativeStruct.weight.value.uint64); }
             set { System.Runtime.InteropServices.Marshal.StructureToPtr(value, _nativeStruct.weight.value.uint64, false); }
         }
         public List<FilterCondition> Conditions

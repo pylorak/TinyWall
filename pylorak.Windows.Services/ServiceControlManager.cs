@@ -229,7 +229,7 @@ namespace pylorak.Windows.Services
             if (result == false)
                 throw new Win32Exception(Marshal.GetLastWin32Error());
 
-            QUERY_SERVICE_CONFIG query_srv_config = (QUERY_SERVICE_CONFIG)Marshal.PtrToStructure(buff.DangerousGetHandle(), typeof(QUERY_SERVICE_CONFIG));
+            QUERY_SERVICE_CONFIG query_srv_config = Marshal.PtrToStructure<QUERY_SERVICE_CONFIG>(buff.DangerousGetHandle());
             return query_srv_config.dwStartType;
         }
 
@@ -245,7 +245,7 @@ namespace pylorak.Windows.Services
             if (result == false)
                 throw new Win32Exception(Marshal.GetLastWin32Error());
 
-            SERVICE_STATUS_PROCESS query_srv_status = (SERVICE_STATUS_PROCESS)Marshal.PtrToStructure(buff.DangerousGetHandle(), typeof(SERVICE_STATUS_PROCESS));
+            SERVICE_STATUS_PROCESS query_srv_status = Marshal.PtrToStructure<SERVICE_STATUS_PROCESS>(buff.DangerousGetHandle());
 
             switch (query_srv_status.dwCurrentState)
             {

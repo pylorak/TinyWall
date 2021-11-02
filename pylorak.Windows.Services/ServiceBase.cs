@@ -330,11 +330,11 @@ namespace pylorak.Windows.Services
 
             if (ped.Event == PowerEventType.PowerSettingChange)
             {
-                var data0 = (POWERBROADCAST_SETTING_NODATA)Marshal.PtrToStructure(eventData, typeof(POWERBROADCAST_SETTING_NODATA));
+                var data0 = Marshal.PtrToStructure<POWERBROADCAST_SETTING_NODATA>(eventData);
                 ped.Setting = data0.PowerSetting;
                 if (data0.DataLength == 4)
                 {
-                    var data1 = (POWERBROADCAST_SETTING_DWORD)Marshal.PtrToStructure(eventData, typeof(POWERBROADCAST_SETTING_DWORD));
+                    var data1 = Marshal.PtrToStructure<POWERBROADCAST_SETTING_DWORD>(eventData);
                     ped.PayloadInt = data1.Data;
                 }
             }
@@ -350,12 +350,12 @@ namespace pylorak.Windows.Services
             DeviceEventData ded = new DeviceEventData();
             ded.Event = (DeviceEventType)eventType;
 
-            var hdr = (DEV_BROADCAST_HDR)Marshal.PtrToStructure(eventData, typeof(DEV_BROADCAST_HDR));
+            var hdr = Marshal.PtrToStructure<DEV_BROADCAST_HDR>(eventData);
             ded.DeviceType = hdr.DeviceType;
             switch (ded.DeviceType)
             {
                 case DeviceBroadcastHdrDevType.DBT_DEVTYP_DEVICEINTERFACE:
-                    var tmp = (DEV_BROADCAST_DEVICEINTERFACE)Marshal.PtrToStructure(eventData, typeof(DEV_BROADCAST_DEVICEINTERFACE));
+                    var tmp = Marshal.PtrToStructure<DEV_BROADCAST_DEVICEINTERFACE>(eventData);
                     ded.Class = tmp.ClassGuid;
                     ded.Name = tmp.Name;
                     break;

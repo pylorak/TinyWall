@@ -110,7 +110,7 @@ namespace WFPdotNet
 
         private void NativeCallbackHandler(IntPtr context, IntPtr change)
         {
-            Interop.FWPM_FILTER_CHANGE0 cs = (Interop.FWPM_FILTER_CHANGE0)Marshal.PtrToStructure(change, typeof(Interop.FWPM_FILTER_CHANGE0));
+            Interop.FWPM_FILTER_CHANGE0 cs = Marshal.PtrToStructure<Interop.FWPM_FILTER_CHANGE0>(change);
             _callback(_context, (FilterChangeType)cs.changeType, cs.filterKey);
         }
 
