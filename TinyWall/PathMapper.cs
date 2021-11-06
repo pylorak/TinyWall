@@ -365,45 +365,47 @@ public sealed class PathMapper : IDisposable
             var dc = Cache;
             var mountPoint = GetMountPoint(ret);
 
+            (bool, int, int) searchCache(DriveCache[] dc, StringBuilder mountPoint)
+            {
+                for (int i = 0; i < dc.Length; ++i)
+                {
+                    for (int j = 0; j < dc[i].Drives.Count; ++j)
+                    {
+                        if (dc[i].Drives[j].EqualsCaseInsensitive(mountPoint))
+                            return (true, i, j);
+                    }
+                }
+
+                return (false, 0, 0);
+            }
+
             // GetMountPoint() might return a "mount point" that is not real or not
             // known to the system. This happens for example with directories on ImDisk
             // drives. In this case we wouldn't be able to map the path.
             // So we check if the returned mount point is in our list of all known mount
             // points, and if not, we only map the drive letter.
-            var mountPointFound = false;
-            for (int i = 0; (i < dc.Length) && !mountPointFound; ++i)
-            {
-                for (int j = 0; (j < dc[i].Drives.Count) && !mountPointFound; ++j)
-                {
-                    if (dc[i].Drives[j].EqualsCaseInsensitive(mountPoint))
-                        mountPointFound = true;
-                }
-            }
+            (var mountPointFound, var cacheIdx, var driveIdx) = searchCache(dc, mountPoint);
             if (!mountPointFound)
+            {
+                // Repeat search with only the drive letter
                 mountPoint.Length = 3;
+                (mountPointFound, cacheIdx, driveIdx) = searchCache(dc, mountPoint);
+            }
+
+            if (!mountPointFound)
+                throw new DriveNotFoundException();
 
             // And here we do the mapping
-            for (int i = 0; i < dc.Length; ++i)
+            string trailing = ret.Substring(dc[cacheIdx].Drives[driveIdx].Length);
+            switch (target)
             {
-                for (int j = 0; j < dc[i].Drives.Count; ++j)
-                {
-                    if (dc[i].Drives[j].EqualsCaseInsensitive(mountPoint))
-                    {
-                        string trailing = ret.Substring(dc[i].Drives[j].Length);
-                        switch (target)
-                        {
-                            case PathFormat.NativeNt:
-                                return Path.Combine(dc[i].Device, trailing);
-                            case PathFormat.Volume:
-                                return Path.Combine(dc[i].Volumes[0], trailing);
-                            default:
-                                throw new NotSupportedException();
-                        }
-                    }
-                }
+                case PathFormat.NativeNt:
+                    return Path.Combine(dc[cacheIdx].Device, trailing);
+                case PathFormat.Volume:
+                    return Path.Combine(dc[cacheIdx].Volumes[0], trailing);
+                default:
+                    throw new NotSupportedException();
             }
-
-            throw new DriveNotFoundException();
         }
         else if (ret.StartsWith("Volume{", StringComparison.OrdinalIgnoreCase))
         {   // Volume GUID path, like \\?\Volume{26a21bda-a627-11d7-9931-806e6f6e6963}\Windows\explorer.exe
