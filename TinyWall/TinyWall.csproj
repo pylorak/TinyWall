@@ -65,6 +65,8 @@
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </COMReference>
 
+    <PackageReference Include="System.Memory" Version="4.5.4" />
+
     <EmbeddedResource Update="Resources\Exceptions.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Exceptions.Designer.cs</LastGenOutput>

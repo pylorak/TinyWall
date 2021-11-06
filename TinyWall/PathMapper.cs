@@ -308,7 +308,7 @@ public sealed class PathMapper : IDisposable
 
     public string ConvertPath(string path, PathFormat target)
     {
-        StringBuilder sb = new StringBuilder(path);
+        StringBuilder sb = new StringBuilder(path, path.Length + 64);   // extra length for inserting things
         ReplaceLeading(sb, @"\SystemRoot", SystemRoot);
         ReplaceLeading(sb, @"\\?\", string.Empty);
         ReplaceLeading(sb, @"\\.\", string.Empty);
@@ -371,7 +371,7 @@ public sealed class PathMapper : IDisposable
                 {
                     for (int j = 0; j < dc[i].Drives.Count; ++j)
                     {
-                        if (dc[i].Drives[j].EqualsCaseInsensitive(mountPoint))
+                        if (mountPoint.EqualsCaseInsensitive(dc[i].Drives[j]))
                             return (true, i, j);
                     }
                 }
@@ -396,16 +396,24 @@ public sealed class PathMapper : IDisposable
                 throw new DriveNotFoundException();
 
             // And here we do the mapping
-            string trailing = ret.Substring(dc[cacheIdx].Drives[driveIdx].Length);
+            var trailing = ret.AsSpan().Slice(dc[cacheIdx].Drives[driveIdx].Length);
+            sb.Clear();
             switch (target)
             {
                 case PathFormat.NativeNt:
-                    return Path.Combine(dc[cacheIdx].Device, trailing);
+                    sb.Append(dc[cacheIdx].Device);
+                    break;
                 case PathFormat.Volume:
-                    return Path.Combine(dc[cacheIdx].Volumes[0], trailing);
+                    if (dc[cacheIdx].Volumes.Count > 0)
+                        sb.Append(dc[cacheIdx].Volumes[0]);
+                    else
+                        throw new NotSupportedException();
+                    break;
                 default:
                     throw new NotSupportedException();
             }
+            sb.Append(trailing);
+            return sb.ToString();
         }
         else if (ret.StartsWith("Volume{", StringComparison.OrdinalIgnoreCase))
         {   // Volume GUID path, like \\?\Volume{26a21bda-a627-11d7-9931-806e6f6e6963}\Windows\explorer.exe
@@ -421,19 +429,24 @@ public sealed class PathMapper : IDisposable
                 {
                     if (ret.StartsWith(dc[i].Volumes[j], StringComparison.OrdinalIgnoreCase))
                     {
-                        string trailing = ret.Substring(dc[i].Volumes[j].Length);
+                        var trailing = ret.AsSpan().Slice(dc[i].Volumes[j].Length);
+                        sb.Clear();
                         switch (target)
                         {
                             case PathFormat.NativeNt:
-                                return Path.Combine(dc[i].Device, trailing);
+                                sb.Append(dc[i].Device);
+                                break;
                             case PathFormat.Win32:
                                 if (dc[i].Drives.Count > 0)
-                                    return Path.Combine(dc[i].Drives[0], trailing);
+                                    sb.Append(dc[i].Drives[0]);
                                 else
                                     throw new NotSupportedException();
+                                break;
                             default:
                                 throw new NotSupportedException();
                         }
+                        sb.Append(trailing);
+                        return sb.ToString();
                     }
                 }
             }
@@ -450,19 +463,27 @@ public sealed class PathMapper : IDisposable
             {
                 if (ret.StartsWith(dc[i].Device, StringComparison.OrdinalIgnoreCase))
                 {
-                    string trailing = ret.Substring(dc[i].Device.Length);
+                    var trailing = ret.AsSpan().Slice(dc[i].Device.Length);
+                    sb.Clear();
                     switch (target)
                     {
                         case PathFormat.Volume:
-                            return Path.Combine(dc[i].Volumes[0], trailing);
+                            if (dc[i].Volumes.Count > 0)
+                                sb.Append(dc[i].Volumes[0]);
+                            else
+                                throw new NotSupportedException();
+                            break;
                         case PathFormat.Win32:
                             if (dc[i].Drives.Count > 0)
-                                return Path.Combine(dc[i].Drives[0], trailing);
+                                sb.Append(dc[i].Drives[0]);
                             else
-                                throw new DriveNotFoundException();
+                                throw new NotSupportedException();
+                            break;
                         default:
                             throw new NotSupportedException();
                     }
+                    sb.Append(trailing);
+                    return sb.ToString();
                 }
             }
 

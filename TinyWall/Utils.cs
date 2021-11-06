@@ -18,7 +18,7 @@ namespace PKSoft
 {
     internal static class ExtensionMethods
     {
-        internal static bool EqualsCaseInsensitive(this string str1, StringBuilder str2)
+        internal static bool EqualsCaseInsensitive(this StringBuilder str1, string str2)
         {
             if (str1.Length != str2.Length)
                 return false;
@@ -29,6 +29,11 @@ namespace PKSoft
                     return false;
             }
             return true;
+        }
+        internal static void Append(this StringBuilder sb, ReadOnlySpan<char> str)
+        {
+            for (int i = 0; i < str.Length; ++i)
+                sb.Append(str[i]);
         }
     }
 
