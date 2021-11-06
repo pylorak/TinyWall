@@ -45,7 +45,7 @@ namespace PKSoft
 
         // Context for auto rule inheritance
         private readonly object InheritanceGuard = new object();
-        private readonly StringBuilder ProcessStartWatcher_Sbuilder = new StringBuilder();
+        private StringBuilder ProcessStartWatcher_Sbuilder;
         private HashSet<string> UserSubjectExes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);        // All executables with pre-configured rules.
         private Dictionary<string, List<FirewallExceptionV3>> ChildInheritance = new Dictionary<string, List<FirewallExceptionV3>>(StringComparer.OrdinalIgnoreCase);
         private Dictionary<string, HashSet<string>> ChildInheritedSubjectExes = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);   // Executables that have been already auto-whitelisted due to inheritance
@@ -1803,7 +1803,7 @@ namespace PKSoft
                 using (var throttler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest, true, false))
                 {
                     uint pid = (uint)(e.NewEvent["ProcessID"]);
-                    string path = ProcessManager.GetProcessPath(pid, ProcessStartWatcher_Sbuilder);
+                    string path = ProcessManager.GetProcessPath(pid, ref ProcessStartWatcher_Sbuilder);
 
                     // Skip if we have no path
                     if (string.IsNullOrEmpty(path))
@@ -1838,7 +1838,7 @@ namespace PKSoft
 
                             pidsChecked.Add(parentPid);
 
-                            string parentPath = ProcessManager.GetProcessPath(parentPid, ProcessStartWatcher_Sbuilder);
+                            string parentPath = ProcessManager.GetProcessPath(parentPid, ref ProcessStartWatcher_Sbuilder);
                             if (string.IsNullOrEmpty(parentPath))
                                 continue;
 
