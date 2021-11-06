@@ -97,7 +97,7 @@ public sealed class PathMapper : IDisposable
 
         private set
         {
-            lock(locker)
+            lock (locker)
             {
                 _cache = value;
                 LastUpdateTime = DateTime.Now;
@@ -270,22 +270,21 @@ public sealed class PathMapper : IDisposable
             CacheReadyEvent.WaitOne();
     }
 
-    private static string GetMountPoint(string path)
+    private static StringBuilder GetMountPoint(string path)
     {
         if (!Path.IsPathRooted(path))
             throw new ArgumentException("Input path must be an absolute path.");
 
         int requiredBufferSize = path.Length + 1;
         StringBuilder b = new StringBuilder(requiredBufferSize);
-        if (NativeMethods.GetVolumePathName(path, b, requiredBufferSize))
-        {
-            return b.ToString();
-        }
-        else
+        if (!NativeMethods.GetVolumePathName(path, b, requiredBufferSize))
         {
             // Fallback heuristic
-            return Path.GetPathRoot(path);
+            b.Clear();
+            b.Insert(0, Path.GetPathRoot(path));
         }
+
+        return b;
     }
 
     public string ConvertPathIgnoreErrors(string path, PathFormat target)
@@ -317,7 +316,7 @@ public sealed class PathMapper : IDisposable
         ReplaceLeading(sb, @"UNC\", @"\\");
         ReplaceLeading(sb, @"GLOBALROOT\", string.Empty);
         ReplaceLeading(sb, @"\Device\Mup\", @"\\");
-        string ret = sb.ToString();
+        var ret = sb.ToString();
 
         if (NetworkPath.IsNetworkPath(ret))
         {   // UNC path (like \\server\share\directory\file), or mounted network drive
@@ -376,19 +375,19 @@ public sealed class PathMapper : IDisposable
             {
                 for (int j = 0; (j < dc[i].Drives.Count) && !mountPointFound; ++j)
                 {
-                    if (mountPoint.Equals(dc[i].Drives[j], StringComparison.OrdinalIgnoreCase))
+                    if (dc[i].Drives[j].EqualsCaseInsensitive(mountPoint))
                         mountPointFound = true;
                 }
             }
             if (!mountPointFound)
-                mountPoint = mountPoint.Substring(0, 3);
+                mountPoint.Length = 3;
 
             // And here we do the mapping
             for (int i = 0; i < dc.Length; ++i)
             {
                 for (int j = 0; j < dc[i].Drives.Count; ++j)
                 {
-                    if (mountPoint.Equals(dc[i].Drives[j], StringComparison.OrdinalIgnoreCase))
+                    if (dc[i].Drives[j].EqualsCaseInsensitive(mountPoint))
                     {
                         string trailing = ret.Substring(dc[i].Drives[j].Length);
                         switch (target)
@@ -485,7 +484,7 @@ public sealed class PathMapper : IDisposable
 
         for (int i = 0; i < search.Length; ++i)
         {
-            if (!char.ToUpperInvariant(sb[i]).Equals(char.ToUpperInvariant(search[i])))
+            if (char.ToUpperInvariant(sb[i]) != char.ToUpperInvariant(search[i]))
                 return false;
         }
 
@@ -495,7 +494,7 @@ public sealed class PathMapper : IDisposable
     public void Dispose()
     {
         if (disposed) return;
-        
+
         CacheReadyEvent.WaitOne();
         CacheReadyEvent.Close();
 

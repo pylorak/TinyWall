@@ -16,6 +16,22 @@ using Microsoft.Samples;
 
 namespace PKSoft
 {
+    internal static class ExtensionMethods
+    {
+        internal static bool EqualsCaseInsensitive(this string str1, StringBuilder str2)
+        {
+            if (str1.Length != str2.Length)
+                return false;
+
+            for (int i = 0; i < str2.Length; ++i)
+            {
+                if (char.ToUpperInvariant(str1[i]) != char.ToUpperInvariant(str2[i]))
+                    return false;
+            }
+            return true;
+        }
+    }
+
     internal static class Utils
     {
         [SuppressUnmanagedCodeSecurityAttribute]
