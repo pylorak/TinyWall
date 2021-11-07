@@ -18,18 +18,6 @@ namespace PKSoft
 {
     internal static class ExtensionMethods
     {
-        internal static bool EqualsCaseInsensitive(this StringBuilder str1, string str2)
-        {
-            if (str1.Length != str2.Length)
-                return false;
-
-            for (int i = 0; i < str2.Length; ++i)
-            {
-                if (char.ToUpperInvariant(str1[i]) != char.ToUpperInvariant(str2[i]))
-                    return false;
-            }
-            return true;
-        }
         internal static void Append(this StringBuilder sb, ReadOnlySpan<char> str)
         {
             for (int i = 0; i < str.Length; ++i)

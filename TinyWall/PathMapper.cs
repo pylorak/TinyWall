@@ -31,7 +31,7 @@ public sealed class PathMapper : IDisposable
         public static extern bool GetVolumePathNamesForVolumeName(string lpszVolumeName, [Out] char[] lpszVolumePathNames, int cchBufferLength, out int lpcchReturnLength);
 
         [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
-        public static extern bool GetVolumePathName(string lpszFileName, [Out] StringBuilder lpszVolumePathName, int ccBufferLength);
+        public static unsafe extern bool GetVolumePathName(string lpszFileName, char* lpszVolumePathName, int ccBufferLength);
 
         [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern bool GetVolumeNameForVolumeMountPoint(string lpszVolumeMountPoint, [Out] StringBuilder lpszVolumeName, int cchBufferLength);
@@ -270,21 +270,29 @@ public sealed class PathMapper : IDisposable
             CacheReadyEvent.WaitOne();
     }
 
-    private static StringBuilder GetMountPoint(string path)
+    private static string GetMountPoint(string path)
     {
         if (!Path.IsPathRooted(path))
             throw new ArgumentException("Input path must be an absolute path.");
 
         int requiredBufferSize = path.Length + 1;
-        StringBuilder b = new StringBuilder(requiredBufferSize);
-        if (!NativeMethods.GetVolumePathName(path, b, requiredBufferSize))
+        if (requiredBufferSize <= 512)
         {
-            // Fallback heuristic
-            b.Clear();
-            b.Insert(0, Path.GetPathRoot(path));
+            unsafe
+            {
+                var buffer = stackalloc char[requiredBufferSize];
+                bool success = NativeMethods.GetVolumePathName(path, buffer, requiredBufferSize);
+                if (success)
+                    return new string(buffer);
+            }
+        }
+        else
+        {
+            // TODO: Warn or log somehow.
         }
 
-        return b;
+        // Fallback heuristic
+        return Path.GetPathRoot(path);
     }
 
     public string ConvertPathIgnoreErrors(string path, PathFormat target)
@@ -365,13 +373,13 @@ public sealed class PathMapper : IDisposable
             var dc = Cache;
             var mountPoint = GetMountPoint(ret);
 
-            (bool, int, int) searchCache(DriveCache[] dc, StringBuilder mountPoint)
+            (bool, int, int) searchCache(DriveCache[] dc, string mountPoint)
             {
                 for (int i = 0; i < dc.Length; ++i)
                 {
                     for (int j = 0; j < dc[i].Drives.Count; ++j)
                     {
-                        if (mountPoint.EqualsCaseInsensitive(dc[i].Drives[j]))
+                        if (mountPoint.Equals(dc[i].Drives[j], StringComparison.OrdinalIgnoreCase))
                             return (true, i, j);
                     }
                 }
@@ -388,7 +396,7 @@ public sealed class PathMapper : IDisposable
             if (!mountPointFound)
             {
                 // Repeat search with only the drive letter
-                mountPoint.Length = 3;
+                mountPoint = mountPoint.Substring(0, 3);
                 (mountPointFound, cacheIdx, driveIdx) = searchCache(dc, mountPoint);
             }
 
