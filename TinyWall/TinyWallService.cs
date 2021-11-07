@@ -189,14 +189,9 @@ namespace PKSoft
                         timer.NewSubTask("Rule inheritance processing");
 
                         StringBuilder sbuilder = new StringBuilder(1024);
-                        var procTree = new Dictionary<uint, ProcessManager.ExtendedProcessEntry>();
+                        var procTree = new Dictionary<uint, ProcessSnapshotEntry>();
                         foreach (var p in ProcessManager.CreateToolhelp32SnapshotExtended())
-                        {
-                            var p2 = p;
-                            if (!string.IsNullOrEmpty(p.ImagePath))
-                                p2.ImagePath = p.ImagePath;
-                            procTree.Add(p2.BaseEntry.th32ProcessID, p2);
-                        }
+                            procTree.Add(p.ProcessId, p);
 
                         // This list will hold parents that we already checked for a process.
                         // Used to avoid inf. loop when parent-PID info is unreliable.
@@ -217,11 +212,11 @@ namespace PKSoft
                                 continue;
 
                             // Start walking up the process tree
-                            for (ProcessManager.ExtendedProcessEntry parentEntry = procTree[pair.Key]; ;)
+                            for (var parentEntry = procTree[pair.Key]; ;)
                             {
                                 long childCreationTime = parentEntry.CreationTime;
-                                if (procTree.ContainsKey(parentEntry.BaseEntry.th32ParentProcessID))
-                                    parentEntry = procTree[parentEntry.BaseEntry.th32ParentProcessID];
+                                if (procTree.ContainsKey(parentEntry.ParentProcessId))
+                                    parentEntry = procTree[parentEntry.ParentProcessId];
                                 else
                                     // We reached top of process tree (with non-existing parent)
                                     break;
@@ -231,15 +226,15 @@ namespace PKSoft
                                     // We reached the top of the process tree (with non-existing parent)
                                     break;
 
-                                if (parentEntry.BaseEntry.th32ProcessID == 0)
+                                if (parentEntry.ProcessId == 0)
                                     // We reached top of process tree (with idle process)
                                     break;
 
-                                if (pidsChecked.Contains(parentEntry.BaseEntry.th32ProcessID))
+                                if (pidsChecked.Contains(parentEntry.ProcessId))
                                     // We've been here before, damn it. Avoid looping eternally...
                                     break;
 
-                                pidsChecked.Add(parentEntry.BaseEntry.th32ProcessID);
+                                pidsChecked.Add(parentEntry.ProcessId);
 
                                 if (string.IsNullOrEmpty(parentEntry.ImagePath))
                                     // We cannot get the path, so let's skip this parent
@@ -1818,7 +1813,7 @@ namespace PKSoft
                             return;
 
                         // This list will hold parents that we already checked for a process.
-                        // Used to avoid inf. loop when parent-PID info is unreliable.
+                        // Used to avoid infinite loop when parent-PID info is unreliable.
                         var pidsChecked = new HashSet<uint>();
 
                         // Start walking up the process tree

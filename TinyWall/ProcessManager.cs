@@ -10,6 +10,22 @@ using System.ComponentModel;
 
 namespace PKSoft
 {
+    public readonly struct ProcessSnapshotEntry
+    {
+        public readonly string ImagePath;
+        public readonly long CreationTime;
+        public readonly uint ProcessId;
+        public readonly uint ParentProcessId;
+
+        public ProcessSnapshotEntry(string path, long creationTime, uint pid, uint parentPid)
+        {
+            ImagePath = path;
+            CreationTime = creationTime;
+            ProcessId = pid;
+            ParentProcessId = parentPid;
+        }
+    }
+
     public static class ProcessManager
     {
         [SuppressUnmanagedCodeSecurity]
@@ -162,7 +178,7 @@ namespace PKSoft
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct PROCESSENTRY32
+        internal unsafe struct PROCESSENTRY32
         {
             public uint dwSize;
             public uint cntUsage;
@@ -173,14 +189,7 @@ namespace PKSoft
             public uint th32ParentProcessID;
             public int pcPriClassBase;
             public uint dwFlags;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)] public string szExeFile;
-        };
-
-        public struct ExtendedProcessEntry
-        {
-            public PROCESSENTRY32 BaseEntry;
-            public long CreationTime;
-            public string ImagePath;
+            public fixed char szExeFile[260];
         };
 
         [Flags]
@@ -337,7 +346,7 @@ namespace PKSoft
             return SafeNativeMethods.GetProcessTimes(hProcess, out creationTime, out _, out _, out _);
         }
 
-        public static IEnumerable<PROCESSENTRY32> CreateToolhelp32Snapshot()
+        private static IEnumerable<PROCESSENTRY32> CreateToolhelp32Snapshot()
         {
             const int ERROR_NO_MORE_FILES = 18;
 
@@ -362,18 +371,20 @@ namespace PKSoft
             }
         }
 
-        public static IEnumerable<ExtendedProcessEntry> CreateToolhelp32SnapshotExtended()
+        public static IEnumerable<ProcessSnapshotEntry> CreateToolhelp32SnapshotExtended()
         {
             StringBuilder sbuilder = null;
             foreach (var p in CreateToolhelp32Snapshot())
             {
                 using (var hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, p.th32ProcessID))
                 {
-                    ExtendedProcessEntry ret;
-                    ret.BaseEntry = p;
-                    ret.ImagePath = GetProcessPath(hProcess, ref sbuilder);
-                    GetProcessCreationTime(hProcess, out ret.CreationTime);
-                    yield return ret;
+                    GetProcessCreationTime(hProcess, out long creationTime);
+                    yield return new ProcessSnapshotEntry(
+                        GetProcessPath(hProcess, ref sbuilder),
+                        creationTime,
+                        p.th32ProcessID,
+                        p.th32ParentProcessID
+                    );
                 }
             }
         }
