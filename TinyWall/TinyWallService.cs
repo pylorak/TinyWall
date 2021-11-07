@@ -1055,16 +1055,17 @@ namespace PKSoft
                     }
                 case PolicyType.RuleList:
                     {
-                        // The RuleDefs returned can get modified later.
-                        // To avoid changing the original templates we return copies here.
-                        RuleListPolicy pol = Utils.DeepClone(ex.Policy as RuleListPolicy);
+                        // The RuleDefs returned can get modified by the caller.
+                        // To avoid changing the original templates we return copies of rules.
 
+                        RuleListPolicy pol = ex.Policy as RuleListPolicy;
                         foreach (var rule in pol.Rules)
                         {
-                            rule.SetSubject(ex.Subject);
-                            rule.ExceptionId = ex.Id;
-                            rule.Weight = (rule.Action == RuleAction.Allow) ? permitWeight : blockWeight;
-                            results.Add(rule);
+                            var ruleCopy = rule.DeepCopy();
+                            ruleCopy.SetSubject(ex.Subject);
+                            ruleCopy.ExceptionId = ex.Id;
+                            ruleCopy.Weight = (rule.Action == RuleAction.Allow) ? permitWeight : blockWeight;
+                            results.Add(ruleCopy);
                         }
                         break;
                     }

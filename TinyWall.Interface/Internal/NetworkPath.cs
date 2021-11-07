@@ -53,11 +53,7 @@ namespace TinyWall.Interface.Internal
                 // size is zero.  We know that IntPtr.Size will be
                 // aligned correctly.
                 int apiRetVal = NativeMethods.WNetGetUniversalName(localPath, NativeMethods.UNIVERSAL_NAME_INFO_LEVEL, (IntPtr)IntPtr.Size, ref size);
-
-                // If the return value is not ERROR_MORE_DATA, then
-                // raise an exception.
                 if (apiRetVal != NativeMethods.ERROR_MORE_DATA)
-                    // Throw an exception.
                     throw new System.ComponentModel.Win32Exception(apiRetVal);
 
                 // Allocate the memory.
@@ -65,24 +61,19 @@ namespace TinyWall.Interface.Internal
 
                 // Now make the call.
                 apiRetVal = NativeMethods.WNetGetUniversalName(localPath, NativeMethods.UNIVERSAL_NAME_INFO_LEVEL, buffer, ref size);
-
-                // If it didn't succeed, then throw.
                 if (apiRetVal != NativeMethods.NOERROR)
-                    // Throw an exception.
                     throw new System.ComponentModel.Win32Exception(apiRetVal);
 
                 // Now get the string.  It's all in the same buffer, but
                 // the pointer is first, so offset the pointer by IntPtr.Size
                 // and pass to PtrToStringAnsi.
-                retVal = Marshal.PtrToStringAuto(new IntPtr(buffer.ToInt64() + IntPtr.Size), size);
-                retVal = retVal.Substring(0, retVal.IndexOf('\0'));
+                retVal = Marshal.PtrToStringUni(new IntPtr(buffer.ToInt64() + IntPtr.Size));
             }
             finally
             {
                 // Release the buffer.
                 Marshal.FreeCoTaskMem(buffer);
             }
-
 
             // That's all folks.
             return retVal;
