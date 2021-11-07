@@ -261,9 +261,10 @@ namespace PKSoft
                 }
 
                 // Convert all paths to kernel-format
+                StringBuilder convertPathWorkBuffer = null;
                 foreach (var r in rules)
                 {
-                    r.Application = PathMapper.Instance.ConvertPathIgnoreErrors(r.Application, PathFormat.NativeNt);
+                    r.Application = PathMapper.Instance.ConvertPathIgnoreErrors(r.Application, PathFormat.NativeNt, ref convertPathWorkBuffer);
                 }
 
                 if (displayBlockActive)

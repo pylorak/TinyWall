@@ -297,6 +297,12 @@ public sealed class PathMapper : IDisposable
 
     public string ConvertPathIgnoreErrors(string path, PathFormat target)
     {
+        StringBuilder workBuffer = null;
+        return ConvertPathIgnoreErrors(path, target, ref workBuffer);
+    }
+
+    public string ConvertPathIgnoreErrors(string path, PathFormat target, ref StringBuilder workBuffer)
+    {
         if (string.IsNullOrEmpty(path)
             || path.Equals("registry", StringComparison.OrdinalIgnoreCase)
             || path.Equals("system", StringComparison.OrdinalIgnoreCase))
@@ -306,7 +312,7 @@ public sealed class PathMapper : IDisposable
 
         try
         {
-            return ConvertPath(path, target);
+            return ConvertPath(path, target, ref workBuffer);
         }
         catch
         {
@@ -314,17 +320,28 @@ public sealed class PathMapper : IDisposable
         }
     }
 
-    public string ConvertPath(string path, PathFormat target)
+    public string ConvertPath(string path, PathFormat target, ref StringBuilder workBuffer)
     {
-        StringBuilder sb = new StringBuilder(path, path.Length + 64);   // extra length for inserting things
-        ReplaceLeading(sb, @"\SystemRoot", SystemRoot);
-        ReplaceLeading(sb, @"\\?\", string.Empty);
-        ReplaceLeading(sb, @"\\.\", string.Empty);
-        ReplaceLeading(sb, @"\??\", string.Empty);
-        ReplaceLeading(sb, @"UNC\", @"\\");
-        ReplaceLeading(sb, @"GLOBALROOT\", string.Empty);
-        ReplaceLeading(sb, @"\Device\Mup\", @"\\");
-        var ret = sb.ToString();
+        int workBufferSize = path.Length + 64;
+        if (workBuffer is null)
+        {
+            workBuffer = new StringBuilder(workBufferSize);
+        }
+        else
+        {
+            workBuffer.EnsureCapacity(workBufferSize);
+            workBuffer.Clear();
+            workBuffer.Append(path);
+        }
+
+        ReplaceLeading(workBuffer, @"\SystemRoot", SystemRoot);
+        ReplaceLeading(workBuffer, @"\\?\", string.Empty);
+        ReplaceLeading(workBuffer, @"\\.\", string.Empty);
+        ReplaceLeading(workBuffer, @"\??\", string.Empty);
+        ReplaceLeading(workBuffer, @"UNC\", @"\\");
+        ReplaceLeading(workBuffer, @"GLOBALROOT\", string.Empty);
+        ReplaceLeading(workBuffer, @"\Device\Mup\", @"\\");
+        var ret = workBuffer.ToString();
 
         if (NetworkPath.IsNetworkPath(ret))
         {   // UNC path (like \\server\share\directory\file), or mounted network drive
@@ -405,23 +422,23 @@ public sealed class PathMapper : IDisposable
 
             // And here we do the mapping
             var trailing = ret.AsSpan().Slice(dc[cacheIdx].Drives[driveIdx].Length);
-            sb.Clear();
+            workBuffer.Clear();
             switch (target)
             {
                 case PathFormat.NativeNt:
-                    sb.Append(dc[cacheIdx].Device);
+                    workBuffer.Append(dc[cacheIdx].Device);
                     break;
                 case PathFormat.Volume:
                     if (dc[cacheIdx].Volumes.Count > 0)
-                        sb.Append(dc[cacheIdx].Volumes[0]);
+                        workBuffer.Append(dc[cacheIdx].Volumes[0]);
                     else
                         throw new NotSupportedException();
                     break;
                 default:
                     throw new NotSupportedException();
             }
-            sb.Append(trailing);
-            return sb.ToString();
+            workBuffer.Append(trailing);
+            return workBuffer.ToString();
         }
         else if (ret.StartsWith("Volume{", StringComparison.OrdinalIgnoreCase))
         {   // Volume GUID path, like \\?\Volume{26a21bda-a627-11d7-9931-806e6f6e6963}\Windows\explorer.exe
@@ -438,23 +455,23 @@ public sealed class PathMapper : IDisposable
                     if (ret.StartsWith(dc[i].Volumes[j], StringComparison.OrdinalIgnoreCase))
                     {
                         var trailing = ret.AsSpan().Slice(dc[i].Volumes[j].Length);
-                        sb.Clear();
+                        workBuffer.Clear();
                         switch (target)
                         {
                             case PathFormat.NativeNt:
-                                sb.Append(dc[i].Device);
+                                workBuffer.Append(dc[i].Device);
                                 break;
                             case PathFormat.Win32:
                                 if (dc[i].Drives.Count > 0)
-                                    sb.Append(dc[i].Drives[0]);
+                                    workBuffer.Append(dc[i].Drives[0]);
                                 else
                                     throw new NotSupportedException();
                                 break;
                             default:
                                 throw new NotSupportedException();
                         }
-                        sb.Append(trailing);
-                        return sb.ToString();
+                        workBuffer.Append(trailing);
+                        return workBuffer.ToString();
                     }
                 }
             }
@@ -472,26 +489,26 @@ public sealed class PathMapper : IDisposable
                 if (ret.StartsWith(dc[i].Device, StringComparison.OrdinalIgnoreCase))
                 {
                     var trailing = ret.AsSpan().Slice(dc[i].Device.Length);
-                    sb.Clear();
+                    workBuffer.Clear();
                     switch (target)
                     {
                         case PathFormat.Volume:
                             if (dc[i].Volumes.Count > 0)
-                                sb.Append(dc[i].Volumes[0]);
+                                workBuffer.Append(dc[i].Volumes[0]);
                             else
                                 throw new NotSupportedException();
                             break;
                         case PathFormat.Win32:
                             if (dc[i].Drives.Count > 0)
-                                sb.Append(dc[i].Drives[0]);
+                                workBuffer.Append(dc[i].Drives[0]);
                             else
                                 throw new NotSupportedException();
                             break;
                         default:
                             throw new NotSupportedException();
                     }
-                    sb.Append(trailing);
-                    return sb.ToString();
+                    workBuffer.Append(trailing);
+                    return workBuffer.ToString();
                 }
             }
 
@@ -541,9 +558,10 @@ public sealed class PathMapper : IDisposable
         string ntResult = NO_RESULT;
         string volumeResult = NO_RESULT;
 
-        try { win32Result = ConvertPath(path, PathFormat.Win32); } catch { }
-        try { ntResult = ConvertPath(path, PathFormat.NativeNt); } catch { }
-        try { volumeResult = ConvertPath(path, PathFormat.Volume); } catch { }
+        StringBuilder workBuffer = null;
+        try { win32Result = ConvertPath(path, PathFormat.Win32, ref workBuffer); } catch { }
+        try { ntResult = ConvertPath(path, PathFormat.NativeNt, ref workBuffer); } catch { }
+        try { volumeResult = ConvertPath(path, PathFormat.Volume, ref workBuffer); } catch { }
 
         string output = path + ":" + Environment.NewLine
             + "    Win32:  " + win32Result + Environment.NewLine

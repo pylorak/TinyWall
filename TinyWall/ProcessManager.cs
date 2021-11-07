@@ -275,7 +275,7 @@ namespace PKSoft
                     if (numChars == 0)
                         return string.Empty;
 
-                    return PathMapper.Instance.ConvertPathIgnoreErrors(new string(stack_buffer, 0, numChars), PathFormat.Win32);
+                    return PathMapper.Instance.ConvertPathIgnoreErrors(new string(stack_buffer, 0, numChars), PathFormat.Win32, ref buffer);
                 }
             }
 
@@ -289,8 +289,8 @@ namespace PKSoft
                 }
                 else
                 {
-                    buffer.Length = 0;
-                    buffer.Capacity = MAX_PATH_BUFF_CHARS;
+                    buffer.Clear();
+                    buffer.EnsureCapacity(MAX_PATH_BUFF_CHARS);
                 }
                 numChars = buffer.Capacity;
                 if (SafeNativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.NativeFormat, buffer, ref numChars))
