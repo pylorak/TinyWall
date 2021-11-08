@@ -70,10 +70,15 @@ namespace pylorak.Windows.ObjectManager
             return NativeMethods.RtlEqualUnicodeString(this, in other, caseInSensitive);
         }
 
-        public string GetString()
+        public NativeMethods.UNICODE_STRING ToStruct()
         {
-            var oa = Marshal.PtrToStructure<NativeMethods.UNICODE_STRING>(this.handle);
-            return oa.ToString();
+            NativeMethods.UNICODE_STRING ret = new NativeMethods.UNICODE_STRING();
+            int size = Marshal.SizeOf(typeof(NativeMethods.UNICODE_STRING));
+            unsafe
+            {
+                Buffer.MemoryCopy(handle.ToPointer(), &ret, size, size);
+            }
+            return ret;
         }
 
         private void Initialize(string str, ushort capacityInChars)
@@ -113,23 +118,6 @@ namespace pylorak.Windows.ObjectManager
         }
     }
 
-    public readonly struct ObjectDirectoyInfo
-    {
-        public readonly string Name;
-        public readonly string TypeName;
-
-        public ObjectDirectoyInfo(string name, string type)
-        {
-            Name = name;
-            TypeName = type;
-        }
-
-        public override string ToString()
-        {
-            return $"{Name} | {TypeName}";
-        }
-    }
-
     public class NtStatusException : Exception
     {
         public uint NtStatus { get; private set; }
@@ -140,7 +128,7 @@ namespace pylorak.Windows.ObjectManager
         }
     }
 
-    internal static class NativeMethods
+    public static class NativeMethods
     {
         private const uint STANDARD_RIGHTS_REQUIRED = 0x000F0000;
 
@@ -210,7 +198,7 @@ namespace pylorak.Windows.ObjectManager
 
             public int length;
             public IntPtr rootDirectory;
-            public SafeHandle objectName;
+            public IntPtr objectName;
             public Attributes attributes;
             public IntPtr securityDescriptor;
             public IntPtr securityQualityOfService;
@@ -226,6 +214,16 @@ namespace pylorak.Windows.ObjectManager
             public override string ToString()
             {
                 return Marshal.PtrToStringUni(buffer, length / 2);
+            }
+
+            public bool StartsWith(UNICODE_STRING needle, bool caseInSensitive = false)
+            {
+                if (needle.length > this.length)
+                    return false;
+
+                var thisCopy = this;
+                thisCopy.length = needle.length;
+                return RtlEqualUnicodeString(in thisCopy, in needle, caseInSensitive);
             }
         }
 
@@ -251,11 +249,15 @@ namespace pylorak.Windows.ObjectManager
         [DllImport("ntdll")]
         [return: MarshalAs(UnmanagedType.U1)]
         public static extern bool RtlEqualUnicodeString(SafeUnicodeStringHandle str1, in UNICODE_STRING str2, [MarshalAs(UnmanagedType.U1)] bool caseInSensitive);
+
+        [DllImport("ntdll")]
+        [return: MarshalAs(UnmanagedType.U1)]
+        public static extern bool RtlEqualUnicodeString(in UNICODE_STRING str1, in UNICODE_STRING str2, [MarshalAs(UnmanagedType.U1)] bool caseInSensitive);
     }
 
     public class ObjectManager
     {
-        private static NativeMethods.OBJECT_ATTRIBUTES InitializeObjectAttributes(SafeUnicodeStringHandle objectName, SafeNtObjectHandle parentObject = null)
+        private static NativeMethods.OBJECT_ATTRIBUTES InitializeObjectAttributes(IntPtr objectName, SafeNtObjectHandle parentObject = null)
         {
             return new NativeMethods.OBJECT_ATTRIBUTES()
             {
@@ -270,7 +272,7 @@ namespace pylorak.Windows.ObjectManager
         public static SafeNtObjectHandle OpenDirectoryObjectForRead(string dirName, SafeNtObjectHandle parentObject = null)
         {
             using var objectName = new SafeUnicodeStringHandle(dirName);
-            var oa = InitializeObjectAttributes(objectName, parentObject);
+            var oa = InitializeObjectAttributes(objectName.DangerousGetHandle(), parentObject);
             var success = NativeMethods.NtOpenDirectoryObject(out SafeNtObjectHandle handle, NativeMethods.AccessMask.DIRECTORY_QUERY | NativeMethods.AccessMask.DIRECTORY_TRAVERSE, ref oa);
             return handle;
         }
@@ -278,21 +280,29 @@ namespace pylorak.Windows.ObjectManager
         private static SafeNtObjectHandle OpenSymbolicLinkObjectForRead(string linkName, SafeNtObjectHandle parentObject = null)
         {
             using var objectName = new SafeUnicodeStringHandle(linkName);
-            var oa = InitializeObjectAttributes(objectName, parentObject);
+            var oa = InitializeObjectAttributes(objectName.DangerousGetHandle(), parentObject);
             var success = NativeMethods.NtOpenSymbolicLinkObject(out SafeNtObjectHandle handle, NativeMethods.AccessMask.GENERIC_READ, ref oa);
             return handle;
         }
 
-        public static string QueryLinkTarget(ref SafeUnicodeStringHandle buffer, string linkName, SafeNtObjectHandle parentObject)
+        private static SafeNtObjectHandle OpenSymbolicLinkObjectForRead(NativeMethods.UNICODE_STRING linkName, SafeNtObjectHandle parentObject = null)
         {
-            using var linkHandle = OpenSymbolicLinkObjectForRead(linkName, parentObject);
+            unsafe
+            {
+                var oa = InitializeObjectAttributes(new IntPtr(&linkName), parentObject);
+                var success = NativeMethods.NtOpenSymbolicLinkObject(out SafeNtObjectHandle handle, NativeMethods.AccessMask.GENERIC_READ, ref oa);
+                return handle;
+            }
+        }
 
+        public static string QueryLinkTarget(ref SafeUnicodeStringHandle buffer, SafeNtObjectHandle linkHandle, SafeNtObjectHandle parentObject)
+        {
             while (true)
             {
                 var ret = NativeMethods.NtQuerySymbolicLinkObject(linkHandle, buffer, out uint returnLen);
                 if (ret == NativeMethods.NtStatus.STATUS_SUCCESS)
                 {
-                    return buffer.GetString();
+                    return buffer.ToStruct().ToString();
                 }
                 else if (ret == NativeMethods.NtStatus.STATUS_BUFFER_TOO_SMALL)
                 {
@@ -317,11 +327,23 @@ namespace pylorak.Windows.ObjectManager
             throw new InvalidOperationException("Logic error.");
         }
 
-        public static IEnumerable<ObjectDirectoyInfo> QueryDirectory(SafeNtObjectHandle dirObjHndl)
+        public static string QueryLinkTarget(ref SafeUnicodeStringHandle buffer, NativeMethods.UNICODE_STRING linkName, SafeNtObjectHandle parentObject)
         {
-            DirectoryQueryFilter<ObjectDirectoyInfo> filter = (in NativeMethods.OBJECT_DIRECTORY_INFORMATION di, ref ObjectDirectoyInfo ret) =>
+            using var linkHandle = OpenSymbolicLinkObjectForRead(linkName, parentObject);
+            return QueryLinkTarget(ref buffer, linkHandle, parentObject);
+        }
+
+        public static string QueryLinkTarget(ref SafeUnicodeStringHandle buffer, string linkName, SafeNtObjectHandle parentObject)
+        {
+            using var linkHandle = OpenSymbolicLinkObjectForRead(linkName, parentObject);
+            return QueryLinkTarget(ref buffer, linkHandle, parentObject);
+        }
+
+        public static IEnumerable<NativeMethods.OBJECT_DIRECTORY_INFORMATION> QueryDirectory(SafeNtObjectHandle dirObjHndl)
+        {
+            DirectoryQueryFilter<NativeMethods.OBJECT_DIRECTORY_INFORMATION> filter = (in NativeMethods.OBJECT_DIRECTORY_INFORMATION di, ref NativeMethods.OBJECT_DIRECTORY_INFORMATION ret) =>
             {
-                ret = new ObjectDirectoyInfo(di.Name.ToString(), di.TypeName.ToString());
+                ret = di;
                 return true;
             };
 
@@ -329,15 +351,15 @@ namespace pylorak.Windows.ObjectManager
                 yield return item;
         }
 
-        public static IEnumerable<string> QueryDirectoryForType(SafeNtObjectHandle dirObjHndl, string objType)
+        public static IEnumerable<NativeMethods.UNICODE_STRING> QueryDirectoryForType(SafeNtObjectHandle dirObjHndl, string objType)
         {
             using var typeHandle = new SafeUnicodeStringHandle(objType);
 
-            DirectoryQueryFilter<string> filter = (in NativeMethods.OBJECT_DIRECTORY_INFORMATION di, ref string ret) =>
+            DirectoryQueryFilter<NativeMethods.UNICODE_STRING> filter = (in NativeMethods.OBJECT_DIRECTORY_INFORMATION di, ref NativeMethods.UNICODE_STRING ret) =>
             {
                 if (typeHandle.StringEquals(in di.TypeName, true))
                 {
-                    ret = di.Name.ToString();
+                    ret = di.Name;
                     return true;
                 }
                 return false;

@@ -166,13 +166,15 @@ public sealed class PathMapper : IDisposable
         const string SYMBOLIC_LINK_TYPE = "SymbolicLink";
 
         using var dir = ObjectManager.OpenDirectoryObjectForRead(@"\GLOBAL??");
+        using var volumeNamePrefixHandle = new SafeUnicodeStringHandle("Volume{");
+        var volumeNamePrefix = volumeNamePrefixHandle.ToStruct();
         var linkTargetBuff = new SafeUnicodeStringHandle(512);
         try
         {
             foreach (var name in ObjectManager.QueryDirectoryForType(dir, SYMBOLIC_LINK_TYPE))
             {
                 // Found a volume GUID?
-                if (name.StartsWith("Volume{", StringComparison.Ordinal))
+                if (name.StartsWith(volumeNamePrefix, true))
                 {
                     var target = ObjectManager.QueryLinkTarget(ref linkTargetBuff, name, dir) + @"\";
                     var volumePath = @"\\?\" + name + @"\";
@@ -198,7 +200,13 @@ public sealed class PathMapper : IDisposable
                 }
 
                 // Found a drive letter?
-                if ((name.Length == 2) && char.IsLetter(name[0]) && (name[1] == ':'))
+                bool isDriveLetter;
+                unsafe
+                {
+                    char* namePtr = (char*)name.buffer.ToPointer();
+                    isDriveLetter = (name.length == 4) && char.IsLetter(namePtr[0]) && (namePtr[1] == ':');
+                }
+                if (isDriveLetter)
                 {
                     var target = ObjectManager.QueryLinkTarget(ref linkTargetBuff, name, dir) + @"\";
                     var drivePath = name + @"\";
