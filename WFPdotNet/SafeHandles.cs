@@ -353,7 +353,13 @@ namespace WFPdotNet
 
         public T ToStruct<T>() where T : unmanaged
         {
-            return Marshal.PtrToStructure<T>(this.handle);
+            T ret = default(T);
+            var size = Marshal.SizeOf(typeof(T));
+            unsafe
+            {
+                Buffer.MemoryCopy(handle.ToPointer(), &ret, size, size);
+            }
+            return ret;
         }
 
         public void ForgetAndResize(uint newSize, bool zeroInit = false)
