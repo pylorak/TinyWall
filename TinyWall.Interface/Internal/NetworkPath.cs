@@ -11,7 +11,7 @@ namespace TinyWall.Interface.Internal
         {
             [DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
             [return: MarshalAs(UnmanagedType.Bool)]
-            internal static extern bool PathIsNetworkPath(string pszPath);
+            internal static unsafe extern bool PathIsNetworkPath(char* pszPath);
 
             #region WNetGetUniversalName
             internal const int UNIVERSAL_NAME_INFO_LEVEL = 0x00000001;
@@ -30,6 +30,11 @@ namespace TinyWall.Interface.Internal
         }
 
         public static bool IsUncPath(string path)
+        {
+            return IsUncPath(path.AsSpan());
+        }
+
+        public static bool IsUncPath(ReadOnlySpan<char> path)
         {
             return (path.Length > 2) && (path[0] == '\\') && (path[1] == '\\');
         }
@@ -81,7 +86,18 @@ namespace TinyWall.Interface.Internal
 
         public static bool IsNetworkPath(string path)
         {
-            return NativeMethods.PathIsNetworkPath(path);
+            return IsNetworkPath(path.AsSpan());
+        }
+
+        public static bool IsNetworkPath(ReadOnlySpan<char> path)
+        {
+            unsafe
+            {
+                fixed (char* ptr = path)
+                {
+                    return NativeMethods.PathIsNetworkPath(ptr);
+                }
+            }
         }
     }
 }

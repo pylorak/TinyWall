@@ -19,7 +19,13 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>TinyWall.key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
   <ItemGroup>
     <None Include="TinyWall.key.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Memory" Version="4.5.4" />
   </ItemGroup>
 </Project>

@@ -31,7 +31,7 @@ public sealed class PathMapper : IDisposable
         public static extern bool GetVolumePathNamesForVolumeName(string lpszVolumeName, [Out] char[] lpszVolumePathNames, int cchBufferLength, out int lpcchReturnLength);
 
         [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
-        public static unsafe extern bool GetVolumePathName(string lpszFileName, char* lpszVolumePathName, int ccBufferLength);
+        public static unsafe extern bool GetVolumePathName(char* lpszFileName, char* lpszVolumePathName, int ccBufferLength);
 
         [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern bool GetVolumeNameForVolumeMountPoint(string lpszVolumeMountPoint, [Out] StringBuilder lpszVolumeName, int cchBufferLength);
@@ -270,9 +270,11 @@ public sealed class PathMapper : IDisposable
             CacheReadyEvent.WaitOne();
     }
 
-    private static string GetMountPoint(string path)
+    private static string GetMountPoint(ReadOnlySpan<char> path)
     {
-        if (!Path.IsPathRooted(path))
+        // NOTE: This method only works for drive paths, not for UNC paths.
+
+        if (!((path.Length >= 3) && char.IsLetter(path[0]) && (path[1] == ':') && (path[2] == '\\')))
             throw new ArgumentException("Input path must be an absolute path.");
 
         int requiredBufferSize = path.Length + 1;
@@ -280,10 +282,13 @@ public sealed class PathMapper : IDisposable
         {
             unsafe
             {
-                var buffer = stackalloc char[requiredBufferSize];
-                bool success = NativeMethods.GetVolumePathName(path, buffer, requiredBufferSize);
-                if (success)
-                    return new string(buffer);
+                fixed (char* pathPtr = path)
+                {
+                    var buffer = stackalloc char[requiredBufferSize];
+                    bool success = NativeMethods.GetVolumePathName(pathPtr, buffer, requiredBufferSize);
+                    if (success)
+                        return new string(buffer);
+                }
             }
         }
         else
@@ -292,16 +297,10 @@ public sealed class PathMapper : IDisposable
         }
 
         // Fallback heuristic
-        return Path.GetPathRoot(path);
+        return path.Slice(3).ToString();
     }
 
     public string ConvertPathIgnoreErrors(string path, PathFormat target)
-    {
-        StringBuilder workBuffer = null;
-        return ConvertPathIgnoreErrors(path, target, ref workBuffer);
-    }
-
-    public string ConvertPathIgnoreErrors(string path, PathFormat target, ref StringBuilder workBuffer)
     {
         if (string.IsNullOrEmpty(path)
             || path.Equals("registry", StringComparison.OrdinalIgnoreCase)
@@ -312,7 +311,7 @@ public sealed class PathMapper : IDisposable
 
         try
         {
-            return ConvertPath(path, target, ref workBuffer);
+            return ConvertPath(path, target);
         }
         catch
         {
@@ -320,28 +319,16 @@ public sealed class PathMapper : IDisposable
         }
     }
 
-    public string ConvertPath(string path, PathFormat target, ref StringBuilder workBuffer)
+    public string ConvertPath(string path, PathFormat target)
     {
-        int workBufferSize = path.Length + 64;
-        if (workBuffer is null)
-        {
-            workBuffer = new StringBuilder(workBufferSize);
-        }
-        else
-        {
-            workBuffer.EnsureCapacity(workBufferSize);
-            workBuffer.Clear();
-            workBuffer.Append(path);
-        }
-
-        ReplaceLeading(workBuffer, @"\SystemRoot", SystemRoot);
-        ReplaceLeading(workBuffer, @"\\?\", string.Empty);
-        ReplaceLeading(workBuffer, @"\\.\", string.Empty);
-        ReplaceLeading(workBuffer, @"\??\", string.Empty);
-        ReplaceLeading(workBuffer, @"UNC\", @"\\");
-        ReplaceLeading(workBuffer, @"GLOBALROOT\", string.Empty);
-        ReplaceLeading(workBuffer, @"\Device\Mup\", @"\\");
-        var ret = workBuffer.ToString();
+        var ret = path.AsSpan();
+        ret = ReplaceLeading(ret, @"\SystemRoot", SystemRoot);
+        ret = ReplaceLeading(ret, @"\\?\", string.Empty);
+        ret = ReplaceLeading(ret, @"\\.\", string.Empty);
+        ret = ReplaceLeading(ret, @"\??\", string.Empty);
+        ret = ReplaceLeading(ret, @"UNC\", @"\\");
+        ret = ReplaceLeading(ret, @"GLOBALROOT\", string.Empty);
+        ret = ReplaceLeading(ret, @"\Device\Mup\", @"\\");
 
         if (NetworkPath.IsNetworkPath(ret))
         {   // UNC path (like \\server\share\directory\file), or mounted network drive
@@ -359,7 +346,7 @@ public sealed class PathMapper : IDisposable
                         {
                             using (var driveKey = networkKey.OpenSubKey(sk, false))
                             {
-                                ret = Path.Combine((string)driveKey.GetValue("RemotePath"), ret.Substring(3));
+                                ret = TinyWall.Interface.Internal.Utils.CombinePath((driveKey.GetValue("RemotePath") as string).AsSpan(), ret.Slice(3)).AsSpan();
                                 break;
                             }
                         }
@@ -374,9 +361,9 @@ public sealed class PathMapper : IDisposable
             switch (target)
             {
                 case PathFormat.Win32:
-                    return ret;
+                    return ret.ToString();
                 case PathFormat.NativeNt:
-                    return @"\Device\Mup\" + ret.Substring(2);
+                    return TinyWall.Interface.Internal.Utils.Concat(@"\Device\Mup\".AsSpan(), ret.Slice(2));
                 default:
                     throw new NotSupportedException();
             }
@@ -385,7 +372,7 @@ public sealed class PathMapper : IDisposable
         {   // Win32 drive letter format, like C:\Windows\explorer.exe
 
             if (target == PathFormat.Win32)
-                return ret;
+                return ret.ToString();
 
             var dc = Cache;
             var mountPoint = GetMountPoint(ret);
@@ -421,57 +408,47 @@ public sealed class PathMapper : IDisposable
                 throw new DriveNotFoundException();
 
             // And here we do the mapping
-            var trailing = ret.AsSpan().Slice(dc[cacheIdx].Drives[driveIdx].Length);
-            workBuffer.Clear();
+            var trailing = ret.Slice(dc[cacheIdx].Drives[driveIdx].Length);
             switch (target)
             {
                 case PathFormat.NativeNt:
-                    workBuffer.Append(dc[cacheIdx].Device);
-                    break;
+                    return TinyWall.Interface.Internal.Utils.Concat(dc[cacheIdx].Device.AsSpan(), trailing);
                 case PathFormat.Volume:
                     if (dc[cacheIdx].Volumes.Count > 0)
-                        workBuffer.Append(dc[cacheIdx].Volumes[0]);
+                        return TinyWall.Interface.Internal.Utils.Concat(dc[cacheIdx].Volumes[0].AsSpan(), trailing);
                     else
                         throw new NotSupportedException();
-                    break;
                 default:
                     throw new NotSupportedException();
             }
-            workBuffer.Append(trailing);
-            return workBuffer.ToString();
         }
-        else if (ret.StartsWith("Volume{", StringComparison.OrdinalIgnoreCase))
+        else if (ret.StartsWith("Volume{".AsSpan(), StringComparison.OrdinalIgnoreCase))
         {   // Volume GUID path, like \\?\Volume{26a21bda-a627-11d7-9931-806e6f6e6963}\Windows\explorer.exe
 
             if (target == PathFormat.Volume)
                 return path;
 
-            ret = @"\\?\" + ret;
+            ret = TinyWall.Interface.Internal.Utils.Concat(@"\\?\".AsSpan(), ret).AsSpan();
             var dc = Cache;
             for (int i = 0; i < dc.Length; ++i)
             {
                 for (int j = 0; j < dc[i].Volumes.Count; ++j)
                 {
-                    if (ret.StartsWith(dc[i].Volumes[j], StringComparison.OrdinalIgnoreCase))
+                    if (ret.StartsWith(dc[i].Volumes[j].AsSpan(), StringComparison.OrdinalIgnoreCase))
                     {
-                        var trailing = ret.AsSpan().Slice(dc[i].Volumes[j].Length);
-                        workBuffer.Clear();
+                        var trailing = ret.Slice(dc[i].Volumes[j].Length);
                         switch (target)
                         {
                             case PathFormat.NativeNt:
-                                workBuffer.Append(dc[i].Device);
-                                break;
+                                return TinyWall.Interface.Internal.Utils.Concat(dc[i].Device.AsSpan(), trailing);
                             case PathFormat.Win32:
                                 if (dc[i].Drives.Count > 0)
-                                    workBuffer.Append(dc[i].Drives[0]);
+                                    return TinyWall.Interface.Internal.Utils.Concat(dc[i].Drives[0].AsSpan(), trailing);
                                 else
                                     throw new NotSupportedException();
-                                break;
                             default:
                                 throw new NotSupportedException();
                         }
-                        workBuffer.Append(trailing);
-                        return workBuffer.ToString();
                     }
                 }
             }
@@ -486,29 +463,24 @@ public sealed class PathMapper : IDisposable
             var dc = Cache;
             for (int i = 0; i < dc.Length; ++i)
             {
-                if (ret.StartsWith(dc[i].Device, StringComparison.OrdinalIgnoreCase))
+                if (ret.StartsWith(dc[i].Device.AsSpan(), StringComparison.OrdinalIgnoreCase))
                 {
-                    var trailing = ret.AsSpan().Slice(dc[i].Device.Length);
-                    workBuffer.Clear();
+                    var trailing = ret.Slice(dc[i].Device.Length);
                     switch (target)
                     {
                         case PathFormat.Volume:
                             if (dc[i].Volumes.Count > 0)
-                                workBuffer.Append(dc[i].Volumes[0]);
+                                return TinyWall.Interface.Internal.Utils.Concat(dc[i].Volumes[0].AsSpan(), trailing);
                             else
                                 throw new NotSupportedException();
-                            break;
                         case PathFormat.Win32:
                             if (dc[i].Drives.Count > 0)
-                                workBuffer.Append(dc[i].Drives[0]);
+                                return TinyWall.Interface.Internal.Utils.Concat(dc[i].Drives[0].AsSpan(), trailing);
                             else
                                 throw new NotSupportedException();
-                            break;
                         default:
                             throw new NotSupportedException();
                     }
-                    workBuffer.Append(trailing);
-                    return workBuffer.ToString();
                 }
             }
 
@@ -516,27 +488,18 @@ public sealed class PathMapper : IDisposable
         }
     }
 
-    private static void ReplaceLeading(StringBuilder text, string needle, string replacement)
+    private unsafe static ReadOnlySpan<char> ReplaceLeading(ReadOnlySpan<char> text, string needle, string replacement)
     {
-        if (!StringBuilderBeginsWithCaseInsensitive(text, needle))
-            return;
-
-        text.Remove(0, needle.Length);
-        text.Insert(0, replacement);
-    }
-
-    private static bool StringBuilderBeginsWithCaseInsensitive(StringBuilder sb, string search)
-    {
-        if (sb.Length < search.Length)
-            return false;
-
-        for (int i = 0; i < search.Length; ++i)
+        if (text.StartsWith(needle.AsSpan(), StringComparison.OrdinalIgnoreCase))
         {
-            if (char.ToUpperInvariant(sb[i]) != char.ToUpperInvariant(search[i]))
-                return false;
+            text = text.Slice(needle.Length);
+            if (!string.IsNullOrEmpty(replacement))
+            {
+                text = TinyWall.Interface.Internal.Utils.Concat(replacement.AsSpan(), text).AsSpan();
+            }
         }
 
-        return true;
+        return text;
     }
 
     public void Dispose()
@@ -559,9 +522,9 @@ public sealed class PathMapper : IDisposable
         string volumeResult = NO_RESULT;
 
         StringBuilder workBuffer = null;
-        try { win32Result = ConvertPath(path, PathFormat.Win32, ref workBuffer); } catch { }
-        try { ntResult = ConvertPath(path, PathFormat.NativeNt, ref workBuffer); } catch { }
-        try { volumeResult = ConvertPath(path, PathFormat.Volume, ref workBuffer); } catch { }
+        try { win32Result = ConvertPath(path, PathFormat.Win32); } catch { }
+        try { ntResult = ConvertPath(path, PathFormat.NativeNt); } catch { }
+        try { volumeResult = ConvertPath(path, PathFormat.Volume); } catch { }
 
         string output = path + ":" + Environment.NewLine
             + "    Win32:  " + win32Result + Environment.NewLine

@@ -11,6 +11,47 @@ namespace TinyWall.Interface.Internal
     {
         private static readonly Random _rng = new Random();
 
+        public static unsafe string Join(ReadOnlySpan<char> str0, ReadOnlySpan<char> str1, char separator)
+        {
+            var result = new string('\0', checked(str0.Length + str1.Length + 1));
+            fixed (char* resultPtr = result)
+            {
+                var resultSpan = new Span<char>(resultPtr, result.Length);
+
+                str0.CopyTo(resultSpan);
+                resultSpan = resultSpan.Slice(str0.Length);
+
+                resultSpan[0] = separator;
+                resultSpan = resultSpan.Slice(1);
+
+                str1.CopyTo(resultSpan);
+            }
+            return result;
+        }
+
+        public static unsafe string Concat(ReadOnlySpan<char> str0, ReadOnlySpan<char> str1)
+        {
+            var result = new string('\0', checked(str0.Length + str1.Length));
+            fixed (char* resultPtr = result)
+            {
+                var resultSpan = new Span<char>(resultPtr, result.Length);
+
+                str0.CopyTo(resultSpan);
+                resultSpan = resultSpan.Slice(str0.Length);
+
+                str1.CopyTo(resultSpan);
+            }
+            return result;
+        }
+
+        public static unsafe string CombinePath(ReadOnlySpan<char> str0, ReadOnlySpan<char> str1)
+        {
+            if ((str0[str0.Length - 1] == '\\') || (str0[str0.Length - 1] == '/'))
+                return Concat(str0, str1);
+            else
+                return Join(str0, str1, '\\');
+        }
+
         public static string HexEncode(byte[] binstr)
         {
             StringBuilder sb = new StringBuilder();
