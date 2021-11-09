@@ -201,9 +201,15 @@ namespace WFPdotNet
                     else
                     {
                         Interop.FWP_V6_ADDR_AND_MASK addrAndMask6 = new Interop.FWP_V6_ADDR_AND_MASK();
-                        addrAndMask6.addr = addressBytes;
+                        unsafe
+                        {
+                            fixed (byte* addrSrcPtr = addressBytes)
+                            {
+                                Buffer.MemoryCopy(addrSrcPtr, addrAndMask6.addr, 16, 16);
+                            }
+                        }
                         addrAndMask6.prefixLength = subnetLen;
-                        nativeMem = SafeHGlobalHandle.FromManagedStruct(addrAndMask6);
+                        nativeMem = SafeHGlobalHandle.FromStruct(addrAndMask6);
 
                         _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_V6_ADDR_MASK;
                         _nativeStruct.conditionValue.value.v6AddrMask = nativeMem.DangerousGetHandle();

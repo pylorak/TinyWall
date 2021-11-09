@@ -128,7 +128,7 @@ namespace WFPdotNet
 
             try
             {
-                Interop.FWP_VALUE0 val = Marshal.PtrToStructure<Interop.FWP_VALUE0>(nativeMem.DangerousGetHandle());
+                Interop.FWP_VALUE0 val = PInvokeHelper.PtrToStructure<Interop.FWP_VALUE0>(nativeMem.DangerousGetHandle());
                 System.Diagnostics.Debug.Assert(val.type == Interop.FWP_DATA_TYPE.FWP_UINT32);
                 return val.value.uint32;
             }
@@ -308,7 +308,7 @@ namespace WFPdotNet
                 if (err != 0)
                     throw new WfpException(err, "FwpmFilterGetByKey0");
 
-                var nativeFilter = Marshal.PtrToStructure<Interop.FWPM_FILTER0_NoStrings>(nativeMem.DangerousGetHandle());
+                var nativeFilter = PInvokeHelper.PtrToStructure<Interop.FWPM_FILTER0_NoStrings>(nativeMem.DangerousGetHandle());
                 return new Filter(nativeFilter, getConditions);
             }
             finally
@@ -326,7 +326,7 @@ namespace WFPdotNet
                 if (err != 0)
                     throw new WfpException(err, "FwpmFilterGetById0");
 
-                var nativeFilter = Marshal.PtrToStructure<Interop.FWPM_FILTER0_NoStrings>(nativeMem.DangerousGetHandle());
+                var nativeFilter = PInvokeHelper.PtrToStructure<Interop.FWPM_FILTER0_NoStrings>(nativeMem.DangerousGetHandle());
                 return new Filter(nativeFilter, getConditions);
             }
             finally

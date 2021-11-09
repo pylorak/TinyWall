@@ -155,7 +155,7 @@ namespace WFPdotNet
 
             if (nativeEvent.type == Interop.FWPM_NET_EVENT_TYPE.FWPM_NET_EVENT_TYPE_CLASSIFY_DROP)
             {
-                Interop.FWPM_NET_EVENT_CLASSIFY_DROP1 classify = Marshal.PtrToStructure<Interop.FWPM_NET_EVENT_CLASSIFY_DROP1>(nativeEvent.EventInfo);
+                Interop.FWPM_NET_EVENT_CLASSIFY_DROP1 classify = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT_CLASSIFY_DROP1>(nativeEvent.EventInfo);
                 filterId = classify.filterId;
                 direction = classify.msFwpDirection;
             }
@@ -206,13 +206,13 @@ namespace WFPdotNet
 
             if (nativeEvent.type == Interop.FWPM_NET_EVENT_TYPE.FWPM_NET_EVENT_TYPE_CLASSIFY_DROP)
             {
-                Interop.FWPM_NET_EVENT_CLASSIFY_DROP1 classify = Marshal.PtrToStructure<Interop.FWPM_NET_EVENT_CLASSIFY_DROP1>(nativeEvent.EventInfo);
+                Interop.FWPM_NET_EVENT_CLASSIFY_DROP1 classify = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT_CLASSIFY_DROP1>(nativeEvent.EventInfo);
                 filterId = classify.filterId;
                 direction = classify.msFwpDirection;
             }
             if (nativeEvent.type == Interop.FWPM_NET_EVENT_TYPE.FWPM_NET_EVENT_TYPE_CLASSIFY_ALLOW)
             {
-                Interop.FWPM_NET_EVENT_CLASSIFY_ALLOW0 classify = Marshal.PtrToStructure<Interop.FWPM_NET_EVENT_CLASSIFY_ALLOW0>(nativeEvent.EventInfo);
+                Interop.FWPM_NET_EVENT_CLASSIFY_ALLOW0 classify = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT_CLASSIFY_ALLOW0>(nativeEvent.EventInfo);
                 filterId = classify.filterId;
                 direction = classify.msFwpDirection;
             }
@@ -317,7 +317,7 @@ namespace WFPdotNet
 
         private void NativeCallbackHandler0(IntPtr context, IntPtr netEvent1)
         {
-            Interop.FWPM_NET_EVENT1 ev = Marshal.PtrToStructure<Interop.FWPM_NET_EVENT1>(netEvent1);
+            Interop.FWPM_NET_EVENT1 ev = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT1>(netEvent1);
             _callback(_context, new NetEventData(ev, SBuilder));
         }
     }
@@ -354,7 +354,7 @@ namespace WFPdotNet
 
         private void NativeCallbackHandler1(IntPtr context, IntPtr netEvent1)
         {
-            Interop.FWPM_NET_EVENT2 ev = Marshal.PtrToStructure<Interop.FWPM_NET_EVENT2>(netEvent1);
+            Interop.FWPM_NET_EVENT2 ev = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT2>(netEvent1);
             _callback(_context, new NetEventData(ev, SBuilder));
         }
     }

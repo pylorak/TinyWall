@@ -24,7 +24,7 @@ namespace WFPdotNet
             {
                 // TODO: Do we really not need to own these SafeHandles ???
                 //_providerKeyHandle = new AllocHGlobalSafeHandle(_nativeStruct.providerKey, false);
-                _providerKey = System.Runtime.InteropServices.Marshal.PtrToStructure<Guid>(_nativeStruct.providerKey);
+                _providerKey = PInvokeHelper.PtrToStructure<Guid>(_nativeStruct.providerKey);
             }
         }
 

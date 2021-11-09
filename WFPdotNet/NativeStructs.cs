@@ -135,10 +135,9 @@ namespace WFPdotNet.Interop
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct FWP_V6_ADDR_AND_MASK
+    public unsafe struct FWP_V6_ADDR_AND_MASK
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16, ArraySubType = UnmanagedType.U1)]
-        public byte[] addr;
+        public fixed byte addr[16];
         public byte prefixLength;
     }
 

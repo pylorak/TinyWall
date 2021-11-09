@@ -7,15 +7,35 @@ namespace WFPdotNet
 {
     public static class PInvokeHelper
     {
-        public static T[] PtrToStructureArray<T>(IntPtr start, uint numElem, uint stride)
+        public static T[] PtrToStructureArray<T>(IntPtr start, uint numElem, uint stride) where T : unmanaged
         {
             T[] ret = new T[numElem];
             long ptr = start.ToInt64();
             for (int i = 0; i < numElem; i++, ptr += stride)
             {
-                ret[i] = Marshal.PtrToStructure<T>(new IntPtr(ptr));
+                ret[i] = PInvokeHelper.PtrToStructure<T>(new IntPtr(ptr));
             }
             return ret;
+        }
+
+        public static T PtrToStructure<T>(IntPtr src) where T : unmanaged
+        {
+            var ret = default(T);
+            var size = Marshal.SizeOf(typeof(T));
+            unsafe
+            {
+                Buffer.MemoryCopy(src.ToPointer(), &ret, size, size);
+            }
+            return ret;
+        }
+
+        public static void StructureToPtr<T>(T src, IntPtr dst) where T : unmanaged
+        {
+            var size = Marshal.SizeOf(typeof(T));
+            unsafe
+            {
+                Buffer.MemoryCopy(&src, dst.ToPointer(), size, size);
+            }
         }
 
         public static void AssertUnmanagedType<T>() where T : unmanaged
