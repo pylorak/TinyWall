@@ -466,7 +466,7 @@ namespace WFPdotNet
             string serviceSid = GetServiceSidFromName(serviceName);
 
             // Put service SID into SDDL form
-            string sddl = string.Format("O:SYG:SYD:(A;;CCRC;;;{0})", serviceSid);
+            string sddl = $"O:SYG:SYD:(A;;CCRC;;;{serviceSid})";
 
             // Construct condition from security descriptor
             Init(ConditionKeys.FWPM_CONDITION_ALE_USER_ID, new RawSecurityDescriptor(sddl), matchType);
@@ -527,15 +527,7 @@ namespace WFPdotNet
             // 9: Create the first part of the SID "S-1-5-80-"
             // 10: Tack on each block of Decimal strings with a "-" in between each block that was converted and reversed.
             // 11: Finally out put the complete SID for the service.
-            string serviceSid = string.Format("S-1-5-80-{0}-{1}-{2}-{3}-{4}",
-                dec[0],
-                dec[1],
-                dec[2],
-                dec[3],
-                dec[4]
-            );
-
-            return serviceSid;
+            return $"S-1-5-80-{dec[0]}-{dec[1]}-{dec[2]}-{dec[3]}-{dec[4]}";
         }
     }
 
@@ -543,7 +535,7 @@ namespace WFPdotNet
     {
         public UserIdFilterCondition(string sid, RemoteOrLocal peer)
         {
-            string sddl = string.Format("O:LSD:(A;;CC;;;{0}))", sid);
+            string sddl = $"O:LSD:(A;;CC;;;{sid}))";
             Init(
                 (RemoteOrLocal.Local == peer) ? ConditionKeys.FWPM_CONDITION_ALE_USER_ID : ConditionKeys.FWPM_CONDITION_ALE_REMOTE_USER_ID,
                 new RawSecurityDescriptor(sddl),
