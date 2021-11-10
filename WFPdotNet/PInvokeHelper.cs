@@ -38,6 +38,36 @@ namespace WFPdotNet
             }
         }
 
+        public static SafeHGlobalHandle CreateWfpBlob(IntPtr dataPtr, int dataSize, bool nullTerminateUnicodeData = false)
+        {
+            // Reserve buffer
+            var bufSize = nullTerminateUnicodeData ? dataSize + 2 : dataSize;
+            var blobSize = Marshal.SizeOf(typeof(Interop.FWP_BYTE_BLOB));
+            var nativeMemHndl = SafeHGlobalHandle.Alloc(blobSize + bufSize);
+            var blobPtr = nativeMemHndl.DangerousGetHandle();
+            var bufPtr = blobPtr + blobSize;
+
+            // Prepare blob structure
+            Interop.FWP_BYTE_BLOB blob;
+            blob.data = bufPtr;
+            blob.size = (uint)bufSize;
+
+            // Copy all into native memory
+            unsafe
+            {
+                if (nullTerminateUnicodeData)
+                {
+                    var strBufPtr = (char*)bufPtr.ToPointer();
+                    var strLen = dataSize / 2;
+                    strBufPtr[strLen] = (char)0;
+                }
+                Buffer.MemoryCopy(&blob, blobPtr.ToPointer(), blobSize, blobSize);
+                Buffer.MemoryCopy(dataPtr.ToPointer(), bufPtr.ToPointer(), dataSize, dataSize);
+            }
+
+            return nativeMemHndl;
+        }
+
         public static void AssertUnmanagedType<T>() where T : unmanaged
         { }
 

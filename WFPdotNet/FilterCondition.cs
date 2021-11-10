@@ -356,8 +356,7 @@ namespace WFPdotNet
                 [Out] out FwpmMemorySafeHandle appId);
         }
 
-        private SafeHandle appIdNativeMem;
-        private SafeHandle appIdDataNativeMem;
+        private SafeHandle NativeMem;
 
         public AppIdFilterCondition(string filePath, bool bBeforeProxying = false, bool alreadyKernelFormat = false)
         {
@@ -371,48 +370,30 @@ namespace WFPdotNet
                 //       avoid calling FwpmGetAppIdFromFileName0() completely by passing in paths already
                 //       in kernel format.
                 uint err = NativeMethods.FwpmGetAppIdFromFileName0(filePath, out FwpmMemorySafeHandle tmpHandle);
-                appIdNativeMem = tmpHandle;
+                NativeMem = tmpHandle;
                 if (0 != err)
                     throw new WfpException(err, "FwpmGetAppIdFromFileName0");
             }
             else
             {
-                // Get unicode bytes with null-terminator
-                filePath = filePath.ToLowerInvariant();                     // WFP will only match if lowercase
-                int nBytes = filePath.Length * 2;
-                int bufSize = nBytes + 2;
-
-                // Get the bytes into an unmanaged pointer
-                appIdDataNativeMem = SafeHGlobalHandle.Alloc(bufSize);
                 unsafe
                 {
-                    var dst = (char*)appIdDataNativeMem.DangerousGetHandle();
-                    dst[filePath.Length] = (char)0;
-                    fixed (char* src = filePath)
-                        Buffer.MemoryCopy(src, dst, nBytes, nBytes);
+                    fixed (char* src = filePath.ToLowerInvariant()) // WFP will only match if lowercase
+                        NativeMem = PInvokeHelper.CreateWfpBlob((IntPtr)src, filePath.Length * 2, true);
                 }
-
-                // Get the blob into an unmanaged pointer
-                Interop.FWP_BYTE_BLOB blob;
-                blob.data = appIdDataNativeMem.DangerousGetHandle();
-                blob.size = (uint)bufSize;
-                appIdNativeMem = SafeHGlobalHandle.FromStruct(blob);
             }
 
             _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
             _nativeStruct.fieldKey = bBeforeProxying ? ConditionKeys.FWPM_CONDITION_ALE_ORIGINAL_APP_ID : ConditionKeys.FWPM_CONDITION_ALE_APP_ID;
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_BYTE_BLOB_TYPE;
-            _nativeStruct.conditionValue.value.byteBlob = appIdNativeMem.DangerousGetHandle();
+            _nativeStruct.conditionValue.value.byteBlob = NativeMem.DangerousGetHandle();
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                appIdNativeMem?.Dispose();
-                appIdNativeMem = null;
-                appIdDataNativeMem?.Dispose();
-                appIdDataNativeMem = null;
+                NativeMem?.Dispose();
             }
 
             base.Dispose(disposing);
@@ -421,8 +402,7 @@ namespace WFPdotNet
 
     public abstract class SecurityDescriptorFilterCondition : FilterCondition
     {
-        private SafeHGlobalHandle byteBlobNativeMem;
-        private SafeHGlobalHandle sdNativeMem;
+        private SafeHandle NativeMem;
 
         protected SecurityDescriptorFilterCondition() { }
 
@@ -435,28 +415,23 @@ namespace WFPdotNet
 
         protected void Init(Guid fieldKey, byte[] sdBinaryForm, FieldMatchType matchType)
         {
-            // Get the SD in SDDL self-related form into an unmanaged pointer
-            sdNativeMem = SafeHGlobalHandle.Alloc(sdBinaryForm.Length);
-            System.Runtime.InteropServices.Marshal.Copy(sdBinaryForm, 0, sdNativeMem.DangerousGetHandle(), sdBinaryForm.Length);
-
-            //  Create FWP_BYTE_BLOB for the SD
-            Interop.FWP_BYTE_BLOB blob = new Interop.FWP_BYTE_BLOB();
-            blob.size = (uint)sdBinaryForm.Length;
-            blob.data = sdNativeMem.DangerousGetHandle();
-            byteBlobNativeMem = SafeHGlobalHandle.FromStruct(blob);
+            unsafe
+            {
+                fixed (byte* src = sdBinaryForm)
+                    NativeMem = PInvokeHelper.CreateWfpBlob((IntPtr)src, sdBinaryForm.Length);
+            }
 
             _nativeStruct.matchType = matchType;
             _nativeStruct.fieldKey = fieldKey;
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_SECURITY_DESCRIPTOR_TYPE;
-            _nativeStruct.conditionValue.value.sd = byteBlobNativeMem.DangerousGetHandle();
+            _nativeStruct.conditionValue.value.sd = NativeMem.DangerousGetHandle();
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                byteBlobNativeMem?.Dispose();
-                sdNativeMem?.Dispose();
+                NativeMem?.Dispose();
             }
 
             base.Dispose(disposing);
@@ -727,13 +702,6 @@ namespace WFPdotNet
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT32;
             _nativeStruct.conditionValue.value.uint32 = (uint)flags;
         }
-    }
-
-    public enum SioRcvAll : uint
-    {
-        SIO_RCVALL = (uint)2550136833u,
-        SIO_RCVALL_MCAST = (uint)2550136834u,
-        SIO_RCVALL_IGMPMCAST = (uint)2550136835u
     }
 
     public sealed class LocalInterfaceCondition : FilterCondition
