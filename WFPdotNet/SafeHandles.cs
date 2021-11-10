@@ -340,6 +340,7 @@ namespace WFPdotNet
             int size = Marshal.SizeOf(typeof(T));
             unsafe
             {
+                System.Diagnostics.Debug.Assert(sizeof(T) == size);
                 Buffer.MemoryCopy(&obj, (byte*)this.handle.ToPointer() + offset, size, size);
             }
             MarshalDestroyType = null;
@@ -357,6 +358,7 @@ namespace WFPdotNet
             var size = Marshal.SizeOf(typeof(T));
             unsafe
             {
+                System.Diagnostics.Debug.Assert(sizeof(T) == size);
                 Buffer.MemoryCopy(handle.ToPointer(), &ret, size, size);
             }
             return ret;

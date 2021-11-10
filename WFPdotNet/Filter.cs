@@ -47,7 +47,7 @@ namespace WFPdotNet
         private string _DisplayDescription;
         private DisplaySyncMode _DisplaySynchNeeded;
 
-        public Filter()
+        private Filter()
         {
             _nativeStruct.providerKey = IntPtr.Zero;
             _providerKeyHandle = null;
@@ -64,8 +64,6 @@ namespace WFPdotNet
         {
             this.DisplayName = name;
             this.DisplayDescription = desc;
-            _DisplaySynchNeeded = DisplaySyncMode.ToNative;
-
             this.ProviderKey = providerKey;
             this.Action = action;
             this.Weight = weight;
