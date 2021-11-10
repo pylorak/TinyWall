@@ -169,20 +169,19 @@ namespace WFPdotNet
                     else
                     {
                         // Convert CIDR subnet length to byte array
-                        byte[] maskBytes = new byte[4];
+                        uint maskBits = 0;
                         int prefix = subnetLen;
-                        for (int i = 0; i < maskBytes.Length; ++i)
+                        for (int i = 0; i < 4; ++i)
                         {
                             int s = (prefix < 8) ? prefix : 8;
-                            maskBytes[i] = MaskByteBitsLookup[s];
+                            maskBits = (maskBits << 8) | MaskByteBitsLookup[s];
                             prefix -= s;
                         }
-                        Array.Reverse(maskBytes);
                         Array.Reverse(addressBytes);
 
                         Interop.FWP_V4_ADDR_AND_MASK addrAndMask4 = new Interop.FWP_V4_ADDR_AND_MASK();
                         addrAndMask4.addr = BitConverter.ToUInt32(addressBytes, 0);
-                        addrAndMask4.mask = BitConverter.ToUInt32(maskBytes, 0);
+                        addrAndMask4.mask = maskBits;
                         nativeMem = SafeHGlobalHandle.FromStruct(addrAndMask4);
 
                         _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_V4_ADDR_MASK;
