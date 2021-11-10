@@ -247,7 +247,7 @@ namespace WFPdotNet
             if (Guid.Empty == filter.FilterKey)
                 filter.FilterKey = Guid.NewGuid();
 
-            var nf = filter.Marshal();
+            var nf = filter.Prepare();
             uint err = NativeMethods.FwpmFilterAdd0(_nativeEngineHandle, ref nf, IntPtr.Zero, out ulong id);
             if (0 != err)
                 throw new WfpException(err, "FwpmFilterAdd0");

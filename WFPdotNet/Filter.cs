@@ -34,10 +34,9 @@ namespace WFPdotNet
 
         private Interop.FWPM_FILTER0_NoStrings _nativeStruct;
 
-        private Guid? _providerKey;
-        private SafeHGlobalHandle _providerKeyHandle;
-
-        private SafeHGlobalHandle _weightHandle;
+        private ulong _weight;
+        private Guid _providerKey;
+        private SafeHGlobalHandle _weightAndProviderKeyHandle;
 
         private List<FilterCondition> _conditions;
         private SafeHGlobalHandle _conditionsHandle;
@@ -49,12 +48,10 @@ namespace WFPdotNet
 
         private Filter()
         {
-            _nativeStruct.providerKey = IntPtr.Zero;
-            _providerKeyHandle = null;
-
-            _weightHandle = SafeHGlobalHandle.Alloc(sizeof(ulong));
+            _weightAndProviderKeyHandle = SafeHGlobalHandle.Alloc(sizeof(ulong) + Marshal.SizeOf(typeof(Guid)));
             _nativeStruct.weight.type = Interop.FWP_DATA_TYPE.FWP_UINT64;
-            _nativeStruct.weight.value.uint64 = _weightHandle.DangerousGetHandle();
+            _nativeStruct.weight.value.uint64 = _weightAndProviderKeyHandle.DangerousGetHandle();
+            _nativeStruct.providerKey = _weightAndProviderKeyHandle.DangerousGetHandle() + sizeof(ulong);
 
             _conditions = new List<FilterCondition>();
             _conditionsHandle = null;
@@ -83,11 +80,12 @@ namespace WFPdotNet
                 // TODO: Do we really not need to own these SafeHandles ???
                 //_providerKeyHandle = new AllocHGlobalSafeHandle(_nativeStruct.providerKey, false);
                 _providerKey = PInvokeHelper.PtrToStructure<Guid>(_nativeStruct.providerKey);
+                _weight = PInvokeHelper.PtrToStructure<ulong>(_nativeStruct.weight.value.uint64);
             }
 
             if (getConditions)
             {
-                int condSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(Interop.FWPM_FILTER_CONDITION0));
+                int condSize = Marshal.SizeOf(typeof(Interop.FWPM_FILTER_CONDITION0));
                 _conditions = new List<FilterCondition>((int)_nativeStruct.numFilterConditions);
                 for (int i = 0; i < (int)_nativeStruct.numFilterConditions; ++i)
                 {
@@ -98,13 +96,13 @@ namespace WFPdotNet
             }
         }
 
-        public Interop.FWPM_FILTER0_NoStrings Marshal()
+        public Interop.FWPM_FILTER0_NoStrings Prepare()
         {
             SynchronizeDisplayData();
 
             if (_conditionsHandle == null)
             {
-                int condSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(Interop.FWPM_FILTER_CONDITION0));
+                int condSize = Marshal.SizeOf(typeof(Interop.FWPM_FILTER_CONDITION0));
                 _conditionsHandle?.Dispose();
                 _conditionsHandle = SafeHGlobalHandle.Alloc(_conditions.Count * condSize);
                 _nativeStruct.filterConditions = _conditionsHandle.DangerousGetHandle();
@@ -114,7 +112,7 @@ namespace WFPdotNet
                 {
                     PInvokeHelper.AssertUnmanagedType<Interop.FWPM_FILTER_CONDITION0>();
                     IntPtr dst = _conditionsHandle.DangerousGetHandle();
-                    int size = System.Runtime.InteropServices.Marshal.SizeOf<Interop.FWPM_FILTER_CONDITION0>();
+                    int size = Marshal.SizeOf<Interop.FWPM_FILTER_CONDITION0>();
                     for (int i = 0; i < _conditions.Count; ++i)
                     {
                         var cond = _conditions[i].Marshal();
@@ -141,9 +139,10 @@ namespace WFPdotNet
                 case DisplaySyncMode.None:
                     break;
                 case DisplaySyncMode.ToManaged:
-                    _DisplayName = System.Runtime.InteropServices.Marshal.PtrToStringUni(_nativeStruct.displayData.name);
-                    _DisplayDescription = System.Runtime.InteropServices.Marshal.PtrToStringUni(_nativeStruct.displayData.description);
-                    break;
+                    throw new InvalidOperationException();
+                    //_DisplayName = Marshal.PtrToStringUni(_nativeStruct.displayData.name);
+                    //_DisplayDescription = Marshal.PtrToStringUni(_nativeStruct.displayData.description);
+                    //break;
                 case DisplaySyncMode.ToNative:
                     int nameSize = _DisplayName.Length * 2;
                     int descriptionSize = _DisplayDescription.Length * 2;
@@ -207,27 +206,17 @@ namespace WFPdotNet
             set { _nativeStruct.flags = value; }
         }
 
-        public Guid? ProviderKey
+        public Guid ProviderKey
         {
             get { return _providerKey; }
             set
             {
-                _providerKeyHandle?.Dispose();
-                _providerKeyHandle = null;
+                if (_weightAndProviderKeyHandle is null)
+                    throw new InvalidOperationException();
 
                 _providerKey = value;
-
-                if (value.HasValue)
-                {
-                    _providerKeyHandle = SafeHGlobalHandle.FromStruct(value.Value);
-                    _nativeStruct.providerKey = _providerKeyHandle.DangerousGetHandle();
-                }
-                else
-                {
-                    _nativeStruct.providerKey = IntPtr.Zero;
-                }
+                PInvokeHelper.StructureToPtr(value, _nativeStruct.providerKey);
             }
-
         }
 
         private ulong? _FilterId;
@@ -255,8 +244,15 @@ namespace WFPdotNet
         }
         public ulong Weight
         {
-            get { return PInvokeHelper.PtrToStructure<ulong>(_nativeStruct.weight.value.uint64); }
-            set { PInvokeHelper.StructureToPtr(value, _nativeStruct.weight.value.uint64); }
+            get { return _weight; }
+            set
+            {
+                if (_weightAndProviderKeyHandle is null)
+                    throw new InvalidOperationException();
+
+                _weight = value;
+                PInvokeHelper.StructureToPtr(value, _nativeStruct.weight.value.uint64);
+            }
         }
         public List<FilterCondition> Conditions
         {
@@ -282,14 +278,13 @@ namespace WFPdotNet
 
         public void Dispose()
         {
-            _providerKeyHandle?.Dispose();
-            _weightHandle?.Dispose();
+            _weightAndProviderKeyHandle?.Dispose();
             _conditionsHandle?.Dispose();
             _displayDataHandle?.Dispose();
 
-            _providerKeyHandle = null;
-            _weightHandle = null;
+            _weightAndProviderKeyHandle = null;
             _conditionsHandle = null;
+            _displayDataHandle = null;
         }
     }
 }
