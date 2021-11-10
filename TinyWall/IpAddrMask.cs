@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using TinyWall.Interface.Internal;
 
 namespace PKSoft
 {
@@ -233,21 +233,26 @@ namespace PKSoft
 
         public static IpAddrMask Parse(string str)
         {
+            return Parse(str.AsSpan());
+        }
+
+        public static IpAddrMask Parse(ReadOnlySpan<char> str)
+        {
             int prefix;
             IPAddress addr;
 
             int slash = str.IndexOf('/');
             if (slash == -1)
             {
-                addr = IPAddress.Parse(str);
+                addr = IPAddress.Parse(str.ToString()); // TODO: Parse from Span directly and don't convert to string
                 prefix = addr.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork ? 32 : 128;
             }
             else
             {
-                string ip = str.Remove(slash);
-                addr = IPAddress.Parse(ip);
-                string tmp = str.Substring(slash + 1);
-                prefix = int.Parse(tmp);
+                var addrSpan = str.Slice(0, slash);
+                addr = IPAddress.Parse(addrSpan.ToString()); // TODO: Parse from Span directly and don't convert to string
+                var prefixSpan = str.Slice(slash + 1);
+                prefix = prefixSpan.DecimalToInt32(); // TODO: Use int.Parse() when available
             }
 
             return new IpAddrMask(addr, prefix);

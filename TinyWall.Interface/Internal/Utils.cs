@@ -52,6 +52,73 @@ namespace TinyWall.Interface.Internal
                 return Join(str0, str1, '\\');
         }
 
+        public static bool Equals(this ReadOnlySpan<char> span, string other, StringComparison opts)
+        {
+            return span.Equals(other.AsSpan(), opts);
+        }
+
+        private static (ulong, bool) DecimalToNumeric(this ReadOnlySpan<char> span, int maxDecimals, bool negativeAllowed)
+        {
+            ulong ret = 0;
+            bool negative = false;
+
+            // Skip leading and trailing whitespace
+            span = span.Trim();
+
+            // String may begin with a sign
+            if (span[0] == '+')
+            {
+                span = span.Slice(1);
+            }
+            else if (negativeAllowed && (span[0] == '-'))
+            {
+                negative = true;
+                span = span.Slice(1);
+            }
+
+            // String must not be empty after the sign
+            if (span.Length == 0)
+                throw new FormatException();
+
+            for (int i = 0; i < span.Length; ++i)
+            {
+                if (i == maxDecimals)
+                    throw new OverflowException();
+
+                char c = span[i];
+                if (char.IsDigit(c))
+                    ret = ret * 10UL + (ulong)(c-48);
+                else
+                    throw new FormatException();
+            }
+
+            return (ret, negative);
+        }
+
+        public static int DecimalToInt32(this ReadOnlySpan<char> span)
+        {
+            (var unsignedVal, var negative) = DecimalToNumeric(span, 10, true);
+            return checked((negative ? (int)-(uint)unsignedVal : (int)unsignedVal));
+        }
+        public static ushort DecimalToUInt16(this ReadOnlySpan<char> span)
+        {
+            (var unsignedVal, var _) = DecimalToNumeric(span, 5, false);
+            return checked((ushort)unsignedVal);
+        }
+        public static bool TryDecimalToUInt16(this ReadOnlySpan<char> span, out ushort result)
+        {
+            try
+            {
+                result = DecimalToUInt16(span);
+                return true;
+            }
+            catch
+            {
+                result = 0;
+                return false;
+            }
+        }
+
         public static string HexEncode(byte[] binstr)
         {
             StringBuilder sb = new StringBuilder();

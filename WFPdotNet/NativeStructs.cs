@@ -281,7 +281,7 @@ namespace WFPdotNet.Interop
     {
         public Guid fieldKey;
         public FieldMatchType matchType;
-        public Interop.FWP_CONDITION_VALUE0 conditionValue;
+        public FWP_CONDITION_VALUE0 conditionValue;
     }
 
     [Flags]

@@ -250,7 +250,10 @@ namespace WFPdotNet
         public PortFilterCondition(ushort minPort, ushort maxPort, RemoteOrLocal peer)
             : this(peer)
         {
-            Init(minPort, maxPort);
+            if (minPort == maxPort)
+                Init(minPort);
+            else
+                Init(minPort, maxPort);
         }
 
         public PortFilterCondition(string portOrRange, RemoteOrLocal peer)
@@ -621,6 +624,38 @@ namespace WFPdotNet
             base.Dispose(disposing);
         }
     }
+
+    public sealed class IcmpTypeFilterCondition : FilterCondition
+    {
+        public IcmpTypeFilterCondition(ushort icmpType)
+        {
+            _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
+            _nativeStruct.fieldKey = ConditionKeys.FWPM_CONDITION_ORIGINAL_ICMP_TYPE;
+            _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT16;
+            _nativeStruct.conditionValue.value.uint16 = icmpType;
+        }
+    }
+    public sealed class IcmpErrorTypeFilterCondition : FilterCondition
+    {
+        public IcmpErrorTypeFilterCondition(ushort icmpType)
+        {
+            _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
+            _nativeStruct.fieldKey = ConditionKeys.FWPM_CONDITION_ICMP_TYPE;
+            _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT16;
+            _nativeStruct.conditionValue.value.uint16 = icmpType;
+        }
+    }
+    public sealed class IcmpErrorCodeFilterCondition : FilterCondition
+    {
+        public IcmpErrorCodeFilterCondition(ushort icmpCode)
+        {
+            _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
+            _nativeStruct.fieldKey = ConditionKeys.FWPM_CONDITION_ICMP_CODE;
+            _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT16;
+            _nativeStruct.conditionValue.value.uint16 = icmpCode;
+        }
+    }
+
 
     [Flags]
     public enum ConditionFlags : uint

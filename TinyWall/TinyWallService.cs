@@ -67,11 +67,9 @@ namespace PKSoft
         {
             using (var timer = new HierarchicalStopwatch("AssembleActiveRules()"))
             {
-                bool displayBlockActive = ActiveConfig.Service.ActiveProfile.DisplayOffBlock && !DisplayCurrentlyOn;
                 List<RuleDef> rules = new List<RuleDef>();
                 Guid ModeId = Guid.NewGuid();
                 RuleDef def;
-
 
                 // Do we want to let local traffic through?
                 if (ActiveConfig.Service.ActiveProfile.AllowLocalSubnet)
@@ -266,6 +264,7 @@ namespace PKSoft
                     r.Application = PathMapper.Instance.ConvertPathIgnoreErrors(r.Application, PathFormat.NativeNt);
                 }
 
+                bool displayBlockActive = ActiveConfig.Service.ActiveProfile.DisplayOffBlock && !DisplayCurrentlyOn;
                 if (displayBlockActive)
                 {
                     // Modify all allow-rules to only allow local subnet
@@ -498,10 +497,44 @@ namespace PKSoft
 
         private void ConstructFilter(RuleDef r, LayerKeyEnum layer)
         {
+            // Local helper methods
+
+            bool addIpFilterCondition(IpAddrMask peerAddr, RemoteOrLocal peerType, List<FilterCondition> coll)
+            {
+                if (peerAddr.IsIPv6 == LayerIsV6Stack(layer))
+                {
+                    coll.Add(new IpFilterCondition(peerAddr.Address, (byte)peerAddr.PrefixLen, peerType));
+                    return true;
+                }
+                return false;
+            }
+
+            (ushort, ushort) parseUInt16Range(ReadOnlySpan<char> str)
+            {
+                if (-1 != str.IndexOf('-'))
+                {
+                    ReadOnlySpan<char> min, max;
+                    using (var enumerator = str.Split('-'))
+                    {
+                        enumerator.MoveNext(); min = enumerator.Current;
+                        enumerator.MoveNext(); max = enumerator.Current;
+                    }
+                    return (min.DecimalToUInt16(), max.DecimalToUInt16());
+                }
+                else
+                {
+                    var port = str.DecimalToUInt16();
+                    return (port, port);
+                }
+            }
+
+            // ---------------------------------------
+
             List<FilterCondition> conditions = new List<FilterCondition>();
+
+            // Application identity
             try
             {
-
                 if (!string.IsNullOrEmpty(r.AppContainerSid))
                 {
                     System.Diagnostics.Debug.Assert(!r.AppContainerSid.Equals("*"));
@@ -537,42 +570,32 @@ namespace PKSoft
                     }
                 }
 
+                // IP address
                 if (!string.IsNullOrEmpty(r.RemoteAddresses))
                 {
                     System.Diagnostics.Debug.Assert(!r.RemoteAddresses.Equals("*"));
 
                     bool validAddressFound = false;
-                    string[] addresses = r.RemoteAddresses.Split(',');
-
-                    void addIpFilterCondition(IpAddrMask peerAddr, RemoteOrLocal peerType)
+                    foreach (var ipStr in r.RemoteAddresses.AsSpan().Split(',', SpanSplitOptions.RemoveEmptyEntries))
                     {
-                        if (peerAddr.IsIPv6 == LayerIsV6Stack(layer))
-                        {
-                            validAddressFound = true;
-                            conditions.Add(new IpFilterCondition(peerAddr.Address, (byte)peerAddr.PrefixLen, peerType));
-                        }
-                    }
-
-                    foreach (var ipStr in addresses)
-                    {
-                        if (ipStr == RuleDef.LOCALSUBNET_ID)
+                        if (ipStr.Equals(RuleDef.LOCALSUBNET_ID, StringComparison.Ordinal))
                         {
                             foreach (var addr in LocalSubnetAddreses)
-                                addIpFilterCondition(addr, RemoteOrLocal.Remote);
+                                validAddressFound |= addIpFilterCondition(addr, RemoteOrLocal.Remote, conditions);
                         }
-                        else if (ipStr == "DefaultGateway")
+                        else if (ipStr.Equals("DefaultGateway", StringComparison.Ordinal))
                         {
                             foreach (var addr in GatewayAddresses)
-                                addIpFilterCondition(addr, RemoteOrLocal.Remote);
+                                validAddressFound |= addIpFilterCondition(addr, RemoteOrLocal.Remote, conditions);
                         }
-                        else if (ipStr == "DNS")
+                        else if (ipStr.Equals("DNS", StringComparison.Ordinal))
                         {
                             foreach (var addr in DnsAddresses)
-                                addIpFilterCondition(addr, RemoteOrLocal.Remote);
+                                validAddressFound |= addIpFilterCondition(addr, RemoteOrLocal.Remote, conditions);
                         }
                         else
                         {
-                            addIpFilterCondition(IpAddrMask.Parse(ipStr), RemoteOrLocal.Remote);
+                            validAddressFound |= addIpFilterCondition(IpAddrMask.Parse(ipStr), RemoteOrLocal.Remote, conditions);
                         }
                     }
 
@@ -586,6 +609,7 @@ namespace PKSoft
                 // We never want to affect loopback traffic
                 conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
 
+                // Protocol
                 if (r.Protocol != Protocol.Any)
                 {
                     if (LayerIsAleAuthConnect(layer) || LayerIsAleAuthRecvAccept(layer))
@@ -599,62 +623,62 @@ namespace PKSoft
                             conditions.Add(new ProtocolFilterCondition((byte)r.Protocol));
                     }
                 }
+
+                // Ports
                 if (!string.IsNullOrEmpty(r.LocalPorts))
                 {
                     System.Diagnostics.Debug.Assert(!r.LocalPorts.Equals("*"));
-                    string[] ports = r.LocalPorts.Split(',');
-                    foreach (var p in ports)
-                        conditions.Add(new PortFilterCondition(p, RemoteOrLocal.Local));
+                    foreach (var p in r.LocalPorts.AsSpan().Split(',', SpanSplitOptions.RemoveEmptyEntries))
+                    {
+                        (var minPort, var maxPort) = parseUInt16Range(p);
+                        conditions.Add(new PortFilterCondition(minPort, maxPort, RemoteOrLocal.Local));
+                    }
                 }
                 if (!string.IsNullOrEmpty(r.RemotePorts))
                 {
                     System.Diagnostics.Debug.Assert(!r.RemotePorts.Equals("*"));
-                    string[] ports = r.RemotePorts.Split(',');
-                    foreach (var p in ports)
-                        conditions.Add(new PortFilterCondition(p, RemoteOrLocal.Remote));
+                    foreach (var p in r.RemotePorts.AsSpan().Split(',', SpanSplitOptions.RemoveEmptyEntries))
+                    {
+                        (var minPort, var maxPort) = parseUInt16Range(p);
+                        conditions.Add(new PortFilterCondition(minPort, maxPort, RemoteOrLocal.Remote));
+                    }
                 }
+
+                // ICMP
                 if (!string.IsNullOrEmpty(r.IcmpTypesAndCodes))
                 {
                     System.Diagnostics.Debug.Assert(!r.IcmpTypesAndCodes.Equals("*"));
-                    string[] list = r.IcmpTypesAndCodes.Split(',');
-                    foreach (var e in list)
+                    foreach (var e in r.IcmpTypesAndCodes.AsSpan().Split(',', SpanSplitOptions.RemoveEmptyEntries))
                     {
-                        string[] tc = e.Split(':');
+                        using var tc = e.Split(':');
+                        tc.MoveNext(); var icmpType = tc.Current;
 
                         if (LayerIsIcmpError(layer))
                         {
                             // ICMP Type
-                            if (!string.IsNullOrEmpty(tc[0]) && ushort.TryParse(tc[0], out ushort icmpType))
-                            {
-                                FWP_CONDITION_VALUE0 cv = new FWP_CONDITION_VALUE0();
-                                cv.type = FWP_DATA_TYPE.FWP_UINT16;
-                                cv.value.uint16 = icmpType;
-                                conditions.Add(new FilterCondition(ConditionKeys.FWPM_CONDITION_ICMP_TYPE, FieldMatchType.FWP_MATCH_EQUAL, cv));
-                            }
+                            if ((icmpType.Length != 0) && icmpType.TryDecimalToUInt16(out ushort icmpTypeVal))
+                                conditions.Add(new IcmpErrorTypeFilterCondition(icmpTypeVal));
+
                             // ICMP Code
-                            if ((tc.Length > 1) && !string.IsNullOrEmpty(tc[1]) && ushort.TryParse(tc[1], out ushort icmpCode))
+                            if (tc.MoveNext())
                             {
-                                FWP_CONDITION_VALUE0 cv = new FWP_CONDITION_VALUE0();
-                                cv.type = FWP_DATA_TYPE.FWP_UINT16;
-                                cv.value.uint16 = icmpCode;
-                                conditions.Add(new FilterCondition(ConditionKeys.FWPM_CONDITION_ICMP_CODE, FieldMatchType.FWP_MATCH_EQUAL, cv));
+                                var icmpCode = tc.Current;
+                                if ((icmpCode.Length != 0) && icmpCode.TryDecimalToUInt16(out ushort icmpCodeVal))
+                                    conditions.Add(new IcmpErrorCodeFilterCondition(icmpCodeVal));
                             }
                         }
                         else
                         {
                             // ICMP Type - note different condition key
-                            if (!string.IsNullOrEmpty(tc[0]) && ushort.TryParse(tc[0], out ushort icmpType))
-                            {
-                                FWP_CONDITION_VALUE0 cv = new FWP_CONDITION_VALUE0();
-                                cv.type = FWP_DATA_TYPE.FWP_UINT16;
-                                cv.value.uint16 = icmpType;
-                                conditions.Add(new FilterCondition(ConditionKeys.FWPM_CONDITION_ORIGINAL_ICMP_TYPE, FieldMatchType.FWP_MATCH_EQUAL, cv));
-                            }
+                            if ((icmpType.Length != 0) && icmpType.TryDecimalToUInt16(out ushort icmpTypeVal))
+                                conditions.Add(new IcmpTypeFilterCondition(icmpTypeVal));
+
                             // Matching on ICMP Code not possible
                         }
                     }
                 }
 
+                // Create and install filter
                 using (Filter f = new Filter(
                     r.ExceptionId.ToString(),
                     r.Name,
