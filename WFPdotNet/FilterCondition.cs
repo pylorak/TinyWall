@@ -428,15 +428,20 @@ namespace WFPdotNet
 
         protected void Init(Guid fieldKey, RawSecurityDescriptor sd, FieldMatchType matchType)
         {
-            // Get the SD in SDDL self-related form into an unmanaged pointer
             byte[] sdBinaryForm = new byte[sd.BinaryLength];
             sd.GetBinaryForm(sdBinaryForm, 0);
-            sdNativeMem = SafeHGlobalHandle.Alloc(sd.BinaryLength);
-            System.Runtime.InteropServices.Marshal.Copy(sdBinaryForm, 0, sdNativeMem.DangerousGetHandle(), sd.BinaryLength);
+            Init(fieldKey, sdBinaryForm, matchType);
+        }
+
+        protected void Init(Guid fieldKey, byte[] sdBinaryForm, FieldMatchType matchType)
+        {
+            // Get the SD in SDDL self-related form into an unmanaged pointer
+            sdNativeMem = SafeHGlobalHandle.Alloc(sdBinaryForm.Length);
+            System.Runtime.InteropServices.Marshal.Copy(sdBinaryForm, 0, sdNativeMem.DangerousGetHandle(), sdBinaryForm.Length);
 
             //  Create FWP_BYTE_BLOB for the SD
             Interop.FWP_BYTE_BLOB blob = new Interop.FWP_BYTE_BLOB();
-            blob.size = (uint)sd.BinaryLength;
+            blob.size = (uint)sdBinaryForm.Length;
             blob.data = sdNativeMem.DangerousGetHandle();
             byteBlobNativeMem = SafeHGlobalHandle.FromStruct(blob);
 
@@ -460,6 +465,20 @@ namespace WFPdotNet
 
     public sealed class ServiceNameFilterCondition : SecurityDescriptorFilterCondition
     {
+        private static class NativeMethods
+        {
+            [DllImport("advapi32", SetLastError = true, CharSet = CharSet.Unicode)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            public static extern bool ConvertStringSecurityDescriptorToSecurityDescriptor(
+                string stringSd,
+                uint stringSdRevision,
+                out IntPtr resultSd,
+                ref uint resultSdLength);
+
+            [DllImport("kernel32")]
+            public static extern IntPtr LocalFree(IntPtr hMem);
+        }
+
         public ServiceNameFilterCondition(string serviceName, FieldMatchType matchType)
         {
             // Get service SID
@@ -468,8 +487,26 @@ namespace WFPdotNet
             // Put service SID into SDDL form
             string sddl = $"O:SYG:SYD:(A;;CCRC;;;{serviceSid})";
 
+            // Get SDDL in binary form
+            IntPtr nativeArray = IntPtr.Zero;
+            uint byteArraySize = 0;
+            byte[] binaryForm = null;
+            try
+            {
+                if (!NativeMethods.ConvertStringSecurityDescriptorToSecurityDescriptor(sddl, 1, out nativeArray, ref byteArraySize))
+                    throw new Win32Exception();
+
+                binaryForm = new byte[byteArraySize];
+                System.Runtime.InteropServices.Marshal.Copy(nativeArray, binaryForm, 0, (int)byteArraySize);
+            }
+            finally
+            {
+                if (nativeArray != IntPtr.Zero)
+                    NativeMethods.LocalFree(nativeArray);
+            }
+
             // Construct condition from security descriptor
-            Init(ConditionKeys.FWPM_CONDITION_ALE_USER_ID, new RawSecurityDescriptor(sddl), matchType);
+            Init(ConditionKeys.FWPM_CONDITION_ALE_USER_ID, binaryForm, matchType);
         }
 
         public ServiceNameFilterCondition(string serviceName) : this(serviceName, FieldMatchType.FWP_MATCH_EQUAL)
@@ -512,22 +549,25 @@ namespace WFPdotNet
             // Optimized away by reversing array order in steps 7 and 10.
 
             // 6: Split the reversed string into 5 blocks of 4 bytes each.
-            uint[] dec = new uint[5];
-            for (int i = 0; i < dec.Length; ++i)
+            unsafe
             {
-                // 7: Convert each block of hex bytes() to Decimal
-                dec[i] =
-                    ((uint)sha1[i * 4 + 3] << 24) +
-                    ((uint)sha1[i * 4 + 2] << 16) +
-                    ((uint)sha1[i * 4 + 1] << 8) +
-                    ((uint)sha1[i * 4 + 0] << 0);
-            }
+                var dec = stackalloc uint[5];
+                for (int i = 0; i < 5; ++i)
+                {
+                    // 7: Convert each block of hex bytes() to Decimal
+                    dec[i] =
+                        ((uint)sha1[i * 4 + 3] << 24) +
+                        ((uint)sha1[i * 4 + 2] << 16) +
+                        ((uint)sha1[i * 4 + 1] << 8) +
+                        ((uint)sha1[i * 4 + 0] << 0);
+                }
 
-            // 8: Reverse the Position of the blocks.
-            // 9: Create the first part of the SID "S-1-5-80-"
-            // 10: Tack on each block of Decimal strings with a "-" in between each block that was converted and reversed.
-            // 11: Finally out put the complete SID for the service.
-            return $"S-1-5-80-{dec[0]}-{dec[1]}-{dec[2]}-{dec[3]}-{dec[4]}";
+                // 8: Reverse the Position of the blocks.
+                // 9: Create the first part of the SID "S-1-5-80-"
+                // 10: Tack on each block of Decimal strings with a "-" in between each block that was converted and reversed.
+                // 11: Finally out put the complete SID for the service.
+                return $"S-1-5-80-{dec[0].ToString()}-{dec[1].ToString()}-{dec[2].ToString()}-{dec[3].ToString()}-{dec[4].ToString()}";
+            }
         }
     }
 
