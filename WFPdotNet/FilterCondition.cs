@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.ConstrainedExecution;
 using System.Security;
 using System.Security.AccessControl;
-using System.Text;
+using System.Diagnostics;
 
 namespace WFPdotNet
 {
@@ -44,6 +44,22 @@ namespace WFPdotNet
     public class FilterCondition : IDisposable
     {
         protected Interop.FWPM_FILTER_CONDITION0 _nativeStruct;
+        private int _referenceCount;
+
+        public void AddRef()
+        {
+            ++_referenceCount;
+        }
+
+        public void RemoveRef()
+        {
+            Debug.Assert(_referenceCount > 0);
+            --_referenceCount;
+            if (0 == _referenceCount)
+                Dispose();
+        }
+
+        public int ReferenceCount => _referenceCount;
 
         public Guid FieldKey
         {
@@ -126,6 +142,10 @@ namespace WFPdotNet
 
         public void Dispose()
         {
+            Debug.Assert(_referenceCount == 0);
+            if (_referenceCount > 0)
+                return;
+
             Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -160,6 +180,7 @@ namespace WFPdotNet
             switch (addr.AddressFamily)
             {
                 case System.Net.Sockets.AddressFamily.InterNetwork:
+                    IsIPv6 = false;
                     if (subnetLen == 32)
                     {
                         Array.Reverse(addressBytes);
@@ -189,6 +210,7 @@ namespace WFPdotNet
                     }
                     break;
                 case System.Net.Sockets.AddressFamily.InterNetworkV6:
+                    IsIPv6 = true;
                     if (subnetLen == 128)
                     {
                         nativeMem = SafeHGlobalHandle.Alloc(16);
@@ -219,6 +241,8 @@ namespace WFPdotNet
                     throw new NotSupportedException("Only the IPv4 and IPv6 address families are supported.");
             }
         }
+
+        public bool IsIPv6 { get; }
 
         protected override void Dispose(bool disposing)
         {

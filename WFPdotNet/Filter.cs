@@ -38,7 +38,7 @@ namespace WFPdotNet
         private Guid _providerKey;
         private SafeHGlobalHandle _weightAndProviderKeyHandle;
 
-        private List<FilterCondition> _conditions;
+        private FilterConditionList _conditions;
         private SafeHGlobalHandle _conditionsHandle;
 
         private SafeHGlobalHandle _displayDataHandle;
@@ -46,19 +46,14 @@ namespace WFPdotNet
         private string _DisplayDescription;
         private DisplaySyncMode _DisplaySynchNeeded;
 
-        private Filter()
+        public Filter(string name, string desc, Guid providerKey, FilterActions action, ulong weight, FilterConditionList conditions = null)
         {
             _weightAndProviderKeyHandle = SafeHGlobalHandle.Alloc(sizeof(ulong) + Marshal.SizeOf(typeof(Guid)));
             _nativeStruct.weight.type = Interop.FWP_DATA_TYPE.FWP_UINT64;
             _nativeStruct.weight.value.uint64 = _weightAndProviderKeyHandle.DangerousGetHandle();
             _nativeStruct.providerKey = _weightAndProviderKeyHandle.DangerousGetHandle() + sizeof(ulong);
+            _conditions = (conditions is null) ? new FilterConditionList() : conditions;
 
-            _conditions = new List<FilterCondition>();
-            _conditionsHandle = null;
-        }
-
-        public Filter(string name, string desc, Guid providerKey, FilterActions action, ulong weight) : this()
-        {
             this.DisplayName = name;
             this.DisplayDescription = desc;
             this.ProviderKey = providerKey;
@@ -86,7 +81,7 @@ namespace WFPdotNet
             if (getConditions)
             {
                 int condSize = Marshal.SizeOf(typeof(Interop.FWPM_FILTER_CONDITION0));
-                _conditions = new List<FilterCondition>((int)_nativeStruct.numFilterConditions);
+                _conditions = new FilterConditionList((int)_nativeStruct.numFilterConditions);
                 for (int i = 0; i < (int)_nativeStruct.numFilterConditions; ++i)
                 {
                     IntPtr ptr = new IntPtr(_nativeStruct.filterConditions.ToInt64() + i * condSize);
@@ -254,7 +249,7 @@ namespace WFPdotNet
                 PInvokeHelper.StructureToPtr(value, _nativeStruct.weight.value.uint64);
             }
         }
-        public List<FilterCondition> Conditions
+        public FilterConditionList Conditions
         {
             get 
             {
@@ -281,10 +276,12 @@ namespace WFPdotNet
             _weightAndProviderKeyHandle?.Dispose();
             _conditionsHandle?.Dispose();
             _displayDataHandle?.Dispose();
+            _conditions?.Dispose();
 
             _weightAndProviderKeyHandle = null;
             _conditionsHandle = null;
             _displayDataHandle = null;
+            _conditions = null;
         }
     }
 }

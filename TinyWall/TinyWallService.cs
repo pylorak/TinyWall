@@ -62,6 +62,9 @@ namespace PKSoft
         private HashSet<IpAddrMask> LocalSubnetAddreses = new HashSet<IpAddrMask>();
         private HashSet<IpAddrMask> GatewayAddresses = new HashSet<IpAddrMask>();
         private HashSet<IpAddrMask> DnsAddresses = new HashSet<IpAddrMask>();
+        private FilterConditionList LocalSubnetFilterConditions = new FilterConditionList();
+        private FilterConditionList GatewayFilterConditions = new FilterConditionList();
+        private FilterConditionList DnsFilterConditions = new FilterConditionList();
 
         private List<RuleDef> AssembleActiveRules(List<RuleDef> rawSocketExceptions)
         {
@@ -499,7 +502,17 @@ namespace PKSoft
         {
             // Local helper methods
 
-            bool addIpFilterCondition(IpAddrMask peerAddr, RemoteOrLocal peerType, List<FilterCondition> coll)
+            bool addCommonIpFilterCondition(FilterCondition cond, FilterConditionList coll)
+            {
+                var ipFilter = cond as IpFilterCondition;
+                if (ipFilter.IsIPv6 == LayerIsV6Stack(layer))
+                {
+                    coll.Add(cond);
+                    return true;
+                }
+                return false;
+            }
+            bool addIpFilterCondition(IpAddrMask peerAddr, RemoteOrLocal peerType, FilterConditionList coll)
             {
                 if (peerAddr.IsIPv6 == LayerIsV6Stack(layer))
                 {
@@ -508,7 +521,6 @@ namespace PKSoft
                 }
                 return false;
             }
-
             (ushort, ushort) parseUInt16Range(ReadOnlySpan<char> str)
             {
                 if (-1 != str.IndexOf('-'))
@@ -530,174 +542,166 @@ namespace PKSoft
 
             // ---------------------------------------
 
-            List<FilterCondition> conditions = new List<FilterCondition>();
+            using var conditions = new FilterConditionList();
 
             // Application identity
-            try
+            if (!string.IsNullOrEmpty(r.AppContainerSid))
             {
-                if (!string.IsNullOrEmpty(r.AppContainerSid))
+                System.Diagnostics.Debug.Assert(!r.AppContainerSid.Equals("*"));
+
+                // Skip filter if OS is not supported
+                if (!TinyWall.Interface.VersionInfo.Win81OrNewer)
+                    return;
+
+                if (!LayerIsIcmpError(layer))
+                    conditions.Add(new PackageIdFilterCondition(r.AppContainerSid));
+                else
+                    return;
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(r.ServiceName))
                 {
-                    System.Diagnostics.Debug.Assert(!r.AppContainerSid.Equals("*"));
-
-                    // Skip filter if OS is not supported
-                    if (!TinyWall.Interface.VersionInfo.Win81OrNewer)
-                        return;
-
+                    System.Diagnostics.Debug.Assert(!r.ServiceName.Equals("*"));
                     if (!LayerIsIcmpError(layer))
-                        conditions.Add(new PackageIdFilterCondition(r.AppContainerSid));
+                        conditions.Add(new ServiceNameFilterCondition(r.ServiceName));
                     else
                         return;
                 }
-                else
+
+                if (!string.IsNullOrEmpty(r.Application))
                 {
-                    if (!string.IsNullOrEmpty(r.ServiceName))
-                    {
-                        System.Diagnostics.Debug.Assert(!r.ServiceName.Equals("*"));
-                        if (!LayerIsIcmpError(layer))
-                            conditions.Add(new ServiceNameFilterCondition(r.ServiceName));
-                        else
-                            return;
-                    }
+                    System.Diagnostics.Debug.Assert(!r.Application.Equals("*"));
 
-                    if (!string.IsNullOrEmpty(r.Application))
-                    {
-                        System.Diagnostics.Debug.Assert(!r.Application.Equals("*"));
-
-                        if (!LayerIsIcmpError(layer))
-                            conditions.Add(new AppIdFilterCondition(r.Application, false, true));
-                        else
-                            return;
-                    }
-                }
-
-                // IP address
-                if (!string.IsNullOrEmpty(r.RemoteAddresses))
-                {
-                    System.Diagnostics.Debug.Assert(!r.RemoteAddresses.Equals("*"));
-
-                    bool validAddressFound = false;
-                    foreach (var ipStr in r.RemoteAddresses.AsSpan().Split(',', SpanSplitOptions.RemoveEmptyEntries))
-                    {
-                        if (ipStr.Equals(RuleDef.LOCALSUBNET_ID, StringComparison.Ordinal))
-                        {
-                            foreach (var addr in LocalSubnetAddreses)
-                                validAddressFound |= addIpFilterCondition(addr, RemoteOrLocal.Remote, conditions);
-                        }
-                        else if (ipStr.Equals("DefaultGateway", StringComparison.Ordinal))
-                        {
-                            foreach (var addr in GatewayAddresses)
-                                validAddressFound |= addIpFilterCondition(addr, RemoteOrLocal.Remote, conditions);
-                        }
-                        else if (ipStr.Equals("DNS", StringComparison.Ordinal))
-                        {
-                            foreach (var addr in DnsAddresses)
-                                validAddressFound |= addIpFilterCondition(addr, RemoteOrLocal.Remote, conditions);
-                        }
-                        else
-                        {
-                            validAddressFound |= addIpFilterCondition(IpAddrMask.Parse(ipStr), RemoteOrLocal.Remote, conditions);
-                        }
-                    }
-
-                    if (!validAddressFound)
-                    {
-                        // Break. We don't want to add this filter to this layer.
+                    if (!LayerIsIcmpError(layer))
+                        conditions.Add(new AppIdFilterCondition(r.Application, false, true));
+                    else
                         return;
-                    }
-                }
-
-                // We never want to affect loopback traffic
-                conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
-
-                // Protocol
-                if (r.Protocol != Protocol.Any)
-                {
-                    if (LayerIsAleAuthConnect(layer) || LayerIsAleAuthRecvAccept(layer))
-                    {
-                        if (r.Protocol == Protocol.TcpUdp)
-                        {
-                            conditions.Add(new ProtocolFilterCondition((byte)Protocol.TCP));
-                            conditions.Add(new ProtocolFilterCondition((byte)Protocol.UDP));
-                        }
-                        else
-                            conditions.Add(new ProtocolFilterCondition((byte)r.Protocol));
-                    }
-                }
-
-                // Ports
-                if (!string.IsNullOrEmpty(r.LocalPorts))
-                {
-                    System.Diagnostics.Debug.Assert(!r.LocalPorts.Equals("*"));
-                    foreach (var p in r.LocalPorts.AsSpan().Split(',', SpanSplitOptions.RemoveEmptyEntries))
-                    {
-                        (var minPort, var maxPort) = parseUInt16Range(p);
-                        conditions.Add(new PortFilterCondition(minPort, maxPort, RemoteOrLocal.Local));
-                    }
-                }
-                if (!string.IsNullOrEmpty(r.RemotePorts))
-                {
-                    System.Diagnostics.Debug.Assert(!r.RemotePorts.Equals("*"));
-                    foreach (var p in r.RemotePorts.AsSpan().Split(',', SpanSplitOptions.RemoveEmptyEntries))
-                    {
-                        (var minPort, var maxPort) = parseUInt16Range(p);
-                        conditions.Add(new PortFilterCondition(minPort, maxPort, RemoteOrLocal.Remote));
-                    }
-                }
-
-                // ICMP
-                if (!string.IsNullOrEmpty(r.IcmpTypesAndCodes))
-                {
-                    System.Diagnostics.Debug.Assert(!r.IcmpTypesAndCodes.Equals("*"));
-                    foreach (var e in r.IcmpTypesAndCodes.AsSpan().Split(',', SpanSplitOptions.RemoveEmptyEntries))
-                    {
-                        using var tc = e.Split(':');
-                        tc.MoveNext(); var icmpType = tc.Current;
-
-                        if (LayerIsIcmpError(layer))
-                        {
-                            // ICMP Type
-                            if ((icmpType.Length != 0) && icmpType.TryDecimalToUInt16(out ushort icmpTypeVal))
-                                conditions.Add(new IcmpErrorTypeFilterCondition(icmpTypeVal));
-
-                            // ICMP Code
-                            if (tc.MoveNext())
-                            {
-                                var icmpCode = tc.Current;
-                                if ((icmpCode.Length != 0) && icmpCode.TryDecimalToUInt16(out ushort icmpCodeVal))
-                                    conditions.Add(new IcmpErrorCodeFilterCondition(icmpCodeVal));
-                            }
-                        }
-                        else
-                        {
-                            // ICMP Type - note different condition key
-                            if ((icmpType.Length != 0) && icmpType.TryDecimalToUInt16(out ushort icmpTypeVal))
-                                conditions.Add(new IcmpTypeFilterCondition(icmpTypeVal));
-
-                            // Matching on ICMP Code not possible
-                        }
-                    }
-                }
-
-                // Create and install filter
-                using (Filter f = new Filter(
-                    r.ExceptionId.ToString(),
-                    r.Name,
-                    TINYWALL_PROVIDER_KEY,
-                    (r.Action == RuleAction.Allow) ? FilterActions.FWP_ACTION_PERMIT : FilterActions.FWP_ACTION_BLOCK,
-                    r.Weight
-                ))
-                {
-                    f.LayerKey = GetLayerKey(layer);
-                    f.SublayerKey = GetSublayerKey(layer);
-                    f.Conditions.AddRange(conditions);
-
-                    InstallWfpFilter(f);
                 }
             }
-            finally
+
+            // IP address
+            if (!string.IsNullOrEmpty(r.RemoteAddresses))
             {
-                for (int i = 0; i < conditions.Count; ++i)
-                    conditions[i].Dispose();
+                System.Diagnostics.Debug.Assert(!r.RemoteAddresses.Equals("*"));
+
+                bool validAddressFound = false;
+                foreach (var ipStr in r.RemoteAddresses.AsSpan().Split(',', SpanSplitOptions.RemoveEmptyEntries))
+                {
+                    if (ipStr.Equals(RuleDef.LOCALSUBNET_ID, StringComparison.Ordinal))
+                    {
+                        foreach (var filter in LocalSubnetFilterConditions)
+                            validAddressFound |= addCommonIpFilterCondition(filter, conditions);
+                    }
+                    else if (ipStr.Equals("DefaultGateway", StringComparison.Ordinal))
+                    {
+                        foreach (var filter in GatewayFilterConditions)
+                            validAddressFound |= addCommonIpFilterCondition(filter, conditions);
+                    }
+                    else if (ipStr.Equals("DNS", StringComparison.Ordinal))
+                    {
+                        foreach (var filter in DnsFilterConditions)
+                            validAddressFound |= addCommonIpFilterCondition(filter, conditions);
+                    }
+                    else
+                    {
+                        validAddressFound |= addIpFilterCondition(IpAddrMask.Parse(ipStr), RemoteOrLocal.Remote, conditions);
+                    }
+                }
+
+                if (!validAddressFound)
+                {
+                    // Break. We don't want to add this filter to this layer.
+                    return;
+                }
+            }
+
+            // We never want to affect loopback traffic
+            conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
+
+            // Protocol
+            if (r.Protocol != Protocol.Any)
+            {
+                if (LayerIsAleAuthConnect(layer) || LayerIsAleAuthRecvAccept(layer))
+                {
+                    if (r.Protocol == Protocol.TcpUdp)
+                    {
+                        conditions.Add(new ProtocolFilterCondition((byte)Protocol.TCP));
+                        conditions.Add(new ProtocolFilterCondition((byte)Protocol.UDP));
+                    }
+                    else
+                        conditions.Add(new ProtocolFilterCondition((byte)r.Protocol));
+                }
+            }
+
+            // Ports
+            if (!string.IsNullOrEmpty(r.LocalPorts))
+            {
+                System.Diagnostics.Debug.Assert(!r.LocalPorts.Equals("*"));
+                foreach (var p in r.LocalPorts.AsSpan().Split(',', SpanSplitOptions.RemoveEmptyEntries))
+                {
+                    (var minPort, var maxPort) = parseUInt16Range(p);
+                    conditions.Add(new PortFilterCondition(minPort, maxPort, RemoteOrLocal.Local));
+                }
+            }
+            if (!string.IsNullOrEmpty(r.RemotePorts))
+            {
+                System.Diagnostics.Debug.Assert(!r.RemotePorts.Equals("*"));
+                foreach (var p in r.RemotePorts.AsSpan().Split(',', SpanSplitOptions.RemoveEmptyEntries))
+                {
+                    (var minPort, var maxPort) = parseUInt16Range(p);
+                    conditions.Add(new PortFilterCondition(minPort, maxPort, RemoteOrLocal.Remote));
+                }
+            }
+
+            // ICMP
+            if (!string.IsNullOrEmpty(r.IcmpTypesAndCodes))
+            {
+                System.Diagnostics.Debug.Assert(!r.IcmpTypesAndCodes.Equals("*"));
+                foreach (var e in r.IcmpTypesAndCodes.AsSpan().Split(',', SpanSplitOptions.RemoveEmptyEntries))
+                {
+                    using var tc = e.Split(':');
+                    tc.MoveNext(); var icmpType = tc.Current;
+
+                    if (LayerIsIcmpError(layer))
+                    {
+                        // ICMP Type
+                        if ((icmpType.Length != 0) && icmpType.TryDecimalToUInt16(out ushort icmpTypeVal))
+                            conditions.Add(new IcmpErrorTypeFilterCondition(icmpTypeVal));
+
+                        // ICMP Code
+                        if (tc.MoveNext())
+                        {
+                            var icmpCode = tc.Current;
+                            if ((icmpCode.Length != 0) && icmpCode.TryDecimalToUInt16(out ushort icmpCodeVal))
+                                conditions.Add(new IcmpErrorCodeFilterCondition(icmpCodeVal));
+                        }
+                    }
+                    else
+                    {
+                        // ICMP Type - note different condition key
+                        if ((icmpType.Length != 0) && icmpType.TryDecimalToUInt16(out ushort icmpTypeVal))
+                            conditions.Add(new IcmpTypeFilterCondition(icmpTypeVal));
+
+                        // Matching on ICMP Code not possible
+                    }
+                }
+            }
+
+            // Create and install filter
+            using (Filter f = new Filter(
+                r.ExceptionId.ToString(),
+                r.Name,
+                TINYWALL_PROVIDER_KEY,
+                (r.Action == RuleAction.Allow) ? FilterActions.FWP_ACTION_PERMIT : FilterActions.FWP_ACTION_BLOCK,
+                r.Weight,
+                conditions
+            ))
+            {
+                f.LayerKey = GetLayerKey(layer);
+                f.SublayerKey = GetSublayerKey(layer);
+
+                InstallWfpFilter(f);
             }
         }
 
@@ -709,31 +713,19 @@ namespace PKSoft
 
         private void InstallRawSocketBlocks(LayerKeyEnum layer)
         {
-            List<FilterCondition> conditions = new List<FilterCondition>();
-
-            try
+            using (Filter f = new Filter(
+                "Raw socket block",
+                string.Empty,
+                TINYWALL_PROVIDER_KEY,
+                FilterActions.FWP_ACTION_BLOCK,
+                (ulong)FilterWeights.RawSocketBlock
+            ))
             {
-                conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_RAW_ENDPOINT, FieldMatchType.FWP_MATCH_FLAGS_ANY_SET));
+                f.LayerKey = GetLayerKey(layer);
+                f.SublayerKey = GetSublayerKey(layer);
+                f.Conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_RAW_ENDPOINT, FieldMatchType.FWP_MATCH_FLAGS_ANY_SET));
 
-                using (Filter f = new Filter(
-                    "Raw socket block",
-                    string.Empty,
-                    TINYWALL_PROVIDER_KEY,
-                    FilterActions.FWP_ACTION_BLOCK,
-                    (ulong)FilterWeights.RawSocketBlock
-                ))
-                {
-                    f.LayerKey = GetLayerKey(layer);
-                    f.SublayerKey = GetSublayerKey(layer);
-                    f.Conditions.AddRange(conditions);
-
-                    InstallWfpFilter(f);
-                }
-            }
-            finally
-            {
-                for (int i = 0; i < conditions.Count; ++i)
-                    conditions[i].Dispose();
+                InstallWfpFilter(f);
             }
         }
 
@@ -759,34 +751,22 @@ namespace PKSoft
 
         private void InstallWsl2Filters(bool permit, string ifAlias, LayerKeyEnum layer)
         {
-            List<FilterCondition> conditions = new List<FilterCondition>();
-
             FilterActions action = permit ? FilterActions.FWP_ACTION_PERMIT : FilterActions.FWP_ACTION_BLOCK;
             ulong weight = (ulong)(permit ? FilterWeights.UserPermit : FilterWeights.UserBlock);
 
-            try
+            using (Filter f = new Filter(
+                "Allow WSL2",
+                string.Empty,
+                TINYWALL_PROVIDER_KEY,
+                action,
+                weight
+            ))
             {
-                conditions.Add(new LocalInterfaceCondition(ifAlias));
+                f.LayerKey = GetLayerKey(layer);
+                f.SublayerKey = GetSublayerKey(layer);
+                f.Conditions.Add(new LocalInterfaceCondition(ifAlias));
 
-                using (Filter f = new Filter(
-                    "Allow WSL2",
-                    string.Empty,
-                    TINYWALL_PROVIDER_KEY,
-                    action,
-                    weight
-                ))
-                {
-                    f.LayerKey = GetLayerKey(layer);
-                    f.SublayerKey = GetSublayerKey(layer);
-                    f.Conditions.AddRange(conditions);
-
-                    InstallWfpFilter(f);
-                }
-            }
-            finally
-            {
-                for (int i = 0; i < conditions.Count; ++i)
-                    conditions[i].Dispose();
+                InstallWfpFilter(f);
             }
         }
 
@@ -800,15 +780,13 @@ namespace PKSoft
         {
             foreach (var subj in rawSocketExceptions)
             {
-                List<FilterCondition> conditions = new List<FilterCondition>();
-
                 try
                 {
+                    using var conditions = new FilterConditionList();
                     if (!string.IsNullOrEmpty(subj.Application))
                         conditions.Add(new AppIdFilterCondition(subj.Application, false, true));
                     if (!string.IsNullOrEmpty(subj.ServiceName))
                         conditions.Add(new ServiceNameFilterCondition(subj.ServiceName));
-
                     if (conditions.Count == 0)
                         return;
 
@@ -817,22 +795,17 @@ namespace PKSoft
                         string.Empty,
                         TINYWALL_PROVIDER_KEY,
                         FilterActions.FWP_ACTION_PERMIT,
-                        (ulong)FilterWeights.RawSocketPermit
+                        (ulong)FilterWeights.RawSocketPermit,
+                        conditions
                     ))
                     {
                         f.LayerKey = GetLayerKey(layer);
                         f.SublayerKey = GetSublayerKey(layer);
-                        f.Conditions.AddRange(conditions);
 
                         InstallWfpFilter(f);
                     }
                 }
                 catch { }
-                finally
-                {
-                    for (int i = 0; i < conditions.Count; ++i)
-                        conditions[i].Dispose();
-                }
             }
         }
 
@@ -844,33 +817,22 @@ namespace PKSoft
 
         private void InstallPortScanProtection(LayerKeyEnum layer, Guid callout)
         {
-            List<FilterCondition> conditions = new List<FilterCondition>();
-
-            try
+            using (Filter f = new Filter(
+                "Port Scanning Protection",
+                string.Empty,
+                TINYWALL_PROVIDER_KEY,
+                FilterActions.FWP_ACTION_CALLOUT_TERMINATING,
+                (ulong)FilterWeights.Blocklist
+            ))
             {
+                f.LayerKey = GetLayerKey(layer);
+                f.SublayerKey = GetSublayerKey(layer);
+                f.CalloutKey = callout;
+
                 // Don't affect loopback traffic
-                conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK | ConditionFlags.FWP_CONDITION_FLAG_IS_IPSEC_SECURED, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
+                f.Conditions.Add(new FlagsFilterCondition(ConditionFlags.FWP_CONDITION_FLAG_IS_LOOPBACK | ConditionFlags.FWP_CONDITION_FLAG_IS_IPSEC_SECURED, FieldMatchType.FWP_MATCH_FLAGS_NONE_SET));
 
-                using (Filter f = new Filter(
-                    "Port Scanning Protection",
-                    string.Empty,
-                    TINYWALL_PROVIDER_KEY,
-                    FilterActions.FWP_ACTION_CALLOUT_TERMINATING,
-                    (ulong)FilterWeights.Blocklist
-                ))
-                {
-                    f.LayerKey = GetLayerKey(layer);
-                    f.SublayerKey = GetSublayerKey(layer);
-                    f.CalloutKey = callout;
-                    f.Conditions.AddRange(conditions);
-
-                    InstallWfpFilter(f);
-                }
-            }
-            finally
-            {
-                for (int i = 0; i < conditions.Count; ++i)
-                    conditions[i].Dispose();
+                InstallWfpFilter(f);
             }
         }
 
@@ -1677,17 +1639,30 @@ namespace PKSoft
                 newLocalSubnetAddreses.Add(IpAddrMask.AdminScopedMulticast);
                 newLocalSubnetAddreses.Add(IpAddrMask.IPv6LinkLocalMulticast);
 
-                if (!LocalSubnetAddreses.SetEquals(newLocalSubnetAddreses)
-                    || !GatewayAddresses.SetEquals(newGatewayAddresses)
-                    || !DnsAddresses.SetEquals(newDnsAddresses))
+                bool ipConfigurationChanged =
+                    !LocalSubnetAddreses.SetEquals(newLocalSubnetAddreses) ||
+                    !GatewayAddresses.SetEquals(newGatewayAddresses) ||
+                    !DnsAddresses.SetEquals(newDnsAddresses);
+
+                if (ipConfigurationChanged)
                 {
                     LocalSubnetAddreses = newLocalSubnetAddreses;
                     GatewayAddresses = newGatewayAddresses;
                     DnsAddresses = newDnsAddresses;
-                    return true;
+
+                    LocalSubnetFilterConditions.Clear();
+                    GatewayFilterConditions.Clear();
+                    DnsFilterConditions.Clear();
+                    
+                    foreach (var addr in LocalSubnetAddreses)
+                        LocalSubnetFilterConditions.Add(new IpFilterCondition(addr.Address, (byte)addr.PrefixLen, RemoteOrLocal.Remote));
+                    foreach (var addr in GatewayAddresses)
+                        GatewayFilterConditions.Add(new IpFilterCondition(addr.Address, (byte)addr.PrefixLen, RemoteOrLocal.Remote));
+                    foreach (var addr in DnsAddresses)
+                        DnsFilterConditions.Add(new IpFilterCondition(addr.Address, (byte)addr.PrefixLen, RemoteOrLocal.Remote));
                 }
 
-                return false;
+                return ipConfigurationChanged;
             }
         }
 
@@ -2049,6 +2024,9 @@ namespace PKSoft
                     MinuteTimer = null;
                 }
 
+                LocalSubnetFilterConditions.Dispose();
+                GatewayFilterConditions.Dispose();
+                DnsFilterConditions.Dispose();
                 LogWatcher.Dispose();
                 CommitLearnedRules();
                 ActiveConfig.Service.Save(ConfigSavePath);
