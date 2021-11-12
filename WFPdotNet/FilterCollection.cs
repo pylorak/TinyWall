@@ -23,7 +23,7 @@ namespace WFPdotNet
             internal static extern uint FwpmFilterEnum0(
                 [In] FwpmEngineSafeHandle engineHandle,
                 [In] FwpmFilterEnumSafeHandle enumHandle,
-                [In] uint numEntriesRequested,
+                [In] int numEntriesRequested,
                 [Out] out FwpmMemorySafeHandle entries,
                 [Out] out int numEntriesReturned);
         }
@@ -31,7 +31,6 @@ namespace WFPdotNet
         private void Init(Engine engine, bool getFilterConditions, Interop.FWPM_FILTER_ENUM_TEMPLATE0 template)
         {
             FwpmFilterEnumSafeHandle enumSafeHandle = null;
-            FwpmMemorySafeHandle entries = null;
 
             RuntimeHelpers.PrepareConstrainedRegions();
             try
@@ -57,35 +56,42 @@ namespace WFPdotNet
 
                 while (true)
                 {
-                    const uint numEntriesRequested = 10;
+                    const int numEntriesRequested = 10;
 
-                    // FwpmFilterEnum0() returns a list of pointers in batches
-                    err = NativeMethods.FwpmFilterEnum0(engine.NativePtr, enumSafeHandle, numEntriesRequested, out entries, out int numEntriesReturned);
-                    if (0 != err)
-                        throw new WfpException(err, "FwpmFilterEnum0");
-
-                    unsafe
+                    FwpmMemorySafeHandle entries = null;
+                    try
                     {
-                        PInvokeHelper.AssertUnmanagedType<Interop.FWPM_FILTER0_NoStrings>();
-                        int size = Marshal.SizeOf(typeof(Interop.FWPM_FILTER0_NoStrings));
-                        IntPtr* ptrListPtr = (IntPtr*)entries.DangerousGetHandle();
-                        Interop.FWPM_FILTER0_NoStrings filt;
-                        for (int i = 0; i < numEntriesReturned; ++i)
-                        {
-                            Buffer.MemoryCopy(ptrListPtr->ToPointer(), &filt, size, size);
-                            Items.Add(new Filter(in filt, getFilterConditions));
-                            ++ptrListPtr;
-                        }
-                    }
+                        // FwpmFilterEnum0() returns a list of pointers in batches
+                        err = NativeMethods.FwpmFilterEnum0(engine.NativePtr, enumSafeHandle, numEntriesRequested, out entries, out int numEntriesReturned);
+                        if (0 != err)
+                            throw new WfpException(err, "FwpmFilterEnum0");
 
-                    // Exit infinite loop if we have exhausted the list
-                    if (numEntriesReturned < numEntriesRequested)
-                        break;
-                }
+                        unsafe
+                        {
+                            PInvokeHelper.AssertUnmanagedType<Interop.FWPM_FILTER0_NoStrings>();
+                            int size = Marshal.SizeOf(typeof(Interop.FWPM_FILTER0_NoStrings));
+                            IntPtr* ptrListPtr = (IntPtr*)entries.DangerousGetHandle();
+                            Interop.FWPM_FILTER0_NoStrings filt;
+                            for (int i = 0; i < numEntriesReturned; ++i)
+                            {
+                                Buffer.MemoryCopy(ptrListPtr->ToPointer(), &filt, size, size);
+                                Items.Add(new Filter(in filt, getFilterConditions));
+                                ++ptrListPtr;
+                            }
+                        }
+
+                        // Exit infinite loop if we have exhausted the list
+                        if (numEntriesReturned < numEntriesRequested)
+                            break;
+                    }
+                    finally
+                    {
+                        entries?.Dispose();
+                    }
+                } // while
             }
             finally
             {
-                entries?.Dispose();
                 enumSafeHandle?.Dispose();
             }
         }
