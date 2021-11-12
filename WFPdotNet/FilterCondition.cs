@@ -436,14 +436,18 @@ namespace WFPdotNet
             Init(fieldKey, sdBinaryForm, matchType);
         }
 
-        protected void Init(Guid fieldKey, byte[] sdBinaryForm, FieldMatchType matchType)
+        protected unsafe void Init(Guid fieldKey, byte[] sdBinaryForm, FieldMatchType matchType)
         {
             unsafe
             {
                 fixed (byte* src = sdBinaryForm)
-                    NativeMem = PInvokeHelper.CreateWfpBlob((IntPtr)src, sdBinaryForm.Length);
+                    Init(fieldKey, (IntPtr)src, sdBinaryForm.Length, matchType);
             }
+        }
 
+        protected void Init(Guid fieldKey, IntPtr sdBinaryFormPtr, int sdBinaryFormLength, FieldMatchType matchType)
+        {
+            NativeMem = PInvokeHelper.CreateWfpBlob(sdBinaryFormPtr, sdBinaryFormLength);
             _nativeStruct.matchType = matchType;
             _nativeStruct.fieldKey = fieldKey;
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_SECURITY_DESCRIPTOR_TYPE;
@@ -471,7 +475,7 @@ namespace WFPdotNet
                 string stringSd,
                 uint stringSdRevision,
                 out IntPtr resultSd,
-                ref uint resultSdLength);
+                ref int resultSdLength);
 
             [DllImport("kernel32")]
             public static extern IntPtr LocalFree(IntPtr hMem);
@@ -487,24 +491,18 @@ namespace WFPdotNet
 
             // Get SDDL in binary form
             IntPtr nativeArray = IntPtr.Zero;
-            uint byteArraySize = 0;
-            byte[] binaryForm = null;
             try
             {
+                int byteArraySize = 0;
                 if (!NativeMethods.ConvertStringSecurityDescriptorToSecurityDescriptor(sddl, 1, out nativeArray, ref byteArraySize))
                     throw new Win32Exception();
 
-                binaryForm = new byte[byteArraySize];
-                System.Runtime.InteropServices.Marshal.Copy(nativeArray, binaryForm, 0, (int)byteArraySize);
+                Init(ConditionKeys.FWPM_CONDITION_ALE_USER_ID, nativeArray, byteArraySize, matchType);
             }
             finally
             {
-                if (nativeArray != IntPtr.Zero)
-                    NativeMethods.LocalFree(nativeArray);
+                NativeMethods.LocalFree(nativeArray);
             }
-
-            // Construct condition from security descriptor
-            Init(ConditionKeys.FWPM_CONDITION_ALE_USER_ID, binaryForm, matchType);
         }
 
         public ServiceNameFilterCondition(string serviceName) : this(serviceName, FieldMatchType.FWP_MATCH_EQUAL)
