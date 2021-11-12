@@ -275,7 +275,7 @@ namespace PKSoft
                     if (numChars == 0)
                         return string.Empty;
 
-                    return PathMapper.Instance.ConvertPathIgnoreErrors(new string(stack_buffer, 0, numChars), PathFormat.Win32);
+                    return PathMapper.Instance.ConvertPathIgnoreErrors(new ReadOnlySpan<char>(stack_buffer, numChars), PathFormat.Win32);
                 }
             }
 

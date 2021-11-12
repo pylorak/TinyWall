@@ -310,12 +310,23 @@ public sealed class PathMapper : IDisposable
 
     public string ConvertPathIgnoreErrors(string path, PathFormat target)
     {
-        if (string.IsNullOrEmpty(path)
-            || path.Equals("registry", StringComparison.OrdinalIgnoreCase)
-            || path.Equals("system", StringComparison.OrdinalIgnoreCase))
-        {
-            return path;
-        }
+        if (path is null)
+            return string.Empty;
+
+        return ConvertPathIgnoreErrors(path.AsSpan(), target);
+    }
+
+    private static readonly string REGISTRY_CONST = "Registry";
+    private static readonly string SYSTEM_CONST = "System";
+
+    public string ConvertPathIgnoreErrors(ReadOnlySpan<char> path, PathFormat target)
+    {
+        if (0 == path.Length)
+            return string.Empty;
+        if (path.Equals(REGISTRY_CONST, StringComparison.OrdinalIgnoreCase))
+            return REGISTRY_CONST;
+        if (path.Equals(SYSTEM_CONST, StringComparison.OrdinalIgnoreCase))
+            return SYSTEM_CONST;
 
         try
         {
@@ -323,13 +334,13 @@ public sealed class PathMapper : IDisposable
         }
         catch
         {
-            return path;
+            return path.ToString();
         }
     }
 
-    public string ConvertPath(string path, PathFormat target)
+    public string ConvertPath(ReadOnlySpan<char> path, PathFormat target)
     {
-        var ret = path.AsSpan();
+        var ret = path;
         ret = ReplaceLeading(ret, @"\SystemRoot", SystemRoot);
         ret = ReplaceLeading(ret, @"\\?\", string.Empty);
         ret = ReplaceLeading(ret, @"\\.\", string.Empty);
@@ -434,7 +445,7 @@ public sealed class PathMapper : IDisposable
         {   // Volume GUID path, like \\?\Volume{26a21bda-a627-11d7-9931-806e6f6e6963}\Windows\explorer.exe
 
             if (target == PathFormat.Volume)
-                return path;
+                return path.ToString();
 
             ret = TinyWall.Interface.Internal.Utils.Concat(@"\\?\".AsSpan(), ret).AsSpan();
             var dc = Cache;
@@ -466,7 +477,7 @@ public sealed class PathMapper : IDisposable
         else
         {   // Assume native NT device path, like \Device\HarddiskVolume1\Windows\explorer.exe
             if (target == PathFormat.NativeNt)
-                return path;
+                return path.ToString();
 
             var dc = Cache;
             for (int i = 0; i < dc.Length; ++i)
@@ -529,10 +540,9 @@ public sealed class PathMapper : IDisposable
         string ntResult = NO_RESULT;
         string volumeResult = NO_RESULT;
 
-        StringBuilder workBuffer = null;
-        try { win32Result = ConvertPath(path, PathFormat.Win32); } catch { }
-        try { ntResult = ConvertPath(path, PathFormat.NativeNt); } catch { }
-        try { volumeResult = ConvertPath(path, PathFormat.Volume); } catch { }
+        win32Result = ConvertPathIgnoreErrors(path, PathFormat.Win32);
+        ntResult = ConvertPathIgnoreErrors(path, PathFormat.NativeNt);
+        volumeResult = ConvertPathIgnoreErrors(path, PathFormat.Volume);
 
         string output = path + ":" + Environment.NewLine
             + "    Win32:  " + win32Result + Environment.NewLine
