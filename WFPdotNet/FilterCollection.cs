@@ -25,7 +25,7 @@ namespace WFPdotNet
                 [In] FwpmFilterEnumSafeHandle enumHandle,
                 [In] uint numEntriesRequested,
                 [Out] out FwpmMemorySafeHandle entries,
-                [Out] out uint numEntriesReturned);
+                [Out] out int numEntriesReturned);
         }
 
         private void Init(Engine engine, bool getFilterConditions, Interop.FWPM_FILTER_ENUM_TEMPLATE0 template)
@@ -58,25 +58,23 @@ namespace WFPdotNet
                 while (true)
                 {
                     const uint numEntriesRequested = 10;
-                    uint numEntriesReturned;
 
                     // FwpmFilterEnum0() returns a list of pointers in batches
-                    err = NativeMethods.FwpmFilterEnum0(engine.NativePtr, enumSafeHandle, numEntriesRequested, out entries, out numEntriesReturned);
+                    err = NativeMethods.FwpmFilterEnum0(engine.NativePtr, enumSafeHandle, numEntriesRequested, out entries, out int numEntriesReturned);
                     if (0 != err)
                         throw new WfpException(err, "FwpmFilterEnum0");
-
-                    // Dereference each pointer in the current batch
-                    IntPtr[] ptrList = PInvokeHelper.PtrToStructureArray<IntPtr>(entries.DangerousGetHandle(), numEntriesReturned, (uint)IntPtr.Size);
 
                     unsafe
                     {
                         PInvokeHelper.AssertUnmanagedType<Interop.FWPM_FILTER0_NoStrings>();
+                        int size = Marshal.SizeOf(typeof(Interop.FWPM_FILTER0_NoStrings));
+                        IntPtr* ptrListPtr = (IntPtr*)entries.DangerousGetHandle();
                         Interop.FWPM_FILTER0_NoStrings filt;
-                        int size = System.Runtime.InteropServices.Marshal.SizeOf<Interop.FWPM_FILTER0_NoStrings>();
                         for (int i = 0; i < numEntriesReturned; ++i)
                         {
-                            Buffer.MemoryCopy(ptrList[i].ToPointer(), &filt, size, size);
+                            Buffer.MemoryCopy(ptrListPtr->ToPointer(), &filt, size, size);
                             Items.Add(new Filter(in filt, getFilterConditions));
+                            ++ptrListPtr;
                         }
                     }
 
