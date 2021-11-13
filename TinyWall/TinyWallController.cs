@@ -266,6 +266,8 @@ namespace PKSoft
         // Traffic rate monitoring
         private System.Threading.Timer TrafficTimer;
         private TrafficRateMonitor TrafficMonitor;
+        private bool TrafficRateVisible_ = true;
+        private bool TrayMenuShowing_;
 
         private EventHandler<AnyEventArgs> BalloonClickedCallback;
         private object BalloonClickedCallbackArgument;
@@ -340,7 +342,7 @@ namespace PKSoft
 
         private void TrayMenu_Closed(object sender, ToolStripDropDownClosedEventArgs e)
         {
-            UpdateTrafficRate = false;
+            TrayMenuShowing = false;
         }
 
         protected override void Dispose(bool disposing)
@@ -421,10 +423,11 @@ namespace PKSoft
             {
                 TrafficMonitor.Update();
                 UpdateTrafficRateText(TrafficMonitor.BytesReceivedPerSec, TrafficMonitor.BytesSentPerSec);
+                TrafficRateVisible = true;
             }
             catch
             {
-                UpdateTrafficRateText(-1, -1);
+                TrafficRateVisible = false;
             }
             finally
             {
@@ -434,40 +437,62 @@ namespace PKSoft
 
         void UpdateTrafficRateText(long rxRate, long txRate)
         {
-            Utils.Invoke(TrayMenu, (MethodInvoker)delegate
+            if (TrayMenuShowing && TrafficRateVisible)
             {
-                bool show = (rxRate >= 0);
-                mnuTrafficRate.Visible = show;
-                toolStripMenuItem1.Visible = show;
-                if (show)
+                float KBytesRxPerSec = (float)rxRate / 1024;
+                float KBytesTxPerSec = (float)txRate / 1024;
+                float MBytesRxPerSec = KBytesRxPerSec / 1024;
+                float MBytesTxPerSec = KBytesTxPerSec / 1024;
+
+                string rxDisplay = (MBytesRxPerSec > 1)
+                    ? string.Format(CultureInfo.CurrentCulture, "{0:f} MiB/s", MBytesRxPerSec)
+                    : string.Format(CultureInfo.CurrentCulture, "{0:f} KiB/s", KBytesRxPerSec);
+
+                string txDisplay = (MBytesTxPerSec > 1)
+                    ? string.Format(CultureInfo.CurrentCulture, "{0:f} MiB/s", MBytesTxPerSec)
+                    : string.Format(CultureInfo.CurrentCulture, "{0:f} KiB/s", KBytesTxPerSec);
+
+                string trafficRateText = string.Format(CultureInfo.CurrentCulture, "{0}: {1}    {2}: {3}", PKSoft.Resources.Messages.TrafficIn, rxDisplay, PKSoft.Resources.Messages.TrafficOut, txDisplay);
+
+                Utils.Invoke(TrayMenu, (MethodInvoker)delegate
                 {
-                    float KBytesRxPerSec = (float)rxRate / 1024;
-                    float KBytesTxPerSec = (float)txRate / 1024;
-                    float MBytesRxPerSec = KBytesRxPerSec / 1024;
-                    float MBytesTxPerSec = KBytesTxPerSec / 1024;
-
-                    string rxDisplay = (MBytesRxPerSec > 1) 
-                        ? string.Format(CultureInfo.CurrentCulture, "{0:f} MiB/s", MBytesRxPerSec)
-                        : string.Format(CultureInfo.CurrentCulture, "{0:f} KiB/s", KBytesRxPerSec);
-
-                    string txDisplay = (MBytesTxPerSec > 1)
-                        ? string.Format(CultureInfo.CurrentCulture, "{0:f} MiB/s", MBytesTxPerSec)
-                        : string.Format(CultureInfo.CurrentCulture, "{0:f} KiB/s", KBytesTxPerSec); 
-
-                    mnuTrafficRate.Text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}    {2}: {3}", PKSoft.Resources.Messages.TrafficIn, rxDisplay, PKSoft.Resources.Messages.TrafficOut, txDisplay);
-                }
-            });
+                    mnuTrafficRate.Text = trafficRateText;
+                });
+            }
         }
 
-        private bool UpdateTrafficRate
+        private bool TrayMenuShowing
         {
+            get => TrayMenuShowing_;
             set
             {
+                TrayMenuShowing_ = value;
+
                 // Update more often while visible
-                if ((TrafficMonitor != null) && value)
-                    TrafficTimer.Change(0, 2000);
+                if ((TrafficMonitor != null) && TrayMenuShowing_)
+                {
+                    TrafficTimerTick(null);
+                    TrafficTimer.Change(2000, 2000);
+                }
                 else
-                    TrafficTimer.Change(5000, 5000);
+                    TrafficTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            }
+        }
+
+        private bool TrafficRateVisible
+        {
+            get => TrafficRateVisible_;
+            set
+            {
+                if (value != TrafficRateVisible_)
+                {
+                    TrafficRateVisible_ = value;
+                    Utils.Invoke(TrayMenu, (MethodInvoker)delegate
+                    {
+                        mnuTrafficRate.Visible = TrafficRateVisible_;
+                        toolStripMenuItem1.Visible = TrafficRateVisible_;
+                    });
+                }
             }
         }
 
@@ -692,7 +717,7 @@ namespace PKSoft
                 }
             }
 
-            UpdateTrafficRate = true;
+            TrayMenuShowing = true;
 
             this.Locked = GlobalInstances.Controller.IsServerLocked;
             UpdateDisplay();
@@ -1366,11 +1391,11 @@ namespace PKSoft
                 try
                 {
                     TrafficMonitor = new TrafficRateMonitor();
-                    UpdateTrafficRate = false;
+                    TrayMenuShowing = false;
                 }
                 catch 
                 {
-                    UpdateTrafficRateText(-1, -1);
+                    TrafficRateVisible = false;
                 }
 
                 ApplyControllerSettings();
