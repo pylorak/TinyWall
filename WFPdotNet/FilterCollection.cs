@@ -10,17 +10,17 @@ namespace WFPdotNet
     public class FilterCollection : System.Collections.ObjectModel.ReadOnlyCollection<Filter>
     {
         [SuppressUnmanagedCodeSecurity]
-        internal static class NativeMethods
+        private static class NativeMethods
         {
             [DllImport("FWPUClnt.dll", EntryPoint = "FwpmFilterCreateEnumHandle0")]
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-            internal static extern uint FwpmFilterCreateEnumHandle0(
+            public static extern uint FwpmFilterCreateEnumHandle0(
                 [In] FwpmEngineSafeHandle engineHandle,
                 [In] Interop.FWPM_FILTER_ENUM_TEMPLATE0 enumTemplate,
                 [Out] out FwpmFilterEnumSafeHandle enumHandle);
 
             [DllImport("FWPUClnt.dll", EntryPoint = "FwpmFilterEnum0")]
-            internal static extern uint FwpmFilterEnum0(
+            public static extern uint FwpmFilterEnum0(
                 [In] FwpmEngineSafeHandle engineHandle,
                 [In] FwpmFilterEnumSafeHandle enumHandle,
                 [In] int numEntriesRequested,
@@ -71,11 +71,10 @@ namespace WFPdotNet
                             PInvokeHelper.AssertUnmanagedType<Interop.FWPM_FILTER0_NoStrings>();
                             int size = Marshal.SizeOf(typeof(Interop.FWPM_FILTER0_NoStrings));
                             IntPtr* ptrListPtr = (IntPtr*)entries.DangerousGetHandle();
-                            Interop.FWPM_FILTER0_NoStrings filt;
                             for (int i = 0; i < numEntriesReturned; ++i)
                             {
-                                Buffer.MemoryCopy(ptrListPtr->ToPointer(), &filt, size, size);
-                                Items.Add(new Filter(in filt, getFilterConditions));
+                                Interop.FWPM_FILTER0_NoStrings* filtPtr = (Interop.FWPM_FILTER0_NoStrings * )ptrListPtr->ToPointer();
+                                Items.Add(new Filter(in *filtPtr, getFilterConditions));
                                 ++ptrListPtr;
                             }
                         }
