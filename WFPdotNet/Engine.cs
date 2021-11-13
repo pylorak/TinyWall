@@ -206,14 +206,44 @@ namespace WFPdotNet
             return new SublayerCollection(this);
         }
 
-        public FilterCollection GetFilters(bool getFilterConditions)
+        public FilterEnumerator EnumerateFilters(bool getFilterConditions)
         {
-            return new FilterCollection(this, getFilterConditions);
+            return new FilterEnumerator(this, null, getFilterConditions);
         }
 
-        public FilterCollection GetFilters(bool getFilterConditions, Guid provider, Guid layer)
+        public FilterEnumerator EnumerateFilters(bool getFilterConditions, Guid provider, Guid layer)
         {
-            return new FilterCollection(this, getFilterConditions, provider, layer);
+            using var providerGuidHandle = SafeHGlobalHandle.FromStruct(provider);
+            var template = new Interop.FWPM_FILTER_ENUM_TEMPLATE0
+            {
+                providerKey = providerGuidHandle.DangerousGetHandle(),
+                layerKey = layer,
+                flags = Interop.FilterEnumTemplateFlags.FWP_FILTER_ENUM_FLAG_INCLUDE_BOOTTIME | Interop.FilterEnumTemplateFlags.FWP_FILTER_ENUM_FLAG_INCLUDE_DISABLED,
+                numFilterConditions = 0,
+                actionMask = 0xFFFFFFFFu,
+            };
+            
+            return new FilterEnumerator(this, template, getFilterConditions);
+        }
+
+        public FilterKeyEnumerator EnumerateFilterKeys()
+        {
+            return new FilterKeyEnumerator(this, null);
+        }
+
+        public FilterKeyEnumerator EnumerateFilterKeys(Guid provider, Guid layer)
+        {
+            using var providerGuidHandle = SafeHGlobalHandle.FromStruct(provider);
+            var template = new Interop.FWPM_FILTER_ENUM_TEMPLATE0
+            {
+                providerKey = providerGuidHandle.DangerousGetHandle(),
+                layerKey = layer,
+                flags = Interop.FilterEnumTemplateFlags.FWP_FILTER_ENUM_FLAG_INCLUDE_BOOTTIME | Interop.FilterEnumTemplateFlags.FWP_FILTER_ENUM_FLAG_INCLUDE_DISABLED,
+                numFilterConditions = 0,
+                actionMask = 0xFFFFFFFFu,
+            };
+
+            return new FilterKeyEnumerator(this, template);
         }
 
         public Guid RegisterProvider(ref Interop.FWPM_PROVIDER0 provider)
@@ -309,7 +339,7 @@ namespace WFPdotNet
                     throw new WfpException(err, "FwpmFilterGetByKey0");
 
                 var nativeFilter = PInvokeHelper.PtrToStructure<Interop.FWPM_FILTER0_NoStrings>(nativeMem.DangerousGetHandle());
-                return new Filter(nativeFilter, getConditions);
+                return new Filter(in nativeFilter, getConditions);
             }
             finally
             {
@@ -327,7 +357,7 @@ namespace WFPdotNet
                     throw new WfpException(err, "FwpmFilterGetById0");
 
                 var nativeFilter = PInvokeHelper.PtrToStructure<Interop.FWPM_FILTER0_NoStrings>(nativeMem.DangerousGetHandle());
-                return new Filter(nativeFilter, getConditions);
+                return new Filter(in nativeFilter, getConditions);
             }
             finally
             {

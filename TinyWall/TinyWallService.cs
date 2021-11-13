@@ -1678,9 +1678,8 @@ namespace PKSoft
                     Guid subLayerKey = GetSublayerKey(layer);
 
                     // Remove filters in the sublayer
-                    FilterCollection filters = wfp.GetFilters(false, TINYWALL_PROVIDER_KEY, layerKey);
-                    foreach (var f in filters)
-                        wfp.UnregisterFilter(f.FilterKey);
+                    foreach (var filterKey in wfp.EnumerateFilterKeys(TINYWALL_PROVIDER_KEY, layerKey))
+                        wfp.UnregisterFilter(filterKey);
 
                     // Remove sublayer
                     if (removeLayersAndProvider)

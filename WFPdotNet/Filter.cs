@@ -38,20 +38,23 @@ namespace WFPdotNet
         private Guid _providerKey;
         private SafeHGlobalHandle _weightAndProviderKeyHandle;
 
+        private string _displayName;
+        private string _displayDescription;
+        private SafeHGlobalHandle _displayDataHandle;
+
         private FilterConditionList _conditions;
         private SafeHGlobalHandle _conditionsHandle;
 
-        private SafeHGlobalHandle _displayDataHandle;
-        private string _DisplayName;
-        private string _DisplayDescription;
-        private DisplaySyncMode _DisplaySynchNeeded;
-
-        public Filter(string name, string desc, Guid providerKey, FilterActions action, ulong weight, FilterConditionList conditions = null)
+        private Filter()
         {
             _weightAndProviderKeyHandle = SafeHGlobalHandle.Alloc(sizeof(ulong) + Marshal.SizeOf(typeof(Guid)));
             _nativeStruct.weight.type = Interop.FWP_DATA_TYPE.FWP_UINT64;
             _nativeStruct.weight.value.uint64 = _weightAndProviderKeyHandle.DangerousGetHandle();
             _nativeStruct.providerKey = _weightAndProviderKeyHandle.DangerousGetHandle() + sizeof(ulong);
+        }
+
+        public Filter(string name, string desc, Guid providerKey, FilterActions action, ulong weight, FilterConditionList conditions = null) : this()
+        {
             _conditions = (conditions is null) ? new FilterConditionList() : conditions;
 
             this.DisplayName = name;
@@ -61,22 +64,21 @@ namespace WFPdotNet
             this.Weight = weight;
         }
 
-        internal Filter(in Interop.FWPM_FILTER0_NoStrings filt0, bool getConditions)
+        internal Filter(in Interop.FWPM_FILTER0_NoStrings filt0, bool getConditions) : this()
         {
             _nativeStruct = filt0;
-            _DisplaySynchNeeded = DisplaySyncMode.ToManaged;
-
-            // TODO: Do we really not need to own these SafeHandles ???
-            //_weightHandle = new AllocHGlobalSafeHandle(_nativeStruct.weight.value.uint64, false);
-            //_conditionsHandle = new AllocHGlobalSafeHandle(_nativeStruct.filterConditions, false);
 
             if (_nativeStruct.providerKey != IntPtr.Zero)
-            {
-                // TODO: Do we really not need to own these SafeHandles ???
-                //_providerKeyHandle = new AllocHGlobalSafeHandle(_nativeStruct.providerKey, false);
-                _providerKey = PInvokeHelper.PtrToStructure<Guid>(_nativeStruct.providerKey);
-                _weight = PInvokeHelper.PtrToStructure<ulong>(_nativeStruct.weight.value.uint64);
-            }
+                ProviderKey = PInvokeHelper.PtrToStructure<Guid>(_nativeStruct.providerKey);
+
+            if (_nativeStruct.weight.value.uint64 != IntPtr.Zero)
+                Weight = PInvokeHelper.PtrToStructure<ulong>(_nativeStruct.weight.value.uint64);
+
+            if (_nativeStruct.displayData.name != IntPtr.Zero)
+                DisplayName = Marshal.PtrToStringUni(_nativeStruct.displayData.name);
+
+            if (_nativeStruct.displayData.description != IntPtr.Zero)
+                DisplayDescription = Marshal.PtrToStringUni(_nativeStruct.displayData.description);
 
             if (getConditions)
             {
@@ -129,55 +131,45 @@ namespace WFPdotNet
 
         private void SynchronizeDisplayData()
         {
-            switch (_DisplaySynchNeeded)
-            {
-                case DisplaySyncMode.None:
-                    break;
-                case DisplaySyncMode.ToManaged:
-                    throw new InvalidOperationException();
-                    //_DisplayName = Marshal.PtrToStringUni(_nativeStruct.displayData.name);
-                    //_DisplayDescription = Marshal.PtrToStringUni(_nativeStruct.displayData.description);
-                    //break;
-                case DisplaySyncMode.ToNative:
-                    int nameSize = _DisplayName.Length * 2;
-                    int descriptionSize = _DisplayDescription.Length * 2;
-                    int unmanagedSize = nameSize + descriptionSize + (2 * 2);
-                    _displayDataHandle?.Dispose();
-                    _displayDataHandle = SafeHGlobalHandle.Alloc(unmanagedSize);
-                    IntPtr namePtr = _displayDataHandle.DangerousGetHandle();
-                    IntPtr descriptionPtr = namePtr + nameSize + 2;
-                    unsafe
-                    {
-                        var dst = (char*)namePtr;
-                        dst[_DisplayName.Length] = (char)0;
-                        fixed (char* src = _DisplayName)
-                            Buffer.MemoryCopy(src, dst, nameSize, nameSize);
+            if (_displayDataHandle != null)
+                // Already synchronized
+                return;
 
-                        dst = (char*)descriptionPtr;
-                        dst[_DisplayDescription.Length] = (char)0;
-                        fixed (char* src = _DisplayDescription)
-                            Buffer.MemoryCopy(src, dst, descriptionSize, descriptionSize);
-                    }
-                    _nativeStruct.displayData.name = namePtr;
-                    _nativeStruct.displayData.description = descriptionPtr;
-                    break;
-                default:
-                    throw new InvalidOperationException();
+            int nameSize = _displayName.Length * 2;
+            int descriptionSize = _displayDescription.Length * 2;
+            int unmanagedSize = nameSize + descriptionSize + (2 * 2);
+            _displayDataHandle = SafeHGlobalHandle.Alloc(unmanagedSize);
+
+            IntPtr namePtr = _displayDataHandle.DangerousGetHandle();
+            IntPtr descriptionPtr = namePtr + nameSize + 2;
+            unsafe
+            {
+                var dst = (char*)namePtr;
+                dst[_displayName.Length] = (char)0;
+                fixed (char* src = _displayName)
+                    Buffer.MemoryCopy(src, dst, nameSize, nameSize);
+
+                dst = (char*)descriptionPtr;
+                dst[_displayDescription.Length] = (char)0;
+                fixed (char* src = _displayDescription)
+                    Buffer.MemoryCopy(src, dst, descriptionSize, descriptionSize);
             }
-            _DisplaySynchNeeded = DisplaySyncMode.None;
+
+            _nativeStruct.displayData.name = namePtr;
+            _nativeStruct.displayData.description = descriptionPtr;
         }
 
         public string DisplayName
         {
             get
             {
-                SynchronizeDisplayData();
-                return _DisplayName;
+                return _displayName;
             }
             set
             {
-                _DisplayName = value;
-                _DisplaySynchNeeded = DisplaySyncMode.ToNative;
+                _displayName = value;
+                _displayDataHandle?.Dispose();
+                _displayDataHandle = null;
             }
         }
 
@@ -185,13 +177,13 @@ namespace WFPdotNet
         {
             get
             {
-                SynchronizeDisplayData();
-                return _DisplayDescription;
+                return _displayDescription;
             }
             set
             {
-                _DisplayDescription = value;
-                _DisplaySynchNeeded = DisplaySyncMode.ToNative;
+                _displayDescription = value;
+                _displayDataHandle?.Dispose();
+                _displayDataHandle = null;
             }
         }
 
@@ -274,13 +266,13 @@ namespace WFPdotNet
         public void Dispose()
         {
             _weightAndProviderKeyHandle?.Dispose();
-            _conditionsHandle?.Dispose();
             _displayDataHandle?.Dispose();
+            _conditionsHandle?.Dispose();
             _conditions?.Dispose();
 
             _weightAndProviderKeyHandle = null;
-            _conditionsHandle = null;
             _displayDataHandle = null;
+            _conditionsHandle = null;
             _conditions = null;
         }
     }
