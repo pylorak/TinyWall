@@ -504,19 +504,9 @@ namespace PKSoft
                 }
                 catch
                 {
-                    // Try loading from older export file format.
-                    try
-                    {
-                        var oldConfig = Deprecated.SerializationHelper.LoadFromXMLFile<Obsolete.ConfigContainer>(ofd.FileName);
-                        TmpConfig.Controller = oldConfig.Controller;
-                        TmpConfig.Service = oldConfig.Service.ToNewFormat();
-                    }
-                    catch
-                    {
-                        // Fail import.
-                        MessageBox.Show(this, PKSoft.Resources.Messages.ConfigurationImportError, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
+                    // Fail import.
+                    MessageBox.Show(this, PKSoft.Resources.Messages.ConfigurationImportError, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
 
                 InitSettingsUI();

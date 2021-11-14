@@ -1077,17 +1077,6 @@ namespace PKSoft
 
             if (ret == null)
             {
-                // Try again by loading config file from older versions
-                try
-                {
-                    var oldSettings = ServiceSettings21.Load();
-                    ret = oldSettings.ToNewFormat();
-                }
-                catch { }
-            }
-
-            if (ret == null)
-            {
                 ret = new ServerConfiguration();
                 ret.SetActiveProfile(PKSoft.Resources.Messages.Default);
 
@@ -1161,7 +1150,7 @@ namespace PKSoft
                 {
                     try
                     {
-                        string filePath = Path.Combine(ServiceSettings21.AppDataPath, LastUpdateCheck_FILENAME);
+                        string filePath = Path.Combine(Utils.AppDataPath, LastUpdateCheck_FILENAME);
                         if (File.Exists(filePath))
                         {
                             using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -1188,7 +1177,7 @@ namespace PKSoft
 
                 try
                 {
-                    string filePath = Path.Combine(ServiceSettings21.AppDataPath, LastUpdateCheck_FILENAME);
+                    string filePath = Path.Combine(Utils.AppDataPath, LastUpdateCheck_FILENAME);
                     using (var afu = new AtomicFileUpdater(filePath))
                     {
                         using (FileStream fs = new FileStream(afu.TemporaryFilePath, FileMode.Create, FileAccess.Write, FileShare.None))

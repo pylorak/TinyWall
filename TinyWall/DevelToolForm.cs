@@ -108,13 +108,7 @@ namespace PKSoft
                 }
                 catch
                 {
-                    try
-                    {
-                        var app = Deprecated.SerializationHelper.LoadFromXMLFile<PKSoft.Obsolete.Application>(fpath);
-                        //SerializationHelper.SaveToXMLFile(app.ToNewFormat(), fpath + "2");
-                        db.KnownApplications.Add(app.ToNewFormat());
-                    }
-                    catch { }
+                    //Debug.Assert(false);
                 }
             }
 

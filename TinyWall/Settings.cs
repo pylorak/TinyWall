@@ -32,136 +32,6 @@ namespace PKSoft
 
     // --------------------------------------------------------------------------------------------------------------------------------
 
-
-    
-    [Obsolete]
-    public sealed class ServiceSettings21
-    {
-        internal const string APP_NAME = "TinyWall";
-        private const string ENC_SALT = @";U~2+i=wV;eE3Q@f";
-        private const string ENC_IV = @"0!#&9x=GGu%>$g&5";   // must be 16/24/32 bytes
-
-        public int SequenceNumber = -1;
-
-        // Machine settings
-        public BlockListSettings Blocklists = new BlockListSettings();
-        public bool LockHostsFile = true;
-        public DateTime LastUpdateCheck;
-        public bool AutoUpdateCheck = true;
-        public FirewallMode StartupMode = FirewallMode.Normal;
-
-        // Zone settings
-        public List<string> SpecialExceptions = new List<string>();
-        public bool AllowLocalSubnet = false;
-        public List<Obsolete.FirewallException> AppExceptions = new List<Obsolete.FirewallException>();
-
-        internal static string AppDataPath
-        {
-            get
-            {
-#if DEBUG
-                return Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath);
-#else
-                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), ServiceSettings21.APP_NAME);
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-                return dir;
-#endif
-            }
-        }
-        
-        internal ServiceSettings21() { }
-
-        /*
-        internal ServiceSettings21(bool enableRecommendedExceptions)
-        {
-            if (enableRecommendedExceptions)
-            {
-                // Add recommended profiles as standard
-                Obsolete.ApplicationCollection allKnownApps = GlobalInstances.ProfileMan.KnownApplications;
-                foreach (Obsolete.Application app in allKnownApps)
-                {
-                    if (app.Recommended && app.Special)
-                        SpecialExceptions.Add(app.Name);
-                }
-            }
-        }
-        */
-
-        internal void Save()
-        {
-            throw new InvalidOperationException();
-        }
-
-        internal ServerConfiguration ToNewFormat()
-        {
-            ServerConfiguration ret = new ServerConfiguration();
-            ret.SetActiveProfile(PKSoft.Resources.Messages.Default);
-            ret.AutoUpdateCheck = this.AutoUpdateCheck;
-            ret.Blocklists.EnableBlocklists = this.Blocklists.EnableBlocklists;
-            ret.Blocklists.EnableHostsBlocklist = this.Blocklists.EnableHostsBlocklist;
-            ret.Blocklists.EnablePortBlocklist = this.Blocklists.EnablePortBlocklist;
-            ret.LockHostsFile = this.LockHostsFile;
-            ret.StartupMode = this.StartupMode;
-
-            ServerProfileConfiguration prof = ret.ActiveProfile;
-            prof.AllowLocalSubnet = this.AllowLocalSubnet;
-            prof.SpecialExceptions = this.SpecialExceptions;
-            foreach (Obsolete.FirewallException ex in this.AppExceptions)
-                prof.AppExceptions.Add(ex.ToNewFormat2());
-
-            return ret;
-        }
-
-        internal static ServiceSettings21 Load()
-        {
-            ServiceSettings21 ret = null;
-
-            // Construct file path
-            string SettingsFile = Path.Combine(ServiceSettings21.AppDataPath, "config");
-
-            if (File.Exists(SettingsFile))
-            {
-                try
-                {
-                    // Construct key
-                    string key = ENC_SALT;
-                    key = Hasher.HashString(key).Substring(0, 16);
-
-                    ret = Deprecated.SerializationHelper.LoadFromEncryptedXMLFile<ServiceSettings21>(SettingsFile, key, ENC_IV);
-                    List<string> distinctSpecialEx = new List<string>();
-                    distinctSpecialEx.AddRange(ret.SpecialExceptions.Distinct());
-                    ret.SpecialExceptions = distinctSpecialEx;
-                }
-                catch
-                {
-                }
-
-                if (ret == null)
-                {
-                    // Try again by loading config file from older versions, which uses a different encryption key
-                    try
-                    {
-                        // Construct key
-                        string key = ENC_SALT + Deprecated.MachineFingerprint.Fingerprint();
-                        key = Hasher.HashString(key).Substring(0, 16);
-
-                        ret = Deprecated.SerializationHelper.LoadFromEncryptedXMLFile<ServiceSettings21>(SettingsFile, key, ENC_IV);
-                        List<string> distinctSpecialEx = new List<string>();
-                        distinctSpecialEx.AddRange(ret.SpecialExceptions.Distinct());
-                        ret.SpecialExceptions = distinctSpecialEx;
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
-
-            return ret;
-        }
-
-    } // class
-
     [Serializable]
     public sealed class ControllerSettings
     {
@@ -269,13 +139,7 @@ namespace PKSoft
                     ret = SerializationHelper.LoadFromXMLFile<ControllerSettings>(SettingsFile);
                 }
                 catch
-                {
-                    try
-                    {
-                        ret = Deprecated.SerializationHelper.LoadFromXMLFile<ControllerSettings>(SettingsFile);
-                    }
-                    catch { }
-                }
+                { }
             }
 
             if (ret == null)
@@ -329,31 +193,11 @@ namespace PKSoft
                 return true;
 
             try
-            {   // TODO: Try to read old password format first.
-                // Remove once TW 2.1 is not supported anymore.
-
-                const string ENC_SALT = "O?2E/)YFq~e:w@a,";
-                const string ENC_IV = "X0@!H93!Y=8&/M/T";   // must be 16/24/32 bytes
-
-                // Construct key
-                string key = ENC_SALT + password;
-                key = Hasher.HashString(key).Substring(0, 16);
-                string hash = Deprecated.SerializationHelper.LoadFromEncryptedXMLFile<string>(PasswordFilePath, key, ENC_IV);
-                if (hash == password)
-                {
-                    _Locked = false;
-                    SetPass(password);  // re-write password using new method
-                }
-            }
-            catch
             {
-                try
-                {
-                    string storedHash = System.IO.File.ReadAllText(PasswordFilePath, System.Text.Encoding.UTF8);
-                    _Locked = !Pbkdf2.CompareHash(storedHash, password);
-                }
-                catch { }
+                string storedHash = System.IO.File.ReadAllText(PasswordFilePath, System.Text.Encoding.UTF8);
+                _Locked = !Pbkdf2.CompareHash(storedHash, password);
             }
+            catch { }
 
             return !_Locked;
         }
@@ -375,16 +219,6 @@ namespace PKSoft
     {
         public ServerConfiguration Service = null;
         public ControllerSettings Controller = null;
-    }
-
-    namespace Obsolete
-    {
-        [Obsolete, Serializable]
-        public sealed class ConfigContainer
-        {
-            public ServiceSettings21 Service = null;
-            public ControllerSettings Controller = null;
-        }
     }
 
     internal static class ActiveConfig
