@@ -38,8 +38,8 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\pylorak.Windows.WFP\pylorak.Windows.WFP.csproj" />
     <ProjectReference Include="..\TinyWall.Interface\TinyWall.Interface.csproj" />
-    <ProjectReference Include="..\WFPdotNet\WFPdotNet.csproj" />
   </ItemGroup>
   <ItemGroup>
 

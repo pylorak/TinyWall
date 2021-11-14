@@ -20,21 +20,21 @@
 /TinyWall/bin/
 /TinyWall/Database.old/
 
-/TinyWall.Interface/obj
-/TinyWall.Interface/bin
+/TinyWall.Interface/obj/
+/TinyWall.Interface/bin/
 
-/pylorak.Windows.Services/obj
-/pylorak.Windows.Services/bin
+/pylorak.Windows.Services/obj/
+/pylorak.Windows.Services/bin/
 
-/Toaster/obj
-/Toaster/bin
+/pylorak.Windows.WFP/bin/
+/pylorak.Windows.WFP/obj/
 
-/MsiSetup/obj
-/MsiSetup/bin
+/Toaster/obj/
+/Toaster/bin/
+
+/MsiSetup/obj/
+/MsiSetup/bin/
 /MsiSetup/Sources/ProgramFiles/
 
 /NativeHelper/Win32/
 /NativeHelper/x64/
-
-/WFPdotNet/bin/
-/WFPdotNet/obj/
