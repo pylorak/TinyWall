@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.ConstrainedExecution;
 using System.Security;
 using System.Security.AccessControl;
-using System.Text;
+using System.Diagnostics;
 
 namespace WFPdotNet
 {
@@ -44,6 +44,22 @@ namespace WFPdotNet
     public class FilterCondition : IDisposable
     {
         protected Interop.FWPM_FILTER_CONDITION0 _nativeStruct;
+        private int _referenceCount;
+
+        public void AddRef()
+        {
+            ++_referenceCount;
+        }
+
+        public void RemoveRef()
+        {
+            Debug.Assert(_referenceCount > 0);
+            --_referenceCount;
+            if (0 == _referenceCount)
+                Dispose();
+        }
+
+        public int ReferenceCount => _referenceCount;
 
         public Guid FieldKey
         {
@@ -126,7 +142,12 @@ namespace WFPdotNet
 
         public void Dispose()
         {
+            Debug.Assert(_referenceCount == 0);
+            if (_referenceCount > 0)
+                return;
+
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing) { }
@@ -159,6 +180,7 @@ namespace WFPdotNet
             switch (addr.AddressFamily)
             {
                 case System.Net.Sockets.AddressFamily.InterNetwork:
+                    IsIPv6 = false;
                     if (subnetLen == 32)
                     {
                         Array.Reverse(addressBytes);
@@ -168,20 +190,19 @@ namespace WFPdotNet
                     else
                     {
                         // Convert CIDR subnet length to byte array
-                        byte[] maskBytes = new byte[4];
+                        uint maskBits = 0;
                         int prefix = subnetLen;
-                        for (int i = 0; i < maskBytes.Length; ++i)
+                        for (int i = 0; i < 4; ++i)
                         {
                             int s = (prefix < 8) ? prefix : 8;
-                            maskBytes[i] = MaskByteBitsLookup[s];
+                            maskBits = (maskBits << 8) | MaskByteBitsLookup[s];
                             prefix -= s;
                         }
-                        Array.Reverse(maskBytes);
                         Array.Reverse(addressBytes);
 
                         Interop.FWP_V4_ADDR_AND_MASK addrAndMask4 = new Interop.FWP_V4_ADDR_AND_MASK();
                         addrAndMask4.addr = BitConverter.ToUInt32(addressBytes, 0);
-                        addrAndMask4.mask = BitConverter.ToUInt32(maskBytes, 0);
+                        addrAndMask4.mask = maskBits;
                         nativeMem = SafeHGlobalHandle.FromStruct(addrAndMask4);
 
                         _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_V4_ADDR_MASK;
@@ -189,6 +210,7 @@ namespace WFPdotNet
                     }
                     break;
                 case System.Net.Sockets.AddressFamily.InterNetworkV6:
+                    IsIPv6 = true;
                     if (subnetLen == 128)
                     {
                         nativeMem = SafeHGlobalHandle.Alloc(16);
@@ -201,9 +223,15 @@ namespace WFPdotNet
                     else
                     {
                         Interop.FWP_V6_ADDR_AND_MASK addrAndMask6 = new Interop.FWP_V6_ADDR_AND_MASK();
-                        addrAndMask6.addr = addressBytes;
+                        unsafe
+                        {
+                            fixed (byte* addrSrcPtr = addressBytes)
+                            {
+                                Buffer.MemoryCopy(addrSrcPtr, addrAndMask6.addr, 16, 16);
+                            }
+                        }
                         addrAndMask6.prefixLength = subnetLen;
-                        nativeMem = SafeHGlobalHandle.FromManagedStruct(addrAndMask6);
+                        nativeMem = SafeHGlobalHandle.FromStruct(addrAndMask6);
 
                         _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_V6_ADDR_MASK;
                         _nativeStruct.conditionValue.value.v6AddrMask = nativeMem.DangerousGetHandle();
@@ -213,6 +241,8 @@ namespace WFPdotNet
                     throw new NotSupportedException("Only the IPv4 and IPv6 address families are supported.");
             }
         }
+
+        public bool IsIPv6 { get; }
 
         protected override void Dispose(bool disposing)
         {
@@ -244,7 +274,10 @@ namespace WFPdotNet
         public PortFilterCondition(ushort minPort, ushort maxPort, RemoteOrLocal peer)
             : this(peer)
         {
-            Init(minPort, maxPort);
+            if (minPort == maxPort)
+                Init(minPort);
+            else
+                Init(minPort, maxPort);
         }
 
         public PortFilterCondition(string portOrRange, RemoteOrLocal peer)
@@ -346,8 +379,7 @@ namespace WFPdotNet
                 [Out] out FwpmMemorySafeHandle appId);
         }
 
-        private SafeHandle appIdNativeMem;
-        private SafeHandle appIdDataNativeMem;
+        private SafeHandle NativeMem;
 
         public AppIdFilterCondition(string filePath, bool bBeforeProxying = false, bool alreadyKernelFormat = false)
         {
@@ -361,43 +393,30 @@ namespace WFPdotNet
                 //       avoid calling FwpmGetAppIdFromFileName0() completely by passing in paths already
                 //       in kernel format.
                 uint err = NativeMethods.FwpmGetAppIdFromFileName0(filePath, out FwpmMemorySafeHandle tmpHandle);
-                appIdNativeMem = tmpHandle;
+                NativeMem = tmpHandle;
                 if (0 != err)
                     throw new WfpException(err, "FwpmGetAppIdFromFileName0");
             }
             else
             {
-                // Get unicode bytes with null-terminator
-                filePath = filePath.ToLowerInvariant();                     // WFP will only match if lowercase
-                int nBytes = Encoding.Unicode.GetByteCount(filePath) + 2;   // +2 for the null-terminator
-                var bytes = new byte[nBytes];
-                Encoding.Unicode.GetBytes(filePath, 0, filePath.Length, bytes, 0);
-
-                // Get the bytes into an unmanaged pointer
-                appIdDataNativeMem = SafeHGlobalHandle.Alloc(nBytes);
-                System.Runtime.InteropServices.Marshal.Copy(bytes, 0, appIdDataNativeMem.DangerousGetHandle(), nBytes);
-
-                // Get the blob into an unmanaged pointer
-                Interop.FWP_BYTE_BLOB blob;
-                blob.data = appIdDataNativeMem.DangerousGetHandle();
-                blob.size = (uint)nBytes;
-                appIdNativeMem = SafeHGlobalHandle.FromStruct(blob);
+                unsafe
+                {
+                    fixed (char* src = filePath.ToLowerInvariant()) // WFP will only match if lowercase
+                        NativeMem = PInvokeHelper.CreateWfpBlob((IntPtr)src, filePath.Length * 2, true);
+                }
             }
 
             _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
             _nativeStruct.fieldKey = bBeforeProxying ? ConditionKeys.FWPM_CONDITION_ALE_ORIGINAL_APP_ID : ConditionKeys.FWPM_CONDITION_ALE_APP_ID;
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_BYTE_BLOB_TYPE;
-            _nativeStruct.conditionValue.value.byteBlob = appIdNativeMem.DangerousGetHandle();
+            _nativeStruct.conditionValue.value.byteBlob = NativeMem.DangerousGetHandle();
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                appIdNativeMem?.Dispose();
-                appIdNativeMem = null;
-                appIdDataNativeMem?.Dispose();
-                appIdDataNativeMem = null;
+                NativeMem?.Dispose();
             }
 
             base.Dispose(disposing);
@@ -406,37 +425,40 @@ namespace WFPdotNet
 
     public abstract class SecurityDescriptorFilterCondition : FilterCondition
     {
-        private SafeHGlobalHandle byteBlobNativeMem;
-        private SafeHGlobalHandle sdNativeMem;
+        private SafeHandle NativeMem;
 
         protected SecurityDescriptorFilterCondition() { }
 
         protected void Init(Guid fieldKey, RawSecurityDescriptor sd, FieldMatchType matchType)
         {
-            // Get the SD in SDDL self-related form into an unmanaged pointer
             byte[] sdBinaryForm = new byte[sd.BinaryLength];
             sd.GetBinaryForm(sdBinaryForm, 0);
-            sdNativeMem = SafeHGlobalHandle.Alloc(sd.BinaryLength);
-            System.Runtime.InteropServices.Marshal.Copy(sdBinaryForm, 0, sdNativeMem.DangerousGetHandle(), sd.BinaryLength);
+            Init(fieldKey, sdBinaryForm, matchType);
+        }
 
-            //  Create FWP_BYTE_BLOB for the SD
-            Interop.FWP_BYTE_BLOB blob = new Interop.FWP_BYTE_BLOB();
-            blob.size = (uint)sd.BinaryLength;
-            blob.data = sdNativeMem.DangerousGetHandle();
-            byteBlobNativeMem = SafeHGlobalHandle.FromStruct(blob);
+        protected unsafe void Init(Guid fieldKey, byte[] sdBinaryForm, FieldMatchType matchType)
+        {
+            unsafe
+            {
+                fixed (byte* src = sdBinaryForm)
+                    Init(fieldKey, (IntPtr)src, sdBinaryForm.Length, matchType);
+            }
+        }
 
+        protected void Init(Guid fieldKey, IntPtr sdBinaryFormPtr, int sdBinaryFormLength, FieldMatchType matchType)
+        {
+            NativeMem = PInvokeHelper.CreateWfpBlob(sdBinaryFormPtr, sdBinaryFormLength);
             _nativeStruct.matchType = matchType;
             _nativeStruct.fieldKey = fieldKey;
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_SECURITY_DESCRIPTOR_TYPE;
-            _nativeStruct.conditionValue.value.sd = byteBlobNativeMem.DangerousGetHandle();
+            _nativeStruct.conditionValue.value.sd = NativeMem.DangerousGetHandle();
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                byteBlobNativeMem?.Dispose();
-                sdNativeMem?.Dispose();
+                NativeMem?.Dispose();
             }
 
             base.Dispose(disposing);
@@ -445,16 +467,42 @@ namespace WFPdotNet
 
     public sealed class ServiceNameFilterCondition : SecurityDescriptorFilterCondition
     {
+        private static class NativeMethods
+        {
+            [DllImport("advapi32", SetLastError = true, CharSet = CharSet.Unicode)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            public static extern bool ConvertStringSecurityDescriptorToSecurityDescriptor(
+                string stringSd,
+                uint stringSdRevision,
+                out IntPtr resultSd,
+                ref int resultSdLength);
+
+            [DllImport("kernel32")]
+            public static extern IntPtr LocalFree(IntPtr hMem);
+        }
+
         public ServiceNameFilterCondition(string serviceName, FieldMatchType matchType)
         {
             // Get service SID
             string serviceSid = GetServiceSidFromName(serviceName);
 
             // Put service SID into SDDL form
-            string sddl = string.Format("O:SYG:SYD:(A;;CCRC;;;{0})", serviceSid);
+            string sddl = $"O:SYG:SYD:(A;;CCRC;;;{serviceSid})";
 
-            // Construct condition from security descriptor
-            Init(ConditionKeys.FWPM_CONDITION_ALE_USER_ID, new RawSecurityDescriptor(sddl), matchType);
+            // Get SDDL in binary form
+            IntPtr nativeArray = IntPtr.Zero;
+            try
+            {
+                int byteArraySize = 0;
+                if (!NativeMethods.ConvertStringSecurityDescriptorToSecurityDescriptor(sddl, 1, out nativeArray, ref byteArraySize))
+                    throw new Win32Exception();
+
+                Init(ConditionKeys.FWPM_CONDITION_ALE_USER_ID, nativeArray, byteArraySize, matchType);
+            }
+            finally
+            {
+                NativeMethods.LocalFree(nativeArray);
+            }
         }
 
         public ServiceNameFilterCondition(string serviceName) : this(serviceName, FieldMatchType.FWP_MATCH_EQUAL)
@@ -497,31 +545,25 @@ namespace WFPdotNet
             // Optimized away by reversing array order in steps 7 and 10.
 
             // 6: Split the reversed string into 5 blocks of 4 bytes each.
-            uint[] dec = new uint[5];
-            for (int i = 0; i < dec.Length; ++i)
+            unsafe
             {
-                // 7: Convert each block of hex bytes() to Decimal
-                string hexBlock =sha1[i * 4 + 3].ToString("X2") +
-                    sha1[i * 4 + 2].ToString("X2") +
-                    sha1[i * 4 + 1].ToString("X2") +
-                    sha1[i * 4 + 0].ToString("X2");
+                var dec = stackalloc uint[5];
+                for (int i = 0; i < 5; ++i)
+                {
+                    // 7: Convert each block of hex bytes() to Decimal
+                    dec[i] =
+                        ((uint)sha1[i * 4 + 3] << 24) +
+                        ((uint)sha1[i * 4 + 2] << 16) +
+                        ((uint)sha1[i * 4 + 1] << 8) +
+                        ((uint)sha1[i * 4 + 0] << 0);
+                }
 
-                dec[i] = Convert.ToUInt32(hexBlock, 16);
+                // 8: Reverse the Position of the blocks.
+                // 9: Create the first part of the SID "S-1-5-80-"
+                // 10: Tack on each block of Decimal strings with a "-" in between each block that was converted and reversed.
+                // 11: Finally out put the complete SID for the service.
+                return $"S-1-5-80-{dec[0].ToString()}-{dec[1].ToString()}-{dec[2].ToString()}-{dec[3].ToString()}-{dec[4].ToString()}";
             }
-
-            // 8: Reverse the Position of the blocks.
-            // 9: Create the first part of the SID "S-1-5-80-"
-            // 10: Tack on each block of Decimal strings with a "-" in between each block that was converted and reversed.
-            // 11: Finally out put the complete SID for the service.
-            string serviceSid = string.Format("S-1-5-80-{0}-{1}-{2}-{3}-{4}",
-                dec[0],
-                dec[1],
-                dec[2],
-                dec[3],
-                dec[4]
-            );
-
-            return serviceSid;
         }
     }
 
@@ -529,7 +571,7 @@ namespace WFPdotNet
     {
         public UserIdFilterCondition(string sid, RemoteOrLocal peer)
         {
-            string sddl = string.Format("O:LSD:(A;;CC;;;{0}))", sid);
+            string sddl = $"O:LSD:(A;;CC;;;{sid}))";
             Init(
                 (RemoteOrLocal.Local == peer) ? ConditionKeys.FWPM_CONDITION_ALE_USER_ID : ConditionKeys.FWPM_CONDITION_ALE_REMOTE_USER_ID,
                 new RawSecurityDescriptor(sddl),
@@ -612,6 +654,38 @@ namespace WFPdotNet
         }
     }
 
+    public sealed class IcmpTypeFilterCondition : FilterCondition
+    {
+        public IcmpTypeFilterCondition(ushort icmpType)
+        {
+            _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
+            _nativeStruct.fieldKey = ConditionKeys.FWPM_CONDITION_ORIGINAL_ICMP_TYPE;
+            _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT16;
+            _nativeStruct.conditionValue.value.uint16 = icmpType;
+        }
+    }
+    public sealed class IcmpErrorTypeFilterCondition : FilterCondition
+    {
+        public IcmpErrorTypeFilterCondition(ushort icmpType)
+        {
+            _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
+            _nativeStruct.fieldKey = ConditionKeys.FWPM_CONDITION_ICMP_TYPE;
+            _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT16;
+            _nativeStruct.conditionValue.value.uint16 = icmpType;
+        }
+    }
+    public sealed class IcmpErrorCodeFilterCondition : FilterCondition
+    {
+        public IcmpErrorCodeFilterCondition(ushort icmpCode)
+        {
+            _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
+            _nativeStruct.fieldKey = ConditionKeys.FWPM_CONDITION_ICMP_CODE;
+            _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT16;
+            _nativeStruct.conditionValue.value.uint16 = icmpCode;
+        }
+    }
+
+
     [Flags]
     public enum ConditionFlags : uint
     {
@@ -649,13 +723,6 @@ namespace WFPdotNet
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT32;
             _nativeStruct.conditionValue.value.uint32 = (uint)flags;
         }
-    }
-
-    public enum SioRcvAll : uint
-    {
-        SIO_RCVALL = (uint)2550136833u,
-        SIO_RCVALL_MCAST = (uint)2550136834u,
-        SIO_RCVALL_IGMPMCAST = (uint)2550136835u
     }
 
     public sealed class LocalInterfaceCondition : FilterCondition

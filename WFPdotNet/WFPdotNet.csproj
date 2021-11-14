@@ -27,7 +27,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -38,7 +38,7 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -50,8 +50,9 @@
     <Compile Include="ConditionKeys.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Filter.cs" />
-    <Compile Include="FilterCollection.cs" />
     <Compile Include="FilterCondition.cs" />
+    <Compile Include="FilterConditionList.cs" />
+    <Compile Include="FilterEnumerator.cs" />
     <Compile Include="FilterSubscription.cs" />
     <Compile Include="LayerKeys.cs" />
     <Compile Include="NativeStructs.cs" />

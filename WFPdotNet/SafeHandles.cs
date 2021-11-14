@@ -334,7 +334,15 @@ namespace WFPdotNet
 
         public void MarshalFromStruct<T>(T obj, int offset = 0) where T : unmanaged
         {
-            Marshal.StructureToPtr(obj, (IntPtr)(this.handle.ToInt64() + offset), NeedsMarshalDestroy);  // TODO: Use IntPtr.Add() on .Net4
+            if (NeedsMarshalDestroy)
+                Marshal.DestroyStructure(this.handle, MarshalDestroyType);
+
+            int size = Marshal.SizeOf(typeof(T));
+            unsafe
+            {
+                System.Diagnostics.Debug.Assert(sizeof(T) == size);
+                Buffer.MemoryCopy(&obj, (byte*)this.handle.ToPointer() + offset, size, size);
+            }
             MarshalDestroyType = null;
         }
 
@@ -346,7 +354,14 @@ namespace WFPdotNet
 
         public T ToStruct<T>() where T : unmanaged
         {
-            return (T)Marshal.PtrToStructure(this.handle, typeof(T));
+            T ret = default(T);
+            var size = Marshal.SizeOf(typeof(T));
+            unsafe
+            {
+                System.Diagnostics.Debug.Assert(sizeof(T) == size);
+                Buffer.MemoryCopy(handle.ToPointer(), &ret, size, size);
+            }
+            return ret;
         }
 
         public void ForgetAndResize(uint newSize, bool zeroInit = false)

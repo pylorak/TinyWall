@@ -32,7 +32,6 @@ namespace WFPdotNet
             : base(new List<Interop.FWPM_SESSION0>())
         {
             FwpmSessionEnumSafeHandle enumSafeHandle = null;
-            FwpmMemorySafeHandle entries = null;
 
             RuntimeHelpers.PrepareConstrainedRegions();
             try
@@ -59,28 +58,34 @@ namespace WFPdotNet
                 while (true)
                 {
                     const uint numEntriesRequested = 10;
-                    uint numEntriesReturned;
 
-                    // FwpmSessionEnum0() returns a list of pointers in batches
-                    err = NativeMethods.FwpmSessionEnum0(engine.NativePtr, enumSafeHandle, numEntriesRequested, out entries, out numEntriesReturned);
-                    if (0 != err)
-                        throw new WfpException(err, "FwpmSessionEnum0");
-
-                    // Dereference each pointer in the current batch
-                    IntPtr[] ptrList = PInvokeHelper.PtrToStructureArray<IntPtr>(entries.DangerousGetHandle(), numEntriesReturned, (uint)IntPtr.Size);
-                    for (int i = 0; i < numEntriesReturned; ++i)
+                    FwpmMemorySafeHandle entries = null;
+                    try
                     {
-                        Items.Add((Interop.FWPM_SESSION0)Marshal.PtrToStructure(ptrList[i], typeof(Interop.FWPM_SESSION0)));
-                    }
+                        // FwpmSessionEnum0() returns a list of pointers in batches
+                        err = NativeMethods.FwpmSessionEnum0(engine.NativePtr, enumSafeHandle, numEntriesRequested, out entries, out uint numEntriesReturned);
+                        if (0 != err)
+                            throw new WfpException(err, "FwpmSessionEnum0");
 
-                    // Exit infinite loop if we have exhausted the list
-                    if (numEntriesReturned < numEntriesRequested)
-                        break;
-                }
+                        // Dereference each pointer in the current batch
+                        IntPtr[] ptrList = PInvokeHelper.PtrToStructureArray<IntPtr>(entries.DangerousGetHandle(), numEntriesReturned, (uint)IntPtr.Size);
+                        for (int i = 0; i < numEntriesReturned; ++i)
+                        {
+                            Items.Add((Interop.FWPM_SESSION0)Marshal.PtrToStructure(ptrList[i], typeof(Interop.FWPM_SESSION0)));
+                        }
+
+                        // Exit infinite loop if we have exhausted the list
+                        if (numEntriesReturned < numEntriesRequested)
+                            break;
+                    }
+                    finally
+                    {
+                        entries?.Dispose();
+                    }
+                } // while
             }
             finally
             {
-                entries?.Dispose();
                 enumSafeHandle?.Dispose();
             }
         }

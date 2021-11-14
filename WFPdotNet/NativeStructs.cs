@@ -10,6 +10,13 @@ namespace WFPdotNet.Interop
         [MarshalAs(UnmanagedType.LPWStr)] public string description;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_DISPLAY_DATA0_NoStrings
+    {
+        public IntPtr name;
+        public IntPtr description;
+    }
+
     [Flags]
     public enum FWPM_SESSION_FLAGS : uint
     {
@@ -128,10 +135,9 @@ namespace WFPdotNet.Interop
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct FWP_V6_ADDR_AND_MASK
+    public unsafe struct FWP_V6_ADDR_AND_MASK
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16, ArraySubType = UnmanagedType.U1)]
-        public byte[] addr;
+        public fixed byte addr[16];
         public byte prefixLength;
     }
 
@@ -275,7 +281,7 @@ namespace WFPdotNet.Interop
     {
         public Guid fieldKey;
         public FieldMatchType matchType;
-        public Interop.FWP_CONDITION_VALUE0 conditionValue;
+        public FWP_CONDITION_VALUE0 conditionValue;
     }
 
     [Flags]
@@ -335,7 +341,26 @@ namespace WFPdotNet.Interop
         public FWP_VALUE0 effectiveWeight;
     }
 
-    
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FWPM_FILTER0_NoStrings
+    {
+        public Guid filterKey;
+        public FWPM_DISPLAY_DATA0_NoStrings displayData;
+        public FilterFlags flags;
+        public IntPtr providerKey;
+        public FWP_BYTE_BLOB providerData;
+        public Guid layerKey;
+        public Guid subLayerKey;
+        public FWP_VALUE0 weight;
+        public uint numFilterConditions;
+        public IntPtr filterConditions;
+        public FWPM_ACTION0 action;
+        public Filter0Context filterContext;
+        public IntPtr reserved;
+        public ulong filterId;
+        public FWP_VALUE0 effectiveWeight;
+    }
+
     public enum FWP_FILTER_ENUM_TYPE : uint
     {
         FWP_FILTER_ENUM_FULLY_CONTAINED = 0,
@@ -354,7 +379,7 @@ namespace WFPdotNet.Interop
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct FWPM_FILTER_ENUM_TEMPLATE0
+    public class FWPM_FILTER_ENUM_TEMPLATE0 // class on purpose
     {
         public IntPtr providerKey;
         public Guid layerKey;
@@ -377,7 +402,7 @@ namespace WFPdotNet.Interop
     [StructLayout(LayoutKind.Sequential)]
     public struct FWPM_FILTER_SUBSCRIPTION0
     {
-        public IntPtr enumTemplate;
+        public Interop.FWPM_FILTER_ENUM_TEMPLATE0 enumTemplate;
         public FilterSubscriptionFlags flags;
         public Guid sessionKey;
     }

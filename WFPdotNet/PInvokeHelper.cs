@@ -5,18 +5,90 @@ using System.Security.Principal;
 
 namespace WFPdotNet
 {
+    public static class Buffer
+    {
+        public unsafe static void MemoryCopy(void* src, void* dst, long dstSize, long srcLen)
+        {
+            long cpyLen = dstSize < srcLen ? dstSize : srcLen;
+            byte* bsrc = (byte*)src;
+            byte* bdst = (byte*)dst;
+            byte* bsrcEnd = bsrc + cpyLen;
+            while(bsrc < bsrcEnd)
+            {
+                *bdst = *bsrc;
+                ++bsrc;
+                ++bdst;
+            }
+        }
+    }
+
     public static class PInvokeHelper
     {
-        public static T[] PtrToStructureArray<T>(IntPtr start, uint numElem, uint stride)
+        public static T[] PtrToStructureArray<T>(IntPtr start, uint numElem, uint stride) where T : unmanaged
         {
             T[] ret = new T[numElem];
             long ptr = start.ToInt64();
             for (int i = 0; i < numElem; i++, ptr += stride)
             {
-                ret[i] = (T)Marshal.PtrToStructure(new IntPtr(ptr), typeof(T));
+                ret[i] = PInvokeHelper.PtrToStructure<T>(new IntPtr(ptr));
             }
             return ret;
         }
+
+        public static T PtrToStructure<T>(IntPtr src) where T : unmanaged
+        {
+            var ret = default(T);
+            var size = Marshal.SizeOf(typeof(T));
+            unsafe
+            {
+                System.Diagnostics.Debug.Assert(sizeof(T) == size);
+                Buffer.MemoryCopy(src.ToPointer(), &ret, size, size);
+            }
+            return ret;
+        }
+
+        public static void StructureToPtr<T>(T src, IntPtr dst) where T : unmanaged
+        {
+            var size = Marshal.SizeOf(typeof(T));
+            unsafe
+            {
+                System.Diagnostics.Debug.Assert(sizeof(T) == size);
+                Buffer.MemoryCopy(&src, dst.ToPointer(), size, size);
+            }
+        }
+
+        public static SafeHGlobalHandle CreateWfpBlob(IntPtr dataPtr, int dataSize, bool nullTerminateUnicodeData = false)
+        {
+            // Reserve buffer
+            var bufSize = nullTerminateUnicodeData ? dataSize + 2 : dataSize;
+            var blobSize = Marshal.SizeOf(typeof(Interop.FWP_BYTE_BLOB));
+            var nativeMemHndl = SafeHGlobalHandle.Alloc(blobSize + bufSize);
+            var blobPtr = nativeMemHndl.DangerousGetHandle();
+            var bufPtr = new IntPtr(blobPtr.ToInt64() + blobSize);
+
+            // Prepare blob structure
+            Interop.FWP_BYTE_BLOB blob;
+            blob.data = bufPtr;
+            blob.size = (uint)bufSize;
+
+            // Copy all into native memory
+            unsafe
+            {
+                if (nullTerminateUnicodeData)
+                {
+                    var strBufPtr = (char*)bufPtr.ToPointer();
+                    var strLen = dataSize / 2;
+                    strBufPtr[strLen] = (char)0;
+                }
+                Buffer.MemoryCopy(&blob, blobPtr.ToPointer(), blobSize, blobSize);
+                Buffer.MemoryCopy(dataPtr.ToPointer(), bufPtr.ToPointer(), dataSize, dataSize);
+            }
+
+            return nativeMemHndl;
+        }
+
+        public static void AssertUnmanagedType<T>() where T : unmanaged
+        { }
 
         [DllImport("advapi32", CharSet = CharSet.Auto)]
         static extern uint GetLengthSid(IntPtr pSid);

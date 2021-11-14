@@ -14,6 +14,26 @@ using System.Windows.Forms;
 using System.Threading;
 using Microsoft.Samples;
 
+namespace System
+{
+    public static class Buffer
+    {
+        public unsafe static void MemoryCopy(void* src, void* dst, long dstSize, long srcLen)
+        {
+            long cpyLen = dstSize < srcLen ? dstSize : srcLen;
+            byte* bsrc = (byte*)src;
+            byte* bdst = (byte*)dst;
+            byte* bsrcEnd = bsrc + cpyLen;
+            while (bsrc < bsrcEnd)
+            {
+                *bdst = *bsrc;
+                ++bsrc;
+                ++bdst;
+            }
+        }
+    }
+}
+
 namespace PKSoft
 {
     internal static class Utils

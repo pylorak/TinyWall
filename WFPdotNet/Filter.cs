@@ -25,31 +25,38 @@ namespace WFPdotNet
 
     public sealed class Filter : IDisposable
     {
-        private Interop.FWPM_FILTER0 _nativeStruct;
-
-        private Guid? _providerKey;
-        SafeHGlobalHandle _providerKeyHandle;
-
-        SafeHGlobalHandle _weightHandle;
-
-        private List<FilterCondition> _conditions;
-        SafeHGlobalHandle _conditionsHandle;
-
-        public Filter()
+        private enum DisplaySyncMode
         {
-            _nativeStruct.providerKey = IntPtr.Zero;
-            _providerKeyHandle = null;
-
-            _weightHandle = SafeHGlobalHandle.Alloc(sizeof(ulong));
-            _nativeStruct.weight.type = Interop.FWP_DATA_TYPE.FWP_UINT64;
-            _nativeStruct.weight.value.uint64 = _weightHandle.DangerousGetHandle();
-
-            _conditions = new List<FilterCondition>();
-            _conditionsHandle = null;
+            None,
+            ToNative,
+            ToManaged
         }
 
-        public Filter(string name, string desc, Guid providerKey, FilterActions action, ulong weight) : this()
+        private Interop.FWPM_FILTER0_NoStrings _nativeStruct;
+
+        private ulong _weight;
+        private Guid _providerKey;
+        private SafeHGlobalHandle _weightAndProviderKeyHandle;
+
+        private string _displayName;
+        private string _displayDescription;
+        private SafeHGlobalHandle _displayDataHandle;
+
+        private FilterConditionList _conditions;
+        private SafeHGlobalHandle _conditionsHandle;
+
+        private Filter()
         {
+            _weightAndProviderKeyHandle = SafeHGlobalHandle.Alloc(sizeof(ulong) + Marshal.SizeOf(typeof(Guid)));
+            _nativeStruct.weight.type = Interop.FWP_DATA_TYPE.FWP_UINT64;
+            _nativeStruct.weight.value.uint64 = _weightAndProviderKeyHandle.DangerousGetHandle();
+            _nativeStruct.providerKey = new IntPtr(_weightAndProviderKeyHandle.DangerousGetHandle().ToInt64() + sizeof(ulong));
+        }
+
+        public Filter(string name, string desc, Guid providerKey, FilterActions action, ulong weight, FilterConditionList conditions = null) : this()
+        {
+            _conditions = (conditions is null) ? new FilterConditionList() : conditions;
+
             this.DisplayName = name;
             this.DisplayDescription = desc;
             this.ProviderKey = providerKey;
@@ -57,51 +64,64 @@ namespace WFPdotNet
             this.Weight = weight;
         }
 
-        internal Filter(Interop.FWPM_FILTER0 filt0, bool getConditions)
+        internal Filter(in Interop.FWPM_FILTER0_NoStrings filt0, bool getConditions) : this()
         {
             _nativeStruct = filt0;
 
-            // TODO: Do we really not need to own these SafeHandles ???
-            //_weightHandle = new AllocHGlobalSafeHandle(_nativeStruct.weight.value.uint64, false);
-            //_conditionsHandle = new AllocHGlobalSafeHandle(_nativeStruct.filterConditions, false);
-
             if (_nativeStruct.providerKey != IntPtr.Zero)
-            {
-                // TODO: Do we really not need to own these SafeHandles ???
-                //_providerKeyHandle = new AllocHGlobalSafeHandle(_nativeStruct.providerKey, false);
-                _providerKey = (Guid)System.Runtime.InteropServices.Marshal.PtrToStructure(_nativeStruct.providerKey, typeof(Guid));
-            }
+                ProviderKey = PInvokeHelper.PtrToStructure<Guid>(_nativeStruct.providerKey);
+
+            if (_nativeStruct.weight.value.uint64 != IntPtr.Zero)
+                Weight = PInvokeHelper.PtrToStructure<ulong>(_nativeStruct.weight.value.uint64);
+
+            if (_nativeStruct.displayData.name != IntPtr.Zero)
+                DisplayName = Marshal.PtrToStringUni(_nativeStruct.displayData.name);
+
+            if (_nativeStruct.displayData.description != IntPtr.Zero)
+                DisplayDescription = Marshal.PtrToStringUni(_nativeStruct.displayData.description);
 
             if (getConditions)
             {
-                int condSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(Interop.FWPM_FILTER_CONDITION0));
-                _conditions = new List<FilterCondition>((int)_nativeStruct.numFilterConditions);
+                int condSize = Marshal.SizeOf(typeof(Interop.FWPM_FILTER_CONDITION0));
+                _conditions = new FilterConditionList((int)_nativeStruct.numFilterConditions);
                 for (int i = 0; i < (int)_nativeStruct.numFilterConditions; ++i)
                 {
                     IntPtr ptr = new IntPtr(_nativeStruct.filterConditions.ToInt64() + i * condSize);
-                    FilterCondition cond = new FilterCondition((Interop.FWPM_FILTER_CONDITION0)System.Runtime.InteropServices.Marshal.PtrToStructure(ptr, typeof(Interop.FWPM_FILTER_CONDITION0)));
+                    FilterCondition cond = new FilterCondition(PInvokeHelper.PtrToStructure<Interop.FWPM_FILTER_CONDITION0>(ptr));
                     _conditions.Add(cond);
                 }
             }
         }
 
-        public Interop.FWPM_FILTER0 Marshal()
+        public Interop.FWPM_FILTER0_NoStrings Prepare()
         {
-            _conditionsHandle?.Dispose();
+            SynchronizeDisplayData();
 
-            _nativeStruct.numFilterConditions = (uint)_conditions.Count;
-
-            int condSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(Interop.FWPM_FILTER_CONDITION0));
-            _conditionsHandle = SafeHGlobalHandle.Alloc(_conditions.Count * condSize);
-            _nativeStruct.filterConditions = _conditionsHandle.DangerousGetHandle();
-            for (int i = 0; i < _conditions.Count; ++i )
+            if (_conditionsHandle == null)
             {
-                _conditionsHandle.MarshalFromStruct(_conditions[i].Marshal(), i * condSize);
+                int condSize = Marshal.SizeOf(typeof(Interop.FWPM_FILTER_CONDITION0));
+                _conditionsHandle?.Dispose();
+                _conditionsHandle = SafeHGlobalHandle.Alloc(_conditions.Count * condSize);
+                _nativeStruct.filterConditions = _conditionsHandle.DangerousGetHandle();
+                _nativeStruct.numFilterConditions = (uint)_conditions.Count;
+
+                unsafe
+                {
+                    PInvokeHelper.AssertUnmanagedType<Interop.FWPM_FILTER_CONDITION0>();
+                    IntPtr dst = _conditionsHandle.DangerousGetHandle();
+                    int size = Marshal.SizeOf(typeof(Interop.FWPM_FILTER_CONDITION0));
+                    for (int i = 0; i < _conditions.Count; ++i)
+                    {
+                        var cond = _conditions[i].Marshal();
+                        Interop.FWPM_FILTER_CONDITION0* src = &cond;
+                        Buffer.MemoryCopy(src, dst.ToPointer(), size, size);
+                        dst = new IntPtr(dst.ToInt64() + size);
+                    }
+                }
             }
 
             return _nativeStruct;
         }
-
 
         public Guid FilterKey
         {
@@ -109,16 +129,62 @@ namespace WFPdotNet
             set { _nativeStruct.filterKey = value; }
         }
 
+        private void SynchronizeDisplayData()
+        {
+            if (_displayDataHandle != null)
+                // Already synchronized
+                return;
+
+            int nameSize = _displayName.Length * 2;
+            int descriptionSize = _displayDescription.Length * 2;
+            int unmanagedSize = nameSize + descriptionSize + (2 * 2);
+            _displayDataHandle = SafeHGlobalHandle.Alloc(unmanagedSize);
+
+            IntPtr namePtr = _displayDataHandle.DangerousGetHandle();
+            IntPtr descriptionPtr = new IntPtr(namePtr.ToInt64() + nameSize + 2);
+            unsafe
+            {
+                var dst = (char*)namePtr;
+                dst[_displayName.Length] = (char)0;
+                fixed (char* src = _displayName)
+                    Buffer.MemoryCopy(src, dst, nameSize, nameSize);
+
+                dst = (char*)descriptionPtr;
+                dst[_displayDescription.Length] = (char)0;
+                fixed (char* src = _displayDescription)
+                    Buffer.MemoryCopy(src, dst, descriptionSize, descriptionSize);
+            }
+
+            _nativeStruct.displayData.name = namePtr;
+            _nativeStruct.displayData.description = descriptionPtr;
+        }
+
         public string DisplayName
         {
-            get { return _nativeStruct.displayData.name; }
-            set { _nativeStruct.displayData.name = value; }
+            get
+            {
+                return _displayName;
+            }
+            set
+            {
+                _displayName = value;
+                _displayDataHandle?.Dispose();
+                _displayDataHandle = null;
+            }
         }
 
         public string DisplayDescription
         {
-            get { return _nativeStruct.displayData.description; }
-            set { _nativeStruct.displayData.description = value; }
+            get
+            {
+                return _displayDescription;
+            }
+            set
+            {
+                _displayDescription = value;
+                _displayDataHandle?.Dispose();
+                _displayDataHandle = null;
+            }
         }
 
         public FilterFlags Flags
@@ -127,27 +193,17 @@ namespace WFPdotNet
             set { _nativeStruct.flags = value; }
         }
 
-        public Guid? ProviderKey
+        public Guid ProviderKey
         {
             get { return _providerKey; }
             set
             {
-                _providerKeyHandle?.Dispose();
-                _providerKeyHandle = null;
+                if (_weightAndProviderKeyHandle is null)
+                    throw new InvalidOperationException();
 
                 _providerKey = value;
-
-                if (value.HasValue)
-                {
-                    _providerKeyHandle = SafeHGlobalHandle.FromStruct(value.Value);
-                    _nativeStruct.providerKey = _providerKeyHandle.DangerousGetHandle();
-                }
-                else
-                {
-                    _nativeStruct.providerKey = IntPtr.Zero;
-                }
+                PInvokeHelper.StructureToPtr(value, _nativeStruct.providerKey);
             }
-
         }
 
         private ulong? _FilterId;
@@ -175,12 +231,26 @@ namespace WFPdotNet
         }
         public ulong Weight
         {
-            get { return (ulong)System.Runtime.InteropServices.Marshal.PtrToStructure(_nativeStruct.weight.value.uint64, typeof(ulong)); }
-            set { System.Runtime.InteropServices.Marshal.StructureToPtr(value, _nativeStruct.weight.value.uint64, false); }
+            get { return _weight; }
+            set
+            {
+                if (_weightAndProviderKeyHandle is null)
+                    throw new InvalidOperationException();
+
+                _weight = value;
+                PInvokeHelper.StructureToPtr(value, _nativeStruct.weight.value.uint64);
+            }
         }
-        public List<FilterCondition> Conditions
+        public FilterConditionList Conditions
         {
-            get { return _conditions; }
+            get 
+            {
+                // Invalidate cache
+                _conditionsHandle?.Dispose();
+                _conditionsHandle = null;
+
+                return _conditions; 
+            }
         }
         public FilterActions Action
         {
@@ -195,13 +265,15 @@ namespace WFPdotNet
 
         public void Dispose()
         {
-            _providerKeyHandle?.Dispose();
-            _weightHandle?.Dispose();
+            _weightAndProviderKeyHandle?.Dispose();
+            _displayDataHandle?.Dispose();
             _conditionsHandle?.Dispose();
+            _conditions?.Dispose();
 
-            _providerKeyHandle = null;
-            _weightHandle = null;
+            _weightAndProviderKeyHandle = null;
+            _displayDataHandle = null;
             _conditionsHandle = null;
+            _conditions = null;
         }
     }
 }

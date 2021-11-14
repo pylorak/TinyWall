@@ -65,7 +65,7 @@ namespace WFPdotNet
             [DllImport("FWPUClnt.dll", EntryPoint = "FwpmFilterAdd0")]
             internal static extern uint FwpmFilterAdd0(
                 [In] FwpmEngineSafeHandle engineHandle,
-                [In] ref WFPdotNet.Interop.FWPM_FILTER0 filter,
+                [In] ref WFPdotNet.Interop.FWPM_FILTER0_NoStrings filter,
                 [In] IntPtr sd,
                 [Out] out ulong id);
 
@@ -128,7 +128,7 @@ namespace WFPdotNet
 
             try
             {
-                Interop.FWP_VALUE0 val = (Interop.FWP_VALUE0)Marshal.PtrToStructure(nativeMem.DangerousGetHandle(), typeof(Interop.FWP_VALUE0));
+                Interop.FWP_VALUE0 val = PInvokeHelper.PtrToStructure<Interop.FWP_VALUE0>(nativeMem.DangerousGetHandle());
                 System.Diagnostics.Debug.Assert(val.type == Interop.FWP_DATA_TYPE.FWP_UINT32);
                 return val.value.uint32;
             }
@@ -206,9 +206,44 @@ namespace WFPdotNet
             return new SublayerCollection(this);
         }
 
-        public FilterCollection GetFilters(bool getFilterConditions)
+        public FilterEnumerator EnumerateFilters(bool getFilterConditions)
         {
-            return new FilterCollection(this, getFilterConditions);
+            return new FilterEnumerator(this, null, getFilterConditions);
+        }
+
+        public FilterEnumerator EnumerateFilters(bool getFilterConditions, Guid provider, Guid layer)
+        {
+            using var providerGuidHandle = SafeHGlobalHandle.FromStruct(provider);
+            var template = new Interop.FWPM_FILTER_ENUM_TEMPLATE0
+            {
+                providerKey = providerGuidHandle.DangerousGetHandle(),
+                layerKey = layer,
+                flags = Interop.FilterEnumTemplateFlags.FWP_FILTER_ENUM_FLAG_INCLUDE_BOOTTIME | Interop.FilterEnumTemplateFlags.FWP_FILTER_ENUM_FLAG_INCLUDE_DISABLED,
+                numFilterConditions = 0,
+                actionMask = 0xFFFFFFFFu,
+            };
+            
+            return new FilterEnumerator(this, template, getFilterConditions);
+        }
+
+        public FilterKeyEnumerator EnumerateFilterKeys()
+        {
+            return new FilterKeyEnumerator(this, null);
+        }
+
+        public FilterKeyEnumerator EnumerateFilterKeys(Guid provider, Guid layer)
+        {
+            using var providerGuidHandle = SafeHGlobalHandle.FromStruct(provider);
+            var template = new Interop.FWPM_FILTER_ENUM_TEMPLATE0
+            {
+                providerKey = providerGuidHandle.DangerousGetHandle(),
+                layerKey = layer,
+                flags = Interop.FilterEnumTemplateFlags.FWP_FILTER_ENUM_FLAG_INCLUDE_BOOTTIME | Interop.FilterEnumTemplateFlags.FWP_FILTER_ENUM_FLAG_INCLUDE_DISABLED,
+                numFilterConditions = 0,
+                actionMask = 0xFFFFFFFFu,
+            };
+
+            return new FilterKeyEnumerator(this, template);
         }
 
         public Guid RegisterProvider(ref Interop.FWPM_PROVIDER0 provider)
@@ -242,7 +277,7 @@ namespace WFPdotNet
             if (Guid.Empty == filter.FilterKey)
                 filter.FilterKey = Guid.NewGuid();
 
-            Interop.FWPM_FILTER0 nf = filter.Marshal();
+            var nf = filter.Prepare();
             uint err = NativeMethods.FwpmFilterAdd0(_nativeEngineHandle, ref nf, IntPtr.Zero, out ulong id);
             if (0 != err)
                 throw new WfpException(err, "FwpmFilterAdd0");
@@ -303,8 +338,8 @@ namespace WFPdotNet
                 if (err != 0)
                     throw new WfpException(err, "FwpmFilterGetByKey0");
 
-                Interop.FWPM_FILTER0 nativeFilter = (Interop.FWPM_FILTER0)Marshal.PtrToStructure(nativeMem.DangerousGetHandle(), typeof(Interop.FWPM_FILTER0));
-                return new Filter(nativeFilter, getConditions);
+                var nativeFilter = PInvokeHelper.PtrToStructure<Interop.FWPM_FILTER0_NoStrings>(nativeMem.DangerousGetHandle());
+                return new Filter(in nativeFilter, getConditions);
             }
             finally
             {
@@ -321,8 +356,8 @@ namespace WFPdotNet
                 if (err != 0)
                     throw new WfpException(err, "FwpmFilterGetById0");
 
-                Interop.FWPM_FILTER0 nativeFilter = (Interop.FWPM_FILTER0)Marshal.PtrToStructure(nativeMem.DangerousGetHandle(), typeof(Interop.FWPM_FILTER0));
-                return new Filter(nativeFilter, getConditions);
+                var nativeFilter = PInvokeHelper.PtrToStructure<Interop.FWPM_FILTER0_NoStrings>(nativeMem.DangerousGetHandle());
+                return new Filter(in nativeFilter, getConditions);
             }
             finally
             {
