@@ -25,13 +25,6 @@ namespace WFPdotNet
 
     public sealed class Filter : IDisposable
     {
-        private enum DisplaySyncMode
-        {
-            None,
-            ToNative,
-            ToManaged
-        }
-
         private Interop.FWPM_FILTER0_NoStrings _nativeStruct;
 
         private ulong _weight;
@@ -198,9 +191,6 @@ namespace WFPdotNet
             get { return _providerKey; }
             set
             {
-                if (_weightAndProviderKeyHandle is null)
-                    throw new InvalidOperationException();
-
                 _providerKey = value;
                 PInvokeHelper.StructureToPtr(value, _nativeStruct.providerKey);
             }
@@ -234,9 +224,6 @@ namespace WFPdotNet
             get { return _weight; }
             set
             {
-                if (_weightAndProviderKeyHandle is null)
-                    throw new InvalidOperationException();
-
                 _weight = value;
                 PInvokeHelper.StructureToPtr(value, _nativeStruct.weight.value.uint64);
             }
