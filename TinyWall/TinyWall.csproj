@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <OutputType>WinExe</OutputType>
     <UseWindowsForms>true</UseWindowsForms>
     <NeutralLanguage>en</NeutralLanguage>
@@ -38,12 +38,17 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\pylorak.Windows.WFP\pylorak.Windows.WFP.csproj" />
     <ProjectReference Include="..\TinyWall.Interface\TinyWall.Interface.csproj" />
   </ItemGroup>
   <ItemGroup>
 
     <Compile Include="../pylorak.Windows.Services/*.cs" LinkBase="pylorak.Windows.Services" />
+    <Compile Include="../pylorak.Windows.WFP/*.cs" LinkBase="pylorak.Windows.WFP" />
+    <PackageReference Include="Nullable" Version="1.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Memory" Version="4.5.4" />
 
     <COMReference Include="NetFwTypeLib">
       <WrapperTool>tlbimp</WrapperTool>
@@ -64,8 +69,6 @@
       <Isolated>false</Isolated>
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </COMReference>
-
-    <PackageReference Include="System.Memory" Version="4.5.4" />
 
     <EmbeddedResource Update="Resources\Exceptions.resx">
       <Generator>ResXFileCodeGenerator</Generator>
