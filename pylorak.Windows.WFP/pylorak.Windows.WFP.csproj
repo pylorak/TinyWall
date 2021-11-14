@@ -6,22 +6,22 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <RootNamespace>PKSoft</RootNamespace>
+    <RootNamespace>pylorak.Windows.WFP</RootNamespace>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
   <PropertyGroup>
     <Product>WFPdotNet</Product>
-    <Description>WFP Interop Library</Description>
-    <AssemblyTitle>WFPdotNet</AssemblyTitle>
+    <Description>Windows Filtering Platform Interop Library</Description>
+    <AssemblyTitle>pylorak.Windows.WFP</AssemblyTitle>
     <Company>Károly Pados</Company>
     <Copyright>Copyright © 2015 Károly Pados</Copyright>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>WFPdotNet.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>pylorak.Windows.WFP.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="WFPdotNet.snk" />
+    <None Include="pylorak.Windows.WFP.snk" />
   </ItemGroup>
 </Project>
