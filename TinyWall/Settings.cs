@@ -2,7 +2,6 @@
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
-using System.Linq;
 using TinyWall.Interface.Internal;
 using TinyWall.Interface;
 using TinyWall;
@@ -10,29 +9,6 @@ using System.Runtime.Serialization;
 
 namespace PKSoft
 {
-    [Serializable]
-    public class ZoneSettings
-    {
-        public string ZoneName = "Unknown";
-        public List<string> SpecialExceptions = new List<string>();
-        public bool AllowLocalSubnet = false;
-        public List<FirewallExceptionV3> AppExceptions = new List<FirewallExceptionV3>();
-    }
-
-    [Serializable]
-    public class MachineSettings
-    {
-        public BlockListSettings Blocklists = new BlockListSettings();
-        public bool LockHostsFile = true;
-        public DateTime LastUpdateCheck;
-        public bool AutoUpdateCheck = true;
-        public FirewallMode StartupMode = FirewallMode.Normal;
-    }
-
-
-    // --------------------------------------------------------------------------------------------------------------------------------
-
-    [Serializable]
     public sealed class ControllerSettings
     {
         // UI Localization

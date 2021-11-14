@@ -17,7 +17,6 @@ namespace TinyWall.Interface
     // -----------------------------------------------------------------------
 
     [DataContract(Namespace = "TinyWall")]
-    [Serializable]
     public abstract class ExceptionSubject : IEquatable<ExceptionSubject>
     {
         public abstract SubjectType SubjectType { get; }
@@ -68,7 +67,6 @@ namespace TinyWall.Interface
     // -----------------------------------------------------------------------
 
     [DataContract(Namespace = "TinyWall")]
-    [Serializable]
     public class GlobalSubject : ExceptionSubject
     {
         public static GlobalSubject Instance { get; } = new GlobalSubject();
@@ -106,7 +104,6 @@ namespace TinyWall.Interface
     // -----------------------------------------------------------------------
 
     [DataContract(Namespace = "TinyWall")]
-    [Serializable]
     public class ExecutableSubject : ExceptionSubject
     {
         public override SubjectType SubjectType
@@ -130,7 +127,6 @@ namespace TinyWall.Interface
             this.ExecutablePath = filePath;
         }
 
-        [NonSerialized]
         private string _HashSha1;
         public string HashSha1
         {
@@ -144,7 +140,6 @@ namespace TinyWall.Interface
             }
         }
 
-        [NonSerialized]
         private string _CertSubject;
         public string CertSubject
         {
@@ -163,7 +158,6 @@ namespace TinyWall.Interface
             }
         }
 
-        [NonSerialized]
         private WinTrust.VerifyResult? _CertStatus;
         public bool CertValid
         {
@@ -252,7 +246,6 @@ namespace TinyWall.Interface
     // -----------------------------------------------------------------------
 
     [DataContract(Namespace = "TinyWall")]
-    [Serializable]
     public class ServiceSubject : ExecutableSubject
     {
         public override SubjectType SubjectType
@@ -320,7 +313,6 @@ namespace TinyWall.Interface
     // -----------------------------------------------------------------------
 
     [DataContract(Namespace = "TinyWall")]
-    [Serializable]
     public class AppContainerSubject : ExceptionSubject
     {
         public override SubjectType SubjectType

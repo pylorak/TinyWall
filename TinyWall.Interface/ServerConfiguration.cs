@@ -16,7 +16,6 @@ namespace TinyWall.Interface
     }
 
     [DataContract(Namespace = "TinyWall")]
-    [Serializable]
     public sealed class BlockListSettings
     {
         [DataMember(EmitDefaultValue = false)]
@@ -30,7 +29,6 @@ namespace TinyWall.Interface
     }
 
     [DataContract(Namespace = "TinyWall")]
-    [Serializable]
     public sealed class ServerProfileConfiguration
     {
         [DataMember(EmitDefaultValue = false)]
@@ -147,7 +145,6 @@ namespace TinyWall.Interface
     }
 
     [DataContract(Namespace = "TinyWall")]
-    [Serializable]
     public sealed class ServerConfiguration
     {
         private const string APP_NAME = "TinyWall";
@@ -182,7 +179,6 @@ namespace TinyWall.Interface
             _ActiveProfile = null;
         }
         
-        [NonSerialized]
         private ServerProfileConfiguration _ActiveProfile = null;
         public ServerProfileConfiguration ActiveProfile
         {

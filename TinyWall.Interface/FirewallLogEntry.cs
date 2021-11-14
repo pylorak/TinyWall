@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 namespace TinyWall.Interface
 {
     public enum EventLogEvent
@@ -25,7 +24,6 @@ namespace TinyWall.Interface
         InOut = In | Out
     }
 
-    [Serializable]
     public class FirewallLogEntry : IEquatable<FirewallLogEntry>
     {
         public DateTime Timestamp;

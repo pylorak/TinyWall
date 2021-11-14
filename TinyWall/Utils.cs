@@ -423,13 +423,11 @@ namespace PKSoft
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                BinaryFormatter formatter = new BinaryFormatter();
-                formatter.Context = new StreamingContext(StreamingContextStates.Clone);
-                formatter.Serialize(ms, obj);
+                TinyWall.Interface.Internal.SerializationHelper.SerializeDC(ms, obj);
                 ms.Flush();
                 ms.Position = 0;
 
-                return (T)formatter.Deserialize(ms);
+                return TinyWall.Interface.Internal.SerializationHelper.DeserializeDC<T>(ms);
             }
         }
 

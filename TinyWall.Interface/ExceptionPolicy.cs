@@ -18,7 +18,6 @@ namespace TinyWall.Interface
     // -----------------------------------------------------------------------
 
     [DataContract(Namespace = "TinyWall")]
-    [Serializable]
     public abstract class ExceptionPolicy
     {
         public abstract PolicyType PolicyType { get; }
@@ -29,7 +28,6 @@ namespace TinyWall.Interface
     // -----------------------------------------------------------------------
 
     [DataContract(Namespace = "TinyWall")]
-    [Serializable]
     public class HardBlockPolicy : ExceptionPolicy
     {
         public static HardBlockPolicy Instance { get; } = new HardBlockPolicy();
@@ -63,7 +61,6 @@ namespace TinyWall.Interface
     // -----------------------------------------------------------------------
 
     [DataContract(Namespace = "TinyWall")]
-    [Serializable]
     public class UnrestrictedPolicy : ExceptionPolicy
     {
         public override PolicyType PolicyType
@@ -112,7 +109,6 @@ namespace TinyWall.Interface
     // -----------------------------------------------------------------------
 
     [DataContract(Namespace = "TinyWall")]
-    [Serializable]
     public class TcpUdpPolicy : ExceptionPolicy
     {
         public override PolicyType PolicyType
@@ -223,7 +219,6 @@ namespace TinyWall.Interface
     // -----------------------------------------------------------------------
 
     [DataContract(Namespace = "TinyWall")]
-    [Serializable]
     public class RuleListPolicy : ExceptionPolicy
     {
         public override PolicyType PolicyType

@@ -5,7 +5,6 @@ using TinyWall.Interface.Internal;
 
 namespace TinyWall.Interface
 {
-    [Serializable]
     [DataContract(Namespace = "TinyWall")]
     public class UpdateModule
     {
@@ -19,7 +18,6 @@ namespace TinyWall.Interface
         public string UpdateURL;
     }
 
-    [Serializable]
     [DataContract(Namespace = "TinyWall")]
     public class UpdateDescriptor
     {
@@ -29,7 +27,6 @@ namespace TinyWall.Interface
         public UpdateModule[] Modules;
     }
 
-    [Serializable]
     public class ServerState
     {
         public bool HasPassword = false;

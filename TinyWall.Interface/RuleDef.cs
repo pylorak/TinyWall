@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using System.Xml.Serialization;
 
 namespace TinyWall.Interface
 {
-    [Serializable]
     [DataContract(Namespace = "TinyWall")]
     public class RuleDef
     {
         public static readonly string LOCALSUBNET_ID = "LocalSubnet";
 
-        [XmlAttribute]
         [DataMember]
         public string Name;
-        [XmlIgnore]
         [DataMember(EmitDefaultValue = false)]
         public Guid ExceptionId;
         [DataMember]

@@ -18,7 +18,6 @@ namespace TinyWall.Interface
     }
 
     [DataContract(Namespace = "TinyWall")]
-    [Serializable]
     public class FirewallExceptionV3
     {
         [DataMember(EmitDefaultValue = false)]

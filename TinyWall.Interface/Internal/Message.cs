@@ -4,7 +4,6 @@ using System.Runtime.Serialization;
 namespace TinyWall.Interface.Internal
 {
     [DataContract(Namespace = "TinyWall")]
-    [Serializable]
     public struct TwMessage
     {
         [DataMember(EmitDefaultValue = false)]
