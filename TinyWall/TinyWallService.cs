@@ -9,9 +9,9 @@ using System.Management;
 using System.Threading;
 using TinyWall.Interface;
 using TinyWall.Interface.Internal;
-using WFPdotNet;
-using WFPdotNet.Interop;
 using pylorak.Windows.Services;
+using pylorak.Windows.WFP;
+using pylorak.Windows.WFP.Interop;
 
 namespace PKSoft
 {

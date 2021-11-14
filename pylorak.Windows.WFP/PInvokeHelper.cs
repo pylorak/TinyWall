@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.ConstrainedExecution;
 using System.Security.Principal;
 
-namespace WFPdotNet
+namespace pylorak.Windows.WFP
 {
     public static class PInvokeHelper
     {

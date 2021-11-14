@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.ConstrainedExecution;
 using System.Security;
 
-namespace WFPdotNet
+namespace pylorak.Windows.WFP
 {
     public sealed class Transaction : IDisposable
     {

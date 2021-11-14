@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 
-namespace WFPdotNet
+namespace pylorak.Windows.WFP
 {
     [Serializable]
     public class WfpException : Exception

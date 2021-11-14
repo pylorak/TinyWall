@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WFPdotNet
+namespace pylorak.Windows.WFP
 {
     public static class VersionInfo
     {

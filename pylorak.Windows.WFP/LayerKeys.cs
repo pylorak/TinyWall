@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace WFPdotNet
+namespace pylorak.Windows.WFP
 {
     public static class LayerKeys
     {

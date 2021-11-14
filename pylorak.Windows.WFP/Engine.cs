@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using System.Runtime.ConstrainedExecution;
 
-namespace WFPdotNet
+namespace pylorak.Windows.WFP
 {
     public sealed class Engine : IDisposable
     {
@@ -65,7 +65,7 @@ namespace WFPdotNet
             [DllImport("FWPUClnt.dll", EntryPoint = "FwpmFilterAdd0")]
             internal static extern uint FwpmFilterAdd0(
                 [In] FwpmEngineSafeHandle engineHandle,
-                [In] ref WFPdotNet.Interop.FWPM_FILTER0_NoStrings filter,
+                [In] ref Interop.FWPM_FILTER0_NoStrings filter,
                 [In] IntPtr sd,
                 [Out] out ulong id);
 

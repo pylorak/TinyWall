@@ -4,7 +4,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Security;
 using Microsoft.Win32.SafeHandles;
 
-namespace WFPdotNet
+namespace pylorak.Windows.WFP
 {
     public sealed class FwpmEngineSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
     {

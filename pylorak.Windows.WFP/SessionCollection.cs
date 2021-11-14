@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.ConstrainedExecution;
 using System.Security;
 
-namespace WFPdotNet
+namespace pylorak.Windows.WFP
 {
     public class SessionCollection : System.Collections.ObjectModel.ReadOnlyCollection<Interop.FWPM_SESSION0>
     {

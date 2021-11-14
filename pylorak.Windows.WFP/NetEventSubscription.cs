@@ -7,7 +7,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Security;
 using System.Security.Principal;
 
-namespace WFPdotNet
+namespace pylorak.Windows.WFP
 {
     public struct NetEventData
     {
@@ -243,18 +243,6 @@ namespace WFPdotNet
                 Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subs0 = new Interop.FWPM_NET_EVENT_SUBSCRIPTION0();
                 subs0.sessionKey = engine.SessionKey;
                 subs0.enumTemplate = IntPtr.Zero;
-
-                if (false)
-                {
-                    Interop.FWPM_NET_EVENT_ENUM_TEMPLATE0 templ0 = new Interop.FWPM_NET_EVENT_ENUM_TEMPLATE0();
-                    templ0.startTime.timestamp = 0;
-                    templ0.endTime.timestamp = long.MaxValue;
-                    templ0.numFilterConditions = 0;
-                    templ0.filterCondition = IntPtr.Zero;
-
-                    templMemHandle = SafeHGlobalHandle.FromStruct(templ0);
-                    subs0.enumTemplate = templMemHandle.DangerousGetHandle();
-                }
 
                 uint err;
                 bool handleOk = false;

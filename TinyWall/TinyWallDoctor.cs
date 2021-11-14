@@ -4,10 +4,10 @@ using System.Configuration.Install;
 using System.Diagnostics;
 using System.ServiceProcess;
 using TinyWall.Interface;
-using WFPdotNet;
-using WFPdotNet.Interop;
 using TaskScheduler;
 using pylorak.Windows.Services;
+using pylorak.Windows.WFP;
+using pylorak.Windows.WFP.Interop;
 
 namespace PKSoft
 {

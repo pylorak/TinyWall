@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace WFPdotNet
+namespace pylorak.Windows.WFP
 {
     public sealed class Sublayer : IDisposable
     {

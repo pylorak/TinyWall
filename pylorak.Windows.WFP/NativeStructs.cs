@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace WFPdotNet.Interop
+namespace pylorak.Windows.WFP.Interop
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct FWPM_DISPLAY_DATA0

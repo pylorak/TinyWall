@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Security;
 using System.Runtime.InteropServices;
-using WFPdotNet.Interop;
 
-namespace WFPdotNet
+namespace pylorak.Windows.WFP
 {
     public abstract class FilterEnumeratorBase : IDisposable
     {
@@ -120,7 +119,7 @@ namespace WFPdotNet
             _getFilterConditions = getFilterConditions;
         }
 
-        protected override unsafe void SetCurrentItem(FWPM_FILTER0_NoStrings* native)
+        protected override unsafe void SetCurrentItem(Interop.FWPM_FILTER0_NoStrings* native)
         {
             Current = new Filter(in *native, _getFilterConditions);
         }
@@ -136,7 +135,7 @@ namespace WFPdotNet
             : base(engine, template)
         { }
 
-        protected override unsafe void SetCurrentItem(FWPM_FILTER0_NoStrings* native)
+        protected override unsafe void SetCurrentItem(Interop.FWPM_FILTER0_NoStrings* native)
         {
             Current = native->filterKey;
         }

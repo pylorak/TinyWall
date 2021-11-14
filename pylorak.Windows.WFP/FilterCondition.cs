@@ -8,7 +8,7 @@ using System.Security;
 using System.Security.AccessControl;
 using System.Diagnostics;
 
-namespace WFPdotNet
+namespace pylorak.Windows.WFP
 {
     public enum FieldMatchType
     {

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace WFPdotNet
+namespace pylorak.Windows.WFP
 {
     public class FilterConditionList : ICollection<FilterCondition>, IList<FilterCondition>, IDisposable
     {
