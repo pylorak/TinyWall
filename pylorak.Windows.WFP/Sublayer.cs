@@ -9,7 +9,7 @@ namespace pylorak.Windows.WFP
         private Interop.FWPM_SUBLAYER0 _nativeStruct;
 
         private Guid? _providerKey;
-        private SafeHGlobalHandle _providerKeyHandle;
+        private SafeHGlobalHandle? _providerKeyHandle;
 
         public Sublayer(string name)
         {

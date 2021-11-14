@@ -31,25 +31,25 @@ namespace pylorak.Windows.WFP
         private Guid _providerKey;
         private SafeHGlobalHandle _weightAndProviderKeyHandle;
 
-        private string _displayName;
-        private string _displayDescription;
-        private SafeHGlobalHandle _displayDataHandle;
+        private string? _displayName;
+        private string? _displayDescription;
+        private SafeHGlobalHandle? _displayDataHandle;
 
         private FilterConditionList _conditions;
-        private SafeHGlobalHandle _conditionsHandle;
+        private SafeHGlobalHandle? _conditionsHandle;
 
-        private Filter()
+        private Filter(FilterConditionList conditions)
         {
+            _conditions = conditions;
             _weightAndProviderKeyHandle = SafeHGlobalHandle.Alloc(sizeof(ulong) + Marshal.SizeOf(typeof(Guid)));
             _nativeStruct.weight.type = Interop.FWP_DATA_TYPE.FWP_UINT64;
             _nativeStruct.weight.value.uint64 = _weightAndProviderKeyHandle.DangerousGetHandle();
             _nativeStruct.providerKey = _weightAndProviderKeyHandle.DangerousGetHandle() + sizeof(ulong);
         }
 
-        public Filter(string name, string desc, Guid providerKey, FilterActions action, ulong weight, FilterConditionList conditions = null) : this()
+        public Filter(string? name, string? desc, Guid providerKey, FilterActions action, ulong weight, FilterConditionList? conditions = null)
+            : this((conditions is null) ? new FilterConditionList() : conditions)
         {
-            _conditions = (conditions is null) ? new FilterConditionList() : conditions;
-
             this.DisplayName = name;
             this.DisplayDescription = desc;
             this.ProviderKey = providerKey;
@@ -57,7 +57,8 @@ namespace pylorak.Windows.WFP
             this.Weight = weight;
         }
 
-        internal Filter(in Interop.FWPM_FILTER0_NoStrings filt0, bool getConditions) : this()
+        internal Filter(in Interop.FWPM_FILTER0_NoStrings filt0, bool getConditions)
+            : this(new FilterConditionList())
         {
             _nativeStruct = filt0;
 
@@ -76,7 +77,7 @@ namespace pylorak.Windows.WFP
             if (getConditions)
             {
                 int condSize = Marshal.SizeOf(typeof(Interop.FWPM_FILTER_CONDITION0));
-                _conditions = new FilterConditionList((int)_nativeStruct.numFilterConditions);
+                _conditions.Capacity = (int)_nativeStruct.numFilterConditions;
                 for (int i = 0; i < (int)_nativeStruct.numFilterConditions; ++i)
                 {
                     IntPtr ptr = new IntPtr(_nativeStruct.filterConditions.ToInt64() + i * condSize);
@@ -128,8 +129,10 @@ namespace pylorak.Windows.WFP
                 // Already synchronized
                 return;
 
-            int nameSize = _displayName.Length * 2;
-            int descriptionSize = _displayDescription.Length * 2;
+            int nameLength = _displayName?.Length ?? 0;
+            int nameSize = nameLength * 2;
+            int descriptionLength = _displayDescription?.Length ?? 0;
+            int descriptionSize = descriptionLength * 2;
             int unmanagedSize = nameSize + descriptionSize + (2 * 2);
             _displayDataHandle = SafeHGlobalHandle.Alloc(unmanagedSize);
 
@@ -138,21 +141,21 @@ namespace pylorak.Windows.WFP
             unsafe
             {
                 var dst = (char*)namePtr;
-                dst[_displayName.Length] = (char)0;
+                dst[nameLength] = (char)0;
                 fixed (char* src = _displayName)
                     Buffer.MemoryCopy(src, dst, nameSize, nameSize);
 
                 dst = (char*)descriptionPtr;
-                dst[_displayDescription.Length] = (char)0;
+                dst[descriptionLength] = (char)0;
                 fixed (char* src = _displayDescription)
                     Buffer.MemoryCopy(src, dst, descriptionSize, descriptionSize);
             }
 
-            _nativeStruct.displayData.name = namePtr;
-            _nativeStruct.displayData.description = descriptionPtr;
+            _nativeStruct.displayData.name = (nameLength == 0) ? IntPtr.Zero : namePtr;
+            _nativeStruct.displayData.description = (descriptionLength == 0) ? IntPtr.Zero : descriptionPtr;
         }
 
-        public string DisplayName
+        public string? DisplayName
         {
             get
             {
@@ -166,7 +169,7 @@ namespace pylorak.Windows.WFP
             }
         }
 
-        public string DisplayDescription
+        public string? DisplayDescription
         {
             get
             {
@@ -257,10 +260,8 @@ namespace pylorak.Windows.WFP
             _conditionsHandle?.Dispose();
             _conditions?.Dispose();
 
-            _weightAndProviderKeyHandle = null;
             _displayDataHandle = null;
             _conditionsHandle = null;
-            _conditions = null;
         }
     }
 }

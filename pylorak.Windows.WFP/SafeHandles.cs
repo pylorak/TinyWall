@@ -68,27 +68,31 @@ namespace pylorak.Windows.WFP
         }
 
         private FwpmEngineSafeHandle _safeEngineHandle;
-        private bool _releaseSafeEngineHandle;
 
-        public FwpmFilterSubscriptionSafeHandle() : base(true) { }
+        public FwpmFilterSubscriptionSafeHandle(IntPtr wrappedHndl, FwpmEngineSafeHandle engineHndl) : base(true)
+        {
+            bool success = false;
+            engineHndl.DangerousAddRef(ref success);
+            if (!success)
+            {
+                NativeMethods.FwpmFilterUnsubscribeChanges0(engineHndl, wrappedHndl);
+                throw new Exception("Failed to add reference.");
+            }
+
+            _safeEngineHandle = engineHndl;
+            SetHandle(wrappedHndl);
+        }
 
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         [PrePrepareMethod]
         protected override bool ReleaseHandle()
         {
-            uint ret = NativeMethods.FwpmFilterUnsubscribeChanges0(_safeEngineHandle, handle);
-            if (_releaseSafeEngineHandle)
+            if (0 == NativeMethods.FwpmFilterUnsubscribeChanges0(_safeEngineHandle, handle))
+            {
                 _safeEngineHandle.DangerousRelease();
-            return (0 == ret);
-        }
-
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-        [PrePrepareMethod]
-        public bool SetEngineReference(FwpmEngineSafeHandle safeEngineHandle)
-        {
-            _safeEngineHandle = safeEngineHandle;
-            _safeEngineHandle.DangerousAddRef(ref _releaseSafeEngineHandle);
-            return _releaseSafeEngineHandle;
+                return true;
+            }
+            return false;
         }
     }
 
@@ -105,27 +109,31 @@ namespace pylorak.Windows.WFP
         }
 
         private FwpmEngineSafeHandle _safeEngineHandle;
-        private bool _releaseSafeEngineHandle;
 
-        public FwpmNetEventSubscriptionSafeHandle() : base(true) { }
+        public FwpmNetEventSubscriptionSafeHandle(IntPtr wrappedHndl, FwpmEngineSafeHandle engineHndl) : base(true)
+        {
+            bool success = false;
+            engineHndl.DangerousAddRef(ref success);
+            if (!success)
+            {
+                NativeMethods.FwpmNetEventUnsubscribe0(engineHndl, wrappedHndl);
+                throw new Exception("Failed to add reference.");
+            }
+
+            _safeEngineHandle = engineHndl;
+            SetHandle(wrappedHndl);
+        }
 
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         [PrePrepareMethod]
         protected override bool ReleaseHandle()
         {
-            uint ret = NativeMethods.FwpmNetEventUnsubscribe0(_safeEngineHandle, handle);
-            if (_releaseSafeEngineHandle)
+            if (0 == NativeMethods.FwpmNetEventUnsubscribe0(_safeEngineHandle, handle))
+            {
                 _safeEngineHandle.DangerousRelease();
-            return (0 == ret);
-        }
-
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-        [PrePrepareMethod]
-        public bool SetEngineReference(FwpmEngineSafeHandle safeEngineHandle)
-        {
-            _safeEngineHandle = safeEngineHandle;
-            _safeEngineHandle.DangerousAddRef(ref _releaseSafeEngineHandle);
-            return _releaseSafeEngineHandle;
+                return true;
+            }
+            return false;
         }
     }
 
@@ -142,27 +150,31 @@ namespace pylorak.Windows.WFP
         }
 
         private FwpmEngineSafeHandle _safeEngineHandle;
-        private bool _releaseSafeEngineHandle;
 
-        public FwpmFilterEnumSafeHandle() : base(true) { }
+        public FwpmFilterEnumSafeHandle(IntPtr wrappedHndl, FwpmEngineSafeHandle engineHndl) : base(true)
+        {
+            bool success = false;
+            engineHndl.DangerousAddRef(ref success);
+            if (!success)
+            {
+                NativeMethods.FwpmFilterDestroyEnumHandle0(engineHndl, wrappedHndl);
+                throw new Exception("Failed to add reference.");
+            }
+
+            _safeEngineHandle = engineHndl;
+            SetHandle(wrappedHndl);
+        }
 
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         [PrePrepareMethod]
         protected override bool ReleaseHandle()
         {
-            uint ret = NativeMethods.FwpmFilterDestroyEnumHandle0(_safeEngineHandle, handle);
-            if (_releaseSafeEngineHandle)
+            if (0 == NativeMethods.FwpmFilterDestroyEnumHandle0(_safeEngineHandle, handle))
+            {
                 _safeEngineHandle.DangerousRelease();
-            return (0 == ret);
-        }
-
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-        [PrePrepareMethod]
-        public bool SetEngineReference(FwpmEngineSafeHandle safeEngineHandle)
-        {
-            _safeEngineHandle = safeEngineHandle;
-            _safeEngineHandle.DangerousAddRef(ref _releaseSafeEngineHandle);
-            return _releaseSafeEngineHandle;
+                return true;
+            }
+            return false;
         }
     }
 
@@ -179,27 +191,31 @@ namespace pylorak.Windows.WFP
         }
 
         private FwpmEngineSafeHandle _safeEngineHandle;
-        private bool _releaseSafeEngineHandle;
 
-        public FwpmProviderEnumSafeHandle() : base(true) { }
+        public FwpmProviderEnumSafeHandle(IntPtr wrappedHndl, FwpmEngineSafeHandle engineHndl) : base(true)
+        {
+            bool success = false;
+            engineHndl.DangerousAddRef(ref success);
+            if (!success)
+            {
+                NativeMethods.FwpmProviderDestroyEnumHandle0(engineHndl, wrappedHndl);
+                throw new Exception("Failed to add reference.");
+            }
+
+            _safeEngineHandle = engineHndl;
+            SetHandle(wrappedHndl);
+        }
 
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         [PrePrepareMethod]
         protected override bool ReleaseHandle()
         {
-            uint ret = NativeMethods.FwpmProviderDestroyEnumHandle0(_safeEngineHandle, handle);
-            if (_releaseSafeEngineHandle)
+            if (0 == NativeMethods.FwpmProviderDestroyEnumHandle0(_safeEngineHandle, handle))
+            {
                 _safeEngineHandle.DangerousRelease();
-            return (0 == ret);
-        }
-
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-        [PrePrepareMethod]
-        public bool SetEngineReference(FwpmEngineSafeHandle safeEngineHandle)
-        {
-            _safeEngineHandle = safeEngineHandle;
-            _safeEngineHandle.DangerousAddRef(ref _releaseSafeEngineHandle);
-            return _releaseSafeEngineHandle;
+                return true;
+            }
+            return false;
         }
     }
 
@@ -216,27 +232,31 @@ namespace pylorak.Windows.WFP
         }
 
         private FwpmEngineSafeHandle _safeEngineHandle;
-        private bool _releaseSafeEngineHandle;
 
-        public FwpmSessionEnumSafeHandle() : base(true) { }
+        public FwpmSessionEnumSafeHandle(IntPtr wrappedHndl, FwpmEngineSafeHandle engineHndl) : base(true)
+        {
+            bool success = false;
+            engineHndl.DangerousAddRef(ref success);
+            if (!success)
+            {
+                NativeMethods.FwpmSessionDestroyEnumHandle0(engineHndl, wrappedHndl);
+                throw new Exception("Failed to add reference.");
+            }
+
+            _safeEngineHandle = engineHndl;
+            SetHandle(wrappedHndl);
+        }
 
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         [PrePrepareMethod]
         protected override bool ReleaseHandle()
         {
-            uint ret = NativeMethods.FwpmSessionDestroyEnumHandle0(_safeEngineHandle, handle);
-            if (_releaseSafeEngineHandle)
+            if (0 == NativeMethods.FwpmSessionDestroyEnumHandle0(_safeEngineHandle, handle))
+            {
                 _safeEngineHandle.DangerousRelease();
-            return (0 == ret);
-        }
-
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-        [PrePrepareMethod]
-        public bool SetEngineReference(FwpmEngineSafeHandle safeEngineHandle)
-        {
-            _safeEngineHandle = safeEngineHandle;
-            _safeEngineHandle.DangerousAddRef(ref _releaseSafeEngineHandle);
-            return _releaseSafeEngineHandle;
+                return true;
+            }
+            return false;
         }
     }
 
@@ -253,27 +273,31 @@ namespace pylorak.Windows.WFP
         }
 
         private FwpmEngineSafeHandle _safeEngineHandle;
-        private bool _releaseSafeEngineHandle;
 
-        public FwpmSublayerEnumSafeHandle() : base(true) { }
+        public FwpmSublayerEnumSafeHandle(IntPtr wrappedHndl, FwpmEngineSafeHandle engineHndl) : base(true)
+        {
+            bool success = false;
+            engineHndl.DangerousAddRef(ref success);
+            if (!success)
+            {
+                NativeMethods.FwpmSubLayerDestroyEnumHandle0(engineHndl, wrappedHndl);
+                throw new Exception("Failed to add reference.");
+            }
+
+            _safeEngineHandle = engineHndl;
+            SetHandle(wrappedHndl);
+        }
 
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         [PrePrepareMethod]
         protected override bool ReleaseHandle()
         {
-            uint ret = NativeMethods.FwpmSubLayerDestroyEnumHandle0(_safeEngineHandle, handle);
-            if (_releaseSafeEngineHandle)
+            if (0 == NativeMethods.FwpmSubLayerDestroyEnumHandle0(_safeEngineHandle, handle))
+            {
                 _safeEngineHandle.DangerousRelease();
-            return (0 == ret);
-        }
-
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-        [PrePrepareMethod]
-        public bool SetEngineReference(FwpmEngineSafeHandle safeEngineHandle)
-        {
-            _safeEngineHandle = safeEngineHandle;
-            _safeEngineHandle.DangerousAddRef(ref _releaseSafeEngineHandle);
-            return _releaseSafeEngineHandle;
+                return true;
+            }
+            return false;
         }
     }
 
@@ -289,7 +313,7 @@ namespace pylorak.Windows.WFP
             public static extern IntPtr GlobalFree(IntPtr hMem);
         }
 
-        private Type MarshalDestroyType;
+        private Type? MarshalDestroyType;
 
         private bool NeedsMarshalDestroy => (MarshalDestroyType != null);
 

@@ -17,49 +17,35 @@ namespace pylorak.Windows.WFP
             internal static extern uint FwpmProviderCreateEnumHandle0(
                 [In] FwpmEngineSafeHandle engineHandle,
                 [In] IntPtr enumTemplate,
-                [Out] out FwpmProviderEnumSafeHandle enumHandle);
+                out IntPtr enumHandle);
 
             [DllImport("FWPUClnt.dll", EntryPoint = "FwpmProviderEnum0")]
             internal static extern uint FwpmProviderEnum0(
                 [In] FwpmEngineSafeHandle engineHandle,
                 [In] FwpmProviderEnumSafeHandle enumHandle,
-                [In] uint numEntriesRequested,
-                [Out] out FwpmMemorySafeHandle entries,
-                [Out] out uint numEntriesReturned);
+                uint numEntriesRequested,
+                out FwpmMemorySafeHandle entries,
+                out uint numEntriesReturned);
         }
 
         internal ProviderCollection(Engine engine)
             : base(new List<Interop.FWPM_PROVIDER0>())
         {
-            FwpmProviderEnumSafeHandle enumSafeHandle = null;
+            FwpmProviderEnumSafeHandle? enumSafeHandle = null;
 
-            RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
-                uint err;
-                bool handleOk = false;
-
-                // Atomically construct the native handle
-                RuntimeHelpers.PrepareConstrainedRegions();
-                try { }
-                finally
-                {
-                    err = NativeMethods.FwpmProviderCreateEnumHandle0(engine.NativePtr, IntPtr.Zero, out enumSafeHandle);
-                    if (0 == err)
-                        handleOk = enumSafeHandle.SetEngineReference(engine.NativePtr);
-                }
-
-                // Do error handling after the CER
-                if (!handleOk)
-                    throw new Exception("Failed to set handle value.");
-                if (0 != err)
+                var err = NativeMethods.FwpmProviderCreateEnumHandle0(engine.NativePtr, IntPtr.Zero, out IntPtr outHndl);
+                if (0 == err)
+                    enumSafeHandle = new FwpmProviderEnumSafeHandle(outHndl, engine.NativePtr);
+                else
                     throw new WfpException(err, "FwpmProviderCreateEnumHandle0");
 
                 while (true)
                 {
                     const uint numEntriesRequested = 10;
 
-                    FwpmMemorySafeHandle entries = null;
+                    FwpmMemorySafeHandle? entries = null;
                     try
                     {
                         // FwpmProviderEnum0() returns a list of pointers in batches

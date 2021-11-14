@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace pylorak.Windows.WFP
 {
@@ -12,8 +13,8 @@ namespace pylorak.Windows.WFP
             [DllImport("FWPUClnt.dll", EntryPoint = "FwpmFilterCreateEnumHandle0")]
             public static extern uint FwpmFilterCreateEnumHandle0(
                 [In] FwpmEngineSafeHandle engineHandle,
-                [In] Interop.FWPM_FILTER_ENUM_TEMPLATE0 enumTemplate,
-                [Out] out FwpmFilterEnumSafeHandle enumHandle);
+                [In] Interop.FWPM_FILTER_ENUM_TEMPLATE0? enumTemplate,
+                out IntPtr enumHandle);
 
             [DllImport("FWPUClnt.dll", EntryPoint = "FwpmFilterEnum0")]
             public static extern uint FwpmFilterEnum0(
@@ -29,21 +30,20 @@ namespace pylorak.Windows.WFP
         private readonly FwpmFilterEnumSafeHandle _enumSafeHandle;
         private readonly int FWPM_FILTER0_SIZE;
 
-        private FwpmMemorySafeHandle _entries;
+        private FwpmMemorySafeHandle? _entries;
         private IntPtr _entryListItemPtr;
         private int _entriesRemain;
         private bool _disposed;
 
-        protected FilterEnumeratorBase(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0 template)
+        protected FilterEnumeratorBase(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0? template)
         {
             _engine = engine;
 
-            var err = NativeMethods.FwpmFilterCreateEnumHandle0(engine.NativePtr, template, out _enumSafeHandle);
-            if (0 != err)
+            var err = NativeMethods.FwpmFilterCreateEnumHandle0(engine.NativePtr, template, out IntPtr outHndl);
+            if (0 == err)
+                _enumSafeHandle = new FwpmFilterEnumSafeHandle(outHndl, engine.NativePtr);
+            else
                 throw new WfpException(err, "FwpmFilterCreateEnumHandle0");
-
-            if (!_enumSafeHandle.SetEngineReference(engine.NativePtr))
-                throw new Exception("Failed to set handle value.");
 
             FWPM_FILTER0_SIZE = Marshal.SizeOf(typeof(Interop.FWPM_FILTER0_NoStrings));
         }
@@ -111,9 +111,10 @@ namespace pylorak.Windows.WFP
 
         public FilterEnumerator GetEnumerator() => this;
 
-        public Filter Current { get; private set; }
+        [DisallowNull]
+        public Filter? Current { get; private set; }
 
-        public FilterEnumerator(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0 template, bool getFilterConditions)
+        public FilterEnumerator(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0? template, bool getFilterConditions)
             : base(engine, template)
         {
             _getFilterConditions = getFilterConditions;
@@ -131,7 +132,7 @@ namespace pylorak.Windows.WFP
 
         public Guid Current { get; private set; }
 
-        public FilterKeyEnumerator(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0 template)
+        public FilterKeyEnumerator(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0? template)
             : base(engine, template)
         { }
 

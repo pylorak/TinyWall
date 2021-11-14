@@ -1741,7 +1741,7 @@ namespace PKSoft
                 using (WfpEngine = new Engine("TinyWall Session", "", FWPM_SESSION_FLAGS.None, 5000))
                 using (RuleReloadEventMerger = new EventMerger(1000))
                 using (var NetworkInterfaceWatcher = new IpInterfaceWatcher())
-                using (var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback, null))
+                using (var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback))
                 using (var DisplayOffSubscription = SafeHandlePowerSettingNotification.Create(service.ServiceHandle, PowerSetting.GUID_CONSOLE_DISPLAY_STATE, DeviceNotifFlags.DEVICE_NOTIFY_SERVICE_HANDLE))
                 using (var DeviceNotification = SafeHandleDeviceNotification.Create(service.ServiceHandle, DeviceInterfaceClass.GUID_DEVINTERFACE_VOLUME, DeviceNotifFlags.DEVICE_NOTIFY_SERVICE_HANDLE))
                 using (var MountPointsWatcher = new RegistryWatcher(@"HKEY_LOCAL_MACHINE\SYSTEM\MountedDevices", true))
@@ -1869,7 +1869,7 @@ namespace PKSoft
             }
         }
 
-        private void WfpNetEventCallback(object context, NetEventData data)
+        private void WfpNetEventCallback(NetEventData data)
         {
             EventLogEvent eventType = EventLogEvent.ALLOWED;
             if (data.EventType == FWPM_NET_EVENT_TYPE.FWPM_NET_EVENT_TYPE_CLASSIFY_DROP)

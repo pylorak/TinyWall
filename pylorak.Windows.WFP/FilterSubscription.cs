@@ -29,24 +29,23 @@ namespace pylorak.Windows.WFP
                 [In] ref Interop.FWPM_FILTER_SUBSCRIPTION0 subscription,
                 [In] FWPM_FILTER_CHANGE_CALLBACK0 callback,
                 [In] IntPtr context,
-                [Out] out FwpmFilterSubscriptionSafeHandle changeHandle);
+                out IntPtr changeHandle);
         }
 
 
-        private readonly FwpmFilterSubscriptionSafeHandle _changeHandle;
+        private readonly FwpmFilterSubscriptionSafeHandle _subscriptionHandle;
         private readonly FilterChangeCallback _callback;
         private readonly object _context;
         private readonly NativeMethods.FWPM_FILTER_CHANGE_CALLBACK0 _nativeCallbackDelegate;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "dummy")]
-        private FilterSubscription(Engine engine, FilterChangeCallback callback, object context, Guid? providerKey, Guid? layerKey, bool dummy)
+        private FilterSubscription(Engine engine, FilterChangeCallback callback, object context, Guid? providerKey, Guid? layerKey, bool _)
         {
             _callback = callback;
             _context = context;
             _nativeCallbackDelegate = new NativeMethods.FWPM_FILTER_CHANGE_CALLBACK0(NativeCallbackHandler);
-            SafeHGlobalHandle providerKeyMemHandle = null;
+            SafeHGlobalHandle? providerKeyMemHandle = null;
 
-            RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
                 Interop.FWPM_FILTER_SUBSCRIPTION0 subs0 = new Interop.FWPM_FILTER_SUBSCRIPTION0();
@@ -55,7 +54,7 @@ namespace pylorak.Windows.WFP
 
                 if (layerKey.HasValue)
                 {
-                    providerKeyMemHandle = SafeHGlobalHandle.FromStruct(providerKey.Value);
+                    providerKeyMemHandle = SafeHGlobalHandle.FromStruct(providerKey!.Value);
                     subs0.enumTemplate = new Interop.FWPM_FILTER_ENUM_TEMPLATE0
                     {
                         providerKey = providerKeyMemHandle.DangerousGetHandle(),
@@ -65,23 +64,10 @@ namespace pylorak.Windows.WFP
                     };
                 }
 
-                uint err;
-                bool handleOk = false;
-
-                // Atomically get the native handle
-                RuntimeHelpers.PrepareConstrainedRegions();
-                try { }
-                finally
-                {
-                    err = NativeMethods.FwpmFilterSubscribeChanges0(engine.NativePtr, ref subs0, _nativeCallbackDelegate, IntPtr.Zero, out _changeHandle);
-                    if (0 == err)
-                        handleOk = _changeHandle.SetEngineReference(engine.NativePtr);
-                }
-
-                // Do error handling after the CER
-                if (!handleOk)
-                    throw new Exception("Failed to set handle value.");
-                if (0 != err)
+                var err = NativeMethods.FwpmFilterSubscribeChanges0(engine.NativePtr, ref subs0, _nativeCallbackDelegate, IntPtr.Zero, out IntPtr outHndl);
+                if (0 == err)
+                    _subscriptionHandle = new FwpmFilterSubscriptionSafeHandle(outHndl, engine.NativePtr);
+                else
                     throw new WfpException(err, "FwpmFilterSubscribeChanges0");
             }
             finally
@@ -108,7 +94,7 @@ namespace pylorak.Windows.WFP
 
         public void Dispose()
         {
-            _changeHandle.Dispose();
+            _subscriptionHandle.Dispose();
         }
     }
 }

@@ -23,6 +23,8 @@ namespace pylorak.Windows.WFP
 
         public int Count => _list.Count;
 
+        public int Capacity { get => _list.Capacity; set => _list.Capacity = value; }
+
         public bool IsReadOnly => false;
 
         public object SyncRoot => _list;

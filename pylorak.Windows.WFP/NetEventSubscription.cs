@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Text;
-using System.Net;
 using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
-using System.Runtime.ConstrainedExecution;
 using System.Security;
 using System.Security.Principal;
 
@@ -19,14 +16,14 @@ namespace pylorak.Windows.WFP
         public IpProtocol? ipProtocol;
         public ushort? localPort;
         public ushort? remotePort;
-        public string appId;
-        public SecurityIdentifier userId;
+        public string? appId;
+        public SecurityIdentifier? userId;
         public Interop.FwpmDirection? direction;
-        public string packageId;
+        public string? packageId;
 
 #if true    // would be easier to go over IPAdress, but this way a lot of object allocations are avoided
-        public string localAddr;
-        public string remoteAddr;
+        public string? localAddr;
+        public string? remoteAddr;
         private static string ToIpAddress(Interop.InternetworkAddr addr, bool isIpV6, StringBuilder sb)
         {
             sb.Length = 0;
@@ -193,7 +190,7 @@ namespace pylorak.Windows.WFP
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_PACKAGE_ID_SET) != 0)
             {
-                string sid = PInvokeHelper.ConvertSidToStringSid(nativeEvent.header.packageSid);
+                string? sid = PInvokeHelper.ConvertSidToStringSid(nativeEvent.header.packageSid);
                 if ((sid != null) && sid.StartsWith("S-1-15-2-"))
                     packageId = sid;
             }
@@ -220,56 +217,35 @@ namespace pylorak.Windows.WFP
 
     }
 
-    public delegate void NetEventCallback(object context, NetEventData data);
+    public delegate void NetEventCallback(NetEventData data);
 
     public abstract class NetEventSubscription : IDisposable
     {
-        protected readonly FwpmNetEventSubscriptionSafeHandle _changeHandle;
         protected readonly NetEventCallback _callback;
         protected readonly StringBuilder SBuilder = new StringBuilder(40);
-        protected readonly object _context;
+        
+        public bool IsDisposed { get; private set; }
 
-        protected abstract uint CreateSubscription(FwpmEngineSafeHandle engineHandle, ref Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subscription, IntPtr context, out FwpmNetEventSubscriptionSafeHandle changeHandle);
-
-        protected NetEventSubscription(Engine engine, NetEventCallback callback, object context)
+        protected NetEventSubscription(NetEventCallback callback)
         {
             _callback = callback;
-            _context = context;
-            SafeHGlobalHandle templMemHandle = null;
+        }
 
-            RuntimeHelpers.PrepareConstrainedRegions();
-            try
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!IsDisposed)
             {
-                Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subs0 = new Interop.FWPM_NET_EVENT_SUBSCRIPTION0();
-                subs0.sessionKey = engine.SessionKey;
-                subs0.enumTemplate = IntPtr.Zero;
+                if (disposing)
+                { }
 
-                uint err;
-                bool handleOk = false;
-
-                // Atomically get the native handle
-                RuntimeHelpers.PrepareConstrainedRegions();
-                try { }
-                finally
-                {
-                    err = CreateSubscription(engine.NativePtr, ref subs0, IntPtr.Zero, out _changeHandle);
-                    if (0 == err)
-                        handleOk = _changeHandle.SetEngineReference(engine.NativePtr);
-                }
-
-                // Do error handling after the CER
-                if (0 != err)
-                    throw new WfpException(err, "FwpmNetEventSubscribe1");
-            }
-            finally
-            {
-                templMemHandle?.Dispose();
+                IsDisposed = true;
             }
         }
 
         public void Dispose()
         {
-            _changeHandle.Dispose();
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
     }
@@ -282,31 +258,50 @@ namespace pylorak.Windows.WFP
             [UnmanagedFunctionPointer(CallingConvention.StdCall)]
             internal delegate void FWPM_NET_EVENT_CALLBACK0(IntPtr context, IntPtr netEvent1);
 
-            [DllImport("FWPUClnt.dll", EntryPoint = "FwpmNetEventSubscribe0")]
-            [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+            [DllImport("FWPUClnt.dll")]
             internal static extern uint FwpmNetEventSubscribe0(
                 [In] FwpmEngineSafeHandle engineHandle,
                 [In] ref Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subscription,
                 [In] FWPM_NET_EVENT_CALLBACK0 callback,
-                [In] IntPtr context,
-                [Out] out FwpmNetEventSubscriptionSafeHandle changeHandle);
+                IntPtr context,
+                out IntPtr changeHandle);
         }
 
-        private NativeMethods.FWPM_NET_EVENT_CALLBACK0 _nativeCallbackDelegate0;
+        private readonly FwpmNetEventSubscriptionSafeHandle _changeHandle;
+        private readonly NativeMethods.FWPM_NET_EVENT_CALLBACK0 _nativeCallbackDelegate0;
 
-        internal NetEventSubscription0(Engine engine, NetEventCallback callback, object context) : base(engine, callback, context)
-        { }
-
-        protected override uint CreateSubscription(FwpmEngineSafeHandle engineHandle, ref Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subscription, IntPtr context, out FwpmNetEventSubscriptionSafeHandle changeHandle)
+        internal NetEventSubscription0(Engine engine, NetEventCallback callback) : base(callback)
         {
             _nativeCallbackDelegate0 = new NativeMethods.FWPM_NET_EVENT_CALLBACK0(NativeCallbackHandler0);
-            return NativeMethods.FwpmNetEventSubscribe0(engineHandle, ref subscription, _nativeCallbackDelegate0, IntPtr.Zero, out changeHandle);
+
+            Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subs0 = new Interop.FWPM_NET_EVENT_SUBSCRIPTION0();
+            subs0.sessionKey = engine.SessionKey;
+            subs0.enumTemplate = IntPtr.Zero;
+
+            var err = NativeMethods.FwpmNetEventSubscribe0(engine.NativePtr, ref subs0, _nativeCallbackDelegate0, IntPtr.Zero, out IntPtr outHndl);
+            if (0 == err)
+                _changeHandle = new FwpmNetEventSubscriptionSafeHandle(outHndl, engine.NativePtr);
+            else
+                throw new WfpException(err, "FwpmNetEventSubscribe0");
         }
 
         private void NativeCallbackHandler0(IntPtr context, IntPtr netEvent1)
         {
             Interop.FWPM_NET_EVENT1 ev = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT1>(netEvent1);
-            _callback(_context, new NetEventData(ev, SBuilder));
+            _callback(new NetEventData(ev, SBuilder));
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!IsDisposed)
+            {
+                if (disposing)
+                {
+                    _changeHandle.Dispose();
+                }
+            }
+
+            base.Dispose(disposing);
         }
     }
 
@@ -318,32 +313,51 @@ namespace pylorak.Windows.WFP
             [UnmanagedFunctionPointer(CallingConvention.StdCall)]
             internal delegate void FWPM_NET_EVENT_CALLBACK1(IntPtr context, IntPtr netEvent2);
 
-            [DllImport("FWPUClnt.dll", EntryPoint = "FwpmNetEventSubscribe1")]
-            [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+            [DllImport("FWPUClnt.dll")]
             internal static extern uint FwpmNetEventSubscribe1(
                 [In] FwpmEngineSafeHandle engineHandle,
                 [In] ref Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subscription,
                 [In] FWPM_NET_EVENT_CALLBACK1 callback,
-                [In] IntPtr context,
-                [Out] out FwpmNetEventSubscriptionSafeHandle changeHandle);
+                IntPtr context,
+                out IntPtr changeHandle);
 
         }
 
-        private NativeMethods.FWPM_NET_EVENT_CALLBACK1 _nativeCallbackDelegate0;
+        private readonly FwpmNetEventSubscriptionSafeHandle _changeHandle;
+        private readonly NativeMethods.FWPM_NET_EVENT_CALLBACK1 _nativeCallbackDelegate1;
 
-        internal NetEventSubscription1(Engine engine, NetEventCallback callback, object context) : base(engine, callback, context)
-        { }
-
-        protected override uint CreateSubscription(FwpmEngineSafeHandle engineHandle, ref Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subscription, IntPtr context, out FwpmNetEventSubscriptionSafeHandle changeHandle)
+        internal NetEventSubscription1(Engine engine, NetEventCallback callback) : base(callback)
         {
-            _nativeCallbackDelegate0 = new NativeMethods.FWPM_NET_EVENT_CALLBACK1(NativeCallbackHandler1);
-            return NativeMethods.FwpmNetEventSubscribe1(engineHandle, ref subscription, _nativeCallbackDelegate0, IntPtr.Zero, out changeHandle);
+            _nativeCallbackDelegate1 = new NativeMethods.FWPM_NET_EVENT_CALLBACK1(NativeCallbackHandler1);
+
+            Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subs0 = new Interop.FWPM_NET_EVENT_SUBSCRIPTION0();
+            subs0.sessionKey = engine.SessionKey;
+            subs0.enumTemplate = IntPtr.Zero;
+
+            var err = NativeMethods.FwpmNetEventSubscribe1(engine.NativePtr, ref subs0, _nativeCallbackDelegate1, IntPtr.Zero, out IntPtr outHndl);
+            if (0 == err)
+                _changeHandle = new FwpmNetEventSubscriptionSafeHandle(outHndl, engine.NativePtr);
+            else
+                throw new WfpException(err, "FwpmNetEventSubscribe1");
         }
 
         private void NativeCallbackHandler1(IntPtr context, IntPtr netEvent1)
         {
             Interop.FWPM_NET_EVENT2 ev = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT2>(netEvent1);
-            _callback(_context, new NetEventData(ev, SBuilder));
+            _callback(new NetEventData(ev, SBuilder));
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!IsDisposed)
+            {
+                if (disposing)
+                {
+                    _changeHandle.Dispose();
+                }
+            }
+
+            base.Dispose(disposing);
         }
     }
 

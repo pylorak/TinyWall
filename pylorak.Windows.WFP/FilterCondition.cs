@@ -7,6 +7,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Security;
 using System.Security.AccessControl;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace pylorak.Windows.WFP
 {
@@ -164,7 +165,7 @@ namespace pylorak.Windows.WFP
         private static readonly byte[] MaskByteBitsLookup = new byte[]
         { 0x00, 0x80, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC, 0xFE, 0xFF };
 
-        private SafeHGlobalHandle nativeMem;
+        private SafeHGlobalHandle? nativeMem;
 
         public IpFilterCondition(IPAddress addr, byte subnetLen, RemoteOrLocal peer)
         {
@@ -258,7 +259,7 @@ namespace pylorak.Windows.WFP
     
     public sealed class PortFilterCondition : FilterCondition
     {
-        private SafeHGlobalHandle rangeNativeMem;
+        private SafeHGlobalHandle? rangeNativeMem;
 
         private PortFilterCondition(RemoteOrLocal peer)
         {
@@ -425,48 +426,6 @@ namespace pylorak.Windows.WFP
 
     public abstract class SecurityDescriptorFilterCondition : FilterCondition
     {
-        private SafeHandle NativeMem;
-
-        protected SecurityDescriptorFilterCondition() { }
-
-        protected void Init(Guid fieldKey, RawSecurityDescriptor sd, FieldMatchType matchType)
-        {
-            byte[] sdBinaryForm = new byte[sd.BinaryLength];
-            sd.GetBinaryForm(sdBinaryForm, 0);
-            Init(fieldKey, sdBinaryForm, matchType);
-        }
-
-        protected unsafe void Init(Guid fieldKey, byte[] sdBinaryForm, FieldMatchType matchType)
-        {
-            unsafe
-            {
-                fixed (byte* src = sdBinaryForm)
-                    Init(fieldKey, (IntPtr)src, sdBinaryForm.Length, matchType);
-            }
-        }
-
-        protected void Init(Guid fieldKey, IntPtr sdBinaryFormPtr, int sdBinaryFormLength, FieldMatchType matchType)
-        {
-            NativeMem = PInvokeHelper.CreateWfpBlob(sdBinaryFormPtr, sdBinaryFormLength);
-            _nativeStruct.matchType = matchType;
-            _nativeStruct.fieldKey = fieldKey;
-            _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_SECURITY_DESCRIPTOR_TYPE;
-            _nativeStruct.conditionValue.value.sd = NativeMem.DangerousGetHandle();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                NativeMem?.Dispose();
-            }
-
-            base.Dispose(disposing);
-        }
-    }
-
-    public sealed class ServiceNameFilterCondition : SecurityDescriptorFilterCondition
-    {
         private static class NativeMethods
         {
             [DllImport("advapi32", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -481,14 +440,16 @@ namespace pylorak.Windows.WFP
             public static extern IntPtr LocalFree(IntPtr hMem);
         }
 
-        public ServiceNameFilterCondition(string serviceName, FieldMatchType matchType)
+        private SafeHandle NativeMem;
+
+        public SecurityDescriptorFilterCondition(Guid fieldKey, FieldMatchType matchType, string sddl)
         {
-            // Get service SID
-            string serviceSid = GetServiceSidFromName(serviceName);
+            Init(fieldKey, matchType, sddl);
+        }
 
-            // Put service SID into SDDL form
-            string sddl = $"O:SYG:SYD:(A;;CCRC;;;{serviceSid})";
-
+        [MemberNotNull(nameof(NativeMem))]
+        protected void Init(Guid fieldKey, FieldMatchType matchType, string sddl)
+        {
             // Get SDDL in binary form
             IntPtr nativeArray = IntPtr.Zero;
             try
@@ -497,7 +458,7 @@ namespace pylorak.Windows.WFP
                 if (!NativeMethods.ConvertStringSecurityDescriptorToSecurityDescriptor(sddl, 1, out nativeArray, ref byteArraySize))
                     throw new Win32Exception();
 
-                Init(ConditionKeys.FWPM_CONDITION_ALE_USER_ID, nativeArray, byteArraySize, matchType);
+                Init(fieldKey, matchType, nativeArray, byteArraySize);
             }
             finally
             {
@@ -505,7 +466,50 @@ namespace pylorak.Windows.WFP
             }
         }
 
-        public ServiceNameFilterCondition(string serviceName) : this(serviceName, FieldMatchType.FWP_MATCH_EQUAL)
+
+        [MemberNotNull(nameof(NativeMem))]
+        protected void Init(Guid fieldKey, FieldMatchType matchType, RawSecurityDescriptor sd)
+        {
+            byte[] sdBinaryForm = new byte[sd.BinaryLength];
+            sd.GetBinaryForm(sdBinaryForm, 0);
+            Init(fieldKey, matchType, sdBinaryForm);
+        }
+
+        [MemberNotNull(nameof(NativeMem))]
+        protected unsafe void Init(Guid fieldKey, FieldMatchType matchType, byte[] sdBinaryForm)
+        {
+            unsafe
+            {
+                fixed (byte* src = sdBinaryForm)
+                    Init(fieldKey, matchType, (IntPtr)src, sdBinaryForm.Length);
+            }
+        }
+
+        [MemberNotNull(nameof(NativeMem))]
+        protected void Init(Guid fieldKey, FieldMatchType matchType, IntPtr sdBinaryFormPtr, int sdBinaryFormLength)
+        {
+            NativeMem = PInvokeHelper.CreateWfpBlob(sdBinaryFormPtr, sdBinaryFormLength);
+            _nativeStruct.matchType = matchType;
+            _nativeStruct.fieldKey = fieldKey;
+            _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_SECURITY_DESCRIPTOR_TYPE;
+            _nativeStruct.conditionValue.value.sd = NativeMem.DangerousGetHandle();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                NativeMem.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+    }
+
+    public sealed class ServiceNameFilterCondition : SecurityDescriptorFilterCondition
+    {
+        public ServiceNameFilterCondition(string serviceName)
+            : base(ConditionKeys.FWPM_CONDITION_ALE_USER_ID, FieldMatchType.FWP_MATCH_EQUAL, $"O:SYG:SYD:(A;;CCRC;;;{GetServiceSidFromName(serviceName)})")
         {
         }
 
@@ -535,34 +539,33 @@ namespace pylorak.Windows.WFP
             byte[] unicode = System.Text.UnicodeEncoding.Unicode.GetBytes(serviceName);
 
             // 4: Run bytes() thru the sha1 hash function.
-            byte[] sha1 = null;
-            using (System.Security.Cryptography.SHA1Managed hasher = new System.Security.Cryptography.SHA1Managed())
+            using (var hasher = new System.Security.Cryptography.SHA1Managed())
             {
-                sha1 = hasher.ComputeHash(unicode);
-            }
+                var sha1 = hasher.ComputeHash(unicode);
 
-            // 5: Reverse the byte() string  returned from the SHA1 hash function(on Little Endian systems Not tested on Big Endian systems)
-            // Optimized away by reversing array order in steps 7 and 10.
+                // 5: Reverse the byte() string  returned from the SHA1 hash function(on Little Endian systems Not tested on Big Endian systems)
+                // Optimized away by reversing array order in steps 7 and 10.
 
-            // 6: Split the reversed string into 5 blocks of 4 bytes each.
-            unsafe
-            {
-                var dec = stackalloc uint[5];
-                for (int i = 0; i < 5; ++i)
+                // 6: Split the reversed string into 5 blocks of 4 bytes each.
+                unsafe
                 {
-                    // 7: Convert each block of hex bytes() to Decimal
-                    dec[i] =
-                        ((uint)sha1[i * 4 + 3] << 24) +
-                        ((uint)sha1[i * 4 + 2] << 16) +
-                        ((uint)sha1[i * 4 + 1] << 8) +
-                        ((uint)sha1[i * 4 + 0] << 0);
-                }
+                    var dec = stackalloc uint[5];
+                    for (int i = 0; i < 5; ++i)
+                    {
+                        // 7: Convert each block of hex bytes() to Decimal
+                        dec[i] =
+                            ((uint)sha1[i * 4 + 3] << 24) +
+                            ((uint)sha1[i * 4 + 2] << 16) +
+                            ((uint)sha1[i * 4 + 1] << 8) +
+                            ((uint)sha1[i * 4 + 0] << 0);
+                    }
 
-                // 8: Reverse the Position of the blocks.
-                // 9: Create the first part of the SID "S-1-5-80-"
-                // 10: Tack on each block of Decimal strings with a "-" in between each block that was converted and reversed.
-                // 11: Finally out put the complete SID for the service.
-                return $"S-1-5-80-{dec[0].ToString()}-{dec[1].ToString()}-{dec[2].ToString()}-{dec[3].ToString()}-{dec[4].ToString()}";
+                    // 8: Reverse the Position of the blocks.
+                    // 9: Create the first part of the SID "S-1-5-80-"
+                    // 10: Tack on each block of Decimal strings with a "-" in between each block that was converted and reversed.
+                    // 11: Finally out put the complete SID for the service.
+                    return $"S-1-5-80-{dec[0].ToString()}-{dec[1].ToString()}-{dec[2].ToString()}-{dec[3].ToString()}-{dec[4].ToString()}";
+                }
             }
         }
     }
@@ -570,13 +573,10 @@ namespace pylorak.Windows.WFP
     public sealed class UserIdFilterCondition : SecurityDescriptorFilterCondition
     {
         public UserIdFilterCondition(string sid, RemoteOrLocal peer)
+            : base((RemoteOrLocal.Local == peer) ? ConditionKeys.FWPM_CONDITION_ALE_USER_ID : ConditionKeys.FWPM_CONDITION_ALE_REMOTE_USER_ID,
+                  FieldMatchType.FWP_MATCH_EQUAL,
+                  $"O:LSD:(A;;CC;;;{sid}))")
         {
-            string sddl = $"O:LSD:(A;;CC;;;{sid}))";
-            Init(
-                (RemoteOrLocal.Local == peer) ? ConditionKeys.FWPM_CONDITION_ALE_USER_ID : ConditionKeys.FWPM_CONDITION_ALE_REMOTE_USER_ID,
-                new RawSecurityDescriptor(sddl),
-                FieldMatchType.FWP_MATCH_EQUAL
-            );
         }
     }
 
@@ -593,7 +593,7 @@ namespace pylorak.Windows.WFP
             internal static extern int DeriveAppContainerSidFromAppContainerName(string appContainerName, out SidSafeHandle sid);
         }
 
-        private SafeHandle sidNativeMem = null;
+        private SafeHandle sidNativeMem;
 
         public PackageIdFilterCondition(IntPtr sid)
         {
@@ -622,6 +622,7 @@ namespace pylorak.Windows.WFP
             Init(sid);
         }
 
+        [MemberNotNull(nameof(sidNativeMem))]
         private void Init(SafeHandle sidHandle)
         {
             sidNativeMem = sidHandle;

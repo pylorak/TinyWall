@@ -14,15 +14,7 @@ namespace pylorak.Windows.WFP
         {
             [DllImport("FWPUClnt.dll", EntryPoint = "FwpmEngineOpen0")]
             internal static extern uint FwpmEngineOpen0(
-                [In, MarshalAs(UnmanagedType.LPWStr)] string serverName,
-                [In] uint authnService,
-                [In] IntPtr authIdentity,
-                [In] SafeHGlobalHandle session,
-                [Out] out FwpmEngineSafeHandle engineHandle);
-
-            [DllImport("FWPUClnt.dll", EntryPoint = "FwpmEngineOpen0")]
-            internal static extern uint FwpmEngineOpen0(
-                [In, MarshalAs(UnmanagedType.LPWStr)] string serverName,
+                [In, MarshalAs(UnmanagedType.LPWStr)] string? serverName,
                 [In] uint authnService,
                 [In] IntPtr authIdentity,
                 [In] ref Interop.FWPM_SESSION0 session,
@@ -96,13 +88,6 @@ namespace pylorak.Windows.WFP
             {
                 return _nativeEngineHandle;
             }
-        }
-
-        public Engine()
-        {
-            uint error = NativeMethods.FwpmEngineOpen0(null, (uint)Interop.RPC_C_AUTHN.RPC_C_AUTHN_WINNT, IntPtr.Zero, new SafeHGlobalHandle(), out _nativeEngineHandle);
-            if (0 != error)
-                throw new WfpException(error, "FwpmEngineOpen0");
         }
 
         public Engine(string displName, string displDescr, Interop.FWPM_SESSION_FLAGS flags, uint txnTimeoutMsec)
@@ -321,47 +306,45 @@ namespace pylorak.Windows.WFP
             return new FilterSubscription(this, callback, context, providerKey, layerKey);
         }
 
-        public NetEventSubscription SubscribeNetEvent(NetEventCallback callback, object context)
+        public NetEventSubscription SubscribeNetEvent(NetEventCallback callback)
         {
             if (VersionInfo.Win8OrNewer)
-                return new NetEventSubscription1(this, callback, context);
+                return new NetEventSubscription1(this, callback);
             else
-                return new NetEventSubscription0(this, callback, context);
+                return new NetEventSubscription0(this, callback);
         }
 
         public Filter GetFilter(Guid guid, bool getConditions)
         {
-            FwpmMemorySafeHandle nativeMem = null;
+            uint err = NativeMethods.FwpmFilterGetByKey0(this._nativeEngineHandle, ref guid, out FwpmMemorySafeHandle nativeMem);
+            if (err != 0)
+                throw new WfpException(err, "FwpmFilterGetByKey0");
+
             try
             {
-                uint err = NativeMethods.FwpmFilterGetByKey0(this._nativeEngineHandle, ref guid, out nativeMem);
-                if (err != 0)
-                    throw new WfpException(err, "FwpmFilterGetByKey0");
-
                 var nativeFilter = PInvokeHelper.PtrToStructure<Interop.FWPM_FILTER0_NoStrings>(nativeMem.DangerousGetHandle());
                 return new Filter(in nativeFilter, getConditions);
             }
             finally
             {
-                nativeMem?.Dispose();
+                nativeMem.Dispose();
             }
         }
 
         public Filter GetFilter(ulong id, bool getConditions)
         {
-            FwpmMemorySafeHandle nativeMem = null;
+            uint err = NativeMethods.FwpmFilterGetById0(this._nativeEngineHandle, id, out FwpmMemorySafeHandle nativeMem);
+            if (err != 0)
+                throw new WfpException(err, "FwpmFilterGetById0");
+
             try
             {
-                uint err = NativeMethods.FwpmFilterGetById0(this._nativeEngineHandle, id, out nativeMem);
-                if (err != 0)
-                    throw new WfpException(err, "FwpmFilterGetById0");
-
                 var nativeFilter = PInvokeHelper.PtrToStructure<Interop.FWPM_FILTER0_NoStrings>(nativeMem.DangerousGetHandle());
                 return new Filter(in nativeFilter, getConditions);
             }
             finally
             {
-                nativeMem?.Dispose();
+                nativeMem.Dispose();
             }
         }
 

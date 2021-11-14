@@ -402,7 +402,7 @@ namespace pylorak.Windows.WFP.Interop
     [StructLayout(LayoutKind.Sequential)]
     public struct FWPM_FILTER_SUBSCRIPTION0
     {
-        public Interop.FWPM_FILTER_ENUM_TEMPLATE0 enumTemplate;
+        public FWPM_FILTER_ENUM_TEMPLATE0? enumTemplate;
         public FilterSubscriptionFlags flags;
         public Guid sessionKey;
     }
