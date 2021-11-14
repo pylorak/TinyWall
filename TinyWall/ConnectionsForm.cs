@@ -110,7 +110,7 @@ namespace PKSoft
             if (chkShowBlocked.Checked)
             {
                 // Try to resolve PIDs heuristically
-                var ProcessPathInfoMap = new Dictionary<string, List<ProcessManager.ExtendedProcessEntry>>();
+                var ProcessPathInfoMap = new Dictionary<string, List<ProcessSnapshotEntry>>();
                 foreach (var p in ProcessManager.CreateToolhelp32SnapshotExtended())
                 {
                     if (string.IsNullOrEmpty(p.ImagePath))
@@ -118,7 +118,7 @@ namespace PKSoft
 
                     var key = p.ImagePath.ToLowerInvariant();
                     if (!ProcessPathInfoMap.ContainsKey(key))
-                        ProcessPathInfoMap.Add(key, new List<ProcessManager.ExtendedProcessEntry>());
+                        ProcessPathInfoMap.Add(key, new List<ProcessSnapshotEntry>());
                     ProcessPathInfoMap[key].Add(p);
                 }
 
@@ -130,7 +130,7 @@ namespace PKSoft
 
                     var p = ProcessPathInfoMap[key];
                     if ((p.Count == 1) && (p[0].CreationTime < e.Timestamp.ToFileTime()))
-                        e.ProcessId = p[0].BaseEntry.th32ProcessID;
+                        e.ProcessId = p[0].ProcessId;
                 }
 
                 List<FirewallLogEntry> filteredLog = new List<FirewallLogEntry>();

@@ -10,6 +10,22 @@ using System.ComponentModel;
 
 namespace PKSoft
 {
+    public readonly struct ProcessSnapshotEntry
+    {
+        public readonly string ImagePath;
+        public readonly long CreationTime;
+        public readonly uint ProcessId;
+        public readonly uint ParentProcessId;
+
+        public ProcessSnapshotEntry(string path, long creationTime, uint pid, uint parentPid)
+        {
+            ImagePath = path;
+            CreationTime = creationTime;
+            ProcessId = pid;
+            ParentProcessId = parentPid;
+        }
+    }
+
     public static class ProcessManager
     {
         [SuppressUnmanagedCodeSecurity]
@@ -20,6 +36,9 @@ namespace PKSoft
 
             [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
             internal static extern bool QueryFullProcessImageName(SafeObjectHandle hProcess, QueryFullProcessImageNameFlags dwFlags, [Out] StringBuilder lpExeName, ref int size);
+
+            [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
+            internal static unsafe extern bool QueryFullProcessImageName(SafeObjectHandle hProcess, QueryFullProcessImageNameFlags dwFlags, [Out] char* lpExeName, ref int size);
 
             [DllImport("ntdll")]
             internal static extern int NtQueryInformationProcess(SafeObjectHandle hProcess, int processInformationClass, [Out] out PROCESS_BASIC_INFORMATION processInformation, int processInformationLength, out int returnLength);
@@ -159,7 +178,7 @@ namespace PKSoft
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct PROCESSENTRY32
+        internal unsafe struct PROCESSENTRY32
         {
             public uint dwSize;
             public uint cntUsage;
@@ -170,14 +189,7 @@ namespace PKSoft
             public uint th32ParentProcessID;
             public int pcPriClassBase;
             public uint dwFlags;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)] public string szExeFile;
-        };
-
-        public struct ExtendedProcessEntry
-        {
-            public PROCESSENTRY32 BaseEntry;
-            public long CreationTime;
-            public string ImagePath;
+            public fixed char szExeFile[260];
         };
 
         [Flags]
@@ -217,8 +229,7 @@ namespace PKSoft
             NativeFormat = 1
         }
 
-        private const int MIN_PATH_BUFF_SIZE = 130;
-        private const int MAX_PATH_BUFF_SIZE = 1040;
+        private const int MAX_PATH_BUFF_CHARS = 1040;
 
         public static string ExecutablePath { get; } = GetCurrentExecutablePath();
         private static string GetCurrentExecutablePath()
@@ -231,19 +242,19 @@ namespace PKSoft
         }
         public static string GetProcessPath(uint processId)
         {
-            var buffer = new StringBuilder(MIN_PATH_BUFF_SIZE);
-            return GetProcessPath(processId, buffer);
+            StringBuilder buffer = null;
+            return GetProcessPath(processId, ref buffer);
         }
 
-        public static string GetProcessPath(uint processId, StringBuilder buffer)
+        public static string GetProcessPath(uint processId, ref StringBuilder buffer)
         {
             using (var hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
             {
-                return GetProcessPath(hProcess, buffer);
+                return GetProcessPath(hProcess, ref buffer);
             }
         }
 
-        public static string GetProcessPath(SafeObjectHandle hProcess, StringBuilder buffer)
+        public static string GetProcessPath(SafeObjectHandle hProcess, ref StringBuilder buffer)
         {
             // This method needs Windows Vista or newer OS
             System.Diagnostics.Debug.Assert(Environment.OSVersion.Version.Major >= 6);
@@ -251,30 +262,43 @@ namespace PKSoft
             if (hProcess.IsInvalid)
                 return null;
 
-            buffer.Length = 0;
-            buffer.Capacity = 130;
-            while (true)
+            // First, try a smaller buffer on the stack.
+            // This is more eficient both memory and performance-wise, and covers most cases.
+            const int STACK_BUFF_BYTES = 1024;
+            const int STACK_BUFF_CHARS = STACK_BUFF_BYTES / 2;
+            int numChars = STACK_BUFF_CHARS;
+            unsafe
             {
-                int size = buffer.Capacity;
-                if (SafeNativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.NativeFormat, buffer, ref size))
+                var stack_buffer = stackalloc char[STACK_BUFF_CHARS];
+                if (SafeNativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.NativeFormat, stack_buffer, ref numChars))
                 {
-                    if (buffer.Length == 0)
+                    if (numChars == 0)
                         return string.Empty;
 
-                    return PathMapper.Instance.ConvertPathIgnoreErrors(buffer.ToString(), PathFormat.Win32);
+                    return PathMapper.Instance.ConvertPathIgnoreErrors(new string(stack_buffer, 0, numChars), PathFormat.Win32);
+                }
+            }
+
+            // If the stack buffer wasn't big enough, allocate a larger buffer on the heap and try again
+            const int ERROR_INSUFFICIENT_BUFFER = 122;
+            if (ERROR_INSUFFICIENT_BUFFER == Marshal.GetLastWin32Error())
+            {
+                if (buffer is null)
+                {
+                    buffer = new StringBuilder(MAX_PATH_BUFF_CHARS);
                 }
                 else
                 {
-                    const int ERROR_INSUFFICIENT_BUFFER = 122;
-                    int error = Marshal.GetLastWin32Error();
-                    if ((ERROR_INSUFFICIENT_BUFFER == error) && (buffer.Capacity < MAX_PATH_BUFF_SIZE))
-                    {
-                        buffer.Length = 0;
-                        buffer.Capacity = MAX_PATH_BUFF_SIZE;
-                        continue;
-                    }
-                    else
-                        break;
+                    buffer.Length = 0;
+                    buffer.EnsureCapacity(MAX_PATH_BUFF_CHARS);
+                }
+                numChars = buffer.Capacity;
+                if (SafeNativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.NativeFormat, buffer, ref numChars))
+                {
+                    if (numChars == 0)
+                        return string.Empty;
+
+                    return PathMapper.Instance.ConvertPathIgnoreErrors(buffer.ToString(), PathFormat.Win32);
                 }
             }
 
@@ -287,7 +311,7 @@ namespace PKSoft
             {
                 if (hProcess.IsInvalid)
                     return false;
-                    //throw new Exception($"Cannot open process Id {processId}.");
+                //throw new Exception($"Cannot open process Id {processId}.");
 
                 if (VersionInfo.IsWow64Process)
                 {
@@ -322,7 +346,7 @@ namespace PKSoft
             return SafeNativeMethods.GetProcessTimes(hProcess, out creationTime, out _, out _, out _);
         }
 
-        public static IEnumerable<PROCESSENTRY32> CreateToolhelp32Snapshot()
+        private static IEnumerable<PROCESSENTRY32> CreateToolhelp32Snapshot()
         {
             const int ERROR_NO_MORE_FILES = 18;
 
@@ -347,18 +371,20 @@ namespace PKSoft
             }
         }
 
-        public static IEnumerable<ExtendedProcessEntry> CreateToolhelp32SnapshotExtended()
+        public static IEnumerable<ProcessSnapshotEntry> CreateToolhelp32SnapshotExtended()
         {
-            StringBuilder sbuilder = new StringBuilder(MIN_PATH_BUFF_SIZE);
+            StringBuilder sbuilder = null;
             foreach (var p in CreateToolhelp32Snapshot())
             {
                 using (var hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, p.th32ProcessID))
                 {
-                    ExtendedProcessEntry ret;
-                    ret.BaseEntry = p;
-                    ret.ImagePath = GetProcessPath(hProcess, sbuilder);
-                    GetProcessCreationTime(hProcess, out ret.CreationTime);
-                    yield return ret;
+                    GetProcessCreationTime(hProcess, out long creationTime);
+                    yield return new ProcessSnapshotEntry(
+                        GetProcessPath(hProcess, ref sbuilder),
+                        creationTime,
+                        p.th32ProcessID,
+                        p.th32ParentProcessID
+                    );
                 }
             }
         }

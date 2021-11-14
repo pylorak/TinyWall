@@ -45,7 +45,7 @@ namespace PKSoft
 
         // Context for auto rule inheritance
         private readonly object InheritanceGuard = new object();
-        private readonly StringBuilder ProcessStartWatcher_Sbuilder = new StringBuilder();
+        private StringBuilder ProcessStartWatcher_Sbuilder;
         private HashSet<string> UserSubjectExes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);        // All executables with pre-configured rules.
         private Dictionary<string, List<FirewallExceptionV3>> ChildInheritance = new Dictionary<string, List<FirewallExceptionV3>>(StringComparer.OrdinalIgnoreCase);
         private Dictionary<string, HashSet<string>> ChildInheritedSubjectExes = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);   // Executables that have been already auto-whitelisted due to inheritance
@@ -189,14 +189,9 @@ namespace PKSoft
                         timer.NewSubTask("Rule inheritance processing");
 
                         StringBuilder sbuilder = new StringBuilder(1024);
-                        var procTree = new Dictionary<uint, ProcessManager.ExtendedProcessEntry>();
+                        var procTree = new Dictionary<uint, ProcessSnapshotEntry>();
                         foreach (var p in ProcessManager.CreateToolhelp32SnapshotExtended())
-                        {
-                            var p2 = p;
-                            if (!string.IsNullOrEmpty(p.ImagePath))
-                                p2.ImagePath = p.ImagePath;
-                            procTree.Add(p2.BaseEntry.th32ProcessID, p2);
-                        }
+                            procTree.Add(p.ProcessId, p);
 
                         // This list will hold parents that we already checked for a process.
                         // Used to avoid inf. loop when parent-PID info is unreliable.
@@ -217,11 +212,11 @@ namespace PKSoft
                                 continue;
 
                             // Start walking up the process tree
-                            for (ProcessManager.ExtendedProcessEntry parentEntry = procTree[pair.Key]; ;)
+                            for (var parentEntry = procTree[pair.Key]; ;)
                             {
                                 long childCreationTime = parentEntry.CreationTime;
-                                if (procTree.ContainsKey(parentEntry.BaseEntry.th32ParentProcessID))
-                                    parentEntry = procTree[parentEntry.BaseEntry.th32ParentProcessID];
+                                if (procTree.ContainsKey(parentEntry.ParentProcessId))
+                                    parentEntry = procTree[parentEntry.ParentProcessId];
                                 else
                                     // We reached top of process tree (with non-existing parent)
                                     break;
@@ -231,15 +226,15 @@ namespace PKSoft
                                     // We reached the top of the process tree (with non-existing parent)
                                     break;
 
-                                if (parentEntry.BaseEntry.th32ProcessID == 0)
+                                if (parentEntry.ProcessId == 0)
                                     // We reached top of process tree (with idle process)
                                     break;
 
-                                if (pidsChecked.Contains(parentEntry.BaseEntry.th32ProcessID))
+                                if (pidsChecked.Contains(parentEntry.ProcessId))
                                     // We've been here before, damn it. Avoid looping eternally...
                                     break;
 
-                                pidsChecked.Add(parentEntry.BaseEntry.th32ProcessID);
+                                pidsChecked.Add(parentEntry.ProcessId);
 
                                 if (string.IsNullOrEmpty(parentEntry.ImagePath))
                                     // We cannot get the path, so let's skip this parent
@@ -1755,7 +1750,7 @@ namespace PKSoft
                 using (var throttler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest, true, false))
                 {
                     uint pid = (uint)(e.NewEvent["ProcessID"]);
-                    string path = ProcessManager.GetProcessPath(pid, ProcessStartWatcher_Sbuilder);
+                    string path = ProcessManager.GetProcessPath(pid, ref ProcessStartWatcher_Sbuilder);
 
                     // Skip if we have no path
                     if (string.IsNullOrEmpty(path))
@@ -1790,7 +1785,7 @@ namespace PKSoft
 
                             pidsChecked.Add(parentPid);
 
-                            string parentPath = ProcessManager.GetProcessPath(parentPid, ProcessStartWatcher_Sbuilder);
+                            string parentPath = ProcessManager.GetProcessPath(parentPid, ref ProcessStartWatcher_Sbuilder);
                             if (string.IsNullOrEmpty(parentPath))
                                 continue;
 
