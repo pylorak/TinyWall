@@ -7,19 +7,19 @@ namespace PKSoft
 {
     public static class WfpSublayerKeys
     {
-        public static readonly Guid FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6 = new Guid("{745777F7-5092-4706-95C1-B74A0092E78A}");
-        public static readonly Guid FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4 = new Guid("{0FAC82A5-64D6-41CC-BC5F-415702FFB664}");
-        public static readonly Guid FWPM_LAYER_INBOUND_ICMP_ERROR_V6 = new Guid("{B06F3846-5886-4416-A9F4-6DCB8A9B8FC8}");
-        public static readonly Guid FWPM_LAYER_INBOUND_ICMP_ERROR_V4 = new Guid("{7BF8AAAB-B21D-415F-BD03-D272FA3728EC}");
-        public static readonly Guid FWPM_LAYER_ALE_AUTH_CONNECT_V6 = new Guid("{A6F49767-7190-4718-A80C-9E058ABA1B60}");
-        public static readonly Guid FWPM_LAYER_ALE_AUTH_CONNECT_V4 = new Guid("{3C6B5A3E-7413-4BA0-8B2D-28C36E39FE52}");
-        public static readonly Guid FWPM_LAYER_ALE_AUTH_LISTEN_V6 = new Guid("{A36CEEFC-83EB-44FC-B784-6E64EB3A9566}");
-        public static readonly Guid FWPM_LAYER_ALE_AUTH_LISTEN_V4 = new Guid("{19EC1DE9-7B31-49D2-BA12-83945E08F168}");
-        public static readonly Guid FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6 = new Guid("{DE420F02-5DA6-43B5-94C1-F193C4909AA4}");
-        public static readonly Guid FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4 = new Guid("{089B5CA9-6AC2-4B5E-939B-F1818816884F}");
-        public static readonly Guid FWPM_LAYER_INBOUND_TRANSPORT_V6_DISCARD = new Guid("{D05BD1D0-1298-4E86-BB38-305E0BEFB112}");
-        public static readonly Guid FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD = new Guid("{024A1067-9549-4949-8916-4BB6DDCDBD6A}");
-        public static readonly Guid FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6 = new Guid("{26DA5F3F-9E15-417E-81DD-601DCF1721BF}");
-        public static readonly Guid FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4 = new Guid("{F2E24D17-B1FA-44C8-A397-CD206B60BF8F}");
+        public static readonly Guid FWPM_LAYER_OUTBOUND_ICMP_ERROR_V6 =         new(0x745777F7, 0x5092, 0x4706, 0x95, 0xC1, 0xB7, 0x4A, 0x00, 0x92, 0xE7, 0x8A);
+        public static readonly Guid FWPM_LAYER_OUTBOUND_ICMP_ERROR_V4 =         new(0x0FAC82A5, 0x64D6, 0x41CC, 0xBC, 0x5F, 0x41, 0x57, 0x02, 0xFF, 0xB6, 0x64);
+        public static readonly Guid FWPM_LAYER_INBOUND_ICMP_ERROR_V6 =          new(0xB06F3846, 0x5886, 0x4416, 0xA9, 0xF4, 0x6D, 0xCB, 0x8A, 0x9B, 0x8F, 0xC8);
+        public static readonly Guid FWPM_LAYER_INBOUND_ICMP_ERROR_V4 =          new(0x7BF8AAAB, 0xB21D, 0x415F, 0xBD, 0x03, 0xD2, 0x72, 0xFA, 0x37, 0x28, 0xEC);
+        public static readonly Guid FWPM_LAYER_ALE_AUTH_CONNECT_V6 =            new(0xA6F49767, 0x7190, 0x4718, 0xA8, 0x0C, 0x9E, 0x05, 0x8A, 0xBA, 0x1B, 0x60);
+        public static readonly Guid FWPM_LAYER_ALE_AUTH_CONNECT_V4 =            new(0x3C6B5A3E, 0x7413, 0x4BA0, 0x8B, 0x2D, 0x28, 0xC3, 0x6E, 0x39, 0xFE, 0x52);
+        public static readonly Guid FWPM_LAYER_ALE_AUTH_LISTEN_V6 =             new(0xA36CEEFC, 0x83EB, 0x44FC, 0xB7, 0x84, 0x6E, 0x64, 0xEB, 0x3A, 0x95, 0x66);
+        public static readonly Guid FWPM_LAYER_ALE_AUTH_LISTEN_V4 =             new(0x19EC1DE9, 0x7B31, 0x49D2, 0xBA, 0x12, 0x83, 0x94, 0x5E, 0x08, 0xF1, 0x68);
+        public static readonly Guid FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6 =        new(0xDE420F02, 0x5DA6, 0x43B5, 0x94, 0xC1, 0xF1, 0x93, 0xC4, 0x90, 0x9A, 0xA4);
+        public static readonly Guid FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4 =        new(0x089B5CA9, 0x6AC2, 0x4B5E, 0x93, 0x9B, 0xF1, 0x81, 0x88, 0x16, 0x88, 0x4F);
+        public static readonly Guid FWPM_LAYER_INBOUND_TRANSPORT_V6_DISCARD =   new(0xD05BD1D0, 0x1298, 0x4E86, 0xBB, 0x38, 0x30, 0x5E, 0x0B, 0xEF, 0xB1, 0x12);
+        public static readonly Guid FWPM_LAYER_INBOUND_TRANSPORT_V4_DISCARD =   new(0x024A1067, 0x9549, 0x4949, 0x89, 0x16, 0x4B, 0xB6, 0xDD, 0xCD, 0xBD, 0x6A);
+        public static readonly Guid FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6 =     new(0x26DA5F3F, 0x9E15, 0x417E, 0x81, 0xDD, 0x60, 0x1D, 0xCF, 0x17, 0x21, 0xBF);
+        public static readonly Guid FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4 =     new(0xF2E24D17, 0xB1FA, 0x44C8, 0xA3, 0x97, 0xCD, 0x20, 0x6B, 0x60, 0xBF, 0x8F);
     }
 }

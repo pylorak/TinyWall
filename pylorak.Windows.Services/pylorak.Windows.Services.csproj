@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <Nullable>enable</Nullable>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <Deterministic>True</Deterministic>
     <VersionPrefix>0.1.0</VersionPrefix>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

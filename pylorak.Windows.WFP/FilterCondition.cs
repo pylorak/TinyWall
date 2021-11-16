@@ -171,7 +171,7 @@ namespace pylorak.Windows.WFP
         {
             if (((addr.AddressFamily == AddressFamily.InterNetwork) && (subnetLen > 32))
              || ((addr.AddressFamily == AddressFamily.InterNetworkV6) && (subnetLen > 128)))
-                throw new ArgumentOutOfRangeException("Subnet length out of range for the address family.");
+                throw new ArgumentOutOfRangeException(nameof(subnetLen));
 
             _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
             _nativeStruct.fieldKey = (peer == RemoteOrLocal.Local) ? ConditionKeys.FWPM_CONDITION_IP_LOCAL_ADDRESS : ConditionKeys.FWPM_CONDITION_IP_REMOTE_ADDRESS;
@@ -201,7 +201,7 @@ namespace pylorak.Windows.WFP
                         }
                         Array.Reverse(addressBytes);
 
-                        Interop.FWP_V4_ADDR_AND_MASK addrAndMask4 = new Interop.FWP_V4_ADDR_AND_MASK();
+                        var addrAndMask4 = new Interop.FWP_V4_ADDR_AND_MASK();
                         addrAndMask4.addr = BitConverter.ToUInt32(addressBytes, 0);
                         addrAndMask4.mask = maskBits;
                         nativeMem = SafeHGlobalHandle.FromStruct(addrAndMask4);
@@ -223,7 +223,7 @@ namespace pylorak.Windows.WFP
                     }
                     else
                     {
-                        Interop.FWP_V6_ADDR_AND_MASK addrAndMask6 = new Interop.FWP_V6_ADDR_AND_MASK();
+                        var addrAndMask6 = new Interop.FWP_V6_ADDR_AND_MASK();
                         unsafe
                         {
                             fixed (byte* addrSrcPtr = addressBytes)
@@ -310,7 +310,7 @@ namespace pylorak.Windows.WFP
         {
             _nativeStruct.matchType = FieldMatchType.FWP_MATCH_RANGE;
 
-            Interop.FWP_RANGE0 range = new Interop.FWP_RANGE0();
+            var range = new Interop.FWP_RANGE0();
             range.valueLow.type = Interop.FWP_DATA_TYPE.FWP_UINT16;
             range.valueLow.value.uint16 = minPort;
             range.valueHigh.type = Interop.FWP_DATA_TYPE.FWP_UINT16;
@@ -380,7 +380,7 @@ namespace pylorak.Windows.WFP
                 [Out] out FwpmMemorySafeHandle appId);
         }
 
-        private SafeHandle NativeMem;
+        private readonly SafeHandle NativeMem;
 
         public AppIdFilterCondition(string filePath, bool bBeforeProxying = false, bool alreadyKernelFormat = false)
         {
@@ -417,7 +417,7 @@ namespace pylorak.Windows.WFP
         {
             if (disposing)
             {
-                NativeMem?.Dispose();
+                NativeMem.Dispose();
             }
 
             base.Dispose(disposing);
@@ -539,33 +539,31 @@ namespace pylorak.Windows.WFP
             byte[] unicode = System.Text.UnicodeEncoding.Unicode.GetBytes(serviceName);
 
             // 4: Run bytes() thru the sha1 hash function.
-            using (var hasher = new System.Security.Cryptography.SHA1Managed())
+            using var hasher = new System.Security.Cryptography.SHA1Managed();
+            var sha1 = hasher.ComputeHash(unicode);
+
+            // 5: Reverse the byte() string  returned from the SHA1 hash function(on Little Endian systems Not tested on Big Endian systems)
+            // Optimized away by reversing array order in steps 7 and 10.
+
+            // 6: Split the reversed string into 5 blocks of 4 bytes each.
+            unsafe
             {
-                var sha1 = hasher.ComputeHash(unicode);
-
-                // 5: Reverse the byte() string  returned from the SHA1 hash function(on Little Endian systems Not tested on Big Endian systems)
-                // Optimized away by reversing array order in steps 7 and 10.
-
-                // 6: Split the reversed string into 5 blocks of 4 bytes each.
-                unsafe
+                var dec = stackalloc uint[5];
+                for (int i = 0; i < 5; ++i)
                 {
-                    var dec = stackalloc uint[5];
-                    for (int i = 0; i < 5; ++i)
-                    {
-                        // 7: Convert each block of hex bytes() to Decimal
-                        dec[i] =
-                            ((uint)sha1[i * 4 + 3] << 24) +
-                            ((uint)sha1[i * 4 + 2] << 16) +
-                            ((uint)sha1[i * 4 + 1] << 8) +
-                            ((uint)sha1[i * 4 + 0] << 0);
-                    }
-
-                    // 8: Reverse the Position of the blocks.
-                    // 9: Create the first part of the SID "S-1-5-80-"
-                    // 10: Tack on each block of Decimal strings with a "-" in between each block that was converted and reversed.
-                    // 11: Finally out put the complete SID for the service.
-                    return $"S-1-5-80-{dec[0].ToString()}-{dec[1].ToString()}-{dec[2].ToString()}-{dec[3].ToString()}-{dec[4].ToString()}";
+                    // 7: Convert each block of hex bytes() to Decimal
+                    dec[i] =
+                        ((uint)sha1[i * 4 + 3] << 24) +
+                        ((uint)sha1[i * 4 + 2] << 16) +
+                        ((uint)sha1[i * 4 + 1] << 8) +
+                        ((uint)sha1[i * 4 + 0] << 0);
                 }
+
+                // 8: Reverse the Position of the blocks.
+                // 9: Create the first part of the SID "S-1-5-80-"
+                // 10: Tack on each block of Decimal strings with a "-" in between each block that was converted and reversed.
+                // 11: Finally out put the complete SID for the service.
+                return $"S-1-5-80-{dec[0].ToString()}-{dec[1].ToString()}-{dec[2].ToString()}-{dec[3].ToString()}-{dec[4].ToString()}";
             }
         }
     }
@@ -638,8 +636,9 @@ namespace pylorak.Windows.WFP
             if (!VersionInfo.Win8OrNewer)
                 throw new NotSupportedException("FWPM_CONDITION_ALE_PACKAGE_ID requires Windows 8 or newer.");
 
-            if (0 != NativeMethods.DeriveAppContainerSidFromAppContainerName(packageFamilyName, out SidSafeHandle tmpHndl))
-                throw new ArgumentException();
+            var err = NativeMethods.DeriveAppContainerSidFromAppContainerName(packageFamilyName, out SidSafeHandle tmpHndl);
+            if (0 != err)
+                throw new ArgumentException($"DeriveAppContainerSidFromAppContainerName() returned {err}.");
 
             return new PackageIdFilterCondition(tmpHndl);
         }
@@ -648,7 +647,7 @@ namespace pylorak.Windows.WFP
         {
             if (disposing)
             {
-                sidNativeMem?.Dispose();
+                sidNativeMem.Dispose();
             }
 
             base.Dispose(disposing);
@@ -737,44 +736,39 @@ namespace pylorak.Windows.WFP
 
         public static bool InterfaceAliasExists(string ifAlias)
         {
+            const int NO_ERROR = 0;
             const int ERROR_INVALID_PARAMETER = 87;
 
-            int err = NativeMethods.ConvertInterfaceAliasToLuid(ifAlias, out ulong luid);
-            if (err == 0)
-                return true;
-            if (err == ERROR_INVALID_PARAMETER)
-                return false;
-            else
-                throw new Win32Exception(err);
+            int err = NativeMethods.ConvertInterfaceAliasToLuid(ifAlias, out ulong _);
+            return err switch
+            {
+                NO_ERROR => true,
+                ERROR_INVALID_PARAMETER => false,
+                _ => throw new Win32Exception(err)
+            };
         }
 
-        private SafeHGlobalHandle nativeMem;
+        private readonly SafeHGlobalHandle NativeMem;
 
         public LocalInterfaceCondition(string ifAlias)
         {
-            nativeMem = SafeHGlobalHandle.Alloc(sizeof(ulong));
-
             int err = NativeMethods.ConvertInterfaceAliasToLuid(ifAlias, out ulong luid);
             if (0 != err)
                 throw new Win32Exception(err);
 
-            IntPtr ptrLuid = nativeMem.DangerousGetHandle();
-            unsafe
-            {
-                *(ulong*)ptrLuid = luid;
-            }
+            NativeMem = SafeHGlobalHandle.FromStruct(luid);
 
             _nativeStruct.matchType = FieldMatchType.FWP_MATCH_EQUAL;
             _nativeStruct.fieldKey = ConditionKeys.FWPM_CONDITION_IP_LOCAL_INTERFACE;
             _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_UINT64;
-            _nativeStruct.conditionValue.value.uint64 = ptrLuid;
+            _nativeStruct.conditionValue.value.uint64 = NativeMem.DangerousGetHandle();
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                nativeMem?.Dispose();
+                NativeMem.Dispose();
             }
 
             base.Dispose(disposing);

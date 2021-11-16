@@ -42,13 +42,13 @@ namespace TinyWall.Interface
         public static ExceptionSubject Construct(string arg1, string? arg2 = null)
         {
             if (string.IsNullOrEmpty(arg1))
-                throw new ArgumentException(nameof(arg1));
+                throw new ArgumentException($"Argument {nameof(arg1)} may not be null or empty.");
 
             // Try GlobalSubject
             if (arg1.Equals("*"))
             {
                 if (!string.IsNullOrEmpty(arg2))
-                    throw new ArgumentException(nameof(arg2));
+                    throw new ArgumentException($"Argument {nameof(arg2)} may not be null or empty if {nameof(arg1)} is a wildcard.");
                 return GlobalSubject.Instance;
             }
 
@@ -254,7 +254,7 @@ namespace TinyWall.Interface
             base(filePath)
         {
             if (string.IsNullOrEmpty(serviceName))
-                throw new ArgumentException(nameof(serviceName));
+                throw new ArgumentException($"Argument {nameof(serviceName)} may not be null or empty.");
 
             this.ServiceName = serviceName;
         }
