@@ -9,7 +9,7 @@ namespace TinyWall.Interface.Internal
 {
     public static class Utils
     {
-        private static readonly Random _rng = new Random();
+        private static readonly Random _rng = new();
 
         public static unsafe string Join(ReadOnlySpan<char> str0, ReadOnlySpan<char> str1, char separator)
         {
@@ -121,14 +121,14 @@ namespace TinyWall.Interface.Internal
 
         public static string HexEncode(byte[] binstr)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             foreach (byte oct in binstr)
                 sb.Append(oct.ToString(@"X2", CultureInfo.InvariantCulture));
 
             return sb.ToString();
         }
 
-        public static string GetReg64StrValue(RegistryHive hive, string key, string val)
+        public static string? GetReg64StrValue(RegistryHive hive, string key, string val)
         {
             using var baseKey = RegistryKey.OpenBaseKey(hive, RegistryView.Registry64);
             using var subKey = baseKey?.OpenSubKey(key, false);

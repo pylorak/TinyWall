@@ -4,8 +4,7 @@ namespace TinyWall.Interface.Internal
 {
     public sealed class Future<T> : Disposable where T : struct
     {
-        private bool disposed = false;
-        private ManualResetEvent Event = new ManualResetEvent(false);
+        private readonly ManualResetEvent Event = new(false);
         
         private T _Value;
 
@@ -30,7 +29,7 @@ namespace TinyWall.Interface.Internal
 
         protected override void Dispose(bool disposing)
         {
-            if (disposed)
+            if (IsDisposed)
                 return;
 
             if (disposing)
@@ -38,8 +37,6 @@ namespace TinyWall.Interface.Internal
                 Event.Close();
             }
 
-            Event = null;
-            disposed = true;
             base.Dispose(disposing);
         }
     }

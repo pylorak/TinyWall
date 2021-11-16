@@ -6,8 +6,6 @@ namespace TinyWall.Interface
 {
     public class AtomicFileUpdater : Disposable
     {
-        private bool disposed = false;
-
         public AtomicFileUpdater(string targetFile)
         {
             // File.Replace needs the target and temporary files to be on the same volume.
@@ -27,11 +25,11 @@ namespace TinyWall.Interface
 
         public void Commit()
         {
-            string tmp = RandomFileInSameDir(TargetFilePath);
+            string backup = RandomFileInSameDir(TargetFilePath);
             try
             {
                 if (File.Exists(TargetFilePath))
-                    File.Replace(TemporaryFilePath, TargetFilePath, tmp, true);
+                    File.Replace(TemporaryFilePath, TargetFilePath, backup, true);
                 else
                     File.Move(TemporaryFilePath, TargetFilePath);
             }
@@ -39,7 +37,7 @@ namespace TinyWall.Interface
             {
                 try
                 {
-                    File.Delete(tmp);
+                    File.Delete(backup);
                 }
                 catch { }
             }
@@ -47,7 +45,7 @@ namespace TinyWall.Interface
 
         protected override void Dispose(bool disposing)
         {
-            if (disposed)
+            if (IsDisposed)
                 return;
 
             if (disposing)
@@ -59,7 +57,6 @@ namespace TinyWall.Interface
                 catch { }
             }
 
-            disposed = true;
             base.Dispose(disposing);
         }
     }

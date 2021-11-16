@@ -4,14 +4,21 @@ namespace TinyWall.Interface.Internal
 {
     public abstract class Disposable : IDisposable
     {
+        public bool IsDisposed { get; private set; }
+
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
         {
+            IsDisposed = true;
+
+            // if (IsDisposed)
+            //  return;
+
             //if (disposing)
             //{
             // Release managed resources
@@ -24,10 +31,7 @@ namespace TinyWall.Interface.Internal
         }
 
         /* Only if owning unmanaged resources without SafeHandles
-        ~DerivedClass()
-        {
-            Dispose(false);
-        }
+        ~DerivedClass() => Dispose(false);
         */
     }
 }

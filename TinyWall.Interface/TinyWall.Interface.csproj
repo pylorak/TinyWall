@@ -3,6 +3,7 @@
     <TargetFramework>net48</TargetFramework>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>

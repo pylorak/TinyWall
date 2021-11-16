@@ -9,28 +9,28 @@ namespace TinyWall.Interface
         public static readonly string LOCALSUBNET_ID = "LocalSubnet";
 
         [DataMember]
-        public string Name;
+        public string? Name;
         [DataMember(EmitDefaultValue = false)]
         public Guid ExceptionId;
         [DataMember]
         public RuleAction Action;
 
         [DataMember(EmitDefaultValue = false)]
-        public string AppContainerSid;
+        public string? AppContainerSid;
         [DataMember(EmitDefaultValue = false)]
-        public string Application;
+        public string? Application;
         [DataMember(EmitDefaultValue = false)]
-        public string ServiceName;
+        public string? ServiceName;
         [DataMember(EmitDefaultValue = false)]
-        public string LocalPorts;
+        public string? LocalPorts;
         [DataMember(EmitDefaultValue = false)]
-        public string RemotePorts;
+        public string? RemotePorts;
         [DataMember(EmitDefaultValue = false)]
-        public string LocalAddresses;
+        public string? LocalAddresses;
         [DataMember(EmitDefaultValue = false)]
-        public string RemoteAddresses;
+        public string? RemoteAddresses;
         [DataMember(EmitDefaultValue = false)]
-        public string IcmpTypesAndCodes;
+        public string? IcmpTypesAndCodes;
 
         [DataMember]
         public Protocol Protocol;
@@ -40,12 +40,11 @@ namespace TinyWall.Interface
         public ulong Weight;
 
         public RuleDef()
-        {
-        }
+        { }
 
-        public RuleDef DeepCopy()
+        public RuleDef ShallowCopy()
         {
-            RuleDef copy = new RuleDef();
+            var copy = new RuleDef();
             copy.Name = this.Name;
             copy.ExceptionId = this.ExceptionId;
             copy.Action = this.Action;
@@ -84,7 +83,7 @@ namespace TinyWall.Interface
                         this.ServiceName = null;
                         this.AppContainerSid = uwp.Sid;
                         break;
-                    case GlobalSubject glob:
+                    case GlobalSubject _:
                         this.Application = null;
                         this.ServiceName = null;
                         this.AppContainerSid = null;

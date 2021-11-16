@@ -46,23 +46,22 @@ namespace TinyWall.Interface.Internal
 
         public static void SerializeToPipe<T>(PipeStream pipe, T obj)
         {
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                XmlWriterSettings settings = new XmlWriterSettings();
-                settings.CloseOutput = false;
-                settings.Indent = true;
-                settings.Encoding = Encoding.UTF8;
-                using (XmlWriter writer = XmlWriter.Create(memoryStream, settings))
-                {
-                    DataContractSerializer serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
-                    serializer.WriteObject(writer, obj);
-                }
+            using var memoryStream = new MemoryStream();
 
-                memoryStream.Position = 0;
-                var buf = memoryStream.ToArray();
-                pipe.Write(buf, 0, buf.Length);
-                pipe.Flush();
+            var settings = new XmlWriterSettings();
+            settings.CloseOutput = false;
+            settings.Indent = true;
+            settings.Encoding = Encoding.UTF8;
+            using (var writer = XmlWriter.Create(memoryStream, settings))
+            {
+                var serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
+                serializer.WriteObject(writer, obj);
             }
+
+            memoryStream.Position = 0;
+            var buf = memoryStream.ToArray();
+            pipe.Write(buf, 0, buf.Length);
+            pipe.Flush();
         }
 
         public static bool DeserializeFromPipe<T>(PipeStream pipe, int timeout_ms, ref T result)
@@ -105,11 +104,10 @@ namespace TinyWall.Interface.Internal
                 settings.IgnoreComments = true;
                 settings.IgnoreProcessingInstructions = true;
                 settings.IgnoreWhitespace = true;
-                using (var reader = XmlReader.Create(memoryStream, settings))
-                {
-                    DataContractSerializer serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
-                    result = (T)serializer.ReadObject(reader);
-                }
+
+                using var reader = XmlReader.Create(memoryStream, settings);
+                var serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
+                result = (T)serializer.ReadObject(reader);
             }
 
             return true;
@@ -118,73 +116,58 @@ namespace TinyWall.Interface.Internal
 
         public static void SerializeDC<T>(Stream stream, T obj)
         {
-            DataContractSerializer serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
-
-            XmlWriterSettings settings = new XmlWriterSettings();
+            var serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
+            var settings = new XmlWriterSettings();
             settings.CloseOutput = false;
             settings.Indent = true;
-            using (XmlWriter writer = XmlWriter.Create(stream, settings))
-            {
-                serializer.WriteObject(writer, obj);
-            }
+            using XmlWriter writer = XmlWriter.Create(stream, settings);
+            serializer.WriteObject(writer, obj);
         }
 
         public static T DeserializeDC<T>(Stream stream)
         {
-            DataContractSerializer serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
+            var serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
             return (T)serializer.ReadObject(stream);
         }
 
         public static T LoadFromEncryptedXMLFile<T>(string filepath, string key, string iv)
         {
             // Construct encryptor
-            using (AesCryptoServiceProvider symmetricKey = new AesCryptoServiceProvider())
-            {
-                symmetricKey.Mode = CipherMode.CBC;
-                symmetricKey.Key = Encoding.ASCII.GetBytes(key);
-                symmetricKey.IV = Encoding.ASCII.GetBytes(iv);
+            using var symmetricKey = new AesCryptoServiceProvider();
+            symmetricKey.Mode = CipherMode.CBC;
+            symmetricKey.Key = Encoding.ASCII.GetBytes(key);
+            symmetricKey.IV = Encoding.ASCII.GetBytes(iv);
 
-                // Decrypt
-                using (FileStream fs = new FileStream(filepath, FileMode.Open, FileAccess.Read))
-                using (CryptoStream cryptoStream = new CryptoStream(fs, symmetricKey.CreateDecryptor(), CryptoStreamMode.Read))
-                {
-                    return DeserializeDC<T>(cryptoStream);
-                }
-            }
+            // Decrypt
+            using var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read);
+            using var cryptoStream = new CryptoStream(fs, symmetricKey.CreateDecryptor(), CryptoStreamMode.Read);
+            return DeserializeDC<T>(cryptoStream);
         }
 
         public static void SaveToEncryptedXMLFile<T>(T obj, string filepath, string key, string iv)
         {
             // Construct encryptor
-            using (AesCryptoServiceProvider symmetricKey = new AesCryptoServiceProvider())
-            {
-                symmetricKey.Mode = CipherMode.CBC;
-                symmetricKey.Key = Encoding.ASCII.GetBytes(key);
-                symmetricKey.IV = Encoding.ASCII.GetBytes(iv);
+            using var symmetricKey = new AesCryptoServiceProvider();
+            symmetricKey.Mode = CipherMode.CBC;
+            symmetricKey.Key = Encoding.ASCII.GetBytes(key);
+            symmetricKey.IV = Encoding.ASCII.GetBytes(iv);
 
-                // Encrypt
-                using (FileStream fs = new FileStream(filepath, FileMode.Create, FileAccess.Write))
-                using (CryptoStream cryptoStream = new CryptoStream(fs, symmetricKey.CreateEncryptor(), CryptoStreamMode.Write))
-                {
-                    SerializeDC(cryptoStream, obj);
-                }
-            }
+            // Encrypt
+            using var fs = new FileStream(filepath, FileMode.Create, FileAccess.Write);
+            using var cryptoStream = new CryptoStream(fs, symmetricKey.CreateEncryptor(), CryptoStreamMode.Write);
+            SerializeDC(cryptoStream, obj);
         }
 
         public static T LoadFromXMLFile<T>(string filepath)
         {
-            using (FileStream stream = new FileStream(filepath, FileMode.Open, FileAccess.Read))
-            {
-                return DeserializeDC<T>(stream);
-            }
+            using var stream = new FileStream(filepath, FileMode.Open, FileAccess.Read);
+            return DeserializeDC<T>(stream);
         }
 
         public static void SaveToXMLFile<T>(T obj, string filepath)
         {
-            using (FileStream stream = new FileStream(filepath, FileMode.Create, FileAccess.Write))
-            {
-                SerializeDC(stream, obj);
-            }
+            using var stream = new FileStream(filepath, FileMode.Create, FileAccess.Write);
+            SerializeDC(stream, obj);
         }
 
     }

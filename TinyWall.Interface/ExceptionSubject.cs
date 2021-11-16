@@ -28,11 +28,10 @@ namespace TinyWall.Interface
             if (obj == null)
                 return false;
 
-            ExceptionSubject other = obj as ExceptionSubject;
-            if (other == null)
-                return false;
-            else
+            if (obj is ExceptionSubject other)
                 return Equals(other);
+            else
+                return false;
         }
 
         public override int GetHashCode()
@@ -40,16 +39,16 @@ namespace TinyWall.Interface
             throw new NotImplementedException();
         }
 
-        public static ExceptionSubject Construct(string arg1, string arg2 = null)
+        public static ExceptionSubject Construct(string arg1, string? arg2 = null)
         {
             if (string.IsNullOrEmpty(arg1))
-                throw new ArgumentNullException();
+                throw new ArgumentException(nameof(arg1));
 
             // Try GlobalSubject
             if (arg1.Equals("*"))
             {
                 if (!string.IsNullOrEmpty(arg2))
-                    throw new ArgumentException();
+                    throw new ArgumentException(nameof(arg2));
                 return GlobalSubject.Instance;
             }
 
@@ -60,7 +59,7 @@ namespace TinyWall.Interface
             }
 
             // Try ServiceSubject
-            return new ServiceSubject(arg1, arg2);
+            return new ServiceSubject(arg1, arg2!);
         }
     }
 
@@ -81,13 +80,10 @@ namespace TinyWall.Interface
 
         public override bool Equals(ExceptionSubject other)
         {
-            if (null == other)
+            if (other is null)
                 return false;
 
-            if (other.GetType() != this.GetType())
-                return false;
-
-            return true;
+            return (other is GlobalSubject);
         }
 
         public override int GetHashCode()
@@ -127,25 +123,24 @@ namespace TinyWall.Interface
             this.ExecutablePath = filePath;
         }
 
-        private string _HashSha1;
+        private string? _HashSha1;
         public string HashSha1
         {
             get
             {
-                if (string.IsNullOrEmpty(_HashSha1))
-                {
+                if (_HashSha1 is null)
                     _HashSha1 = Hasher.HashFileSha1(this.ExecutablePath);
-                }
+
                 return _HashSha1;
             }
         }
 
-        private string _CertSubject;
-        public string CertSubject
+        private string? _CertSubject;
+        public string? CertSubject
         {
             get
             {
-                if (string.IsNullOrEmpty(_CertSubject))
+                if (_CertSubject is null)
                 {
                     try
                     {
@@ -209,17 +204,13 @@ namespace TinyWall.Interface
 
         public override bool Equals(ExceptionSubject other)
         {
-            if (null == other)
+            if (other is null)
                 return false;
 
-            if (other.GetType() != this.GetType())
+            if (other is ExecutableSubject o)
+                return string.Equals(ExecutablePath, o.ExecutablePath, StringComparison.OrdinalIgnoreCase);
+            else
                 return false;
-
-            ExecutableSubject o = other as ExecutableSubject;
-            if (!string.Equals(ExecutablePath, o.ExecutablePath, StringComparison.OrdinalIgnoreCase))
-                return false;
-
-            return true;
         }
 
         public override int GetHashCode()
@@ -263,7 +254,7 @@ namespace TinyWall.Interface
             base(filePath)
         {
             if (string.IsNullOrEmpty(serviceName))
-                throw new ArgumentException();
+                throw new ArgumentException(nameof(serviceName));
 
             this.ServiceName = serviceName;
         }
@@ -275,16 +266,16 @@ namespace TinyWall.Interface
 
         public override bool Equals(ExceptionSubject other)
         {
+            if (other is null)
+                return false;
+
             if (!base.Equals(other))
                 return false;
 
-            ServiceSubject o = other as ServiceSubject;
-            if (!string.Equals(ServiceName, o.ServiceName, StringComparison.OrdinalIgnoreCase))
+            if (other is ServiceSubject o)
+                return string.Equals(ServiceName, o.ServiceName, StringComparison.OrdinalIgnoreCase);
+            else
                 return false;
-            if (!string.Equals(ExecutablePath, o.ExecutablePath, StringComparison.OrdinalIgnoreCase))
-                return false;
-
-            return true;
         }
 
         public override int GetHashCode()
@@ -345,17 +336,13 @@ namespace TinyWall.Interface
 
         public override bool Equals(ExceptionSubject other)
         {
-            if (null == other)
+            if (other is null)
                 return false;
 
-            if (other.GetType() != this.GetType())
+            if (other is AppContainerSubject o)
+                return string.Equals(Sid, o.Sid, StringComparison.OrdinalIgnoreCase);
+            else
                 return false;
-
-            AppContainerSubject o = other as AppContainerSubject;
-            if (!string.Equals(Sid, o.Sid, StringComparison.OrdinalIgnoreCase))
-                return false;
-
-            return true;
         }
 
         public override int GetHashCode()

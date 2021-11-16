@@ -17,11 +17,10 @@ namespace PKSoft
         private readonly string m_PipeName;
 
         private bool m_Run = true;
-        private bool disposed = false;
 
         protected override void Dispose(bool disposing)
         {
-            if (disposed)
+            if (IsDisposed)
                 return;
 
             m_Run = false;
@@ -41,7 +40,6 @@ namespace PKSoft
             // Release unmanaged resources.
             // Set large fields to null.
             // Call Dispose on your base class.
-            disposed = true;
             base.Dispose(disposing);
         }
 

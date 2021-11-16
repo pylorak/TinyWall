@@ -68,7 +68,7 @@ namespace TinyWall.Interface
                 const uint VER_PRODUCT_TYPE = 0x0000080;
                 const byte VER_EQUAL = 1;
 
-                OsVersionInfoEx osvi = new OsVersionInfoEx();
+                var osvi = new OsVersionInfoEx();
                 osvi.OSVersionInfoSize = (uint)Marshal.SizeOf(osvi);
                 osvi.ProductType = VER_NT_WORKSTATION;
                 ulong dwlConditionMask = VerSetConditionMask(0, VER_PRODUCT_TYPE, VER_EQUAL);
@@ -78,7 +78,7 @@ namespace TinyWall.Interface
 
         private static bool WinVerEqOrGr(int major, int minor)
         {
-            Version winVersion = new Version(major, minor, 0, 0);
+            var winVersion = new Version(major, minor, 0, 0);
             return (Environment.OSVersion.Platform == PlatformID.Win32NT)
                 && (Environment.OSVersion.Version >= winVersion);
         }
@@ -88,12 +88,14 @@ namespace TinyWall.Interface
             Version winver = Environment.OSVersion.Version;
             try
             {
-                string product = Utils.GetReg64StrValue(RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName");
-                string build = Utils.GetReg64StrValue(RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuild");
-                string releaseId = (winver.Major >= 10) ? Utils.GetReg64StrValue(RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId") : null;
+                string product = Utils.GetReg64StrValue(RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") ?? "Windows ??";
+                string build = Utils.GetReg64StrValue(RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuild") ?? "?????";
                 string bitness = Is64BitOs ? "64" : "32";
 
                 string ret = $"{product} {bitness}-bit {winver.Major}.{winver.Minor}.{build}";
+
+                // TODO: releaseId is unreliable, use CurrentBuild or otherwise DisplayVersion reg values
+                string? releaseId = (winver.Major >= 10) ? Utils.GetReg64StrValue(RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId") : null;
                 if (!string.IsNullOrEmpty(releaseId))
                     ret += $" (v{releaseId})";
 

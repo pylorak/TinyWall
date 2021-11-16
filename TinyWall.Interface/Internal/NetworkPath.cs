@@ -41,9 +41,6 @@ namespace TinyWall.Interface.Internal
 
         public static string GetUncPath(string localPath)
         {
-            // The return value.
-            string retVal = null;
-
             // The pointer in memory to the structure.
             IntPtr buffer = IntPtr.Zero;
 
@@ -72,16 +69,13 @@ namespace TinyWall.Interface.Internal
                 // Now get the string.  It's all in the same buffer, but
                 // the pointer is first, so offset the pointer by IntPtr.Size
                 // and pass to PtrToStringAnsi.
-                retVal = Marshal.PtrToStringUni(new IntPtr(buffer.ToInt64() + IntPtr.Size));
+                return Marshal.PtrToStringUni(new IntPtr(buffer.ToInt64() + IntPtr.Size));
             }
             finally
             {
                 // Release the buffer.
                 Marshal.FreeCoTaskMem(buffer);
             }
-
-            // That's all folks.
-            return retVal;
         }
 
         public static bool IsNetworkPath(string path)

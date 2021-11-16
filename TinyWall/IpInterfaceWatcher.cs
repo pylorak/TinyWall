@@ -132,10 +132,9 @@ namespace PKSoft
             ChangeEventMerger.Pulse();
         }
 
-        private bool disposed = false;
         protected override void Dispose(bool disposing)
         {
-            if (disposed)
+            if (IsDisposed)
                 return;
 
             if (disposing)
@@ -147,7 +146,6 @@ namespace PKSoft
                 ChangeEventMerger.Dispose();
             }
 
-            disposed = true;
             base.Dispose(disposing);
         }
     }

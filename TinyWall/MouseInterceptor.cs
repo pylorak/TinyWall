@@ -56,7 +56,6 @@ namespace PKSoft
         internal delegate void MouseHookLButtonDown(int x, int y);
         internal event MouseHookLButtonDown MouseLButtonDown;
 
-        private bool disposed = false;
         private NativeMethods.LowLevelMouseProc _proc;
         private static IntPtr _hookID = IntPtr.Zero;
 
@@ -83,15 +82,9 @@ namespace PKSoft
             return NativeMethods.CallNextHookEx(_hookID, nCode, wParam, lParam);
         }
 
-        ~MouseInterceptor() 
-        {
-            // Finalizer calls Dispose(false)
-            Dispose(false);
-        }
-
         protected override void Dispose(bool disposing)
         {
-            if (disposed)
+            if (IsDisposed)
                 return;
 
             if (disposing)
@@ -109,8 +102,9 @@ namespace PKSoft
                 _hookID = IntPtr.Zero;
             }
 
-            disposed = true;
             base.Dispose(disposing);
         }
+
+        ~MouseInterceptor() => Dispose(false);
     }
 }

@@ -104,7 +104,7 @@ namespace PKSoft
         public static Package[] GetList()
         {
             if (!PlatformSupport)
-                return new Package[0];
+                return Array.Empty<Package>();
 
             NativeMethods.GetUwpPackageListing(out Package[] packages, out _);
             return packages;

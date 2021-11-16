@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 
 namespace TinyWall.Interface
 {
+    // TODO: Get rid of PolicyType and use type patterns instead
     public enum PolicyType
     {
         Invalid,
@@ -32,28 +33,19 @@ namespace TinyWall.Interface
     {
         public static HardBlockPolicy Instance { get; } = new HardBlockPolicy();
 
-        public override PolicyType PolicyType
-        {
-            get
-            {
-                return PolicyType.HardBlock;
-            }
-        }
+        public override PolicyType PolicyType => PolicyType.HardBlock;
 
         public override bool MergeRulesTo(ref ExceptionPolicy other)
         {
-            switch(other.PolicyType)
+            other = other.PolicyType switch
             {
-                case PolicyType.RuleList:
-                case PolicyType.HardBlock:
-                case PolicyType.TcpUdpOnly:
-                case PolicyType.Unrestricted:
-                    other = HardBlockPolicy.Instance;
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
-
+                PolicyType.RuleList or 
+                    PolicyType.HardBlock or
+                    PolicyType.TcpUdpOnly or 
+                    PolicyType.Unrestricted => HardBlockPolicy.Instance,
+                PolicyType.Invalid => throw new InvalidOperationException(),
+                _ => throw new NotImplementedException(),
+            };
             return true;
         }
     }
@@ -63,13 +55,7 @@ namespace TinyWall.Interface
     [DataContract(Namespace = "TinyWall")]
     public class UnrestrictedPolicy : ExceptionPolicy
     {
-        public override PolicyType PolicyType
-        {
-            get
-            {
-                return PolicyType.Unrestricted;
-            }
-        }
+        public override PolicyType PolicyType => PolicyType.Unrestricted;
 
         [DataMember(EmitDefaultValue = false)]
         public bool LocalNetworkOnly { get; set; }
@@ -80,7 +66,7 @@ namespace TinyWall.Interface
             {
                 case PolicyType.Unrestricted:
                 {
-                    var other = target as UnrestrictedPolicy;
+                    var other = (UnrestrictedPolicy)target;
                     other.LocalNetworkOnly &= this.LocalNetworkOnly;
                     break;
                 }
@@ -93,7 +79,7 @@ namespace TinyWall.Interface
                     break;
                 case PolicyType.TcpUdpOnly:
                 {
-                    var other = target as TcpUdpPolicy;
+                    var other = (TcpUdpPolicy)target;
                     this.LocalNetworkOnly &= other.LocalNetworkOnly;
                     target = this;
                     break;
@@ -111,13 +97,7 @@ namespace TinyWall.Interface
     [DataContract(Namespace = "TinyWall")]
     public class TcpUdpPolicy : ExceptionPolicy
     {
-        public override PolicyType PolicyType
-        {
-            get
-            {
-                return PolicyType.TcpUdpOnly;
-            }
-        }
+        public override PolicyType PolicyType => PolicyType.TcpUdpOnly;
 
         public TcpUdpPolicy(bool unrestricted = false)
         {
@@ -134,16 +114,16 @@ namespace TinyWall.Interface
         public bool LocalNetworkOnly { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        public string AllowedRemoteTcpConnectPorts { get; set; }
+        public string? AllowedRemoteTcpConnectPorts { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        public string AllowedRemoteUdpConnectPorts { get; set; }
+        public string? AllowedRemoteUdpConnectPorts { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        public string AllowedLocalTcpListenerPorts { get; set; }
+        public string? AllowedLocalTcpListenerPorts { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        public string AllowedLocalUdpListenerPorts { get; set; }
+        public string? AllowedLocalUdpListenerPorts { get; set; }
 
         public override bool MergeRulesTo(ref ExceptionPolicy target)
         {
@@ -158,9 +138,9 @@ namespace TinyWall.Interface
                     // No change to target
                     break;
                 case PolicyType.TcpUdpOnly:
-                    return MergeRulesTo(target as TcpUdpPolicy);
+                    return MergeRulesTo((TcpUdpPolicy)target);
                 case PolicyType.Unrestricted:
-                    var other = target as UnrestrictedPolicy;
+                    var other = (UnrestrictedPolicy)target;
                     other.LocalNetworkOnly &= this.LocalNetworkOnly;
                     break;
                 default:
@@ -181,7 +161,7 @@ namespace TinyWall.Interface
             return true;
         }
 
-        private static string MergeStringList(string str1, string str2)
+        private static string? MergeStringList(string? str1, string? str2)
         {
             if (str1 == null)
                 return str2;
@@ -207,7 +187,7 @@ namespace TinyWall.Interface
                     return "*";
             }
 
-            List<string> mergedList = new List<string>();
+            var mergedList = new List<string>();
             mergedList.AddRange(list1);
             mergedList.AddRange(list2);
             mergedList.Sort();
@@ -221,16 +201,10 @@ namespace TinyWall.Interface
     [DataContract(Namespace = "TinyWall")]
     public class RuleListPolicy : ExceptionPolicy
     {
-        public override PolicyType PolicyType
-        {
-            get
-            {
-                return PolicyType.RuleList;
-            }
-        }
+        public override PolicyType PolicyType => PolicyType.RuleList;
 
         [DataMember(EmitDefaultValue = false)]
-        public List<RuleDef> Rules { get; set; }
+        public List<RuleDef> Rules { get; set; } = new List<RuleDef>();
 
         public override bool MergeRulesTo(ref ExceptionPolicy target)
         {
@@ -238,7 +212,7 @@ namespace TinyWall.Interface
             {
                 case PolicyType.RuleList:
                 {
-                    var other = target as RuleListPolicy;
+                    var other = (RuleListPolicy)target;
                     other.Rules.AddRange(this.Rules);
                     break;
                 }
@@ -249,7 +223,7 @@ namespace TinyWall.Interface
                     break;
                 case PolicyType.Unrestricted:
                 {
-                    var other = target as UnrestrictedPolicy;
+                    var other = (UnrestrictedPolicy)target;
                     other.LocalNetworkOnly = false;
                     break;
                 }

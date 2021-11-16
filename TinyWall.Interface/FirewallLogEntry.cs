@@ -78,7 +78,7 @@ namespace TinyWall.Interface
 
             // Return true if the fields match.
             return
-                (includeTimestamp ? Timestamp == obj.Timestamp : true) &&
+                (!includeTimestamp || (Timestamp == obj.Timestamp)) &&
                 (Event == obj.Event) &&
                 (ProcessId == obj.ProcessId) &&
                 (Protocol == obj.Protocol) &&

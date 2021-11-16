@@ -9,12 +9,10 @@ namespace PKSoft
 {
     class TrafficRateMonitor : TinyWall.Interface.Internal.Disposable
     {
-        private bool disposed;
-
         private readonly IntPtr hQuery;
         private readonly IntPtr hTxCounter;
         private readonly IntPtr hRxCounter;
-        private byte[] buffer = new byte[0];
+        private byte[] buffer = Array.Empty<byte>();
 
         public TrafficRateMonitor()
         {
@@ -73,7 +71,7 @@ namespace PKSoft
         
         protected override void Dispose(bool disposing)
         {
-            if (disposed)
+            if (IsDisposed)
                 return;
 
             if (disposing)
@@ -86,7 +84,6 @@ namespace PKSoft
             // Call Dispose on your base class.
             NativeMethods.PdhCloseQuery(hQuery);
             buffer = null;
-            disposed = true;
             base.Dispose(disposing);
         }
 

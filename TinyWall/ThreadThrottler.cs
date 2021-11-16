@@ -10,7 +10,6 @@ namespace PKSoft
         private readonly ThreadPriority OriginalPriority;
         private readonly ThreadPriority RequestedPriority;
         private int NumRequests = 0;
-        private bool disposed = false;
 
         public ThreadThrottler(Thread thread, ThreadPriority newPriority, bool autoRequest = false, bool synchronized = false)
         {
@@ -45,7 +44,7 @@ namespace PKSoft
 
         protected override void Dispose(bool disposing)
         {
-            if (disposed)
+            if (IsDisposed)
                 return;
 
             System.Diagnostics.Debug.Assert(NumRequests <= 1);
@@ -56,7 +55,6 @@ namespace PKSoft
                 catch { }
             }
 
-            disposed = true;
             base.Dispose(disposing);
         }
     }

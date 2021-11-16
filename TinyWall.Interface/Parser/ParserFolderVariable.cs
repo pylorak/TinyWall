@@ -13,24 +13,16 @@ namespace TinyWall.Interface.Parser
             try
             {
                 // Registry path
-                switch (str)
+                return str switch
                 {
-                    case "pf":
-                    case "pf64":
-                        return ProgramFilesx64();
-                    case "pf32":
-                        return ProgramFilesx86();
-                    case "sys32":
-                        return NativeSys32();
-                    case "twpath":
-                        return Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath);
-                    case "LocalAppData":
-                        return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                    case "windows":
-                        return Environment.GetEnvironmentVariable("windir");
-                    default:
-                        return str;
-                }
+                    "pf" or "pf64" => ProgramFilesx64(),
+                    "pf32" => ProgramFilesx86(),
+                    "sys32" => NativeSys32(),
+                    "twpath" => Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath),
+                    "LocalAppData" => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "windows" => Environment.GetEnvironmentVariable("windir"),
+                    _ => str,
+                };
             }
             catch
             {

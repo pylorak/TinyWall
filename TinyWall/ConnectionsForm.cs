@@ -104,7 +104,7 @@ namespace PKSoft
             }
 
             // Finished reading tables, continues with log processing
-            List<FirewallLogEntry> fwLog = GlobalInstances.Controller.EndReadFwLog(fwLogRequest);
+            List<FirewallLogEntry> fwLog = TinyWall.Interface.Controller.EndReadFwLog(fwLogRequest);
 
             // Show log entries if requested by user
             if (chkShowBlocked.Checked)

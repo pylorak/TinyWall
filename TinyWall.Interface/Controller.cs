@@ -6,8 +6,7 @@ namespace TinyWall.Interface
 {
     public sealed class Controller : Disposable
     {
-        private bool disposed = false;
-        private PipeClientEndpoint Endpoint;
+        private readonly PipeClientEndpoint Endpoint;
 
         public Controller(string serverEndpoint)
         {
@@ -16,7 +15,7 @@ namespace TinyWall.Interface
 
         protected override void Dispose(bool disposing)
         {
-            if (disposed)
+            if (IsDisposed)
                 return;
 
             if (disposing)
@@ -24,12 +23,10 @@ namespace TinyWall.Interface
                 Endpoint.Dispose();
             }
 
-            Endpoint = null;
-            disposed = true;
             base.Dispose(disposing);
         }
 
-        public MessageType GetServerConfig(out ServerConfiguration serverConfig, out ServerState serverState, ref Guid changeset)
+        public MessageType GetServerConfig(out ServerConfiguration? serverConfig, out ServerState? serverState, ref Guid clientChangeset)
         {
             // Detect if server settings have changed in comparison to ours and download
             // settings only if we need them. Settings are "version numbered" using the "changeset"
@@ -39,16 +36,13 @@ namespace TinyWall.Interface
             serverConfig = null;
             serverState = null;
 
-            Guid clientChangeset = changeset;
-            Guid serverChangeset = Guid.Empty;
-
             TwMessage resp = Endpoint.QueueMessageSimple(MessageType.GET_SETTINGS, clientChangeset);
             if (resp.Type == MessageType.RESPONSE_OK)
             {
-                serverChangeset = (Guid)resp.Arguments[0];
-                changeset = serverChangeset;
+                var serverChangeset = (Guid)resp.Arguments[0];
                 if (serverChangeset != clientChangeset)
                 {
+                    clientChangeset = serverChangeset;
                     serverConfig = (ServerConfiguration)resp.Arguments[1];
                     serverState = (ServerState)resp.Arguments[2];
                 }
@@ -57,18 +51,18 @@ namespace TinyWall.Interface
             return resp.Type;
         }
 
-        public MessageType SetServerConfig(ref ServerConfiguration serverConfig, ref Guid changeset, out ServerState serverState)
+        public MessageType SetServerConfig(ref ServerConfiguration serverConfig, ref Guid clientChangeset, out ServerState? serverState)
         {
-            serverState = null;
-
-            TwMessage resp = Endpoint.QueueMessageSimple(MessageType.PUT_SETTINGS, serverConfig, changeset);
+            TwMessage resp = Endpoint.QueueMessageSimple(MessageType.PUT_SETTINGS, serverConfig, clientChangeset);
 
             if ((resp.Arguments != null) && (resp.Arguments.Length > 0) && (resp.Arguments[0] is ServerConfiguration tmp))
             {
                 serverConfig = tmp;
-                changeset = (Guid)resp.Arguments[1];
+                clientChangeset = (Guid)resp.Arguments[1];
                 serverState = (ServerState)resp.Arguments[2];
             }
+            else
+                serverState = null;
 
             if ((serverState == null) && (resp.Type == MessageType.RESPONSE_OK))
                 resp.Type = MessageType.RESPONSE_ERROR;
@@ -81,7 +75,7 @@ namespace TinyWall.Interface
             return Endpoint.QueueMessage(new TwMessage(MessageType.READ_FW_LOG));
         }
 
-        public List<FirewallLogEntry> EndReadFwLog(Future<TwMessage> f)
+        public static List<FirewallLogEntry> EndReadFwLog(Future<TwMessage> f)
         {
             try
             {
@@ -138,7 +132,9 @@ namespace TinyWall.Interface
         {
             TwMessage resp = Endpoint.QueueMessageSimple(MessageType.GET_PROCESS_PATH, pid);
             if (resp.Type == MessageType.RESPONSE_OK)
-                return resp.Arguments[0] as string;
+            {
+                return (resp.Arguments[0] as string)!;
+            }
             else
                 return string.Empty;
         }

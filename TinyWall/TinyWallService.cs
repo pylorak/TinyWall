@@ -1046,7 +1046,7 @@ namespace PKSoft
                         RuleListPolicy pol = ex.Policy as RuleListPolicy;
                         foreach (var rule in pol.Rules)
                         {
-                            var ruleCopy = rule.DeepCopy();
+                            var ruleCopy = rule.ShallowCopy();
                             ruleCopy.SetSubject(ex.Subject);
                             ruleCopy.ExceptionId = ex.Id;
                             ruleCopy.Weight = (rule.Action == RuleAction.Allow) ? permitWeight : blockWeight;

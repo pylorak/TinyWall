@@ -8,35 +8,34 @@ namespace TinyWall.Interface.Parser
     {
         public static string ResolveString(string input)
         {
-            Stack<ParserVariable> stack = new Stack<ParserVariable>();
-            ParserVariable var = null;
+            var stack = new Stack<ParserVariable>();
 
             for (int i = 0; i < input.Length; ++i)
             {
                 if (ParserRegistryVariable.IsStartTag(input, i))
                 {
-                    var = new ParserRegistryVariable();
+                    var var = new ParserRegistryVariable();
                     var.Start = i;  // TODO: Make Start a ctor argument in all derived classes of ParserVariable
                     stack.Push(var);
                     i += var.GetOpeningTagLength() - 1;
                 }
                 else if (ParserNoTrailingSlashVariable.IsStartTag(input, i))
                 {
-                    var = new ParserNoTrailingSlashVariable();
+                    var var = new ParserNoTrailingSlashVariable();
                     var.Start = i;
                     stack.Push(var);
                     i += var.GetOpeningTagLength() - 1;
                 }
                 else if (ParserFolderVariable.IsStartTag(input, i))
                 {
-                    var = new ParserFolderVariable();
+                    var var = new ParserFolderVariable();
                     var.Start = i;
                     stack.Push(var);
                     i += var.GetOpeningTagLength() - 1;
                 }
                 else if (ParserParentVariable.IsStartTag(input, i))
                 {
-                    var = new ParserParentVariable();
+                    var var = new ParserParentVariable();
                     var.Start = i;
                     stack.Push(var);
                     i += var.GetOpeningTagLength() - 1;
@@ -46,7 +45,7 @@ namespace TinyWall.Interface.Parser
                     if (stack.Count < 1)
                         return input;
 
-                    var = stack.Pop();
+                    var var = stack.Pop();
                     int tagValueStart = var.Start + var.GetOpeningTagLength();
                     int tagValueEnd = i;
                     string varStr = input.Substring(tagValueStart, tagValueEnd - tagValueStart);

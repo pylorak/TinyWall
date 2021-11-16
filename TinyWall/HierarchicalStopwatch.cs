@@ -155,10 +155,9 @@ namespace PKSoft
             }
         }
 
-        private bool disposed;
         protected override void Dispose(bool disposing)
         {
-            if (disposed)
+            if (IsDisposed)
                 return;
 
             if (disposing)
@@ -184,7 +183,6 @@ namespace PKSoft
             // Set large fields to null.
             // Call Dispose on your base class.
 
-            disposed = true;
             base.Dispose(disposing);
         }
     }

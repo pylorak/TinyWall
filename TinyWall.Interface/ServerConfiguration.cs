@@ -32,7 +32,7 @@ namespace TinyWall.Interface
     public sealed class ServerProfileConfiguration
     {
         [DataMember(EmitDefaultValue = false)]
-        public string ProfileName { get; set; } = null;
+        public string ProfileName { get; set; } = string.Empty;
 
         [DataMember(EmitDefaultValue = false)]
         public List<string> SpecialExceptions { get; set; } = new List<string>();
@@ -67,7 +67,7 @@ namespace TinyWall.Interface
 
         public void AddExceptions(List<FirewallExceptionV3> newList)
         {
-            List<FirewallExceptionV3> oldList = new List<FirewallExceptionV3>(AppExceptions);
+            var oldList = new List<FirewallExceptionV3>(AppExceptions);
 
             foreach (var oldEx in oldList)
             {
@@ -116,13 +116,7 @@ namespace TinyWall.Interface
                         // an exception, in which case the newer (edited) version
                         // is added using the same ID as the unedited one.
 
-                        FirewallExceptionV3 older = app1;
-                        FirewallExceptionV3 newer = app2;
-                        if (app1.CreationDate > app2.CreationDate)
-                        {
-                            older = app2;
-                            newer = app1;
-                        }
+                        var older = app1.CreationDate > app2.CreationDate ? app2 : app1;
                         AppExceptions.Remove(older);
                     }
                     else if (app1.Subject.Equals(app2.Subject)
@@ -147,8 +141,6 @@ namespace TinyWall.Interface
     [DataContract(Namespace = "TinyWall")]
     public sealed class ServerConfiguration
     {
-        private const string APP_NAME = "TinyWall";
-
         public int ConfigVersion { get; set; } = 1;
 
         // Machine settings
@@ -168,18 +160,18 @@ namespace TinyWall.Interface
         public List<ServerProfileConfiguration> Profiles { get; set; } = new List<ServerProfileConfiguration>();
 
         [DataMember(EmitDefaultValue = false)]
-        private string ActiveProfileName = null;
+        private string ActiveProfileName = string.Empty;
 
         public void SetActiveProfile(string profileName)
         {
             if (string.IsNullOrEmpty(profileName))
-                throw new ArgumentException();
+                throw new ArgumentException($"Argument {nameof(profileName)} may not be null or empty.");
 
             ActiveProfileName = profileName;
             _ActiveProfile = null;
         }
         
-        private ServerProfileConfiguration _ActiveProfile = null;
+        private ServerProfileConfiguration? _ActiveProfile;
         public ServerProfileConfiguration ActiveProfile
         {
             get
@@ -187,22 +179,21 @@ namespace TinyWall.Interface
                 if (string.IsNullOrEmpty(ActiveProfileName))
                     throw new InvalidOperationException();
 
-                if (null == _ActiveProfile)
+                if (_ActiveProfile is null)
                 {
                     foreach (ServerProfileConfiguration profile in Profiles)
                     {
-                        if (profile.ProfileName.Equals(ActiveProfileName))
+                        if (profile.ProfileName.Equals(ActiveProfileName, StringComparison.InvariantCultureIgnoreCase))
                         {
                             _ActiveProfile = profile;
                             break;
                         }
                     }
 
-                    if (null == _ActiveProfile)
+                    if (_ActiveProfile is null)
                     {
-                        if (Profiles.Count == 0)
-                            Profiles.Add(new ServerProfileConfiguration(ActiveProfileName));
-                        _ActiveProfile = Profiles[0];
+                        _ActiveProfile = new ServerProfileConfiguration(ActiveProfileName);
+                        Profiles.Add(_ActiveProfile);
                     }
                 }
 
@@ -217,14 +208,9 @@ namespace TinyWall.Interface
         {
             string key = Internal.Hasher.HashString(ENC_SALT).Substring(0, 16);
 
-            using (AtomicFileUpdater fileUpdater = new AtomicFileUpdater(filePath))
-            {
-                lock (this)
-                {
-                    Internal.SerializationHelper.SaveToEncryptedXMLFile(this, fileUpdater.TemporaryFilePath, key, ENC_IV);
-                }
-                fileUpdater.Commit();
-            }
+            using var fileUpdater = new AtomicFileUpdater(filePath);
+            Internal.SerializationHelper.SaveToEncryptedXMLFile(this, fileUpdater.TemporaryFilePath, key, ENC_IV);
+            fileUpdater.Commit();
         }
 
         public static ServerConfiguration Load(string filePath)

@@ -7,15 +7,14 @@ namespace TinyWall.Interface.Internal
     public class PipeClientEndpoint : Disposable
     {
         private readonly Thread m_PipeWorkerThread;
-        private readonly BoundedMessageQueue m_Queue = new BoundedMessageQueue();
+        private readonly BoundedMessageQueue m_Queue;
         private readonly string m_PipeName;
 
         private bool m_Run = true;
-        private bool disposed = false;
 
         protected override void Dispose(bool disposing)
         {
-            if (disposed)
+            if (IsDisposed)
                 return;
 
             m_Run = false;
@@ -28,12 +27,12 @@ namespace TinyWall.Interface.Internal
                 m_Queue.Dispose();
             }
 
-            disposed = true;
             base.Dispose(disposing);
         }
 
         public PipeClientEndpoint(string clientPipeName)
         {
+            m_Queue = new BoundedMessageQueue();
             m_PipeName = clientPipeName;
             m_PipeWorkerThread = new Thread(new ThreadStart(PipeClientWorker));
             m_PipeWorkerThread.Name = "ClientPipeWorker";
@@ -54,7 +53,7 @@ namespace TinyWall.Interface.Internal
 
                 // In case of a communication error,
                 // retry a small number of times.
-                TwMessage response = new TwMessage();
+                var response = new TwMessage();
                 for (int i = 0; i < 2; ++i)
                 {
                     response = SenderProcessor(msg);
@@ -72,19 +71,17 @@ namespace TinyWall.Interface.Internal
         {
             try
             {
-                using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", m_PipeName, PipeDirection.InOut, PipeOptions.WriteThrough))
-                {
-                    pipeClient.Connect(1000);
-                    pipeClient.ReadMode = PipeTransmissionMode.Message;
+                using NamedPipeClientStream pipeClient = new(".", m_PipeName, PipeDirection.InOut, PipeOptions.WriteThrough);
+                pipeClient.Connect(1000);
+                pipeClient.ReadMode = PipeTransmissionMode.Message;
 
-                    // Send command
-                    SerializationHelper.SerializeToPipe(pipeClient, msg);
+                // Send command
+                SerializationHelper.SerializeToPipe(pipeClient, msg);
 
-                    // Get response
-                    TwMessage ret = new TwMessage(MessageType.COM_ERROR);
-                    SerializationHelper.DeserializeFromPipe<TwMessage>(pipeClient, 20000, ref ret);
-                    return ret;
-                }
+                // Get response
+                var ret = new TwMessage(MessageType.COM_ERROR);
+                SerializationHelper.DeserializeFromPipe<TwMessage>(pipeClient, 20000, ref ret);
+                return ret;
             }
             catch
             {
@@ -94,33 +91,27 @@ namespace TinyWall.Interface.Internal
 
         public Future<TwMessage> QueueMessage(TwMessage msg)
         {
-            Future<TwMessage> future = new Future<TwMessage>();
+            var future = new Future<TwMessage>();
             m_Queue.Enqueue(msg, future);
             return future;
         }
 
         public TwMessage QueueMessageSimple(MessageType cmd)
         {
-            using (Future<TwMessage> f = QueueMessage(new TwMessage(cmd)))
-            {
-                return f.Value;
-            }
+            using var f = QueueMessage(new TwMessage(cmd));
+            return f.Value;
         }
 
         public TwMessage QueueMessageSimple(MessageType cmd, object arg0)
         {
-            using (Future<TwMessage> f = QueueMessage(new TwMessage(cmd, arg0)))
-            {
-                return f.Value;
-            }
+            using var f = QueueMessage(new TwMessage(cmd, arg0));
+            return f.Value;
         }
 
         public TwMessage QueueMessageSimple(MessageType cmd, object arg0, object arg1)
         {
-            using (Future<TwMessage> f = QueueMessage(new TwMessage(cmd, arg0, arg1)))
-            {
-                return f.Value;
-            }
+            using var f = QueueMessage(new TwMessage(cmd, arg0, arg1));
+            return f.Value;
         }
     }
 }

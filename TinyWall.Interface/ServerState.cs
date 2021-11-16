@@ -9,13 +9,13 @@ namespace TinyWall.Interface
     public class UpdateModule
     {
         [DataMember]
-        public string Component;
+        public string? Component;
         [DataMember]
-        public string ComponentVersion;
+        public string? ComponentVersion;
         [DataMember]
-        public string DownloadHash;
+        public string? DownloadHash;
         [DataMember]
-        public string UpdateURL;
+        public string? UpdateURL;
     }
 
     [DataContract(Namespace = "TinyWall")]
@@ -24,15 +24,15 @@ namespace TinyWall.Interface
         [DataMember]
         public string MagicWord = "TinyWall Update Descriptor";
         [DataMember]
-        public UpdateModule[] Modules;
+        public UpdateModule[]? Modules;
     }
 
     public class ServerState
     {
         public bool HasPassword = false;
         public bool Locked = false;
-        public UpdateDescriptor Update = null;
+        public UpdateDescriptor? Update = null;
         public FirewallMode Mode = FirewallMode.Unknown;
-        public List<MessageType> ClientNotifs = new List<MessageType>();
+        public List<MessageType> ClientNotifs = new();
     }
 }

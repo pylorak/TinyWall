@@ -38,18 +38,14 @@ namespace TinyWall.Interface
         [DataMember(EmitDefaultValue = false)]
         public bool ChildProcessesInherit { get; set; }
 
-        public FirewallExceptionV3()
+        public FirewallExceptionV3(ExceptionSubject subject, ExceptionPolicy policy)
         {
             Timer = AppExceptionTimer.Permanent;
             CreationDate = DateTime.Now;
             RegenerateId();
-        }
 
-        public FirewallExceptionV3(ExceptionSubject subject, ExceptionPolicy policy) :
-            this()
-        {
-            this.Subject = subject;
-            this.Policy = policy;
+            Subject = subject;
+            Policy = policy;
         }
 
         public void RegenerateId()
