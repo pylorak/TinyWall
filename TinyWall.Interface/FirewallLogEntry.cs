@@ -24,29 +24,21 @@ namespace TinyWall.Interface
         InOut = In | Out
     }
 
-    public class FirewallLogEntry : IEquatable<FirewallLogEntry>
+    public sealed record FirewallLogEntry : IEquatable<FirewallLogEntry>
     {
         public DateTime Timestamp;
         public EventLogEvent Event;
         public uint ProcessId;
         public Protocol Protocol;
         public RuleDirection Direction;
-        public string LocalIp;
-        public string RemoteIp;
+        public string? LocalIp;
+        public string? RemoteIp;
         public int LocalPort;
         public int RemotePort;
-        public string AppPath;
-        public string PackageId;
+        public string? AppPath;
+        public string? PackageId;
 
-        public override bool Equals(object obj)
-        {
-            if (obj is FirewallLogEntry other)
-                return Equals(other, true);
-            else
-                return false;
-        }
-
-        public override int GetHashCode()
+        public int GetHashCode(bool includeTimestamp)
         {
             unchecked
             {
@@ -54,48 +46,54 @@ namespace TinyWall.Interface
                 const int FNV_PRIME = 16777619;
 
                 int hash = OFFSET_BASIS;
-                hash = (hash ^ Timestamp.GetHashCode()) * FNV_PRIME;
+                if (includeTimestamp)
+                    hash = (hash ^ Timestamp.GetHashCode()) * FNV_PRIME;
                 hash = (hash ^ Event.GetHashCode()) * FNV_PRIME;
                 hash = (hash ^ ProcessId.GetHashCode()) * FNV_PRIME;
                 hash = (hash ^ Protocol.GetHashCode()) * FNV_PRIME;
                 hash = (hash ^ Direction.GetHashCode()) * FNV_PRIME;
-                hash = (hash ^ LocalIp.GetHashCode()) * FNV_PRIME;
-                hash = (hash ^ RemoteIp.GetHashCode()) * FNV_PRIME;
+                if (LocalIp is not null)
+                    hash = (hash ^ LocalIp.GetHashCode()) * FNV_PRIME;
+                if (RemoteIp is not null)
+                    hash = (hash ^ RemoteIp.GetHashCode()) * FNV_PRIME;
                 hash = (hash ^ LocalPort.GetHashCode()) * FNV_PRIME;
                 hash = (hash ^ RemotePort.GetHashCode()) * FNV_PRIME;
-                hash = (hash ^ AppPath.GetHashCode()) * FNV_PRIME;
-                hash = (hash ^ PackageId.GetHashCode()) * FNV_PRIME;
+                if (AppPath is not null)
+                    hash = (hash ^ AppPath.GetHashCode()) * FNV_PRIME;
+                if (PackageId is not null)
+                    hash = (hash ^ PackageId.GetHashCode()) * FNV_PRIME;
 
                 return hash;
             }
         }
 
-        public bool Equals(FirewallLogEntry obj, bool timestampMustMatch)
+        public override int GetHashCode()
         {
-            if (null == obj) return false;
-
-            // Return true if the fields match.
-            bool eventMatch =
-                this.RemoteIp.Equals(obj.RemoteIp) &&
-                (this.RemotePort == obj.RemotePort) &&
-                (this.Event == obj.Event) &&
-                (this.ProcessId == obj.ProcessId) &&
-                (this.Protocol == obj.Protocol) &&
-                (this.Direction == obj.Direction) &&
-                this.LocalIp.Equals(obj.LocalIp) &&
-                this.AppPath.Equals(obj.AppPath) &&
-                this.AppPath.Equals(obj.PackageId) &&
-                (this.LocalPort == obj.LocalPort);
-
-            if (timestampMustMatch)
-                return this.Timestamp.Equals(obj.Timestamp) && eventMatch;
-            else
-                return eventMatch;
+            return GetHashCode(true);
         }
 
-        public bool Equals(FirewallLogEntry other)
+        public bool Equals(FirewallLogEntry? obj, bool includeTimestamp)
         {
-            return this.Equals(other, true);
+            if (obj is null) return false;
+
+            // Return true if the fields match.
+            return
+                (includeTimestamp ? Timestamp == obj.Timestamp : true) &&
+                (Event == obj.Event) &&
+                (ProcessId == obj.ProcessId) &&
+                (Protocol == obj.Protocol) &&
+                (Direction == obj.Direction) &&
+                string.Equals(LocalIp, obj.LocalIp) &&
+                string.Equals(RemoteIp, obj.RemoteIp) &&
+                (LocalPort == obj.LocalPort) &&
+                (RemotePort == obj.RemotePort) &&
+                string.Equals(AppPath, obj.AppPath) &&
+                string.Equals(PackageId, obj.PackageId);
+        }
+
+        public bool Equals(FirewallLogEntry? other)
+        {
+            return Equals(other, true);
         }
     }
 }
