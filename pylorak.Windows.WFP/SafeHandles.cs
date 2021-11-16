@@ -67,7 +67,7 @@ namespace pylorak.Windows.WFP
                 [In] IntPtr changeHandle);
         }
 
-        private FwpmEngineSafeHandle _safeEngineHandle;
+        private readonly FwpmEngineSafeHandle _safeEngineHandle;
 
         public FwpmFilterSubscriptionSafeHandle(IntPtr wrappedHndl, FwpmEngineSafeHandle engineHndl) : base(true)
         {
@@ -75,7 +75,7 @@ namespace pylorak.Windows.WFP
             engineHndl.DangerousAddRef(ref success);
             if (!success)
             {
-                NativeMethods.FwpmFilterUnsubscribeChanges0(engineHndl, wrappedHndl);
+                _ = NativeMethods.FwpmFilterUnsubscribeChanges0(engineHndl, wrappedHndl);
                 throw new Exception("Failed to add reference.");
             }
 
@@ -108,7 +108,7 @@ namespace pylorak.Windows.WFP
                 [In] IntPtr changeHandle);
         }
 
-        private FwpmEngineSafeHandle _safeEngineHandle;
+        private readonly FwpmEngineSafeHandle _safeEngineHandle;
 
         public FwpmNetEventSubscriptionSafeHandle(IntPtr wrappedHndl, FwpmEngineSafeHandle engineHndl) : base(true)
         {
@@ -116,7 +116,7 @@ namespace pylorak.Windows.WFP
             engineHndl.DangerousAddRef(ref success);
             if (!success)
             {
-                NativeMethods.FwpmNetEventUnsubscribe0(engineHndl, wrappedHndl);
+                _ = NativeMethods.FwpmNetEventUnsubscribe0(engineHndl, wrappedHndl);
                 throw new Exception("Failed to add reference.");
             }
 
@@ -149,7 +149,7 @@ namespace pylorak.Windows.WFP
                 [In] IntPtr enumHandle);
         }
 
-        private FwpmEngineSafeHandle _safeEngineHandle;
+        private readonly FwpmEngineSafeHandle _safeEngineHandle;
 
         public FwpmFilterEnumSafeHandle(IntPtr wrappedHndl, FwpmEngineSafeHandle engineHndl) : base(true)
         {
@@ -157,7 +157,7 @@ namespace pylorak.Windows.WFP
             engineHndl.DangerousAddRef(ref success);
             if (!success)
             {
-                NativeMethods.FwpmFilterDestroyEnumHandle0(engineHndl, wrappedHndl);
+                _ = NativeMethods.FwpmFilterDestroyEnumHandle0(engineHndl, wrappedHndl);
                 throw new Exception("Failed to add reference.");
             }
 
@@ -190,7 +190,7 @@ namespace pylorak.Windows.WFP
                 [In] IntPtr enumHandle);
         }
 
-        private FwpmEngineSafeHandle _safeEngineHandle;
+        private readonly FwpmEngineSafeHandle _safeEngineHandle;
 
         public FwpmProviderEnumSafeHandle(IntPtr wrappedHndl, FwpmEngineSafeHandle engineHndl) : base(true)
         {
@@ -198,7 +198,7 @@ namespace pylorak.Windows.WFP
             engineHndl.DangerousAddRef(ref success);
             if (!success)
             {
-                NativeMethods.FwpmProviderDestroyEnumHandle0(engineHndl, wrappedHndl);
+                _ = NativeMethods.FwpmProviderDestroyEnumHandle0(engineHndl, wrappedHndl);
                 throw new Exception("Failed to add reference.");
             }
 
@@ -231,7 +231,7 @@ namespace pylorak.Windows.WFP
                 [In] IntPtr enumHandle);
         }
 
-        private FwpmEngineSafeHandle _safeEngineHandle;
+        private readonly FwpmEngineSafeHandle _safeEngineHandle;
 
         public FwpmSessionEnumSafeHandle(IntPtr wrappedHndl, FwpmEngineSafeHandle engineHndl) : base(true)
         {
@@ -239,7 +239,7 @@ namespace pylorak.Windows.WFP
             engineHndl.DangerousAddRef(ref success);
             if (!success)
             {
-                NativeMethods.FwpmSessionDestroyEnumHandle0(engineHndl, wrappedHndl);
+                _ = NativeMethods.FwpmSessionDestroyEnumHandle0(engineHndl, wrappedHndl);
                 throw new Exception("Failed to add reference.");
             }
 
@@ -272,7 +272,7 @@ namespace pylorak.Windows.WFP
                 [In] IntPtr enumHandle);
         }
 
-        private FwpmEngineSafeHandle _safeEngineHandle;
+        private readonly FwpmEngineSafeHandle _safeEngineHandle;
 
         public FwpmSublayerEnumSafeHandle(IntPtr wrappedHndl, FwpmEngineSafeHandle engineHndl) : base(true)
         {
@@ -280,7 +280,7 @@ namespace pylorak.Windows.WFP
             engineHndl.DangerousAddRef(ref success);
             if (!success)
             {
-                NativeMethods.FwpmSubLayerDestroyEnumHandle0(engineHndl, wrappedHndl);
+                _ = NativeMethods.FwpmSubLayerDestroyEnumHandle0(engineHndl, wrappedHndl);
                 throw new Exception("Failed to add reference.");
             }
 
@@ -378,7 +378,7 @@ namespace pylorak.Windows.WFP
 
         public T ToStruct<T>() where T : unmanaged
         {
-            T ret = default(T);
+            T ret = default;
             var size = Marshal.SizeOf(typeof(T));
             unsafe
             {
