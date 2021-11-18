@@ -12,17 +12,15 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "MsiSetup", "MsiSetup\MsiSet
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Toaster", "Toaster\Toaster.csproj", "{1289F709-BC70-41F7-940C-FCACFA461F91}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyWall.Interface", "TinyWall.Interface\TinyWall.Interface.csproj", "{AC7BE8FE-87D6-44A6-9298-813534203590}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NativeHelper", "NativeHelper\NativeHelper.vcxproj", "{062004FD-090C-494D-AEEC-43B62A62C711}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pylorak.Windows.Services", "pylorak.Windows.Services\pylorak.Windows.Services.csproj", "{31FB6AFC-FFA6-4B38-A438-D066FA84E90F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pylorak.Windows.WFP", "pylorak.Windows.WFP\pylorak.Windows.WFP.csproj", "{D21201CE-6D78-4FBF-A5EF-7EF60ADEBEC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pylorak.Windows", "pylorak.Windows\pylorak.Windows.csproj", "{A2ED13D3-503F-4640-A7DE-75F7A6EAA566}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pylorak.Windows", "pylorak.Windows\pylorak.Windows.csproj", "{A2ED13D3-503F-4640-A7DE-75F7A6EAA566}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pylorak.Utilities", "pylorak.Utilities\pylorak.Utilities.csproj", "{88626D1E-88C0-493A-AF9F-7ADF9AFFC661}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pylorak.Utilities", "pylorak.Utilities\pylorak.Utilities.csproj", "{88626D1E-88C0-493A-AF9F-7ADF9AFFC661}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,18 +66,6 @@ Global
 		{1289F709-BC70-41F7-940C-FCACFA461F91}.Release|x64.Build.0 = Release|Any CPU
 		{1289F709-BC70-41F7-940C-FCACFA461F91}.Release|x86.ActiveCfg = Release|Any CPU
 		{1289F709-BC70-41F7-940C-FCACFA461F91}.Release|x86.Build.0 = Release|Any CPU
-		{AC7BE8FE-87D6-44A6-9298-813534203590}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC7BE8FE-87D6-44A6-9298-813534203590}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC7BE8FE-87D6-44A6-9298-813534203590}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{AC7BE8FE-87D6-44A6-9298-813534203590}.Debug|x64.Build.0 = Debug|Any CPU
-		{AC7BE8FE-87D6-44A6-9298-813534203590}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{AC7BE8FE-87D6-44A6-9298-813534203590}.Debug|x86.Build.0 = Debug|Any CPU
-		{AC7BE8FE-87D6-44A6-9298-813534203590}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC7BE8FE-87D6-44A6-9298-813534203590}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC7BE8FE-87D6-44A6-9298-813534203590}.Release|x64.ActiveCfg = Release|Any CPU
-		{AC7BE8FE-87D6-44A6-9298-813534203590}.Release|x64.Build.0 = Release|Any CPU
-		{AC7BE8FE-87D6-44A6-9298-813534203590}.Release|x86.ActiveCfg = Release|Any CPU
-		{AC7BE8FE-87D6-44A6-9298-813534203590}.Release|x86.Build.0 = Release|Any CPU
 		{062004FD-090C-494D-AEEC-43B62A62C711}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{062004FD-090C-494D-AEEC-43B62A62C711}.Debug|x64.ActiveCfg = Debug|x64
 		{062004FD-090C-494D-AEEC-43B62A62C711}.Debug|x64.Build.0 = Debug|x64

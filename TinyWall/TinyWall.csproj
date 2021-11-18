@@ -38,9 +38,6 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TinyWall.Interface\TinyWall.Interface.csproj" />
-  </ItemGroup>
-  <ItemGroup>
 
     <Compile Include="../pylorak.Utilities/*.cs" LinkBase="pylorak.Utilities" />
     <Compile Include="../pylorak.Windows/*.cs" LinkBase="pylorak.Windows" />

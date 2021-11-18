@@ -54,7 +54,6 @@
     <Feature Id="ProductFeature" Title="Complete" Description="The complete package." ConfigurableDirectory="INSTALLDIR" Level="1">
       <ComponentRef Id='MainExecutable' />
       <ComponentRef Id='MainExecutableConfig' />
-      <ComponentRef Id='InterfaceLib' />
       <ComponentRef Id='NativeHelper32Lib' />
       <ComponentRef Id='NativeHelper64Lib' />
       <ComponentRef Id='Toaster' />
@@ -145,9 +144,6 @@
           </Component>
           <Component Id="MainExecutableConfig" Guid="{81CD5E43-FAE3-4B3C-AA84-A7A0C660FDB4}" Win64="$(var.Win64)">
             <File Id="TinyWallCONFIG" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe.config" KeyPath="yes" />
-          </Component>
-          <Component Id="InterfaceLib" Guid="{D7FFC9A3-6934-40F1-82FC-E6D2EADDE00B}" Win64="$(var.Win64)">
-            <File Id="InterfaceDLL" Source="Sources\ProgramFiles\TinyWall\TinyWall.Interface.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
           </Component>
           <Component Id="NativeHelper32Lib" Guid="{5146CE20-A9FB-4EE4-8CEF-646B314B36EE}" Win64="$(var.Win64)">
             <File Id="NativeHelper32DLL" Source="Sources\ProgramFiles\TinyWall\NativeHelper32.dll" Vital="yes" KeyPath="yes" Checksum="yes" />
