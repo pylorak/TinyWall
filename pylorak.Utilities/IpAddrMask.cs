@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.NetworkInformation;
-using TinyWall.Interface.Internal;
 
-namespace PKSoft
+namespace pylorak.Utilities
 {
     public class IpAddrMask : IEquatable<IpAddrMask>
     {

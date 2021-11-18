@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace PKSoft
+namespace pylorak.Utilities
 {
     public class EventMerger : IDisposable
     {

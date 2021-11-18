@@ -14,7 +14,9 @@ namespace PKSoft
         [ThreadStatic] private static StreamWriter Logfile;
         [ThreadStatic] private static StringBuilder LogLines;
         [ThreadStatic] private static int IndentLevel;
+
         public static bool Enable { get; set; } = false;
+        public static string LogFileBase { get; set; }
 
         private bool SameLineResult = true;
         private bool HasSubTask = false;
@@ -124,8 +126,8 @@ namespace PKSoft
                 if (Logfile == null)
                 {
                     // Name of the current log file
-                    string logdir = Path.Combine(Utils.AppDataPath, "logs");
-                    string logfile = Path.Combine(logdir, $"timing {threadName}.log");
+                    var logdir = Path.GetDirectoryName(LogFileBase);
+                    var logfile = $"{LogFileBase} {threadName}.log";
 
                     if (!Directory.Exists(logdir))
                         Directory.CreateDirectory(logdir);

@@ -22,6 +22,12 @@
 /TinyWall.Interface/obj/
 /TinyWall.Interface/bin/
 
+/pylorak.Utilities/obj/
+/pylorak.Utilities/bin/
+
+/pylorak.Windows/obj/
+/pylorak.Windows/bin/
+
 /pylorak.Windows.Services/obj/
 /pylorak.Windows.Services/bin/
 

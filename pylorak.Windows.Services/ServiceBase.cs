@@ -4,10 +4,7 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 
-#if !NET35
-using System.Runtime.ExceptionServices;
-using System.Threading.Tasks;
-#endif
+using pylorak.Windows;
 
 namespace pylorak.Windows.Services
 {

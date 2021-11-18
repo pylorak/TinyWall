@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Text;
 using System.Security;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
-namespace pylorak.Windows.ObjectManager
+namespace pylorak.Windows
 {
     public sealed class SafeNtObjectHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
@@ -378,7 +377,7 @@ namespace pylorak.Windows.ObjectManager
             bool restart = true;
             R retVal = default;
 
-            using var buf = pylorak.Windows.Services.SafeHGlobalHandle.Alloc(bufLen);
+            using var buf = SafeHGlobalHandle.Alloc(bufLen);
 
             while (true)
             {

@@ -5,10 +5,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-using TinyWall.Interface;
 using System.ComponentModel;
 
-namespace PKSoft
+namespace pylorak.Windows
 {
     public readonly struct ProcessSnapshotEntry
     {
@@ -29,7 +28,7 @@ namespace PKSoft
     public static class ProcessManager
     {
         [SuppressUnmanagedCodeSecurity]
-        protected static class SafeNativeMethods
+        protected static class NativeMethods
         {
             [DllImport("kernel32", SetLastError = true)]
             internal static extern SafeObjectHandle OpenProcess(ProcessAccessFlags dwDesiredAccess, bool bInheritHandle, uint dwProcessId);
@@ -50,7 +49,7 @@ namespace PKSoft
             [DllImport("kernel32", SetLastError = true)]
             internal static extern bool Process32Next(SafeObjectHandle hSnapshot, [In, Out] ref PROCESSENTRY32 lppe);
 
-            [DllImport("user32.dll", SetLastError = true)]
+            [DllImport("user32", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool PostThreadMessage(int threadId, uint msg, UIntPtr wParam, IntPtr lParam);
 
@@ -73,6 +72,20 @@ namespace PKSoft
                 HeapSafeHandle TokenInformation,
                 int TokenInformationLength,
                 out int ReturnLength);
+
+            [DllImport("advapi32", CharSet = CharSet.Unicode, SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            private static extern bool ConvertSidToStringSid(IntPtr Sid, out AllocHLocalSafeHandle StringSid);
+
+            internal static string ConvertSidToStringSid(IntPtr pSid)
+            {
+                if (!ConvertSidToStringSid(pSid, out AllocHLocalSafeHandle ptrStrSid))
+                    return null;
+
+                string strSid = Marshal.PtrToStringUni(ptrStrSid.DangerousGetHandle());
+                ptrStrSid.Dispose();
+                return strSid;
+            }
         }
 
         protected enum TokenInformationClass
@@ -248,7 +261,7 @@ namespace PKSoft
 
         public static string GetProcessPath(uint processId, ref StringBuilder buffer)
         {
-            using (var hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
+            using (var hProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
             {
                 return GetProcessPath(hProcess, ref buffer);
             }
@@ -270,7 +283,7 @@ namespace PKSoft
             unsafe
             {
                 var stack_buffer = stackalloc char[STACK_BUFF_CHARS];
-                if (SafeNativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.NativeFormat, stack_buffer, ref numChars))
+                if (NativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.NativeFormat, stack_buffer, ref numChars))
                 {
                     if (numChars == 0)
                         return string.Empty;
@@ -293,7 +306,7 @@ namespace PKSoft
                     buffer.EnsureCapacity(MAX_PATH_BUFF_CHARS);
                 }
                 numChars = buffer.Capacity;
-                if (SafeNativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.NativeFormat, buffer, ref numChars))
+                if (NativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.NativeFormat, buffer, ref numChars))
                 {
                     if (numChars == 0)
                         return string.Empty;
@@ -307,7 +320,7 @@ namespace PKSoft
 
         public static bool GetParentProcess(uint processId, ref uint parentPid)
         {
-            using (var hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
+            using (var hProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
             {
                 if (hProcess.IsInvalid)
                     return false;
@@ -321,7 +334,7 @@ namespace PKSoft
                 else
                 {
                     PROCESS_BASIC_INFORMATION pbi = new PROCESS_BASIC_INFORMATION();
-                    int status = SafeNativeMethods.NtQueryInformationProcess(hProcess, 0, out pbi, Marshal.SizeOf(typeof(PROCESS_BASIC_INFORMATION)), out int returnLength);
+                    int status = NativeMethods.NtQueryInformationProcess(hProcess, 0, out pbi, Marshal.SizeOf(typeof(PROCESS_BASIC_INFORMATION)), out int returnLength);
                     if (status < 0)
                         throw new Exception($"NTSTATUS: {status}");
 
@@ -329,7 +342,7 @@ namespace PKSoft
 
                     // parentPid might have been reused and thus might not be the actual parent.
                     // Check process creation times to figure it out.
-                    using (var hParentProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, parentPid))
+                    using (var hParentProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, parentPid))
                     {
                         if (GetProcessCreationTime(hParentProcess, out long parentCreation) && GetProcessCreationTime(hProcess, out long childCreation))
                         {
@@ -343,7 +356,7 @@ namespace PKSoft
 
         private static bool GetProcessCreationTime(SafeObjectHandle hProcess, out long creationTime)
         {
-            return SafeNativeMethods.GetProcessTimes(hProcess, out creationTime, out _, out _, out _);
+            return NativeMethods.GetProcessTimes(hProcess, out creationTime, out _, out _, out _);
         }
 
         private static IEnumerable<PROCESSENTRY32> CreateToolhelp32Snapshot()
@@ -352,12 +365,12 @@ namespace PKSoft
 
             PROCESSENTRY32 pe32 = new PROCESSENTRY32 { };
             pe32.dwSize = (uint)Marshal.SizeOf(typeof(PROCESSENTRY32));
-            using (var hSnapshot = SafeNativeMethods.CreateToolhelp32Snapshot(SnapshotFlags.Process, 0))
+            using (var hSnapshot = NativeMethods.CreateToolhelp32Snapshot(SnapshotFlags.Process, 0))
             {
                 if (hSnapshot.IsInvalid)
                     throw new Win32Exception(Marshal.GetLastWin32Error());
 
-                if (!SafeNativeMethods.Process32First(hSnapshot, ref pe32))
+                if (!NativeMethods.Process32First(hSnapshot, ref pe32))
                 {
                     int errno = Marshal.GetLastWin32Error();
                     if (errno == ERROR_NO_MORE_FILES)
@@ -367,7 +380,7 @@ namespace PKSoft
                 do
                 {
                     yield return pe32;
-                } while (SafeNativeMethods.Process32Next(hSnapshot, ref pe32));
+                } while (NativeMethods.Process32Next(hSnapshot, ref pe32));
             }
         }
 
@@ -376,7 +389,7 @@ namespace PKSoft
             StringBuilder sbuilder = null;
             foreach (var p in CreateToolhelp32Snapshot())
             {
-                using (var hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, p.th32ProcessID))
+                using (var hProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, p.th32ProcessID))
                 {
                     GetProcessCreationTime(hProcess, out long creationTime);
                     yield return new ProcessSnapshotEntry(
@@ -394,7 +407,7 @@ namespace PKSoft
             foreach (ProcessThread thread in p.Threads)
             {
                 const uint WM_NULL = 0;
-                SafeNativeMethods.PostThreadMessage(thread.Id, WM_NULL, UIntPtr.Zero, IntPtr.Zero);
+                NativeMethods.PostThreadMessage(thread.Id, WM_NULL, UIntPtr.Zero, IntPtr.Zero);
             }
         }
 
@@ -405,7 +418,7 @@ namespace PKSoft
                 foreach (ProcessThread thread in p.Threads)
                 {
                     const uint WM_QUIT = 0x0012;
-                    SafeNativeMethods.PostThreadMessage(thread.Id, WM_QUIT, UIntPtr.Zero, IntPtr.Zero);
+                    NativeMethods.PostThreadMessage(thread.Id, WM_QUIT, UIntPtr.Zero, IntPtr.Zero);
                 }
             }
             else
@@ -424,9 +437,9 @@ namespace PKSoft
             if (!UwpPackage.PlatformSupport)
                 return null;
 
-            using (var hProcess = SafeNativeMethods.OpenProcess(ProcessAccessFlags.QueryInformation, false, pid))
+            using (var hProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryInformation, false, pid))
             {
-                if (!SafeNativeMethods.OpenProcessToken(hProcess, TokenAccessLevels.TokenQuery, out SafeObjectHandle token))
+                if (!NativeMethods.OpenProcessToken(hProcess, TokenAccessLevels.TokenQuery, out SafeObjectHandle token))
                     return null;
 
                 const int hTokenInfoMemSize = 128;
@@ -434,14 +447,14 @@ namespace PKSoft
                 using (var hToken = token)
                 using (var hTokenInfo = new HeapSafeHandle(hTokenInfoMemSize))
                 {
-                    if (!SafeNativeMethods.GetTokenInformation(hToken, TokenInformationClass.TokenAppContainerSid, hTokenInfo, hTokenInfoMemSize, out _))
+                    if (!NativeMethods.GetTokenInformation(hToken, TokenInformationClass.TokenAppContainerSid, hTokenInfo, hTokenInfoMemSize, out _))
                         return null;
 
                     var tokenAppContainerInfo = Marshal.PtrToStructure<TOKEN_APPCONTAINER_INFORMATION>(hTokenInfo.DangerousGetHandle());
                     if (tokenAppContainerInfo.TokenAppContainer == IntPtr.Zero)
                         return null;
 
-                    return Utils.ConvertSidToStringSid(tokenAppContainerInfo.TokenAppContainer);
+                    return NativeMethods.ConvertSidToStringSid(tokenAppContainerInfo.TokenAppContainer);
                 }
             }
         }

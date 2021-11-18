@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\pylorak.Windows\pylorak.Windows.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="System.ServiceProcess" />
   </ItemGroup>
 

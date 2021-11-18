@@ -5,7 +5,7 @@ using System.Diagnostics;
 using Microsoft.Win32;
 using TinyWall.Interface.Internal;
 
-namespace TinyWall.Interface
+namespace pylorak.Windows
 {
     public static class VersionInfo
     {
@@ -88,14 +88,14 @@ namespace TinyWall.Interface
             Version winver = Environment.OSVersion.Version;
             try
             {
-                string product = Utils.GetReg64StrValue(RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") ?? "Windows ??";
-                string build = Utils.GetReg64StrValue(RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuild") ?? "?????";
+                string product = RegistryHive.LocalMachine.GetReg64StrValue(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") ?? "Windows ??";
+                string build = RegistryHive.LocalMachine.GetReg64StrValue(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuild") ?? "?????";
                 string bitness = Is64BitOs ? "64" : "32";
 
                 string ret = $"{product} {bitness}-bit {winver.Major}.{winver.Minor}.{build}";
 
                 // TODO: releaseId is unreliable, use CurrentBuild or otherwise DisplayVersion reg values
-                string? releaseId = (winver.Major >= 10) ? Utils.GetReg64StrValue(RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId") : null;
+                string? releaseId = (winver.Major >= 10) ? RegistryHive.LocalMachine.GetReg64StrValue(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId") : null;
                 if (!string.IsNullOrEmpty(releaseId))
                     ret += $" (v{releaseId})";
 

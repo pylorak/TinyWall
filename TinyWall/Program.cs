@@ -76,6 +76,7 @@ namespace PKSoft
         static int Main(string[] args)
         {
             HierarchicalStopwatch.Enable = File.Exists(Path.Combine(Utils.AppDataPath, "enable-timings"));
+            HierarchicalStopwatch.LogFileBase = Path.Combine(Utils.AppDataPath, @"logs\timings");
 
             /*
             DatabaseClasses.Application app = TinyWall.Interface.Internal.SerializationHelper.LoadFromXMLFile<DatabaseClasses.Application>(@"C:\Users\Dev\ownCloud\TinyWall\TinyWall3\TinyWall\Database\Special\Special File and printer sharing.xml2");

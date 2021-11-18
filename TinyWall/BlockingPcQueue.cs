@@ -4,6 +4,7 @@ using System.Threading;
 
 namespace PKSoft
 {
+    // TODO: remove if not used
     public class BlockingPcQueue<T>
     {
         private readonly Queue<T> Q = new Queue<T>();

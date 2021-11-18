@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Security;
 using System.Runtime.InteropServices;
-using System.Linq;
 
-namespace PKSoft
+namespace pylorak.Windows
 {
     [Flags]
     public enum RegNotifyFilter

@@ -27,4 +27,8 @@
   <ItemGroup>
     <PackageReference Include="System.Memory" Version="4.5.4" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\pylorak.Utilities\pylorak.Utilities.csproj" />
+    <ProjectReference Include="..\pylorak.Windows\pylorak.Windows.csproj" />
+  </ItemGroup>
 </Project>

@@ -72,10 +72,6 @@ namespace PKSoft
                 int cchBuffer
             );
 
-            [DllImport("advapi32", CharSet = CharSet.Unicode, SetLastError = true)]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            internal static extern bool ConvertSidToStringSid(IntPtr Sid, out AllocHLocalSafeHandle StringSid);
-
             #region IsMetroActive
             [ComImport, Guid("2246EA2D-CAEA-4444-A3C4-6DE827E44313"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
             internal interface IAppVisibility
@@ -158,16 +154,6 @@ namespace PKSoft
         {
             const int SM_SHUTTINGDOWN = 0x2000;
             return 0 != SafeNativeMethods.GetSystemMetrics(SM_SHUTTINGDOWN);
-        }
-
-        internal static string ConvertSidToStringSid(IntPtr pSid)
-        {
-            if (!SafeNativeMethods.ConvertSidToStringSid(pSid, out AllocHLocalSafeHandle ptrStrSid))
-                return null;
-
-            string strSid = Marshal.PtrToStringUni(ptrStrSid.DangerousGetHandle());
-            ptrStrSid.Dispose();
-            return strSid;
         }
 
         internal static bool IsMetroActive(out bool success)

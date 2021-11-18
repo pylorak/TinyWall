@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Runtime.ConstrainedExecution;
 using System.Security;
-using Microsoft.Win32.SafeHandles;
-using TinyWall.Interface;
 
-namespace PKSoft
+namespace pylorak.Windows
 {
     public class UwpPackage
     {
@@ -24,11 +21,6 @@ namespace PKSoft
             public string PublisherId;
             public string Sid;
             public TamperedState Tampered;
-
-            public AppContainerSubject ToExceptionSubject()
-            {
-                return new AppContainerSubject(Sid, Name, Publisher, PublisherId);
-            }
 
             public override int GetHashCode()
             {
