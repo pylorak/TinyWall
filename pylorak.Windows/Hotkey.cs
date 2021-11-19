@@ -3,26 +3,26 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Windows.Forms;
-using TinyWall.Interface.Internal;
+using pylorak.Utilities;
 
 namespace PKSoft
 {
-    internal class Hotkey : Disposable, IMessageFilter
+    public class Hotkey : Disposable, IMessageFilter
 	{
         private static class NativeMethods
         {
-            internal const uint WM_HOTKEY = 0x312;
-            internal const uint MOD_ALT = 0x1;
-            internal const uint MOD_CONTROL = 0x2;
-            internal const uint MOD_SHIFT = 0x4;
-            internal const uint MOD_WIN = 0x8;
-            internal const uint ERROR_HOTKEY_ALREADY_REGISTERED = 1409;
+			public const uint WM_HOTKEY = 0x312;
+			public const uint MOD_ALT = 0x1;
+			public const uint MOD_CONTROL = 0x2;
+			public const uint MOD_SHIFT = 0x4;
+			public const uint MOD_WIN = 0x8;
+			public const uint ERROR_HOTKEY_ALREADY_REGISTERED = 1409;
 
             [DllImport("user32.dll", SetLastError = true)]
-            internal static extern int RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, System.Windows.Forms.Keys vk);
+			public static extern int RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, System.Windows.Forms.Keys vk);
 
             [DllImport("user32.dll", SetLastError = true)]
-            internal static extern int UnregisterHotKey(IntPtr hWnd, int id);
+			public static extern int UnregisterHotKey(IntPtr hWnd, int id);
         }
 
 		private static int currentID;
@@ -37,7 +37,7 @@ namespace PKSoft
 		private int id;
 		private bool registered;
 
-        internal event HandledEventHandler Pressed;
+        internal event HandledEventHandler? Pressed;
 
         internal Hotkey()
             : this(Keys.None, false, false, false, false)
@@ -91,7 +91,7 @@ namespace PKSoft
 
 			// Get an ID for the hotkey and increase current ID
 			this.id = Hotkey.currentID;
-			Hotkey.currentID = Hotkey.currentID + 1 % Hotkey.maximumID;
+			Hotkey.currentID = (Hotkey.currentID + 1) % Hotkey.maximumID;
 
 			// Translate modifier keys into unmanaged version
             uint modifiers = (this.Alt ? NativeMethods.MOD_ALT : 0) | (this.Control ? NativeMethods.MOD_CONTROL : 0) |
@@ -160,12 +160,11 @@ namespace PKSoft
 		private bool OnPressed()
 		{
 			// Fire the event if we can
-			HandledEventArgs handledEventArgs = new HandledEventArgs(false);
-			if (this.Pressed != null)
-			{ this.Pressed(this, handledEventArgs); }
+			var handledEventArgs = new HandledEventArgs(false);
+            this.Pressed?.Invoke(this, handledEventArgs);
 
-			// Return whether we handled the event or not
-			return handledEventArgs.Handled;
+            // Return whether we handled the event or not
+            return handledEventArgs.Handled;
 		}
 
         public override string ToString()

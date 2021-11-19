@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO;
-using TinyWall.Interface.Internal;
 
-namespace TinyWall.Interface
+namespace pylorak.Utilities
 {
-    public class AtomicFileUpdater : Disposable
+    public sealed class AtomicFileUpdater : Disposable
     {
         public AtomicFileUpdater(string targetFile)
         {

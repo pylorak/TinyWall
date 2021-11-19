@@ -8,11 +8,9 @@ namespace PKSoft
     // Implements the manual sorting of items by columns.
     internal class ListViewItemComparer : IComparer<ListViewItem>, IComparer
     {
-        private ImageList ImageList;
+        private readonly ImageList? ImageList;
 
-        internal ListViewItemComparer() { }
-
-        internal ListViewItemComparer(int column, ImageList imageList = null, bool ascending = true)
+        internal ListViewItemComparer(int column, ImageList? imageList = null, bool ascending = true)
         {
             Column = column;
             Ascending = ascending;
@@ -40,9 +38,10 @@ namespace PKSoft
 
         int IComparer.Compare(object x, object y)
         {
-            var lx = x as ListViewItem;
-            var ly = y as ListViewItem;
-            return Compare(lx, ly);
+            if ((x is ListViewItem lx) && (y is ListViewItem ly))
+                return Compare(lx, ly);
+            else
+                throw new ArgumentException($"Both arguments must by of type {nameof(ListViewItem)}.");
         }
 
         internal int Column { get; private set; } = 0;

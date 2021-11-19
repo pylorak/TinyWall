@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Security;
 using System.Runtime.InteropServices;
+using pylorak.Utilities;
 
 namespace pylorak.Windows
 {
@@ -15,7 +16,7 @@ namespace pylorak.Windows
         SecurityDescriptorChange = 0x8,
     }
 
-    public class RegistryWatcher : TinyWall.Interface.Internal.Disposable
+    public class RegistryWatcher : Disposable
     {
         private readonly bool WatchSubTree;
         private readonly RegNotifyFilter NotifyFilter;
@@ -24,12 +25,12 @@ namespace pylorak.Windows
         private readonly SafeRegistryHandle[] WatchedKeys;
         private readonly Thread WatcherThread;
 
-        public event EventHandler RegistryChanged;
+        public event EventHandler? RegistryChanged;
 
         private void WatcherProc()
         {
             for (int i = 0; i < WatchedKeys.Length; ++i)
-                NativeMethods.RegNotifyChangeKeyValue(WatchedKeys[i].DangerousGetHandle(), WatchSubTree, NotifyFilter, EventHandles[i].SafeWaitHandle.DangerousGetHandle(), true);
+                _ = NativeMethods.RegNotifyChangeKeyValue(WatchedKeys[i].DangerousGetHandle(), WatchSubTree, NotifyFilter, EventHandles[i].SafeWaitHandle.DangerousGetHandle(), true);
 
             while (true)
             {
@@ -42,14 +43,14 @@ namespace pylorak.Windows
                 }
                 else
                 {
-                    NativeMethods.RegNotifyChangeKeyValue(WatchedKeys[evIdx].DangerousGetHandle(), WatchSubTree, NotifyFilter, EventHandles[evIdx].SafeWaitHandle.DangerousGetHandle(), true);
+                    _ = NativeMethods.RegNotifyChangeKeyValue(WatchedKeys[evIdx].DangerousGetHandle(), WatchSubTree, NotifyFilter, EventHandles[evIdx].SafeWaitHandle.DangerousGetHandle(), true);
                     if (Enabled) 
                         RegistryChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
 
-        public RegistryWatcher(string key, bool watchSubTree, RegNotifyFilter notifyFilter = RegNotifyFilter.NameChange | RegNotifyFilter.ValueChange, object userCtx = null) :
+        public RegistryWatcher(string key, bool watchSubTree, RegNotifyFilter notifyFilter = RegNotifyFilter.NameChange | RegNotifyFilter.ValueChange) :
             this(new string[] { key }, watchSubTree, notifyFilter)
         { }
 
@@ -60,7 +61,7 @@ namespace pylorak.Windows
             StopEvent = new ManualResetEvent(false);
 
             // Find out how many keys we have, and at the same time try to open them
-            List<SafeRegistryHandle> tmpHandles = new List<SafeRegistryHandle>();
+            var tmpHandles = new List<SafeRegistryHandle>();
             foreach (var key in keys)
                 tmpHandles.Add(SafeRegistryHandle.Open(key, SafeRegistryHandle.RegistryRights.KEY_READ | SafeRegistryHandle.RegistryRights.KEY_WOW64_64KEY));
 

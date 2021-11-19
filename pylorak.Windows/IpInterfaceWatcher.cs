@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 using System.Runtime.ConstrainedExecution;
 using System.ComponentModel;
-using TinyWall.Interface.Internal;
 using pylorak.Utilities;
 
 namespace pylorak.Windows

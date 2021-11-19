@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.NetworkInformation;
 
-namespace PKSoft.netstat
+namespace pylorak.Windows.NetStat
 {
     internal class TcpRow
     {

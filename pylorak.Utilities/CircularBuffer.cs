@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace PKSoft
+namespace pylorak.Utilities
 {
-    [DebuggerTypeProxy(typeof(PKSoft.CircularBuffer<>.CircularBufferDebugView))]
+    [DebuggerTypeProxy(typeof(CircularBuffer<>.CircularBufferDebugView))]
     public sealed class CircularBuffer<T> : IEnumerable<T>, System.Collections.ICollection
     {
+        private readonly object _syncRoot = new();
         private readonly T[] _array;
         private int _size = 0;  // current # of elements
         private int _head = 0;  // first element
         private int _tail = 0;  // last element
-        private object _syncRoot = new object();
 
         public CircularBuffer(int capacity)
         {
@@ -33,11 +33,11 @@ namespace PKSoft
         public void CopyTo(Array array, int dstIndex)
         {
             if (array == null)
-                throw new ArgumentNullException("array", "Argument cannot be null.");
+                throw new ArgumentNullException(nameof(array), "Argument cannot be null.");
             if (array.Rank != 1)
                 throw new ArgumentException("Destination array must have a rank of 1.");
             if (dstIndex < 0)
-                throw new ArgumentOutOfRangeException("dstIndex", "Argument cannot be negative.");
+                throw new ArgumentOutOfRangeException(nameof(dstIndex), "Argument cannot be negative.");
 
             int arrayLen = array.Length;
             if (arrayLen - dstIndex < _size)
@@ -81,7 +81,7 @@ namespace PKSoft
                 throw new InvalidOperationException("The collection is already empty.");
 
             T ret = _array[_head];
-            _array[_head] = default(T);
+            _array[_head] = default;
             _head = (_head + 1) % _array.Length;
             _size--;
             return ret;
@@ -100,7 +100,7 @@ namespace PKSoft
             int index = _head;
             int count = _size;
 
-            if (obj.GetType().IsClass && (obj == null))
+            if (typeof(T).IsClass && (obj == null))
             {
                 while (count-- > 0)
                 {
@@ -114,7 +114,8 @@ namespace PKSoft
             {
                 while (count-- > 0)
                 {
-                    if (_array[index] != null && _array[index].Equals(obj))
+                    var item = _array[index];
+                    if ((item is not null) && item.Equals(obj))
                         return true;
 
                     index = (index + 1) % _array.Length;
@@ -129,7 +130,7 @@ namespace PKSoft
             get
             {
                 if (i >= _size)
-                    throw new ArgumentOutOfRangeException("Index cannot be greater than collection size.");
+                    throw new IndexOutOfRangeException();
 
                 return _array[(_head + i) % _array.Length];
             }
@@ -137,7 +138,7 @@ namespace PKSoft
             set
             {
                 if (i >= _size)
-                    throw new ArgumentOutOfRangeException("Index cannot be greater than collection size.");
+                    throw new IndexOutOfRangeException();
 
                 _array[(_head + i) % _array.Length] = value;
             }
@@ -177,14 +178,11 @@ namespace PKSoft
 
         internal class CircularBufferDebugView
         {
-            private CircularBuffer<T> buffer;
+            private readonly CircularBuffer<T> buffer;
 
             public CircularBufferDebugView(CircularBuffer<T> buffer)
             {
-                if (buffer == null)
-                    throw new ArgumentNullException("buffer");
-
-                this.buffer = buffer;
+                this.buffer = buffer ?? throw new ArgumentNullException(nameof(buffer));
             }
 
             public int Count

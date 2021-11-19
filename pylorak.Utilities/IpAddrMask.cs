@@ -5,7 +5,7 @@ using System.Net.NetworkInformation;
 
 namespace pylorak.Utilities
 {
-    public class IpAddrMask : IEquatable<IpAddrMask>
+    public sealed class IpAddrMask : IEquatable<IpAddrMask>
     {
         private static readonly byte[] MaskByteBitsLookup = new byte[]
         { 0x00, 0x80, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC, 0xFE, 0xFF };
@@ -115,7 +115,7 @@ namespace pylorak.Utilities
             if (Address.AddressFamily != host.AddressFamily)
                 throw new ArgumentException("Parameter must be of the same AddressFamily as this instance.");
 
-            IpAddrMask other = new IpAddrMask(host, this.PrefixLen);
+            var other = new IpAddrMask(host, this.PrefixLen);
             return this.Subnet.Equals(other.Subnet);
         }
 
@@ -194,11 +194,10 @@ namespace pylorak.Utilities
             if (obj == null)
                 return false;
 
-            IpAddrMask other = obj as IpAddrMask;
-            if (other == null)
-                return false;
-            else
+            if (obj is IpAddrMask other)
                 return Equals(other);
+            else
+                return false;
         }
 
         public override int GetHashCode()
@@ -216,7 +215,7 @@ namespace pylorak.Utilities
                 if (PrefixLen == 32)
                     return Address.ToString();
                 else
-                    return $"{Address.ToString()}/{PrefixLen}";
+                    return $"{Address}/{PrefixLen}";
             }
             else
             {

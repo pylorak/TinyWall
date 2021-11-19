@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Diagnostics;
 using Microsoft.Win32;
-using TinyWall.Interface.Internal;
 
 namespace pylorak.Windows
 {

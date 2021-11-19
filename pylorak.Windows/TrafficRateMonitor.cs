@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Security;
 using System.Runtime.InteropServices;
-using TinyWall.Interface;
+using pylorak.Utilities;
 
 namespace PKSoft
 {
-    class TrafficRateMonitor : TinyWall.Interface.Internal.Disposable
+    class TrafficRateMonitor : Disposable
     {
         private readonly IntPtr hQuery;
         private readonly IntPtr hTxCounter;
@@ -16,17 +14,19 @@ namespace PKSoft
 
         public TrafficRateMonitor()
         {
-            NativeMethods.PdhOpenQuery(null, IntPtr.Zero, out hQuery);
-            NativeMethods.PdhAddEnglishCounter(hQuery, "\\Network Interface(*)\\Bytes Sent/Sec", IntPtr.Zero, out hTxCounter);
-            NativeMethods.PdhAddEnglishCounter(hQuery, "\\Network Interface(*)\\Bytes Received/Sec", IntPtr.Zero, out hRxCounter);
-            NativeMethods.PdhCollectQueryData(hQuery);
+            _ = NativeMethods.PdhOpenQuery(null, IntPtr.Zero, out hQuery);
+            _ = NativeMethods.PdhAddEnglishCounter(hQuery, "\\Network Interface(*)\\Bytes Sent/Sec", IntPtr.Zero, out hTxCounter);
+            _ = NativeMethods.PdhAddEnglishCounter(hQuery, "\\Network Interface(*)\\Bytes Received/Sec", IntPtr.Zero, out hRxCounter);
+            _ = NativeMethods.PdhCollectQueryData(hQuery);
         }
+
         public void Update()
         {
-            NativeMethods.PdhCollectQueryData(hQuery);
+            _ = NativeMethods.PdhCollectQueryData(hQuery);
             BytesSentPerSec = ReadLongCounter(hTxCounter);
             BytesReceivedPerSec = ReadLongCounter(hRxCounter);
         }
+
         private long ReadLongCounter(IntPtr hCounter)
         {
             const int PDH_CSTATUS_VALID_DATA = 0;
@@ -36,7 +36,7 @@ namespace PKSoft
 
             int size = 0;
             int count = 0;
-            NativeMethods.PdhGetFormattedCounterArray(hCounter, PDH_FMT.LARGE | PDH_FMT.NOSCALE | PDH_FMT.NOCAP100, ref size, ref count, IntPtr.Zero);
+            _ = NativeMethods.PdhGetFormattedCounterArray(hCounter, PDH_FMT.LARGE | PDH_FMT.NOSCALE | PDH_FMT.NOCAP100, ref size, ref count, IntPtr.Zero);
 
             if (size > buffer.Length)
                 buffer = new byte[size];
@@ -45,7 +45,7 @@ namespace PKSoft
             {
                 fixed (byte* bufferPtr = buffer)
                 {
-                    NativeMethods.PdhGetFormattedCounterArray(hCounter, PDH_FMT.LARGE | PDH_FMT.NOSCALE | PDH_FMT.NOCAP100, ref size, ref count, (IntPtr)bufferPtr);
+                    _ = NativeMethods.PdhGetFormattedCounterArray(hCounter, PDH_FMT.LARGE | PDH_FMT.NOSCALE | PDH_FMT.NOCAP100, ref size, ref count, (IntPtr)bufferPtr);
 
                     int stride = (IntPtr.Size == 8) ? 24 : 16;
                     int statusOffset = IntPtr.Size;
@@ -79,11 +79,7 @@ namespace PKSoft
                 // Release managed resources
             }
 
-            // Release unmanaged resources.
-            // Set large fields to null.
-            // Call Dispose on your base class.
-            NativeMethods.PdhCloseQuery(hQuery);
-            buffer = null;
+            _ = NativeMethods.PdhCloseQuery(hQuery);
             base.Dispose(disposing);
         }
 
@@ -134,19 +130,19 @@ namespace PKSoft
         private static class NativeMethods
         {
             [DllImport("pdh", CharSet = CharSet.Unicode)]
-            internal static extern int PdhOpenQuery(string szDataSource, IntPtr dwUserData, [Out] out IntPtr phQuery);
+            public static extern int PdhOpenQuery(string? szDataSource, IntPtr dwUserData, [Out] out IntPtr phQuery);
 
             [DllImport("pdh", CharSet = CharSet.Unicode)]
-            internal static extern int PdhAddEnglishCounter(IntPtr hQuery, string szFullCounterPath, IntPtr dwUserData, [Out] out IntPtr phCounter);
+            public static extern int PdhAddEnglishCounter(IntPtr hQuery, string szFullCounterPath, IntPtr dwUserData, [Out] out IntPtr phCounter);
 
             [DllImport("pdh", CharSet = CharSet.Unicode)]
-            internal static extern int PdhCollectQueryData(IntPtr hQuery);
+            public static extern int PdhCollectQueryData(IntPtr hQuery);
 
             [DllImport("pdh", CharSet = CharSet.Unicode)]
-            internal static extern int PdhGetFormattedCounterArray(IntPtr hCounter, PDH_FMT dwFormat, ref int lpdwBufferSize, ref int lpdwItemCount, IntPtr ItemBuffer);
+            public static extern int PdhGetFormattedCounterArray(IntPtr hCounter, PDH_FMT dwFormat, ref int lpdwBufferSize, ref int lpdwItemCount, IntPtr ItemBuffer);
 
             [DllImport("pdh", CharSet = CharSet.Unicode)]
-            internal static extern int PdhCloseQuery(IntPtr hQuery);
+            public static extern int PdhCloseQuery(IntPtr hQuery);
         }
     }
 }

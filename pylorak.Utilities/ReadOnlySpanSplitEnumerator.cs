@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PKSoft
+namespace pylorak.Utilities
 {
     [Flags]
     public enum SpanSplitOptions
@@ -17,7 +12,7 @@ namespace PKSoft
     public static class ReadOnlySpanExtension
     {
         public static ReadOnlySpanSplitEnumerator<T> Split<T>(this ReadOnlySpan<T> span, T separator, SpanSplitOptions options = SpanSplitOptions.None) where T : IEquatable<T>
-            => new ReadOnlySpanSplitEnumerator<T>(span, separator, options);
+            => new(span, separator, options);
     }
 
     public ref struct ReadOnlySpanSplitEnumerator<T> where T : IEquatable<T>

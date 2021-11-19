@@ -1,5 +1,5 @@
 ﻿
-namespace PKSoft.netstat
+namespace pylorak.Windows.NetStat
 {
     internal enum IPVersion
     {

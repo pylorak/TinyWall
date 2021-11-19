@@ -2,7 +2,7 @@
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 
-namespace PKSoft.netstat
+namespace pylorak.Windows.NetStat
 {
     internal static class SafeNativeMethods
     {

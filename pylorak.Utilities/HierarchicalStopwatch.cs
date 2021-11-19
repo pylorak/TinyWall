@@ -1,22 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Threading;
 
-namespace PKSoft
+namespace pylorak.Utilities
 {
-    class HierarchicalStopwatch : TinyWall.Interface.Internal.Disposable
+    public sealed class HierarchicalStopwatch : Disposable
     {
-        [ThreadStatic] private static Stack<HierarchicalStopwatch> Hierarchy;
-        [ThreadStatic] private static Stopwatch Timer;
-        [ThreadStatic] private static StreamWriter Logfile;
-        [ThreadStatic] private static StringBuilder LogLines;
+        [ThreadStatic] private static Stack<HierarchicalStopwatch>? Hierarchy;
+        [ThreadStatic] private static Stopwatch? Timer;
+        [ThreadStatic] private static StreamWriter? Logfile;
+        [ThreadStatic] private static StringBuilder? LogLines;
         [ThreadStatic] private static int IndentLevel;
 
         public static bool Enable { get; set; } = false;
-        public static string LogFileBase { get; set; }
+
+        [DisallowNull]
+        public static string? LogFileBase { get; set; }
 
         private bool SameLineResult = true;
         private bool HasSubTask = false;
@@ -48,20 +51,20 @@ namespace PKSoft
             Hierarchy.Push(this);
 
             NewLogLine(IndentLevel, "{0}:", taskName);
-            StartTicksTask = Timer.ElapsedTicks;
+            StartTicksTask = Timer!.ElapsedTicks;
         }
 
         private void NewLogLine(int indent, string format, params object[] args)
         {
             for (int i = 0; i < indent; ++i)
-                LogLines.Append("    ");
+                LogLines!.Append("    ");
 
-            LogLines.AppendFormat(format, args);
+            LogLines!.AppendFormat(format, args);
         }
 
         private void EndSubTask()
         {
-            long totalTicks = Timer.ElapsedTicks;
+            long totalTicks = Timer!.ElapsedTicks;
             long elapsedTimeMs = 1000 * (totalTicks - StartTicksSubTask) / Stopwatch.Frequency;
             if (elapsedTimeMs == 0)
                 elapsedTimeMs = 1;
@@ -77,7 +80,7 @@ namespace PKSoft
 
         private void EndTask()
         {
-            long totalTicks = Timer.ElapsedTicks;
+            long totalTicks = Timer!.ElapsedTicks;
             long elapsedTimeMs = 1000 * (totalTicks - StartTicksTask) / Stopwatch.Frequency;
             if (elapsedTimeMs == 0)
                 elapsedTimeMs = 1;
@@ -106,7 +109,7 @@ namespace PKSoft
             ++IndentLevel;
 
             NewLogLine(IndentLevel, "{0}:", taskName);
-            StartTicksSubTask = Timer.ElapsedTicks;
+            StartTicksSubTask = Timer!.ElapsedTicks;
         }
 
         public static void FlushResults()
@@ -135,11 +138,11 @@ namespace PKSoft
                     // Only log if log file has not yet reached a certain size
                     if (File.Exists(logfile))
                     {
-                        FileInfo fi = new FileInfo(logfile);
+                        var fi = new FileInfo(logfile);
                         if (fi.Length > 512 * 1024)
                         {
                             // Truncate file back to zero
-                            using (var fs = new FileStream(logfile, FileMode.Truncate, FileAccess.Write)) { }
+                            using var fs = new FileStream(logfile, FileMode.Truncate, FileAccess.Write);
                         }
                     }
 
@@ -147,7 +150,7 @@ namespace PKSoft
                 }
 
                 // Do the logging
-                Logfile.Write(LogLines.ToString());
+                Logfile.Write(LogLines!.ToString());
                 Logfile.Flush();
                 LogLines.Length = 0;
             }
@@ -172,7 +175,7 @@ namespace PKSoft
                         EndSubTask();
                     EndTask();
 
-                    Hierarchy.Pop();
+                    Hierarchy!.Pop();
                     if (Hierarchy.Count == 0)
                     {
                         Logfile?.Dispose();

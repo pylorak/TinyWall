@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Security;
 using System.Runtime.InteropServices;
+using pylorak.Utilities;
 
-namespace TinyWall.Interface.Internal
+namespace pylorak.Windows
 {
     public static class WinTrust
     {

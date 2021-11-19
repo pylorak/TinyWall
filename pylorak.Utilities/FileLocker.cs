@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace PKSoft
+namespace pylorak.Utilities
 {
-    internal static class FileLocker
+    public sealed class FileLocker : Disposable
     {
-        private static readonly Dictionary<string, FileStream> LockedFiles = new Dictionary<string, FileStream>();
+        private readonly Dictionary<string, FileStream> LockedFiles = new();
 
-        internal static bool LockFile(string filePath, FileAccess localAccess, FileShare shareMode)
+        public bool Lock(string filePath, FileAccess localAccess, FileShare shareMode)
         {
             if (IsLocked(filePath))
                 return false;
@@ -23,17 +23,17 @@ namespace PKSoft
             }
         }
 
-        internal static FileStream GetStream(string filePath)
+        public FileStream GetStream(string filePath)
         {
             return LockedFiles[filePath];
         }
 
-        internal static bool IsLocked(string filePath)
+        public bool IsLocked(string filePath)
         {
             return LockedFiles.ContainsKey(filePath);
         }
 
-        internal static bool UnlockFile(string filePath)
+        public bool Unlock(string filePath)
         {
             if (!IsLocked(filePath))
                 return false;
@@ -50,17 +50,25 @@ namespace PKSoft
             }
         }
 
-        internal static void UnlockAll()
+        public void UnlockAll()
         {
-            // We cannot remove items from a dictionary while we are iterating over it.
-            // So we iterate over a copy, and modify the original.
+            foreach (var stream in LockedFiles.Values)
+            {
+                try { stream.Close(); } catch { }
+            }
 
-            Dictionary<string, FileStream> listCopy = new Dictionary<string, FileStream>();
-            foreach (var elem in LockedFiles)
-                listCopy.Add(elem.Key, elem.Value);
+            LockedFiles.Clear();
+        }
 
-            foreach (string filePath in listCopy.Keys)
-                UnlockFile(filePath);
+        protected override void Dispose(bool disposing)
+        {
+            if (IsDisposed)
+                return;
+
+            if (disposing)
+                UnlockAll();
+
+            base.Dispose(disposing);
         }
     }
 }

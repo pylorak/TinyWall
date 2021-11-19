@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading;
-using TinyWall.Interface.Internal;
 
-namespace PKSoft
+namespace pylorak.Utilities
 {
     public sealed class ThreadThrottler : Disposable
     {
@@ -10,21 +9,17 @@ namespace PKSoft
         private readonly ThreadPriority OriginalPriority;
         private readonly ThreadPriority RequestedPriority;
         private int NumRequests = 0;
+        public object SynchRoot { get; } = new();
 
-        public ThreadThrottler(Thread thread, ThreadPriority newPriority, bool autoRequest = false, bool synchronized = false)
+        public ThreadThrottler(Thread thread, ThreadPriority newPriority, bool autoRequest = false)
         {
             ThreadRef = thread;
             OriginalPriority = thread.Priority;
             RequestedPriority = newPriority;
 
-            if (synchronized)
-                SynchRoot = new object();
-
             if (autoRequest)
                 Request();
         }
-
-        public object SynchRoot { get; }
 
         public void Request()
         {
@@ -51,8 +46,7 @@ namespace PKSoft
 
             if (disposing)
             {
-                try { ThreadRef.Priority = OriginalPriority; }
-                catch { }
+                try { ThreadRef.Priority = OriginalPriority; } catch { }
             }
 
             base.Dispose(disposing);

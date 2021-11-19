@@ -3,15 +3,14 @@ using System.Threading;
 
 namespace pylorak.Utilities
 {
-    public class EventMerger : IDisposable
+    public sealed class EventMerger : Disposable
     {
         private readonly int MaxEventLatencyMs;
         private readonly Timer DelayTimer;
-        private readonly object Locker = new object();
+        private readonly object Locker = new();
 
-        public event EventHandler Event;
+        public event EventHandler? Event;
         private bool TimerActive;
-        private bool Disposed;
 
         public EventMerger(int maxLatencyMs)
         {
@@ -21,7 +20,7 @@ namespace pylorak.Utilities
 
         public void Pulse()
         {
-            if (Disposed)
+            if (IsDisposed)
                 throw new ObjectDisposedException(GetType().FullName);
 
             lock (Locker)
@@ -44,28 +43,21 @@ namespace pylorak.Utilities
             ThreadPool.QueueUserWorkItem(o => Event?.Invoke(this, EventArgs.Empty));        
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
-            if (!Disposed)
-            {
-                Disposed = true;
-                if (disposing)
-                {
-                    DelayTimer.Change(Timeout.Infinite, Timeout.Infinite);
-                    using (var wh = new ManualResetEvent(false))
-                    {
-                        DelayTimer.Dispose(wh);
-                        wh.WaitOne();
-                    }
-                }
-            }
-        }
+            if (IsDisposed)
+                return;
 
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            if (disposing)
+            {
+                DelayTimer.Change(Timeout.Infinite, Timeout.Infinite);
+
+                using var wh = new ManualResetEvent(false);
+                DelayTimer.Dispose(wh);
+                wh.WaitOne();
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

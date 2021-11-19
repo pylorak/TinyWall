@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace PKSoft.netstat
+namespace pylorak.Windows.NetStat
 {
     internal class TcpTable : IEnumerable<TcpRow>
     {

@@ -1,20 +1,19 @@
 ﻿using System.Threading;
-using TinyWall.Interface.Internal;
 
-namespace PKSoft
+namespace pylorak.Utilities
 {
-    internal class ThreadBarrier : Disposable
+    public sealed class ThreadBarrier : Disposable
     {
         private readonly ManualResetEvent BarrierEvent;
         private int Count;
 
-        internal ThreadBarrier(int count)
+        public ThreadBarrier(int count)
         {
             BarrierEvent = new ManualResetEvent(false);
             Count = count;
         }
 
-        internal void Wait()
+        public void Wait()
         {
             Interlocked.Decrement(ref Count);
             if (Count > 0)
@@ -30,14 +29,8 @@ namespace PKSoft
 
             if (disposing)
             {
-                // Release managed resources
-
                 BarrierEvent.Close();
             }
-
-            // Release unmanaged resources.
-            // Set large fields to null.
-            // Call Dispose on your base class.
 
             base.Dispose(disposing);
         }

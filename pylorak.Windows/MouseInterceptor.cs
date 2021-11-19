@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using TinyWall.Interface.Internal;
+using pylorak.Utilities;
 
 namespace PKSoft
 {
-    internal class MouseInterceptor : Disposable
+    public class MouseInterceptor : Disposable
     {
         private static class NativeMethods
         {
-            internal const int WH_MOUSE_LL = 14;
-            internal delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
+            public const int WH_MOUSE_LL = 14;
+            public delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
 
-            internal enum MouseMessages
+            public enum MouseMessages
             {
                 WM_LBUTTONDOWN = 0x0201,
                 WM_LBUTTONUP = 0x0202,
@@ -23,51 +23,49 @@ namespace PKSoft
             }
 
             [StructLayout(LayoutKind.Sequential)]
-            internal struct POINT
+            public struct POINT
             {
                 internal int x;
                 internal int y;
             }
 
             [StructLayout(LayoutKind.Sequential)]
-            internal struct MSLLHOOKSTRUCT
+            public struct MSLLHOOKSTRUCT
             {
-                internal POINT pt;
-                internal uint mouseData;
-                internal uint flags;
-                internal uint time;
-                internal IntPtr dwExtraInfo;
+                public POINT pt;
+                public uint mouseData;
+                public uint flags;
+                public uint time;
+                public IntPtr dwExtraInfo;
             }
 
             [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-            internal static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
+            public static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
 
             [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
-            internal static extern bool UnhookWindowsHookEx(IntPtr hhk);
+            public static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
             [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-            internal static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+            public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
             [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-            internal static extern IntPtr GetModuleHandle(string lpModuleName);
+            public static extern IntPtr GetModuleHandle(string lpModuleName);
         }
 
-        internal delegate void MouseHookLButtonDown(int x, int y);
-        internal event MouseHookLButtonDown MouseLButtonDown;
+        public delegate void MouseHookLButtonDown(int x, int y);
+        public event MouseHookLButtonDown? MouseLButtonDown;
 
-        private NativeMethods.LowLevelMouseProc _proc;
+        private readonly NativeMethods.LowLevelMouseProc _proc;
         private static IntPtr _hookID = IntPtr.Zero;
 
-        internal MouseInterceptor()
+        public MouseInterceptor()
         {
             _proc = HookCallback;
 
-            using (Process curProcess = Process.GetCurrentProcess())
-            using (ProcessModule curModule = curProcess.MainModule)
-            {
-                _hookID = NativeMethods.SetWindowsHookEx(NativeMethods.WH_MOUSE_LL, _proc, NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
-            }
+            using Process curProcess = Process.GetCurrentProcess();
+            using ProcessModule curModule = curProcess.MainModule;
+            _hookID = NativeMethods.SetWindowsHookEx(NativeMethods.WH_MOUSE_LL, _proc, NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
         }
 
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
@@ -75,7 +73,7 @@ namespace PKSoft
             if ((nCode >= 0) && (NativeMethods.MouseMessages.WM_LBUTTONDOWN == (NativeMethods.MouseMessages)wParam))
             {
                 NativeMethods.MSLLHOOKSTRUCT hookStruct = Marshal.PtrToStructure<NativeMethods.MSLLHOOKSTRUCT>(lParam);
-                MouseLButtonDown(hookStruct.pt.x, hookStruct.pt.y);
+                MouseLButtonDown?.Invoke(hookStruct.pt.x, hookStruct.pt.y);
 
                 //Console.WriteLine(hookStruct.pt.x + ", " + hookStruct.pt.y);
             }

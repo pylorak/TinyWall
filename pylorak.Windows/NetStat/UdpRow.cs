@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace PKSoft.netstat
+namespace pylorak.Windows.NetStat
 {
 
     internal class UdpRow
