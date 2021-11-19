@@ -1,5 +1,5 @@
 ﻿
-namespace TinyWall.Interface
+namespace pylorak.TinyWall
 {
     public enum RuleAction
     {

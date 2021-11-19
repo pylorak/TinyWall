@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
 using System.Reflection;
-using TinyWall.Interface;
+using pylorak.Windows;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     internal partial class ApplicationExceptionForm : Form
     {
@@ -53,28 +53,28 @@ namespace PKSoft
             cmbTimer.SuspendLayout();
             Dictionary<AppExceptionTimer, KeyValuePair<string, AppExceptionTimer>> timerTexts = new Dictionary<AppExceptionTimer, KeyValuePair<string, AppExceptionTimer>>();
             timerTexts.Add(AppExceptionTimer.Permanent,
-                new KeyValuePair<string, AppExceptionTimer>(PKSoft.Resources.Messages.Permanent, AppExceptionTimer.Permanent)
+                new KeyValuePair<string, AppExceptionTimer>(Resources.Messages.Permanent, AppExceptionTimer.Permanent)
                 );
             timerTexts.Add(AppExceptionTimer.Until_Reboot,
-                new KeyValuePair<string, AppExceptionTimer>(PKSoft.Resources.Messages.UntilReboot, AppExceptionTimer.Until_Reboot)
+                new KeyValuePair<string, AppExceptionTimer>(Resources.Messages.UntilReboot, AppExceptionTimer.Until_Reboot)
                 );
             timerTexts.Add(AppExceptionTimer.For_5_Minutes,
-                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.XMinutes, 5), AppExceptionTimer.For_5_Minutes)
+                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XMinutes, 5), AppExceptionTimer.For_5_Minutes)
                 );
             timerTexts.Add(AppExceptionTimer.For_30_Minutes,
-                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.XMinutes, 30), AppExceptionTimer.For_30_Minutes)
+                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XMinutes, 30), AppExceptionTimer.For_30_Minutes)
                 );
             timerTexts.Add(AppExceptionTimer.For_1_Hour, 
-                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.XHour, 1), AppExceptionTimer.For_1_Hour)
+                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHour, 1), AppExceptionTimer.For_1_Hour)
                 );
             timerTexts.Add(AppExceptionTimer.For_4_Hours,
-                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.XHours, 4), AppExceptionTimer.For_4_Hours)
+                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHours, 4), AppExceptionTimer.For_4_Hours)
                 );
             timerTexts.Add(AppExceptionTimer.For_9_Hours,
-                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.XHours, 9), AppExceptionTimer.For_9_Hours)
+                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHours, 9), AppExceptionTimer.For_9_Hours)
                 );
             timerTexts.Add(AppExceptionTimer.For_24_Hours,
-                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.XHours, 24), AppExceptionTimer.For_24_Hours)
+                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHours, 24), AppExceptionTimer.For_24_Hours)
                 );
 
             foreach (AppExceptionTimer timerVal in Enum.GetValues(typeof(AppExceptionTimer)))
@@ -130,19 +130,19 @@ namespace PKSoft
             {
                 // Recognized app
                 panel1.BackgroundImage = Resources.Icons.green_banner;
-                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.RecognizedApplication, TmpExceptionSettings[0].Subject.ToString());
+                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, Resources.Messages.RecognizedApplication, TmpExceptionSettings[0].Subject.ToString());
             }
             else if (hasSignature && !validSignature)
             {
                 // Recognized, but compromised app
                 panel1.BackgroundImage = Resources.Icons.red_banner;
-                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.CompromisedApplication, TmpExceptionSettings[0].Subject.ToString());
+                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, Resources.Messages.CompromisedApplication, TmpExceptionSettings[0].Subject.ToString());
             }
             else
             {
                 // Unknown app
                 panel1.BackgroundImage = Resources.Icons.blue_banner;
-                transparentLabel1.Text = PKSoft.Resources.Messages.UnknownApplication;
+                transparentLabel1.Text = Resources.Messages.UnknownApplication;
             }
 
             Utils.CenterControlInParent(transparentLabel1);
@@ -319,8 +319,8 @@ namespace PKSoft
                 catch
                 {
                     Utils.ShowMessageBox(
-                        PKSoft.Resources.Messages.PortListInvalid,
-                        PKSoft.Resources.Messages.TinyWall,
+                        Resources.Messages.PortListInvalid,
+                        Resources.Messages.TinyWall,
                         Microsoft.Samples.TaskDialogCommonButtons.Ok,
                         Microsoft.Samples.TaskDialogIcon.Warning,
                         this);
@@ -359,7 +359,7 @@ namespace PKSoft
 
             ExceptionSubject subject;
             if (procList[0].Package.HasValue)
-                subject = procList[0].Package.Value.ToExceptionSubject();
+                subject = new AppContainerSubject(procList[0].Package.Value);
             else
                 subject = new ExecutableSubject(procList[0].Path);
 
@@ -387,7 +387,7 @@ namespace PKSoft
             var packageList = UwpPackagesForm.ChoosePackage(this, false);
             if (packageList.Count == 0) return;
 
-            ReinitFormFromSubject(packageList[0].ToExceptionSubject());
+            ReinitFormFromSubject(new AppContainerSubject(packageList[0]));
         }
 
         private void ReinitFormFromSubject(ExceptionSubject subject)

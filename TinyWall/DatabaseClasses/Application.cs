@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using TinyWall.Interface;
 
-namespace PKSoft.DatabaseClasses
+namespace pylorak.TinyWall.DatabaseClasses
 {
     [DataContract(Namespace = "TinyWall")]
     internal class Application
@@ -18,7 +17,7 @@ namespace PKSoft.DatabaseClasses
             {
                 try
                 {
-                    string ret = PKSoft.Resources.Exceptions.ResourceManager.GetString(Name);
+                    string ret = Resources.Exceptions.ResourceManager.GetString(Name);
                     return string.IsNullOrEmpty(ret) ? Name : ret;
                 }
                 catch

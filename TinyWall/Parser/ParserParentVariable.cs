@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace TinyWall.Interface.Parser
+namespace pylorak.TinyWall
 {
     public sealed class ParserParentVariable : ParserVariable
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     public static class WfpSublayerKeys
     {

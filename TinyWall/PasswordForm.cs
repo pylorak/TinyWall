@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using TinyWall.Interface.Internal;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     internal partial class PasswordForm : Form
     {

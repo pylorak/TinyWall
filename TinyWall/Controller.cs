@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using TinyWall.Interface.Internal;
+using pylorak.Utilities;
 
-namespace TinyWall.Interface
+namespace pylorak.TinyWall
 {
     public sealed class Controller : Disposable
     {

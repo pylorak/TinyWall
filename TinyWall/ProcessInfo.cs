@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using pylorak.Windows;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     internal class ProcessInfo
     {

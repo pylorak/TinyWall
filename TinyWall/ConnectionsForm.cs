@@ -8,11 +8,10 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Linq;
 
-using TinyWall.Interface;
-using TinyWall.Interface.Internal;
+using pylorak.Windows;
 using pylorak.Windows.NetStat;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     internal partial class ConnectionsForm : Form
     {
@@ -104,7 +103,7 @@ namespace PKSoft
             }
 
             // Finished reading tables, continues with log processing
-            List<FirewallLogEntry> fwLog = TinyWall.Interface.Controller.EndReadFwLog(fwLogRequest);
+            List<FirewallLogEntry> fwLog = pylorak.TinyWall.Controller.EndReadFwLog(fwLogRequest);
 
             // Show log entries if requested by user
             if (chkShowBlocked.Checked)
@@ -190,7 +189,7 @@ namespace PKSoft
                     // for example due to missing file system privileges, capitalization will not be corrected.
                     // The service has much more privileges, so doing this in the service would allow more paths
                     // to be corrected.
-                    entry.AppPath = TinyWall.Interface.Internal.Utils.GetExactPath(entry.AppPath);
+                    entry.AppPath = Utils.GetExactPath(entry.AppPath);
 
                     var pi = ProcessInfo.Create(entry.ProcessId, entry.AppPath, entry.PackageId, uwpPackages, servicePids);
                     ConstructListItem(itemColl, pi, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.LocalIp), entry.LocalPort), new IPEndPoint(IPAddress.Parse(entry.RemoteIp), entry.RemotePort), "Blocked", entry.Timestamp, entry.Direction);
@@ -251,10 +250,10 @@ namespace PKSoft
                 switch (dir)
                 {
                     case RuleDirection.In:
-                        li.SubItems.Add(PKSoft.Resources.Messages.TrafficIn);
+                        li.SubItems.Add(Resources.Messages.TrafficIn);
                         break;
                     case RuleDirection.Out:
-                        li.SubItems.Add(PKSoft.Resources.Messages.TrafficOut);
+                        li.SubItems.Add(Resources.Messages.TrafficOut);
                         break;
                     default:
                         li.SubItems.Add(string.Empty);
@@ -393,7 +392,7 @@ namespace PKSoft
                         }
                         catch
                         {
-                            MessageBox.Show(this, string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CouldNotCloseProcess, proc.ProcessName, pi.Pid), PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            MessageBox.Show(this, string.Format(CultureInfo.CurrentCulture, Resources.Messages.CouldNotCloseProcess, proc.ProcessName, pi.Pid), Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         }
                     }
                 }
@@ -447,7 +446,7 @@ namespace PKSoft
             }
             catch
             {
-                MessageBox.Show(this, PKSoft.Resources.Messages.CannotGetPathOfProcess, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(this, Resources.Messages.CannotGetPathOfProcess, Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
             }
         }
@@ -465,7 +464,7 @@ namespace PKSoft
             }
             catch
             {
-                MessageBox.Show(this, PKSoft.Resources.Messages.CannotGetPathOfProcess, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(this, Resources.Messages.CannotGetPathOfProcess, Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
         private void mnuFileNameOnTheWeb_Click(object sender, EventArgs e)
@@ -481,7 +480,7 @@ namespace PKSoft
             }
             catch
             {
-                MessageBox.Show(this, PKSoft.Resources.Messages.CannotGetPathOfProcess, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(this, Resources.Messages.CannotGetPathOfProcess, Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
 
@@ -498,7 +497,7 @@ namespace PKSoft
             }
             catch
             {
-                MessageBox.Show(this, PKSoft.Resources.Messages.CannotGetPathOfProcess, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(this, Resources.Messages.CannotGetPathOfProcess, Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
 

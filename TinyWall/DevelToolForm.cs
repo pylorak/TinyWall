@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
@@ -10,10 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
-using TinyWall.Interface;
-using TinyWall.Interface.Internal;
-
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     internal partial class DevelToolForm : Form
     {
@@ -103,7 +99,7 @@ namespace PKSoft
             {
                 try
                 {
-                    var app = SerializationHelper.LoadFromXMLFile<PKSoft.DatabaseClasses.Application>(fpath);
+                    var app = SerializationHelper.LoadFromXMLFile<DatabaseClasses.Application>(fpath);
                     db.KnownApplications.Add(app);
                 }
                 catch

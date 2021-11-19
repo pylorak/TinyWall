@@ -1,4 +1,4 @@
-﻿namespace TinyWall.Interface.Internal
+﻿namespace pylorak.TinyWall
 {
     // Possible message types from controller to service
     public enum MessageType

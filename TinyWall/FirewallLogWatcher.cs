@@ -1,12 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Runtime.InteropServices;
-using TinyWall.Interface;
-using TinyWall.Interface.Internal;
+using Microsoft.Samples;
+using pylorak.Utilities;
+using pylorak.Windows;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     internal class FirewallLogWatcher : Disposable
     {
@@ -122,7 +122,7 @@ namespace PKSoft
             entry.AppPath = PathMapper.Instance.ConvertPathIgnoreErrors(entry.AppPath, PathFormat.Win32);
 
             // Correct casing of app path
-            entry.AppPath = TinyWall.Interface.Internal.Utils.GetExactPath(entry.AppPath);
+            entry.AppPath = Utils.GetExactPath(entry.AppPath);
 
             // Replace invalid IP strings with the "unspecified address" IPv6 specifier
             if (string.IsNullOrEmpty(entry.RemoteIp))

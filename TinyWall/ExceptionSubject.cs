@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Security.Cryptography.X509Certificates;
 using System.Runtime.Serialization;
-using TinyWall.Interface.Internal;
+using pylorak.Windows;
 
-namespace TinyWall.Interface
+namespace pylorak.TinyWall
 {
     public enum SubjectType
     {
@@ -74,7 +74,7 @@ namespace TinyWall.Interface
         {
             get
             {
-                return Interface.SubjectType.Global;
+                return SubjectType.Global;
             }
         }
 
@@ -106,7 +106,7 @@ namespace TinyWall.Interface
         {
             get
             {
-                return Interface.SubjectType.Executable;
+                return SubjectType.Executable;
             }
         }
 
@@ -181,7 +181,7 @@ namespace TinyWall.Interface
         public static string ResolvePath(string path)
         {
             string ret = path;
-            ret = Environment.ExpandEnvironmentVariables(Parser.RecursiveParser.ResolveString(ret));
+            ret = Environment.ExpandEnvironmentVariables(RecursiveParser.ResolveString(ret));
             if (NetworkPath.IsNetworkPath(ret))
             {
                 if (!NetworkPath.IsUncPath(ret))
@@ -243,7 +243,7 @@ namespace TinyWall.Interface
         {
             get
             {
-                return Interface.SubjectType.Service;
+                return SubjectType.Service;
             }
         }
 
@@ -310,7 +310,7 @@ namespace TinyWall.Interface
         {
             get
             {
-                return Interface.SubjectType.AppContainer;
+                return SubjectType.AppContainer;
             }
         }
 
@@ -333,6 +333,10 @@ namespace TinyWall.Interface
             this.Publisher = publisher;
             this.PublisherId = publisherId;
         }
+
+        public AppContainerSubject(UwpPackage.Package package) :
+            this(package.Sid, package.Name, package.Publisher, package.PublisherId)
+        { }
 
         public override bool Equals(ExceptionSubject other)
         {

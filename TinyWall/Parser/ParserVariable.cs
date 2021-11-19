@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TinyWall.Interface.Parser
+namespace pylorak.TinyWall
 {
     public abstract class ParserVariable
     {

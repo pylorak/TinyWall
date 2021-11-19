@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PKSoft.Resources {
+namespace pylorak.TinyWall.Resources {
     using System;
     
     

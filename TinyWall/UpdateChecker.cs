@@ -6,11 +6,9 @@ using System.Net;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Samples;
+using pylorak.Windows;
 
-using TinyWall.Interface;
-using TinyWall.Interface.Internal;
-
-namespace PKSoft
+namespace pylorak.TinyWall
 {
 
     internal class Updater
@@ -35,10 +33,10 @@ namespace PKSoft
             updater.State = UpdaterState.GettingDescriptor;
 
             updater.TDialog = new TaskDialog();
-            updater.TDialog.CustomMainIcon = PKSoft.Resources.Icons.firewall;
-            updater.TDialog.WindowTitle = PKSoft.Resources.Messages.TinyWall;
-            updater.TDialog.MainInstruction = PKSoft.Resources.Messages.TinyWallUpdater;
-            updater.TDialog.Content = PKSoft.Resources.Messages.PleaseWaitWhileTinyWallChecksForUpdates;
+            updater.TDialog.CustomMainIcon = Resources.Icons.firewall;
+            updater.TDialog.WindowTitle = Resources.Messages.TinyWall;
+            updater.TDialog.MainInstruction = Resources.Messages.TinyWallUpdater;
+            updater.TDialog.Content = Resources.Messages.PleaseWaitWhileTinyWallChecksForUpdates;
             updater.TDialog.AllowDialogCancellation = false;
             updater.TDialog.CommonButtons = TaskDialogCommonButtons.Cancel;
             updater.TDialog.ShowMarqueeProgressBar = true;
@@ -55,7 +53,7 @@ namespace PKSoft
                     }
                     catch
                     {
-                        updater.ErrorMsg = PKSoft.Resources.Messages.ErrorCheckingForUpdates;
+                        updater.ErrorMsg = Resources.Messages.ErrorCheckingForUpdates;
                     }
                 });
             UpdateThread.Start();
@@ -71,7 +69,7 @@ namespace PKSoft
                     updater.CheckVersion();
                     break;
                 case (int)DialogResult.Abort:
-                    Utils.ShowMessageBox(updater.ErrorMsg, PKSoft.Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
+                    Utils.ShowMessageBox(updater.ErrorMsg, Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
                     break;
             }
         }
@@ -88,14 +86,14 @@ namespace PKSoft
 
             if (WindowsNew_AnyTwUpdate || WindowsOld_TwMinorFixOnly)
             {
-                string prompt = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.UpdateAvailable, UpdateModule.ComponentVersion);
-                if (Utils.ShowMessageBox(prompt, PKSoft.Resources.Messages.TinyWallUpdater, TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No, TaskDialogIcon.Warning) == DialogResult.Yes)
+                string prompt = string.Format(CultureInfo.CurrentCulture, Resources.Messages.UpdateAvailable, UpdateModule.ComponentVersion);
+                if (Utils.ShowMessageBox(prompt, Resources.Messages.TinyWallUpdater, TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No, TaskDialogIcon.Warning) == DialogResult.Yes)
                     DownloadUpdate(UpdateModule);
             }
             else
             {
-                string prompt = PKSoft.Resources.Messages.NoUpdateAvailable;
-                Utils.ShowMessageBox(prompt, PKSoft.Resources.Messages.TinyWallUpdater, TaskDialogCommonButtons.Ok, TaskDialogIcon.Information);
+                string prompt = Resources.Messages.NoUpdateAvailable;
+                Utils.ShowMessageBox(prompt, Resources.Messages.TinyWallUpdater, TaskDialogCommonButtons.Ok, TaskDialogIcon.Information);
             }
         }
 
@@ -104,10 +102,10 @@ namespace PKSoft
             ErrorMsg = null;
             Updater updater = this;
             updater.TDialog = new TaskDialog();
-            updater.TDialog.CustomMainIcon = PKSoft.Resources.Icons.firewall;
-            updater.TDialog.WindowTitle = PKSoft.Resources.Messages.TinyWall;
-            updater.TDialog.MainInstruction = PKSoft.Resources.Messages.TinyWallUpdater;
-            updater.TDialog.Content = PKSoft.Resources.Messages.DownloadingUpdate;
+            updater.TDialog.CustomMainIcon = Resources.Icons.firewall;
+            updater.TDialog.WindowTitle = Resources.Messages.TinyWall;
+            updater.TDialog.MainInstruction = Resources.Messages.TinyWallUpdater;
+            updater.TDialog.Content = Resources.Messages.DownloadingUpdate;
             updater.TDialog.AllowDialogCancellation = false;
             updater.TDialog.CommonButtons = TaskDialogCommonButtons.Cancel;
             updater.TDialog.ShowProgressBar = true;
@@ -135,7 +133,7 @@ namespace PKSoft
                         InstallUpdate(tmpFile);
                         break;
                     case (int)DialogResult.Abort:
-                        Utils.ShowMessageBox(updater.ErrorMsg, PKSoft.Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
+                        Utils.ShowMessageBox(updater.ErrorMsg, Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
                         break;
                 }
             }
@@ -150,7 +148,7 @@ namespace PKSoft
         {
             if (e.Cancelled || (e.Error != null))
             {
-                ErrorMsg = PKSoft.Resources.Messages.DownloadInterrupted;
+                ErrorMsg = Resources.Messages.DownloadInterrupted;
                 return;
             }
 

@@ -1,4 +1,4 @@
-﻿namespace PKSoft
+﻿namespace pylorak.TinyWall
 {
     partial class SettingsForm
     {
@@ -104,7 +104,7 @@
             // 
             resources.ApplyResources(this.btnCancel, "btnCancel");
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Image = global::PKSoft.Resources.Icons.cancel;
+            this.btnCancel.Image = global::pylorak.TinyWall.Resources.Icons.cancel;
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -112,7 +112,7 @@
             // btnOK
             // 
             resources.ApplyResources(this.btnOK, "btnOK");
-            this.btnOK.Image = global::PKSoft.Resources.Icons.accept;
+            this.btnOK.Image = global::pylorak.TinyWall.Resources.Icons.accept;
             this.btnOK.Name = "btnOK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -142,7 +142,7 @@
             // btnAppRemoveAll
             // 
             resources.ApplyResources(this.btnAppRemoveAll, "btnAppRemoveAll");
-            this.btnAppRemoveAll.Image = global::PKSoft.Resources.Icons.remove;
+            this.btnAppRemoveAll.Image = global::pylorak.TinyWall.Resources.Icons.remove;
             this.btnAppRemoveAll.Name = "btnAppRemoveAll";
             this.btnAppRemoveAll.UseVisualStyleBackColor = true;
             this.btnAppRemoveAll.Click += new System.EventHandler(this.btnAppRemoveAll_Click);
@@ -150,7 +150,7 @@
             // btnAppAutoDetect
             // 
             resources.ApplyResources(this.btnAppAutoDetect, "btnAppAutoDetect");
-            this.btnAppAutoDetect.Image = global::PKSoft.Resources.Icons.uninstall;
+            this.btnAppAutoDetect.Image = global::pylorak.TinyWall.Resources.Icons.uninstall;
             this.btnAppAutoDetect.Name = "btnAppAutoDetect";
             this.btnAppAutoDetect.UseVisualStyleBackColor = true;
             this.btnAppAutoDetect.Click += new System.EventHandler(this.btnAppAutoDetect_Click);
@@ -158,7 +158,7 @@
             // btnSubmitAssoc
             // 
             resources.ApplyResources(this.btnSubmitAssoc, "btnSubmitAssoc");
-            this.btnSubmitAssoc.Image = global::PKSoft.Resources.Icons.submit;
+            this.btnSubmitAssoc.Image = global::pylorak.TinyWall.Resources.Icons.submit;
             this.btnSubmitAssoc.Name = "btnSubmitAssoc";
             this.btnSubmitAssoc.UseVisualStyleBackColor = true;
             this.btnSubmitAssoc.Click += new System.EventHandler(this.btnSubmitAssoc_Click);
@@ -171,7 +171,7 @@
             // btnAppRemove
             // 
             resources.ApplyResources(this.btnAppRemove, "btnAppRemove");
-            this.btnAppRemove.Image = global::PKSoft.Resources.Icons.remove;
+            this.btnAppRemove.Image = global::pylorak.TinyWall.Resources.Icons.remove;
             this.btnAppRemove.Name = "btnAppRemove";
             this.btnAppRemove.UseVisualStyleBackColor = true;
             this.btnAppRemove.Click += new System.EventHandler(this.btnAppRemove_Click);
@@ -179,7 +179,7 @@
             // btnAppModify
             // 
             resources.ApplyResources(this.btnAppModify, "btnAppModify");
-            this.btnAppModify.Image = global::PKSoft.Resources.Icons.modify;
+            this.btnAppModify.Image = global::pylorak.TinyWall.Resources.Icons.modify;
             this.btnAppModify.Name = "btnAppModify";
             this.btnAppModify.UseVisualStyleBackColor = true;
             this.btnAppModify.Click += new System.EventHandler(this.btnAppModify_Click);
@@ -187,7 +187,7 @@
             // btnAppAdd
             // 
             resources.ApplyResources(this.btnAppAdd, "btnAppAdd");
-            this.btnAppAdd.Image = global::PKSoft.Resources.Icons.add;
+            this.btnAppAdd.Image = global::pylorak.TinyWall.Resources.Icons.add;
             this.btnAppAdd.Name = "btnAppAdd";
             this.btnAppAdd.UseVisualStyleBackColor = true;
             this.btnAppAdd.Click += new System.EventHandler(this.btnAppAdd_Click);
@@ -428,7 +428,7 @@
             // btnImport
             // 
             resources.ApplyResources(this.btnImport, "btnImport");
-            this.btnImport.Image = global::PKSoft.Resources.Icons.import;
+            this.btnImport.Image = global::pylorak.TinyWall.Resources.Icons.import;
             this.btnImport.Name = "btnImport";
             this.btnImport.UseVisualStyleBackColor = true;
             this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
@@ -436,7 +436,7 @@
             // btnExport
             // 
             resources.ApplyResources(this.btnExport, "btnExport");
-            this.btnExport.Image = global::PKSoft.Resources.Icons.export;
+            this.btnExport.Image = global::pylorak.TinyWall.Resources.Icons.export;
             this.btnExport.Name = "btnExport";
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
@@ -511,7 +511,7 @@
             // btnUpdate
             // 
             resources.ApplyResources(this.btnUpdate, "btnUpdate");
-            this.btnUpdate.Image = global::PKSoft.Resources.Icons.update;
+            this.btnUpdate.Image = global::pylorak.TinyWall.Resources.Icons.update;
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.UseVisualStyleBackColor = true;
             this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
@@ -519,7 +519,7 @@
             // btnWeb
             // 
             resources.ApplyResources(this.btnWeb, "btnWeb");
-            this.btnWeb.Image = global::PKSoft.Resources.Icons.web;
+            this.btnWeb.Image = global::pylorak.TinyWall.Resources.Icons.web;
             this.btnWeb.Name = "btnWeb";
             this.btnWeb.UseVisualStyleBackColor = true;
             this.btnWeb.Click += new System.EventHandler(this.btnWeb_Click);

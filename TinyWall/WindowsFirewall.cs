@@ -4,7 +4,7 @@ using System.Threading;
 using System.Diagnostics.Eventing.Reader;
 using NetFwTypeLib;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     class WindowsFirewall : IDisposable
     {
@@ -14,9 +14,9 @@ namespace PKSoft
         private static readonly string[] WhitelistedApps = new string[]
         {
 #if DEBUG
-            Path.Combine(Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath), "TinyWall.vshost.exe"),
+            Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "TinyWall.vshost.exe"),
 #endif
-            TinyWall.Interface.Internal.Utils.ExecutablePath,
+            Utils.ExecutablePath,
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "dllhost.exe")
         };
 

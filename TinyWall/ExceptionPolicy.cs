@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace TinyWall.Interface
+namespace pylorak.TinyWall
 {
     // TODO: Get rid of PolicyType and use type patterns instead
     public enum PolicyType

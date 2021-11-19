@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Windows.Forms;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     // Implements the manual sorting of items by columns.
     internal class ListViewItemComparer : IComparer<ListViewItem>, IComparer

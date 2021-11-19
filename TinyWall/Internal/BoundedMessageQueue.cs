@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using pylorak.Utilities;
 
-namespace TinyWall.Interface.Internal
+namespace pylorak.TinyWall
 {
     public sealed class BoundedMessageQueue : Disposable
     {

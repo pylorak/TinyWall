@@ -1,4 +1,4 @@
-﻿namespace PKSoft
+﻿namespace pylorak.TinyWall
 {
     partial class DevelToolForm
     {

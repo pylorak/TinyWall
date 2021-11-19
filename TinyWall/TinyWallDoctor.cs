@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Configuration.Install;
 using System.Diagnostics;
 using System.ServiceProcess;
-using TinyWall.Interface;
 using TaskScheduler;
+using pylorak.Windows;
 using pylorak.Windows.Services;
 using pylorak.Windows.WFP;
 using pylorak.Windows.WFP.Interop;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     internal static class TinyWallDoctor
     {
@@ -64,7 +64,7 @@ namespace PKSoft
                 // Run installers
                 try
                 {
-                    ManagedInstallerClass.InstallHelper(new string[] { "/i", TinyWall.Interface.Internal.Utils.ExecutablePath });
+                    ManagedInstallerClass.InstallHelper(new string[] { "/i", Utils.ExecutablePath });
                 }
                 catch(Exception e)
                 {
@@ -97,7 +97,7 @@ namespace PKSoft
                 // We are not running as admin.
                 try
                 {
-                    using (Process p = Utils.StartProcess(TinyWall.Interface.Internal.Utils.ExecutablePath, "/install", true))
+                    using (Process p = Utils.StartProcess(Utils.ExecutablePath, "/install", true))
                     {
                         p.WaitForExit();
                         return (p.ExitCode == 0);
@@ -130,8 +130,8 @@ namespace PKSoft
                 frm.TopMost = true;
 
                 if (System.Windows.Forms.MessageBox.Show(frm,
-                    PKSoft.Resources.Messages.DidYouInitiateTheUninstall,
-                    PKSoft.Resources.Messages.TinyWall,
+                    Resources.Messages.DidYouInitiateTheUninstall,
+                    Resources.Messages.TinyWall,
                     System.Windows.Forms.MessageBoxButtons.YesNo,
                     System.Windows.Forms.MessageBoxIcon.Exclamation) != System.Windows.Forms.DialogResult.Yes)
                 {
@@ -227,13 +227,14 @@ namespace PKSoft
             try
             {
                 // Put back the user's original hosts file
-                HostsFileManager.DisableHostsFile();
+                using HostsFileManager hosts = new();
+                hosts.DisableHostsFile();
             }
             catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_INSTALLER); }
 
             try
             {
-                ManagedInstallerClass.InstallHelper(new string[] { "/u", TinyWall.Interface.Internal.Utils.ExecutablePath });
+                ManagedInstallerClass.InstallHelper(new string[] { "/u", Utils.ExecutablePath });
             }
             catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_INSTALLER); }
 
@@ -297,7 +298,7 @@ namespace PKSoft
                 td.Settings.ExecutionTimeLimit = "PT0S";
                 td.Triggers.Create(_TASK_TRIGGER_TYPE2.TASK_TRIGGER_LOGON);
                 var act = td.Actions.Create(_TASK_ACTION_TYPE.TASK_ACTION_EXEC) as IExecAction;
-                act.Path = TinyWall.Interface.Internal.Utils.ExecutablePath;
+                act.Path = Utils.ExecutablePath;
                 taskService.GetFolder(@"\").RegisterTaskDefinition(CONTROLLER_START_TASKSCH_NAME, td, TASK_CREATE_OR_UPDATE, null, null, _TASK_LOGON_TYPE.TASK_LOGON_NONE);
             }
             catch (System.Runtime.InteropServices.COMException e)

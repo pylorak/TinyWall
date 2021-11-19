@@ -2,9 +2,9 @@
 using System.Threading;
 using System.IO;
 using System.Net;
-using pylorak.Windows.Services;
+using pylorak.Utilities;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     static class Program
     {
@@ -78,18 +78,6 @@ namespace PKSoft
             HierarchicalStopwatch.Enable = File.Exists(Path.Combine(Utils.AppDataPath, "enable-timings"));
             HierarchicalStopwatch.LogFileBase = Path.Combine(Utils.AppDataPath, @"logs\timings");
 
-            /*
-            DatabaseClasses.Application app = TinyWall.Interface.Internal.SerializationHelper.LoadFromXMLFile<DatabaseClasses.Application>(@"C:\Users\Dev\ownCloud\TinyWall\TinyWall3\TinyWall\Database\Special\Special File and printer sharing.xml2");
-            //DatabaseClasses.Application app = new DatabaseClasses.Application();
-            TinyWall.Interface.RuleListPolicy rp = new TinyWall.Interface.RuleListPolicy();
-            rp.Rules = new System.Collections.Generic.List<TinyWall.Interface.RuleDef>();
-            rp.Rules.Add(new TinyWall.Interface.RuleDef(Guid.NewGuid(), "Name", null, TinyWall.Interface.RuleAction.Allow, TinyWall.Interface.RuleDirection.Out, TinyWall.Interface.Protocol.UDP));
-            rp.Rules.Add(new TinyWall.Interface.RuleDef());
-            app.Components = new System.Collections.Generic.List<DatabaseClasses.SubjectIdentity>();
-            app.Components.Add(new DatabaseClasses.SubjectIdentity(TinyWall.Interface.GlobalSubject.Instance));
-            app.Components[0].Policy = rp;
-            TinyWall.Interface.Internal.SerializationHelper.SaveToXMLFile(app, @"C:\Users\Dev\ownCloud\TinyWall\TinyWall3\TinyWall\Database\Special\Special File and printer sharing.xml3");
-            */
             if (DefaultOsCulture == null)
                 DefaultOsCulture = Thread.CurrentThread.CurrentUICulture;
 
@@ -103,7 +91,7 @@ namespace PKSoft
             try
             {
                 // Prevent Windows Error Reporting running for us
-                Utils.SafeNativeMethods.WerAddExcludedApplication(TinyWall.Interface.Internal.Utils.ExecutablePath, true);
+                Utils.SafeNativeMethods.WerAddExcludedApplication(Utils.ExecutablePath, true);
             }
             catch { }
 

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using TinyWall.Interface.Internal;
 
-namespace TinyWall.Interface
+namespace pylorak.TinyWall
 {
     [DataContract(Namespace = "TinyWall")]
     public class UpdateModule

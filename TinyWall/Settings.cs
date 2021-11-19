@@ -2,12 +2,10 @@
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
-using TinyWall.Interface.Internal;
-using TinyWall.Interface;
-using TinyWall;
 using System.Runtime.Serialization;
+using pylorak.Utilities;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     public sealed class ControllerSettings
     {
@@ -76,7 +74,7 @@ namespace PKSoft
             get
             {
 #if DEBUG
-                return Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath);
+                return Path.GetDirectoryName(Utils.ExecutablePath);
 #else
                 string dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 dir = System.IO.Path.Combine(dir, "TinyWall");
@@ -156,7 +154,7 @@ namespace PKSoft
                 using (AtomicFileUpdater fileUpdater = new AtomicFileUpdater(PasswordFilePath))
                 {
                     string salt = Utils.RandomString(8);
-                    string hash = TinyWall.Pbkdf2.GetHashForStorage(password, salt, 150000, 16);
+                    string hash = Pbkdf2.GetHashForStorage(password, salt, 150000, 16);
                     File.WriteAllText(fileUpdater.TemporaryFilePath, hash, Encoding.UTF8);
                     fileUpdater.Commit();
                 }

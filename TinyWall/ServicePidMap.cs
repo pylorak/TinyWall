@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ServiceProcess;
 using pylorak.Windows.Services;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     public class ServicePidMap
     {

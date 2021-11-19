@@ -1,4 +1,4 @@
-﻿namespace PKSoft
+﻿namespace pylorak.TinyWall
 {
     partial class ApplicationExceptionForm
     {
@@ -73,7 +73,7 @@
             // 
             resources.ApplyResources(this.btnCancel, "btnCancel");
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Image = global::PKSoft.Resources.Icons.cancel;
+            this.btnCancel.Image = global::pylorak.TinyWall.Resources.Icons.cancel;
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -81,7 +81,7 @@
             // btnOK
             // 
             resources.ApplyResources(this.btnOK, "btnOK");
-            this.btnOK.Image = global::PKSoft.Resources.Icons.accept;
+            this.btnOK.Image = global::pylorak.TinyWall.Resources.Icons.accept;
             this.btnOK.Name = "btnOK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -160,7 +160,7 @@
             // panel1
             // 
             resources.ApplyResources(this.panel1, "panel1");
-            this.panel1.BackgroundImage = global::PKSoft.Resources.Icons.green_banner;
+            this.panel1.BackgroundImage = global::pylorak.TinyWall.Resources.Icons.green_banner;
             this.panel1.Controls.Add(this.transparentLabel1);
             this.panel1.Name = "panel1";
             // 

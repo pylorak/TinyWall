@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
+using pylorak.Utilities;
 
-namespace TinyWall.Interface
+namespace pylorak.TinyWall
 {
     public enum FirewallMode
     {
@@ -206,17 +207,17 @@ namespace TinyWall.Interface
 
         public void Save(string filePath)
         {
-            string key = Internal.Hasher.HashString(ENC_SALT).Substring(0, 16);
+            string key = Hasher.HashString(ENC_SALT).Substring(0, 16);
 
             using var fileUpdater = new AtomicFileUpdater(filePath);
-            Internal.SerializationHelper.SaveToEncryptedXMLFile(this, fileUpdater.TemporaryFilePath, key, ENC_IV);
+            SerializationHelper.SaveToEncryptedXMLFile(this, fileUpdater.TemporaryFilePath, key, ENC_IV);
             fileUpdater.Commit();
         }
 
         public static ServerConfiguration Load(string filePath)
         {
-            string key = Internal.Hasher.HashString(ENC_SALT).Substring(0, 16);
-            return Internal.SerializationHelper.LoadFromEncryptedXMLFile<ServerConfiguration>(filePath, key, ENC_IV);
+            string key = Hasher.HashString(ENC_SALT).Substring(0, 16);
+            return SerializationHelper.LoadFromEncryptedXMLFile<ServerConfiguration>(filePath, key, ENC_IV);
         }
 
         public void Normalize()

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Drawing;
-using TinyWall.Interface;
-using PKSoft.DatabaseClasses;
+using pylorak.TinyWall.DatabaseClasses;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     internal static class GlobalInstances
     {

@@ -4,7 +4,7 @@ using System.Configuration.Install;
 using System.ServiceProcess;
 using pylorak.Windows.Services;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     internal class ServiceInstaller : Installer
     {

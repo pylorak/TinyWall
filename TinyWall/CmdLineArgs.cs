@@ -1,5 +1,5 @@
 ﻿
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     internal enum StartUpMode
     {

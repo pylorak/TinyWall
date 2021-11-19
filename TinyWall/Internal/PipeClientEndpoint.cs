@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO.Pipes;
 using System.Threading;
+using pylorak.Utilities;
 
-namespace TinyWall.Interface.Internal
+namespace pylorak.TinyWall
 {
     public class PipeClientEndpoint : Disposable
     {

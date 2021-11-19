@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
-using TinyWall.Interface.Parser;
-using TinyWall.Interface;
+using pylorak.Windows;
 
-namespace PKSoft.DatabaseClasses
+namespace pylorak.TinyWall.DatabaseClasses
 {
     [DataContract(Namespace = "TinyWall")]
     internal sealed class SubjectIdentity
@@ -126,7 +125,7 @@ namespace PKSoft.DatabaseClasses
                 path.Equals("*")  // All files
                 || path.Equals("System", StringComparison.OrdinalIgnoreCase)    // System-process
                 || Path.IsPathRooted(path) && (File.Exists(path)  // File path on filesystem
-                || TinyWall.Interface.Internal.NetworkPath.IsNetworkPath(path));    // Network resource
+                || NetworkPath.IsNetworkPath(path));    // Network resource
         }
 
         public bool DoesExecutableSatisfy(ExceptionSubject subject)

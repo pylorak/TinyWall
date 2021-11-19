@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Configuration.Install;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     [RunInstaller(true)]
     public class TinyWallInstaller : Installer

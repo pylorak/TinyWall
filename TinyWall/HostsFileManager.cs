@@ -1,11 +1,10 @@
 ﻿using System;
 using System.IO;
-using TinyWall.Interface.Internal;
-using TinyWall.Interface;
+using pylorak.Utilities;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
-    internal static class HostsFileManager
+    internal class HostsFileManager : Disposable
     {
         // Active system hosts file
         private static string HOSTS_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"drivers\etc\hosts");
@@ -13,48 +12,67 @@ namespace PKSoft
         private static string HOSTS_BACKUP = Path.Combine(Utils.AppDataPath, "hosts.bck");
         // User's original hosts file
         private static string HOSTS_ORIGINAL = Path.Combine(Utils.AppDataPath, "hosts.orig");
-        // Should we lock the system's hosts file
-        private static bool _ProtectHostsFile = false;
 
-        internal static void EnableProtection(bool protectHosts)
+        public readonly FileLocker FileLocker = new FileLocker();
+
+        protected override void Dispose(bool disposing)
         {
-            _ProtectHostsFile = protectHosts;
-            if (File.Exists(HOSTS_PATH))
+            if (IsDisposed)
+                return;
+
+            if (disposing)
             {
-                if (_ProtectHostsFile)
-                    FileLocker.LockFile(HOSTS_PATH, FileAccess.Read, FileShare.Read);
-                else
-                    FileLocker.UnlockFile(HOSTS_PATH);
+                FileLocker.Dispose();
             }
 
-            if (File.Exists(HOSTS_BACKUP))
-                FileLocker.LockFile(HOSTS_BACKUP, FileAccess.Read, FileShare.Read);
-
-            if (File.Exists(HOSTS_ORIGINAL))
-                FileLocker.LockFile(HOSTS_ORIGINAL, FileAccess.Read, FileShare.Read);
+            base.Dispose(disposing);
         }
 
-        private static void CreateOriginalBackup()
+
+        private bool _EnableProtection;
+        public bool EnableProtection
         {
-            FileLocker.UnlockFile(HOSTS_ORIGINAL);
-            File.Copy(HOSTS_PATH, HOSTS_ORIGINAL, true);
-            FileLocker.LockFile(HOSTS_ORIGINAL, FileAccess.Read, FileShare.Read);
+            get => _EnableProtection;
+            set
+            {
+                _EnableProtection = value;
+                if (File.Exists(HOSTS_PATH))
+                {
+                    if (_EnableProtection)
+                        FileLocker.Lock(HOSTS_PATH, FileAccess.Read, FileShare.Read);
+                    else
+                        FileLocker.Unlock(HOSTS_PATH);
+                }
+
+                if (File.Exists(HOSTS_BACKUP))
+                    FileLocker.Lock(HOSTS_BACKUP, FileAccess.Read, FileShare.Read);
+
+                if (File.Exists(HOSTS_ORIGINAL))
+                    FileLocker.Lock(HOSTS_ORIGINAL, FileAccess.Read, FileShare.Read);
+            }
         }
 
-        internal static void UpdateHostsFile(string path)
+        private void CreateOriginalBackup()
+        {
+            FileLocker.Unlock(HOSTS_ORIGINAL);
+            File.Copy(HOSTS_PATH, HOSTS_ORIGINAL, true);
+            FileLocker.Lock(HOSTS_ORIGINAL, FileAccess.Read, FileShare.Read);
+        }
+
+        public void UpdateHostsFile(string path)
         {
             // We keep a copy of the hosts file for ourself, so that
             // we can re-install it any time without a net connection.
-            FileLocker.UnlockFile(HOSTS_BACKUP);
+            FileLocker.Unlock(HOSTS_BACKUP);
             using (var afu = new AtomicFileUpdater(HOSTS_BACKUP))
             {
                 File.Copy(path, afu.TemporaryFilePath, true);
                 afu.Commit();
             }
-            FileLocker.LockFile(HOSTS_BACKUP, FileAccess.Read, FileShare.Read);
+            FileLocker.Lock(HOSTS_BACKUP, FileAccess.Read, FileShare.Read);
         }
 
-        internal static string GetHostsHash()
+        public string GetHostsHash()
         {
             if (File.Exists(HOSTS_BACKUP))
                 return Hasher.HashFile(HOSTS_BACKUP);
@@ -62,7 +80,7 @@ namespace PKSoft
                 return string.Empty;
         }
 
-        internal static bool EnableHostsFile()
+        public bool EnableHostsFile()
         {
             // If we have no backup of the user's original hosts file,
             // we make a copy of it.
@@ -81,7 +99,7 @@ namespace PKSoft
             }
         }
 
-        internal static bool DisableHostsFile()
+        public bool DisableHostsFile()
         {
             try
             {
@@ -91,7 +109,7 @@ namespace PKSoft
                 // recreated next time we install a custom hosts.
                 if (File.Exists(HOSTS_ORIGINAL))
                 {
-                    FileLocker.UnlockFile(HOSTS_ORIGINAL);
+                    FileLocker.Unlock(HOSTS_ORIGINAL);
                     File.Delete(HOSTS_ORIGINAL);
                 }
 
@@ -117,22 +135,22 @@ namespace PKSoft
             }
         }
 
-        private static void InstallHostsFile(string sourcePath)
+        private void InstallHostsFile(string sourcePath)
         {
             try
             {
                 if (File.Exists(sourcePath))
                 {
-                    FileLocker.UnlockFile(HOSTS_PATH);
+                    FileLocker.Unlock(HOSTS_PATH);
                     File.Copy(sourcePath, HOSTS_PATH, true);
                 }
             }
             finally
             {
-                if (_ProtectHostsFile)
-                    FileLocker.LockFile(HOSTS_PATH, FileAccess.Read, FileShare.Read);
+                if (_EnableProtection)
+                    FileLocker.Lock(HOSTS_PATH, FileAccess.Read, FileShare.Read);
                 else
-                    FileLocker.UnlockFile(HOSTS_PATH);
+                    FileLocker.Unlock(HOSTS_PATH);
             }
         }
 

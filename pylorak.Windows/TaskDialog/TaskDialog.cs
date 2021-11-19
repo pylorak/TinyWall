@@ -398,7 +398,7 @@ namespace Microsoft.Samples
         /// <summary>
         /// Creates a default Task Dialog.
         /// </summary>
-        private TaskDialog()
+        public TaskDialog()
         {
             this.Reset();
         }

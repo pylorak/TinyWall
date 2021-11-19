@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     // TODO: remove if not used
     public class BlockingPcQueue<T>

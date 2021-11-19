@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security;
 using System.Diagnostics;
 using System.Drawing;
@@ -6,15 +7,14 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Principal;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 using Microsoft.Samples;
+using pylorak.Windows;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     internal static class ExtensionMethods
     {
@@ -126,23 +126,69 @@ namespace PKSoft
 
         private static readonly Random _rng = new Random();
 
-        /*
-        internal static List<string> GetDNSServers()
+        public static string ExecutablePath { get; } = System.Reflection.Assembly.GetEntryAssembly().Location;
+
+        public static string HexEncode(byte[] binstr)
         {
-            List<string> servers = new List<string>();
+            var sb = new StringBuilder();
+            foreach (byte oct in binstr)
+                sb.Append(oct.ToString(@"X2", CultureInfo.InvariantCulture));
 
-            NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
-            for (int i = 0; i < interfaces.Length; ++i)
-            {
-                NetworkInterface iface = interfaces[i];
-                IPAddressCollection dnscollection = iface.GetIPProperties().DnsAddresses;
-                for (int j = 0; j < dnscollection.Count; ++j)
-                    servers.Add(dnscollection[j].ToString());
-            }
-
-            return servers;
+            return sb.ToString();
         }
-        */
+
+        public static T OnlyFirst<T>(IEnumerable<T> items)
+        {
+            using IEnumerator<T> iter = items.GetEnumerator();
+            iter.MoveNext();
+            return iter.Current;
+        }
+
+        /// <summary>
+        /// Returns the correctly cased version of a local file or directory path. Returns the input path on error.
+        /// </summary>
+        public static string GetExactPath(string path)
+        {
+            try
+            {
+                // DirectoryInfo accepts either a file path or a directory path,
+                // and most of its properties work for either.
+                // However, its Exists property only works for a directory path.
+                if (!(Directory.Exists(path) || File.Exists(path)))
+                    return path;
+
+                var dir = new DirectoryInfo(path);
+                var parent = dir.Parent;    // will be null if there is no parent
+                var result = string.Empty;
+
+                while (parent != null)
+                {
+                    result = Path.Combine(OnlyFirst(parent.EnumerateFileSystemInfos(dir.Name)).Name, result);
+
+                    dir = parent;
+                    parent = parent.Parent;
+                }
+
+                // Handle the root part (i.e., drive letter)
+                string root = dir.FullName;
+                if (root.Contains(":"))
+                {
+                    // Drive letter
+                    root = root.ToUpperInvariant();
+                    result = Path.Combine(root, result);
+                    return result;
+                }
+                else
+                {
+                    // Error
+                    return path;
+                }
+            }
+            catch
+            {
+                return path;
+            }
+        }
 
         internal static void SetRightToLeft(Control ctrl)
         {
@@ -188,7 +234,7 @@ namespace PKSoft
         {
             msg = msg.Replace("\n", "|");
             string args = string.Format(CultureInfo.InvariantCulture, "KPados.TinyWall.Controller \"{0}\"", msg);
-            Utils.StartProcess(Path.Combine(Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath), "Toaster.exe"), args, false, true);
+            Utils.StartProcess(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "Toaster.exe"), args, false, true);
         }
 
         internal static uint GetForegroundProcessPid()
@@ -256,7 +302,7 @@ namespace PKSoft
             }
         }
 
-        internal static string GetPathOfProcessUseTwService(uint pid, TinyWall.Interface.Controller controller)
+        internal static string GetPathOfProcessUseTwService(uint pid, Controller controller)
         {
             // Shortcut for special case
             if ((pid == 0) || (pid == 4))
@@ -409,11 +455,11 @@ namespace PKSoft
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                TinyWall.Interface.Internal.SerializationHelper.SerializeDC(ms, obj);
+                SerializationHelper.SerializeDC(ms, obj);
                 ms.Flush();
                 ms.Position = 0;
 
-                return TinyWall.Interface.Internal.SerializationHelper.DeserializeDC<T>(ms);
+                return SerializationHelper.DeserializeDC<T>(ms);
             }
         }
 
@@ -640,7 +686,7 @@ namespace PKSoft
                 string.Join(
                     Environment.NewLine, new string[] {
                     $"TinyWall version: {Utils.TinyWallVersion}",
-                    $"Windows version: {TinyWall.Interface.VersionInfo.WindowsVersionString}",
+                    $"Windows version: {VersionInfo.WindowsVersionString}",
                     e.ToString()
                 }),
                 logname
@@ -724,7 +770,7 @@ namespace PKSoft
             get
             {
 #if DEBUG
-                return Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath);
+                return Path.GetDirectoryName(Utils.ExecutablePath);
 #else
                 string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "TinyWall");
                 if (!Directory.Exists(dir))

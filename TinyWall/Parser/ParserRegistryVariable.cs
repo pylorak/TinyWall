@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TinyWall.Interface.Internal;
+using pylorak.Windows;
 using Microsoft.Win32;
 
-namespace TinyWall.Interface.Parser
+namespace pylorak.TinyWall
 {
     public sealed class ParserRegistryVariable : ParserVariable
     {
@@ -19,7 +17,7 @@ namespace TinyWall.Interface.Parser
                 string keyPath = tokens[0];
                 string keyValue = tokens[1];
 
-                return Utils.GetReg64StrValue(RegistryHive.LocalMachine, keyPath, keyValue) ?? str;
+                return RegistryHive.LocalMachine.GetReg64StrValue(keyPath, keyValue) ?? str;
             }
             catch
             {

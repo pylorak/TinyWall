@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace TinyWall.Interface
+namespace pylorak.TinyWall
 {
     // The default value must have value Zero.
     public enum AppExceptionTimer

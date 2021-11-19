@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using TinyWall.Interface;
+using pylorak.Windows;
 
-namespace TinyWall.Interface.Parser
+namespace pylorak.TinyWall
 {
     public sealed class ParserFolderVariable : ParserVariable
     {
@@ -18,7 +18,7 @@ namespace TinyWall.Interface.Parser
                     "pf" or "pf64" => ProgramFilesx64(),
                     "pf32" => ProgramFilesx86(),
                     "sys32" => NativeSys32(),
-                    "twpath" => Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath),
+                    "twpath" => Path.GetDirectoryName(Utils.ExecutablePath),
                     "LocalAppData" => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "windows" => Environment.GetEnvironmentVariable("windir"),
                     _ => str,

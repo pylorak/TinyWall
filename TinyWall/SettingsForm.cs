@@ -5,15 +5,9 @@ using System.Globalization;
 using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
+using pylorak.Windows;
 
-using TinyWall.Interface.Internal;
-using TinyWall.Interface;
-
-#if DEBUG
-//using Microsoft.VisualStudio.Profiler;
-#endif
-
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     internal partial class SettingsForm : Form
     {
@@ -303,7 +297,7 @@ namespace PKSoft
             {
                 if (txtPassword.Text != txtPasswordAgain.Text)
                 {
-                    MessageBox.Show(this, PKSoft.Resources.Messages.PasswordFieldsDoNotMatch, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show(this, Resources.Messages.PasswordFieldsDoNotMatch, Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
             }
@@ -368,7 +362,7 @@ namespace PKSoft
 
         private void btnAppRemoveAll_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show(this, PKSoft.Resources.Messages.AreYouSureYouWantToRemoveAllExceptions, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.No)
+            if (MessageBox.Show(this, Resources.Messages.AreYouSureYouWantToRemoveAllExceptions, Resources.Messages.TinyWall, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.No)
                 return;
 
             TmpConfig.Service.ActiveProfile.AppExceptions.Clear();
@@ -465,7 +459,7 @@ namespace PKSoft
         {
             try
             {
-                ProcessStartInfo psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath), "License.rtf"));
+                ProcessStartInfo psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "License.rtf"));
                 psi.UseShellExecute = true;
                 Process.Start(psi);
             }
@@ -495,7 +489,7 @@ namespace PKSoft
 
         private void btnImport_Click(object sender, EventArgs e)
         {
-            ofd.Filter = string.Format(CultureInfo.CurrentCulture, "{0} (*.tws)|*.tws|{1} (*)|*", PKSoft.Resources.Messages.TinyWallSettingsFileFilter, PKSoft.Resources.Messages.AllFilesFileFilter);
+            ofd.Filter = string.Format(CultureInfo.CurrentCulture, "{0} (*.tws)|*.tws|{1} (*)|*", Resources.Messages.TinyWallSettingsFileFilter, Resources.Messages.AllFilesFileFilter);
             if (ofd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
                 try
@@ -505,23 +499,23 @@ namespace PKSoft
                 catch
                 {
                     // Fail import.
-                    MessageBox.Show(this, PKSoft.Resources.Messages.ConfigurationImportError, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(this, Resources.Messages.ConfigurationImportError, Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 InitSettingsUI();
-                MessageBox.Show(this, PKSoft.Resources.Messages.ConfigurationHasBeenImported, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(this, Resources.Messages.ConfigurationHasBeenImported, Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         private void btnExport_Click(object sender, EventArgs e)
         {
-            ofd.Filter = string.Format(CultureInfo.CurrentCulture, "{0} (*.tws)|*.tws|{1} (*)|*", PKSoft.Resources.Messages.TinyWallSettingsFileFilter, PKSoft.Resources.Messages.AllFilesFileFilter);
+            ofd.Filter = string.Format(CultureInfo.CurrentCulture, "{0} (*.tws)|*.tws|{1} (*)|*", Resources.Messages.TinyWallSettingsFileFilter, Resources.Messages.AllFilesFileFilter);
             sfd.DefaultExt = "tws";
             if (sfd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
                 SerializationHelper.SaveToXMLFile(this.TmpConfig, sfd.FileName);
-                MessageBox.Show(this, PKSoft.Resources.Messages.ConfigurationHasBeenExported, PKSoft.Resources.Messages.TinyWallSettingsFileFilter, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(this, Resources.Messages.ConfigurationHasBeenExported, Resources.Messages.TinyWallSettingsFileFilter, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -614,7 +608,7 @@ namespace PKSoft
         {
             try
             {
-                ProcessStartInfo psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(TinyWall.Interface.Internal.Utils.ExecutablePath), "Attributions.txt"));
+                ProcessStartInfo psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "Attributions.txt"));
                 psi.UseShellExecute = true;
                 Process.Start(psi);
             }

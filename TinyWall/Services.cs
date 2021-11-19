@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.ServiceProcess;
 using System.Windows.Forms;
 using Microsoft.Win32;
-using TinyWall.Interface;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     internal partial class ServicesForm : Form
     {

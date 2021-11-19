@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Linq;
+using pylorak.Windows;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     internal partial class ProcessesForm : Form
     {
@@ -119,7 +120,7 @@ namespace PKSoft
                         {
                             li.ImageKey = "system";
                         }
-                        else if (TinyWall.Interface.Internal.NetworkPath.IsNetworkPath(e.Path))
+                        else if (NetworkPath.IsNetworkPath(e.Path))
                         {
                             li.ImageKey = "network-drive";
                         }

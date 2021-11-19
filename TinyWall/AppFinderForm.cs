@@ -6,9 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using TinyWall.Interface;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     internal sealed partial class AppFinderForm : Form
     {
@@ -35,7 +34,7 @@ namespace PKSoft
         {
             if (!RunSearch)
             {
-                btnStartDetection.Text = PKSoft.Resources.Messages.Stop;
+                btnStartDetection.Text = Resources.Messages.Stop;
                 this.btnStartDetection.Image = GlobalInstances.CancelBtnIcon;
                 list.Items.Clear();
 
@@ -162,8 +161,8 @@ namespace PKSoft
                 {
                     try
                     {
-                        lblStatus.Text = PKSoft.Resources.Messages.SearchResults;
-                        btnStartDetection.Text = PKSoft.Resources.Messages.Start;
+                        lblStatus.Text = Resources.Messages.SearchResults;
+                        btnStartDetection.Text = Resources.Messages.Start;
                         btnStartDetection.Image = GlobalInstances.ApplyBtnIcon;
                         btnStartDetection.Enabled = true;
                     }
@@ -187,7 +186,7 @@ namespace PKSoft
                 LastEnterDoSearchPath = now;
                 this.BeginInvoke((MethodInvoker)delegate()
                 {
-                    lblStatus.Text = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.SearchingPath, path);
+                    lblStatus.Text = string.Format(CultureInfo.CurrentCulture, Resources.Messages.SearchingPath, path);
                 });
             }
             #endregion

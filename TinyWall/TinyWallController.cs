@@ -6,13 +6,10 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Samples;
+using pylorak.Utilities;
+using pylorak.Windows;
 
-using TinyWall.Interface;
-using TinyWall.Interface.Internal;
-
-using PKSoft.DatabaseClasses;
-
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     internal sealed class TinyWallController : ApplicationContext
     {
@@ -57,7 +54,7 @@ namespace PKSoft
             // Tray
             // 
             resources.ApplyResources(this.Tray, "Tray");
-            this.Tray.Icon = global::PKSoft.Resources.Icons.firewall;
+            this.Tray.Icon = global::pylorak.TinyWall.Resources.Icons.firewall;
             this.Tray.Visible = false;
             this.Tray.BalloonTipClicked += new System.EventHandler(this.Tray_BalloonTipClicked);
             this.Tray.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Tray_MouseClick);
@@ -88,7 +85,7 @@ namespace PKSoft
             // mnuTrafficRate
             // 
             this.mnuTrafficRate.AccessibleRole = System.Windows.Forms.AccessibleRole.StaticText;
-            this.mnuTrafficRate.Image = global::PKSoft.Resources.Icons.info;
+            this.mnuTrafficRate.Image = global::pylorak.TinyWall.Resources.Icons.info;
             this.mnuTrafficRate.Name = "mnuTrafficRate";
             resources.ApplyResources(this.mnuTrafficRate, "mnuTrafficRate");
             // 
@@ -141,28 +138,28 @@ namespace PKSoft
             // 
             // mnuManage
             // 
-            this.mnuManage.Image = global::PKSoft.Resources.Icons.manage;
+            this.mnuManage.Image = global::pylorak.TinyWall.Resources.Icons.manage;
             this.mnuManage.Name = "mnuManage";
             resources.ApplyResources(this.mnuManage, "mnuManage");
             this.mnuManage.Click += new System.EventHandler(this.mnuManage_Click);
             // 
             // mnuConnections
             // 
-            this.mnuConnections.Image = global::PKSoft.Resources.Icons.connections;
+            this.mnuConnections.Image = global::pylorak.TinyWall.Resources.Icons.connections;
             this.mnuConnections.Name = "mnuConnections";
             resources.ApplyResources(this.mnuConnections, "mnuConnections");
             this.mnuConnections.Click += new System.EventHandler(this.mnuConnections_Click);
             // 
             // mnuLock
             // 
-            this.mnuLock.Image = global::PKSoft.Resources.Icons.lock_small;
+            this.mnuLock.Image = global::pylorak.TinyWall.Resources.Icons.lock_small;
             this.mnuLock.Name = "mnuLock";
             resources.ApplyResources(this.mnuLock, "mnuLock");
             this.mnuLock.Click += new System.EventHandler(this.mnuLock_Click);
             // 
             // mnuElevate
             // 
-            this.mnuElevate.Image = global::PKSoft.Resources.Icons.w7uacshield;
+            this.mnuElevate.Image = global::pylorak.TinyWall.Resources.Icons.w7uacshield;
             this.mnuElevate.Name = "mnuElevate";
             resources.ApplyResources(this.mnuElevate, "mnuElevate");
             this.mnuElevate.Click += new System.EventHandler(this.mnuElevate_Click);
@@ -191,21 +188,21 @@ namespace PKSoft
             // 
             // mnuWhitelistByExecutable
             // 
-            this.mnuWhitelistByExecutable.Image = global::PKSoft.Resources.Icons.executable;
+            this.mnuWhitelistByExecutable.Image = global::pylorak.TinyWall.Resources.Icons.executable;
             this.mnuWhitelistByExecutable.Name = "mnuWhitelistByExecutable";
             resources.ApplyResources(this.mnuWhitelistByExecutable, "mnuWhitelistByExecutable");
             this.mnuWhitelistByExecutable.Click += new System.EventHandler(this.mnuWhitelistByExecutable_Click);
             // 
             // mnuWhitelistByProcess
             // 
-            this.mnuWhitelistByProcess.Image = global::PKSoft.Resources.Icons.process;
+            this.mnuWhitelistByProcess.Image = global::pylorak.TinyWall.Resources.Icons.process;
             this.mnuWhitelistByProcess.Name = "mnuWhitelistByProcess";
             resources.ApplyResources(this.mnuWhitelistByProcess, "mnuWhitelistByProcess");
             this.mnuWhitelistByProcess.Click += new System.EventHandler(this.mnuWhitelistByProcess_Click);
             // 
             // mnuWhitelistByWindow
             // 
-            this.mnuWhitelistByWindow.Image = global::PKSoft.Resources.Icons.window;
+            this.mnuWhitelistByWindow.Image = global::pylorak.TinyWall.Resources.Icons.window;
             this.mnuWhitelistByWindow.Name = "mnuWhitelistByWindow";
             resources.ApplyResources(this.mnuWhitelistByWindow, "mnuWhitelistByWindow");
             this.mnuWhitelistByWindow.Click += new System.EventHandler(this.mnuWhitelistByWindow_Click);
@@ -217,7 +214,7 @@ namespace PKSoft
             // 
             // mnuQuit
             // 
-            this.mnuQuit.Image = global::PKSoft.Resources.Icons.exit;
+            this.mnuQuit.Image = global::pylorak.TinyWall.Resources.Icons.exit;
             this.mnuQuit.Name = "mnuQuit";
             resources.ApplyResources(this.mnuQuit, "mnuQuit");
             this.mnuQuit.Click += new System.EventHandler(this.mnuQuit_Click);
@@ -289,12 +286,12 @@ namespace PKSoft
                 FirewallState.Locked = value;
                 if (m_Locked)
                 {
-                    mnuLock.Text = PKSoft.Resources.Messages.Unlock;
+                    mnuLock.Text = Resources.Messages.Unlock;
                     mnuLock.Visible = false;
                 }
                 else
                 {
-                    mnuLock.Text = PKSoft.Resources.Messages.Lock;
+                    mnuLock.Text = Resources.Messages.Lock;
                     mnuLock.Visible = FirewallState.HasPassword;
                 }
             }
@@ -388,7 +385,7 @@ namespace PKSoft
                     {
                         Utils.Invoke(SyncCtx, (SendOrPostCallback)delegate(object o)
                         {
-                            string prompt = string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.UpdateAvailableBubble, MainAppModule.ComponentVersion);
+                            string prompt = string.Format(CultureInfo.CurrentCulture, pylorak.TinyWall.Resources.Messages.UpdateAvailableBubble, MainAppModule.ComponentVersion);
                             ShowBalloonTip(prompt, ToolTipIcon.Info, 5000, StartUpdate, MainAppModule.UpdateURL);
                         });
                     }
@@ -452,7 +449,7 @@ namespace PKSoft
                     ? string.Format(CultureInfo.CurrentCulture, "{0:f} MiB/s", MBytesTxPerSec)
                     : string.Format(CultureInfo.CurrentCulture, "{0:f} KiB/s", KBytesTxPerSec);
 
-                string trafficRateText = string.Format(CultureInfo.CurrentCulture, "{0}: {1}    {2}: {3}", PKSoft.Resources.Messages.TrafficIn, rxDisplay, PKSoft.Resources.Messages.TrafficOut, txDisplay);
+                string trafficRateText = string.Format(CultureInfo.CurrentCulture, "{0}: {1}    {2}: {3}", Resources.Messages.TrafficIn, rxDisplay, Resources.Messages.TrafficOut, txDisplay);
 
                 Utils.Invoke(TrayMenu, (MethodInvoker)delegate
                 {
@@ -525,48 +522,48 @@ namespace PKSoft
         private void UpdateDisplay()
         {
             // Update UI based on current firewall mode
-            string FirewallModeName = PKSoft.Resources.Messages.FirewallModeUnknown;
+            string FirewallModeName = Resources.Messages.FirewallModeUnknown;
             switch (FirewallState.Mode)
             {
-                case TinyWall.Interface.FirewallMode.Normal:
-                    Tray.Icon = PKSoft.Resources.Icons.firewall;
+                case FirewallMode.Normal:
+                    Tray.Icon = Resources.Icons.firewall;
                     mnuMode.Image = mnuModeNormal.Image;
-                    FirewallModeName = PKSoft.Resources.Messages.FirewallModeNormal;
+                    FirewallModeName = Resources.Messages.FirewallModeNormal;
                     break;
 
-                case TinyWall.Interface.FirewallMode.AllowOutgoing:
-                    Tray.Icon = PKSoft.Resources.Icons.shield_red_small;
+                case FirewallMode.AllowOutgoing:
+                    Tray.Icon = Resources.Icons.shield_red_small;
                     mnuMode.Image = mnuModeAllowOutgoing.Image;
-                    FirewallModeName = PKSoft.Resources.Messages.FirewallModeAllowOut;
+                    FirewallModeName = Resources.Messages.FirewallModeAllowOut;
                     break;
 
-                case TinyWall.Interface.FirewallMode.BlockAll:
-                    Tray.Icon = PKSoft.Resources.Icons.shield_yellow_small;
+                case FirewallMode.BlockAll:
+                    Tray.Icon = Resources.Icons.shield_yellow_small;
                     mnuMode.Image = mnuModeBlockAll.Image;
-                    FirewallModeName = PKSoft.Resources.Messages.FirewallModeBlockAll;
+                    FirewallModeName = Resources.Messages.FirewallModeBlockAll;
                     break;
 
-                case TinyWall.Interface.FirewallMode.Disabled:
-                    Tray.Icon = PKSoft.Resources.Icons.shield_grey_small;
+                case FirewallMode.Disabled:
+                    Tray.Icon = Resources.Icons.shield_grey_small;
                     mnuMode.Image = mnuModeDisabled.Image;
-                    FirewallModeName = PKSoft.Resources.Messages.FirewallModeDisabled;
+                    FirewallModeName = Resources.Messages.FirewallModeDisabled;
                     break;
 
-                case TinyWall.Interface.FirewallMode.Learning:
-                    Tray.Icon = PKSoft.Resources.Icons.shield_blue_small;
+                case FirewallMode.Learning:
+                    Tray.Icon = Resources.Icons.shield_blue_small;
                     mnuMode.Image = mnuModeLearn.Image;
-                    FirewallModeName = PKSoft.Resources.Messages.FirewallModeLearn;
+                    FirewallModeName = Resources.Messages.FirewallModeLearn;
                     break;
 
-                case TinyWall.Interface.FirewallMode.Unknown:
-                    Tray.Icon = PKSoft.Resources.Icons.shield_grey_small;
-                    mnuMode.Image = PKSoft.Resources.Icons.shield_grey_small.ToBitmap();
-                    FirewallModeName = PKSoft.Resources.Messages.FirewallModeUnknown;
+                case FirewallMode.Unknown:
+                    Tray.Icon = Resources.Icons.shield_grey_small;
+                    mnuMode.Image = Resources.Icons.shield_grey_small.ToBitmap();
+                    FirewallModeName = Resources.Messages.FirewallModeUnknown;
                     break;
             }
 
             Tray.Text = string.Format(CultureInfo.CurrentCulture, "TinyWall\r\n{0}: {1}",
-                PKSoft.Resources.Messages.Mode, FirewallModeName);
+                Resources.Messages.Mode, FirewallModeName);
 
             // Find out if we are locked and if we have a password
             this.Locked = FirewallState.Locked;
@@ -575,31 +572,31 @@ namespace PKSoft
             mnuEnableHostsBlocklist.Checked = ActiveConfig.Service.Blocklists.EnableBlocklists;
         }
 
-        private void SetMode(TinyWall.Interface.FirewallMode mode)
+        private void SetMode(FirewallMode mode)
         {
             MessageType resp = GlobalInstances.Controller.SwitchFirewallMode(mode);
 
             string usermsg = string.Empty;
             switch (mode)
             {
-                case TinyWall.Interface.FirewallMode.Normal:
-                    usermsg = PKSoft.Resources.Messages.TheFirewallIsNowOperatingAsRecommended;
+                case FirewallMode.Normal:
+                    usermsg = Resources.Messages.TheFirewallIsNowOperatingAsRecommended;
                     break;
 
-                case TinyWall.Interface.FirewallMode.AllowOutgoing:
-                    usermsg = PKSoft.Resources.Messages.TheFirewallIsNowAllowsOutgoingConnections;
+                case FirewallMode.AllowOutgoing:
+                    usermsg = Resources.Messages.TheFirewallIsNowAllowsOutgoingConnections;
                     break;
 
-                case TinyWall.Interface.FirewallMode.BlockAll:
-                    usermsg = PKSoft.Resources.Messages.TheFirewallIsNowBlockingAllInAndOut;
+                case FirewallMode.BlockAll:
+                    usermsg = Resources.Messages.TheFirewallIsNowBlockingAllInAndOut;
                     break;
 
-                case TinyWall.Interface.FirewallMode.Disabled:
-                    usermsg = PKSoft.Resources.Messages.TheFirewallIsNowDisabled;
+                case FirewallMode.Disabled:
+                    usermsg = Resources.Messages.TheFirewallIsNowDisabled;
                     break;
 
-                case TinyWall.Interface.FirewallMode.Learning:
-                    usermsg = PKSoft.Resources.Messages.TheFirewallIsNowLearning;
+                case FirewallMode.Learning:
+                    usermsg = Resources.Messages.TheFirewallIsNowLearning;
                     break;
             }
 
@@ -620,7 +617,7 @@ namespace PKSoft
             if (!EnsureUnlockedServer())
                 return;
 
-            SetMode(TinyWall.Interface.FirewallMode.Disabled);
+            SetMode(FirewallMode.Disabled);
             UpdateDisplay();
         }
 
@@ -629,7 +626,7 @@ namespace PKSoft
             if (!EnsureUnlockedServer())
                 return;
 
-            SetMode(TinyWall.Interface.FirewallMode.Normal);
+            SetMode(FirewallMode.Normal);
             UpdateDisplay();
         }
 
@@ -638,7 +635,7 @@ namespace PKSoft
             if (!EnsureUnlockedServer())
                 return;
 
-            SetMode(TinyWall.Interface.FirewallMode.BlockAll);
+            SetMode(FirewallMode.BlockAll);
             UpdateDisplay();
         }
 
@@ -647,7 +644,7 @@ namespace PKSoft
             if (!EnsureUnlockedServer())
                 return;
 
-            SetMode(TinyWall.Interface.FirewallMode.AllowOutgoing);
+            SetMode(FirewallMode.AllowOutgoing);
             UpdateDisplay();
         }
 
@@ -681,7 +678,7 @@ namespace PKSoft
             {
                 ActiveConfig.Controller = new ControllerSettings();
                 ActiveConfig.Service = new ServerConfiguration();
-                ActiveConfig.Service.SetActiveProfile(PKSoft.Resources.Messages.Default);
+                ActiveConfig.Service.SetActiveProfile(Resources.Messages.Default);
                 FirewallState = new ServerState();
                 SettingsUpdated = true;
             }
@@ -708,11 +705,11 @@ namespace PKSoft
         private void TrayMenu_Opening(object sender, CancelEventArgs e)
         {
             e.Cancel = false;
-            if (FirewallState.Mode == TinyWall.Interface.FirewallMode.Unknown)
+            if (FirewallState.Mode == FirewallMode.Unknown)
             {
                 if (!TinyWallDoctor.IsServiceRunning(Utils.LOG_ID_GUI, false))
                 {
-                    ShowBalloonTip(PKSoft.Resources.Messages.TheTinyWallServiceIsUnavailable, ToolTipIcon.Error, 10000);
+                    ShowBalloonTip(Resources.Messages.TheTinyWallServiceIsUnavailable, ToolTipIcon.Error, 10000);
                     e.Cancel = true;
                 }
             }
@@ -759,7 +756,7 @@ namespace PKSoft
 
                 List<ExceptionSubject> subjects = new List<ExceptionSubject>();
                 if (sel.Package.HasValue)
-                    subjects.Add(sel.Package.Value.ToExceptionSubject());
+                    subjects.Add(new AppContainerSubject(sel.Package.Value));
                 else if (sel.Services.Count > 0)
                 {
                     foreach (var srv in sel.Services)
@@ -834,18 +831,18 @@ namespace PKSoft
                     ActiveConfig.Service = srvConfig;
                     GlobalInstances.ClientChangeset = localChangeset;
                     if (showUI)
-                        ShowBalloonTip(PKSoft.Resources.Messages.TheFirewallSettingsHaveBeenUpdated, ToolTipIcon.Info);
+                        ShowBalloonTip(Resources.Messages.TheFirewallSettingsHaveBeenUpdated, ToolTipIcon.Info);
                     break;
                 case MessageType.RESPONSE_WARNING:
                     FirewallState = state;
 
                     // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
                     if (showUI)
-                        ShowBalloonTip(PKSoft.Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
+                        ShowBalloonTip(Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
                     break;
                 case MessageType.RESPONSE_ERROR:
                     if (showUI)
-                        ShowBalloonTip(PKSoft.Resources.Messages.CouldNotApplySettingsInternalError, ToolTipIcon.Warning);
+                        ShowBalloonTip(Resources.Messages.CouldNotApplySettingsInternalError, ToolTipIcon.Warning);
                     break;
                 default:
                     if (showUI)
@@ -862,20 +859,20 @@ namespace PKSoft
             switch (op)
             {
                 case MessageType.RESPONSE_OK:
-                    ShowBalloonTip(PKSoft.Resources.Messages.Success, ToolTipIcon.Info);
+                    ShowBalloonTip(Resources.Messages.Success, ToolTipIcon.Info);
                     break;
                 case MessageType.RESPONSE_WARNING:
-                    ShowBalloonTip(PKSoft.Resources.Messages.OtherSettingsPreventEffect, ToolTipIcon.Warning);
+                    ShowBalloonTip(Resources.Messages.OtherSettingsPreventEffect, ToolTipIcon.Warning);
                     break;
                 case MessageType.RESPONSE_ERROR:
-                    ShowBalloonTip(PKSoft.Resources.Messages.OperationFailed, ToolTipIcon.Error);
+                    ShowBalloonTip(Resources.Messages.OperationFailed, ToolTipIcon.Error);
                     break;
                 case MessageType.RESPONSE_LOCKED:
-                    ShowBalloonTip(PKSoft.Resources.Messages.TinyWallIsCurrentlyLocked, ToolTipIcon.Warning);
+                    ShowBalloonTip(Resources.Messages.TinyWallIsCurrentlyLocked, ToolTipIcon.Warning);
                     break;
                 case MessageType.COM_ERROR:
                 default:
-                    ShowBalloonTip(PKSoft.Resources.Messages.CommunicationWithTheServiceError, ToolTipIcon.Error);
+                    ShowBalloonTip(Resources.Messages.CommunicationWithTheServiceError, ToolTipIcon.Error);
                     break;
             }
         }
@@ -986,7 +983,7 @@ namespace PKSoft
                 }
                 catch
                 {
-                    ShowBalloonTip(PKSoft.Resources.Messages.CannotGetExecutablePathWhitelisting, ToolTipIcon.Error);
+                    ShowBalloonTip(Resources.Messages.CannotGetExecutablePathWhitelisting, ToolTipIcon.Error);
                 }
             }
             else
@@ -994,14 +991,14 @@ namespace PKSoft
                 if (MouseInterceptor == null)
                 {
                     MouseInterceptor = new MouseInterceptor();
-                    MouseInterceptor.MouseLButtonDown += new PKSoft.MouseInterceptor.MouseHookLButtonDown(MouseInterceptor_MouseLButtonDown);
-                    ShowBalloonTip(PKSoft.Resources.Messages.ClickOnAWindowWhitelisting, ToolTipIcon.Info);
+                    MouseInterceptor.MouseLButtonDown += new MouseInterceptor.MouseHookLButtonDown(MouseInterceptor_MouseLButtonDown);
+                    ShowBalloonTip(Resources.Messages.ClickOnAWindowWhitelisting, ToolTipIcon.Info);
                 }
                 else
                 {
                     MouseInterceptor.Dispose();
                     MouseInterceptor = null;
-                    ShowBalloonTip(PKSoft.Resources.Messages.WhitelistingCancelled, ToolTipIcon.Info);
+                    ShowBalloonTip(Resources.Messages.WhitelistingCancelled, ToolTipIcon.Info);
                 }
             }
         }
@@ -1035,11 +1032,11 @@ namespace PKSoft
                     ExceptionSubject subj;
                     if (appContainer.HasValue)
                     {
-                        subj = appContainer.Value.ToExceptionSubject();
+                        subj = new AppContainerSubject(appContainer.Value);
                     }
                     else if (string.IsNullOrEmpty(exePath))
                     {
-                        ShowBalloonTip(PKSoft.Resources.Messages.CannotGetExecutablePathWhitelisting, ToolTipIcon.Error);
+                        ShowBalloonTip(Resources.Messages.CannotGetExecutablePathWhitelisting, ToolTipIcon.Error);
                         return;
                     }
                     else
@@ -1116,16 +1113,16 @@ namespace PKSoft
                             signedAndValid = exesub.IsSigned && exesub.CertValid;
 
                         if (signedAndValid)
-                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForRecognizedChanged, list[0].Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(list[0]));
+                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, Resources.Messages.FirewallRulesForRecognizedChanged, list[0].Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(list[0]));
                         else
-                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.FirewallRulesForUnrecognizedChanged, list[0].Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(list[0]));
+                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, Resources.Messages.FirewallRulesForUnrecognizedChanged, list[0].Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(list[0]));
                         break;
                     case MessageType.RESPONSE_WARNING:
                         // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
-                        ShowBalloonTip(PKSoft.Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
+                        ShowBalloonTip(Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
                         break;
                     case MessageType.RESPONSE_ERROR:
-                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, PKSoft.Resources.Messages.CouldNotWhitelistProcess, list[0].Subject.ToString()), ToolTipIcon.Warning);
+                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, Resources.Messages.CouldNotWhitelistProcess, list[0].Subject.ToString()), ToolTipIcon.Warning);
                         break;
                     default:
                         DefaultPopups(resp);
@@ -1167,7 +1164,7 @@ namespace PKSoft
                             return true;
                         case MessageType.RESPONSE_ERROR:
                             if (showUi)
-                                ShowBalloonTip(PKSoft.Resources.Messages.UnlockFailed, ToolTipIcon.Error);
+                                ShowBalloonTip(Resources.Messages.UnlockFailed, ToolTipIcon.Error);
                             break;
                         default:
                             if (showUi)
@@ -1261,12 +1258,12 @@ namespace PKSoft
         {
             try
             {
-                Utils.StartProcess(TinyWall.Interface.Internal.Utils.ExecutablePath, null, true);
+                Utils.StartProcess(Utils.ExecutablePath, null, true);
                 System.Windows.Forms.Application.Exit();
             }
             catch
             {
-                ShowBalloonTip(PKSoft.Resources.Messages.CouldNotElevatePrivileges, ToolTipIcon.Error);
+                ShowBalloonTip(Resources.Messages.CouldNotElevatePrivileges, ToolTipIcon.Error);
             }
         }
 
@@ -1308,16 +1305,16 @@ namespace PKSoft
         {
             try
             {
-                GlobalInstances.AppDatabase = AppDatabase.Load(AppDatabase.DBPath);
+                GlobalInstances.AppDatabase = DatabaseClasses.AppDatabase.Load(DatabaseClasses.AppDatabase.DBPath);
             }
             catch
             {
-                GlobalInstances.AppDatabase = new AppDatabase();
+                GlobalInstances.AppDatabase = new DatabaseClasses.AppDatabase();
                 ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
                 {
                     Utils.Invoke(SyncCtx, (SendOrPostCallback)delegate(object o)
                     {
-                        ShowBalloonTip(PKSoft.Resources.Messages.DatabaseIsMissingOrCorrupt, ToolTipIcon.Warning);
+                        ShowBalloonTip(Resources.Messages.DatabaseIsMissingOrCorrupt, ToolTipIcon.Warning);
                     });
                 });
 
@@ -1338,11 +1335,11 @@ namespace PKSoft
             if (!EnsureUnlockedServer())
                 return;
 
-            Utils.SplitFirstLine(PKSoft.Resources.Messages.YouAreAboutToEnterLearningMode, out string firstLine, out string contentLines);
+            Utils.SplitFirstLine(Resources.Messages.YouAreAboutToEnterLearningMode, out string firstLine, out string contentLines);
 
             TaskDialog dialog = new TaskDialog();
-            dialog.CustomMainIcon = PKSoft.Resources.Icons.firewall;
-            dialog.WindowTitle = PKSoft.Resources.Messages.TinyWall;
+            dialog.CustomMainIcon = Resources.Icons.firewall;
+            dialog.WindowTitle = Resources.Messages.TinyWall;
             dialog.MainInstruction = firstLine;
             dialog.Content = contentLines;
             dialog.AllowDialogCancellation = false;
@@ -1351,13 +1348,13 @@ namespace PKSoft
             if (dialog.Show() != (int)DialogResult.Yes)
                 return;
 
-            SetMode(TinyWall.Interface.FirewallMode.Learning);
+            SetMode(FirewallMode.Learning);
             UpdateDisplay();
         }
 
         private void InitController()
         {
-            mnuTrafficRate.Text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", PKSoft.Resources.Messages.TrafficIn, "...", PKSoft.Resources.Messages.TrafficOut, "...");
+            mnuTrafficRate.Text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", Resources.Messages.TrafficIn, "...", Resources.Messages.TrafficOut, "...");
 
             // We will load our database parallel to other things to improve startup performance
             using (ThreadBarrier barrier = new ThreadBarrier(2))

@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace TinyWall.Interface.Internal
+namespace pylorak.TinyWall
 {
     public static class Hasher
     {

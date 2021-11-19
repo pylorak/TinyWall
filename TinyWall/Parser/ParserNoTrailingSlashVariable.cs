@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
-using TinyWall.Interface;
 
-namespace TinyWall.Interface.Parser
+namespace pylorak.TinyWall
 {
     public sealed class ParserNoTrailingSlashVariable : ParserVariable
     {

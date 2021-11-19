@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Globalization;
-using TinyWall.Interface;
-using TinyWall.Interface.Internal;
 using Microsoft.Samples;
 
-namespace PKSoft.DatabaseClasses
+namespace pylorak.TinyWall.DatabaseClasses
 {
     [DataContract(Namespace = "TinyWall")]
     class AppDatabase
@@ -137,25 +135,25 @@ namespace PKSoft.DatabaseClasses
                     string firstLine, contentLines;
 
                     // Try to get localized name
-                    string localizedAppName = PKSoft.Resources.Exceptions.ResourceManager.GetString(app.Name);
+                    string localizedAppName = Resources.Exceptions.ResourceManager.GetString(app.Name);
                     localizedAppName = string.IsNullOrEmpty(localizedAppName) ? app.Name : localizedAppName;
 
-                    Utils.SplitFirstLine(string.Format(CultureInfo.InvariantCulture, PKSoft.Resources.Messages.UnblockApp, localizedAppName), out firstLine, out contentLines);
+                    Utils.SplitFirstLine(string.Format(CultureInfo.InvariantCulture, Resources.Messages.UnblockApp, localizedAppName), out firstLine, out contentLines);
 
                     TaskDialog dialog = new TaskDialog();
-                    dialog.CustomMainIcon = PKSoft.Resources.Icons.firewall;
-                    dialog.WindowTitle = PKSoft.Resources.Messages.TinyWall;
+                    dialog.CustomMainIcon = Resources.Icons.firewall;
+                    dialog.WindowTitle = Resources.Messages.TinyWall;
                     dialog.MainInstruction = firstLine;
                     dialog.Content = contentLines;
                     dialog.DefaultButton = 1;
-                    dialog.ExpandedControlText = PKSoft.Resources.Messages.UnblockAppShowRelated;
+                    dialog.ExpandedControlText = Resources.Messages.UnblockAppShowRelated;
                     dialog.ExpandFooterArea = true;
                     dialog.AllowDialogCancellation = false;
                     dialog.UseCommandLinks = true;
 
-                    TaskDialogButton button1 = new TaskDialogButton(101, PKSoft.Resources.Messages.UnblockAppUnblockAllRecommended);
-                    TaskDialogButton button2 = new TaskDialogButton(102, PKSoft.Resources.Messages.UnblockAppUnblockOnlySelected);
-                    TaskDialogButton button3 = new TaskDialogButton(103, PKSoft.Resources.Messages.UnblockAppCancel);
+                    TaskDialogButton button1 = new TaskDialogButton(101, Resources.Messages.UnblockAppUnblockAllRecommended);
+                    TaskDialogButton button2 = new TaskDialogButton(102, Resources.Messages.UnblockAppUnblockOnlySelected);
+                    TaskDialogButton button3 = new TaskDialogButton(103, Resources.Messages.UnblockAppCancel);
                     dialog.Buttons = new TaskDialogButton[] { button1, button2, button3 };
 
                     string fileListStr = string.Empty;

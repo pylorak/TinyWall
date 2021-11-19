@@ -7,13 +7,13 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Management;
 using System.Threading;
-using TinyWall.Interface;
-using TinyWall.Interface.Internal;
+using pylorak.Windows;
 using pylorak.Windows.Services;
 using pylorak.Windows.WFP;
 using pylorak.Windows.WFP.Interop;
+using pylorak.Utilities;
 
-namespace PKSoft
+namespace pylorak.TinyWall
 {
     public sealed class TinyWallServer : IDisposable
     {
@@ -38,6 +38,8 @@ namespace PKSoft
         private DateTime LastRuleReloadTime = DateTime.Now;
         private CircularBuffer<FirewallLogEntry> FirewallLogEntries = new CircularBuffer<FirewallLogEntry>(500);
         private PasswordManager ServiceLocker = new PasswordManager();
+        private FileLocker FileLocker = new FileLocker();
+        private HostsFileManager HostsFileManager = new HostsFileManager();
 
         // Context needed for learning mode
         private FirewallLogWatcher LogWatcher = new FirewallLogWatcher();
@@ -98,7 +100,7 @@ namespace PKSoft
                 bool needUserRules = true;
                 switch (VisibleState.Mode)
                 {
-                    case TinyWall.Interface.FirewallMode.AllowOutgoing:
+                    case FirewallMode.AllowOutgoing:
                         {
                             // Block everything
                             def = new RuleDef(ModeId, "Block everything", GlobalSubject.Instance, RuleAction.Block, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultBlock);
@@ -109,7 +111,7 @@ namespace PKSoft
                             rules.Add(def);
                             break;
                         }
-                    case TinyWall.Interface.FirewallMode.BlockAll:
+                    case FirewallMode.BlockAll:
                         {
                             // We won't need application exceptions
                             needUserRules = false;
@@ -119,14 +121,14 @@ namespace PKSoft
                             rules.Add(def);
                             break;
                         }
-                    case TinyWall.Interface.FirewallMode.Learning:
+                    case FirewallMode.Learning:
                         {
                             // Add rule to explicitly allow everything
                             def = new RuleDef(ModeId, "Allow everything", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultPermit);
                             rules.Add(def);
                             break;
                         }
-                    case TinyWall.Interface.FirewallMode.Disabled:
+                    case FirewallMode.Disabled:
                         {
                             // We won't need application exceptions
                             needUserRules = false;
@@ -136,7 +138,7 @@ namespace PKSoft
                             rules.Add(def);
                             break;
                         }
-                    case TinyWall.Interface.FirewallMode.Normal:
+                    case FirewallMode.Normal:
                         {
                             // Block all by default
                             def = new RuleDef(ModeId, "Block everything", GlobalSubject.Instance, RuleAction.Block, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultBlock);
@@ -550,7 +552,7 @@ namespace PKSoft
                 System.Diagnostics.Debug.Assert(!r.AppContainerSid.Equals("*"));
 
                 // Skip filter if OS is not supported
-                if (!TinyWall.Interface.VersionInfo.Win81OrNewer)
+                if (!pylorak.Windows.VersionInfo.Win81OrNewer)
                     return;
 
                 if (!LayerIsIcmpError(layer))
@@ -1078,7 +1080,7 @@ namespace PKSoft
             if (ret == null)
             {
                 ret = new ServerConfiguration();
-                ret.SetActiveProfile(PKSoft.Resources.Messages.Default);
+                ret.SetActiveProfile(Resources.Messages.Default);
 
                 // Allow recommended exceptions
                 DatabaseClasses.AppDatabase db = GlobalInstances.AppDatabase;
@@ -1115,7 +1117,7 @@ namespace PKSoft
         {
             using (var timer = new HierarchicalStopwatch("ReapplySettings()"))
             {
-                HostsFileManager.EnableProtection(ActiveConfig.Service.LockHostsFile);
+                HostsFileManager.EnableProtection = ActiveConfig.Service.LockHostsFile;
                 if (ActiveConfig.Service.Blocklists.EnableBlocklists
                     && ActiveConfig.Service.Blocklists.EnableHostsBlocklist)
                     HostsFileManager.EnableHostsFile();
@@ -1282,13 +1284,13 @@ namespace PKSoft
         {
             string tmpFilePath = (string)file;
 
-            FileLocker.UnlockFile(DatabaseClasses.AppDatabase.DBPath);
+            FileLocker.Unlock(DatabaseClasses.AppDatabase.DBPath);
             using (var afu = new AtomicFileUpdater(DatabaseClasses.AppDatabase.DBPath))
             {
                 File.Copy(tmpFilePath, afu.TemporaryFilePath, true);
                 afu.Commit();
             }
-            FileLocker.LockFile(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
+            FileLocker.Lock(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
             NotifyController(MessageType.DATABASE_UPDATED);
             Q.Enqueue(new TwMessage(MessageType.REINIT), null);
         }
@@ -1351,7 +1353,7 @@ namespace PKSoft
                     }
                 case MessageType.MODE_SWITCH:
                     {
-                        FirewallMode newMode = (TinyWall.Interface.FirewallMode)req.Arguments[0];
+                        FirewallMode newMode = (FirewallMode)req.Arguments[0];
 
                         if (CommitLearnedRules())
                             ActiveConfig.Service.Save(ConfigSavePath);
@@ -1371,8 +1373,8 @@ namespace PKSoft
                         InstallFirewallRules();
 
                         if (
-                               (VisibleState.Mode != TinyWall.Interface.FirewallMode.Disabled)
-                            && (VisibleState.Mode != TinyWall.Interface.FirewallMode.Learning)
+                               (VisibleState.Mode != FirewallMode.Disabled)
+                            && (VisibleState.Mode != FirewallMode.Learning)
                            )
                         {
                             ActiveConfig.Service.StartupMode = VisibleState.Mode;
@@ -1484,7 +1486,7 @@ namespace PKSoft
                     }
                 case MessageType.SET_PASSPHRASE:
                     {
-                        FileLocker.UnlockFile(PasswordManager.PasswordFilePath);
+                        FileLocker.Unlock(PasswordManager.PasswordFilePath);
                         try
                         {
                             ServiceLocker.SetPass((string)req.Arguments[0]);
@@ -1497,7 +1499,7 @@ namespace PKSoft
                         }
                         finally
                         {
-                            FileLocker.LockFile(PasswordManager.PasswordFilePath, FileAccess.Read, FileShare.Read);
+                            FileLocker.Lock(PasswordManager.PasswordFilePath, FileAccess.Read, FileShare.Read);
                         }
                     }
                 case MessageType.STOP_SERVICE:
@@ -1695,7 +1697,7 @@ namespace PKSoft
             {
                 timer.NewSubTask("Init 1");
 
-                FirewallThreadThrottler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest, false, true);
+                FirewallThreadThrottler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest, false);
                 MinuteTimer = new Timer(new TimerCallback(TimerCallback), null, 60000, 60000);
                 LogWatcher.NewLogEntry += (FirewallLogWatcher sender, FirewallLogEntry entry) =>
                 {
@@ -1703,8 +1705,8 @@ namespace PKSoft
                 };
 
                 // Fire up file protections as soon as possible
-                FileLocker.LockFile(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
-                FileLocker.LockFile(PasswordManager.PasswordFilePath, FileAccess.Read, FileShare.Read);
+                FileLocker.Lock(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
+                FileLocker.Lock(PasswordManager.PasswordFilePath, FileAccess.Read, FileShare.Read);
 
                 // Lock configuration if we have a password
                 if (ServiceLocker.HasPassword)
@@ -1783,7 +1785,7 @@ namespace PKSoft
         {
             try
             {
-                using (var throttler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest, true, false))
+                using (var throttler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest, true))
                 {
                     uint pid = (uint)(e.NewEvent["ProcessID"]);
                     string path = ProcessManager.GetProcessPath(pid, ref ProcessStartWatcher_Sbuilder);
@@ -2018,6 +2020,7 @@ namespace PKSoft
                 LogWatcher.Dispose();
                 CommitLearnedRules();
                 ActiveConfig.Service.Save(ConfigSavePath);
+                HostsFileManager.Dispose();
                 FileLocker.UnlockAll();
 
                 FirewallThreadThrottler?.Dispose();
