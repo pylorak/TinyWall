@@ -14,13 +14,13 @@ namespace pylorak.Windows
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        public struct Package
+        public readonly struct Package  // TODO: Use record struct from C# 10
         {
-            public string Name;
-            public string Publisher;
-            public string PublisherId;
-            public string Sid;
-            public TamperedState Tampered;
+            public readonly string Name;
+            public readonly string Publisher;
+            public readonly string PublisherId;
+            public readonly string Sid;
+            public readonly TamperedState Tampered;
 
             public override int GetHashCode()
             {
@@ -33,10 +33,10 @@ namespace pylorak.Windows
 
             public override bool Equals(object obj)
             {
-                if (!(obj is Package))
+                if (obj is Package other)
+                    return Equals(other);
+                else
                     return false;
-
-                return Equals((Package)obj);
             }
 
             public bool Equals(Package other)
@@ -133,12 +133,12 @@ namespace pylorak.Windows
 
         public UwpPackage()
         {
-            Packages = UwpPackage.GetList();
+            Packages = GetList();
         }
 
         public Package? FindPackage(string sid)
         {
-            return UwpPackage.FindPackageDetails(sid, Packages);
+            return FindPackageDetails(sid, Packages);
         }
     }
 }

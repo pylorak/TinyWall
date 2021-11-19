@@ -3,66 +3,41 @@ using System.Net.NetworkInformation;
 
 namespace pylorak.Windows.NetStat
 {
-    internal class TcpRow
+    public class TcpRow
     {
-        private IPVersion ipVersion;
-        private IPEndPoint localEndPoint;
-        private IPEndPoint remoteEndPoint;
-        private TcpState state;
-        private uint processId;
+        public IPVersion IPVersion { get; private set; }
+        public IPEndPoint LocalEndPoint { get; private set; }
+        public IPEndPoint RemoteEndPoint { get; private set; }
+        public TcpState State { get; private set; }
+        public uint ProcessId { get; private set; }
 
-        internal TcpRow(SafeNativeMethods.Tcp4Row tcpRow)
+        internal TcpRow(NativeMethods.Tcp4Row tcpRow)
         {
-            ipVersion = IPVersion.IPv4;
-            this.state = tcpRow.state;
-            this.processId = tcpRow.owningPid;
+            IPVersion = IPVersion.IPv4;
+            State = tcpRow.state;
+            ProcessId = tcpRow.owningPid;
 
             int localPort = NetStat.PortNetworkToHost(tcpRow.localPort);
             long localAddress = tcpRow.localAddr;
-            this.localEndPoint = new IPEndPoint(localAddress, localPort);
+            LocalEndPoint = new IPEndPoint(localAddress, localPort);
 
             int remotePort = NetStat.PortNetworkToHost(tcpRow.remotePort);
             long remoteAddress = tcpRow.remoteAddr;
-            this.remoteEndPoint = new IPEndPoint(remoteAddress, remotePort);
+            RemoteEndPoint = new IPEndPoint(remoteAddress, remotePort);
         }
-        internal TcpRow(SafeNativeMethods.Tcp6Row tcpRow)
+        internal TcpRow(NativeMethods.Tcp6Row tcpRow)
         {
-            ipVersion = IPVersion.IPv6;
-            this.state = tcpRow.state;
-            this.processId = tcpRow.owningPid;
+            IPVersion = IPVersion.IPv6;
+            State = tcpRow.state;
+            ProcessId = tcpRow.owningPid;
 
-            int localPort = NetStat.PortNetworkToHost(tcpRow.localPort);
-            IPAddress localAddress = new IPAddress(tcpRow.localAddr);
-            this.localEndPoint = new IPEndPoint(localAddress, localPort);
+            var localPort = NetStat.PortNetworkToHost(tcpRow.localPort);
+            var localAddress = new IPAddress(tcpRow.localAddr);
+            LocalEndPoint = new IPEndPoint(localAddress, localPort);
 
-            int remotePort = NetStat.PortNetworkToHost(tcpRow.remotePort);
-            IPAddress remoteAddress = new IPAddress(tcpRow.remoteAddr);
-            this.remoteEndPoint = new IPEndPoint(remoteAddress, remotePort);
-        }
-
-        internal IPEndPoint LocalEndPoint
-        {
-            get { return this.localEndPoint; }
-        }
-
-        internal IPEndPoint RemoteEndPoint
-        {
-            get { return this.remoteEndPoint; }
-        }
-
-        internal TcpState State
-        {
-            get { return this.state; }
-        }
-
-        internal uint ProcessId
-        {
-            get { return this.processId; }
-        }
-
-        internal IPVersion IPVersion
-        {
-            get { return this.ipVersion; }
+            var remotePort = NetStat.PortNetworkToHost(tcpRow.remotePort);
+            var remoteAddress = new IPAddress(tcpRow.remoteAddr);
+            RemoteEndPoint = new IPEndPoint(remoteAddress, remotePort);
         }
     }
 }

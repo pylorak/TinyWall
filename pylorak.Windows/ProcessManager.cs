@@ -11,12 +11,12 @@ namespace pylorak.Windows
 {
     public readonly struct ProcessSnapshotEntry
     {
-        public readonly string ImagePath;
+        public readonly string? ImagePath;
         public readonly long CreationTime;
         public readonly uint ProcessId;
         public readonly uint ParentProcessId;
 
-        public ProcessSnapshotEntry(string path, long creationTime, uint pid, uint parentPid)
+        public ProcessSnapshotEntry(string? path, long creationTime, uint pid, uint parentPid)
         {
             ImagePath = path;
             CreationTime = creationTime;
@@ -77,7 +77,7 @@ namespace pylorak.Windows
             [return: MarshalAs(UnmanagedType.Bool)]
             private static extern bool ConvertSidToStringSid(IntPtr Sid, out AllocHLocalSafeHandle StringSid);
 
-            internal static string ConvertSidToStringSid(IntPtr pSid)
+            internal static string? ConvertSidToStringSid(IntPtr pSid)
             {
                 if (!ConvertSidToStringSid(pSid, out AllocHLocalSafeHandle ptrStrSid))
                     return null;
@@ -247,27 +247,23 @@ namespace pylorak.Windows
         public static string ExecutablePath { get; } = GetCurrentExecutablePath();
         private static string GetCurrentExecutablePath()
         {
-            using (var proc = Process.GetCurrentProcess())
-            {
-                uint pid = unchecked((uint)proc.Id);
-                return ProcessManager.GetProcessPath(pid);
-            }
+            using var proc = Process.GetCurrentProcess();
+            var pid = unchecked((uint)proc.Id);
+            return GetProcessPath(pid) ?? proc.MainModule.FileName;
         }
-        public static string GetProcessPath(uint processId)
+        public static string? GetProcessPath(uint processId)
         {
-            StringBuilder buffer = null;
+            StringBuilder? buffer = null;
             return GetProcessPath(processId, ref buffer);
         }
 
-        public static string GetProcessPath(uint processId, ref StringBuilder buffer)
+        public static string? GetProcessPath(uint processId, ref StringBuilder? buffer)
         {
-            using (var hProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
-            {
-                return GetProcessPath(hProcess, ref buffer);
-            }
+            using var hProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId);
+            return GetProcessPath(hProcess, ref buffer);
         }
 
-        public static string GetProcessPath(SafeObjectHandle hProcess, ref StringBuilder buffer)
+        public static string? GetProcessPath(SafeObjectHandle hProcess, ref StringBuilder? buffer)
         {
             // This method needs Windows Vista or newer OS
             System.Diagnostics.Debug.Assert(Environment.OSVersion.Version.Major >= 6);
@@ -320,37 +316,32 @@ namespace pylorak.Windows
 
         public static bool GetParentProcess(uint processId, ref uint parentPid)
         {
-            using (var hProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId))
+            using var hProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId);
+            if (hProcess.IsInvalid)
+                return false;
+            //throw new Exception($"Cannot open process Id {processId}.");
+
+            if (VersionInfo.IsWow64Process)
             {
-                if (hProcess.IsInvalid)
-                    return false;
-                    //throw new Exception($"Cannot open process Id {processId}.");
+                return false;
+                //throw new NotSupportedException("This method is not supported in 32-bit process on a 64-bit OS.");
+            }
+            else
+            {
+                var pbi = new PROCESS_BASIC_INFORMATION();
+                var status = NativeMethods.NtQueryInformationProcess(hProcess, 0, out pbi, Marshal.SizeOf(typeof(PROCESS_BASIC_INFORMATION)), out int returnLength);
+                if (status < 0)
+                    throw new Exception($"NTSTATUS: {status}");
 
-                if (VersionInfo.IsWow64Process)
-                {
-                    return false;
-                    //throw new NotSupportedException("This method is not supported in 32-bit process on a 64-bit OS.");
-                }
+                parentPid = unchecked((uint)pbi.InheritedFromUniqueProcessId.ToInt32());
+
+                // parentPid might have been reused and thus might not be the actual parent.
+                // Check process creation times to figure it out.
+                using var hParentProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, parentPid);
+                if (GetProcessCreationTime(hParentProcess, out long parentCreation) && GetProcessCreationTime(hProcess, out long childCreation))
+                    return parentCreation <= childCreation;
                 else
-                {
-                    PROCESS_BASIC_INFORMATION pbi = new PROCESS_BASIC_INFORMATION();
-                    int status = NativeMethods.NtQueryInformationProcess(hProcess, 0, out pbi, Marshal.SizeOf(typeof(PROCESS_BASIC_INFORMATION)), out int returnLength);
-                    if (status < 0)
-                        throw new Exception($"NTSTATUS: {status}");
-
-                    parentPid = unchecked((uint)pbi.InheritedFromUniqueProcessId.ToInt32());
-
-                    // parentPid might have been reused and thus might not be the actual parent.
-                    // Check process creation times to figure it out.
-                    using (var hParentProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, parentPid))
-                    {
-                        if (GetProcessCreationTime(hParentProcess, out long parentCreation) && GetProcessCreationTime(hProcess, out long childCreation))
-                        {
-                            return parentCreation <= childCreation;
-                        }
-                        return false;
-                    }
-                }
+                    return false;
             }
         }
 
@@ -363,42 +354,38 @@ namespace pylorak.Windows
         {
             const int ERROR_NO_MORE_FILES = 18;
 
-            PROCESSENTRY32 pe32 = new PROCESSENTRY32 { };
+            var pe32 = new PROCESSENTRY32();
             pe32.dwSize = (uint)Marshal.SizeOf(typeof(PROCESSENTRY32));
-            using (var hSnapshot = NativeMethods.CreateToolhelp32Snapshot(SnapshotFlags.Process, 0))
-            {
-                if (hSnapshot.IsInvalid)
-                    throw new Win32Exception(Marshal.GetLastWin32Error());
+            using var hSnapshot = NativeMethods.CreateToolhelp32Snapshot(SnapshotFlags.Process, 0);
+            if (hSnapshot.IsInvalid)
+                throw new Win32Exception(Marshal.GetLastWin32Error());
 
-                if (!NativeMethods.Process32First(hSnapshot, ref pe32))
-                {
-                    int errno = Marshal.GetLastWin32Error();
-                    if (errno == ERROR_NO_MORE_FILES)
-                        yield break;
-                    throw new Win32Exception(errno);
-                }
-                do
-                {
-                    yield return pe32;
-                } while (NativeMethods.Process32Next(hSnapshot, ref pe32));
+            if (!NativeMethods.Process32First(hSnapshot, ref pe32))
+            {
+                int errno = Marshal.GetLastWin32Error();
+                if (errno == ERROR_NO_MORE_FILES)
+                    yield break;
+                throw new Win32Exception(errno);
             }
+            do
+            {
+                yield return pe32;
+            } while (NativeMethods.Process32Next(hSnapshot, ref pe32));
         }
 
         public static IEnumerable<ProcessSnapshotEntry> CreateToolhelp32SnapshotExtended()
         {
-            StringBuilder sbuilder = null;
+            StringBuilder? sbuilder = null;
             foreach (var p in CreateToolhelp32Snapshot())
             {
-                using (var hProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, p.th32ProcessID))
-                {
-                    GetProcessCreationTime(hProcess, out long creationTime);
-                    yield return new ProcessSnapshotEntry(
-                        GetProcessPath(hProcess, ref sbuilder),
-                        creationTime,
-                        p.th32ProcessID,
-                        p.th32ParentProcessID
-                    );
-                }
+                using var hProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, p.th32ProcessID);
+                GetProcessCreationTime(hProcess, out long creationTime);
+                yield return new ProcessSnapshotEntry(
+                    GetProcessPath(hProcess, ref sbuilder),
+                    creationTime,
+                    p.th32ProcessID,
+                    p.th32ParentProcessID
+                );
             }
         }
 
@@ -432,30 +419,31 @@ namespace pylorak.Windows
             }
         }
 
-        public static string GetAppContainerSid(uint pid)
+        public static string? GetAppContainerSid(uint pid)
         {
             if (!UwpPackage.PlatformSupport)
                 return null;
 
-            using (var hProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryInformation, false, pid))
+            using var hProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryInformation, false, pid);
+            if (!NativeMethods.OpenProcessToken(hProcess, TokenAccessLevels.TokenQuery, out SafeObjectHandle hToken))
+                return null;
+
+            try
             {
-                if (!NativeMethods.OpenProcessToken(hProcess, TokenAccessLevels.TokenQuery, out SafeObjectHandle token))
+                const int hTokenInfoMemSize = 128;
+                using var hTokenInfo = new HeapSafeHandle(hTokenInfoMemSize);
+                if (!NativeMethods.GetTokenInformation(hToken, TokenInformationClass.TokenAppContainerSid, hTokenInfo, hTokenInfoMemSize, out _))
                     return null;
 
-                const int hTokenInfoMemSize = 128;
+                var tokenAppContainerInfo = Marshal.PtrToStructure<TOKEN_APPCONTAINER_INFORMATION>(hTokenInfo.DangerousGetHandle());
+                if (tokenAppContainerInfo.TokenAppContainer == IntPtr.Zero)
+                    return null;
 
-                using (var hToken = token)
-                using (var hTokenInfo = new HeapSafeHandle(hTokenInfoMemSize))
-                {
-                    if (!NativeMethods.GetTokenInformation(hToken, TokenInformationClass.TokenAppContainerSid, hTokenInfo, hTokenInfoMemSize, out _))
-                        return null;
-
-                    var tokenAppContainerInfo = Marshal.PtrToStructure<TOKEN_APPCONTAINER_INFORMATION>(hTokenInfo.DangerousGetHandle());
-                    if (tokenAppContainerInfo.TokenAppContainer == IntPtr.Zero)
-                        return null;
-
-                    return NativeMethods.ConvertSidToStringSid(tokenAppContainerInfo.TokenAppContainer);
-                }
+                return NativeMethods.ConvertSidToStringSid(tokenAppContainerInfo.TokenAppContainer);
+            }
+            finally
+            {
+                hToken.Dispose();
             }
         }
     }

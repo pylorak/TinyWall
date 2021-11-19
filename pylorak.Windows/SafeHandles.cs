@@ -85,7 +85,7 @@ namespace pylorak.Windows
 
         public T ToStruct<T>() where T : unmanaged
         {
-            T ret = default(T);
+            T ret = default;
             var size = Marshal.SizeOf(typeof(T));
             unsafe
             {
@@ -368,26 +368,24 @@ namespace pylorak.Windows
         public static IEnumerable<string> EnumerateVolumes()
         {
             const int ERROR_NO_MORE_FILES = 18;
-            StringBuilder sb = new StringBuilder(64);
+            var sb = new StringBuilder(64);
 
-            using (var safeHandle = FindFirstVolume(sb))
+            using var safeHandle = FindFirstVolume(sb);
+            if (safeHandle.IsInvalid)
+                throw new Win32Exception();
+
+            yield return sb.ToString();
+
+            while (safeHandle.FindNextVolume(sb))
             {
-                if (safeHandle.IsInvalid)
-                    throw new Win32Exception();
-
                 yield return sb.ToString();
-
-                while(safeHandle.FindNextVolume(sb))
-                {
-                    yield return sb.ToString();
-                }
-
-                int errno = Marshal.GetLastWin32Error();
-                if (errno == ERROR_NO_MORE_FILES)
-                    yield break;
-                else
-                    throw new Win32Exception(errno);
             }
+
+            int errno = Marshal.GetLastWin32Error();
+            if (errno == ERROR_NO_MORE_FILES)
+                yield break;
+            else
+                throw new Win32Exception(errno);
         }
 
         private static FindVolumeSafeHandle FindFirstVolume(StringBuilder dst)

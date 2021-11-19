@@ -24,8 +24,7 @@ namespace Microsoft.Samples
         /// <summary>
         /// The Task Dialog's window handle.
         /// </summary>
-        [SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")] // We don't own the window.
-        private IntPtr handle;
+        private readonly IntPtr handle;
 
         /// <summary>
         /// Creates a ActiveTaskDialog.
@@ -33,12 +32,7 @@ namespace Microsoft.Samples
         /// <param name="handle">The Task Dialog's window handle.</param>
         internal ActiveTaskDialog(IntPtr handle)
         {
-            if (handle == IntPtr.Zero)
-            {
-                throw new ArgumentNullException("handle");
-            }
-
-            this.handle = handle;
+            this.handle = (handle != IntPtr.Zero) ? handle : throw new ArgumentNullException(nameof(handle));
         }
 
         /// <summary>

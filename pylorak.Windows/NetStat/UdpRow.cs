@@ -2,45 +2,29 @@
 
 namespace pylorak.Windows.NetStat
 {
-
-    internal class UdpRow
+    public class UdpRow
     {
-        private IPVersion ipVersion;
-        private IPEndPoint localEndPoint;
-        private uint processId;
+        public IPVersion IPVersion { get; private set; }
+        public IPEndPoint LocalEndPoint { get; private set; }
+        public uint ProcessId { get; private set; }
 
-        internal UdpRow(SafeNativeMethods.Udp4Row udpRow)
+        internal UdpRow(NativeMethods.Udp4Row udpRow)
         {
-            ipVersion = IPVersion.IPv4;
-            this.processId = udpRow.owningPid;
+            IPVersion = IPVersion.IPv4;
+            ProcessId = udpRow.owningPid;
 
-            int localPort = NetStat.PortNetworkToHost(udpRow.localPort);
-            long localAddress = udpRow.localAddr;
-            this.localEndPoint = new IPEndPoint(localAddress, localPort);
+            var localPort = NetStat.PortNetworkToHost(udpRow.localPort);
+            var localAddress = udpRow.localAddr;
+            LocalEndPoint = new IPEndPoint(localAddress, localPort);
         }
-        internal UdpRow(SafeNativeMethods.Udp6Row udpRow)
+        internal UdpRow(NativeMethods.Udp6Row udpRow)
         {
-            ipVersion = IPVersion.IPv6;
-            this.processId = udpRow.owningPid;
+            IPVersion = IPVersion.IPv6;
+            ProcessId = udpRow.owningPid;
 
-            int localPort = NetStat.PortNetworkToHost(udpRow.localPort);
-            IPAddress localAddress = new IPAddress(udpRow.localAddr);
-            this.localEndPoint = new IPEndPoint(localAddress, localPort);
-        }
-
-        internal IPEndPoint LocalEndPoint
-        {
-            get { return this.localEndPoint; }
-        }
-
-        internal uint ProcessId
-        {
-            get { return this.processId; }
-        }
-
-        internal IPVersion IPVersion
-        {
-            get { return this.ipVersion; }
+            var localPort = NetStat.PortNetworkToHost(udpRow.localPort);
+            var localAddress = new IPAddress(udpRow.localAddr);
+            LocalEndPoint = new IPEndPoint(localAddress, localPort);
         }
     }
 }

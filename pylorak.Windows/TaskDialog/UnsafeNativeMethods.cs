@@ -316,13 +316,11 @@ namespace Microsoft.Samples
             /// <summary>
             /// Parent window handle.
             /// </summary>
-            [SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")] // Managed code owns actual resource. Passed to native in syncronous call. No lifetime issues.
             internal IntPtr hwndParent;
 
             /// <summary>
             /// Module instance handle for resources.
             /// </summary>
-            [SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")] // Managed code owns actual resource. Passed to native in syncronous call. No lifetime issues.
             internal IntPtr hInstance;
 
             /// <summary>
@@ -339,25 +337,24 @@ namespace Microsoft.Samples
             /// Window title.
             /// </summary>
             [MarshalAs(UnmanagedType.LPWStr)]
-            internal string pszWindowTitle;                         // string or MAKEINTRESOURCE()
+            internal string? pszWindowTitle;                         // string or MAKEINTRESOURCE()
 
             /// <summary>
             /// The Main icon. Overloaded member. Can be string, a handle, a special value or a resource ID.
             /// </summary>
-            [SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")] // Managed code owns actual resource. Passed to native in syncronous call. No lifetime issues.
             internal IntPtr MainIcon;
 
             /// <summary>
             /// Main Instruction.
             /// </summary>
             [MarshalAs(UnmanagedType.LPWStr)]
-            internal string pszMainInstruction;
+            internal string? pszMainInstruction;
 
             /// <summary>
             /// Content.
             /// </summary>
             [MarshalAs(UnmanagedType.LPWStr)]
-            internal string pszContent;
+            internal string? pszContent;
 
             /// <summary>
             /// Count of custom Buttons.
@@ -367,7 +364,6 @@ namespace Microsoft.Samples
             /// <summary>
             /// Array of custom buttons.
             /// </summary>
-            [SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")] // Managed code owns actual resource. Passed to native in syncronous call. No lifetime issues.
             internal IntPtr pButtons;
 
             /// <summary>
@@ -383,7 +379,6 @@ namespace Microsoft.Samples
             /// <summary>
             /// Array of radio buttons.
             /// </summary>
-            [SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")] // Managed code owns actual resource. Passed to native in syncronous call. No lifetime issues.
             internal IntPtr pRadioButtons;
 
             /// <summary>
@@ -395,37 +390,36 @@ namespace Microsoft.Samples
             /// Text for verification check box. often "Don't ask be again".
             /// </summary>
             [MarshalAs(UnmanagedType.LPWStr)]
-            internal string pszVerificationText;
+            internal string? pszVerificationText;
 
             /// <summary>
             /// Expanded Information.
             /// </summary>
             [MarshalAs(UnmanagedType.LPWStr)]
-            internal string pszExpandedInformation;
+            internal string? pszExpandedInformation;
 
             /// <summary>
             /// Text for expanded control.
             /// </summary>
             [MarshalAs(UnmanagedType.LPWStr)]
-            internal string pszExpandedControlText;
+            internal string? pszExpandedControlText;
 
             /// <summary>
             /// Text for expanded control.
             /// </summary>
             [MarshalAs(UnmanagedType.LPWStr)]
-            internal string pszCollapsedControlText;
+            internal string? pszCollapsedControlText;
 
             /// <summary>
             /// Icon for the footer. An overloaded member link MainIcon.
             /// </summary>
-            [SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")] // Managed code owns actual resource. Passed to native in syncronous call. No lifetime issues.
             internal IntPtr FooterIcon;
 
             /// <summary>
             /// Footer Text.
             /// </summary>
             [MarshalAs(UnmanagedType.LPWStr)]
-            internal string pszFooter;
+            internal string? pszFooter;
 
             /// <summary>
             /// Function pointer for callback.
@@ -435,7 +429,6 @@ namespace Microsoft.Samples
             /// <summary>
             /// Data that will be passed to the call back.
             /// </summary>
-            [SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")] // Managed code owns actual resource. Passed to native in syncronous call. No lifetime issues.
             internal IntPtr lpCallbackData;
 
             /// <summary>

@@ -22,7 +22,7 @@ namespace Microsoft.Samples
         /// <summary>
         /// The TaskDialog we will display.
         /// </summary>
-        private TaskDialog taskDialog;
+        private readonly TaskDialog taskDialog;
 
         /// <summary>
         /// The result of the dialog, either a DialogResult value for common push buttons set in the TaskDialog.CommonButtons
@@ -45,12 +45,7 @@ namespace Microsoft.Samples
         /// <param name="taskDialog">The TaskDialog to show.</param>
         internal TaskDialogCommonDialog(TaskDialog taskDialog)
         {
-            if (taskDialog == null)
-            {
-                throw new ArgumentNullException("taskDialog");
-            }
-
-            this.taskDialog = taskDialog;
+            this.taskDialog = taskDialog ?? throw new ArgumentNullException(nameof(taskDialog));
         }
 
         /// <summary>

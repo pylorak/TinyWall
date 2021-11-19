@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace pylorak.Windows.NetStat
 {
-    internal class TcpTable : IEnumerable<TcpRow>
+    public readonly struct TcpTable : IEnumerable<TcpRow>
     {
-        private IEnumerable<TcpRow> tcpRows;
+        private readonly IEnumerable<TcpRow> tcpRows;
 
-        internal TcpTable(IEnumerable<TcpRow> tcpRows)
+        public TcpTable(IEnumerable<TcpRow> tcpRows)
         {
             this.tcpRows = tcpRows;
         }

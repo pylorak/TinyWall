@@ -69,9 +69,9 @@ namespace pylorak.Windows
         private readonly SafeIpHlprNotifyHandle NotifyUnicastIpChangeHandle;
         private readonly SafeIpHlprNotifyHandle NotifyRouteChangeHandle;
         private readonly RegistryWatcher DnsChangeNotifier;
-        private readonly EventMerger ChangeEventMerger = new EventMerger(1000);
+        private readonly EventMerger ChangeEventMerger = new(1000);
 
-        public event EventHandler InterfaceChanged;
+        public event EventHandler? InterfaceChanged;
 
         public IpInterfaceWatcher()
         {

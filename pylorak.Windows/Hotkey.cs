@@ -5,9 +5,9 @@ using System.Security.Permissions;
 using System.Windows.Forms;
 using pylorak.Utilities;
 
-namespace PKSoft
+namespace pylorak.Windows
 {
-    public class Hotkey : Disposable, IMessageFilter
+    public class Hotkey : Disposable, IMessageFilter    // TODO: Can IMessageFilter be removed?
 	{
         private static class NativeMethods
         {

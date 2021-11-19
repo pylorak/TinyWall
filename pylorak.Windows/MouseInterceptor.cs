@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using pylorak.Utilities;
 
-namespace PKSoft
+namespace pylorak.Windows
 {
     public class MouseInterceptor : Disposable
     {

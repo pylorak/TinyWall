@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
@@ -12,7 +13,6 @@ using pylorak.Utilities;
 
 namespace pylorak.Windows
 {
-
     public enum PathFormat
     {
         NativeNt,
@@ -20,7 +20,7 @@ namespace pylorak.Windows
         Win32
     }
 
-    public sealed class PathMapper : IDisposable
+    public sealed class PathMapper : Disposable
     {
         [SuppressUnmanagedCodeSecurity]
         private static class NativeMethods
@@ -44,18 +44,24 @@ namespace pylorak.Windows
             public string Device;
             public List<string> Volumes;
             public List<string> Drives;
+
+            public DriveCache(string kernelDevice, List<string> volumes, List<string> drives)
+            {
+                Device = kernelDevice;
+                Volumes = volumes;
+                Drives = drives;
+            }
         }
 
-        private readonly ManualResetEvent CacheReadyEvent = new ManualResetEvent(false);
+        private readonly ManualResetEvent CacheReadyEvent = new(false);
         private readonly string SystemRoot = Environment.GetFolderPath(Environment.SpecialFolder.System);
-        private readonly object locker = new object();
+        private readonly object locker = new();
 
         private bool CacheRebuilding;
         private DateTime LastUpdateTime = DateTime.MinValue;
-        private bool disposed;
 
-        private static volatile PathMapper _instance;
-        private static readonly object _singletonLock = new object();
+        private static volatile PathMapper? _instance;
+        private static readonly object _singletonLock = new();
         public static PathMapper Instance
         {
             get
@@ -72,19 +78,21 @@ namespace pylorak.Windows
             }
         }
 
-        public PathMapper()
+        private PathMapper()
         {
             RebuildCache();
         }
 
         public bool AutoUpdate { get; set; } = true;
 
-        private DriveCache[] _cache;
+        private DriveCache[]? _cache;
+
+        [AllowNull]
         public DriveCache[] Cache
         {
             get
             {
-                if (AutoUpdate || (_cache == null))
+                if (AutoUpdate || (_cache is null))
                 {
                     if ((DateTime.Now - LastUpdateTime).TotalSeconds > 5)
                         RebuildCache();
@@ -93,7 +101,7 @@ namespace pylorak.Windows
                 CacheReadyEvent.WaitOne();
                 lock (locker)
                 {
-                    return _cache;
+                    return _cache ?? throw new InvalidOperationException("There was an error buildung the drive map cache.");
                 }
             }
 
@@ -109,18 +117,16 @@ namespace pylorak.Windows
             }
         }
 
-        private List<DriveCache> RebuildCacheImpl_1()
+        private static List<DriveCache> RebuildCacheImpl_1()
         {
             const int MAX_PATH = 260;
 
-            StringBuilder sb = new StringBuilder(MAX_PATH);
-            char[] buf = new char[MAX_PATH];
-            List<DriveCache> newCache = new List<DriveCache>();
+            var sb = new StringBuilder(MAX_PATH);
+            var buf = new char[MAX_PATH];
+            var newCache = new List<DriveCache>();
 
             foreach (var vol in FindVolumeSafeHandle.EnumerateVolumes())
             {
-                var cacheEntry = new DriveCache();
-
                 if ((vol[0] != '\\')
                     || (vol[1] != '\\')
                     || (vol[2] != '?')
@@ -129,7 +135,8 @@ namespace pylorak.Windows
                 {
                     continue;
                 }
-                cacheEntry.Volumes = new List<string>() { vol };
+
+                var cacheEntry = new DriveCache(string.Empty, new List<string>() { vol }, new List<string>());
 
                 string qddInput = vol.Substring(4, vol.Length - 5); // Also remove trailing backslash
                 int charCount = NativeMethods.QueryDosDevice(qddInput, sb, sb.Capacity);
@@ -139,7 +146,6 @@ namespace pylorak.Windows
                     cacheEntry.Device = sb.ToString();
                 }
 
-                cacheEntry.Drives = new List<string>();
                 if (NativeMethods.GetVolumePathNamesForVolumeName(vol, buf, buf.Length, out int expectedChars))
                 {
                     int startIdx = 0;
@@ -163,7 +169,7 @@ namespace pylorak.Windows
             return newCache;
         }
 
-        private List<DriveCache> RebuildCacheImpl_2(List<DriveCache> newCache)
+        private static List<DriveCache> RebuildCacheImpl_2(List<DriveCache> newCache)
         {
             const string SYMBOLIC_LINK_TYPE = "SymbolicLink";
 
@@ -183,7 +189,7 @@ namespace pylorak.Windows
                         var existingEntryFound = false;
                         foreach (var cacheEntry in newCache)
                         {
-                            if (cacheEntry.Device.Equals(target, StringComparison.Ordinal))
+                            if (string.Equals(cacheEntry.Device, target, StringComparison.Ordinal))
                             {
                                 existingEntryFound = true;
                                 if (!cacheEntry.Volumes.Contains(volumePath))
@@ -191,14 +197,7 @@ namespace pylorak.Windows
                             }
                         }
                         if (!existingEntryFound)
-                        {
-                            newCache.Add(new DriveCache()
-                            {
-                                Device = target,
-                                Volumes = new List<string>() { volumePath },
-                                Drives = new List<string>(),
-                            });
-                        }
+                            newCache.Add(new DriveCache(target, new List<string>() { volumePath }, new List<string>()));
                     }
 
                     // Found a drive letter?
@@ -215,7 +214,7 @@ namespace pylorak.Windows
                         var existingEntryFound = false;
                         foreach (var cacheEntry in newCache)
                         {
-                            if (cacheEntry.Device.Equals(target, StringComparison.Ordinal))
+                            if (string.Equals(cacheEntry.Device, target, StringComparison.Ordinal))
                             {
                                 existingEntryFound = true;
                                 if (!cacheEntry.Drives.Contains(drivePath))
@@ -223,14 +222,7 @@ namespace pylorak.Windows
                             }
                         }
                         if (!existingEntryFound)
-                        {
-                            newCache.Add(new DriveCache()
-                            {
-                                Device = target,
-                                Volumes = new List<string>(),
-                                Drives = new List<string>() { drivePath },
-                            });
-                        }
+                            newCache.Add(new DriveCache(target, new List<string>(), new List<string>() { drivePath }));
                     }
                 }
 
@@ -365,11 +357,9 @@ namespace pylorak.Windows
                         {
                             if ((sk.Length == 1) && (char.ToUpperInvariant(sk[0]) == driveLetter))
                             {
-                                using (var driveKey = networkKey.OpenSubKey(sk, false))
-                                {
-                                    ret = SpanUtils.CombinePath((driveKey.GetValue("RemotePath") as string).AsSpan(), ret.Slice(3)).AsSpan();
-                                    break;
-                                }
+                                using var driveKey = networkKey.OpenSubKey(sk, false);
+                                ret = SpanUtils.CombinePath((driveKey.GetValue("RemotePath") as string).AsSpan(), ret.Slice(3)).AsSpan();
+                                break;
                             }
                         }
                     }
@@ -379,15 +369,12 @@ namespace pylorak.Windows
                         throw new DriveNotFoundException();
                 }
 
-                switch (target)
+                return target switch
                 {
-                    case PathFormat.Win32:
-                        return ret.ToString();
-                    case PathFormat.NativeNt:
-                        return SpanUtils.Concat(@"\Device\Mup\".AsSpan(), ret.Slice(2));
-                    default:
-                        throw new NotSupportedException();
-                }
+                    PathFormat.Win32 => ret.ToString(),
+                    PathFormat.NativeNt => SpanUtils.Concat(@"\Device\Mup\".AsSpan(), ret.Slice(2)),
+                    _ => throw new NotSupportedException(),
+                };
             }
             else if ((ret.Length >= 3) && char.IsLetter(ret[0]) && (ret[1] == ':') && (ret[2] == '\\'))
             {   // Win32 drive letter format, like C:\Windows\explorer.exe
@@ -398,7 +385,7 @@ namespace pylorak.Windows
                 var dc = Cache;
                 var mountPoint = GetMountPoint(ret);
 
-                (bool, int, int) searchCache(DriveCache[] dc, string mountPoint)
+                static (bool, int, int) searchCache(DriveCache[] dc, string mountPoint)
                 {
                     for (int i = 0; i < dc.Length; ++i)
                     {
@@ -450,21 +437,20 @@ namespace pylorak.Windows
                     return path.ToString();
 
                 ret = SpanUtils.Concat(@"\\?\".AsSpan(), ret).AsSpan();
-                var dc = Cache;
-                for (int i = 0; i < dc.Length; ++i)
+                foreach (var cacheEntry in Cache)
                 {
-                    for (int j = 0; j < dc[i].Volumes.Count; ++j)
+                    for (int j = 0; j < cacheEntry.Volumes.Count; ++j)
                     {
-                        if (ret.StartsWith(dc[i].Volumes[j].AsSpan(), StringComparison.OrdinalIgnoreCase))
+                        if (ret.StartsWith(cacheEntry.Volumes[j].AsSpan(), StringComparison.OrdinalIgnoreCase))
                         {
-                            var trailing = ret.Slice(dc[i].Volumes[j].Length);
+                            var trailing = ret.Slice(cacheEntry.Volumes[j].Length);
                             switch (target)
                             {
                                 case PathFormat.NativeNt:
-                                    return SpanUtils.Concat(dc[i].Device.AsSpan(), trailing);
+                                    return SpanUtils.Concat(cacheEntry.Device.AsSpan(), trailing);
                                 case PathFormat.Win32:
-                                    if (dc[i].Drives.Count > 0)
-                                        return SpanUtils.Concat(dc[i].Drives[0].AsSpan(), trailing);
+                                    if (cacheEntry.Drives.Count > 0)
+                                        return SpanUtils.Concat(cacheEntry.Drives[0].AsSpan(), trailing);
                                     else
                                         throw new NotSupportedException();
                                 default:
@@ -481,22 +467,21 @@ namespace pylorak.Windows
                 if (target == PathFormat.NativeNt)
                     return path.ToString();
 
-                var dc = Cache;
-                for (int i = 0; i < dc.Length; ++i)
+                foreach (var cacheEntry in Cache)
                 {
-                    if (ret.StartsWith(dc[i].Device.AsSpan(), StringComparison.OrdinalIgnoreCase))
+                    if ((cacheEntry.Device is not null) && ret.StartsWith(cacheEntry.Device.AsSpan(), StringComparison.OrdinalIgnoreCase))
                     {
-                        var trailing = ret.Slice(dc[i].Device.Length);
+                        var trailing = ret.Slice(cacheEntry.Device.Length);
                         switch (target)
                         {
                             case PathFormat.Volume:
-                                if (dc[i].Volumes.Count > 0)
-                                    return SpanUtils.Concat(dc[i].Volumes[0].AsSpan(), trailing);
+                                if (cacheEntry.Volumes.Count > 0)
+                                    return SpanUtils.Concat(cacheEntry.Volumes[0].AsSpan(), trailing);
                                 else
                                     throw new NotSupportedException();
                             case PathFormat.Win32:
-                                if (dc[i].Drives.Count > 0)
-                                    return SpanUtils.Concat(dc[i].Drives[0].AsSpan(), trailing);
+                                if (cacheEntry.Drives.Count > 0)
+                                    return SpanUtils.Concat(cacheEntry.Drives[0].AsSpan(), trailing);
                                 else
                                     throw new NotSupportedException();
                             default:
@@ -523,28 +508,27 @@ namespace pylorak.Windows
             return text;
         }
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (disposed) return;
+            if (IsDisposed)
+                return;
 
-            CacheReadyEvent.WaitOne();
-            CacheReadyEvent.Close();
+            if (disposing)
+            {
+                CacheReadyEvent.WaitOne();
+                CacheReadyEvent.Close();
+            }
 
             _instance = null;
-            disposed = true;
+            base.Dispose(disposing);
         }
 
 #if DEBUG
         private void TestConversion(string path)
         {
-            string NO_RESULT = "---";
-            string win32Result = NO_RESULT;
-            string ntResult = NO_RESULT;
-            string volumeResult = NO_RESULT;
-
-            win32Result = ConvertPathIgnoreErrors(path, PathFormat.Win32);
-            ntResult = ConvertPathIgnoreErrors(path, PathFormat.NativeNt);
-            volumeResult = ConvertPathIgnoreErrors(path, PathFormat.Volume);
+            var win32Result = ConvertPathIgnoreErrors(path, PathFormat.Win32);
+            var ntResult = ConvertPathIgnoreErrors(path, PathFormat.NativeNt);
+            var volumeResult = ConvertPathIgnoreErrors(path, PathFormat.Volume);
 
             string output = path + ":" + Environment.NewLine
                 + "    Win32:  " + win32Result + Environment.NewLine

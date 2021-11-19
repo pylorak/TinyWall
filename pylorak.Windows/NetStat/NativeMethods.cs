@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace pylorak.Windows.NetStat
 {
-    internal static class SafeNativeMethods
+    internal static class NativeMethods
     {
         internal const int AfInet = 2;
         internal const int AfInet6 = 23;
@@ -12,12 +12,12 @@ namespace pylorak.Windows.NetStat
         private const string DllName = "iphlpapi.dll";
 
         [DllImport(DllName, SetLastError = true)]
-        internal static extern uint GetExtendedTcpTable(IntPtr tcpTable, ref int tcpTableLength, [MarshalAs(UnmanagedType.Bool)] bool sort, int ipVersion, TcpTableType tcpTableType, int reserved);
+        public static extern uint GetExtendedTcpTable(IntPtr tcpTable, ref int tcpTableLength, [MarshalAs(UnmanagedType.Bool)] bool sort, int ipVersion, TcpTableType tcpTableType, int reserved);
 
         [DllImport(DllName, SetLastError = true)]
-        internal static extern uint GetExtendedUdpTable(IntPtr udpTable, ref int udpTableLength, [MarshalAs(UnmanagedType.Bool)] bool sort, int ipVersion, UdpTableType udpTableType, int reserved);
+        public static extern uint GetExtendedUdpTable(IntPtr udpTable, ref int udpTableLength, [MarshalAs(UnmanagedType.Bool)] bool sort, int ipVersion, UdpTableType udpTableType, int reserved);
 
-        internal enum TcpTableType
+        public enum TcpTableType
         {
             BasicListener,
             BasicConnections,
@@ -31,55 +31,55 @@ namespace pylorak.Windows.NetStat
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct Tcp4Table
+        public struct Tcp4Table
         {
-            internal uint length;
-            internal Tcp4Row row;
+            public uint length;
+            public Tcp4Row row;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct Tcp4Row
+        public struct Tcp4Row
         {
-            internal TcpState state;
-            internal uint localAddr;
+            public TcpState state;
+            public uint localAddr;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-            internal byte[] localPort;
-            internal uint remoteAddr;
+            public byte[] localPort;
+            public uint remoteAddr;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-            internal byte[] remotePort;
-            internal uint owningPid;
+            public byte[] remotePort;
+            public uint owningPid;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct Tcp6Table
+        public struct Tcp6Table
         {
-            internal uint length;
-            internal Tcp6Row row;
+            public uint length;
+            public Tcp6Row row;
         }
 
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct Tcp6Row
+        public struct Tcp6Row
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            internal byte[] localAddr;
+            public byte[] localAddr;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-            internal byte[] localScopeId;
+            public byte[] localScopeId;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-            internal byte[] localPort;
+            public byte[] localPort;
 
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            internal byte[] remoteAddr;
+            public byte[] remoteAddr;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-            internal byte[] remoteScopeId;
+            public byte[] remoteScopeId;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-            internal byte[] remotePort;
+            public byte[] remotePort;
 
-            internal TcpState state;
-            internal uint owningPid;
+            public TcpState state;
+            public uint owningPid;
         }
 
-        internal enum UdpTableType
+        public enum UdpTableType
         {
             Basic,
             OwnerPid,
@@ -87,39 +87,39 @@ namespace pylorak.Windows.NetStat
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct Udp4Table
+        public struct Udp4Table
         {
-            internal uint length;
-            internal Udp4Row row;
+            public uint length;
+            public Udp4Row row;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct Udp4Row
+        public struct Udp4Row
         {
-            internal uint localAddr;
+            public uint localAddr;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-            internal byte[] localPort;
-            internal uint owningPid;
+            public byte[] localPort;
+            public uint owningPid;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct Udp6Table
+        public struct Udp6Table
         {
-            internal uint length;
-            internal Udp6Row row;
+            public uint length;
+            public Udp6Row row;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct Udp6Row
+        public struct Udp6Row
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            internal byte[] localAddr;
+            public byte[] localAddr;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-            internal byte[] localScopeId;
+            public byte[] localScopeId;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-            internal byte[] localPort;
+            public byte[] localPort;
 
-            internal uint owningPid;
+            public uint owningPid;
         }
     }
 }

@@ -81,7 +81,9 @@ namespace pylorak.Utilities
                 throw new InvalidOperationException("The collection is already empty.");
 
             T ret = _array[_head];
+#pragma warning disable CS8601 // Possible null reference assignment.
             _array[_head] = default;
+#pragma warning restore CS8601 // Possible null reference assignment.
             _head = (_head + 1) % _array.Length;
             _size--;
             return ret;

@@ -7,10 +7,10 @@ using System.Net.NetworkInformation;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Linq;
-using PKSoft.netstat;
 
 using TinyWall.Interface;
 using TinyWall.Interface.Internal;
+using pylorak.Windows.NetStat;
 
 namespace PKSoft
 {

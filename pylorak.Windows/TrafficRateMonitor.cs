@@ -3,7 +3,7 @@ using System.Security;
 using System.Runtime.InteropServices;
 using pylorak.Utilities;
 
-namespace PKSoft
+namespace pylorak.Windows
 {
     class TrafficRateMonitor : Disposable
     {

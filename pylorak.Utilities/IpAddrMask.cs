@@ -31,17 +31,6 @@ namespace pylorak.Utilities
         public IPAddress Address;
         public int PrefixLen;
 
-        private static int CountBits(int value)
-        {
-            int count = 0;
-            while (value != 0)
-            {
-                count++;
-                value &= value - 1;
-            }
-            return count;
-        }
-
         public IpAddrMask(IPAddress addr, int prefixLen)
         {
             Address = addr;

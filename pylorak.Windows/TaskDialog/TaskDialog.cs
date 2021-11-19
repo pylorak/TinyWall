@@ -21,7 +21,7 @@ namespace Microsoft.Samples
     /// <param name="args">The notification arguments including the type of notification and information for the notification.</param>
     /// <param name="callbackData">The value set on TaskDialog.CallbackData</param>
     /// <returns>Return value meaning varies depending on the Notification member of args.</returns>
-    internal delegate bool TaskDialogCallback(ActiveTaskDialog taskDialog, TaskDialogNotificationArgs args, object callbackData);
+    internal delegate bool TaskDialogCallback(ActiveTaskDialog taskDialog, TaskDialogNotificationArgs args, object? callbackData);
 
     /// <summary>
     /// The TaskDialog common button flags used to specify the builtin bottons to show in the TaskDialog.
@@ -69,7 +69,6 @@ namespace Microsoft.Samples
     /// <summary>
     /// The System icons the TaskDialog supports.
     /// </summary>
-    [SuppressMessage("Microsoft.Design", "CA1028:EnumStorageShouldBeInt32")] // Type comes from CommCtrl.h
     internal enum TaskDialogIcon : uint
     {
         /// <summary>
@@ -186,7 +185,6 @@ namespace Microsoft.Samples
     /// <summary>
     /// Progress bar state.
     /// </summary>
-    [SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue")] // Comes from CommCtrl.h PBST_* values which don't have a zero.
     internal enum ProgressBarState
     {
         /// <summary>
@@ -208,7 +206,6 @@ namespace Microsoft.Samples
     /// <summary>
     /// A custom button for the TaskDialog.
     /// </summary>
-    [SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")] // Would be unused code as not required for usage.
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack=1)]
     internal struct TaskDialogButton
     {
@@ -262,19 +259,19 @@ namespace Microsoft.Samples
         /// <summary>
         /// The string to be used for the dialog box title. If this parameter is NULL, the filename of the executable program is used.
         /// </summary>
-        private string windowTitle;
+        private string? windowTitle;
 
         /// <summary>
         /// The string to be used for the main instruction.
         /// </summary>
-        private string mainInstruction;
+        private string? mainInstruction;
 
         /// <summary>
         /// The string to be used for the dialog’s primary content. If the EnableHyperlinks member is true,
         /// then this string may contain hyperlinks in the form: <A HREF="executablestring">Hyperlink Text</A>. 
         /// WARNING: Enabling hyperlinks when using content from an unsafe source may cause security vulnerabilities.
         /// </summary>
-        private string content;
+        private string? content;
 
         /// <summary>
         /// Specifies the push buttons displayed in the dialog box.  This parameter may be a combination of flags.
@@ -293,7 +290,7 @@ namespace Microsoft.Samples
         /// Specifies a custom in icon for the main icon in the dialog. If this is set to none
         /// and the CustomMainIcon member is null then no main icon will be displayed.
         /// </summary>
-        private Icon customMainIcon;
+        private Icon? customMainIcon;
 
         /// <summary>
         /// Specifies a built in icon for the icon to be displayed in the footer area of the
@@ -307,7 +304,7 @@ namespace Microsoft.Samples
         /// dialog box. If this is set to none and the CustomFooterIcon member is null then no
         /// footer icon will be displayed.
         /// </summary>
-        private Icon customFooterIcon;
+        private Icon? customFooterIcon;
 
         /// <summary>
         /// Specifies the custom push buttons to display in the dialog. Use CommonButtons member for
@@ -348,7 +345,7 @@ namespace Microsoft.Samples
         /// The string to be used to label the verification checkbox. If this member is null, the
         /// verification checkbox is not displayed in the dialog box.
         /// </summary>
-        private string verificationText;
+        private string? verificationText;
 
         /// <summary>
         /// The string to be used for displaying additional information. The additional information is
@@ -357,7 +354,7 @@ namespace Microsoft.Samples
         /// may contain hyperlinks in the form: <A HREF="executablestring">Hyperlink Text</A>.
         /// WARNING: Enabling hyperlinks when using content from an unsafe source may cause security vulnerabilities.
         /// </summary>
-        private string expandedInformation;
+        private string? expandedInformation;
 
         /// <summary>
         /// The string to be used to label the button for collapsing the expanded information. This
@@ -365,7 +362,7 @@ namespace Microsoft.Samples
         /// and the CollapsedControlText is specified, then the CollapsedControlText value will be
         /// used for this member as well.
         /// </summary>
-        private string expandedControlText;
+        private string? expandedControlText;
 
         /// <summary>
         /// The string to be used to label the button for expanding the expanded information. This
@@ -373,7 +370,7 @@ namespace Microsoft.Samples
         /// and the ExpandedControlText is specified, then the ExpandedControlText value will be
         /// used for this member as well.
         /// </summary>
-        private string collapsedControlText;
+        private string? collapsedControlText;
 
         /// <summary>
         /// The string to be used in the footer area of the dialog box. If the EnableHyperlinks member
@@ -381,17 +378,17 @@ namespace Microsoft.Samples
         /// Hyperlink Text</A>.
         /// WARNING: Enabling hyperlinks when using content from an unsafe source may cause security vulnerabilities.
         /// </summary>
-        private string footer;
+        private string? footer;
 
         /// <summary>
         /// The callback that receives messages from the Task Dialog when various events occur.
         /// </summary>
-        private TaskDialogCallback callback;
+        private TaskDialogCallback? callback;
 
         /// <summary>
         /// Reference that is passed to the callback.
         /// </summary>
-        private object callbackData;
+        private object? callbackData;
 
         /// <summary>
         /// Specifies the width of the Task Dialog’s client area in DLU’s. If 0, Task Dialog will calculate the ideal width.
@@ -401,7 +398,7 @@ namespace Microsoft.Samples
         /// <summary>
         /// Creates a default Task Dialog.
         /// </summary>
-        internal TaskDialog()
+        private TaskDialog()
         {
             this.Reset();
         }
@@ -435,7 +432,7 @@ namespace Microsoft.Samples
         /// <summary>
         /// The string to be used for the dialog box title. If this parameter is NULL, the filename of the executable program is used.
         /// </summary>
-        internal string WindowTitle
+        internal string? WindowTitle
         {
             get { return this.windowTitle; }
             set { this.windowTitle = value; }
@@ -444,7 +441,7 @@ namespace Microsoft.Samples
         /// <summary>
         /// The string to be used for the main instruction.
         /// </summary>
-        internal string MainInstruction
+        internal string? MainInstruction
         {
             get { return this.mainInstruction; }
             set { this.mainInstruction = value; }
@@ -455,7 +452,7 @@ namespace Microsoft.Samples
         /// then this string may contain hyperlinks in the form: <A HREF="executablestring">Hyperlink Text</A>. 
         /// WARNING: Enabling hyperlinks when using content from an unsafe source may cause security vulnerabilities.
         /// </summary>
-        internal string Content
+        internal string? Content
         {
             get { return this.content; }
             set { this.content = value; }
@@ -486,7 +483,7 @@ namespace Microsoft.Samples
         /// Specifies a custom in icon for the main icon in the dialog. If this is set to none
         /// and the CustomMainIcon member is null then no main icon will be displayed.
         /// </summary>
-        internal Icon CustomMainIcon
+        internal Icon? CustomMainIcon
         {
             get { return this.customMainIcon; }
             set { this.customMainIcon = value; }
@@ -508,7 +505,7 @@ namespace Microsoft.Samples
         /// dialog box. If this is set to none and the CustomFooterIcon member is null then no
         /// footer icon will be displayed.
         /// </summary>
-        internal Icon CustomFooterIcon
+        internal Icon? CustomFooterIcon
         {
             get { return this.customFooterIcon; }
             set { this.customFooterIcon = value; }
@@ -519,8 +516,6 @@ namespace Microsoft.Samples
         /// common buttons; OK, Yes, No, Retry and Cancel, and Buttons when you want different text
         /// on the push buttons.
         /// </summary>
-        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")] // Style of use is like single value. Array is of value types.
-        [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")] // Returns a reference, not a copy.
         internal TaskDialogButton[] Buttons
         {
             get
@@ -530,20 +525,13 @@ namespace Microsoft.Samples
 
             set
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-
-                this.buttons = value;
+                this.buttons = value ?? throw new ArgumentNullException(nameof(value));
             }
         }
 
         /// <summary>
         /// Specifies the radio buttons to display in the dialog.
         /// </summary>
-        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")] // Style of use is like single value. Array is of value types.
-        [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")] // Returns a reference, not a copy.
         internal TaskDialogButton[] RadioButtons
         {
             get
@@ -553,12 +541,7 @@ namespace Microsoft.Samples
 
             set
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-
-                this.radioButtons = value;
+                this.radioButtons = value ?? throw new ArgumentNullException(nameof(value));
             }
         }
 
@@ -739,7 +722,7 @@ namespace Microsoft.Samples
         /// The string to be used to label the verification checkbox. If this member is null, the
         /// verification checkbox is not displayed in the dialog box.
         /// </summary>
-        internal string VerificationText
+        internal string? VerificationText
         {
             get { return this.verificationText; }
             set { this.verificationText = value; }
@@ -752,7 +735,7 @@ namespace Microsoft.Samples
         /// may contain hyperlinks in the form: <A HREF="executablestring">Hyperlink Text</A>.
         /// WARNING: Enabling hyperlinks when using content from an unsafe source may cause security vulnerabilities.
         /// </summary>
-        internal string ExpandedInformation
+        internal string? ExpandedInformation
         {
             get { return this.expandedInformation; }
             set { this.expandedInformation = value; }
@@ -764,7 +747,7 @@ namespace Microsoft.Samples
         /// and the CollapsedControlText is specified, then the CollapsedControlText value will be
         /// used for this member as well.
         /// </summary>
-        internal string ExpandedControlText
+        internal string? ExpandedControlText
         {
             get { return this.expandedControlText; }
             set { this.expandedControlText = value; }
@@ -776,7 +759,7 @@ namespace Microsoft.Samples
         /// and the ExpandedControlText is specified, then the ExpandedControlText value will be
         /// used for this member as well.
         /// </summary>
-        internal string CollapsedControlText
+        internal string? CollapsedControlText
         {
             get { return this.collapsedControlText; }
             set { this.collapsedControlText = value; }
@@ -788,7 +771,7 @@ namespace Microsoft.Samples
         /// Hyperlink Text</A>.
         /// WARNING: Enabling hyperlinks when using content from an unsafe source may cause security vulnerabilities.
         /// </summary>
-        internal string Footer
+        internal string? Footer
         {
             get { return this.footer; }
             set { this.footer = value; }
@@ -806,7 +789,7 @@ namespace Microsoft.Samples
         /// <summary>
         /// The callback that receives messages from the Task Dialog when various events occur.
         /// </summary>
-        internal TaskDialogCallback Callback
+        internal TaskDialogCallback? Callback
         {
             get { return this.callback; }
             set { this.callback = value; }
@@ -815,7 +798,7 @@ namespace Microsoft.Samples
         /// <summary>
         /// Reference that is passed to the callback.
         /// </summary>
-        internal object CallbackData
+        internal object? CallbackData
         {
             get { return this.callbackData; }
             set { this.callbackData = value; }
@@ -824,6 +807,7 @@ namespace Microsoft.Samples
         /// <summary>
         /// Resets the Task Dialog to the state when first constructed, all properties set to their default value.
         /// </summary>
+        [MemberNotNull(nameof(buttons), nameof(radioButtons))]
         internal void Reset()
         {
             this.windowTitle = null;
@@ -834,8 +818,8 @@ namespace Microsoft.Samples
             this.customMainIcon = null;
             this.footerIcon = TaskDialogIcon.None;
             this.customFooterIcon = null;
-            this.buttons = new TaskDialogButton[0];
-            this.radioButtons = new TaskDialogButton[0];
+            this.buttons = Array.Empty<TaskDialogButton>();
+            this.radioButtons = Array.Empty<TaskDialogButton>();
             this.flags = 0;
             this.defaultButton = 0;
             this.defaultRadioButton = 0;
@@ -858,9 +842,7 @@ namespace Microsoft.Samples
         /// member or the ButtonID from a TaskDialogButton structure set on the Buttons member.</returns>
         internal int Show()
         {
-            bool verificationFlagChecked;
-            int radioButtonResult;
-            return this.Show(IntPtr.Zero, out verificationFlagChecked, out radioButtonResult);
+            return this.Show(IntPtr.Zero, out _, out _);
         }
 
         /// <summary>
@@ -873,9 +855,7 @@ namespace Microsoft.Samples
         /// member or the ButtonID from a TaskDialogButton structure set on the Buttons member.</returns>
         internal int Show(IWin32Window owner)
         {
-            bool verificationFlagChecked;
-            int radioButtonResult;
-            return this.Show((owner == null ? IntPtr.Zero : owner.Handle), out verificationFlagChecked, out radioButtonResult);
+            return this.Show((owner == null ? IntPtr.Zero : owner.Handle), out bool _, out int _);
         }
 
         /// <summary>
@@ -888,9 +868,7 @@ namespace Microsoft.Samples
         /// member or the ButtonID from a TaskDialogButton structure set on the Buttons member.</returns>
         internal int Show(IntPtr hwndOwner)
         {
-            bool verificationFlagChecked;
-            int radioButtonResult;
-            return this.Show(hwndOwner, out verificationFlagChecked, out radioButtonResult);
+            return this.Show(hwndOwner, out _, out _);
         }
 
         /// <summary>
@@ -905,8 +883,7 @@ namespace Microsoft.Samples
         /// member or the ButtonID from a TaskDialogButton structure set on the Buttons member.</returns>
         internal int Show(IWin32Window owner, out bool verificationFlagChecked)
         {
-            int radioButtonResult;
-            return this.Show((owner == null ? IntPtr.Zero : owner.Handle), out verificationFlagChecked, out radioButtonResult);
+            return this.Show((owner == null ? IntPtr.Zero : owner.Handle), out verificationFlagChecked, out _);
         }
 
         /// <summary>
@@ -923,8 +900,7 @@ namespace Microsoft.Samples
         {
             // We have to call a private version or PreSharp gets upset about a unsafe
             // block in a internal method. (PreSharp error 56505)
-            int radioButtonResult;
-            return this.PrivateShow(hwndOwner, out verificationFlagChecked, out radioButtonResult);
+            return this.PrivateShow(hwndOwner, out verificationFlagChecked, out _);
         }
 
         /// <summary>
@@ -977,7 +953,7 @@ namespace Microsoft.Samples
             verificationFlagChecked = false;
             radioButtonResult = 0;
             int result = 0;
-            UnsafeNativeMethods.TASKDIALOGCONFIG config = new UnsafeNativeMethods.TASKDIALOGCONFIG();
+            var config = new UnsafeNativeMethods.TASKDIALOGCONFIG();
 
             try
             {
@@ -1143,14 +1119,14 @@ namespace Microsoft.Samples
         /// <returns>A HRESULT. It's not clear in the spec what a failed result will do.</returns>
         private int PrivateCallback([In] IntPtr hwnd, [In] uint msg, [In] UIntPtr wparam, [In] IntPtr lparam, [In] IntPtr refData)
         {
-            TaskDialogCallback callback = this.callback;
+            TaskDialogCallback? callback = this.callback;
             if (callback != null)
             {
                 // Prepare arguments for the callback to the user we are insulating from Interop casting sillyness.
 
                 // Future: Consider reusing a single ActiveTaskDialog object and mark it as destroyed on the destry notification.
-                ActiveTaskDialog activeDialog = new ActiveTaskDialog(hwnd);
-                TaskDialogNotificationArgs args = new TaskDialogNotificationArgs();
+                var activeDialog = new ActiveTaskDialog(hwnd);
+                var args = new TaskDialogNotificationArgs();
                 args.Notification = (TaskDialogNotification)msg;
                 switch (args.Notification)
                 {

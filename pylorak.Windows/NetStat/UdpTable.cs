@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace pylorak.Windows.NetStat
 {
-    internal class UdpTable : IEnumerable<UdpRow>
+    public readonly struct UdpTable : IEnumerable<UdpRow>
     {
-        private IEnumerable<UdpRow> udpRows;
+        private readonly IEnumerable<UdpRow> udpRows;
 
-        internal UdpTable(IEnumerable<UdpRow> udpRows)
+        public UdpTable(IEnumerable<UdpRow> udpRows)
         {
             this.udpRows = udpRows;
         }
@@ -17,7 +17,7 @@ namespace pylorak.Windows.NetStat
             return this.udpRows.GetEnumerator();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.udpRows.GetEnumerator();
         }

@@ -7,7 +7,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Threading;
 using Microsoft.Win32.SafeHandles;
 
-namespace PKSoft
+namespace Microsoft.Samples
 {
     using Win32Exception = System.ComponentModel.Win32Exception;
     using PrivilegeNotHeldException = System.Security.AccessControl.PrivilegeNotHeldException;
@@ -139,10 +139,10 @@ namespace PKSoft
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
             internal static extern bool RevertToSelf();
 
-            [DllImport("advapi32", EntryPoint = "LookupPrivilegeValueW", CharSet = CharSet.Auto, SetLastError = true)]
+            [DllImport("advapi32", EntryPoint = "LookupPrivilegeValueW", CharSet = CharSet.Unicode, SetLastError = true)]
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
             internal static extern bool LookupPrivilegeValue(
-                [In]     string lpSystemName,
+                [In]     string? lpSystemName,
                 [In]     string lpName,
                 [In, Out] ref LUID Luid);
 
@@ -187,10 +187,10 @@ namespace PKSoft
         }
 
         #region Private static members
-        private static LocalDataStoreSlot tlsSlot = Thread.AllocateDataSlot();
-        private static HybridDictionary privileges = new HybridDictionary();
-        private static HybridDictionary luids = new HybridDictionary();
-        private static ReaderWriterLock privilegeLock = new ReaderWriterLock();
+        private static readonly LocalDataStoreSlot tlsSlot = Thread.AllocateDataSlot();
+        private static readonly HybridDictionary privileges = new();
+        private static readonly HybridDictionary luids = new();
+        private static readonly ReaderWriterLock privilegeLock = new();
         #endregion
 
         #region Private members
@@ -199,7 +199,7 @@ namespace PKSoft
         private bool stateWasChanged = false;
         private NativeMethods.LUID luid;
         private readonly Thread currentThread = Thread.CurrentThread;
-        private TlsContents tlsContents = null;
+        private TlsContents? tlsContents = null;
         #endregion
 
         #region Privilege names
@@ -285,9 +285,7 @@ namespace PKSoft
                         }
                         else if ( error == NativeMethods.ERROR_NO_SUCH_PRIVILEGE )
                         {
-                            throw new ArgumentException(
-                                string.Format( "{0} is not a valid privilege name", privilege ),
-                                "privilege" );
+                            throw new ArgumentException($"{privilege} is not a valid privilege name", nameof(privilege));
                         }
                         else
                         {
@@ -326,11 +324,13 @@ namespace PKSoft
         {
             private bool disposed = false;
             private int referenceCount = 1;
-            private SafeTokenHandle threadHandle = new SafeTokenHandle( IntPtr.Zero );
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "<Pending>")]
+            private SafeTokenHandle threadHandle = new( IntPtr.Zero );
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "<Pending>")]
             private bool isImpersonating = false;
 
-            private static SafeTokenHandle processHandle = new SafeTokenHandle( IntPtr.Zero );
-            private static readonly object syncRoot = new object();
+            private static SafeTokenHandle processHandle = new( IntPtr.Zero );
+            private static readonly object syncRoot = new();
 
             #region Constructor and finalizer
             public TlsContents()
@@ -471,8 +471,10 @@ namespace PKSoft
             {
                 if ( this.disposed ) return;
 
-                this.threadHandle?.Dispose();
-                this.threadHandle = null;
+                if (disposing)
+                {
+                    this.threadHandle?.Dispose();
+                }
 
                 if ( this.isImpersonating )
                 {
@@ -526,7 +528,7 @@ namespace PKSoft
         {
             if ( privilegeName == null )
             {
-                throw new ArgumentNullException( "privilegeName" );
+                throw new ArgumentNullException(nameof(privilegeName));
             }
 
             this.luid = LuidFromPrivilege( privilegeName );
@@ -591,15 +593,15 @@ namespace PKSoft
                     //
 
                     if ( this.stateWasChanged &&
-                        ( this.tlsContents.ReferenceCountValue > 1 ||
+                        ( this.tlsContents!.ReferenceCountValue > 1 ||
                         !this.tlsContents.IsImpersonating ))
                     {
-                        NativeMethods.TOKEN_PRIVILEGE newState = new NativeMethods.TOKEN_PRIVILEGE();
+                        var newState = new NativeMethods.TOKEN_PRIVILEGE();
                         newState.PrivilegeCount = 1;
                         newState.Privilege.Luid = this.luid;
                         newState.Privilege.Attributes = ( this.initialState ? NativeMethods.SE_PRIVILEGE_ENABLED : NativeMethods.SE_PRIVILEGE_DISABLED );
 
-                        NativeMethods.TOKEN_PRIVILEGE previousState = new NativeMethods.TOKEN_PRIVILEGE();
+                        var previousState = new NativeMethods.TOKEN_PRIVILEGE();
                         uint previousSize = 0;
 
                         if ( false == NativeMethods.AdjustTokenPrivileges(
@@ -647,10 +649,10 @@ namespace PKSoft
         {
             if ( callback == null )
             {
-                throw new ArgumentNullException( "callback" );
+                throw new ArgumentNullException(nameof(callback));
             }
             
-            Privilege p = new Privilege( privilege );
+            var p = new Privilege( privilege );
 
             RuntimeHelpers.PrepareConstrainedRegions();
 
@@ -738,12 +740,12 @@ namespace PKSoft
                         this.tlsContents.IncrementReferenceCount();
                     }
 
-                    NativeMethods.TOKEN_PRIVILEGE newState = new NativeMethods.TOKEN_PRIVILEGE();
+                    var newState = new NativeMethods.TOKEN_PRIVILEGE();
                     newState.PrivilegeCount = 1;
                     newState.Privilege.Luid = this.luid;
                     newState.Privilege.Attributes = enable ? NativeMethods.SE_PRIVILEGE_ENABLED : NativeMethods.SE_PRIVILEGE_DISABLED;
                     
-                    NativeMethods.TOKEN_PRIVILEGE previousState = new NativeMethods.TOKEN_PRIVILEGE();
+                    var previousState = new NativeMethods.TOKEN_PRIVILEGE();
                     uint previousSize = 0;
 
                     //

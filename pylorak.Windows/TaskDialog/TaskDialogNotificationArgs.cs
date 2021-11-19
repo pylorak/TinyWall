@@ -33,7 +33,7 @@ namespace Microsoft.Samples
         /// <summary>
         /// The HREF string of the hyperlink the notification is about.
         /// </summary>
-        private string hyperlink;
+        private string? hyperlink;
 
         /// <summary>
         /// The number of milliseconds since the dialog was opened or the last time the
@@ -74,7 +74,7 @@ namespace Microsoft.Samples
         /// <summary>
         /// The HREF string of the hyperlink the notification is about.
         /// </summary>
-        internal string Hyperlink
+        internal string? Hyperlink
         {
             get { return this.hyperlink; }
             set { this.hyperlink = value; }
