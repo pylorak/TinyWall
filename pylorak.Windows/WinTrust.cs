@@ -98,7 +98,7 @@ namespace pylorak.Windows
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        private class WinTrustData : Disposable
+        private class WinTrustData : IDisposable
         {
             public uint StructSize = (uint)Marshal.SizeOf(typeof(WinTrustData));
             public IntPtr PolicyCallbackData = IntPtr.Zero;
@@ -130,23 +130,29 @@ namespace pylorak.Windows
                 Marshal.StructureToPtr(wtfiData, FileInfoPtr, false);
             }
 
-            protected override void Dispose(bool disposing)
+            protected virtual void Dispose(bool disposing)
             {
-                if (IsDisposed)
-                    return;
-
-                if (disposing)
+                if (FileInfoPtr == IntPtr.Zero)
                 {
-                    // Dispose managed state (managed objects)
+                    if (disposing)
+                    {
+                        // Dispose managed state (managed objects)
+                    }
+
+                    Marshal.DestroyStructure(FileInfoPtr, typeof(WinTrustFileInfo));
+                    Marshal.FreeCoTaskMem(FileInfoPtr);
+                    FileInfoPtr = IntPtr.Zero;
                 }
-
-                Marshal.DestroyStructure(FileInfoPtr, typeof(WinTrustFileInfo));
-                Marshal.FreeCoTaskMem(FileInfoPtr);
-
-                base.Dispose(disposing);
             }
 
-            ~WinTrustData() => Dispose(false);
+            ~WinTrustData() => Dispose(disposing: false);
+
+            public void Dispose()
+            {
+                // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+                Dispose(disposing: true);
+                GC.SuppressFinalize(this);
+            }
         }
 
         //private static readonly Guid DRIVER_ACTION_VERIFY                   = new(0xf750e6c3, 0x38ee, 0x11d1, 0x85, 0xe5, 0x0, 0xc0, 0x4f, 0xc2, 0x95, 0xee);
