@@ -15,62 +15,61 @@ namespace pylorak.TinyWall.DatabaseClasses
         }
 
         [DataMember(EmitDefaultValue = false)]
-        internal ExceptionSubject Subject { get; set; }
+        internal ExceptionSubject Subject { get; set; } = GlobalSubject.Instance;
         [DataMember(EmitDefaultValue = false)]
-        internal ExceptionPolicy Policy { get; set; }
+        internal ExceptionPolicy Policy { get; set; } = new TcpUdpPolicy(true);
 
         // List of locations that specify where to search for this file.
         // Any string that can be resolved by RecursiveParser is valid.
         [DataMember(EmitDefaultValue = false)]
-        internal List<string> SearchPaths { get; set; }
+        internal List<string>? SearchPaths { get; set; }
 
         // List of possible public keys.
         // If the array has more than one items, only one needs to apply.
         [DataMember(EmitDefaultValue = false)]
-        internal List<string> CertificateSubjects { get; set; }
+        internal List<string>? CertificateSubjects { get; set; }
 
         // List of possible hash strings.
         // If the array has more than one items, only one needs to apply.
         [DataMember(EmitDefaultValue = false)]
-        public List<string> AllowedSha1 { get; set; }
+        public List<string>? AllowedSha1 { get; set; }
 
         public FirewallExceptionV3 InstantiateException(ExceptionSubject withSubject)
         {
             return new FirewallExceptionV3(withSubject, this.Policy);
         }
 
-        private ExceptionSubject FromFolder(string parentFolder)
+        private ExceptionSubject? FromFolder(string parentFolder)
         {
-            ExecutableSubject exesub = Subject as ExecutableSubject;
-            if (null == exesub)
-                throw new InvalidOperationException();
-
-            // Recursively resolve variables
-            string folderPath = Environment.ExpandEnvironmentVariables(RecursiveParser.ResolveString(parentFolder));
-            string filePath = Path.Combine(folderPath, exesub.ExecutableName);
-
-            if (IsValidExecutablePath(filePath))
+            if (Subject is ExecutableSubject exesub)
             {
-                ExecutableSubject testee = null;
-                if (exesub.SubjectType == SubjectType.Service)
-                    testee = new ServiceSubject(filePath, (this.Subject as ServiceSubject).ServiceName);
-                else
-                    testee = new ExecutableSubject(filePath);
+                // Recursively resolve variables
+                string folderPath = Environment.ExpandEnvironmentVariables(RecursiveParser.ResolveString(parentFolder));
+                string filePath = Path.Combine(folderPath, exesub.ExecutableName);
 
-                if (this.DoesExecutableSatisfy(testee))
+                if (IsValidExecutablePath(filePath))
                 {
-                    return testee;
-                }
-            }
+                    ExecutableSubject testee = exesub switch
+                    {
+                        ServiceSubject srvsub => new ServiceSubject(filePath, srvsub.ServiceName),
+                        _ => new ExecutableSubject(filePath)
+                    };
 
-            return null;
+                    if (this.DoesExecutableSatisfy(testee))
+                        return testee;
+                }
+
+                return null;
+            }
+            else
+                throw new InvalidOperationException();
         }
 
         // Tries to get the actual file path based on the search criteria
         // specified by SearchPaths. Writes found files to ExecutableRealizations.
-        public List<ExceptionSubject> SearchForFile(string pathHint = null)
+        public List<ExceptionSubject> SearchForFile(string? pathHint = null)
         {
-            List<ExceptionSubject> ret = new List<ExceptionSubject>();
+            var ret = new List<ExceptionSubject>();
 
             if (Subject is GlobalSubject)
             {
@@ -79,9 +78,10 @@ namespace pylorak.TinyWall.DatabaseClasses
             }
 
             // If the subject is not a file, we cannot search for it
-            ExecutableSubject exesub = Subject as ExecutableSubject;
-            if (null == exesub)
+            if (Subject is not ExecutableSubject)
                 return ret;
+
+            var exesub = (ExecutableSubject)Subject;
 
             // If the subject is specified with an absolute path, we won't search for it
             ExecutableSubject resolvedSubject = exesub.ToResolved();
@@ -95,7 +95,7 @@ namespace pylorak.TinyWall.DatabaseClasses
             }
 
             // If we know where to look, we return that location
-            if (!string.IsNullOrEmpty(pathHint))
+            if (pathHint is not null)
             {
                 var subj = FromFolder(pathHint);
                 if (subj != null)
@@ -131,11 +131,9 @@ namespace pylorak.TinyWall.DatabaseClasses
         public bool DoesExecutableSatisfy(ExceptionSubject subject)
         {
             if (null == subject)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(subject));
 
-            ExecutableSubject reference = this.Subject as ExecutableSubject;
-            ExecutableSubject testee = subject as ExecutableSubject;
-            if ((testee != null) && (reference != null))
+            if ((Subject is ExecutableSubject reference) && (subject is ExecutableSubject testee))
             {
                 reference = reference.ToResolved();
 

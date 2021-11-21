@@ -6,6 +6,7 @@ using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Security;
+using pylorak.Utilities;
 
 namespace pylorak.Windows
 {
@@ -58,24 +59,23 @@ namespace pylorak.Windows
 
 		#endregion
 
-		internal static Icon? GetIconForFile(string filename, ShellIconSize size)
+		internal static Icon GetIconForFile(string filename, ShellIconSize size)
 		{
 			var shinfo = new SHFILEINFO();
 			NativeMethods.SHGetFileInfo(filename, FILE_ATTRIBUTE_NORMAL, ref shinfo, (uint)Marshal.SizeOf(shinfo), size);
 
-			Icon? icon = null;
-
-			if (shinfo.hIcon.ToInt32() != 0)
+			if (shinfo.hIcon != IntPtr.Zero)
 			{
 				// create the icon from the native handle and make a managed copy of it
-				icon = (Icon)Icon.FromHandle(shinfo.hIcon).Clone();
+				Icon icon = (Icon)Icon.FromHandle(shinfo.hIcon).Clone();
 				NativeMethods.DestroyIcon(shinfo.hIcon);
+				return icon;
 			}
 
-			return icon;
+			throw new UnexpectedResultExceptions(nameof(NativeMethods.SHGetFileInfo));
 		}
 
-		internal static Icon? GetIconForExtension(string extension, ShellIconSize size)
+		internal static Icon GetIconForExtension(string extension, ShellIconSize size)
 		{
 			// repeat the process used for files, but instruct the API not to access the file
 			size |= (ShellIconSize)SHGFI_USEFILEATTRIBUTES;

@@ -8,8 +8,8 @@ namespace pylorak.TinyWall
 {
     public partial class UwpPackagesForm : Form
     {
-        private readonly List<UwpPackage.Package> SelectedPackages = new List<UwpPackage.Package>();
-        private readonly Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
+        private readonly List<UwpPackage.Package> SelectedPackages = new ();
+        private readonly Size IconSize = new ((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
         public UwpPackagesForm(bool multiSelect)
         {
@@ -26,16 +26,14 @@ namespace pylorak.TinyWall
 
         internal static List<UwpPackage.Package> ChoosePackage(IWin32Window parent, bool multiSelect)
         {
-            using (UwpPackagesForm pf = new UwpPackagesForm(multiSelect))
-            {
-                var pathList = new List<UwpPackage.Package>();
+            using var pf = new UwpPackagesForm(multiSelect);
+            var pathList = new List<UwpPackage.Package>();
 
-                if (pf.ShowDialog(parent) == DialogResult.Cancel)
-                    return pathList;
-
-                pathList.AddRange(pf.SelectedPackages);
+            if (pf.ShowDialog(parent) == DialogResult.Cancel)
                 return pathList;
-            }
+
+            pathList.AddRange(pf.SelectedPackages);
+            return pathList;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -56,7 +54,7 @@ namespace pylorak.TinyWall
         {
             if (btnOK.Enabled)
             {
-                btnOK_Click(btnOK, null);
+                btnOK_Click(btnOK, EventArgs.Empty);
             }
         }
 
@@ -74,11 +72,11 @@ namespace pylorak.TinyWall
 
             foreach (ColumnHeader col in listView.Columns)
             {
-                if (ActiveConfig.Controller.UwpPackagesFormColumnWidths.TryGetValue(col.Tag as string, out int width))
+                if (ActiveConfig.Controller.UwpPackagesFormColumnWidths.TryGetValue((string)col.Tag, out int width))
                     col.Width = width;
             }
 
-            List<ListViewItem> itemColl = new List<ListViewItem>();
+            var itemColl = new List<ListViewItem>();
 
             var packages = UwpPackage.GetList();
             foreach (var package in packages)
@@ -100,8 +98,8 @@ namespace pylorak.TinyWall
 
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            ListViewItemComparer oldSorter = listView.ListViewItemSorter as ListViewItemComparer;
-            ListViewItemComparer newSorter = new ListViewItemComparer(e.Column);
+            var oldSorter = (ListViewItemComparer)listView.ListViewItemSorter;
+            var newSorter = new ListViewItemComparer(e.Column);
             if ((oldSorter != null) && (oldSorter.Column == newSorter.Column))
                 newSorter.Ascending = !oldSorter.Ascending;
 
@@ -124,7 +122,7 @@ namespace pylorak.TinyWall
 
             ActiveConfig.Controller.UwpPackagesFormColumnWidths.Clear();
             foreach (ColumnHeader col in listView.Columns)
-                ActiveConfig.Controller.UwpPackagesFormColumnWidths.Add(col.Tag as string, col.Width);
+                ActiveConfig.Controller.UwpPackagesFormColumnWidths.Add((string)col.Tag, col.Width);
 
             ActiveConfig.Controller.Save();
         }

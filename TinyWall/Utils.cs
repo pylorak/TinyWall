@@ -27,7 +27,7 @@ namespace pylorak.TinyWall
 
     internal static class Utils
     {
-        [SuppressUnmanagedCodeSecurityAttribute]
+        [SuppressUnmanagedCodeSecurity]
         internal static class SafeNativeMethods
         {
             [DllImport("user32.dll")]
@@ -64,9 +64,9 @@ namespace pylorak.TinyWall
             [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             [return: MarshalAs(UnmanagedType.U4)]
             internal static extern int GetLongPathName(
-                [MarshalAs(UnmanagedType.LPTStr)]
+                [MarshalAs(UnmanagedType.LPWStr)]
                 string lpszShortPath,
-                [MarshalAs(UnmanagedType.LPTStr)]
+                [MarshalAs(UnmanagedType.LPWStr)]
                 StringBuilder lpszLongPath,
                 [MarshalAs(UnmanagedType.U4)]
                 int cchBuffer
@@ -110,8 +110,8 @@ namespace pylorak.TinyWall
             #region DoMouseRightClick
             [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
             public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint cButtons, IntPtr dwExtraInfo);
-            private const uint MOUSEEVENTF_LEFTDOWN = 0x02;
-            private const uint MOUSEEVENTF_LEFTUP = 0x04;
+            //private const uint MOUSEEVENTF_LEFTDOWN = 0x02;
+            //private const uint MOUSEEVENTF_LEFTUP = 0x04;
             private const uint MOUSEEVENTF_RIGHTDOWN = 0x08;
             private const uint MOUSEEVENTF_RIGHTUP = 0x10;
             internal static void DoMouseRightClick()
@@ -124,7 +124,7 @@ namespace pylorak.TinyWall
             #endregion
         }
 
-        private static readonly Random _rng = new Random();
+        private static readonly Random _rng = new ();
 
         public static string ExecutablePath { get; } = System.Reflection.Assembly.GetEntryAssembly().Location;
 
@@ -216,10 +216,8 @@ namespace pylorak.TinyWall
                     success = true;
 
                     var pid = Utils.GetForegroundProcessPid();
-                    using (Process p = Process.GetProcessById(unchecked((int)pid)))
-                    {
-                        return launcherVisible || Utils.IsImmersiveProcess(p);
-                    }
+                    using Process p = Process.GetProcessById(unchecked((int)pid));
+                    return launcherVisible || Utils.IsImmersiveProcess(p);
                 }
                 else
                     return false;
@@ -240,7 +238,7 @@ namespace pylorak.TinyWall
         internal static uint GetForegroundProcessPid()
         {
             IntPtr hwnd = SafeNativeMethods.GetForegroundWindow();
-            SafeNativeMethods.GetWindowThreadProcessId(hwnd, out uint pid);
+            _ = SafeNativeMethods.GetWindowThreadProcessId(hwnd, out uint pid);
             return pid;
         }
 
@@ -259,46 +257,29 @@ namespace pylorak.TinyWall
 
         internal static void CompressDeflate(string inputFile, string outputFile)
         {
-            // Get the stream of the source file.
-            using (FileStream inFile = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
+            using var inFile = new FileStream(inputFile, FileMode.Open, FileAccess.Read);
+            using var outFile = new FileStream(outputFile, FileMode.Create, FileAccess.Write);
+            using var compressedOutFile = new DeflateStream(outFile, CompressionMode.Compress, true);
+
+            byte[] buffer = new byte[4096];
+            int numRead;
+            while ((numRead = inFile.Read(buffer, 0, buffer.Length)) != 0)
             {
-              // Create the compressed file.
-              using (FileStream outFile = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
-              {
-                using (DeflateStream Compress = new DeflateStream(outFile, CompressionMode.Compress, true))
-                {
-                    // Copy the source file into
-                    // the compression stream.
-                    byte[] buffer = new byte[4096];
-                    int numRead;
-                    while ((numRead = inFile.Read(buffer, 0, buffer.Length)) != 0)
-                    {
-                        Compress.Write(buffer, 0, numRead);
-                    }
-                }
-              }
+                compressedOutFile.Write(buffer, 0, numRead);
             }
         }
 
         internal static void DecompressDeflate(string inputFile, string outputFile)
         {
-            // Create the decompressed file.
-            using (FileStream outFile = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
+            using var outFile = new FileStream(outputFile, FileMode.Create, FileAccess.Write);
+            using var inFile = new FileStream(inputFile, FileMode.Open, FileAccess.Read);
+            using var decompressedInFile = new DeflateStream(inFile, CompressionMode.Decompress, true);
+
+            byte[] buffer = new byte[4096];
+            int numRead;
+            while ((numRead = decompressedInFile.Read(buffer, 0, buffer.Length)) != 0)
             {
-              // Get the stream of the source file.
-              using (FileStream inFile = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
-              {
-                using (DeflateStream Decompress = new DeflateStream(inFile, CompressionMode.Decompress, true))
-                {
-                    //Copy the decompression stream into the output file.
-                    byte[] buffer = new byte[4096];
-                    int numRead;
-                    while ((numRead = Decompress.Read(buffer, 0, buffer.Length)) != 0)
-                    {
-                        outFile.Write(buffer, 0, numRead);
-                    }
-                }
-              }
+                outFile.Write(buffer, 0, numRead);
             }
         }
 
@@ -330,7 +311,7 @@ namespace pylorak.TinyWall
 
         internal static uint GetPidUnderCursor(int x, int y)
         {
-            SafeNativeMethods.GetWindowThreadProcessId(SafeNativeMethods.WindowFromPoint(new System.Drawing.Point(x, y)), out uint procId);
+            _ = SafeNativeMethods.GetWindowThreadProcessId(SafeNativeMethods.WindowFromPoint(new System.Drawing.Point(x, y)), out uint procId);
             return procId;
         }
 
@@ -341,12 +322,10 @@ namespace pylorak.TinyWall
         /// <returns>The long path. Null or empty if the input is null or empty. Returns the input path in case of error.</returns>
         internal static string GetLongPathName(string shortPath)
         {
-            if (String.IsNullOrEmpty(shortPath))
-            {
+            if (string.IsNullOrEmpty(shortPath))
                 return shortPath;
-            }
 
-            StringBuilder builder = new StringBuilder(255);
+            var builder = new StringBuilder(255);
             int result = SafeNativeMethods.GetLongPathName(shortPath, builder, builder.Capacity);
             if ((result > 0) && (result < builder.Capacity))
             {
@@ -453,21 +432,19 @@ namespace pylorak.TinyWall
 
         internal static T DeepClone<T>(T obj)
         {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                SerializationHelper.SerializeDC(ms, obj);
-                ms.Flush();
-                ms.Position = 0;
+            using var ms = new MemoryStream();
+            SerializationHelper.SerializeDC(ms, obj);
+            ms.Flush();
+            ms.Position = 0;
 
-                return SerializationHelper.DeserializeDC<T>(ms);
-            }
+            return SerializationHelper.DeserializeDC<T>(ms);
         }
 
-        internal static bool ArrayContains<T>(T[] arr, T val)
+        internal static bool StringArrayContains(string[] arr, string val, StringComparison opts = StringComparison.Ordinal)
         {
             for (int i = 0; i < arr.Length; ++i)
             {
-                if (arr[i].Equals(val))
+                if (string.Equals(arr[i], val, opts))
                     return true;
             }
 
@@ -476,7 +453,7 @@ namespace pylorak.TinyWall
 
         internal static Process StartProcess(string path, string args, bool asAdmin, bool hideWindow = false)
         {
-            ProcessStartInfo psi = new ProcessStartInfo(path, args);
+            var psi = new ProcessStartInfo(path, args);
             psi.WorkingDirectory = Path.GetDirectoryName(path);
             if (asAdmin)
             {
@@ -491,8 +468,8 @@ namespace pylorak.TinyWall
 
         internal static bool RunningAsAdmin()
         {
-            WindowsIdentity wi = WindowsIdentity.GetCurrent();
-            WindowsPrincipal wp = new WindowsPrincipal(wi);
+            var wi = WindowsIdentity.GetCurrent();
+            var wp = new WindowsPrincipal(wi);
             return wp.IsInRole(WindowsBuiltInRole.Administrator);
         }
 
@@ -501,7 +478,7 @@ namespace pylorak.TinyWall
             int newWidth = (int)Math.Round(originalImage.Width * scaleX);
             int newHeight = (int)Math.Round(originalImage.Height * scaleY);
 
-            Bitmap newImage = new Bitmap(originalImage, newWidth, newHeight);
+            var newImage = new Bitmap(originalImage, newWidth, newHeight);
             try
             {
                 using (Graphics g = Graphics.FromImage(newImage))
@@ -536,7 +513,7 @@ namespace pylorak.TinyWall
                 newWidth = (int)Math.Round(newHeight * aspectRatio);
             }
 
-            Bitmap newImage = new Bitmap(originalImage, newWidth, newHeight);
+            var newImage = new Bitmap(originalImage, newWidth, newHeight);
             try
             {
                 using (Graphics g = Graphics.FromImage(newImage))
@@ -560,27 +537,21 @@ namespace pylorak.TinyWall
             if ((targetHeight == 16) && (targetWidth == 16))
                 icnSize = IconTools.ShellIconSize.SmallIcon;
 
-            using (Icon icon = IconTools.GetIconForExtension(filePath, icnSize))
+            using var icon = IconTools.GetIconForExtension(filePath, icnSize);
+            if ((icon.Width == targetWidth) && (icon.Height == targetHeight))
             {
-                if ((icon.Width == targetWidth) && (icon.Height == targetHeight))
-                {
-                    return icon.ToBitmap();
-                }
-                if ((icon.Height > targetHeight) || (icon.Width > targetWidth))
-                {
-                    using (Bitmap bmp = icon.ToBitmap())
-                    {
-                        return Utils.ResizeImage(bmp, targetWidth, targetHeight);
-                    }
-                }
-                else
-                {
-                    float scale = Math.Min((float)targetWidth / icon.Width, (float)targetHeight / icon.Height);
-                    using (Bitmap bmp = icon.ToBitmap())
-                    {
-                        return Utils.ScaleImage(bmp, (int)Math.Round(scale*icon.Width), (int)Math.Round(scale * icon.Height));
-                    }
-                }
+                return icon.ToBitmap();
+            }
+            if ((icon.Height > targetHeight) || (icon.Width > targetWidth))
+            {
+                using var bmp = icon.ToBitmap();
+                return Utils.ResizeImage(bmp, targetWidth, targetHeight);
+            }
+            else
+            {
+                using var bmp = icon.ToBitmap();
+                float scale = Math.Min((float)targetWidth / icon.Width, (float)targetHeight / icon.Height);
+                return Utils.ScaleImage(bmp, (int)Math.Round(scale * icon.Width), (int)Math.Round(scale * icon.Height));
             }
         }
 
@@ -591,12 +562,10 @@ namespace pylorak.TinyWall
             {
                 if (!_DpiScalingFactor.HasValue)
                 {
-                    using (System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(IntPtr.Zero))
-                    {
-                        float dpiX = graphics.DpiX;
-                        float dpiY = graphics.DpiY;
-                        _DpiScalingFactor = dpiX / 96.0f;
-                    }
+                    using System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(IntPtr.Zero);
+                    float dpiX = graphics.DpiX;
+                    float dpiY = graphics.DpiY;
+                    _DpiScalingFactor = dpiX / 96.0f;
                 }
 
                 return _DpiScalingFactor.Value;
@@ -640,7 +609,7 @@ namespace pylorak.TinyWall
             string[] lines = str.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 
             firstLine = lines[0];
-            restLines = null;
+            restLines = string.Empty;
 
             if (lines.Length > 1)
             {
@@ -650,33 +619,30 @@ namespace pylorak.TinyWall
             }
         }
 
-        internal static DialogResult ShowMessageBox(string msg, string title, TaskDialogCommonButtons buttons, TaskDialogIcon icon, IWin32Window parent = null)
+        internal static DialogResult ShowMessageBox(string msg, string title, TaskDialogCommonButtons buttons, TaskDialogIcon icon, IWin32Window? parent = null)
         {
             Utils.SplitFirstLine(msg, out string firstLine, out string contentLines);
 
-            TaskDialog taskDialog = new TaskDialog();
+            var taskDialog = new TaskDialog();
             taskDialog.WindowTitle = title;
             taskDialog.MainInstruction = firstLine;
             taskDialog.CommonButtons = buttons;
             taskDialog.MainIcon = icon;
             taskDialog.Content = contentLines;
-            if (parent==null)
+            if (parent is null)
                 return (DialogResult)taskDialog.Show();
             else
                 return (DialogResult)taskDialog.Show(parent);
         }
 
-        private static Random RndGenerator = null;
         internal static int GetRandomNumber()
         {
-            if (RndGenerator == null)
-                RndGenerator = new Random();
-            return RndGenerator.Next(0, int.MaxValue);
+            return _rng.Next(0, int.MaxValue);
         }
 
         internal static Version TinyWallVersion { get; } = typeof(Utils).Assembly.GetName().Version;
 
-        private readonly static object logLocker = new object();
+        private readonly static object logLocker = new();
         internal static readonly string LOG_ID_SERVICE   = "service";
         internal static readonly string LOG_ID_GUI       = "gui";
         internal static readonly string LOG_ID_INSTALLER = "installer";
@@ -726,22 +692,20 @@ namespace pylorak.TinyWall
                     // Only log if log file has not yet reached a certain size
                     if (File.Exists(logfile))
                     {
-                        FileInfo fi = new FileInfo(logfile);
+                        var fi = new FileInfo(logfile);
                         if (fi.Length > 512 * 1024)
                         {
                             // Truncate file back to zero
-                            using (var fs = new FileStream(logfile, FileMode.Truncate, FileAccess.Write)) { }
+                            using var fs = new FileStream(logfile, FileMode.Truncate, FileAccess.Write);
                         }
                     }
 
                     // Do the logging
-                    using (StreamWriter sw = new StreamWriter(logfile, true, Encoding.UTF8))
-                    {
-                        sw.WriteLine();
-                        sw.WriteLine("------- " + DateTime.Now.ToString(CultureInfo.InvariantCulture) + " -------");
-                        sw.WriteLine(info);
-                        sw.WriteLine();
-                    }
+                    using var sw = new StreamWriter(logfile, true, Encoding.UTF8);
+                    sw.WriteLine();
+                    sw.WriteLine("------- " + DateTime.Now.ToString(CultureInfo.InvariantCulture) + " -------");
+                    sw.WriteLine(info);
+                    sw.WriteLine();
                 }
             }
             catch
@@ -762,7 +726,7 @@ namespace pylorak.TinyWall
 
         internal static void FlushDnsCache()
         {
-            SafeNativeMethods.DnsFlushResolverCache();
+            _ = SafeNativeMethods.DnsFlushResolverCache();
         }
 
         internal static string AppDataPath

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
 using System.Diagnostics.Eventing.Reader;
 using NetFwTypeLib;
+using pylorak.Utilities;
 
 namespace pylorak.TinyWall
 {
-    class WindowsFirewall : IDisposable
+    class WindowsFirewall : Disposable
     {
-        private EventLogWatcher WFEventWatcher;
+        private readonly EventLogWatcher? WFEventWatcher;
 
         // This is a list of apps that are allowed to change firewall rules
         private static readonly string[] WhitelistedApps = new string[]
@@ -37,7 +37,7 @@ namespace pylorak.TinyWall
             }
         }
 
-        private static void WFEventWatcher_EventRecordWritten(object sender, EventRecordWrittenEventArgs e)
+        private static void WFEventWatcher_EventRecordWritten(object? sender, EventRecordWrittenEventArgs e)
         {
             try
             {
@@ -84,10 +84,18 @@ namespace pylorak.TinyWall
             DisableMpsSvc();
         }
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            WFEventWatcher?.Dispose();
+            if (IsDisposed)
+                return;
+
+            if (disposing)
+            {
+                WFEventWatcher?.Dispose();
+            }
+
             RestoreMpsSvc();
+            base.Dispose(disposing);
         }
 
         private static INetFwPolicy2 GetFwPolicy2()

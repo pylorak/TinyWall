@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -9,7 +10,7 @@ namespace pylorak.TinyWall.DatabaseClasses
     {
         // Application name
         [DataMember(EmitDefaultValue = false)]
-        internal string Name { get; set; }
+        internal string Name { get; set; } = string.Empty;
 
         internal string LocalizedName
         {
@@ -37,12 +38,12 @@ namespace pylorak.TinyWall.DatabaseClasses
         }
 
         [DataMember(Name = "Flags", EmitDefaultValue = false)]
-        private Dictionary<string, string> Flags = null;
+        private Dictionary<string, string?>? Flags;
 
-        public void SetFlag(string flag, string value = null)
+        public void SetFlag(string flag, string? value = null)
         {
-            if (Flags == null)
-                Flags = new Dictionary<string, string>();
+            if (Flags is null)
+                Flags = new Dictionary<string, string?>();
 
             Flags[flag.ToUpperInvariant()] = value;
         }
@@ -53,7 +54,7 @@ namespace pylorak.TinyWall.DatabaseClasses
 
             return Flags.ContainsKey(flag.ToUpperInvariant());
         }
-        public string GetFlagValue(string flag)
+        public string? GetFlagValue(string flag)
         {
             if (Flags == null)
                 throw new KeyNotFoundException();

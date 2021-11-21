@@ -266,8 +266,8 @@ namespace pylorak.TinyWall
         private bool TrafficRateVisible_ = true;
         private bool TrayMenuShowing_;
 
-        private EventHandler<AnyEventArgs> BalloonClickedCallback;
-        private object BalloonClickedCallbackArgument;
+        private EventHandler<AnyEventArgs>? BalloonClickedCallback;
+        private object? BalloonClickedCallbackArgument;
         private SynchronizationContext SyncCtx;
 
         private Hotkey HotKeyWhitelistExecutable;
@@ -1218,7 +1218,7 @@ namespace pylorak.TinyWall
             mnuEnableHostsBlocklist.Checked = ActiveConfig.Service.Blocklists.EnableBlocklists;
         }
 
-        private void ShowBalloonTip(string msg, ToolTipIcon icon, int period_ms = 5000, EventHandler<AnyEventArgs> balloonClicked = null, object handlerArg = null)
+        private void ShowBalloonTip(string msg, ToolTipIcon icon, int period_ms = 5000, EventHandler<AnyEventArgs>? balloonClicked = null, object? handlerArg = null)
         {
             BalloonClickedCallback = balloonClicked;
             BalloonClickedCallbackArgument = handlerArg;
@@ -1258,7 +1258,7 @@ namespace pylorak.TinyWall
         {
             try
             {
-                Utils.StartProcess(Utils.ExecutablePath, null, true);
+                Utils.StartProcess(Utils.ExecutablePath, string.Empty, true);
                 System.Windows.Forms.Application.Exit();
             }
             catch
@@ -1453,13 +1453,13 @@ namespace pylorak.TinyWall
 
     internal class AnyEventArgs : EventArgs
     {
-        private object _arg;
+        private object? _arg;
 
-        public AnyEventArgs(object arg = null)
+        public AnyEventArgs(object? arg = null)
         {
             _arg = arg;
         }
-        public object Arg
+        public object? Arg
         {
             get { return _arg; }
         }

@@ -104,23 +104,23 @@ namespace pylorak.TinyWall
 
             // Parse comman-line options
             CmdLineArgs opts = new CmdLineArgs();
-            if (!Environment.UserInteractive || Utils.ArrayContains(args, "/service"))
+            if (!Environment.UserInteractive || Utils.StringArrayContains(args, "/service"))
                 opts.ProgramMode = StartUpMode.Service;
-            if (Utils.ArrayContains(args, "/selfhosted"))
+            if (Utils.StringArrayContains(args, "/selfhosted"))
                 opts.ProgramMode = StartUpMode.SelfHosted;
-            if (Utils.ArrayContains(args, "/develtool"))
+            if (Utils.StringArrayContains(args, "/develtool"))
                 opts.ProgramMode = StartUpMode.DevelTool;
-            if (Utils.ArrayContains(args, "/install"))
+            if (Utils.StringArrayContains(args, "/install"))
                 opts.ProgramMode = StartUpMode.Install;
-            if (Utils.ArrayContains(args, "/uninstall"))
+            if (Utils.StringArrayContains(args, "/uninstall"))
                 opts.ProgramMode = StartUpMode.Uninstall;
 
             if (opts.ProgramMode == StartUpMode.Invalid)
                 opts.ProgramMode = StartUpMode.Controller;
 
-            opts.autowhitelist = Utils.ArrayContains(args, "/autowhitelist");
-            opts.updatenow = Utils.ArrayContains(args, "/updatenow");
-            opts.startup = Utils.ArrayContains(args, "/startup");
+            opts.autowhitelist = Utils.StringArrayContains(args, "/autowhitelist");
+            opts.updatenow = Utils.StringArrayContains(args, "/updatenow");
+            opts.startup = Utils.StringArrayContains(args, "/startup");
 
 #if !DEBUG
             // Register an unhandled exception handler - lol
