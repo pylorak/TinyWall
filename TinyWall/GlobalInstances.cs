@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Diagnostics.CodeAnalysis;
 using pylorak.TinyWall.DatabaseClasses;
 
 namespace pylorak.TinyWall
@@ -14,7 +15,6 @@ namespace pylorak.TinyWall
         public static void Cleanup()
         {
             Controller?.Dispose();
-            Controller = null;
         }
 
         public static void InitClient()
@@ -23,6 +23,7 @@ namespace pylorak.TinyWall
                 Controller = new Controller("TinyWallController");
         }
 
+        [AllowNull]
         private static Bitmap _ApplyBtnIcon = null;
         internal static Bitmap ApplyBtnIcon
         {
@@ -35,6 +36,7 @@ namespace pylorak.TinyWall
             }
         }
 
+        [AllowNull]
         private static Bitmap _CancelBtnIcon = null;
         internal static Bitmap CancelBtnIcon
         {
@@ -47,6 +49,7 @@ namespace pylorak.TinyWall
             }
         }
 
+        [AllowNull]
         private static Bitmap _UninstallBtnIcon = null;
         internal static Bitmap UninstallBtnIcon
         {
@@ -59,6 +62,7 @@ namespace pylorak.TinyWall
             }
         }
 
+        [AllowNull]
         private static Bitmap _AddBtnIcon = null;
         internal static Bitmap AddBtnIcon
         {
@@ -71,6 +75,7 @@ namespace pylorak.TinyWall
             }
         }
 
+        [AllowNull]
         private static Bitmap _ModifyBtnIcon = null;
         internal static Bitmap ModifyBtnIcon
         {
@@ -83,6 +88,7 @@ namespace pylorak.TinyWall
             }
         }
 
+        [AllowNull]
         private static Bitmap _RemoveBtnIcon = null;
         internal static Bitmap RemoveBtnIcon
         {
@@ -95,6 +101,7 @@ namespace pylorak.TinyWall
             }
         }
 
+        [AllowNull]
         private static Bitmap _SubmitBtnIcon = null;
         internal static Bitmap SubmitBtnIcon
         {
@@ -107,6 +114,7 @@ namespace pylorak.TinyWall
             }
         }
 
+        [AllowNull]
         private static Bitmap _ImportBtnIcon = null;
         internal static Bitmap ImportBtnIcon
         {
@@ -119,6 +127,7 @@ namespace pylorak.TinyWall
             }
         }
 
+        [AllowNull]
         private static Bitmap _ExportBtnIcon = null;
         internal static Bitmap ExportBtnIcon
         {
@@ -131,6 +140,7 @@ namespace pylorak.TinyWall
             }
         }
 
+        [AllowNull]
         private static Bitmap _UpdateBtnIcon = null;
         internal static Bitmap UpdateBtnIcon
         {
@@ -143,6 +153,7 @@ namespace pylorak.TinyWall
             }
         }
 
+        [AllowNull]
         private static Bitmap _WebBtnIcon = null;
         internal static Bitmap WebBtnIcon
         {

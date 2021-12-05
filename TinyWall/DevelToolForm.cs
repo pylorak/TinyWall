@@ -49,7 +49,8 @@ namespace pylorak.TinyWall
                 if (exe.IsSigned && exe.CertValid)
                 {
                     id.CertificateSubjects = new List<string>();
-                    id.CertificateSubjects.Add(exe.CertSubject);
+                    if (exe.CertSubject is not null)
+                        id.CertificateSubjects.Add(exe.CertSubject);
                 }
                 using (MemoryStream ms = new MemoryStream())
                 {
@@ -324,37 +325,31 @@ namespace pylorak.TinyWall
 
         private void btnOptimize_Click(object sender, EventArgs e)
         {
-            ITypeResolutionService trs = null;
+            ITypeResolutionService? trs = null;
 
             for (int i = 0; i < ResXInputs.Count; ++i)  // for each main resource file
             {
-                KeyValuePair<string, string[]> pair = ResXInputs[i];
-
-                Dictionary<string, ResXDataNode> primary = ReadResXFile(pair.Key);
+                var pair = ResXInputs[i];
+                var primary = ReadResXFile(pair.Key);
 
                 for (int s = 0; s < pair.Value.Length; ++s)  // for each localization
                 {
-                    { // Replace Windows Forms control versions to 2.0.0.0.
-                        // (They were often rewritten to 4.0.0.0 wrongly during localization)
-                        string a = null;
-                        using (StreamReader sr = new StreamReader(pair.Value[s], Encoding.UTF8))
-                        {
-                            a = sr.ReadToEnd();
-                        }
-                        a = a.Replace(", Version=4.0.0.0,", ", Version=2.0.0.0,");
-                        using (StreamWriter sw = new StreamWriter(pair.Value[s], false, Encoding.UTF8))
-                        {
-                            sw.Write(a);
-                        }
+                    { // Replace Windows Forms control versions to 4.0.0.0.
+                        using var sr = new StreamReader(pair.Value[s], Encoding.UTF8);
+                        var a = sr.ReadToEnd();
+                        a = a.Replace(", Version=2.0.0.0,", ", Version=4.0.0.0,");
+
+                        using var sw = new StreamWriter(pair.Value[s], false, Encoding.UTF8);
+                        sw.Write(a);
                     }
 
-                    Dictionary<string, ResXDataNode> satellite = ReadResXFile(pair.Value[s]);
-                    Dictionary<string, ResXDataNode> newSatellite = new Dictionary<string, ResXDataNode>();
+                    var satellite = ReadResXFile(pair.Value[s]);
+                    var newSatellite = new Dictionary<string, ResXDataNode>();
 
                     // Iterate over all contents of primary.
                     // For each entry, check if one with same name, type and contents is available in
                     // satellite, and if so, don't save it to output.
-                    Dictionary<string, ResXDataNode>.Enumerator primaryEnum = primary.GetEnumerator();
+                    var primaryEnum = primary.GetEnumerator();
                     while (primaryEnum.MoveNext())
                     {
                         ResXDataNode primaryItem = primaryEnum.Current.Value;

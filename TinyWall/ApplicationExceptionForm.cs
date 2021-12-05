@@ -9,7 +9,7 @@ namespace pylorak.TinyWall
 {
     internal partial class ApplicationExceptionForm : Form
     {
-        private List<FirewallExceptionV3> TmpExceptionSettings = new List<FirewallExceptionV3>();
+        private List<FirewallExceptionV3> TmpExceptionSettings = new();
 
         internal List<FirewallExceptionV3> ExceptionSettings
         {
@@ -51,31 +51,41 @@ namespace pylorak.TinyWall
             panel2.Width = this.Width;
 
             cmbTimer.SuspendLayout();
-            Dictionary<AppExceptionTimer, KeyValuePair<string, AppExceptionTimer>> timerTexts = new Dictionary<AppExceptionTimer, KeyValuePair<string, AppExceptionTimer>>();
-            timerTexts.Add(AppExceptionTimer.Permanent,
-                new KeyValuePair<string, AppExceptionTimer>(Resources.Messages.Permanent, AppExceptionTimer.Permanent)
-                );
-            timerTexts.Add(AppExceptionTimer.Until_Reboot,
-                new KeyValuePair<string, AppExceptionTimer>(Resources.Messages.UntilReboot, AppExceptionTimer.Until_Reboot)
-                );
-            timerTexts.Add(AppExceptionTimer.For_5_Minutes,
-                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XMinutes, 5), AppExceptionTimer.For_5_Minutes)
-                );
-            timerTexts.Add(AppExceptionTimer.For_30_Minutes,
-                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XMinutes, 30), AppExceptionTimer.For_30_Minutes)
-                );
-            timerTexts.Add(AppExceptionTimer.For_1_Hour, 
-                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHour, 1), AppExceptionTimer.For_1_Hour)
-                );
-            timerTexts.Add(AppExceptionTimer.For_4_Hours,
-                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHours, 4), AppExceptionTimer.For_4_Hours)
-                );
-            timerTexts.Add(AppExceptionTimer.For_9_Hours,
-                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHours, 9), AppExceptionTimer.For_9_Hours)
-                );
-            timerTexts.Add(AppExceptionTimer.For_24_Hours,
-                new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHours, 24), AppExceptionTimer.For_24_Hours)
-                );
+            var timerTexts = new Dictionary<AppExceptionTimer, KeyValuePair<string, AppExceptionTimer>>
+            {
+                {
+                    AppExceptionTimer.Permanent,
+                    new KeyValuePair<string, AppExceptionTimer>(Resources.Messages.Permanent, AppExceptionTimer.Permanent)
+                },
+                {
+                    AppExceptionTimer.Until_Reboot,
+                    new KeyValuePair<string, AppExceptionTimer>(Resources.Messages.UntilReboot, AppExceptionTimer.Until_Reboot)
+                },
+                {
+                    AppExceptionTimer.For_5_Minutes,
+                    new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XMinutes, 5), AppExceptionTimer.For_5_Minutes)
+                },
+                {
+                    AppExceptionTimer.For_30_Minutes,
+                    new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XMinutes, 30), AppExceptionTimer.For_30_Minutes)
+                },
+                {
+                    AppExceptionTimer.For_1_Hour,
+                    new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHour, 1), AppExceptionTimer.For_1_Hour)
+                },
+                {
+                    AppExceptionTimer.For_4_Hours,
+                    new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHours, 4), AppExceptionTimer.For_4_Hours)
+                },
+                {
+                    AppExceptionTimer.For_9_Hours,
+                    new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHours, 9), AppExceptionTimer.For_9_Hours)
+                },
+                {
+                    AppExceptionTimer.For_24_Hours,
+                    new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHours, 24), AppExceptionTimer.For_24_Hours)
+                }
+            };
 
             foreach (AppExceptionTimer timerVal in Enum.GetValues(typeof(AppExceptionTimer)))
             {
@@ -155,15 +165,15 @@ namespace pylorak.TinyWall
                     txtSrvName.Text = Resources.Messages.SubjectTypeGlobal;
                     break;
                 case SubjectType.Executable:
-                    txtAppPath.Text = exeSubj.ExecutablePath;
+                    txtAppPath.Text = exeSubj!.ExecutablePath;
                     txtSrvName.Text = Resources.Messages.SubjectTypeExecutable;
                     break;
                 case SubjectType.Service:
-                    txtAppPath.Text = srvSubj.ServiceName + " (" + srvSubj.ExecutablePath + ")";
+                    txtAppPath.Text = srvSubj!.ServiceName + " (" + srvSubj.ExecutablePath + ")";
                     txtSrvName.Text = Resources.Messages.SubjectTypeService;
                     break;
                 case SubjectType.AppContainer:
-                    txtAppPath.Text = uwpSubj.DisplayName;
+                    txtAppPath.Text = uwpSubj!.DisplayName;
                     txtSrvName.Text = Resources.Messages.SubjectTypeUwpApp;
                     break;
                 default:
@@ -178,7 +188,7 @@ namespace pylorak.TinyWall
             {
                 case PolicyType.HardBlock:
                     radBlock.Checked = true;
-                    radRestriction_CheckedChanged(null, null);
+                    radRestriction_CheckedChanged(this, EventArgs.Empty);
                     break;
                 case PolicyType.RuleList:
                     radBlock.Enabled = false;
@@ -190,7 +200,7 @@ namespace pylorak.TinyWall
                     chkRestrictToLocalNetwork.Checked = false;
                     break;
                 case PolicyType.TcpUdpOnly:
-                    TcpUdpPolicy pol = TmpExceptionSettings[0].Policy as TcpUdpPolicy;
+                    TcpUdpPolicy pol = (TcpUdpPolicy)TmpExceptionSettings[0].Policy;
                     if (
                         string.Equals(pol.AllowedLocalTcpListenerPorts, "*")
                         && string.Equals(pol.AllowedLocalUdpListenerPorts, "*")
@@ -212,17 +222,17 @@ namespace pylorak.TinyWall
                         radOnlySpecifiedPorts.Checked = true;
                     }
 
-                    radRestriction_CheckedChanged(null, null);
+                    radRestriction_CheckedChanged(this, EventArgs.Empty);
                     chkRestrictToLocalNetwork.Checked = pol.LocalNetworkOnly;
-                    txtOutboundPortTCP.Text = string.IsNullOrEmpty(pol.AllowedRemoteTcpConnectPorts) ? string.Empty : pol.AllowedRemoteTcpConnectPorts.Replace(",", ", ");
-                    txtOutboundPortUDP.Text = string.IsNullOrEmpty(pol.AllowedRemoteUdpConnectPorts) ? string.Empty : pol.AllowedRemoteUdpConnectPorts.Replace(",", ", ");
-                    txtListenPortTCP.Text = string.IsNullOrEmpty(pol.AllowedLocalTcpListenerPorts) ? string.Empty : pol.AllowedLocalTcpListenerPorts.Replace(",", ", ");
-                    txtListenPortUDP.Text = string.IsNullOrEmpty(pol.AllowedLocalUdpListenerPorts) ? string.Empty : pol.AllowedLocalUdpListenerPorts.Replace(",", ", ");
+                    txtOutboundPortTCP.Text = (pol.AllowedRemoteTcpConnectPorts is null) ? string.Empty : pol.AllowedRemoteTcpConnectPorts.Replace(",", ", ");
+                    txtOutboundPortUDP.Text = (pol.AllowedRemoteUdpConnectPorts is null) ? string.Empty : pol.AllowedRemoteUdpConnectPorts.Replace(",", ", ");
+                    txtListenPortTCP.Text = (pol.AllowedLocalTcpListenerPorts is null) ? string.Empty : pol.AllowedLocalTcpListenerPorts.Replace(",", ", ");
+                    txtListenPortUDP.Text = (pol.AllowedLocalUdpListenerPorts is null) ? string.Empty : pol.AllowedLocalUdpListenerPorts.Replace(",", ", ");
                     break;
                 case PolicyType.Unrestricted:
-                    UnrestrictedPolicy upol = TmpExceptionSettings[0].Policy as UnrestrictedPolicy;
+                    UnrestrictedPolicy upol = (UnrestrictedPolicy)TmpExceptionSettings[0].Policy;
                     radUnrestricted.Checked = true;
-                    radRestriction_CheckedChanged(null, null);
+                    radRestriction_CheckedChanged(this, EventArgs.Empty);
                     chkRestrictToLocalNetwork.Checked = upol.LocalNetworkOnly;
                     break;
                 default:
@@ -284,7 +294,7 @@ namespace pylorak.TinyWall
             {
                 case SubjectType.Executable:
                 case SubjectType.Service:
-                    btnOK.Enabled = DatabaseClasses.SubjectIdentity.IsValidExecutablePath((TmpExceptionSettings[0].Subject as ExecutableSubject).ExecutablePath);
+                    btnOK.Enabled = DatabaseClasses.SubjectIdentity.IsValidExecutablePath(((ExecutableSubject)TmpExceptionSettings[0].Subject).ExecutablePath);
                     break;
                 case SubjectType.AppContainer:
                 case SubjectType.Global:
@@ -305,7 +315,7 @@ namespace pylorak.TinyWall
             }
             else if (radOnlySpecifiedPorts.Checked || radTcpUdpOut.Checked || radTcpUdpUnrestricted.Checked)
             {
-                TcpUdpPolicy pol = new TcpUdpPolicy();
+                var pol = new TcpUdpPolicy();
 
                 try
                 {
@@ -347,8 +357,8 @@ namespace pylorak.TinyWall
 
         private void btnProcess_Click(object sender, EventArgs e)
         {
-            List<ProcessInfo> procList = new List<ProcessInfo>();
-            using (ProcessesForm pf = new ProcessesForm(false))
+            var procList = new List<ProcessInfo>();
+            using (var pf = new ProcessesForm(false))
             {
                     if (pf.ShowDialog(this) == DialogResult.Cancel)
                         return;
@@ -359,9 +369,9 @@ namespace pylorak.TinyWall
 
             ExceptionSubject subject;
             if (procList[0].Package.HasValue)
-                subject = new AppContainerSubject(procList[0].Package.Value);
+                subject = new AppContainerSubject(procList[0].Package!.Value);
             else
-                subject = new ExecutableSubject(procList[0].Path);
+                subject = new ExecutableSubject(procList[0].Path!);
 
             ReinitFormFromSubject(subject);
         }
@@ -376,7 +386,7 @@ namespace pylorak.TinyWall
 
         private void btnChooseService_Click(object sender, EventArgs e)
         {
-            ServiceSubject subject = ServicesForm.ChooseService(this);
+            ServiceSubject? subject = ServicesForm.ChooseService(this);
             if (subject == null) return;
 
             ReinitFormFromSubject(subject);
@@ -392,7 +402,7 @@ namespace pylorak.TinyWall
 
         private void ReinitFormFromSubject(ExceptionSubject subject)
         {
-            List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out DatabaseClasses.Application app);
+            List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out _);
             if (exceptions.Count == 0)
                 return;
 

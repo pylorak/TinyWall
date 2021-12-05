@@ -81,11 +81,6 @@ namespace pylorak.TinyWall
             if (DefaultOsCulture == null)
                 DefaultOsCulture = Thread.CurrentThread.CurrentUICulture;
 
-#if DEBUG
-            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(CurrentDomain_AssemblyLoad);
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-#endif
-
             // WerAddExcludedApplication will fail every time we are not running as admin, 
             // so wrap it around a try-catch.
             try
@@ -199,19 +194,6 @@ namespace pylorak.TinyWall
                     return -1;
             } // switch
         } // Main
-
-#if DEBUG
-        static System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            string assembly = args.Name;
-            return null;
-        }
-
-        static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
-        {
-            string assembly = args.LoadedAssembly.FullName;
-        }
-#endif
 
     } // class
 } //namespace

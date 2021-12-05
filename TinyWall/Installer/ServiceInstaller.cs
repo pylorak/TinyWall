@@ -9,20 +9,20 @@ namespace pylorak.TinyWall
     internal class ServiceInstaller : Installer
     {
         // Service Account Information
-        private System.ServiceProcess.ServiceProcessInstaller serviceProcessInstaller = null;
+        private System.ServiceProcess.ServiceProcessInstaller serviceProcessInstaller;
         // Service Information
-        private System.ServiceProcess.ServiceInstaller serviceInstaller = null;
+        private System.ServiceProcess.ServiceInstaller serviceInstaller;
 
         internal ServiceInstaller()
         {
+            serviceProcessInstaller = new ServiceProcessInstaller();
+            serviceInstaller = new System.ServiceProcess.ServiceInstaller();
             try
             {
-                serviceProcessInstaller = new ServiceProcessInstaller();
                 serviceProcessInstaller.Account = ServiceAccount.LocalSystem;
                 serviceProcessInstaller.Username = null;
                 serviceProcessInstaller.Password = null;
 
-                serviceInstaller = new System.ServiceProcess.ServiceInstaller();
                 serviceInstaller.DisplayName = TinyWallService.SERVICE_DISPLAY_NAME;
                 serviceInstaller.StartType = ServiceStartMode.Automatic;
                 // This must be identical to the WindowsService.ServiceBase name

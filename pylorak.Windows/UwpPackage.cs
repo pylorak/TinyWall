@@ -102,7 +102,7 @@ namespace pylorak.Windows
             return packages;
         }
 
-        private static Package? FindPackageDetails(string sid, Package[] list)
+        private static Package? FindPackageDetails(string? sid, Package[] list)
         {
             if (string.IsNullOrEmpty(sid))
                 return null;
@@ -136,7 +136,7 @@ namespace pylorak.Windows
             Packages = GetList();
         }
 
-        public Package? FindPackage(string sid)
+        public Package? FindPackage(string? sid)
         {
             return FindPackageDetails(sid, Packages);
         }

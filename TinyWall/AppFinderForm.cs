@@ -210,7 +210,7 @@ namespace pylorak.TinyWall
 
                         // Try to match file
                         ExecutableSubject subject = (ExecutableSubject)ExceptionSubject.Construct(file, null);
-                        DatabaseClasses.Application app = db.TryGetApp(subject, out FirewallExceptionV3 dummyFwex, false);
+                        DatabaseClasses.Application? app = db.TryGetApp(subject, out FirewallExceptionV3? dummyFwex, false);
                         if ((app != null)  && (!subject.IsSigned || subject.CertValid))
                         {
                             SearchResult.AddEntry(app, subject);
@@ -313,11 +313,11 @@ namespace pylorak.TinyWall
                 if (li.Checked)
                 {
                     var app = (DatabaseClasses.Application)li.Tag;
-                    List<ExecutableSubject> appFoundFiles = SearchResult.GetFoundComponents(app);
+                    var appFoundFiles = SearchResult.GetFoundComponents(app);
                     foreach (ExecutableSubject subject in appFoundFiles)
                     {
-                        app = GlobalInstances.AppDatabase.TryGetApp(subject, out FirewallExceptionV3 fwex, false);
-                        if ((app != null) && (!subject.IsSigned || subject.CertValid))
+                        app = GlobalInstances.AppDatabase.TryGetApp(subject, out FirewallExceptionV3? fwex, false);
+                        if ((fwex != null) && (app != null) && (!subject.IsSigned || subject.CertValid))
                         {
                             SelectedExceptions.Add(fwex);
                         }

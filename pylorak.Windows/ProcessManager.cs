@@ -251,25 +251,25 @@ namespace pylorak.Windows
             var pid = unchecked((uint)proc.Id);
             return GetProcessPath(pid) ?? proc.MainModule.FileName;
         }
-        public static string GetProcessPath(uint processId)
+        public static string? GetProcessPath(uint processId)
         {
             StringBuilder? buffer = null;
             return GetProcessPath(processId, ref buffer);
         }
 
-        public static string GetProcessPath(uint processId, ref StringBuilder? buffer)
+        public static string? GetProcessPath(uint processId, ref StringBuilder? buffer)
         {
             using var hProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, processId);
             return GetProcessPath(hProcess, ref buffer);
         }
 
-        public static string GetProcessPath(SafeObjectHandle hProcess, ref StringBuilder? buffer)
+        public static string? GetProcessPath(SafeObjectHandle hProcess, ref StringBuilder? buffer)
         {
             // This method needs Windows Vista or newer OS
             System.Diagnostics.Debug.Assert(Environment.OSVersion.Version.Major >= 6);
 
             if (hProcess.IsInvalid)
-                throw new ArgumentException("The supplied process handle is invalid.");
+                return null;
 
             // First, try a smaller buffer on the stack.
             // This is more eficient both memory and performance-wise, and covers most cases.

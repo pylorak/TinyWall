@@ -14,7 +14,7 @@ namespace pylorak.TinyWall
         private EventLogWatcher LogWatcher;
 
         public delegate void NewLogEntryDelegate(FirewallLogWatcher sender, FirewallLogEntry entry);
-        public event NewLogEntryDelegate NewLogEntry;
+        public event NewLogEntryDelegate? NewLogEntry;
 
         protected override void Dispose(bool disposing)
         {
@@ -192,7 +192,7 @@ namespace pylorak.TinyWall
         {
             try
             {
-                Privilege.RunWithPrivilege(Privilege.Security, true, delegate (object state)
+                Privilege.RunWithPrivilege(Privilege.Security, true, delegate (object? state)
                 {
                     AuditSetSystemPolicy(PACKET_LOGGING_AUDIT_SUBCAT, true, true);
                     AuditSetSystemPolicy(CONNECTION_LOGGING_AUDIT_SUBCAT, true, true);
@@ -205,7 +205,7 @@ namespace pylorak.TinyWall
         {
             try
             {
-                Privilege.RunWithPrivilege(Privilege.Security, true, delegate (object state)
+                Privilege.RunWithPrivilege(Privilege.Security, true, delegate (object? state)
                 {
                     AuditSetSystemPolicy(PACKET_LOGGING_AUDIT_SUBCAT, false, false);
                     AuditSetSystemPolicy(CONNECTION_LOGGING_AUDIT_SUBCAT, false, false);

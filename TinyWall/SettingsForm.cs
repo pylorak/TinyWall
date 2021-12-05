@@ -30,11 +30,11 @@ namespace pylorak.TinyWall
 
         internal ConfigContainer TmpConfig;
 
-        private List<ListViewItem> ExceptionItems = new List<ListViewItem>();
-        private List<ListViewItem> FilteredExceptionItems = new List<ListViewItem>();
+        private List<ListViewItem> ExceptionItems = new();
+        private List<ListViewItem> FilteredExceptionItems = new();
         private bool LoadingSettings;
-        private string m_NewPassword;
-        private Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
+        private string? m_NewPassword;
+        private Size IconSize = new((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
         internal SettingsForm(ServerConfiguration service, ControllerSettings controller)
         {
@@ -60,10 +60,7 @@ namespace pylorak.TinyWall
             listApplications.DragEnter += ListApplications_DragEnter;
             listApplications.DragDrop += ListApplications_DragDrop;
 
-            TmpConfig = new ConfigContainer();
-            TmpConfig.Service = service;
-            TmpConfig.Controller = controller;
-
+            TmpConfig = new ConfigContainer(service, controller);
             TmpConfig.Service.ActiveProfile.Normalize();
         }
 
@@ -76,7 +73,7 @@ namespace pylorak.TinyWall
             {
                 try
                 {
-                    list.AddRange(GlobalInstances.AppDatabase.GetExceptionsForApp(new ExecutableSubject(file), true, out DatabaseClasses.Application app));
+                    list.AddRange(GlobalInstances.AppDatabase.GetExceptionsForApp(new ExecutableSubject(file), true, out _));
                 }
                 catch { }
             }
@@ -93,7 +90,7 @@ namespace pylorak.TinyWall
                 e.Effect = DragDropEffects.None;
         }
 
-        internal string NewPassword
+        internal string? NewPassword
         {
             get { return m_NewPassword; }
         }
@@ -110,7 +107,7 @@ namespace pylorak.TinyWall
                 comboLanguages.SelectedIndex = 0;
                 for(int i = 0; i < comboLanguages.Items.Count; ++i)
                 {
-                    IdWithName item = comboLanguages.Items[i] as IdWithName;
+                    IdWithName item = (IdWithName)comboLanguages.Items[i];
                     if (item.Id.Equals(TmpConfig.Controller.Language, StringComparison.OrdinalIgnoreCase))
                     {
                         comboLanguages.SelectedIndex = i;
@@ -124,7 +121,7 @@ namespace pylorak.TinyWall
                 chkHostsBlocklist.Checked = TmpConfig.Service.Blocklists.EnableHostsBlocklist;
                 chkBlockMalwarePorts.Checked = TmpConfig.Service.Blocklists.EnablePortBlocklist;
                 chkEnableBlocklists.Checked = TmpConfig.Service.Blocklists.EnableBlocklists;
-                chkEnableBlocklists_CheckedChanged(null, null);
+                chkEnableBlocklists_CheckedChanged(this, EventArgs.Empty);
 
                 // Fill lists of special exceptions
                 listRecommendedGlobalProfiles.BeginUpdate();
@@ -204,12 +201,12 @@ namespace pylorak.TinyWall
             listApplications.Refresh();
 
             // Update buttons
-            listApplications_SelectedIndexChanged(listApplications, null);
+            listApplications_SelectedIndexChanged(listApplications, EventArgs.Empty);
         }
 
         private ListViewItem ListItemFromAppException(FirewallExceptionV3 ex, UwpPackage packageList)
         {
-            ListViewItem li = new ListViewItem();
+            var li = new ListViewItem();
             li.Tag = ex;
 
             var exeSubj = ex.Subject as ExecutableSubject;
@@ -392,13 +389,12 @@ namespace pylorak.TinyWall
 
         private void btnAppAdd_Click(object sender, EventArgs e)
         {
-            using (ApplicationExceptionForm f = new ApplicationExceptionForm(null))
+            var defaultNewPolicy = new FirewallExceptionV3(GlobalSubject.Instance, new UnrestrictedPolicy());
+            using var f = new ApplicationExceptionForm(defaultNewPolicy);
+            if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
-                if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
-                {
-                    TmpConfig.Service.ActiveProfile.AddExceptions(f.ExceptionSettings);
-                    RebuildExceptionsList();
-                }
+                TmpConfig.Service.ActiveProfile.AddExceptions(f.ExceptionSettings);
+                RebuildExceptionsList();
             }
         }
 

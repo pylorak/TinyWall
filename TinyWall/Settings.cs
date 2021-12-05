@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using pylorak.Utilities;
@@ -101,8 +102,6 @@ namespace pylorak.TinyWall
 
         internal static ControllerSettings Load()
         {
-            ControllerSettings ret = null;
-
             // Construct file path
             string SettingsFile = Path.Combine(UserDataPath, "ControllerConfig");
 
@@ -110,18 +109,13 @@ namespace pylorak.TinyWall
             {
                 try
                 {
-                    ret = SerializationHelper.LoadFromXMLFile<ControllerSettings>(SettingsFile);
+                    return SerializationHelper.LoadFromXMLFile<ControllerSettings>(SettingsFile);
                 }
                 catch
                 { }
             }
 
-            if (ret == null)
-            {
-                ret = new ControllerSettings();
-            }
-
-            return ret;
+            return new ControllerSettings();
         }
     }
 
@@ -191,8 +185,14 @@ namespace pylorak.TinyWall
 
     public sealed class ConfigContainer
     {
-        public ServerConfiguration Service = null;
-        public ControllerSettings Controller = null;
+        public ServerConfiguration Service;
+        public ControllerSettings Controller;
+
+        public ConfigContainer(ServerConfiguration server, ControllerSettings client)
+        {
+            Service = server;
+            Controller = client;
+        }
     }
 
     internal static class ActiveConfig

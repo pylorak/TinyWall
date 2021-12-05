@@ -5,9 +5,9 @@ namespace pylorak.TinyWall
 {
     internal partial class PasswordForm : Form
     {
-        private string m_PassHash;
+        private string? m_PassHash;
 
-        internal string PassHash
+        internal string? PassHash
         {
             get { return m_PassHash; }
         }

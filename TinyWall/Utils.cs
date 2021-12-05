@@ -147,7 +147,7 @@ namespace pylorak.TinyWall
         /// <summary>
         /// Returns the correctly cased version of a local file or directory path. Returns the input path on error.
         /// </summary>
-        public static string GetExactPath(string path)
+        public static string? GetExactPath(string? path)
         {
             try
             {

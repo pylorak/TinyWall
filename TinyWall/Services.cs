@@ -8,18 +8,20 @@ namespace pylorak.TinyWall
 {
     internal partial class ServicesForm : Form
     {
-        private string SelectedServiceName;
-        private string SelectedServiceExec;
+        private string? SelectedServiceName;
+        private string? SelectedServiceExec;
 
-        internal static ServiceSubject ChooseService(IWin32Window parent = null)
+        internal static ServiceSubject? ChooseService(IWin32Window? parent = null)
         {
-            using (ServicesForm sf = new ServicesForm())
-            {
-                if (sf.ShowDialog(parent) == DialogResult.Cancel)
-                    return null;
+            using var sf = new ServicesForm();
 
+            if (sf.ShowDialog(parent) == DialogResult.Cancel)
+                return null;
+
+            if ((sf.SelectedServiceName is not null) && (sf.SelectedServiceExec is not null))
                 return new ServiceSubject(sf.SelectedServiceExec, sf.SelectedServiceName);
-            }
+            else
+                return null;
         }
 
         internal ServicesForm()
@@ -36,10 +38,8 @@ namespace pylorak.TinyWall
             string ImagePath = string.Empty;
             using (RegistryKey KeyHKLM = Microsoft.Win32.Registry.LocalMachine)
             {
-                using (RegistryKey Key = KeyHKLM.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\"+ serviceName))
-                {
-                    ImagePath = Key.GetValue("ImagePath") as string;
-                }
+                using RegistryKey Key = KeyHKLM.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\" + serviceName);
+                ImagePath = (string)Key.GetValue("ImagePath");
             }
 
             // Remove quotes
@@ -87,7 +87,7 @@ namespace pylorak.TinyWall
         {
             if (btnOK.Enabled)
             {
-                btnOK_Click(btnOK, null);
+                btnOK_Click(btnOK, EventArgs.Empty);
             }
         }
 
@@ -105,7 +105,7 @@ namespace pylorak.TinyWall
 
             foreach (ColumnHeader col in listView.Columns)
             {
-                if (ActiveConfig.Controller.ServicesFormColumnWidths.TryGetValue(col.Tag as string, out int width))
+                if (ActiveConfig.Controller.ServicesFormColumnWidths.TryGetValue((string)col.Tag, out int width))
                     col.Width = width;
             }
 
@@ -136,8 +136,8 @@ namespace pylorak.TinyWall
 
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            ListViewItemComparer oldSorter = listView.ListViewItemSorter as ListViewItemComparer;
-            ListViewItemComparer newSorter = new ListViewItemComparer(e.Column);
+            var oldSorter = (ListViewItemComparer)listView.ListViewItemSorter;
+            var newSorter = new ListViewItemComparer(e.Column);
             if ((oldSorter != null) && (oldSorter.Column == newSorter.Column))
                 newSorter.Ascending = !oldSorter.Ascending;
 
@@ -160,7 +160,7 @@ namespace pylorak.TinyWall
 
             ActiveConfig.Controller.ServicesFormColumnWidths.Clear();
             foreach (ColumnHeader col in listView.Columns)
-                ActiveConfig.Controller.ServicesFormColumnWidths.Add(col.Tag as string, col.Width);
+                ActiveConfig.Controller.ServicesFormColumnWidths.Add((string)col.Tag, col.Width);
 
             ActiveConfig.Controller.Save();
         }

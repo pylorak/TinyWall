@@ -12,7 +12,7 @@ namespace Microsoft.Samples
     using Win32Exception = System.ComponentModel.Win32Exception;
     using PrivilegeNotHeldException = System.Security.AccessControl.PrivilegeNotHeldException;
 
-    internal delegate void PrivilegedCallback(object state);
+    internal delegate void PrivilegedCallback(object? state);
 
     internal sealed class SafeTokenHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
@@ -645,7 +645,7 @@ namespace Microsoft.Samples
             get { return this.needToRevert; }
         }
 
-        public static void RunWithPrivilege( string privilege, bool enabled, PrivilegedCallback callback, object state )
+        public static void RunWithPrivilege( string privilege, bool enabled, PrivilegedCallback callback, object? state )
         {
             if ( callback == null )
             {

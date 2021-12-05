@@ -6,11 +6,11 @@ namespace pylorak.TinyWall
     internal class ProcessInfo
     {
         public uint Pid;
-        public string Path;
+        public string? Path;
         public UwpPackage.Package? Package;
         public HashSet<string> Services;
 
-        private ProcessInfo(uint pid, string path, UwpPackage.Package? package, HashSet<string> services)
+        private ProcessInfo(uint pid, string? path, UwpPackage.Package? package, HashSet<string> services)
         {
             Pid = pid;
             Path = path;
@@ -36,7 +36,7 @@ namespace pylorak.TinyWall
                 servicePids.GetServicesInPid(pid)
             );
         }
-        public static ProcessInfo Create(uint pid, string path, string packageId, UwpPackage uwp, ServicePidMap servicePids)
+        public static ProcessInfo Create(uint pid, string? path, string? packageId, UwpPackage uwp, ServicePidMap servicePids)
         {
             return new ProcessInfo(
                 pid,
