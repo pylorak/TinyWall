@@ -1698,6 +1698,7 @@ namespace PKSoft
                 using (var DisplayOffSubscription = SafeHandlePowerSettingNotification.Create(service.ServiceHandle, PowerSetting.GUID_CONSOLE_DISPLAY_STATE, DeviceNotifFlags.DEVICE_NOTIFY_SERVICE_HANDLE))
                 using (var DeviceNotification = SafeHandleDeviceNotification.Create(service.ServiceHandle, DeviceInterfaceClass.GUID_DEVINTERFACE_VOLUME, DeviceNotifFlags.DEVICE_NOTIFY_SERVICE_HANDLE))
                 using (var MountPointsWatcher = new RegistryWatcher(@"HKEY_LOCAL_MACHINE\SYSTEM\MountedDevices", true))
+                using (var ScmWaitHandle = new ManualResetEvent(false))
                 {
                     ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
                     NetworkInterfaceWatcher.InterfaceChanged += (object sender, EventArgs args) =>
@@ -1713,11 +1714,25 @@ namespace PKSoft
                         RuleReloadEventMerger.Pulse();
                     };
                     MountPointsWatcher.Enabled = true;
-                    service.FinishStateChange();
+
+                    // The Service Control Manager might be busy in which case calling into
+                    // it may hang us for a long time. Start code asynchronously to avoid waiting
+                    // for is completion, we don't really care when it completes anyway.
+                    ThreadPool.QueueUserWorkItem((object _) =>
+                    {
+                       try
+                       {
+                           service.FinishStateChange();
 #if !DEBUG
-                    // Basic software health checks
-                    TinyWallDoctor.EnsureHealth(Utils.LOG_ID_SERVICE);
+                           // Basic software health checks
+                           TinyWallDoctor.EnsureHealth(Utils.LOG_ID_SERVICE);
 #endif
+                       }
+                       finally
+                       {
+                           ScmWaitHandle.Set();
+                       }
+                    });
 
                     RunService = true;
                     while (RunService)
@@ -1739,6 +1754,8 @@ namespace PKSoft
                                 future.Value = new TwMessage(MessageType.RESPONSE_ERROR, null);
                         }
                     }
+
+                    ScmWaitHandle.WaitOne();
                 }
             }
         }
