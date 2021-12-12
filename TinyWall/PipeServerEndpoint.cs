@@ -98,7 +98,7 @@ namespace pylorak.TinyWall
 
             string clientFilePath = Utils.GetPathOfProcess((uint)clientPid);
 
-            return clientFilePath.Equals(ProcessManager.ExecutablePath, StringComparison.OrdinalIgnoreCase);
+            return clientFilePath.Equals(pylorak.Windows.ProcessManager.ExecutablePath, StringComparison.OrdinalIgnoreCase);
 #else
             return true;
 #endif

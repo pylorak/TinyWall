@@ -1422,7 +1422,7 @@ namespace pylorak.TinyWall
                 if (TinyWallDoctor.EnsureServiceInstalledAndRunning(Utils.LOG_ID_GUI, false))
                     LoadSettingsFromServer(out comError, true);
                 else
-                    MessageBox.Show(PKSoft.Resources.Messages.TheTinyWallServiceIsUnavailable, PKSoft.Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(Resources.Messages.TheTinyWallServiceIsUnavailable, Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 #endif
 

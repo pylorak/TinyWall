@@ -2046,8 +2046,9 @@ namespace pylorak.TinyWall
 
         private TinyWallServer? Server;
         private Thread? FirewallWorkerThread;
+#if !DEBUG
         private bool IsComputerShuttingDown;
-
+#endif
         internal TinyWallService()
             : base()
         {
@@ -2111,7 +2112,9 @@ namespace pylorak.TinyWall
         // Executed on computer shutdown.
         protected override void OnShutdown()
         {
+#if !DEBUG
             IsComputerShuttingDown = true;
+#endif
             StartStateChange(ServiceState.StopPending);
         }
 

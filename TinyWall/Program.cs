@@ -40,7 +40,7 @@ namespace pylorak.TinyWall
                 tw.Start(new string[0]);
                 tw.StartedEvent.WaitOne();
 #else
-                ServiceBase.Run(tw);
+                pylorak.Windows.Services.ServiceBase.Run(tw);
 #endif
                 return 0;
             }
@@ -180,7 +180,7 @@ namespace pylorak.TinyWall
                     using (TinyWallService srv = new TinyWallService())
                     {
 #if !DEBUG
-                        PathMapper.Instance.AutoUpdate = false;
+                        pylorak.Windows.PathMapper.Instance.AutoUpdate = false;
 #endif
                         StartService(srv);
 #if DEBUG
