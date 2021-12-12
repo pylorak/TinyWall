@@ -7,7 +7,7 @@ namespace pylorak.TinyWall
     public sealed class BoundedMessageQueue : Disposable
     {
         private readonly List<TwMessage> MsgQueue = new();
-        private readonly List<Future<TwMessage>> FutureQueue = new();
+        private readonly List<Future<TwMessage>?> FutureQueue = new();
         private readonly Semaphore BoundSema = new(0, 64);
         private readonly object locker = new();
 
@@ -24,7 +24,7 @@ namespace pylorak.TinyWall
             base.Dispose(disposing);
         }
 
-        public void Enqueue(TwMessage msg, Future<TwMessage> future)
+        public void Enqueue(TwMessage msg, Future<TwMessage>? future)
         {
             lock (locker)
             {
@@ -44,7 +44,7 @@ namespace pylorak.TinyWall
             }
         }
 
-        public void Dequeue(out TwMessage msg, out Future<TwMessage> future)
+        public void Dequeue(out TwMessage msg, out Future<TwMessage>? future)
         {
             BoundSema.WaitOne();
             lock (locker)

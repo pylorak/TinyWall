@@ -216,12 +216,12 @@ namespace pylorak.TinyWall
             switch (ex.Subject.SubjectType)
             {
                 case SubjectType.Executable:
-                    li.Text = exeSubj.ExecutableName;
+                    li.Text = exeSubj!.ExecutableName;
                     li.SubItems.Add(Resources.Messages.SubjectTypeExecutable);
                     li.SubItems.Add(exeSubj.ExecutablePath);
                     break;
                 case SubjectType.Service:
-                    li.Text = srvSubj.ServiceName;
+                    li.Text = srvSubj!.ServiceName;
                     li.SubItems.Add(Resources.Messages.SubjectTypeService);
                     li.SubItems.Add(srvSubj.ExecutablePath);
                     break;
@@ -232,7 +232,7 @@ namespace pylorak.TinyWall
                     li.ImageIndex = IconList.Images.IndexOfKey("window");
                     break;
                 case SubjectType.AppContainer:
-                    li.Text = uwpSubj.DisplayName;
+                    li.Text = uwpSubj!.DisplayName;
                     li.SubItems.Add(Resources.Messages.SubjectTypeUwpApp);
                     li.SubItems.Add(uwpSubj.PublisherId + ", " + uwpSubj.Publisher);
                     li.ImageIndex = IconList.Images.IndexOfKey("store");
@@ -247,7 +247,7 @@ namespace pylorak.TinyWall
                 li.BackColor = System.Drawing.Color.LightPink;
             }
 
-            if (uwpSubj != null)
+            if (uwpSubj is not null)
             {
                 if (!packageList.FindPackage(uwpSubj.Sid).HasValue)
                 {
@@ -256,7 +256,7 @@ namespace pylorak.TinyWall
                 }
             }
 
-            if (exeSubj != null)
+            if (exeSubj is not null)
             {
                 if (NetworkPath.IsNetworkPath(exeSubj.ExecutablePath))
                 {
@@ -313,7 +313,7 @@ namespace pylorak.TinyWall
             TmpConfig.Service.Blocklists.EnableBlocklists = chkEnableBlocklists.Checked;
             TmpConfig.Service.ActiveProfile.DisplayOffBlock = chkDisplayOffBlock.Checked;
 
-            TmpConfig.Controller.Language = (comboLanguages.SelectedItem as IdWithName).Id;
+            TmpConfig.Controller.Language = ((IdWithName)comboLanguages.SelectedItem).Id;
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
@@ -327,8 +327,8 @@ namespace pylorak.TinyWall
         {
             if (LoadingSettings) return;
 
-            CheckedListBox clb = sender as CheckedListBox;
-            IdWithName item = clb.Items[e.Index] as IdWithName;
+            CheckedListBox clb = (CheckedListBox)sender;
+            IdWithName item = (IdWithName)clb.Items[e.Index];
             if (e.NewValue == CheckState.Checked)
             {
                 TmpConfig.Service.ActiveProfile.SpecialExceptions.Add(item.Id);
@@ -426,7 +426,7 @@ namespace pylorak.TinyWall
             if (listApplications.SelectedIndices.Count == 0)
                 return;
 
-            btnAppModify_Click(null, null);
+            btnAppModify_Click(this, EventArgs.Empty);
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
@@ -448,7 +448,7 @@ namespace pylorak.TinyWall
 
         private void lblAboutHomepageLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            btnWeb_Click(sender, null);
+            btnWeb_Click(sender, EventArgs.Empty);
         }
 
         private void lblLinkLicense_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -530,7 +530,7 @@ namespace pylorak.TinyWall
 
             foreach (ColumnHeader col in listApplications.Columns)
             {
-                if (ActiveConfig.Controller.SettingsFormAppListColumnWidths.TryGetValue(col.Tag as string, out int width))
+                if (ActiveConfig.Controller.SettingsFormAppListColumnWidths.TryGetValue((string)col.Tag, out int width))
                     col.Width = width;
             }
 
@@ -585,7 +585,7 @@ namespace pylorak.TinyWall
 
         private void listApplications_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            ListViewItemComparer oldSorter = listApplications.ListViewItemSorter as ListViewItemComparer;
+            ListViewItemComparer oldSorter = (ListViewItemComparer)listApplications.ListViewItemSorter;
             ListViewItemComparer newSorter = new ListViewItemComparer(e.Column, IconList);
             if ((oldSorter != null) && (oldSorter.Column == newSorter.Column))
                 newSorter.Ascending = !oldSorter.Ascending;
@@ -615,7 +615,7 @@ namespace pylorak.TinyWall
         {
             if (listApplications.Focused && (e.KeyCode == Keys.Delete))
             {
-                btnAppRemove_Click(btnAppRemove, null);
+                btnAppRemove_Click(btnAppRemove, EventArgs.Empty);
                 e.Handled = true;
             }
         }
@@ -631,8 +631,8 @@ namespace pylorak.TinyWall
             ActiveConfig.Controller.SettingsFormAppListColumnWidths.Clear();
             foreach (ColumnHeader col in listApplications.Columns)
             {
-                TmpConfig.Controller.SettingsFormAppListColumnWidths.Add(col.Tag as string, col.Width);
-                ActiveConfig.Controller.SettingsFormAppListColumnWidths.Add(col.Tag as string, col.Width);
+                TmpConfig.Controller.SettingsFormAppListColumnWidths.Add((string)col.Tag, col.Width);
+                ActiveConfig.Controller.SettingsFormAppListColumnWidths.Add((string)col.Tag, col.Width);
             }
 
             ActiveConfig.Controller.Save();
@@ -645,7 +645,7 @@ namespace pylorak.TinyWall
 
         private void listApplications_VirtualItemsSelectionRangeChanged(object sender, ListViewVirtualItemsSelectionRangeChangedEventArgs e)
         {
-            listApplications_SelectedIndexChanged(sender, null);
+            listApplications_SelectedIndexChanged(sender, EventArgs.Empty);
         }
 
         private void listApplications_SelectedIndexChanged(object sender, EventArgs e)

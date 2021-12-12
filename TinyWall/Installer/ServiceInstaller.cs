@@ -9,14 +9,12 @@ namespace pylorak.TinyWall
     internal class ServiceInstaller : Installer
     {
         // Service Account Information
-        private System.ServiceProcess.ServiceProcessInstaller serviceProcessInstaller;
+        private readonly System.ServiceProcess.ServiceProcessInstaller serviceProcessInstaller = new();
         // Service Information
-        private System.ServiceProcess.ServiceInstaller serviceInstaller;
+        private readonly System.ServiceProcess.ServiceInstaller serviceInstaller = new();
 
         internal ServiceInstaller()
         {
-            serviceProcessInstaller = new ServiceProcessInstaller();
-            serviceInstaller = new System.ServiceProcess.ServiceInstaller();
             try
             {
                 serviceProcessInstaller.Account = ServiceAccount.LocalSystem;
@@ -37,8 +35,6 @@ namespace pylorak.TinyWall
             catch(Exception e)
             {
                 Utils.LogException(e, Utils.LOG_ID_INSTALLER);
-                serviceInstaller?.Dispose();
-                serviceProcessInstaller?.Dispose();
             }
         }
 
@@ -48,10 +44,8 @@ namespace pylorak.TinyWall
 
             try
             {
-                using (var scm = new ServiceControlManager())
-                {
-                    scm.SetLoadOrderGroup(TinyWallService.SERVICE_NAME, @"NetworkProvider");
-                }
+                using var scm = new ServiceControlManager();
+                scm.SetLoadOrderGroup(TinyWallService.SERVICE_NAME, @"NetworkProvider");
             }
             catch { }
         }
@@ -62,8 +56,8 @@ namespace pylorak.TinyWall
             {
                 // Release managed resources
 
-                serviceInstaller?.Dispose();
-                serviceProcessInstaller?.Dispose();
+                serviceInstaller.Dispose();
+                serviceProcessInstaller.Dispose();
             }
 
             // Release unmanaged resources.

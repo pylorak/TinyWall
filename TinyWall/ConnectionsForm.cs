@@ -193,7 +193,7 @@ namespace pylorak.TinyWall
                     // to be corrected.
                     entry.AppPath = Utils.GetExactPath(entry.AppPath);
 
-                    var pi = ProcessInfo.Create(entry.ProcessId, entry.AppPath, entry.PackageId, uwpPackages, servicePids);
+                    var pi = ProcessInfo.Create(entry.ProcessId, entry.AppPath ?? string.Empty, entry.PackageId, uwpPackages, servicePids);
                     ConstructListItem(itemColl, pi, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.LocalIp), entry.LocalPort), new IPEndPoint(IPAddress.Parse(entry.RemoteIp), entry.RemotePort), "Blocked", entry.Timestamp, entry.Direction);
                 }
             }

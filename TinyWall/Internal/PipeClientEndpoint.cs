@@ -45,10 +45,11 @@ namespace pylorak.TinyWall
         {
             while (m_Run)
             {
-                m_Queue.Dequeue(out TwMessage msg, out Future<TwMessage> future);
+                m_Queue.Dequeue(out TwMessage msg, out Future<TwMessage>? future);
                 if (msg.Type == MessageType.WAKE_CLIENT_SENDER_QUEUE)
                 {
-                    future.Value = new TwMessage(MessageType.RESPONSE_OK);
+                    if (future is not null)
+                        future.Value = new TwMessage(MessageType.RESPONSE_OK);
                     continue;
                 }
 
@@ -64,7 +65,8 @@ namespace pylorak.TinyWall
                     Thread.Sleep(200);
                 }
 
-                future.Value = response;
+                if (future is not null)
+                    future.Value = response;
             }
         }
 

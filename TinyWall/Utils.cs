@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Security;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -136,6 +137,14 @@ namespace pylorak.TinyWall
 
             return sb.ToString();
         }
+
+#if NET48
+        // Use string.IsNullOrEmpty() on .Net 5 and newer
+        public static bool IsNullOrEmpty([NotNullWhen(false)] string? str)
+        {
+            return (str is null) || (str == string.Empty);
+        }
+#endif
 
         public static T OnlyFirst<T>(IEnumerable<T> items)
         {
@@ -302,11 +311,7 @@ namespace pylorak.TinyWall
             if ((pid == 0) || (pid == 4))
                 return "System";
 
-            string ret = GetLongPathName(ProcessManager.GetProcessPath(pid));
-            if (string.IsNullOrEmpty(ret))
-                ret = string.Empty;
-
-            return ret;
+            return GetLongPathName(ProcessManager.GetProcessPath(pid));
         }
 
         internal static uint GetPidUnderCursor(int x, int y)
@@ -320,10 +325,10 @@ namespace pylorak.TinyWall
         /// </summary>
         /// <param name="shortPath">A path that may contain short path elements (~1).</param>
         /// <returns>The long path. Null or empty if the input is null or empty. Returns the input path in case of error.</returns>
-        internal static string GetLongPathName(string shortPath)
+        internal static string GetLongPathName(string? shortPath)
         {
-            if (string.IsNullOrEmpty(shortPath))
-                return shortPath;
+            if (Utils.IsNullOrEmpty(shortPath))
+                return string.Empty;
 
             var builder = new StringBuilder(255);
             int result = SafeNativeMethods.GetLongPathName(shortPath, builder, builder.Capacity);

@@ -197,7 +197,9 @@ namespace pylorak.TinyWall
 
     internal static class ActiveConfig
     {
+        [AllowNull]
         internal static ServerConfiguration Service = null;
+        [AllowNull]
         internal static ControllerSettings Controller = null;
 
         /*

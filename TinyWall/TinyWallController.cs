@@ -318,7 +318,7 @@ namespace pylorak.TinyWall
             catch { }
 
             InitializeComponent();
-            Utils.SetRightToLeft(TrayMenu);
+            Utils.SetRightToLeft(TrayMenu!);
 
             System.Windows.Forms.Application.Idle += Application_Idle;
             using (var p = Process.GetCurrentProcess())

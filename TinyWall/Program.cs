@@ -9,7 +9,7 @@ namespace pylorak.TinyWall
     static class Program
     {
         internal static bool RestartOnQuit { get; set; }
-        internal static System.Globalization.CultureInfo DefaultOsCulture { get; set; }
+        internal static System.Globalization.CultureInfo? DefaultOsCulture { get; set; }
 
         private static int StartDevelTool()
         {
@@ -78,8 +78,7 @@ namespace pylorak.TinyWall
             HierarchicalStopwatch.Enable = File.Exists(Path.Combine(Utils.AppDataPath, "enable-timings"));
             HierarchicalStopwatch.LogFileBase = Path.Combine(Utils.AppDataPath, @"logs\timings");
 
-            if (DefaultOsCulture == null)
-                DefaultOsCulture = Thread.CurrentThread.CurrentUICulture;
+            DefaultOsCulture ??= Thread.CurrentThread.CurrentUICulture;
 
             // WerAddExcludedApplication will fail every time we are not running as admin, 
             // so wrap it around a try-catch.

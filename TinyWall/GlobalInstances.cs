@@ -7,7 +7,9 @@ namespace pylorak.TinyWall
 {
     internal static class GlobalInstances
     {
+        [AllowNull]
         internal static AppDatabase AppDatabase;
+        [AllowNull]
         internal static Controller Controller;
         internal static Guid ClientChangeset;
         internal static Guid ServerChangeset;
