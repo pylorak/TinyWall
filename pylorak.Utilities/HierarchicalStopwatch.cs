@@ -54,7 +54,7 @@ namespace pylorak.Utilities
             StartTicksTask = Timer!.ElapsedTicks;
         }
 
-        private void NewLogLine(int indent, string format, params object[] args)
+        private static void NewLogLine(int indent, string format, params object[] args)
         {
             for (int i = 0; i < indent; ++i)
                 LogLines!.Append("    ");

@@ -29,13 +29,13 @@ namespace pylorak.Windows.WFP
 
         private ulong _weight;
         private Guid _providerKey;
-        private SafeHGlobalHandle _weightAndProviderKeyHandle;
+        private readonly SafeHGlobalHandle _weightAndProviderKeyHandle;
 
         private string? _displayName;
         private string? _displayDescription;
         private SafeHGlobalHandle? _displayDataHandle;
 
-        private FilterConditionList _conditions;
+        private readonly FilterConditionList _conditions;
         private SafeHGlobalHandle? _conditionsHandle;
 
         private Filter(FilterConditionList conditions)
@@ -80,8 +80,8 @@ namespace pylorak.Windows.WFP
                 _conditions.Capacity = (int)_nativeStruct.numFilterConditions;
                 for (int i = 0; i < (int)_nativeStruct.numFilterConditions; ++i)
                 {
-                    IntPtr ptr = new IntPtr(_nativeStruct.filterConditions.ToInt64() + i * condSize);
-                    FilterCondition cond = new FilterCondition(PInvokeHelper.PtrToStructure<Interop.FWPM_FILTER_CONDITION0>(ptr));
+                    var ptr = new IntPtr(_nativeStruct.filterConditions.ToInt64() + i * condSize);
+                    var cond = new FilterCondition(PInvokeHelper.PtrToStructure<Interop.FWPM_FILTER_CONDITION0>(ptr));
                     _conditions.Add(cond);
                 }
             }

@@ -15,7 +15,7 @@ namespace pylorak.TinyWall
     {
         // Key - The primary resource
         // Value - List of satellite resources
-        private List<KeyValuePair<string, string[]>> ResXInputs = new List<KeyValuePair<string, string[]>>();
+        private readonly List<KeyValuePair<string, string[]>> ResXInputs = new();
 
         internal DevelToolForm()
         {
@@ -44,23 +44,18 @@ namespace pylorak.TinyWall
             {
                 var exe = new ExecutableSubject(txtAssocExePath.Text);
                 var id = new DatabaseClasses.SubjectIdentity(exe);
-                id.AllowedSha1 = new List<string>();
-                id.AllowedSha1.Add(exe.HashSha1);
+                id.AllowedSha1 = new List<string> { exe.HashSha1 };
                 if (exe.IsSigned && exe.CertValid)
                 {
                     id.CertificateSubjects = new List<string>();
                     if (exe.CertSubject is not null)
                         id.CertificateSubjects.Add(exe.CertSubject);
                 }
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    SerializationHelper.SerializeDC(ms, id);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    using (StreamReader sr = new StreamReader(ms))
-                    {
-                        txtAssocResult.Text = sr.ReadToEnd();
-                    }
-                }
+                using var ms = new MemoryStream();
+                SerializationHelper.SerializeDC(ms, id);
+                ms.Seek(0, SeekOrigin.Begin);
+                using var sr = new StreamReader(ms);
+                txtAssocResult.Text = sr.ReadToEnd();
             }
             else
             {
@@ -186,7 +181,7 @@ namespace pylorak.TinyWall
 
             void showUpdateFileNotFoundMsg(string file)
             {
-                MessageBox.Show(this, "File\n\n" + msiPath + "\n\nnot found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "File\n\n" + file + "\n\nnot found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             if (!File.Exists(msiPath))
@@ -212,7 +207,7 @@ namespace pylorak.TinyWall
 
             FileVersionInfo installerInfo = FileVersionInfo.GetVersionInfo(twAssemblyPath);
 
-            UpdateDescriptor update = new UpdateDescriptor();
+            var update = new UpdateDescriptor();
             update.Modules = new UpdateModule[3];
 
             update.Modules[0] = new UpdateModule();
@@ -276,7 +271,6 @@ namespace pylorak.TinyWall
 
                 string dir = Path.GetDirectoryName(primary);
                 string primaryBase = Path.GetFileNameWithoutExtension(primary);
-                string primaryBasePath = Path.Combine(dir, primaryBase);
                 string[] satellites = Directory.GetFiles(dir, primaryBase + ".*.resx", SearchOption.TopDirectoryOnly);
                 ResXInputs.Add(new KeyValuePair<string, string[]>(primary, satellites));
             }
@@ -308,18 +302,15 @@ namespace pylorak.TinyWall
 
         private static Dictionary<string, ResXDataNode> ReadResXFile(string filePath)
         {
-            Dictionary<string, ResXDataNode> resxContents = new Dictionary<string, ResXDataNode>();
-            using (ResXResourceReader resxReader = new ResXResourceReader(filePath))
+            var resxContents = new Dictionary<string, ResXDataNode>();
+            using var resxReader = new ResXResourceReader(filePath);
+            resxReader.UseResXDataNodes = true;
+            IDictionaryEnumerator dict = resxReader.GetEnumerator();
+            while (dict.MoveNext())
             {
-                resxReader.UseResXDataNodes = true;
-                IDictionaryEnumerator dict = resxReader.GetEnumerator();
-                while (dict.MoveNext())
-                {
-                    ResXDataNode node = (ResXDataNode)dict.Value;
-                    resxContents.Add(node.Name, node);
-                }
+                ResXDataNode node = (ResXDataNode)dict.Value;
+                resxContents.Add(node.Name, node);
             }
-
             return resxContents;
         }
 
@@ -368,13 +359,11 @@ namespace pylorak.TinyWall
 
                     // Write output ResX file
                     string outPath = Path.Combine(txtOutputPath.Text, Path.GetFileName(pair.Value[s]));
-                    using (ResXResourceWriter resxWriter = new ResXResourceWriter(outPath))
-                    {
-                        Dictionary<string, ResXDataNode>.Enumerator outputEnum = newSatellite.GetEnumerator();
-                        while (outputEnum.MoveNext())
-                            resxWriter.AddResource(outputEnum.Current.Value);
-                        resxWriter.Generate();
-                    }
+                    using var resxWriter = new ResXResourceWriter(outPath);
+                    Dictionary<string, ResXDataNode>.Enumerator outputEnum = newSatellite.GetEnumerator();
+                    while (outputEnum.MoveNext())
+                        resxWriter.AddResource(outputEnum.Current.Value);
+                    resxWriter.Generate();
                 } // for each localization
             } // for each primary
         }

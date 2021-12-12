@@ -20,10 +20,8 @@ namespace pylorak.TinyWall
 #if !DEBUG
             try
             {
-                using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
-                {
-                    return (sc.Status == ServiceControllerStatus.Running) || (sc.Status == ServiceControllerStatus.StartPending);
-                }
+                using var sc = new ServiceController(TinyWallService.SERVICE_NAME);
+                return (sc.Status == ServiceControllerStatus.Running) || (sc.Status == ServiceControllerStatus.StartPending);
             }
             catch(Exception e)
             {
@@ -40,10 +38,8 @@ namespace pylorak.TinyWall
 #if !DEBUG
             try
             {
-                using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
-                {
-                    return (sc.Status == ServiceControllerStatus.Stopped);
-                }
+                using var sc = new ServiceController(TinyWallService.SERVICE_NAME);
+                return (sc.Status == ServiceControllerStatus.Stopped);
             }
             catch
             {
@@ -77,13 +73,11 @@ namespace pylorak.TinyWall
                 // Start service
                 try
                 {
-                    using (ServiceController sc = new ServiceController(TinyWallService.SERVICE_NAME))
+                    using var sc = new ServiceController(TinyWallService.SERVICE_NAME);
+                    if (sc.Status == ServiceControllerStatus.Stopped)
                     {
-                        if (sc.Status == ServiceControllerStatus.Stopped)
-                        {
-                            sc.Start();
-                            sc.WaitForStatus(ServiceControllerStatus.Running, System.TimeSpan.FromSeconds(5));
-                        }
+                        sc.Start();
+                        sc.WaitForStatus(ServiceControllerStatus.Running, System.TimeSpan.FromSeconds(5));
                     }
                 }
                 catch (Exception e)
@@ -97,11 +91,9 @@ namespace pylorak.TinyWall
                 // We are not running as admin.
                 try
                 {
-                    using (Process p = Utils.StartProcess(Utils.ExecutablePath, "/install", true))
-                    {
-                        p.WaitForExit();
-                        return (p.ExitCode == 0);
-                    }
+                    using Process p = Utils.StartProcess(Utils.ExecutablePath, "/install", true);
+                    p.WaitForExit();
+                    return (p.ExitCode == 0);
                 }
                 catch (Exception e)
                 {
@@ -115,7 +107,7 @@ namespace pylorak.TinyWall
 
         internal static int Uninstall()
         {
-            using (System.Windows.Forms.Form frm = new System.Windows.Forms.Form())
+            using (var frm = new System.Windows.Forms.Form())
             {
                 // See http://www.codeproject.com/Articles/18612/TopMost-MessageBox
                 // for an explanation as for why this is needed.
@@ -144,34 +136,30 @@ namespace pylorak.TinyWall
             {
                 if (TinyWallDoctor.IsServiceRunning(Utils.LOG_ID_INSTALLER, false))
                 {
-                    using (Controller twController = new Controller("TinyWallController"))
+                    using var twController = new Controller("TinyWallController");
+                    // Unlock server
+                    while (twController.IsServerLocked)
                     {
-                        // Unlock server
-                        while (twController.IsServerLocked)
+                        using var pf = new PasswordForm();
+                        pf.BringToFront();
+                        pf.Activate();
+                        if (pf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                         {
-                            using (var pf = new PasswordForm())
-                            {
-                                pf.BringToFront();
-                                pf.Activate();
-                                if (pf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                                {
-                                    twController.TryUnlockServer(pf.PassHash);
-                                }
-                                else
-                                    return -1;
-                            }
+                            twController.TryUnlockServer(pf.PassHash);
                         }
-
-                        // Stop server
-                        twController.RequestServerStop();
-                        DateTime startTs = DateTime.Now;
-                        while (!IsServiceStopped() && ((DateTime.Now - startTs) < TimeSpan.FromSeconds(5)))
-                            System.Threading.Thread.Sleep(200);
-                        if (!IsServiceStopped())
-                        {
-                            Utils.Log("Failed to stop service during uninstall.", Utils.LOG_ID_INSTALLER);
+                        else
                             return -1;
-                        }
+                    }
+
+                    // Stop server
+                    twController.RequestServerStop();
+                    DateTime startTs = DateTime.Now;
+                    while (!IsServiceStopped() && ((DateTime.Now - startTs) < TimeSpan.FromSeconds(5)))
+                        System.Threading.Thread.Sleep(200);
+                    if (!IsServiceStopped())
+                    {
+                        Utils.Log("Failed to stop service during uninstall.", Utils.LOG_ID_INSTALLER);
+                        return -1;
                     }
                 }
             }
@@ -201,12 +189,10 @@ namespace pylorak.TinyWall
             try
             {
                 // Remove persistent WFP objects
-                using (var WfpEngine = new Engine("TinyWall Uninstall Session", "", FWPM_SESSION_FLAGS.None, 5000))
-                using (Transaction trx = WfpEngine.BeginTransaction())
-                {
-                    TinyWallServer.DeleteWfpObjects(WfpEngine, true);
-                    trx.Commit();
-                }
+                using var WfpEngine = new Engine("TinyWall Uninstall Session", "", FWPM_SESSION_FLAGS.None, 5000);
+                using var trx = WfpEngine.BeginTransaction();
+                TinyWallServer.DeleteWfpObjects(WfpEngine, true);
+                trx.Commit();
             }
             catch (Exception e)
             {
@@ -261,11 +247,9 @@ namespace pylorak.TinyWall
             // Ensure that TinyWall itself can be started
             try
             {
-                using (ServiceControlManager scm = new ServiceControlManager())
-                {
-                    scm.SetStartupMode(TinyWallService.SERVICE_NAME, ServiceStartMode.Automatic);
-                    scm.SetRestartOnFailure(TinyWallService.SERVICE_NAME, true);
-                }
+                using var scm = new ServiceControlManager();
+                scm.SetStartupMode(TinyWallService.SERVICE_NAME, ServiceStartMode.Automatic);
+                scm.SetRestartOnFailure(TinyWallService.SERVICE_NAME, true);
             }
             catch (System.ComponentModel.Win32Exception e)
             {
@@ -315,23 +299,19 @@ namespace pylorak.TinyWall
         private static void EnsureServiceDependencies()
         {
             // First, do a recursive scan of all service dependencies
-            HashSet<string> deps = new HashSet<string>();
-            foreach (string srv in TinyWallService.ServiceDependencies)
+            var deps = new HashSet<string>();
+            foreach (var srv in TinyWallService.ServiceDependencies)
             {
-                using (ServiceController sc = new ServiceController(srv))
-                {
-                    ScanServiceDependencies(sc, deps);
-                }
+                using var sc = new ServiceController(srv);
+                ScanServiceDependencies(sc, deps);
             }
 
             // Enable services we need
-            using (ServiceControlManager scm = new ServiceControlManager())
+            using var scm = new ServiceControlManager();
+            foreach (string srv in deps)
             {
-                foreach (string srv in deps)
-                {
-                    if (scm.GetStartupMode(srv) == (uint)ServiceStartMode.Disabled)
-                        scm.SetStartupMode(srv, ServiceStartMode.Manual);
-                }
+                if (scm.GetStartupMode(srv) == (uint)ServiceStartMode.Disabled)
+                    scm.SetStartupMode(srv, ServiceStartMode.Manual);
             }
         }
 

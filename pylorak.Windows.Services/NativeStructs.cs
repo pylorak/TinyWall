@@ -43,9 +43,7 @@ namespace pylorak.Windows.Services
     }
 
     [StructLayout(LayoutKind.Sequential)]
-#pragma warning disable CA1815 // Override equals and operator equals on value types
     public struct SERVICE_STATUS
-#pragma warning restore CA1815 // Override equals and operator equals on value types
     {
         public ServiceType serviceType;
         public ServiceState currentState;

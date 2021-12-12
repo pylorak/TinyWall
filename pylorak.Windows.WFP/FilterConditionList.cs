@@ -6,7 +6,7 @@ namespace pylorak.Windows.WFP
 {
     public class FilterConditionList : ICollection<FilterCondition>, IList<FilterCondition>, IDisposable
     {
-        private List<FilterCondition> _list;
+        private readonly List<FilterCondition> _list;
         private bool _disposed;
 
         public FilterConditionList()

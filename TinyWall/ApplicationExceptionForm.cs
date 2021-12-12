@@ -290,19 +290,16 @@ namespace pylorak.TinyWall
         
         private void UpdateOKButtonEnabled()
         {
-            switch (TmpExceptionSettings[0].Subject.SubjectType)
+            btnOK.Enabled = TmpExceptionSettings[0].Subject.SubjectType switch
             {
-                case SubjectType.Executable:
-                case SubjectType.Service:
-                    btnOK.Enabled = DatabaseClasses.SubjectIdentity.IsValidExecutablePath(((ExecutableSubject)TmpExceptionSettings[0].Subject).ExecutablePath);
-                    break;
-                case SubjectType.AppContainer:
-                case SubjectType.Global:
-                    btnOK.Enabled = true;
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
+                SubjectType.Executable or
+                SubjectType.Service
+                    => DatabaseClasses.SubjectIdentity.IsValidExecutablePath(((ExecutableSubject)TmpExceptionSettings[0].Subject).ExecutablePath),
+                SubjectType.AppContainer or
+                SubjectType.Global
+                    => true,
+                _ => throw new NotImplementedException(),
+            };
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -340,7 +337,7 @@ namespace pylorak.TinyWall
             }
             else if (radUnrestricted.Checked)
             {
-                UnrestrictedPolicy pol = new UnrestrictedPolicy();
+                var pol = new UnrestrictedPolicy();
                 pol.LocalNetworkOnly = chkRestrictToLocalNetwork.Checked;
                 TmpExceptionSettings[0].Policy = pol;
             }

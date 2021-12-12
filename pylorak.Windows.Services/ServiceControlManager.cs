@@ -127,13 +127,13 @@ namespace pylorak.Windows.Services
                 actionCount = 2;
 
                 // Set up the restart action
-                SC_ACTION action1 = new SC_ACTION();
+                var action1 = new SC_ACTION();
                 action1.Type = SC_ACTION_TYPE.SC_ACTION_RESTART;
                 action1.Delay = delay;
                 actionPtr.MarshalFromStruct(action1, 0);
 
                 // Set up the "do nothing" action
-                SC_ACTION action2 = new SC_ACTION();
+                var action2 = new SC_ACTION();
                 action2.Type = SC_ACTION_TYPE.SC_ACTION_NONE;
                 action2.Delay = delay;
                 actionPtr.MarshalFromStruct(action2, SC_ACTION_SIZE);
@@ -143,14 +143,14 @@ namespace pylorak.Windows.Services
                 actionCount = 1;
 
                 // Set up the "do nothing" action
-                SC_ACTION action1 = new SC_ACTION();
+                var action1 = new SC_ACTION();
                 action1.Type = SC_ACTION_TYPE.SC_ACTION_NONE;
                 action1.Delay = delay;
                 actionPtr.MarshalFromStruct(action1);
             }
 
             // Set up the failure actions
-            SERVICE_FAILURE_ACTIONS failureActions = new SERVICE_FAILURE_ACTIONS();
+            var failureActions = new SERVICE_FAILURE_ACTIONS();
             failureActions.dwResetPeriod = 0;
             failureActions.cActions = (uint)actionCount;
             failureActions.lpsaActions = actionPtr.DangerousGetHandle();
@@ -247,16 +247,14 @@ namespace pylorak.Windows.Services
 
             SERVICE_STATUS_PROCESS query_srv_status = Marshal.PtrToStructure<SERVICE_STATUS_PROCESS>(buff.DangerousGetHandle());
 
-            switch (query_srv_status.dwCurrentState)
+            return query_srv_status.dwCurrentState switch
             {
-                case ServiceState.Running:
-                case ServiceState.PausePending:
-                case ServiceState.Paused:
-                case ServiceState.ContinuePending:
-                    return query_srv_status.dwProcessId;
-                default:
-                    return null;
-            }
+                ServiceState.Running or
+                ServiceState.PausePending or
+                ServiceState.Paused or
+                ServiceState.ContinuePending => query_srv_status.dwProcessId,
+                _ => null,
+            };
         }
 
         protected virtual void Dispose(bool disposing)

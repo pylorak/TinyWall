@@ -7,13 +7,13 @@ namespace pylorak.TinyWall
     internal class HostsFileManager : Disposable
     {
         // Active system hosts file
-        private static string HOSTS_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"drivers\etc\hosts");
+        private readonly static string HOSTS_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"drivers\etc\hosts");
         // Local copy of active hosts file
-        private static string HOSTS_BACKUP = Path.Combine(Utils.AppDataPath, "hosts.bck");
+        private readonly static string HOSTS_BACKUP = Path.Combine(Utils.AppDataPath, "hosts.bck");
         // User's original hosts file
-        private static string HOSTS_ORIGINAL = Path.Combine(Utils.AppDataPath, "hosts.orig");
+        private readonly static string HOSTS_ORIGINAL = Path.Combine(Utils.AppDataPath, "hosts.orig");
 
-        public readonly FileLocker FileLocker = new FileLocker();
+        public readonly FileLocker FileLocker = new();
 
         protected override void Dispose(bool disposing)
         {
@@ -72,7 +72,7 @@ namespace pylorak.TinyWall
             FileLocker.Lock(HOSTS_BACKUP, FileAccess.Read, FileShare.Read);
         }
 
-        public string GetHostsHash()
+        public static string GetHostsHash()
         {
             if (File.Exists(HOSTS_BACKUP))
                 return Hasher.HashFile(HOSTS_BACKUP);

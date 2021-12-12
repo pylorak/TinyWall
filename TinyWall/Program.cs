@@ -29,21 +29,19 @@ namespace pylorak.TinyWall
             }
 #endif
 
-            using (Mutex SingleInstanceMutex = new Mutex(true, @"Global\TinyWallService", out bool mutexok))
+            using var SingleInstanceMutex = new Mutex(true, @"Global\TinyWallService", out bool mutexok);
+            if (!mutexok)
             {
-                if (!mutexok)
-                {
-                    return -1;
-                }
+                return -1;
+            }
 
 #if DEBUG
-                tw.Start(new string[0]);
-                tw.StartedEvent.WaitOne();
+            tw.Start(Array.Empty<string>());
+            tw.StartedEvent.WaitOne();
 #else
-                pylorak.Windows.Services.ServiceBase.Run(tw);
+            pylorak.Windows.Services.ServiceBase.Run(tw);
 #endif
-                return 0;
-            }
+            return 0;
         }
 
         private static int StartController(CmdLineArgs opts)
@@ -97,7 +95,7 @@ namespace pylorak.TinyWall
             }
 
             // Parse comman-line options
-            CmdLineArgs opts = new CmdLineArgs();
+            var opts = new CmdLineArgs();
             if (!Environment.UserInteractive || Utils.StringArrayContains(args, "/service"))
                 opts.ProgramMode = StartUpMode.Service;
             if (Utils.StringArrayContains(args, "/selfhosted"))
@@ -168,7 +166,7 @@ namespace pylorak.TinyWall
                 case StartUpMode.DevelTool:
                     return StartDevelTool();
                 case StartUpMode.SelfHosted:
-                    using (TinyWallService srv = new TinyWallService())
+                    using (var srv = new TinyWallService())
                     {
                         StartService(srv);
                         int ret = StartController(opts);
@@ -177,7 +175,7 @@ namespace pylorak.TinyWall
                         return ret;
                     }
                 case StartUpMode.Service:
-                    using (TinyWallService srv = new TinyWallService())
+                    using (var srv = new TinyWallService())
                     {
 #if !DEBUG
                         pylorak.Windows.PathMapper.Instance.AutoUpdate = false;

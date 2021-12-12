@@ -38,7 +38,6 @@ namespace pylorak.Windows.WFP
         private readonly object _context;
         private readonly NativeMethods.FWPM_FILTER_CHANGE_CALLBACK0 _nativeCallbackDelegate;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "dummy")]
         private FilterSubscription(Engine engine, FilterChangeCallback callback, object context, Guid? providerKey, Guid? layerKey, bool _)
         {
             _callback = callback;
@@ -48,7 +47,7 @@ namespace pylorak.Windows.WFP
 
             try
             {
-                Interop.FWPM_FILTER_SUBSCRIPTION0 subs0 = new Interop.FWPM_FILTER_SUBSCRIPTION0();
+                var subs0 = new Interop.FWPM_FILTER_SUBSCRIPTION0();
                 subs0.flags = Interop.FilterSubscriptionFlags.FWPM_SUBSCRIPTION_FLAG_NOTIFY_ON_ADD | Interop.FilterSubscriptionFlags.FWPM_SUBSCRIPTION_FLAG_NOTIFY_ON_DELETE;
                 subs0.enumTemplate = null;
 

@@ -149,7 +149,7 @@ namespace pylorak.Windows
             public static extern bool CloseHandle(IntPtr hHandle);
         }
 
-        internal SafeObjectHandle() : base(true) { }
+        public SafeObjectHandle() : base(true) { }
 
         internal SafeObjectHandle(IntPtr handle) : base(true)
         {
@@ -243,7 +243,7 @@ namespace pylorak.Windows
             public static extern int RegOpenKeyEx(IntPtr hKey, string subKey, uint ulOptions, uint samDesired, out SafeRegistryHandle hkResult);
         }
 
-        internal SafeRegistryHandle() : base(true) { }
+        public SafeRegistryHandle() : base(true) { }
 
         internal SafeRegistryHandle(IntPtr hndl, bool ownsHandle) : base(ownsHandle)
         {

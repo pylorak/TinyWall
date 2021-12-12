@@ -278,17 +278,17 @@ namespace pylorak.TinyWall
 
         #endregion
 
-        private MouseInterceptor MouseInterceptor = new();
-        private ServerState FirewallState = new ServerState();
-        private System.Threading.Timer UpdateTimer;
+        private readonly MouseInterceptor MouseInterceptor = new();
+        private readonly System.Threading.Timer UpdateTimer;
+        private readonly System.Windows.Forms.Timer ServiceTimer;
+        private readonly DateTime AppStarted = DateTime.Now;
+        private readonly List<Form> ActiveForms = new();
+        private ServerState FirewallState = new();
         private DateTime LastUpdateNotification = DateTime.MinValue;
-        private System.Windows.Forms.Timer ServiceTimer;
-        private DateTime AppStarted = DateTime.Now;
-        private List<Form> ActiveForms = new();
 
         // Traffic rate monitoring
-        private System.Threading.Timer TrafficTimer;
-        private TrafficRateMonitor TrafficMonitor = new TrafficRateMonitor();
+        private readonly System.Threading.Timer TrafficTimer;
+        private readonly TrafficRateMonitor TrafficMonitor = new();
         private bool TrafficRateVisible_ = true;
         private bool TrayMenuShowing_;
 
@@ -352,10 +352,8 @@ namespace pylorak.TinyWall
             ServiceTimer = new System.Windows.Forms.Timer(components);
 
             System.Windows.Forms.Application.Idle += Application_Idle;
-            using (var p = Process.GetCurrentProcess())
-            {
-                ProcessManager.WakeMessageQueues(p);
-            }
+            using var p = Process.GetCurrentProcess();
+            ProcessManager.WakeMessageQueues(p);
         }
 
         private void Application_Idle(object sender, EventArgs e)
@@ -682,7 +680,7 @@ namespace pylorak.TinyWall
         // Returns true if the local copy of the settings have been updated.
         private bool LoadSettingsFromServer()
         {
-            return LoadSettingsFromServer(out bool comError, false);
+            return LoadSettingsFromServer(out bool _, false);
         }
 
         // Returns true if the local copy of the settings have been updated.
@@ -755,22 +753,20 @@ namespace pylorak.TinyWall
             if (!EnsureUnlockedServer())
                 return;
 
-            using (var dummy = new Form())
+            using var dummy = new Form();
+            try
             {
-                try
-                {
-                    ActiveForms.Add(dummy);
-                    if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                        return;
-                }
-                finally
-                {
-                    ActiveForms.Remove(dummy);
-                }
-
-                var subj = new ExecutableSubject(PathMapper.Instance.ConvertPathIgnoreErrors(ofd.FileName, PathFormat.Win32));
-                AddExceptions(GlobalInstances.AppDatabase.GetExceptionsForApp(subj, true, out _));
+                ActiveForms.Add(dummy);
+                if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                    return;
             }
+            finally
+            {
+                ActiveForms.Remove(dummy);
+            }
+
+            var subj = new ExecutableSubject(PathMapper.Instance.ConvertPathIgnoreErrors(ofd.FileName, PathFormat.Win32));
+            AddExceptions(GlobalInstances.AppDatabase.GetExceptionsForApp(subj, true, out _));
         }
 
         public void WhitelistProcesses(List<ProcessInfo> list)
@@ -781,7 +777,7 @@ namespace pylorak.TinyWall
                 if (string.IsNullOrEmpty(sel.Path))
                     continue;
 
-                List<ExceptionSubject> subjects = new List<ExceptionSubject>();
+                var subjects = new List<ExceptionSubject>();
                 if (sel.Package.HasValue)
                     subjects.Add(new AppContainerSubject(sel.Package.Value));
                 else if (sel.Services.Count > 0)
@@ -940,54 +936,52 @@ namespace pylorak.TinyWall
 
             LoadSettingsFromServer();
 
-            using (var sf = new SettingsForm(Utils.DeepClone(ActiveConfig.Service), Utils.DeepClone(ActiveConfig.Controller)))
+            using var sf = new SettingsForm(Utils.DeepClone(ActiveConfig.Service), Utils.DeepClone(ActiveConfig.Controller));
+            ActiveForms.Add(sf);
+            try
             {
-                ActiveForms.Add(sf);
-                try
+                if (sf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    if (sf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    var oldLang = ActiveConfig.Controller.Language;
+
+                    // Save settings
+                    ActiveConfig.Controller = sf.TmpConfig.Controller;
+                    ActiveConfig.Controller.Save();
+                    ApplyFirewallSettings(sf.TmpConfig.Service);
+
+                    // Handle password change request
+                    string? newPassword = sf.NewPassword;
+                    if (newPassword is not null)
                     {
-                        var oldLang = ActiveConfig.Controller.Language;
-
-                        // Save settings
-                        ActiveConfig.Controller = sf.TmpConfig.Controller;
-                        ActiveConfig.Controller.Save();
-                        ApplyFirewallSettings(sf.TmpConfig.Service);
-
-                        // Handle password change request
-                        string? newPassword = sf.NewPassword;
-                        if (newPassword is not null)
+                        // If the new password is empty, we do not hash it because an empty password
+                        // is a special value signalizing the non-existence of a password.
+                        MessageType resp = GlobalInstances.Controller.SetPassphrase(string.IsNullOrEmpty(newPassword) ? string.Empty : Hasher.HashString(newPassword));
+                        if (resp != MessageType.RESPONSE_OK)
                         {
-                            // If the new password is empty, we do not hash it because an empty password
-                            // is a special value signalizing the non-existence of a password.
-                            MessageType resp = GlobalInstances.Controller.SetPassphrase(string.IsNullOrEmpty(newPassword) ? string.Empty : Hasher.HashString(newPassword));
-                            if (resp != MessageType.RESPONSE_OK)
-                            {
-                                // Only display a popup for setting the password if it did not succeed
-                                DefaultPopups(resp);
-                                return;
-                            }
-                            else
-                            {
-                                // If the operation is successfull, do not report anything as we will be setting
-                                // the other settings too and we want to avoid multiple popups.
-                                FirewallState.HasPassword = !string.IsNullOrEmpty(newPassword);
-                            }
+                            // Only display a popup for setting the password if it did not succeed
+                            DefaultPopups(resp);
+                            return;
                         }
-
-                        if (oldLang != ActiveConfig.Controller.Language)
+                        else
                         {
-                            Program.RestartOnQuit = true;
-                            ExitThread();
+                            // If the operation is successfull, do not report anything as we will be setting
+                            // the other settings too and we want to avoid multiple popups.
+                            FirewallState.HasPassword = !string.IsNullOrEmpty(newPassword);
                         }
                     }
+
+                    if (oldLang != ActiveConfig.Controller.Language)
+                    {
+                        Program.RestartOnQuit = true;
+                        ExitThread();
+                    }
                 }
-                finally
-                {
-                    ActiveForms.Remove(sf);
-                    ApplyControllerSettings();
-                    UpdateDisplay();
-                }
+            }
+            finally
+            {
+                ActiveForms.Remove(sf);
+                ApplyControllerSettings();
+                UpdateDisplay();
             }
         }
 
@@ -1078,14 +1072,12 @@ namespace pylorak.TinyWall
         // Called when a user double-clicks on a popup to edit the most recent exception
         private void EditRecentException(object sender, AnyEventArgs e)
         {
-            using (var f = new ApplicationExceptionForm((FirewallExceptionV3)e.Arg!))
-            {
-                if (f.ShowDialog() == DialogResult.Cancel)
-                    return;
+            using var f = new ApplicationExceptionForm((FirewallExceptionV3)e.Arg!);
+            if (f.ShowDialog() == DialogResult.Cancel)
+                return;
 
-                // Add exceptions, along with other files that belong to this app
-                AddExceptions(f.ExceptionSettings, false);
-            }
+            // Add exceptions, along with other files that belong to this app
+            AddExceptions(f.ExceptionSettings, false);
         }
 
         internal void AddExceptions(List<FirewallExceptionV3> list, bool showEditUi = true)
@@ -1100,18 +1092,16 @@ namespace pylorak.TinyWall
 
             if (single && ActiveConfig.Controller.AskForExceptionDetails && showEditUi)
             {
-                using (ApplicationExceptionForm f = new ApplicationExceptionForm(list[0]))
-                {
-                    if (Utils.IsMetroActive(out bool _))
-                        Utils.ShowToastNotif(Resources.Messages.ToastInputNeeded);
+                using var f = new ApplicationExceptionForm(list[0]);
+                if (Utils.IsMetroActive(out bool _))
+                    Utils.ShowToastNotif(Resources.Messages.ToastInputNeeded);
 
-                    if (f.ShowDialog() == DialogResult.Cancel)
-                        return;
+                if (f.ShowDialog() == DialogResult.Cancel)
+                    return;
 
-                    list.Clear();
-                    list.AddRange(f.ExceptionSettings);
-                    single = (list.Count == 1);
-                }
+                list.Clear();
+                list.AddRange(f.ExceptionSettings);
+                single = (list.Count == 1);
             }
 
             ServerConfiguration confCopy = Utils.DeepClone(ActiveConfig.Service);
@@ -1172,7 +1162,7 @@ namespace pylorak.TinyWall
             if (!Locked)
                 return true;
 
-            using (PasswordForm pf = new PasswordForm())
+            using (var pf = new PasswordForm())
             {
                 pf.BringToFront();
                 pf.Activate();
@@ -1248,7 +1238,7 @@ namespace pylorak.TinyWall
             Thread.Sleep(500);
         }
 
-        private void SetHotkey(System.ComponentModel.ComponentResourceManager resman, ref Hotkey? hk, HandledEventHandler hkCallback, Keys keyCode, ToolStripMenuItem menu, string mnuName)
+        private static void SetHotkey(System.ComponentModel.ComponentResourceManager resman, ref Hotkey? hk, HandledEventHandler hkCallback, Keys keyCode, ToolStripMenuItem menu, string mnuName)
         {
             if (ActiveConfig.Controller.EnableGlobalHotkeys)
             {   // enable hotkey
@@ -1270,7 +1260,7 @@ namespace pylorak.TinyWall
 
         private void ApplyControllerSettings()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TinyWallController));
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(TinyWallController));
             SetHotkey(resources, ref HotKeyWhitelistWindow, new HandledEventHandler(HotKeyWhitelistWindow_Pressed), Keys.W, mnuWhitelistByWindow, "mnuWhitelistByWindow");
             SetHotkey(resources, ref HotKeyWhitelistExecutable, new HandledEventHandler(HotKeyWhitelistExecutable_Pressed), Keys.E, mnuWhitelistByExecutable, "mnuWhitelistByExecutable");
             SetHotkey(resources, ref HotKeyWhitelistProcess, new HandledEventHandler(HotKeyWhitelistProcess_Pressed), Keys.P, mnuWhitelistByProcess, "mnuWhitelistByProcess");
@@ -1296,17 +1286,15 @@ namespace pylorak.TinyWall
             if (FlashIfOpen(typeof(ConnectionsForm)))
                 return;
 
-            using (ConnectionsForm cf = new ConnectionsForm(this))
+            using var cf = new ConnectionsForm(this);
+            try
             {
-                try
-                {
-                    ActiveForms.Add(cf);
-                    cf.ShowDialog();
-                }
-                finally
-                {
-                    ActiveForms.Remove(cf);
-                }
+                ActiveForms.Add(cf);
+                cf.ShowDialog();
+            }
+            finally
+            {
+                ActiveForms.Remove(cf);
             }
         }
 
@@ -1359,7 +1347,7 @@ namespace pylorak.TinyWall
 
             Utils.SplitFirstLine(Resources.Messages.YouAreAboutToEnterLearningMode, out string firstLine, out string contentLines);
 
-            TaskDialog dialog = new TaskDialog();
+            var dialog = new TaskDialog();
             dialog.CustomMainIcon = Resources.Icons.firewall;
             dialog.WindowTitle = Resources.Messages.TinyWall;
             dialog.MainInstruction = firstLine;
@@ -1379,7 +1367,7 @@ namespace pylorak.TinyWall
             mnuTrafficRate.Text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", Resources.Messages.TrafficIn, "...", Resources.Messages.TrafficOut, "...");
 
             // We will load our database parallel to other things to improve startup performance
-            using (ThreadBarrier barrier = new ThreadBarrier(2))
+            using (var barrier = new ThreadBarrier(2))
             {
                 ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
                 {
@@ -1465,7 +1453,7 @@ namespace pylorak.TinyWall
     {
         public static new AnyEventArgs Empty { get; } = new AnyEventArgs();
 
-        private object? _arg;
+        private readonly object? _arg;
 
         public AnyEventArgs(object? arg = null)
         {

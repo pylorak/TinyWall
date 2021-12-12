@@ -10,7 +10,7 @@ namespace pylorak.TinyWall.DatabaseClasses
     class AppDatabase
     {
         [DataMember(Name = "KnownApplications")]
-        private List<Application> _KnownApplications;
+        private readonly List<Application> _KnownApplications;
 
         public static string DBPath
         {
@@ -53,7 +53,7 @@ namespace pylorak.TinyWall.DatabaseClasses
         {
             var ret = new List<FirewallExceptionV3>();
 
-            foreach (DatabaseClasses.Application app in GlobalInstances.AppDatabase.KnownApplications)
+            foreach (DatabaseClasses.Application app in KnownApplications)
             {
                 if (app.HasFlag("TWUI:Special"))
                     continue;

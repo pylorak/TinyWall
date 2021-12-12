@@ -6,7 +6,7 @@ namespace pylorak.Windows.WFP
     {
         private static bool WinVerEqOrGr(int major, int minor)
         {
-            Version winVersion = new Version(major, minor, 0, 0);
+            var winVersion = new Version(major, minor, 0, 0);
             return (Environment.OSVersion.Platform == PlatformID.Win32NT)
                 && (Environment.OSVersion.Version >= winVersion);
         }

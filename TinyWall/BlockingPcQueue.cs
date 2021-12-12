@@ -7,7 +7,7 @@ namespace pylorak.TinyWall
     // TODO: remove if not used
     public class BlockingPcQueue<T>
     {
-        private readonly Queue<T> Q = new Queue<T>();
+        private readonly Queue<T> Q = new();
 
         public void Enqueue(T item)
         {

@@ -92,7 +92,7 @@ namespace pylorak.Windows.WFP
 
         public Engine(string displName, string displDescr, Interop.FWPM_SESSION_FLAGS flags, uint txnTimeoutMsec)
         {
-            Interop.FWPM_SESSION0 session = new Interop.FWPM_SESSION0();
+            var session = new Interop.FWPM_SESSION0();
             SessionKey = Guid.NewGuid();
             session.sessionKey = SessionKey;
             session.displayData.name = displName;
@@ -125,7 +125,7 @@ namespace pylorak.Windows.WFP
 
         private void EngineOptionSetValue(Interop.FWPM_ENGINE_OPTION opt, uint val)
         {
-            Interop.FWP_VALUE0 vs = new Interop.FWP_VALUE0();
+            var vs = new Interop.FWP_VALUE0();
             vs.type = Interop.FWP_DATA_TYPE.FWP_UINT32;
             vs.value.uint32 = val;
 

@@ -49,14 +49,14 @@ namespace pylorak.Windows.Services
         private bool disposed;
         private readonly bool initialized;
         private readonly ServiceCtrlHandlerExDelegate ServiceCtrlHandlerExCallback;
-        private readonly ManualResetEvent StoppedEventHandle = new ManualResetEvent(true);
-        private readonly ManualResetEvent StartedEventHandle = new ManualResetEvent(false);
+        private readonly ManualResetEvent StoppedEventHandle = new(true);
+        private readonly ManualResetEvent StartedEventHandle = new(false);
         private readonly SafeHGlobalHandle UnmanagedServiceName;
 
         public abstract string ServiceName { get; }
         public IntPtr ServiceHandle { get; private set; }
 
-        private SERVICE_STATUS Status = new SERVICE_STATUS() { currentState = ServiceState.Stopped };
+        private SERVICE_STATUS Status = new() { currentState = ServiceState.Stopped };
         private ServiceState PreviousState = ServiceState.Stopped;
 
         protected ServiceBase()
@@ -130,20 +130,17 @@ namespace pylorak.Windows.Services
 
         public static bool IsStateChangePending(ServiceState state)
         {
-            switch (state)
+            return state switch
             {
-                case ServiceState.ContinuePending:
-                case ServiceState.PausePending:
-                case ServiceState.StartPending:
-                case ServiceState.StopPending:
-                    return true;
-                case ServiceState.Running:
-                case ServiceState.Stopped:
-                case ServiceState.Paused:
-                    return false;
-                default:
-                    throw new ArgumentException("Unrecognized value.", nameof(state));
-            }
+                ServiceState.ContinuePending or
+                ServiceState.PausePending or
+                ServiceState.StartPending or
+                ServiceState.StopPending => true,
+                ServiceState.Running or
+                ServiceState.Stopped or
+                ServiceState.Paused => false,
+                _ => throw new ArgumentException("Unrecognized value.", nameof(state)),
+            };
         }
 
         public void Start(string[] args)
@@ -322,7 +319,7 @@ namespace pylorak.Windows.Services
             if (!Enum.IsDefined(typeof(PowerEventType), eventType))
                 return;
 
-            PowerEventData ped = new PowerEventData();
+            var ped = new PowerEventData();
             ped.Event = (PowerEventType)eventType;
 
             if (ped.Event == PowerEventType.PowerSettingChange)
@@ -344,7 +341,7 @@ namespace pylorak.Windows.Services
             if (!Enum.IsDefined(typeof(DeviceEventType), eventType))
                 return;
 
-            DeviceEventData ded = new DeviceEventData();
+            var ded = new DeviceEventData();
             ded.Event = (DeviceEventType)eventType;
 
             var hdr = Marshal.PtrToStructure<DEV_BROADCAST_HDR>(eventData);
@@ -598,9 +595,7 @@ namespace pylorak.Windows.Services
                 throw;
             }
 #endregion
-#pragma warning disable CA1031 // Do not catch general exception types
             catch { }
-#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         public void Dispose()

@@ -222,7 +222,7 @@ namespace pylorak.Windows.WFP
     public abstract class NetEventSubscription : IDisposable
     {
         protected readonly NetEventCallback _callback;
-        protected readonly StringBuilder SBuilder = new StringBuilder(40);
+        protected readonly StringBuilder SBuilder = new(40);
         
         public bool IsDisposed { get; private set; }
 
@@ -274,7 +274,7 @@ namespace pylorak.Windows.WFP
         {
             _nativeCallbackDelegate0 = new NativeMethods.FWPM_NET_EVENT_CALLBACK0(NativeCallbackHandler0);
 
-            Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subs0 = new Interop.FWPM_NET_EVENT_SUBSCRIPTION0();
+            var subs0 = new Interop.FWPM_NET_EVENT_SUBSCRIPTION0();
             subs0.sessionKey = engine.SessionKey;
             subs0.enumTemplate = IntPtr.Zero;
 
@@ -330,7 +330,7 @@ namespace pylorak.Windows.WFP
         {
             _nativeCallbackDelegate1 = new NativeMethods.FWPM_NET_EVENT_CALLBACK1(NativeCallbackHandler1);
 
-            Interop.FWPM_NET_EVENT_SUBSCRIPTION0 subs0 = new Interop.FWPM_NET_EVENT_SUBSCRIPTION0();
+            var subs0 = new Interop.FWPM_NET_EVENT_SUBSCRIPTION0();
             subs0.sessionKey = engine.SessionKey;
             subs0.enumTemplate = IntPtr.Zero;
 
@@ -343,7 +343,7 @@ namespace pylorak.Windows.WFP
 
         private void NativeCallbackHandler1(IntPtr context, IntPtr netEvent1)
         {
-            Interop.FWPM_NET_EVENT2 ev = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT2>(netEvent1);
+            var ev = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT2>(netEvent1);
             _callback(new NetEventData(ev, SBuilder));
         }
 

@@ -16,7 +16,7 @@ namespace Microsoft.Samples
 
     internal sealed class SafeTokenHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
-        private SafeTokenHandle() : base(true) { }
+        public SafeTokenHandle() : base(true) { }
 
         // 0 is an Invalid Handle
         internal SafeTokenHandle(IntPtr handle) : base(true)
