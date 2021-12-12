@@ -21,44 +21,43 @@ namespace pylorak.TinyWall
             UpdateDownloadReady
         }
 
-        private TaskDialog TDialog;
         private UpdaterState State;
-        private UpdateDescriptor Descriptor;
-        private string ErrorMsg;
+        private string ErrorMsg = string.Empty;
         private volatile int DownloadProgress;
 
         internal static void StartUpdate()
         {
-            Updater updater = new Updater();
+            var updater = new Updater();
+            var descriptor = new UpdateDescriptor();
             updater.State = UpdaterState.GettingDescriptor;
 
-            updater.TDialog = new TaskDialog();
-            updater.TDialog.CustomMainIcon = Resources.Icons.firewall;
-            updater.TDialog.WindowTitle = Resources.Messages.TinyWall;
-            updater.TDialog.MainInstruction = Resources.Messages.TinyWallUpdater;
-            updater.TDialog.Content = Resources.Messages.PleaseWaitWhileTinyWallChecksForUpdates;
-            updater.TDialog.AllowDialogCancellation = false;
-            updater.TDialog.CommonButtons = TaskDialogCommonButtons.Cancel;
-            updater.TDialog.ShowMarqueeProgressBar = true;
-            updater.TDialog.Callback = updater.DownloadTickCallback;
-            updater.TDialog.CallbackData = updater;
-            updater.TDialog.CallbackTimer = true;
+            var TDialog = new TaskDialog();
+            TDialog.CustomMainIcon = Resources.Icons.firewall;
+            TDialog.WindowTitle = Resources.Messages.TinyWall;
+            TDialog.MainInstruction = Resources.Messages.TinyWallUpdater;
+            TDialog.Content = Resources.Messages.PleaseWaitWhileTinyWallChecksForUpdates;
+            TDialog.AllowDialogCancellation = false;
+            TDialog.CommonButtons = TaskDialogCommonButtons.Cancel;
+            TDialog.ShowMarqueeProgressBar = true;
+            TDialog.Callback = updater.DownloadTickCallback;
+            TDialog.CallbackData = updater;
+            TDialog.CallbackTimer = true;
 
-            Thread UpdateThread = new Thread((ThreadStart)delegate()
+            var UpdateThread = new Thread( () =>
+            {
+                try
                 {
-                    try
-                    {
-                        updater.Descriptor = UpdateChecker.GetDescriptor();
-                        updater.State = UpdaterState.DescriptorReady;
-                    }
-                    catch
-                    {
-                        updater.ErrorMsg = Resources.Messages.ErrorCheckingForUpdates;
-                    }
-                });
+                    descriptor = UpdateChecker.GetDescriptor();
+                    updater.State = UpdaterState.DescriptorReady;
+                }
+                catch
+                {
+                    updater.ErrorMsg = Resources.Messages.ErrorCheckingForUpdates;
+                }
+            });
             UpdateThread.Start();
 
-            switch (updater.TDialog.Show())
+            switch (TDialog.Show())
             {
                 case (int)DialogResult.Cancel:
                     UpdateThread.Interrupt();
@@ -66,7 +65,7 @@ namespace pylorak.TinyWall
                         UpdateThread.Abort();
                     break;
                 case (int)DialogResult.OK:
-                    updater.CheckVersion();
+                    updater.CheckVersion(descriptor);
                     break;
                 case (int)DialogResult.Abort:
                     Utils.ShowMessageBox(updater.ErrorMsg, Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
@@ -74,11 +73,11 @@ namespace pylorak.TinyWall
             }
         }
 
-        private void CheckVersion()
+        private void CheckVersion(UpdateDescriptor descriptor)
         {
-            UpdateModule UpdateModule = UpdateChecker.GetMainAppModule(this.Descriptor);
-            Version oldVersion = new Version(System.Windows.Forms.Application.ProductVersion);
-            Version newVersion = new Version(UpdateModule.ComponentVersion);
+            var UpdateModule = UpdateChecker.GetMainAppModule(descriptor)!;
+            var oldVersion = new Version(System.Windows.Forms.Application.ProductVersion);
+            var newVersion = new Version(UpdateModule.ComponentVersion);
 
             bool win10v1903 = VersionInfo.Win10OrNewer && (Environment.OSVersion.Version.Build >= 18362);
             bool WindowsNew_AnyTwUpdate = win10v1903 && (newVersion > oldVersion);
@@ -99,49 +98,46 @@ namespace pylorak.TinyWall
 
         private void DownloadUpdate(UpdateModule mainModule)
         {
-            ErrorMsg = null;
-            Updater updater = this;
-            updater.TDialog = new TaskDialog();
-            updater.TDialog.CustomMainIcon = Resources.Icons.firewall;
-            updater.TDialog.WindowTitle = Resources.Messages.TinyWall;
-            updater.TDialog.MainInstruction = Resources.Messages.TinyWallUpdater;
-            updater.TDialog.Content = Resources.Messages.DownloadingUpdate;
-            updater.TDialog.AllowDialogCancellation = false;
-            updater.TDialog.CommonButtons = TaskDialogCommonButtons.Cancel;
-            updater.TDialog.ShowProgressBar = true;
-            updater.TDialog.Callback = updater.DownloadTickCallback;
-            updater.TDialog.CallbackData = updater;
-            updater.TDialog.CallbackTimer = true;
-            updater.TDialog.EnableHyperlinks = true;
+            ErrorMsg = string.Empty;
+            var TDialog = new TaskDialog();
+            TDialog.CustomMainIcon = Resources.Icons.firewall;
+            TDialog.WindowTitle = Resources.Messages.TinyWall;
+            TDialog.MainInstruction = Resources.Messages.TinyWallUpdater;
+            TDialog.Content = Resources.Messages.DownloadingUpdate;
+            TDialog.AllowDialogCancellation = false;
+            TDialog.CommonButtons = TaskDialogCommonButtons.Cancel;
+            TDialog.ShowProgressBar = true;
+            TDialog.Callback = DownloadTickCallback;
+            TDialog.CallbackData = this;
+            TDialog.CallbackTimer = true;
+            TDialog.EnableHyperlinks = true;
 
             State = UpdaterState.DownloadingUpdate;
 
-            string tmpFile = Path.GetTempFileName() + ".msi";
-            Uri UpdateURL = new Uri(mainModule.UpdateURL);
-            using (WebClient HTTPClient = new WebClient())
-            {
-                HTTPClient.DownloadFileCompleted += new AsyncCompletedEventHandler(Updater_DownloadFinished);
-                HTTPClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(Updater_DownloadProgressChanged);
-                HTTPClient.DownloadFileAsync(UpdateURL, tmpFile, tmpFile);
+            var tmpFile = Path.GetTempFileName() + ".msi";
+            var UpdateURL = new Uri(mainModule.UpdateURL);
+            using var HTTPClient = new WebClient();
+            HTTPClient.DownloadFileCompleted += new AsyncCompletedEventHandler(Updater_DownloadFinished);
+            HTTPClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(Updater_DownloadProgressChanged);
+            HTTPClient.DownloadFileAsync(UpdateURL, tmpFile, tmpFile);
 
-                switch (updater.TDialog.Show())
-                {
-                    case (int)DialogResult.Cancel:
-                        HTTPClient.CancelAsync();
-                        break;
-                    case (int)DialogResult.OK:
-                        InstallUpdate(tmpFile);
-                        break;
-                    case (int)DialogResult.Abort:
-                        Utils.ShowMessageBox(updater.ErrorMsg, Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
-                        break;
-                }
+            switch (TDialog.Show())
+            {
+                case (int)DialogResult.Cancel:
+                    HTTPClient.CancelAsync();
+                    break;
+                case (int)DialogResult.OK:
+                    InstallUpdate(tmpFile);
+                    break;
+                case (int)DialogResult.Abort:
+                    Utils.ShowMessageBox(ErrorMsg, Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
+                    break;
             }
         }
 
         private static void InstallUpdate(string localFilePath)
         {
-            Utils.StartProcess(localFilePath, null, false, false);
+            Utils.StartProcess(localFilePath, string.Empty, false, false);
         }
 
         private void Updater_DownloadFinished(object sender, AsyncCompletedEventArgs e)
@@ -160,27 +156,25 @@ namespace pylorak.TinyWall
             DownloadProgress = e.ProgressPercentage;
         }
 
-        private bool DownloadTickCallback(ActiveTaskDialog taskDialog, TaskDialogNotificationArgs args, object callbackData)
+        private bool DownloadTickCallback(ActiveTaskDialog taskDialog, TaskDialogNotificationArgs args, object? callbackData)
         {
-            Updater updater = callbackData as Updater;
-
             switch (args.Notification)
             {
                 case TaskDialogNotification.Created:
-                    if (updater.State == UpdaterState.GettingDescriptor)
+                    if (State == UpdaterState.GettingDescriptor)
                         taskDialog.SetProgressBarMarquee(true, 25);
                     break;
                 case TaskDialogNotification.Timer:
-                    if (!string.IsNullOrEmpty(updater.ErrorMsg))
+                    if (!string.IsNullOrEmpty(ErrorMsg))
                         taskDialog.ClickButton((int)DialogResult.Abort);
-                    switch (updater.State)
+                    switch (State)
                     {
                         case UpdaterState.DescriptorReady:
                         case UpdaterState.UpdateDownloadReady:
                             taskDialog.ClickButton((int)DialogResult.OK);
                             break;
                         case UpdaterState.DownloadingUpdate:
-                        taskDialog.SetProgressBarPosition(updater.DownloadProgress);
+                        taskDialog.SetProgressBarPosition(DownloadProgress);
                             break;
                     }
                     break;
@@ -196,18 +190,18 @@ namespace pylorak.TinyWall
 
         internal static UpdateDescriptor GetDescriptor()
         {
-            string url = string.Format(CultureInfo.InvariantCulture, URL_UPDATE_DESCRIPTOR, UPDATER_VERSION);
-            string tmpFile = Path.GetTempFileName();
+            var url = string.Format(CultureInfo.InvariantCulture, URL_UPDATE_DESCRIPTOR, UPDATER_VERSION);
+            var tmpFile = Path.GetTempFileName();
 
             try
             {
-                using (WebClient HTTPClient = new WebClient())
+                using (var HTTPClient = new WebClient())
                 {
                     HTTPClient.Headers.Add("TW-Version", Application.ProductVersion);
                     HTTPClient.DownloadFile(url, tmpFile);
                 }
 
-                UpdateDescriptor descriptor = SerializationHelper.LoadFromXMLFile<UpdateDescriptor>(tmpFile);
+                var descriptor = SerializationHelper.LoadFromXMLFile<UpdateDescriptor>(tmpFile);
                 if (descriptor.MagicWord != "TinyWall Update Descriptor")
                     throw new ApplicationException("Bad update descriptor file.");
 
@@ -219,35 +213,28 @@ namespace pylorak.TinyWall
             }
         }
 
-        internal static UpdateModule GetMainAppModule(UpdateDescriptor descriptor)
+        internal static UpdateModule? GetUpdateModule(UpdateDescriptor descriptor, string moduleName)
         {
             for (int i = 0; i < descriptor.Modules.Length; ++i)
             {
-                if (descriptor.Modules[i].Component.Equals("TinyWall"))
+                if (descriptor.Modules[i].Component.Equals(moduleName, StringComparison.InvariantCultureIgnoreCase))
                     return descriptor.Modules[i];
             }
 
             return null;
         }
-        internal static UpdateModule GetHostsFileModule(UpdateDescriptor descriptor)
-        {
-            for (int i = 0; i < descriptor.Modules.Length; ++i)
-            {
-                if (descriptor.Modules[i].Component.Equals("HostsFile"))
-                    return descriptor.Modules[i];
-            }
 
-            return null;
+        internal static UpdateModule? GetMainAppModule(UpdateDescriptor descriptor)
+        {
+            return GetUpdateModule(descriptor, "TinyWall");
         }
-        internal static UpdateModule GetDatabaseFileModule(UpdateDescriptor descriptor)
+        internal static UpdateModule? GetHostsFileModule(UpdateDescriptor descriptor)
         {
-            for (int i = 0; i < descriptor.Modules.Length; ++i)
-            {
-                if (descriptor.Modules[i].Component.Equals("Database"))
-                    return descriptor.Modules[i];
-            }
-
-            return null;
+            return GetUpdateModule(descriptor, "HostsFile");
+        }
+        internal static UpdateModule? GetDatabaseFileModule(UpdateDescriptor descriptor)
+        {
+            return GetUpdateModule(descriptor, "Database");
         }
     }
 }

@@ -1218,16 +1218,22 @@ namespace pylorak.TinyWall
 
             try
             {
-                UpdateModule module = UpdateChecker.GetDatabaseFileModule(VisibleState.Update);
-                if (!string.Equals(module.DownloadHash, Hasher.HashFile(DatabaseClasses.AppDatabase.DBPath), StringComparison.OrdinalIgnoreCase))
+                UpdateModule? module = UpdateChecker.GetDatabaseFileModule(VisibleState.Update);
+                if (module is not null)
                 {
-                    GetCompressedUpdate(module, DatabaseUpdateInstall);
+                    if (!string.Equals(module.DownloadHash, Hasher.HashFile(DatabaseClasses.AppDatabase.DBPath), StringComparison.OrdinalIgnoreCase))
+                    {
+                        GetCompressedUpdate(module, DatabaseUpdateInstall);
+                    }
                 }
 
                 module = UpdateChecker.GetHostsFileModule(VisibleState.Update);
-                if (!string.Equals(module.DownloadHash, HostsFileManager.GetHostsHash(), StringComparison.OrdinalIgnoreCase))
+                if (module is not null)
                 {
-                    GetCompressedUpdate(module, HostsUpdateInstall);
+                    if (!string.Equals(module.DownloadHash, HostsFileManager.GetHostsHash(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        GetCompressedUpdate(module, HostsUpdateInstall);
+                    }
                 }
             }
             catch (Exception e)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -7,8 +8,8 @@ namespace pylorak.TinyWall
     [DataContract(Namespace = "TinyWall")]
     public class UpdateModule
     {
-        [DataMember]
-        public string? Component;
+        [DataMember, AllowNull]
+        public string Component;
         [DataMember]
         public string? ComponentVersion;
         [DataMember]
@@ -23,7 +24,7 @@ namespace pylorak.TinyWall
         [DataMember]
         public string MagicWord = "TinyWall Update Descriptor";
         [DataMember]
-        public UpdateModule[]? Modules;
+        public UpdateModule[] Modules = Array.Empty<UpdateModule>();
     }
 
     public class ServerState

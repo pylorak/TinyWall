@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Samples;
@@ -21,6 +22,31 @@ namespace pylorak.TinyWall
         /// Erforderliche Methode für die Designerunterstützung.
         /// Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
         /// </summary>
+        [MemberNotNull(nameof(Tray),
+            nameof(TrayMenu),
+            nameof(toolStripMenuItem1),
+            nameof(toolStripMenuItem2),
+            nameof(mnuQuit),
+            nameof(mnuMode),
+            nameof(mnuModeNormal),
+            nameof(mnuModeBlockAll),
+            nameof(mnuModeDisabled),
+            nameof(mnuManage),
+            nameof(toolStripMenuItem5),
+            nameof(mnuWhitelistByExecutable),
+            nameof(mnuWhitelistByProcess),
+            nameof(mnuWhitelistByWindow),
+            nameof(mnuLock),
+            nameof(mnuElevate),
+            nameof(mnuConnections),
+            nameof(mnuModeAllowOutgoing),
+            nameof(ofd),
+            nameof(toolStripMenuItem3),
+            nameof(mnuAllowLocalSubnet),
+            nameof(mnuEnableHostsBlocklist),
+            nameof(mnuTrafficRate),
+            nameof(mnuModeLearn)
+        )]
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
@@ -252,27 +278,28 @@ namespace pylorak.TinyWall
 
         #endregion
 
-        private MouseInterceptor MouseInterceptor;
-        private ServerState FirewallState;
+        private MouseInterceptor MouseInterceptor = new();
+        private ServerState FirewallState = new ServerState();
         private System.Threading.Timer UpdateTimer;
         private DateTime LastUpdateNotification = DateTime.MinValue;
         private System.Windows.Forms.Timer ServiceTimer;
         private DateTime AppStarted = DateTime.Now;
-        private List<Form> ActiveForms = new List<Form>();
+        private List<Form> ActiveForms = new();
 
         // Traffic rate monitoring
         private System.Threading.Timer TrafficTimer;
-        private TrafficRateMonitor TrafficMonitor;
+        private TrafficRateMonitor TrafficMonitor = new TrafficRateMonitor();
         private bool TrafficRateVisible_ = true;
         private bool TrayMenuShowing_;
 
         private EventHandler<AnyEventArgs>? BalloonClickedCallback;
         private object? BalloonClickedCallbackArgument;
+        [AllowNull]
         private SynchronizationContext SyncCtx;
 
-        private Hotkey HotKeyWhitelistExecutable;
-        private Hotkey HotKeyWhitelistProcess;
-        private Hotkey HotKeyWhitelistWindow;
+        private Hotkey? HotKeyWhitelistExecutable;
+        private Hotkey? HotKeyWhitelistProcess;
+        private Hotkey? HotKeyWhitelistWindow;
 
         private readonly CmdLineArgs StartupOpts;
 
@@ -318,7 +345,11 @@ namespace pylorak.TinyWall
             catch { }
 
             InitializeComponent();
-            Utils.SetRightToLeft(TrayMenu!);
+            Utils.SetRightToLeft(TrayMenu);
+            MouseInterceptor.MouseLButtonDown += new MouseInterceptor.MouseHookLButtonDown(MouseInterceptor_MouseLButtonDown);
+            TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, Timeout.Infinite, Timeout.Infinite);
+            UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(10));
+            ServiceTimer = new System.Windows.Forms.Timer(components);
 
             System.Windows.Forms.Application.Idle += Application_Idle;
             using (var p = Process.GetCurrentProcess())
@@ -350,7 +381,7 @@ namespace pylorak.TinyWall
                 HotKeyWhitelistExecutable?.Dispose();
                 HotKeyWhitelistProcess?.Dispose();
                 HotKeyWhitelistWindow?.Dispose();
-                MouseInterceptor?.Dispose();
+                MouseInterceptor.Dispose();
 
                 using (WaitHandle wh = new AutoResetEvent(false))
                 {
@@ -377,10 +408,10 @@ namespace pylorak.TinyWall
         {
             try
             {
-                UpdateDescriptor descriptor = FirewallState.Update;
-                if (descriptor != null)
+                UpdateDescriptor? descriptor = FirewallState.Update;
+                if (descriptor is not null)
                 {
-                    UpdateModule MainAppModule = UpdateChecker.GetMainAppModule(descriptor);
+                    UpdateModule MainAppModule = UpdateChecker.GetMainAppModule(descriptor)!;
                     if (new Version(MainAppModule.ComponentVersion) > new Version(System.Windows.Forms.Application.ProductVersion))
                     {
                         Utils.Invoke(SyncCtx, (SendOrPostCallback)delegate(object o)
@@ -411,7 +442,7 @@ namespace pylorak.TinyWall
             }
         }
 
-        private void TrafficTimerTick(object state)
+        private void TrafficTimerTick(object? _)
         {
             if (!Monitor.TryEnter(TrafficTimer))
                 return;
@@ -500,17 +531,17 @@ namespace pylorak.TinyWall
 
         void HotKeyWhitelistProcess_Pressed(object sender, HandledEventArgs e)
         {
-            mnuWhitelistByProcess_Click(null, null);
+            mnuWhitelistByProcess_Click(this, EventArgs.Empty);
         }
 
         void HotKeyWhitelistExecutable_Pressed(object sender, HandledEventArgs e)
         {
-            mnuWhitelistByExecutable_Click(null, null);
+            mnuWhitelistByExecutable_Click(this, EventArgs.Empty);
         }
 
         void HotKeyWhitelistWindow_Pressed(object sender, HandledEventArgs e)
         {
-            mnuWhitelistByWindow_Click(null, null);
+            mnuWhitelistByWindow_Click(this, EventArgs.Empty);
         }
 
         private void mnuQuit_Click(object sender, EventArgs e)
@@ -659,47 +690,43 @@ namespace pylorak.TinyWall
         {
             Guid inChangeset = force ? Guid.Empty : GlobalInstances.ClientChangeset;
             Guid outChangeset = inChangeset;
-            MessageType ret = GlobalInstances.Controller.GetServerConfig(out ServerConfiguration config, out ServerState state, ref outChangeset);
+            MessageType ret = GlobalInstances.Controller.GetServerConfig(out ServerConfiguration? config, out ServerState? state, ref outChangeset);
 
             comError = (MessageType.COM_ERROR == ret);
-            bool SettingsUpdated = force || (inChangeset != outChangeset);
+            bool updated = (inChangeset != outChangeset);
 
             if (MessageType.RESPONSE_OK == ret)
             {
                 // Update our config based on what we received
-                if (SettingsUpdated)
-                {
-                    GlobalInstances.ClientChangeset = outChangeset;
+                GlobalInstances.ClientChangeset = outChangeset;
+                if (config is not null)
                     ActiveConfig.Service = config;
+                if (state is not null)
                     FirewallState = state;
-                }
             }
             else
             {
                 ActiveConfig.Controller = new ControllerSettings();
                 ActiveConfig.Service = new ServerConfiguration();
                 ActiveConfig.Service.SetActiveProfile(Resources.Messages.Default);
-                FirewallState = new ServerState();
-                SettingsUpdated = true;
             }
 
             // See if there is a new notification for the client
-            if (SettingsUpdated)
+            for (int i = 0; i < FirewallState.ClientNotifs.Count; ++i)
             {
-                for (int i = 0; i < FirewallState.ClientNotifs.Count; ++i)
+                switch (FirewallState.ClientNotifs[i])
                 {
-                    switch (FirewallState.ClientNotifs[i])
-                    {
-                        case MessageType.DATABASE_UPDATED:
-                            LoadDatabase();
-                            break;
-                    }
+                    case MessageType.DATABASE_UPDATED:
+                        LoadDatabase();
+                        break;
                 }
-                FirewallState.ClientNotifs.Clear();
-                UpdateDisplay();
             }
+            FirewallState.ClientNotifs.Clear();
 
-            return SettingsUpdated;
+            if (updated)
+                UpdateDisplay();
+
+            return updated;
         }
 
         private void TrayMenu_Opening(object sender, CancelEventArgs e)
@@ -822,19 +849,21 @@ namespace pylorak.TinyWall
                 return MessageType.RESPONSE_LOCKED;
 
             Guid localChangeset = GlobalInstances.ClientChangeset;
-            MessageType resp = GlobalInstances.Controller.SetServerConfig(ref srvConfig, ref localChangeset, out ServerState state);
+            MessageType resp = GlobalInstances.Controller.SetServerConfig(ref srvConfig, ref localChangeset, out ServerState? state);
 
             switch (resp)
             {
                 case MessageType.RESPONSE_OK:
-                    FirewallState = state;
+                    if (state is not null)
+                        FirewallState = state;
                     ActiveConfig.Service = srvConfig;
                     GlobalInstances.ClientChangeset = localChangeset;
                     if (showUI)
                         ShowBalloonTip(Resources.Messages.TheFirewallSettingsHaveBeenUpdated, ToolTipIcon.Info);
                     break;
                 case MessageType.RESPONSE_WARNING:
-                    FirewallState = state;
+                    if (state is not null)
+                        FirewallState = state;
 
                     // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
                     if (showUI)
@@ -926,12 +955,12 @@ namespace pylorak.TinyWall
                         ApplyFirewallSettings(sf.TmpConfig.Service);
 
                         // Handle password change request
-                        string passwd = sf.NewPassword;
-                        if (passwd != null)
+                        string? newPassword = sf.NewPassword;
+                        if (newPassword is not null)
                         {
                             // If the new password is empty, we do not hash it because an empty password
                             // is a special value signalizing the non-existence of a password.
-                            MessageType resp = GlobalInstances.Controller.SetPassphrase(string.IsNullOrEmpty(passwd) ? string.Empty : Hasher.HashString(passwd));
+                            MessageType resp = GlobalInstances.Controller.SetPassphrase(string.IsNullOrEmpty(newPassword) ? string.Empty : Hasher.HashString(newPassword));
                             if (resp != MessageType.RESPONSE_OK)
                             {
                                 // Only display a popup for setting the password if it did not succeed
@@ -942,7 +971,7 @@ namespace pylorak.TinyWall
                             {
                                 // If the operation is successfull, do not report anything as we will be setting
                                 // the other settings too and we want to avoid multiple popups.
-                                FirewallState.HasPassword = !string.IsNullOrEmpty(passwd);
+                                FirewallState.HasPassword = !string.IsNullOrEmpty(newPassword);
                             }
                         }
 
@@ -988,16 +1017,14 @@ namespace pylorak.TinyWall
             }
             else
             {
-                if (MouseInterceptor == null)
+                if (!MouseInterceptor.IsStarted)
                 {
-                    MouseInterceptor = new MouseInterceptor();
-                    MouseInterceptor.MouseLButtonDown += new MouseInterceptor.MouseHookLButtonDown(MouseInterceptor_MouseLButtonDown);
+                    MouseInterceptor.Start();
                     ShowBalloonTip(Resources.Messages.ClickOnAWindowWhitelisting, ToolTipIcon.Info);
                 }
                 else
                 {
-                    MouseInterceptor.Dispose();
-                    MouseInterceptor = null;
+                    MouseInterceptor.Stop();
                     ShowBalloonTip(Resources.Messages.WhitelistingCancelled, ToolTipIcon.Info);
                 }
             }
@@ -1022,8 +1049,7 @@ namespace pylorak.TinyWall
             {
                 Utils.Invoke(SyncCtx, (SendOrPostCallback)delegate(object o)
                 {
-                    MouseInterceptor.Dispose();
-                    MouseInterceptor = null;
+                    MouseInterceptor.Stop();
 
                     uint pid = Utils.GetPidUnderCursor(x, y);
                     string exePath = Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller);
@@ -1052,18 +1078,14 @@ namespace pylorak.TinyWall
         // Called when a user double-clicks on a popup to edit the most recent exception
         private void EditRecentException(object sender, AnyEventArgs e)
         {
-            List<FirewallExceptionV3> exceptions = null;
-
-            using (ApplicationExceptionForm f = new ApplicationExceptionForm(e.Arg as FirewallExceptionV3))
+            using (var f = new ApplicationExceptionForm((FirewallExceptionV3)e.Arg!))
             {
                 if (f.ShowDialog() == DialogResult.Cancel)
                     return;
 
-                exceptions = f.ExceptionSettings;
+                // Add exceptions, along with other files that belong to this app
+                AddExceptions(f.ExceptionSettings, false);
             }
-
-            // Add exceptions, along with other files that belong to this app
-            AddExceptions(exceptions, false);
         }
 
         internal void AddExceptions(List<FirewallExceptionV3> list, bool showEditUi = true)
@@ -1226,7 +1248,7 @@ namespace pylorak.TinyWall
             Thread.Sleep(500);
         }
 
-        private void SetHotkey(System.ComponentModel.ComponentResourceManager resman, ref Hotkey hk, HandledEventHandler hkCallback, Keys keyCode, ToolStripMenuItem menu, string mnuName)
+        private void SetHotkey(System.ComponentModel.ComponentResourceManager resman, ref Hotkey? hk, HandledEventHandler hkCallback, Keys keyCode, ToolStripMenuItem menu, string mnuName)
         {
             if (ActiveConfig.Controller.EnableGlobalHotkeys)
             {   // enable hotkey
@@ -1376,24 +1398,13 @@ namespace pylorak.TinyWall
                 // BEGIN
                 TrayMenu.Closed += TrayMenu_Closed;
                 Tray.ContextMenuStrip = TrayMenu;
-                TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, Timeout.Infinite, Timeout.Infinite);
-                UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(10));
                 mnuElevate.Visible = !Utils.RunningAsAdmin();
                 mnuModeDisabled.Image = Resources.Icons.shield_grey_small.ToBitmap();
                 mnuModeAllowOutgoing.Image = Resources.Icons.shield_red_small.ToBitmap();
                 mnuModeBlockAll.Image = Resources.Icons.shield_yellow_small.ToBitmap();
                 mnuModeNormal.Image = Resources.Icons.shield_green_small.ToBitmap();
                 mnuModeLearn.Image = Resources.Icons.shield_blue_small.ToBitmap();
-
-                try
-                {
-                    TrafficMonitor = new TrafficRateMonitor();
-                    TrayMenuShowing = false;
-                }
-                catch 
-                {
-                    TrafficRateVisible = false;
-                }
+                TrayMenuShowing = false;
 
                 ApplyControllerSettings();
                 GlobalInstances.InitClient();
@@ -1426,13 +1437,12 @@ namespace pylorak.TinyWall
 
                 if (StartupOpts.updatenow)
                 {
-                    StartUpdate(null, null);
+                    StartUpdate(this, AnyEventArgs.Empty);
                 }
             }
             else
             {
                 // Keep on trying to reach the service
-                ServiceTimer = new System.Windows.Forms.Timer(components);
                 ServiceTimer.Tick += ServiceTimer_Tick;
                 ServiceTimer.Interval = 2000;
                 ServiceTimer.Enabled = true;
@@ -1453,6 +1463,8 @@ namespace pylorak.TinyWall
 
     internal class AnyEventArgs : EventArgs
     {
+        public static new AnyEventArgs Empty { get; } = new AnyEventArgs();
+
         private object? _arg;
 
         public AnyEventArgs(object? arg = null)

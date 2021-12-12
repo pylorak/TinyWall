@@ -389,8 +389,7 @@ namespace pylorak.TinyWall
 
         private void btnAppAdd_Click(object sender, EventArgs e)
         {
-            var defaultNewPolicy = new FirewallExceptionV3(GlobalSubject.Instance, new UnrestrictedPolicy());
-            using var f = new ApplicationExceptionForm(defaultNewPolicy);
+            using var f = new ApplicationExceptionForm(FirewallExceptionV3.Default);
             if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
                 TmpConfig.Service.ActiveProfile.AddExceptions(f.ExceptionSettings);

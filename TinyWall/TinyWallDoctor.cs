@@ -149,7 +149,7 @@ namespace pylorak.TinyWall
                         // Unlock server
                         while (twController.IsServerLocked)
                         {
-                            using (PasswordForm pf = new PasswordForm())
+                            using (var pf = new PasswordForm())
                             {
                                 pf.BringToFront();
                                 pf.Activate();
@@ -297,7 +297,7 @@ namespace pylorak.TinyWall
                 td.Settings.DisallowStartIfOnBatteries = false;
                 td.Settings.ExecutionTimeLimit = "PT0S";
                 td.Triggers.Create(_TASK_TRIGGER_TYPE2.TASK_TRIGGER_LOGON);
-                var act = td.Actions.Create(_TASK_ACTION_TYPE.TASK_ACTION_EXEC) as IExecAction;
+                var act = (IExecAction)td.Actions.Create(_TASK_ACTION_TYPE.TASK_ACTION_EXEC);
                 act.Path = Utils.ExecutablePath;
                 taskService.GetFolder(@"\").RegisterTaskDefinition(CONTROLLER_START_TASKSCH_NAME, td, TASK_CREATE_OR_UPDATE, null, null, _TASK_LOGON_TYPE.TASK_LOGON_NONE);
             }

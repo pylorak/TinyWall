@@ -53,6 +53,8 @@ namespace pylorak.TinyWall
 
         public MessageType SetServerConfig(ref ServerConfiguration serverConfig, ref Guid clientChangeset, out ServerState? serverState)
         {
+            serverState = null;
+
             TwMessage resp = Endpoint.QueueMessageSimple(MessageType.PUT_SETTINGS, serverConfig, clientChangeset);
 
             if ((resp.Arguments != null) && (resp.Arguments.Length > 0) && (resp.Arguments[0] is ServerConfiguration tmp))
@@ -61,8 +63,6 @@ namespace pylorak.TinyWall
                 clientChangeset = (Guid)resp.Arguments[1];
                 serverState = (ServerState)resp.Arguments[2];
             }
-            else
-                serverState = null;
 
             if ((serverState == null) && (resp.Type == MessageType.RESPONSE_OK))
                 resp.Type = MessageType.RESPONSE_ERROR;

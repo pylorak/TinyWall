@@ -116,7 +116,7 @@ namespace pylorak.Windows
             return null;
         }
 
-        public static Package? FindPackageDetails(string sid)
+        public static Package? FindPackageDetails(string? sid)
         {
             if (!PlatformSupport)
                 return null;

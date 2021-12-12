@@ -57,16 +57,30 @@ namespace pylorak.Windows
         public event MouseHookLButtonDown? MouseLButtonDown;
 
         private readonly NativeMethods.LowLevelMouseProc _proc;
-        private static IntPtr _hookID = IntPtr.Zero;
+        private IntPtr _hookID = IntPtr.Zero;
 
         public MouseInterceptor()
         {
             _proc = HookCallback;
+        }
 
+        public void Start()
+        {
             using Process curProcess = Process.GetCurrentProcess();
             using ProcessModule curModule = curProcess.MainModule;
             _hookID = NativeMethods.SetWindowsHookEx(NativeMethods.WH_MOUSE_LL, _proc, NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
         }
+
+        public void Stop()
+        {
+            if (_hookID != IntPtr.Zero)
+            {
+                NativeMethods.UnhookWindowsHookEx(_hookID);
+                _hookID = IntPtr.Zero;
+            }
+        }
+
+        public bool IsStarted { get => _hookID != IntPtr.Zero; }
 
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
@@ -74,8 +88,6 @@ namespace pylorak.Windows
             {
                 NativeMethods.MSLLHOOKSTRUCT hookStruct = Marshal.PtrToStructure<NativeMethods.MSLLHOOKSTRUCT>(lParam);
                 MouseLButtonDown?.Invoke(hookStruct.pt.x, hookStruct.pt.y);
-
-                //Console.WriteLine(hookStruct.pt.x + ", " + hookStruct.pt.y);
             }
             return NativeMethods.CallNextHookEx(_hookID, nCode, wParam, lParam);
         }
@@ -93,12 +105,7 @@ namespace pylorak.Windows
             // Release unmanaged resources.
             // Set large fields to null.
             // Call Dispose on your base class.
-
-            if (_hookID != IntPtr.Zero)
-            {
-                NativeMethods.UnhookWindowsHookEx(_hookID);
-                _hookID = IntPtr.Zero;
-            }
+            Stop();
 
             base.Dispose(disposing);
         }
