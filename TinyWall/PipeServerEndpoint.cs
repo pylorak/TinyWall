@@ -24,7 +24,7 @@ namespace pylorak.TinyWall
             m_Run = false;
 
             // Create a dummy connection so that worker thread gets out of the infinite WaitForConnection()
-            using (NamedPipeClientStream npcs = new NamedPipeClientStream(m_PipeName))
+            using (var npcs = new NamedPipeClientStream(m_PipeName))
             {
                 npcs.Connect(500);
             }
@@ -55,9 +55,9 @@ namespace pylorak.TinyWall
         private void PipeServerWorker()
         {
             // Allow authenticated users access to the pipe
-            SecurityIdentifier AuthenticatedSID = new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null);
-            PipeAccessRule par = new PipeAccessRule(AuthenticatedSID, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
-            PipeSecurity ps = new PipeSecurity();
+            SecurityIdentifier AuthenticatedSID = new(WellKnownSidType.AuthenticatedUserSid, null);
+            PipeAccessRule par = new(AuthenticatedSID, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
+            PipeSecurity ps = new();
             ps.AddAccessRule(par);
 
             while (m_Run)
@@ -65,32 +65,31 @@ namespace pylorak.TinyWall
                 try
                 {
                     // Create pipe server
-                    using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(m_PipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message, PipeOptions.WriteThrough, 2048*10, 2048*10, ps))
+                    using var pipeServer = new NamedPipeServerStream(m_PipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message, PipeOptions.WriteThrough, 2048 * 10, 2048 * 10, ps);
+                    if (!pipeServer.IsConnected)
                     {
-                        if (!pipeServer.IsConnected)
-                        {
-                            pipeServer.WaitForConnection();
-                            pipeServer.ReadMode = PipeTransmissionMode.Message;
+                        pipeServer.WaitForConnection();
+                        pipeServer.ReadMode = PipeTransmissionMode.Message;
 
-                            if (!AuthAsServer(pipeServer))
-                                throw new InvalidOperationException("Client authentication failed.");
-                        }
+                        if (!AuthAsServer(pipeServer))
+                            throw new InvalidOperationException("Client authentication failed.");
+                    }
 
-                        // Read msg
-                        TwMessage msg = new TwMessage(MessageType.COM_ERROR);
-                        if (SerializationHelper.DeserializeFromPipe<TwMessage>(pipeServer, 3000, ref msg))
-                        {
-                            // Write response
-                            TwMessage resp = m_RcvCallback(msg);
-                            SerializationHelper.SerializeToPipe(pipeServer, resp);
-                        }
-                    } //using
+                    // Read msg
+                    var msg = new TwMessage(MessageType.COM_ERROR);
+                    if (SerializationHelper.DeserializeFromPipe<TwMessage>(pipeServer, 3000, ref msg))
+                    {
+                        // Write response
+                        var resp = m_RcvCallback(msg);
+                        SerializationHelper.SerializeToPipe(pipeServer, resp);
+                    }
+                    //using
                 }
                 catch { }
             } //while
         }
 
-        private bool AuthAsServer(PipeStream stream)
+        private static bool AuthAsServer(PipeStream stream)
         {
 #if !DEBUG
             if (!Utils.SafeNativeMethods.GetNamedPipeClientProcessId(stream.SafePipeHandle.DangerousGetHandle(), out ulong clientPid))

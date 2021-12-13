@@ -40,8 +40,5 @@
         ADD_TEMPORARY_EXCEPTION = 4096,
         RELOAD_WFP_FILTERS,
         DISPLAY_POWER_EVENT,
-
-        // Client-to-client only
-        WAKE_CLIENT_SENDER_QUEUE = 8192
     }
 }

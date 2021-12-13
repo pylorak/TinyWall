@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.IO.Pipes;
 using System.Threading;
 using pylorak.Utilities;
@@ -8,10 +9,11 @@ namespace pylorak.TinyWall
     public class PipeClientEndpoint : Disposable
     {
         private readonly Thread m_PipeWorkerThread;
-        private readonly BoundedMessageQueue m_Queue;
+        private readonly BlockingCollection<Tuple<TwMessage, Future<TwMessage>>> m_Queue = new(32);
+        private readonly CancellationTokenSource Cancellation = new();
         private readonly string m_PipeName;
 
-        private bool m_Run = true;
+        private volatile bool m_Run = true;
 
         protected override void Dispose(bool disposing)
         {
@@ -23,7 +25,7 @@ namespace pylorak.TinyWall
             if (disposing)
             {
                 // Release managed resources
-                QueueMessageSimple(MessageType.WAKE_CLIENT_SENDER_QUEUE);
+                Cancellation.Cancel();
                 m_PipeWorkerThread.Join(TimeSpan.FromMilliseconds(2000));
                 m_Queue.Dispose();
             }
@@ -33,7 +35,6 @@ namespace pylorak.TinyWall
 
         public PipeClientEndpoint(string clientPipeName)
         {
-            m_Queue = new BoundedMessageQueue();
             m_PipeName = clientPipeName;
             m_PipeWorkerThread = new Thread(new ThreadStart(PipeClientWorker));
             m_PipeWorkerThread.Name = "ClientPipeWorker";
@@ -45,28 +46,31 @@ namespace pylorak.TinyWall
         {
             while (m_Run)
             {
-                m_Queue.Dequeue(out TwMessage msg, out Future<TwMessage>? future);
-                if (msg.Type == MessageType.WAKE_CLIENT_SENDER_QUEUE)
+                TwMessage req;
+                Future<TwMessage> future;
+
+                try
                 {
-                    if (future is not null)
-                        future.Value = new TwMessage(MessageType.RESPONSE_OK);
+                    (req, future) = m_Queue.Take(Cancellation.Token);
+                }
+                catch(OperationCanceledException)
+                {
                     continue;
                 }
 
                 // In case of a communication error,
                 // retry a small number of times.
-                var response = new TwMessage();
+                TwMessage resp = default;
                 for (int i = 0; i < 2; ++i)
                 {
-                    response = SenderProcessor(msg);
-                    if (response.Type != MessageType.COM_ERROR)
+                    resp = SenderProcessor(req);
+                    if (resp.Type != MessageType.COM_ERROR)
                         break;
 
                     Thread.Sleep(200);
                 }
 
-                if (future is not null)
-                    future.Value = response;
+                future.Value = resp;
             }
         }
 
@@ -95,7 +99,7 @@ namespace pylorak.TinyWall
         public Future<TwMessage> QueueMessage(TwMessage msg)
         {
             var future = new Future<TwMessage>();
-            m_Queue.Enqueue(msg, future);
+            m_Queue.Add(new(msg, future));
             return future;
         }
 

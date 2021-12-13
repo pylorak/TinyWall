@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -30,7 +31,7 @@ namespace pylorak.TinyWall
 
         private static readonly Guid TINYWALL_PROVIDER_KEY = new("{66CA412C-4453-4F1E-A973-C16E433E34D0}");
 
-        private readonly BoundedMessageQueue Q = new();
+        private readonly BlockingCollection<Tuple<TwMessage, Future<TwMessage>?>> Q = new(32);
         private readonly PipeServerEndpoint ServerPipe;
         private readonly Timer MinuteTimer;
 
@@ -1232,7 +1233,7 @@ namespace pylorak.TinyWall
             }
             FileLocker.Lock(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
             NotifyController(MessageType.DATABASE_UPDATED);
-            Q.Enqueue(new TwMessage(MessageType.REINIT), null);
+            Q.Add(new(new TwMessage(MessageType.REINIT), null));
         }
 
         private void NotifyController(MessageType msg)
@@ -1243,10 +1244,7 @@ namespace pylorak.TinyWall
 
         internal void TimerCallback(Object state)
         {
-            // This timer is called every minute.
-
-            if (!Q.HasMessageType(MessageType.MINUTE_TIMER))
-                Q.Enqueue(new TwMessage(MessageType.MINUTE_TIMER), null);
+            Q.Add(new(new TwMessage(MessageType.MINUTE_TIMER), null));
         }
 
         private List<FirewallLogEntry> GetFwLog()
@@ -1454,7 +1452,7 @@ namespace pylorak.TinyWall
                         // Check for inactivity and lock if necessary
                         if (DateTime.Now - LastControllerCommandTime > TimeSpan.FromMinutes(10))
                         {
-                            Q.Enqueue(new TwMessage(MessageType.LOCK), null);
+                            Q.Add(new(new TwMessage(MessageType.LOCK), null));
                         }
 
                         // Check all exceptions if any has expired
@@ -1622,7 +1620,7 @@ namespace pylorak.TinyWall
         public TinyWallServer()
         {
             // Make sure the very-first command is a REINIT
-            Q.Enqueue(new TwMessage(MessageType.REINIT), null);
+            Q.Add(new(new TwMessage(MessageType.REINIT), null));
 
             // Fire up file protections as soon as possible
             FileLocker.Lock(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
@@ -1660,11 +1658,11 @@ namespace pylorak.TinyWall
             ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
             NetworkInterfaceWatcher.InterfaceChanged += (object sender, EventArgs args) =>
             {
-                Q.Enqueue(new TwMessage(MessageType.REENUMERATE_ADDRESSES), null);
+                Q.Add(new(new TwMessage(MessageType.REENUMERATE_ADDRESSES), null));
             };
             RuleReloadEventMerger.Event += (object sender, EventArgs args) =>
             {
-                Q.Enqueue(new TwMessage(MessageType.RELOAD_WFP_FILTERS), null);
+                Q.Add(new(new TwMessage(MessageType.RELOAD_WFP_FILTERS), null));
             };
             MountPointsWatcher.RegistryChanged += (object sender, EventArgs args) =>
             {
@@ -1682,12 +1680,12 @@ namespace pylorak.TinyWall
             while (RunService)
             {
                 timer.NewSubTask("Message wait");
-                Q.Dequeue(out TwMessage msg, out Future<TwMessage>? future);
+                (var req, var future) = Q.Take();
 
-                timer.NewSubTask($"Message {msg.Type}");
+                timer.NewSubTask($"Message {req.Type}");
                 try
                 {
-                    TwMessage resp = ProcessCmd(msg);
+                    TwMessage resp = ProcessCmd(req);
                     if (future is not null)
                         future.Value = resp;
                 }
@@ -1767,7 +1765,7 @@ namespace pylorak.TinyWall
                 if (newExceptions != null)
                 {
                     lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Request(); }
-                    Q.Enqueue(new TwMessage(MessageType.ADD_TEMPORARY_EXCEPTION, newExceptions), null);
+                    Q.Add(new(new TwMessage(MessageType.ADD_TEMPORARY_EXCEPTION, newExceptions), null));
                 }
             }
             finally
@@ -1873,8 +1871,8 @@ namespace pylorak.TinyWall
                 LastControllerCommandTime = DateTime.Now;
 
                 // Process and wait for response
-                var future = new Future<TwMessage>();
-                Q.Enqueue(req, future);
+                using var future = new Future<TwMessage>();
+                Q.Add(new(req, future));
 
                 // Send response back to pipe
                 return future.Value;
@@ -1884,14 +1882,14 @@ namespace pylorak.TinyWall
         public void RequestStop()
         {
             var req = new TwMessage(MessageType.STOP_SERVICE);
-            var future = new Future<TwMessage>();
-            Q.Enqueue(req, future);
+            using var future = new Future<TwMessage>();
+            Q.Add(new(req, future));
             future.WaitValue();
         }
 
         public void DisplayPowerEvent(bool turnOn)
         {
-            Q.Enqueue(new TwMessage(MessageType.DISPLAY_POWER_EVENT, turnOn), null);
+            Q.Add(new(new TwMessage(MessageType.DISPLAY_POWER_EVENT, turnOn), null));
         }
 
         public void MountedVolumesChangedEvent()
@@ -1938,6 +1936,7 @@ namespace pylorak.TinyWall
             FileLocker.UnlockAll();
 
             FirewallThreadThrottler?.Dispose();
+            Q.Dispose();
 
 #if !DEBUG
             // Basic software health checks
