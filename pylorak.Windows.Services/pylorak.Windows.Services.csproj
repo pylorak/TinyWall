@@ -8,6 +8,7 @@
     <VersionPrefix>0.1.0</VersionPrefix>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <RootNamespace>pylorak.Windows.Services</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
