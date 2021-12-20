@@ -395,7 +395,6 @@ namespace pylorak.TinyWall
                 TrafficMonitor?.Dispose();
 
                 components.Dispose();
-                GlobalInstances.Cleanup();
                 PathMapper.Instance.Dispose();
             }
 

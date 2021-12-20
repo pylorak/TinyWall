@@ -1945,7 +1945,6 @@ namespace pylorak.TinyWall
                     trx.Commit();
                 }
 #endif
-            GlobalInstances.Cleanup();
             PathMapper.Instance.Dispose();
         }
     }

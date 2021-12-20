@@ -14,11 +14,6 @@ namespace pylorak.TinyWall
         internal static Guid ClientChangeset;
         internal static Guid ServerChangeset;
 
-        public static void Cleanup()
-        {
-            Controller?.Dispose();
-        }
-
         public static void InitClient()
         {
             if (Controller == null)

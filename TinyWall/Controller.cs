@@ -4,26 +4,13 @@ using pylorak.Utilities;
 
 namespace pylorak.TinyWall
 {
-    public sealed class Controller : Disposable
+    public sealed class Controller
     {
         private readonly PipeClientEndpoint Endpoint;
 
         public Controller(string serverEndpoint)
         {
             Endpoint = new PipeClientEndpoint(serverEndpoint);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (IsDisposed)
-                return;
-
-            if (disposing)
-            {
-                Endpoint.Dispose();
-            }
-
-            base.Dispose(disposing);
         }
 
         public MessageType GetServerConfig(out ServerConfiguration? serverConfig, out ServerState? serverState, ref Guid clientChangeset)

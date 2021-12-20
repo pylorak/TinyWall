@@ -136,7 +136,8 @@ namespace pylorak.TinyWall
             {
                 if (TinyWallDoctor.IsServiceRunning(Utils.LOG_ID_INSTALLER, false))
                 {
-                    using var twController = new Controller("TinyWallController");
+                    var twController = new Controller("TinyWallController");
+
                     // Unlock server
                     while (twController.IsServerLocked)
                     {
