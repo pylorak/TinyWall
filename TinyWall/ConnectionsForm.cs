@@ -50,7 +50,7 @@ namespace pylorak.TinyWall
 
         private void UpdateList()
         {
-            Future<TwMessage> fwLogRequest = GlobalInstances.Controller.BeginReadFwLog();
+            var fwLogRequest = GlobalInstances.Controller.BeginReadFwLog();
 
             var uwpPackages = new UwpPackage();
             var itemColl = new List<ListViewItem>();
@@ -103,7 +103,7 @@ namespace pylorak.TinyWall
             }
 
             // Finished reading tables, continues with log processing
-            List<FirewallLogEntry> fwLog = pylorak.TinyWall.Controller.EndReadFwLog(fwLogRequest);
+            List<FirewallLogEntry> fwLog = pylorak.TinyWall.Controller.EndReadFwLog(fwLogRequest.Response);
 
             // Show log entries if requested by user
             if (chkShowBlocked.Checked)

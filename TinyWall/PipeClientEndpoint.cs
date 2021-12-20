@@ -9,7 +9,7 @@ namespace pylorak.TinyWall
     public class PipeClientEndpoint : Disposable
     {
         private readonly Thread m_PipeWorkerThread;
-        private readonly BlockingCollection<Tuple<TwMessage, Future<TwMessage>>> m_Queue = new(32);
+        private readonly BlockingCollection<TwRequest> m_Queue = new(32);
         private readonly CancellationTokenSource Cancellation = new();
         private readonly string m_PipeName;
 
@@ -46,12 +46,11 @@ namespace pylorak.TinyWall
         {
             while (m_Run)
             {
-                TwMessage req;
-                Future<TwMessage> future;
+                TwRequest req;
 
                 try
                 {
-                    (req, future) = m_Queue.Take(Cancellation.Token);
+                    req = m_Queue.Take(Cancellation.Token);
                 }
                 catch(OperationCanceledException)
                 {
@@ -63,14 +62,14 @@ namespace pylorak.TinyWall
                 TwMessage resp = default;
                 for (int i = 0; i < 2; ++i)
                 {
-                    resp = SenderProcessor(req);
+                    resp = SenderProcessor(req.Request);
                     if (resp.Type != MessageType.COM_ERROR)
                         break;
 
                     Thread.Sleep(200);
                 }
 
-                future.Value = resp;
+                req.Response = resp;
             }
         }
 
@@ -96,29 +95,11 @@ namespace pylorak.TinyWall
             }
         }
 
-        public Future<TwMessage> QueueMessage(TwMessage msg)
+        public TwRequest QueueMessage(MessageType reqType, params object[] args)
         {
-            var future = new Future<TwMessage>();
-            m_Queue.Add(new(msg, future));
-            return future;
-        }
-
-        public TwMessage QueueMessageSimple(MessageType cmd)
-        {
-            using var f = QueueMessage(new TwMessage(cmd));
-            return f.Value;
-        }
-
-        public TwMessage QueueMessageSimple(MessageType cmd, object arg0)
-        {
-            using var f = QueueMessage(new TwMessage(cmd, arg0));
-            return f.Value;
-        }
-
-        public TwMessage QueueMessageSimple(MessageType cmd, object arg0, object arg1)
-        {
-            using var f = QueueMessage(new TwMessage(cmd, arg0, arg1));
-            return f.Value;
+            var req = new TwRequest(reqType, args);
+            m_Queue.Add(req);
+            return req;
         }
     }
 }

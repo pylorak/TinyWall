@@ -36,7 +36,7 @@ namespace pylorak.TinyWall
             serverConfig = null;
             serverState = null;
 
-            TwMessage resp = Endpoint.QueueMessageSimple(MessageType.GET_SETTINGS, clientChangeset);
+            var resp = Endpoint.QueueMessage(MessageType.GET_SETTINGS, clientChangeset).Response;
             if (resp.Type == MessageType.RESPONSE_OK)
             {
                 var serverChangeset = (Guid)resp.Arguments[0];
@@ -55,7 +55,7 @@ namespace pylorak.TinyWall
         {
             serverState = null;
 
-            TwMessage resp = Endpoint.QueueMessageSimple(MessageType.PUT_SETTINGS, serverConfig, clientChangeset);
+            var resp = Endpoint.QueueMessage(MessageType.PUT_SETTINGS, serverConfig, clientChangeset).Response;
 
             if ((resp.Arguments != null) && (resp.Arguments.Length > 0) && (resp.Arguments[0] is ServerConfiguration tmp))
             {
@@ -70,42 +70,35 @@ namespace pylorak.TinyWall
             return resp.Type;
         }
 
-        public Future<TwMessage> BeginReadFwLog()
+        public TwRequest BeginReadFwLog()
         {
-            return Endpoint.QueueMessage(new TwMessage(MessageType.READ_FW_LOG));
+            return Endpoint.QueueMessage(MessageType.READ_FW_LOG);
         }
 
-        public static List<FirewallLogEntry> EndReadFwLog(Future<TwMessage> f)
+        public static List<FirewallLogEntry> EndReadFwLog(TwMessage twResp)
         {
-            try
-            {
-                if ((f.Value.Arguments != null) && (f.Value.Arguments.Length > 0) && (f.Value.Arguments[0] is List<FirewallLogEntry> ret))
-                    return ret;
-                else
-                    // TODO: Do we want to show an error to the user?
-                    return new List<FirewallLogEntry>();
-            }
-            finally
-            {
-                f.Dispose();
-            }
+            if ((twResp.Arguments != null) && (twResp.Arguments.Length > 0) && (twResp.Arguments[0] is List<FirewallLogEntry> ret))
+                return ret;
+            else
+                // TODO: Do we want to show an error to the user?
+                return new List<FirewallLogEntry>();
         }
 
         public MessageType SwitchFirewallMode(FirewallMode mode)
         {
-            return Endpoint.QueueMessageSimple(MessageType.MODE_SWITCH, mode).Type;
+            return Endpoint.QueueMessage(MessageType.MODE_SWITCH, mode).Response.Type;
         }
 
         public MessageType RequestServerStop()
         {
-            return Endpoint.QueueMessageSimple(MessageType.STOP_SERVICE).Type;
+            return Endpoint.QueueMessage(MessageType.STOP_SERVICE).Response.Type;
         }
 
         public bool IsServerLocked
         {
             get
             {
-                TwMessage resp = Endpoint.QueueMessageSimple(MessageType.IS_LOCKED);
+                var resp = Endpoint.QueueMessage(MessageType.IS_LOCKED).Response;
                 if (MessageType.RESPONSE_OK == resp.Type)
                     return (bool)resp.Arguments[0];
                 else
@@ -115,22 +108,22 @@ namespace pylorak.TinyWall
 
         public MessageType SetPassphrase(string pwd)
         {
-            return Endpoint.QueueMessageSimple(MessageType.SET_PASSPHRASE, pwd).Type;
+            return Endpoint.QueueMessage(MessageType.SET_PASSPHRASE, pwd).Response.Type;
         }
 
         public MessageType TryUnlockServer(string pwd)
         {
-            return Endpoint.QueueMessageSimple(MessageType.UNLOCK, pwd).Type;
+            return Endpoint.QueueMessage(MessageType.UNLOCK, pwd).Response.Type;
         }
 
         public MessageType LockServer()
         {
-            return Endpoint.QueueMessageSimple(MessageType.LOCK).Type;
+            return Endpoint.QueueMessage(MessageType.LOCK).Response.Type;
         }
 
         public string TryGetProcessPath(uint pid)
         {
-            TwMessage resp = Endpoint.QueueMessageSimple(MessageType.GET_PROCESS_PATH, pid);
+            var resp = Endpoint.QueueMessage(MessageType.GET_PROCESS_PATH, pid).Response;
             if (resp.Type == MessageType.RESPONSE_OK)
             {
                 return (resp.Arguments[0] as string)!;
