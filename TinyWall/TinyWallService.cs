@@ -1131,9 +1131,14 @@ namespace pylorak.TinyWall
 
         private void UpdaterMethod()
         {
+            UpdateDescriptor? update = null; 
             try
             {
-                VisibleState.Update = UpdateChecker.GetDescriptor();
+                if (DateTime.Now - LastUpdateCheck >= TimeSpan.FromDays(2))
+                {
+                    LastUpdateCheck = DateTime.Now;
+                    update = UpdateChecker.GetDescriptor();
+                }
             }
             catch
             {
@@ -1142,15 +1147,12 @@ namespace pylorak.TinyWall
                 // we fail silently.
                 return;
             }
-            finally
-            {
-                LastUpdateCheck = DateTime.Now;
-                GlobalInstances.ServerChangeset = Guid.NewGuid();
-                ActiveConfig.Service.Save(ConfigSavePath);
-            }
 
-            if (VisibleState.Update == null)
+            if (update is null)
                 return;
+
+            VisibleState.Update = update;
+            GlobalInstances.ServerChangeset = Guid.NewGuid();
 
             try
             {
@@ -1490,12 +1492,9 @@ namespace pylorak.TinyWall
                         // Check for updates once every 2 days
                         if (ActiveConfig.Service.AutoUpdateCheck)
                         {
-                            if (DateTime.Now - LastUpdateCheck >= TimeSpan.FromDays(2))
-                            {
 #if !DEBUG
-                                UpdaterMethod();
+                            UpdaterMethod();
 #endif
-                            }
                         }
 
                         return new TwMessage(MessageType.RESPONSE_OK);

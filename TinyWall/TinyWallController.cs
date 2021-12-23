@@ -284,7 +284,6 @@ namespace pylorak.TinyWall
         private readonly DateTime AppStarted = DateTime.Now;
         private readonly List<Form> ActiveForms = new();
         private ServerState FirewallState = new();
-        private DateTime LastUpdateNotification = DateTime.MinValue;
 
         // Traffic rate monitoring
         private readonly System.Threading.Timer TrafficTimer;
@@ -348,7 +347,7 @@ namespace pylorak.TinyWall
             Utils.SetRightToLeft(TrayMenu);
             MouseInterceptor.MouseLButtonDown += new MouseInterceptor.MouseHookLButtonDown(MouseInterceptor_MouseLButtonDown);
             TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, Timeout.Infinite, Timeout.Infinite);
-            UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(10));
+            UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(240));
             ServiceTimer = new System.Windows.Forms.Timer(components);
 
             System.Windows.Forms.Application.Idle += Application_Idle;
@@ -429,13 +428,12 @@ namespace pylorak.TinyWall
 
         private void UpdateTimerTick(object state)
         {
-            if (DateTime.Now - LastUpdateNotification > TimeSpan.FromHours(4))
+            if (ActiveConfig.Service.AutoUpdateCheck)
             {
                 ThreadPool.QueueUserWorkItem((WaitCallback)delegate (object dummy)
                 {
                     VerifyUpdates();
                 });
-                LastUpdateNotification = DateTime.Now;
             }
         }
 
