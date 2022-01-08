@@ -987,37 +987,15 @@ namespace pylorak.TinyWall
             if (!EnsureUnlockedServer())
                 return;
 
-            bool foregroundIsMetro = VersionInfo.Win8OrNewer && Utils.IsMetroActive(out bool success);
-
-            if (foregroundIsMetro)
+            if (!MouseInterceptor.IsStarted)
             {
-                try
-                {
-                    uint pid = Utils.GetForegroundProcessPid();
-                    string filePath = Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller);
-                    if (string.IsNullOrEmpty(filePath))
-                        throw new Exception();
-
-                    var subj = new ExecutableSubject(filePath);
-                    AddExceptions(GlobalInstances.AppDatabase.GetExceptionsForApp(subj, true, out _));
-                }
-                catch
-                {
-                    ShowBalloonTip(Resources.Messages.CannotGetExecutablePathWhitelisting, ToolTipIcon.Error);
-                }
+                MouseInterceptor.Start();
+                ShowBalloonTip(Resources.Messages.ClickOnAWindowWhitelisting, ToolTipIcon.Info);
             }
             else
             {
-                if (!MouseInterceptor.IsStarted)
-                {
-                    MouseInterceptor.Start();
-                    ShowBalloonTip(Resources.Messages.ClickOnAWindowWhitelisting, ToolTipIcon.Info);
-                }
-                else
-                {
-                    MouseInterceptor.Stop();
-                    ShowBalloonTip(Resources.Messages.WhitelistingCancelled, ToolTipIcon.Info);
-                }
+                MouseInterceptor.Stop();
+                ShowBalloonTip(Resources.Messages.WhitelistingCancelled, ToolTipIcon.Info);
             }
         }
 
@@ -1090,9 +1068,6 @@ namespace pylorak.TinyWall
             if (single && ActiveConfig.Controller.AskForExceptionDetails && showEditUi)
             {
                 using var f = new ApplicationExceptionForm(list[0]);
-                if (Utils.IsMetroActive(out bool _))
-                    Utils.ShowToastNotif(Resources.Messages.ToastInputNeeded);
-
                 if (f.ShowDialog() == DialogResult.Cancel)
                     return;
 
@@ -1111,45 +1086,29 @@ namespace pylorak.TinyWall
             }
             
             MessageType resp = ApplyFirewallSettings(confCopy, false);
-            bool metroActive = Utils.IsMetroActive(out bool success) && !VersionInfo.Win10OrNewer;
-            if (!metroActive)
+            switch (resp)
             {
-                switch (resp)
-                {
-                    case MessageType.RESPONSE_OK:
-                        bool signedAndValid = false;
-                        if (list[0].Subject is ExecutableSubject exesub)
-                            signedAndValid = exesub.IsSigned && exesub.CertValid;
+                case MessageType.RESPONSE_OK:
+                    bool signedAndValid = false;
+                    if (list[0].Subject is ExecutableSubject exesub)
+                        signedAndValid = exesub.IsSigned && exesub.CertValid;
 
-                        if (signedAndValid)
-                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, Resources.Messages.FirewallRulesForRecognizedChanged, list[0].Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(list[0]));
-                        else
-                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, Resources.Messages.FirewallRulesForUnrecognizedChanged, list[0].Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(list[0]));
-                        break;
-                    case MessageType.RESPONSE_WARNING:
-                        // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
-                        ShowBalloonTip(Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
-                        break;
-                    case MessageType.RESPONSE_ERROR:
-                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, Resources.Messages.CouldNotWhitelistProcess, list[0].Subject.ToString()), ToolTipIcon.Warning);
-                        break;
-                    default:
-                        DefaultPopups(resp);
-                        LoadSettingsFromServer();
-                        break;
-                }
-            }
-            else
-            {
-                switch (resp)
-                {
-                    case MessageType.RESPONSE_OK:
-                        Utils.ShowToastNotif(string.Format(Resources.Messages.ToastAppWhitelisted + "\n{0}", list[0].Subject.ToString()));
-                        break;
-                    default:
-                        Utils.ShowToastNotif(Resources.Messages.ToastWhitelistFailed);  // TODO: replace by Messages.CouldNotWhitelistProcess?
-                        break;
-                }
+                    if (signedAndValid)
+                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, Resources.Messages.FirewallRulesForRecognizedChanged, list[0].Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(list[0]));
+                    else
+                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, Resources.Messages.FirewallRulesForUnrecognizedChanged, list[0].Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(list[0]));
+                    break;
+                case MessageType.RESPONSE_WARNING:
+                    // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
+                    ShowBalloonTip(Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
+                    break;
+                case MessageType.RESPONSE_ERROR:
+                    ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, Resources.Messages.CouldNotWhitelistProcess, list[0].Subject.ToString()), ToolTipIcon.Warning);
+                    break;
+                default:
+                    DefaultPopups(resp);
+                    LoadSettingsFromServer();
+                    break;
             }
         }
 

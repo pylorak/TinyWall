@@ -211,49 +211,11 @@ namespace pylorak.TinyWall
             return 0 != SafeNativeMethods.GetSystemMetrics(SM_SHUTTINGDOWN);
         }
 
-        internal static bool IsMetroActive(out bool success)
-        { // http://stackoverflow.com/questions/12009999/imetromodeislaunchervisible-in-c-sharp-via-pinvoke
-
-            success = false;
-            try
-            {
-                Type tIAppVisibility = Type.GetTypeFromCLSID(new Guid("7E5FE3D9-985F-4908-91F9-EE19F9FD1514"));
-                SafeNativeMethods.IAppVisibility appVisibility = (SafeNativeMethods.IAppVisibility)Activator.CreateInstance(tIAppVisibility);
-                if (SafeNativeMethods.HRESULT.S_OK == appVisibility.IsLauncherVisible(out bool launcherVisible))
-                {
-                    // launcherVisible flag is valid
-                    success = true;
-
-                    var pid = Utils.GetForegroundProcessPid();
-                    using Process p = Process.GetProcessById(unchecked((int)pid));
-                    return launcherVisible || Utils.IsImmersiveProcess(p);
-                }
-                else
-                    return false;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        internal static void ShowToastNotif(string msg)
-        {
-            msg = msg.Replace("\n", "|");
-            string args = string.Format(CultureInfo.InvariantCulture, "KPados.TinyWall.Controller \"{0}\"", msg);
-            Utils.StartProcess(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "Toaster.exe"), args, false, true);
-        }
-
         internal static uint GetForegroundProcessPid()
         {
             IntPtr hwnd = SafeNativeMethods.GetForegroundWindow();
             _ = SafeNativeMethods.GetWindowThreadProcessId(hwnd, out uint pid);
             return pid;
-        }
-
-        internal static bool IsImmersiveProcess(Process p)
-        {
-            return SafeNativeMethods.IsImmersiveProcess(p.Handle);
         }
 
         internal static string ProgramFilesx86()

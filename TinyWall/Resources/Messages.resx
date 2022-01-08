@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CouldNotElevatePrivilegesForUpdate" xml:space="preserve">
     <value>Could not elevate privileges necessary for update.</value>
@@ -370,20 +370,6 @@ The selected executable could be part of {0}. To ensure that this application ca
   <data name="CompromisedApplication" xml:space="preserve">
     <value>{0}, possibly compromised</value>
     <comment>Exception details window banner text. Param0 is name of application.</comment>
-  </data>
-  <data name="ToastInputNeeded" xml:space="preserve">
-    <value>Your input is needed
-to continue firewall whitelisting.</value>
-    <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
-  </data>
-  <data name="ToastAppWhitelisted" xml:space="preserve">
-    <value>Added to firewall whitelist</value>
-    <comment>Keep line short because words do not wrap.</comment>
-  </data>
-  <data name="ToastWhitelistFailed" xml:space="preserve">
-    <value>Firewall whitelisting failed.
-You might succeed if you try again.</value>
-    <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
   </data>
   <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>Could not apply firewall settings due to an internal error.</value>

@@ -1,11 +1,28 @@
 TinyWall Changelog
 ---------------------
 
-3.2.3 - Maintenance release (26.10.2021.)
-- Fix GUI crash in Connections window if missing file access permissions
+3.3.x - Not yet released (xx.xx.2022.)
+- Require Windows 10 and .Net Framework 4.8
+- Many memory and performance optimizations
+- Annotate code for and enable null-state static analysis
+- Remove deprecated code
+
+---------------------
+
+3.2.5 - Maintenance release (28.12.2021.)
+- Correctly handle change of presence of trailing slashes in registry paths
+- Backport many memory improvements from WIP TinyWall 3.3+
+- Fix grey icon due to long startup time when apps such as Samsung Magician 7.0 are installed
+- Fix merging of blocked UWP app entries in Connections window
+- Update Bulgarian localization
 - Deprecation notes:
     Windows 7, 8, 8.1, and certain older versions of Windows 10
     will soon not be supported in a future TinyWall release.
+
+---------------------
+
+3.2.3 - Maintenance release (26.10.2021.)
+- Fix GUI crash in Connections window if missing file access permissions
 
 ---------------------
 

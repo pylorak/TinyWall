@@ -630,35 +630,6 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Added to firewall whitelist.
-        /// </summary>
-        internal static string ToastAppWhitelisted {
-            get {
-                return ResourceManager.GetString("ToastAppWhitelisted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Your input is needed
-        ///to continue firewall whitelisting..
-        /// </summary>
-        internal static string ToastInputNeeded {
-            get {
-                return ResourceManager.GetString("ToastInputNeeded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Firewall whitelisting failed.
-        ///You might succeed if you try again..
-        /// </summary>
-        internal static string ToastWhitelistFailed {
-            get {
-                return ResourceManager.GetString("ToastWhitelistFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to In.
         /// </summary>
         internal static string TrafficIn {

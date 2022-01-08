@@ -56,7 +56,6 @@
       <ComponentRef Id='MainExecutableConfig' />
       <ComponentRef Id='NativeHelper32Lib' />
       <ComponentRef Id='NativeHelper64Lib' />
-      <ComponentRef Id='Toaster' />
       <ComponentRef Id='ProgramMenuDir' />
       <ComponentRef Id='RemoveAppDataDir' />
       <ComponentRef Id='RegistryKeys' />
@@ -135,10 +134,6 @@
       <!-- Program Files -->
       <Directory Id="$(var.PlatformProgramFilesFolder)" Name="ProgramFiles">
         <Directory Id="INSTALLDIR" Name="TinyWall">
-          <Component Id="Toaster" Guid="{B6599991-DD47-4745-AA99-447EE7C56C5C}" Win64="$(var.Win64)">
-            <Condition>VersionNT >= 602</Condition>
-            <File Id="ToasterEXE" Source="Sources\ProgramFiles\TinyWall\Toaster.exe" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
-          </Component>
           <Component Id="MainExecutable" Guid="{D0A4DEC7-42C7-48F1-912D-76A4B33AC644}" Win64="$(var.Win64)">
             <File Id="TinyWallEXE" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
           </Component>

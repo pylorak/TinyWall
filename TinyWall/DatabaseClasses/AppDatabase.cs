@@ -160,11 +160,6 @@ namespace pylorak.TinyWall.DatabaseClasses
                         fileListStr += fwex.Subject.ToString() + Environment.NewLine;
                     dialog.ExpandedInformation = fileListStr.Trim();
 
-                    if (Utils.IsMetroActive(out _))
-                    {
-                        Utils.ShowToastNotif(Resources.Messages.ToastInputNeeded);
-                    }
-
                     switch (dialog.Show())
                     {
                         case 101:
