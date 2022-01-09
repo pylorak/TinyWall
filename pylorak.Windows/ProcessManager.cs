@@ -72,20 +72,6 @@ namespace pylorak.Windows
                 HeapSafeHandle TokenInformation,
                 int TokenInformationLength,
                 out int ReturnLength);
-
-            [DllImport("advapi32", CharSet = CharSet.Unicode, SetLastError = true)]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            private static extern bool ConvertSidToStringSid(IntPtr Sid, out AllocHLocalSafeHandle StringSid);
-
-            internal static string? ConvertSidToStringSid(IntPtr pSid)
-            {
-                if (!ConvertSidToStringSid(pSid, out AllocHLocalSafeHandle ptrStrSid))
-                    return null;
-
-                string strSid = Marshal.PtrToStringUni(ptrStrSid.DangerousGetHandle());
-                ptrStrSid.Dispose();
-                return strSid;
-            }
         }
 
         protected enum TokenInformationClass
@@ -421,9 +407,6 @@ namespace pylorak.Windows
 
         public static string? GetAppContainerSid(uint pid)
         {
-            if (!UwpPackage.PlatformSupport)
-                return null;
-
             using var hProcess = NativeMethods.OpenProcess(ProcessAccessFlags.QueryInformation, false, pid);
             if (!NativeMethods.OpenProcessToken(hProcess, TokenAccessLevels.TokenQuery, out SafeObjectHandle hToken))
                 return null;
@@ -439,7 +422,7 @@ namespace pylorak.Windows
                 if (tokenAppContainerInfo.TokenAppContainer == IntPtr.Zero)
                     return null;
 
-                return NativeMethods.ConvertSidToStringSid(tokenAppContainerInfo.TokenAppContainer);
+                return SafeSidHandle.ToStringSid(tokenAppContainerInfo.TokenAppContainer);
             }
             finally
             {

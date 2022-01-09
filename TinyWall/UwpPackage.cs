@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Security;
+using Windows.Management.Deployment;
 
 namespace pylorak.Windows
 {
@@ -13,14 +15,41 @@ namespace pylorak.Windows
             Yes
         }
 
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public readonly struct Package  // TODO: Use record struct from C# 10
         {
+            [SuppressUnmanagedCodeSecurity]
+            private static class NativeMethods
+            {
+                [DllImport("Userenv", CharSet = CharSet.Unicode)]
+                public static extern int DeriveAppContainerSidFromAppContainerName(string pszAppContainerName, out SafeSidHandle ppsidAppContainerSid);
+            }
+
             public readonly string Name;
             public readonly string Publisher;
             public readonly string PublisherId;
             public readonly string Sid;
             public readonly TamperedState Tampered;
+
+            public Package(global::Windows.ApplicationModel.Package p)
+            {
+                Name = p.Id.Name;
+                Publisher = p.Id.Publisher;
+                PublisherId = p.Id.PublisherId;
+                Tampered = p.Status.Tampered ? TamperedState.Yes : TamperedState.No;
+
+                SafeSidHandle? pSid = null;
+                try
+                {
+                    if (0 != NativeMethods.DeriveAppContainerSidFromAppContainerName(p.Id.FamilyName, out pSid))
+                        throw new ArgumentException("Cannot determine package SID.");
+
+                    Sid = pSid.GetStringSid() ?? string.Empty;
+                }
+                finally
+                {
+                    pSid?.Dispose();
+                }
+            }
 
             public override int GetHashCode()
             {
@@ -60,46 +89,21 @@ namespace pylorak.Windows
             }
         }
 
-        [SuppressUnmanagedCodeSecurity]
-        private static class NativeMethods
+        public static Package[] GetPackages()
         {
-            [DllImport("NativeHelper32", EntryPoint = "GetUwpPackageListing")]
-            private static extern void GetUwpPackageListing32([Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] out Package[] list, out int size);
-
-            [DllImport("NativeHelper64", EntryPoint = "GetUwpPackageListing")]
-            private static extern void GetUwpPackageListing64([Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] out Package[] list, out int size);
-
-            public static void GetUwpPackageListing(out Package[] list, out int size)
+            var pm = new PackageManager();
+            var packageList = pm.FindPackagesForUser(string.Empty);
+            var resultList = new List<Package>();
+            foreach (var p in packageList)
             {
-                if (IntPtr.Size == 8)
-                    GetUwpPackageListing64(out list, out size);
-                else
-                    GetUwpPackageListing32(out list, out size);
+                try
+                {
+                    resultList.Add(new Package(p));
+                }
+                catch { }
             }
-        }
 
-        private static bool IsGetUwpPackageListingSupported()
-        {
-            try
-            {
-                NativeMethods.GetUwpPackageListing(out Package[] packages, out _);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public static bool PlatformSupport { get; } = IsGetUwpPackageListingSupported();
-
-        public static Package[] GetList()
-        {
-            if (!PlatformSupport)
-                return Array.Empty<Package>();
-
-            NativeMethods.GetUwpPackageListing(out Package[] packages, out _);
-            return packages;
+            return resultList.ToArray();
         }
 
         private static Package? FindPackageDetails(string? sid, Package[] list)
@@ -118,13 +122,10 @@ namespace pylorak.Windows
 
         public static Package? FindPackageDetails(string? sid)
         {
-            if (!PlatformSupport)
-                return null;
-
             if (string.IsNullOrEmpty(sid))
                 return null;
 
-            NativeMethods.GetUwpPackageListing(out Package[] packages, out _);
+            var packages = GetPackages();
 
             return FindPackageDetails(sid, packages);
         }
@@ -133,7 +134,7 @@ namespace pylorak.Windows
 
         public UwpPackage()
         {
-            Packages = GetList();
+            Packages = GetPackages();
         }
 
         public Package? FindPackage(string? sid)

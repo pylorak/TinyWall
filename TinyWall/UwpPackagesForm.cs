@@ -78,7 +78,7 @@ namespace pylorak.TinyWall
 
             var itemColl = new List<ListViewItem>();
 
-            var packages = UwpPackage.GetList();
+            var packages = UwpPackage.GetPackages();
             foreach (var package in packages)
             {
                 // Add list item

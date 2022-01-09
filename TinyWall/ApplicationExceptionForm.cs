@@ -41,7 +41,6 @@ namespace pylorak.TinyWall
             this.Icon = Resources.Icons.firewall;
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
-            this.btnSelectUwpApp.Enabled = UwpPackage.PlatformSupport;
 
             this.TmpExceptionSettings.Add(fwex);
 

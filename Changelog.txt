@@ -3,6 +3,7 @@ TinyWall Changelog
 
 3.3.x - Not yet released (xx.xx.2022.)
 - Require Windows 10 and .Net Framework 4.8
+- Add support for Windows on Arm
 - Many memory and performance optimizations
 - Annotate code for and enable null-state static analysis
 - Remove deprecated code

@@ -12,6 +12,10 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <RootNamespace>pylorak.TinyWall</RootNamespace>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+
+    <!-- Used for WinRT access in .Net 4.8, not needed with .NET 5+ -->
+    <TargetPlatformVersion>8.0</TargetPlatformVersion>
+    
   </PropertyGroup>
   <PropertyGroup>
     <Product>TinyWall</Product>
@@ -37,6 +41,12 @@
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Windows.Forms" />
+    
+    <!-- Used for WinRT access in .Net 4.8, not needed with .NET 5+ -->
+    <Reference Include="Windows.Management" />
+    <Reference Include="Windows.ApplicationModel" />
+    <Reference Include="System.Runtime" />
+
   </ItemGroup>
   <ItemGroup>
 

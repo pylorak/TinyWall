@@ -403,4 +403,59 @@ namespace pylorak.Windows
             return NativeMethods.FindVolumeClose(handle);
         }
     }
+
+    public sealed class SafeSidHandle : SafeHandleZeroOrMinusOneIsInvalid
+    {
+        [SuppressUnmanagedCodeSecurity]
+        private static class NativeMethods
+        {
+            [DllImport("advapi32")]
+            public static extern IntPtr FreeSid(IntPtr pSid);
+
+            [DllImport("advapi32", CharSet = CharSet.Unicode, SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            public static extern bool ConvertSidToStringSid(IntPtr Sid, out AllocHLocalSafeHandle StringSid);
+        }
+
+        public SafeSidHandle(IntPtr ptr, bool ownsHandle)
+            : base(ownsHandle)
+        {
+            this.handle = ptr;
+        }
+
+        public SafeSidHandle()
+            : base(true)
+        {
+            this.handle = IntPtr.Zero;
+        }
+
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+        [PrePrepareMethod]
+        protected override bool ReleaseHandle()
+        {
+            return (IntPtr.Zero == NativeMethods.FreeSid(handle));
+        }
+
+        public static string? ToStringSid(IntPtr pSid)
+        {
+            AllocHLocalSafeHandle? ptrStrSid = null;
+            try
+            {
+                if (!NativeMethods.ConvertSidToStringSid(pSid, out ptrStrSid))
+                    return null;
+
+                return Marshal.PtrToStringUni(ptrStrSid.DangerousGetHandle());
+            }
+            finally
+            {
+                ptrStrSid?.Dispose();
+            }
+        }
+
+        public string? GetStringSid()
+        {
+            return ToStringSid(handle);
+        }
+    }
+
 }
