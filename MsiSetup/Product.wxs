@@ -9,7 +9,7 @@
   <?define Description="A non-intrusive firewall solution." ?>
   <?define ProductURL="http://tinywall.pados.hu" ?>
   <?define ProductVersion="!(bind.fileVersion.TinyWallEXE)" ?>
-  <?define OldestUpgradeableVersion="1.9.2.9" ?>
+  <?define OldestUpgradeableVersion="3.0.0.0" ?>
 
   <!-- Architecture selection -->
   <?if $(var.Platform) = x64 ?>
@@ -61,6 +61,7 @@
       <ComponentRef Id='Attributions' />
       <ComponentRef Id='Database' />
       <ComponentRef Id='hosts' />
+      <ComponentGroupRef Id='Dependencies' />
       <ComponentGroupRef Id='Localizations' />
       <ComponentGroupRef Id='Documentation' />
     </Feature>
@@ -137,6 +138,18 @@
           </Component>
           <Component Id="MainExecutableConfig" Guid="{81CD5E43-FAE3-4B3C-AA84-A7A0C660FDB4}" Win64="$(var.Win64)">
             <File Id="TinyWallCONFIG" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe.config" KeyPath="yes" />
+          </Component>
+          <Component Id="System_Buffers_Lib" Guid="{A1797893-28F9-4D81-9BAF-E7508B04D119}" Win64="$(var.Win64)">
+            <File Id="System_Buffers_dll" Source="Sources\ProgramFiles\TinyWall\System.Buffers.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+          </Component>
+          <Component Id="System_Memory_Lib" Guid="{0A4C05A5-D37A-419D-B85A-0938F34B43D0}" Win64="$(var.Win64)">
+            <File Id="System_Memory_dll" Source="Sources\ProgramFiles\TinyWall\System.Memory.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+          </Component>
+          <Component Id="System_Numerics_Vectors_Lib" Guid="{8B1979B5-8755-4FF2-8635-9C0CAB71073C}" Win64="$(var.Win64)">
+            <File Id="System_Numerics_Vectors_dll" Source="Sources\ProgramFiles\TinyWall\System.Numerics.Vectors.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+          </Component>
+          <Component Id="System_Runtime_CompilerServices_Unsafe_Lib" Guid="{F3DBEFD2-E80A-40E1-9BEB-79080B47508F}" Win64="$(var.Win64)">
+            <File Id="System_Runtime_CompilerServices_Unsafe_dll" Source="Sources\ProgramFiles\TinyWall\System.Runtime.CompilerServices.Unsafe.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
           </Component>
           <Component Id="License" Guid="{2F2FF77C-8900-406A-AB6E-6DCFF4B53463}" Win64="$(var.Win64)">
             <File Id="LicenseRTF" Source="Sources\ProgramFiles\TinyWall\License.rtf" KeyPath="yes" />
@@ -307,6 +320,14 @@
 
     <!-- Icons -->
     <Icon Id="TinyWallIcon.exe" SourceFile="Sources\ProgramFiles\TinyWall\TinyWall.ico" />
+
+    <!-- Dependencies groupping -->
+    <ComponentGroup Id="Dependencies">
+      <ComponentRef Id="System_Buffers_Lib"/>
+      <ComponentRef Id="System_Memory_Lib"/>
+      <ComponentRef Id="System_Numerics_Vectors_Lib"/>
+      <ComponentRef Id="System_Runtime_CompilerServices_Unsafe_Lib"/>
+    </ComponentGroup>
 
     <!-- Localization groupping -->
     <ComponentGroup Id="Localizations">
