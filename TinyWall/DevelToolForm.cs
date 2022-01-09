@@ -419,33 +419,42 @@ namespace pylorak.TinyWall
             string[] files = Directory.GetFiles(dirPath, filePattern, SearchOption.AllDirectories);
             for (int i = 0; i < files.Length; ++i)
             {
-//                string signParams = string.Format("sign /ac C:/Users/Dev/Desktop/scca.crt /ph /f \"{0}\" /p \"{1}\" /d TinyWall /du \"http://tinywall.pados.hu\" /tr \"{2}\" \"{3}\"",
-                string signParams =   string.Format("sign /ph /f \"{0}\" /p \"{1}\" /d TinyWall /du \"http://tinywall.pados.hu\" /tr \"{2}\" /td sha1 /fd sha1 \"{3}\"",
-                        txtCert.Text,
-                        txtCertPass.Text,
-                        txtTimestampingServ.Text,
-                        files[i]);
-
-                // Because signing accesses the timestamping server over the web,
-                // we retry a failed signing multiple times to account for
-                // internet glitches.
-                bool signed = false;
-                for (int retry = 0; retry < 3; ++retry)
+                var signedStatus = pylorak.Windows.WinTrust.VerifyFileAuthenticode(files[i]);
+                if (signedStatus == Windows.WinTrust.VerifyResult.SIGNATURE_MISSING)
                 {
-                    using (Process p = Utils.StartProcess(txtSigntool.Text, signParams, false, true))
+                    //                string signParams = string.Format("sign /ac C:/Users/Dev/Desktop/scca.crt /ph /f \"{0}\" /p \"{1}\" /d TinyWall /du \"http://tinywall.pados.hu\" /tr \"{2}\" \"{3}\"",
+                    string signParams = string.Format("sign /ph /f \"{0}\" /p \"{1}\" /d TinyWall /du \"http://tinywall.pados.hu\" /tr \"{2}\" /td sha1 /fd sha1 \"{3}\"",
+                            txtCert.Text,
+                            txtCertPass.Text,
+                            txtTimestampingServ.Text,
+                            files[i]);
+
+                    // Because signing accesses the timestamping server over the web,
+                    // we retry a failed signing multiple times to account for
+                    // internet glitches.
+                    bool signed = false;
+                    for (int retry = 0; retry < 3; ++retry)
                     {
-                        p.WaitForExit();
-                        signed = signed || (p.ExitCode == 0);
+                        using (Process p = Utils.StartProcess(txtSigntool.Text, signParams, false, true))
+                        {
+                            p.WaitForExit();
+                            signed = signed || (p.ExitCode == 0);
+                        }
+
+                        if (signed)
+                            break;
+
+                        System.Threading.Thread.Sleep(1000);
                     }
-
-                    if (signed)
+                    if (!signed)
+                    {
+                        MessageBox.Show(this, "Failed to sign: " + files[i]);
                         break;
-
-                    System.Threading.Thread.Sleep(1000);
+                    }
                 }
-                if (!signed)
+                else if (signedStatus == Windows.WinTrust.VerifyResult.SIGNATURE_INVALID)
                 {
-                    MessageBox.Show(this, "Failed to sign: " + files[i]);
+                    MessageBox.Show(this, "Has pre-existing INVALID certificate: " + files[i]);
                     break;
                 }
             }
