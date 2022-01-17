@@ -2,9 +2,46 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace pylorak.TinyWall
 {
+    public class ExceptionPolicyConverter : PolymorphicJsonConverter<ExceptionPolicy>
+    {
+        public override string DiscriminatorPropertyName => "PolicyType";
+
+        public override ExceptionPolicy? DeserializeDerived(ref Utf8JsonReader reader, int discriminator)
+        {
+            var ret = (PolicyType)discriminator switch
+            {
+                PolicyType.HardBlock => (ExceptionPolicy?)JsonSerializer.Deserialize<HardBlockPolicy>(ref reader, SourceGenerationContext.Default.HardBlockPolicy),
+                PolicyType.Unrestricted => (ExceptionPolicy?)JsonSerializer.Deserialize<UnrestrictedPolicy>(ref reader, SourceGenerationContext.Default.UnrestrictedPolicy),
+                PolicyType.TcpUdpOnly => (ExceptionPolicy?)JsonSerializer.Deserialize<TcpUdpPolicy>(ref reader, SourceGenerationContext.Default.TcpUdpPolicy),
+                PolicyType.RuleList => (ExceptionPolicy?)JsonSerializer.Deserialize<RuleListPolicy>(ref reader, SourceGenerationContext.Default.RuleListPolicy),
+                _ => throw new JsonException($"Tried to deserialize unsupported type with discriminator {(PolicyType)discriminator}."),
+            };
+            return ret;
+        }
+
+        public override void SerializeDerived(Utf8JsonWriter writer, ExceptionPolicy value, JsonSerializerOptions options)
+        {
+            switch (value)
+            {
+                case HardBlockPolicy typedVal:
+                    JsonSerializer.Serialize<HardBlockPolicy>(writer, typedVal, SourceGenerationContext.Default.HardBlockPolicy); break;
+                case UnrestrictedPolicy typedVal:
+                    JsonSerializer.Serialize<UnrestrictedPolicy>(writer, typedVal, SourceGenerationContext.Default.UnrestrictedPolicy); break;
+                case TcpUdpPolicy typedVal:
+                    JsonSerializer.Serialize<TcpUdpPolicy>(writer, typedVal, SourceGenerationContext.Default.TcpUdpPolicy); break;
+                case RuleListPolicy typedVal:
+                    JsonSerializer.Serialize<RuleListPolicy>(writer, typedVal, SourceGenerationContext.Default.RuleListPolicy); break;
+                default:
+                    throw new JsonException($"Tried to serialize unsupported type {value.GetType()}.");
+            }
+        }
+    }
+
     // TODO: Get rid of PolicyType and use type patterns instead
     public enum PolicyType
     {
@@ -18,6 +55,7 @@ namespace pylorak.TinyWall
 
     // -----------------------------------------------------------------------
 
+    [JsonConverter(typeof(ExceptionPolicyConverter))]
     [DataContract(Namespace = "TinyWall")]
     public abstract class ExceptionPolicy
     {
@@ -99,7 +137,11 @@ namespace pylorak.TinyWall
     {
         public override PolicyType PolicyType => PolicyType.TcpUdpOnly;
 
-        public TcpUdpPolicy(bool unrestricted = false)
+        public TcpUdpPolicy() :
+            this(unrestricted: false)
+        { }
+
+        public TcpUdpPolicy(bool unrestricted)
         {
             if (unrestricted)
             {

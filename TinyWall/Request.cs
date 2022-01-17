@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
 namespace pylorak.TinyWall
 {
@@ -14,17 +15,19 @@ namespace pylorak.TinyWall
             {
                 lock (ResponseSyncRoot)
                 {
-                    while (!_Response.HasValue)
+                    while (_Response is null)
                     {
                         Monitor.Wait(ResponseSyncRoot);
                     }
-                    return _Response.Value;
+                    return _Response;
                 }
             }
             set
             {
                 lock (ResponseSyncRoot)
                 {
+                    if (_Response is not null)
+                        throw new InvalidOperationException("Repeated assignment to Response property is not allowed.");
                     _Response = value;
                     Monitor.Pulse(ResponseSyncRoot);
                 }
@@ -34,11 +37,6 @@ namespace pylorak.TinyWall
         public void WaitResponse()
         {
             var _ = Response;
-        }
-
-        public TwRequest(MessageType type, params object[] args)
-        {
-            Request = new TwMessage(type, args);
         }
 
         public TwRequest(TwMessage reqMsg)

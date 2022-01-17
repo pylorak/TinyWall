@@ -18,23 +18,25 @@ namespace pylorak.TinyWall
 
         private void SendRequest(TwRequest req)
         {
-            TwMessage resp = default;
-
+            TwMessage ret = TwMessageComError.Instance;
             lock (SenderSyncRoot)
             {
                 // In case of a communication error,
                 // retry a small number of times.
                 for (int i = 0; i < 2; ++i)
                 {
-                    resp = SendRequest(req.Request);
+                    var resp = SendRequest(req.Request);
                     if (resp.Type != MessageType.COM_ERROR)
+                    {
+                        ret = resp;
                         break;
+                    }
 
                     Thread.Sleep(200);
                 }
             }
 
-            req.Response = resp;
+            req.Response = ret;
         }
 
         private TwMessage SendRequest(TwMessage msg)
@@ -46,22 +48,21 @@ namespace pylorak.TinyWall
                 pipeClient.ReadMode = PipeTransmissionMode.Message;
 
                 // Send command
-                SerializationHelper.SerializeToPipe(pipeClient, msg);
+                SerializationHelper.SerializeToPipe<TwMessage>(pipeClient, msg);
 
                 // Get response
-                var ret = new TwMessage(MessageType.COM_ERROR);
-                SerializationHelper.DeserializeFromPipe<TwMessage>(pipeClient, 20000, ref ret);
-                return ret;
+                var ret = SerializationHelper.DeserializeFromPipe<TwMessage>(pipeClient, 20000, TwMessageComError.Instance);
+                return ret ?? throw new NullResultExceptions(nameof(SerializationHelper.DeserializeFromPipe));
             }
             catch
             {
-                return new TwMessage(MessageType.COM_ERROR);
+                return TwMessageComError.Instance;
             }
         }
 
-        public TwRequest QueueMessage(MessageType reqType, params object[] args)
+        public TwRequest QueueMessage(TwMessage msg)
         {
-            var req = new TwRequest(reqType, args);
+            var req = new TwRequest(msg);
             SendRequest(req);
             return req;
         }

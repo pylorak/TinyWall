@@ -601,34 +601,19 @@ namespace pylorak.TinyWall
         private void SetMode(FirewallMode mode)
         {
             MessageType resp = GlobalInstances.Controller.SwitchFirewallMode(mode);
-
-            string usermsg = string.Empty;
-            switch (mode)
+            string usermsg = mode switch
             {
-                case FirewallMode.Normal:
-                    usermsg = Resources.Messages.TheFirewallIsNowOperatingAsRecommended;
-                    break;
-
-                case FirewallMode.AllowOutgoing:
-                    usermsg = Resources.Messages.TheFirewallIsNowAllowsOutgoingConnections;
-                    break;
-
-                case FirewallMode.BlockAll:
-                    usermsg = Resources.Messages.TheFirewallIsNowBlockingAllInAndOut;
-                    break;
-
-                case FirewallMode.Disabled:
-                    usermsg = Resources.Messages.TheFirewallIsNowDisabled;
-                    break;
-
-                case FirewallMode.Learning:
-                    usermsg = Resources.Messages.TheFirewallIsNowLearning;
-                    break;
-            }
+                FirewallMode.Normal => Resources.Messages.TheFirewallIsNowOperatingAsRecommended,
+                FirewallMode.AllowOutgoing => Resources.Messages.TheFirewallIsNowAllowsOutgoingConnections,
+                FirewallMode.BlockAll => Resources.Messages.TheFirewallIsNowBlockingAllInAndOut,
+                FirewallMode.Disabled => Resources.Messages.TheFirewallIsNowDisabled,
+                FirewallMode.Learning => Resources.Messages.TheFirewallIsNowLearning,
+                _ => string.Empty
+            };
 
             switch (resp)
             {
-                case MessageType.RESPONSE_OK:
+                case MessageType.MODE_SWITCH:
                     FirewallState.Mode = mode;
                     ShowBalloonTip(usermsg, ToolTipIcon.Info);
                     break;
@@ -690,7 +675,7 @@ namespace pylorak.TinyWall
             comError = (MessageType.COM_ERROR == ret);
             bool updated = (inChangeset != outChangeset);
 
-            if (MessageType.RESPONSE_OK == ret)
+            if (MessageType.GET_SETTINGS == ret)
             {
                 // Update our config based on what we received
                 GlobalInstances.ClientChangeset = outChangeset;
@@ -703,7 +688,7 @@ namespace pylorak.TinyWall
             {
                 ActiveConfig.Controller = new ControllerSettings();
                 ActiveConfig.Service = new ServerConfiguration();
-                ActiveConfig.Service.SetActiveProfile(Resources.Messages.Default);
+                ActiveConfig.Service.ActiveProfileName = Resources.Messages.Default;
             }
 
             // See if there is a new notification for the client
@@ -836,31 +821,27 @@ namespace pylorak.TinyWall
             WhitelistProcesses(selection);
         }
 
-        internal MessageType ApplyFirewallSettings(ServerConfiguration srvConfig, bool showUI = true)
+        internal TwMessage ApplyFirewallSettings(ServerConfiguration srvConfig, bool showUI = true)
         {
             if (!EnsureUnlockedServer(showUI))
-                return MessageType.RESPONSE_LOCKED;
+                return TwMessageLocked.Instance;
 
-            Guid localChangeset = GlobalInstances.ClientChangeset;
-            MessageType resp = GlobalInstances.Controller.SetServerConfig(ref srvConfig, ref localChangeset, out ServerState? state);
-
-            switch (resp)
+            var resp = GlobalInstances.Controller.SetServerConfig(srvConfig, GlobalInstances.ClientChangeset);
+            switch (resp.Type)
             {
-                case MessageType.RESPONSE_OK:
-                    if (state is not null)
-                        FirewallState = state;
-                    ActiveConfig.Service = srvConfig;
-                    GlobalInstances.ClientChangeset = localChangeset;
+                case MessageType.PUT_SETTINGS:
+                    var respArgs = (TwMessagePutSettings)resp;
+                    if (respArgs.State is not null)
+                        FirewallState = respArgs.State;
+                    ActiveConfig.Service = respArgs.Config;
+                    GlobalInstances.ClientChangeset = respArgs.Changeset;
                     if (showUI)
-                        ShowBalloonTip(Resources.Messages.TheFirewallSettingsHaveBeenUpdated, ToolTipIcon.Info);
-                    break;
-                case MessageType.RESPONSE_WARNING:
-                    if (state is not null)
-                        FirewallState = state;
-
-                    // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
-                    if (showUI)
-                        ShowBalloonTip(Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
+                    {
+                        if (respArgs.Warning)
+                            ShowBalloonTip(Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
+                        else
+                            ShowBalloonTip(Resources.Messages.TheFirewallSettingsHaveBeenUpdated, ToolTipIcon.Info);
+                    }
                     break;
                 case MessageType.RESPONSE_ERROR:
                     if (showUI)
@@ -868,7 +849,7 @@ namespace pylorak.TinyWall
                     break;
                 default:
                     if (showUI)
-                        DefaultPopups(resp);
+                        DefaultPopups(resp.Type);
                     LoadSettingsFromServer();
                     break;
             }
@@ -880,11 +861,8 @@ namespace pylorak.TinyWall
         {
             switch (op)
             {
-                case MessageType.RESPONSE_OK:
+                default:
                     ShowBalloonTip(Resources.Messages.Success, ToolTipIcon.Info);
-                    break;
-                case MessageType.RESPONSE_WARNING:
-                    ShowBalloonTip(Resources.Messages.OtherSettingsPreventEffect, ToolTipIcon.Warning);
                     break;
                 case MessageType.RESPONSE_ERROR:
                     ShowBalloonTip(Resources.Messages.OperationFailed, ToolTipIcon.Error);
@@ -893,7 +871,6 @@ namespace pylorak.TinyWall
                     ShowBalloonTip(Resources.Messages.TinyWallIsCurrentlyLocked, ToolTipIcon.Warning);
                     break;
                 case MessageType.COM_ERROR:
-                default:
                     ShowBalloonTip(Resources.Messages.CommunicationWithTheServiceError, ToolTipIcon.Error);
                     break;
             }
@@ -953,7 +930,7 @@ namespace pylorak.TinyWall
                         // If the new password is empty, we do not hash it because an empty password
                         // is a special value signalizing the non-existence of a password.
                         MessageType resp = GlobalInstances.Controller.SetPassphrase(string.IsNullOrEmpty(newPassword) ? string.Empty : Hasher.HashString(newPassword));
-                        if (resp != MessageType.RESPONSE_OK)
+                        if (resp != MessageType.SET_PASSPHRASE)
                         {
                             // Only display a popup for setting the password if it did not succeed
                             DefaultPopups(resp);
@@ -1085,28 +1062,33 @@ namespace pylorak.TinyWall
                 return;
             }
             
-            MessageType resp = ApplyFirewallSettings(confCopy, false);
-            switch (resp)
+            var resp = ApplyFirewallSettings(confCopy, false);
+            switch (resp.Type)
             {
-                case MessageType.RESPONSE_OK:
-                    bool signedAndValid = false;
-                    if (list[0].Subject is ExecutableSubject exesub)
-                        signedAndValid = exesub.IsSigned && exesub.CertValid;
-
-                    if (signedAndValid)
-                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, Resources.Messages.FirewallRulesForRecognizedChanged, list[0].Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(list[0]));
+                case MessageType.PUT_SETTINGS:
+                    var respArgs = (TwMessagePutSettings)resp;
+                    if (respArgs.Warning)
+                    {
+                        // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
+                        ShowBalloonTip(Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
+                    }
                     else
-                        ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, Resources.Messages.FirewallRulesForUnrecognizedChanged, list[0].Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(list[0]));
-                    break;
-                case MessageType.RESPONSE_WARNING:
-                    // We tell the user to re-do his changes to the settings to prevent overwriting the wrong configuration.
-                    ShowBalloonTip(Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
+                    {
+                        bool signedAndValid = false;
+                        if (list[0].Subject is ExecutableSubject exesub)
+                            signedAndValid = exesub.IsSigned && exesub.CertValid;
+
+                        if (signedAndValid)
+                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, Resources.Messages.FirewallRulesForRecognizedChanged, list[0].Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(list[0]));
+                        else
+                            ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, Resources.Messages.FirewallRulesForUnrecognizedChanged, list[0].Subject.ToString()), ToolTipIcon.Info, 5000, EditRecentException, Utils.DeepClone(list[0]));
+                    }
                     break;
                 case MessageType.RESPONSE_ERROR:
                     ShowBalloonTip(string.Format(CultureInfo.CurrentCulture, Resources.Messages.CouldNotWhitelistProcess, list[0].Subject.ToString()), ToolTipIcon.Warning);
                     break;
                 default:
-                    DefaultPopups(resp);
+                    DefaultPopups(resp.Type);
                     LoadSettingsFromServer();
                     break;
             }
@@ -1127,7 +1109,7 @@ namespace pylorak.TinyWall
                     MessageType resp = GlobalInstances.Controller.TryUnlockServer(pf.PassHash);
                     switch (resp)
                     {
-                        case MessageType.RESPONSE_OK:
+                        case MessageType.UNLOCK:
                             this.Locked = false;
                             return true;
                         case MessageType.RESPONSE_ERROR:
@@ -1148,7 +1130,7 @@ namespace pylorak.TinyWall
         private void mnuLock_Click(object sender, EventArgs e)
         {
             MessageType lockResp = GlobalInstances.Controller.LockServer();
-            if ((lockResp == MessageType.RESPONSE_OK) || (lockResp== MessageType.RESPONSE_LOCKED))
+            if ((lockResp == MessageType.LOCK) || (lockResp== MessageType.RESPONSE_LOCKED))
             {
                 this.Locked = true;
             }

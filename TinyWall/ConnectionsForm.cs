@@ -103,7 +103,7 @@ namespace pylorak.TinyWall
             }
 
             // Finished reading tables, continues with log processing
-            List<FirewallLogEntry> fwLog = pylorak.TinyWall.Controller.EndReadFwLog(fwLogRequest.Response);
+            var fwLog = pylorak.TinyWall.Controller.EndReadFwLog(fwLogRequest.Response);
 
             // Show log entries if requested by user
             if (chkShowBlocked.Checked)
@@ -136,7 +136,7 @@ namespace pylorak.TinyWall
 
                 var filteredLog = new List<FirewallLogEntry>();
                 TimeSpan refSpan = TimeSpan.FromMinutes(5);
-                for (int i = 0; i < fwLog.Count; ++i)
+                for (int i = 0; i < fwLog.Length; ++i)
                 {
                     FirewallLogEntry newEntry = fwLog[i];
 

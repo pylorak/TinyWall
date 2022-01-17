@@ -160,18 +160,23 @@ namespace pylorak.TinyWall
         [DataMember(EmitDefaultValue = false)]
         public List<ServerProfileConfiguration> Profiles { get; set; } = new List<ServerProfileConfiguration>();
 
+        private string _ActiveProfileName = string.Empty;
+
         [DataMember(EmitDefaultValue = false)]
-        private string ActiveProfileName = string.Empty;
-
-        public void SetActiveProfile(string profileName)
+        public string ActiveProfileName
         {
-            if (string.IsNullOrEmpty(profileName))
-                throw new ArgumentException($"Argument {nameof(profileName)} may not be null or empty.");
+            get => _ActiveProfileName;
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                    throw new ArgumentException($"Argument {nameof(value)} may not be null or empty.");
 
-            ActiveProfileName = profileName;
-            _ActiveProfile = null;
+                _ActiveProfileName = value;
+                _ActiveProfile = null;
+            }
         }
-        
+
+
         private ServerProfileConfiguration? _ActiveProfile;
         public ServerProfileConfiguration ActiveProfile
         {

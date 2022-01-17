@@ -6,20 +6,65 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace pylorak.TinyWall
 {
+    public interface ISerializable<T>
+    {
+        public System.Text.Json.Serialization.Metadata.JsonTypeInfo<T> GetJsonTypeInfo();
+    }
+
+    [JsonSourceGenerationOptions(
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        GenerationMode = JsonSourceGenerationMode.Default,
+        IgnoreReadOnlyFields = false,
+        IgnoreReadOnlyProperties = false,
+        IncludeFields = true,
+        PropertyNamingPolicy = JsonKnownNamingPolicy.Unspecified,
+        WriteIndented = false
+        )]
+    [JsonSerializable(typeof(TwMessage))]
+    [JsonSerializable(typeof(TwMessageGetSettings))]
+    [JsonSerializable(typeof(TwMessagePutSettings))]
+    [JsonSerializable(typeof(TwMessageComError))]
+    [JsonSerializable(typeof(TwMessageError))]
+    [JsonSerializable(typeof(TwMessageLocked))]
+    [JsonSerializable(typeof(TwMessageGetProcessPath))]
+    [JsonSerializable(typeof(TwMessageReadFwLog))]
+    [JsonSerializable(typeof(TwMessageIsLocked))]
+    [JsonSerializable(typeof(TwMessageUnlock))]
+    [JsonSerializable(typeof(TwMessageModeSwitch))]
+    [JsonSerializable(typeof(TwMessageSetPassword))]
+    [JsonSerializable(typeof(TwMessageSimple))]
+    [JsonSerializable(typeof(TwMessageAddTempException))]
+    [JsonSerializable(typeof(GlobalSubject))]
+    [JsonSerializable(typeof(AppContainerSubject))]
+    [JsonSerializable(typeof(ExecutableSubject))]
+    [JsonSerializable(typeof(ServiceSubject))]
+    [JsonSerializable(typeof(HardBlockPolicy))]
+    [JsonSerializable(typeof(UnrestrictedPolicy))]
+    [JsonSerializable(typeof(TcpUdpPolicy))]
+    [JsonSerializable(typeof(RuleListPolicy))]
+    internal partial class SourceGenerationContext : JsonSerializerContext
+    {
+    }
+
     public static class SerializationHelper
     {
+        public static byte[] Serialize<T>(T obj) where T : ISerializable<T>
+        {
+            return JsonSerializer.SerializeToUtf8Bytes<T>(obj, obj.GetJsonTypeInfo());
+        }
+
+        public static T? Deserialize<T>(Stream stream, T defInstance) where T : ISerializable<T>
+        {
+            return JsonSerializer.Deserialize<T>(stream, defInstance.GetJsonTypeInfo());
+        }
+
         private static readonly Type[] KnownDataContractTypes =
         {
-            typeof(TwMessage),
-            typeof(MessageType),
-            typeof(ServerState),
-            typeof(FirewallMode),
-            typeof(FirewallLogEntry),
-            typeof(List<FirewallLogEntry>),
-
             typeof(BlockListSettings),
             typeof(ServerProfileConfiguration),
             typeof(ServerConfiguration),
@@ -44,73 +89,52 @@ namespace pylorak.TinyWall
             typeof(UpdateDescriptor),
         };
 
-        public static void SerializeToPipe<T>(PipeStream pipe, T obj)
+        public static void SerializeToPipe<T>(PipeStream pipe, T obj) where T : ISerializable<T>
         {
-            using var memoryStream = new MemoryStream();
-
-            var settings = new XmlWriterSettings();
-            settings.CloseOutput = false;
-            settings.Indent = true;
-            settings.Encoding = Encoding.UTF8;
-            using (var writer = XmlWriter.Create(memoryStream, settings))
-            {
-                var serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
-                serializer.WriteObject(writer, obj);
-            }
-
-            memoryStream.Position = 0;
-            var buf = memoryStream.ToArray();
-            pipe.Write(buf, 0, buf.Length);
+            var utf8Bytes = Serialize<T>(obj);
+            //string dbg = System.Text.Encoding.UTF8.GetString(utf8Bytes);
+            pipe.Write(utf8Bytes, 0, utf8Bytes.Length);
             pipe.Flush();
         }
 
-        public static bool DeserializeFromPipe<T>(PipeStream pipe, int timeout_ms, ref T result)
+        public static T? DeserializeFromPipe<T>(PipeStream pipe, int timeout_ms, T defInstance) where T : ISerializable<T>
         {
             bool pipeClosed = false;
+            var buf = new byte[4 * 1024];
 
-            using (var memoryStream = new MemoryStream())
-            using (var readDone = new System.Threading.AutoResetEvent(false))
+            using var memoryStream = new MemoryStream();
+            using var readDone = new System.Threading.AutoResetEvent(false);
+
+            do
             {
-                var buf = new byte[4 * 1024];
-                do
+                int len = 0;
+                var res = pipe.BeginRead(buf, 0, buf.Length, delegate (IAsyncResult r)
                 {
-                    int len = 0;
-                    var res = pipe.BeginRead(buf, 0, buf.Length, delegate (IAsyncResult r)
+                    try
                     {
-                        try
-                        {
-                            len = pipe.EndRead(r);
-                            if (len == 0)
-                                pipeClosed = true;
-                            readDone.Set();
-                        }
-                        catch { }
-                    }, null);
+                        len = pipe.EndRead(r);
+                        if (len == 0)
+                            pipeClosed = true;
+                        readDone.Set();
+                    }
+                    catch { }
+                }, null);
 
-                    if (!readDone.WaitOne(timeout_ms))
-                        throw new TimeoutException("Timeout while waiting for answer from service.");
+                if (!readDone.WaitOne(timeout_ms))
+                    throw new TimeoutException("Timeout while waiting for answer from service.");
 
-                    if (pipeClosed)
-                        return false;
+                if (pipeClosed)
+                    throw new IOException("Pipe closed.");
 
-                    memoryStream.Write(buf, 0, len);
-                    timeout_ms = 1000;
-                } while (!pipe.IsMessageComplete);
+                memoryStream.Write(buf, 0, len);
+                timeout_ms = 1000;
+            } while (!pipe.IsMessageComplete);
 
-                memoryStream.Flush();
-                memoryStream.Position = 0;
+            memoryStream.Flush();
+            memoryStream.Position = 0;
 
-                var settings = new XmlReaderSettings();
-                settings.IgnoreComments = true;
-                settings.IgnoreProcessingInstructions = true;
-                settings.IgnoreWhitespace = true;
-
-                using var reader = XmlReader.Create(memoryStream, settings);
-                var serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
-                result = (T)serializer.ReadObject(reader);
-            }
-
-            return true;
+            //string dbg = System.Text.Encoding.UTF8.GetString(memoryStream.ToArray());
+            return Deserialize<T>(memoryStream, defInstance);
         }
 
 

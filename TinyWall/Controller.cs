@@ -23,71 +23,57 @@ namespace pylorak.TinyWall
             serverConfig = null;
             serverState = null;
 
-            var resp = Endpoint.QueueMessage(MessageType.GET_SETTINGS, clientChangeset).Response;
-            if (resp.Type == MessageType.RESPONSE_OK)
+            var resp = Endpoint.QueueMessage(TwMessageGetSettings.NewRequest(clientChangeset)).Response;
+            if (resp.Type == MessageType.GET_SETTINGS)
             {
-                var serverChangeset = (Guid)resp.Arguments[0];
-                if (serverChangeset != clientChangeset)
+                var respArgs = (TwMessageGetSettings)resp;
+                if (respArgs.Changeset != clientChangeset)
                 {
-                    clientChangeset = serverChangeset;
-                    serverConfig = (ServerConfiguration)resp.Arguments[1];
-                    serverState = (ServerState)resp.Arguments[2];
+                    clientChangeset = respArgs.Changeset;
+                    serverConfig = respArgs.Config;
+                    serverState = respArgs.State;
                 }
             }
 
             return resp.Type;
         }
 
-        public MessageType SetServerConfig(ref ServerConfiguration serverConfig, ref Guid clientChangeset, out ServerState? serverState)
+        public TwMessage SetServerConfig(ServerConfiguration serverConfig, Guid clientChangeset)
         {
-            serverState = null;
-
-            var resp = Endpoint.QueueMessage(MessageType.PUT_SETTINGS, serverConfig, clientChangeset).Response;
-
-            if ((resp.Arguments != null) && (resp.Arguments.Length > 0) && (resp.Arguments[0] is ServerConfiguration tmp))
-            {
-                serverConfig = tmp;
-                clientChangeset = (Guid)resp.Arguments[1];
-                serverState = (ServerState)resp.Arguments[2];
-            }
-
-            if ((serverState == null) && (resp.Type == MessageType.RESPONSE_OK))
-                resp.Type = MessageType.RESPONSE_ERROR;
-
-            return resp.Type;
+            return Endpoint.QueueMessage(TwMessagePutSettings.NewRequest(clientChangeset, serverConfig)).Response;
         }
 
         public TwRequest BeginReadFwLog()
         {
-            return Endpoint.QueueMessage(MessageType.READ_FW_LOG);
+            return Endpoint.QueueMessage(TwMessageReadFwLog.NewRequest());
         }
 
-        public static List<FirewallLogEntry> EndReadFwLog(TwMessage twResp)
+        public static FirewallLogEntry[] EndReadFwLog(TwMessage twResp)
         {
-            if ((twResp.Arguments != null) && (twResp.Arguments.Length > 0) && (twResp.Arguments[0] is List<FirewallLogEntry> ret))
-                return ret;
+            if (twResp is TwMessageReadFwLog fwLog)
+                return fwLog.Entries;
             else
                 // TODO: Do we want to show an error to the user?
-                return new List<FirewallLogEntry>();
+                return Array.Empty<FirewallLogEntry>();
         }
 
         public MessageType SwitchFirewallMode(FirewallMode mode)
         {
-            return Endpoint.QueueMessage(MessageType.MODE_SWITCH, mode).Response.Type;
+            return Endpoint.QueueMessage(TwMessageModeSwitch.NewRequest(mode)).Response.Type;
         }
 
         public MessageType RequestServerStop()
         {
-            return Endpoint.QueueMessage(MessageType.STOP_SERVICE).Response.Type;
+            return Endpoint.QueueMessage(TwMessageSimple.NewRequest(MessageType.STOP_SERVICE)).Response.Type;
         }
 
         public bool IsServerLocked
         {
             get
             {
-                var resp = Endpoint.QueueMessage(MessageType.IS_LOCKED).Response;
-                if (MessageType.RESPONSE_OK == resp.Type)
-                    return (bool)resp.Arguments[0];
+                var resp = Endpoint.QueueMessage(TwMessageIsLocked.NewRequest()).Response;
+                if (resp is TwMessageIsLocked isLockedResp)
+                    return isLockedResp.LockedStatus;
                 else
                     return false;
             }
@@ -95,25 +81,26 @@ namespace pylorak.TinyWall
 
         public MessageType SetPassphrase(string pwd)
         {
-            return Endpoint.QueueMessage(MessageType.SET_PASSPHRASE, pwd).Response.Type;
+            return Endpoint.QueueMessage(TwMessageSetPassword.NewRequest(pwd)).Response.Type;
         }
 
         public MessageType TryUnlockServer(string pwd)
         {
-            return Endpoint.QueueMessage(MessageType.UNLOCK, pwd).Response.Type;
+            return Endpoint.QueueMessage(TwMessageUnlock.NewRequest(pwd)).Response.Type;
         }
 
         public MessageType LockServer()
         {
-            return Endpoint.QueueMessage(MessageType.LOCK).Response.Type;
+            return Endpoint.QueueMessage(TwMessageSimple.NewRequest(MessageType.LOCK)).Response.Type;
         }
 
         public string TryGetProcessPath(uint pid)
         {
-            var resp = Endpoint.QueueMessage(MessageType.GET_PROCESS_PATH, pid).Response;
-            if (resp.Type == MessageType.RESPONSE_OK)
+            var resp = Endpoint.QueueMessage(TwMessageGetProcessPath.NewRequest(pid)).Response;
+            if (resp.Type == MessageType.GET_PROCESS_PATH)
             {
-                return (resp.Arguments[0] as string)!;
+                var respArgs = (TwMessageGetProcessPath)resp;
+                return respArgs.Path;
             }
             else
                 return string.Empty;

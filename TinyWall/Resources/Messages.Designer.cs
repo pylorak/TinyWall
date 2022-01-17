@@ -368,15 +368,6 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The operation succeeded, but other settings prevent it from taking full effect..
-        /// </summary>
-        internal static string OtherSettingsPreventEffect {
-            get {
-                return ResourceManager.GetString("OtherSettingsPreventEffect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Password fields do not match. Please verify your input..
         /// </summary>
         internal static string PasswordFieldsDoNotMatch {

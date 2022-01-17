@@ -139,6 +139,9 @@
           <Component Id="MainExecutableConfig" Guid="{81CD5E43-FAE3-4B3C-AA84-A7A0C660FDB4}" Win64="$(var.Win64)">
             <File Id="TinyWallCONFIG" Source="Sources\ProgramFiles\TinyWall\TinyWall.exe.config" KeyPath="yes" />
           </Component>
+          <Component Id="Microsoft_Bcl_AsyncInterfaces_Lib" Guid="{A7FB0F34-9995-43BC-B415-65AAF3AA37A3}" Win64="$(var.Win64)">
+            <File Id="Microsoft_Bcl_AsyncInterfaces_dll" Source="Sources\ProgramFiles\TinyWall\Microsoft.Bcl.AsyncInterfaces.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+          </Component>
           <Component Id="System_Buffers_Lib" Guid="{A1797893-28F9-4D81-9BAF-E7508B04D119}" Win64="$(var.Win64)">
             <File Id="System_Buffers_dll" Source="Sources\ProgramFiles\TinyWall\System.Buffers.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
           </Component>
@@ -150,6 +153,18 @@
           </Component>
           <Component Id="System_Runtime_CompilerServices_Unsafe_Lib" Guid="{F3DBEFD2-E80A-40E1-9BEB-79080B47508F}" Win64="$(var.Win64)">
             <File Id="System_Runtime_CompilerServices_Unsafe_dll" Source="Sources\ProgramFiles\TinyWall\System.Runtime.CompilerServices.Unsafe.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+          </Component>
+          <Component Id="System_Text_Encodings_Web_Lib" Guid="{FA88A627-F2E3-47BF-A245-79B72D91F448}" Win64="$(var.Win64)">
+            <File Id="System_Text_Encodings_Web_dll" Source="Sources\ProgramFiles\TinyWall\System.Text.Encodings.Web.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+          </Component>
+          <Component Id="System_Text_Json_Lib" Guid="{87A21FAA-7ED7-4383-89B1-720EC6AFF3B8}" Win64="$(var.Win64)">
+            <File Id="System_Text_Json_dll" Source="Sources\ProgramFiles\TinyWall\System.Text.Json.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+          </Component>
+          <Component Id="System_Threading_Tasks_Extensions_Lib" Guid="{D2B40BC4-0B98-4F07-AA93-E0AFC0405789}" Win64="$(var.Win64)">
+            <File Id="System_Threading_Tasks_Extensions_dll" Source="Sources\ProgramFiles\TinyWall\System.Threading.Tasks.Extensions.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+          </Component>
+          <Component Id="System_ValueTuple_Lib" Guid="{1335CC77-A532-4F69-9811-FF9C83A7A01B}" Win64="$(var.Win64)">
+            <File Id="System_ValueTuple_dll" Source="Sources\ProgramFiles\TinyWall\System.ValueTuple.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
           </Component>
           <Component Id="License" Guid="{2F2FF77C-8900-406A-AB6E-6DCFF4B53463}" Win64="$(var.Win64)">
             <File Id="LicenseRTF" Source="Sources\ProgramFiles\TinyWall\License.rtf" KeyPath="yes" />
@@ -323,10 +338,15 @@
 
     <!-- Dependencies groupping -->
     <ComponentGroup Id="Dependencies">
+      <ComponentRef Id="Microsoft_Bcl_AsyncInterfaces_Lib"/>
       <ComponentRef Id="System_Buffers_Lib"/>
       <ComponentRef Id="System_Memory_Lib"/>
       <ComponentRef Id="System_Numerics_Vectors_Lib"/>
       <ComponentRef Id="System_Runtime_CompilerServices_Unsafe_Lib"/>
+      <ComponentRef Id="System_Text_Encodings_Web_Lib"/>
+      <ComponentRef Id="System_Text_Json_Lib"/>
+      <ComponentRef Id="System_Threading_Tasks_Extensions_Lib"/>
+      <ComponentRef Id="System_ValueTuple_Lib"/>
     </ComponentGroup>
 
     <!-- Localization groupping -->

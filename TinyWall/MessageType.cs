@@ -5,9 +5,6 @@
     {
         // General responses
         INVALID_COMMAND,
-        PING,
-        RESPONSE_OK,
-        RESPONSE_WARNING,
         RESPONSE_ERROR,
         RESPONSE_LOCKED,
         COM_ERROR,
@@ -15,7 +12,6 @@
         // Read commands (>31)
         GET_SETTINGS = 32,
         GET_PROCESS_PATH,
-        VERIFY_KEYS,
         READ_FW_LOG,
         IS_LOCKED,
 
@@ -30,7 +26,6 @@
         SET_PASSPHRASE,
         STOP_SERVICE,
         MINUTE_TIMER,
-        TEST_EXCEPTION,
         REENUMERATE_ADDRESSES,
 
         // Service-to-client messages

@@ -234,9 +234,6 @@ Select Elevate from the tray menu and try again.</value>
   <data name="Success" xml:space="preserve">
     <value>Success.</value>
   </data>
-  <data name="OtherSettingsPreventEffect" xml:space="preserve">
-    <value>The operation succeeded, but other settings prevent it from taking full effect.</value>
-  </data>
   <data name="OperationFailed" xml:space="preserve">
     <value>Operation failed.</value>
   </data>

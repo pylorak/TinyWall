@@ -1,10 +1,47 @@
 ﻿using System;
 using System.Security.Cryptography.X509Certificates;
 using System.Runtime.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using pylorak.Windows;
 
 namespace pylorak.TinyWall
 {
+    public class ExceptionSubjectConverter : PolymorphicJsonConverter<ExceptionSubject>
+    {
+        public override string DiscriminatorPropertyName => "SubjectType";
+
+        public override ExceptionSubject? DeserializeDerived(ref Utf8JsonReader reader, int discriminator)
+        {
+            var ret = (SubjectType)discriminator switch
+            {
+                SubjectType.Global => (ExceptionSubject?)JsonSerializer.Deserialize<GlobalSubject>(ref reader, SourceGenerationContext.Default.GlobalSubject),
+                SubjectType.AppContainer => (ExceptionSubject?)JsonSerializer.Deserialize<AppContainerSubject>(ref reader, SourceGenerationContext.Default.AppContainerSubject),
+                SubjectType.Executable => (ExceptionSubject?)JsonSerializer.Deserialize<ExecutableSubject>(ref reader, SourceGenerationContext.Default.ExecutableSubject),
+                SubjectType.Service => (ExceptionSubject?)JsonSerializer.Deserialize<ServiceSubject>(ref reader, SourceGenerationContext.Default.ServiceSubject),
+                _ => throw new JsonException($"Tried to deserialize unsupported type with discriminator {(SubjectType)discriminator}."),
+            };
+            return ret;
+        }
+
+        public override void SerializeDerived(Utf8JsonWriter writer, ExceptionSubject value, JsonSerializerOptions options)
+        {
+            switch (value)
+            {
+                case GlobalSubject typedVal:
+                    JsonSerializer.Serialize<GlobalSubject>(writer, typedVal, SourceGenerationContext.Default.GlobalSubject); break;
+                case AppContainerSubject typedVal:
+                    JsonSerializer.Serialize<AppContainerSubject>(writer, typedVal, SourceGenerationContext.Default.AppContainerSubject); break;
+                case ServiceSubject typedVal:
+                    JsonSerializer.Serialize<ServiceSubject>(writer, typedVal, SourceGenerationContext.Default.ServiceSubject); break;
+                case ExecutableSubject typedVal:
+                    JsonSerializer.Serialize<ExecutableSubject>(writer, typedVal, SourceGenerationContext.Default.ExecutableSubject); break;
+                default:
+                    throw new JsonException($"Tried to serialize unsupported type {value.GetType()}.");
+            }
+        }
+    }
+
     public enum SubjectType
     {
         Invalid,
@@ -16,6 +53,7 @@ namespace pylorak.TinyWall
 
     // -----------------------------------------------------------------------
 
+    [JsonConverter(typeof(ExceptionSubjectConverter))]
     [DataContract(Namespace = "TinyWall")]
     public abstract class ExceptionSubject : IEquatable<ExceptionSubject>
     {
@@ -113,17 +151,20 @@ namespace pylorak.TinyWall
         [DataMember(EmitDefaultValue = false)]
         public string ExecutablePath { get; private set; }
 
+        [JsonIgnore]
         public string ExecutableName
         {
             get { return System.IO.Path.GetFileName(ExecutablePath); }
         }
 
-        public ExecutableSubject(string filePath)
+        [JsonConstructor]
+        public ExecutableSubject(string executablePath)
         {
-            this.ExecutablePath = filePath;
+            this.ExecutablePath = executablePath;
         }
 
         private string? _HashSha1;
+        [JsonIgnore]
         public string HashSha1
         {
             get
@@ -136,6 +177,7 @@ namespace pylorak.TinyWall
         }
 
         private string? _CertSubject;
+        [JsonIgnore]
         public string? CertSubject
         {
             get
@@ -154,6 +196,7 @@ namespace pylorak.TinyWall
         }
 
         private WinTrust.VerifyResult? _CertStatus;
+        [JsonIgnore]
         public bool CertValid
         {
             get
@@ -166,6 +209,7 @@ namespace pylorak.TinyWall
             }
         }
 
+        [JsonIgnore]
         public bool IsSigned
         {
             get
@@ -250,8 +294,9 @@ namespace pylorak.TinyWall
         [DataMember(EmitDefaultValue = false)]
         public string ServiceName { get; private set; }
 
-        public ServiceSubject(string filePath, string serviceName) :
-            base(filePath)
+        [JsonConstructor]
+        public ServiceSubject(string executablePath, string serviceName) :
+            base(executablePath)
         {
             if (string.IsNullOrEmpty(serviceName))
                 throw new ArgumentException($"Argument {nameof(serviceName)} may not be null or empty.");
@@ -326,6 +371,7 @@ namespace pylorak.TinyWall
         [DataMember(EmitDefaultValue = false)]
         public string PublisherId { get; private set; }
 
+        [JsonConstructor]
         public AppContainerSubject(string sid, string displayName, string publisher, string publisherId)
         {
             this.Sid = sid;

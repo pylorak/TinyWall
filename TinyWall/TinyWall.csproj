@@ -23,7 +23,7 @@
     <Company>Károly Pados</Company>
     <Description>A free, lightweight and non-intrusive firewall.</Description>
     <Copyright>Copyright © 2011 Károly Pados</Copyright>
-    <Version>3.2.4</Version>
+    <Version>3.2.99</Version>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -61,6 +61,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="System.Text.Json" Version="6.0.1" />
 
     <COMReference Include="NetFwTypeLib">
       <WrapperTool>tlbimp</WrapperTool>

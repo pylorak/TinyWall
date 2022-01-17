@@ -640,7 +640,7 @@ namespace pylorak.TinyWall
                         if (tc.MoveNext())
                         {
                             var icmpCode = tc.Current;
-                            if ((icmpCode.Length != 0) && icmpCode.TryDecimalToUInt16(out ushort icmpCodeVal))
+                            if ((icmpCode.Length != 0) && !icmpCode.Equals("*", StringComparison.Ordinal) && icmpCode.TryDecimalToUInt16(out ushort icmpCodeVal))
                                 conditions.Add(new IcmpErrorCodeFilterCondition(icmpCodeVal));
                         }
                     }
@@ -1028,7 +1028,7 @@ namespace pylorak.TinyWall
             // Load from file failed, prepare default config instead
 
             var ret = new ServerConfiguration();
-            ret.SetActiveProfile(Resources.Messages.Default);
+            ret.ActiveProfileName = Resources.Messages.Default;
 
             // Allow recommended exceptions
             DatabaseClasses.AppDatabase db = GlobalInstances.AppDatabase;
@@ -1235,7 +1235,7 @@ namespace pylorak.TinyWall
             }
             FileLocker.Lock(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
             NotifyController(MessageType.DATABASE_UPDATED);
-            Q.Add(new TwRequest(MessageType.REINIT));
+            Q.Add(new TwRequest(TwMessageSimple.NewRequest(MessageType.REINIT)));
         }
 
         private void NotifyController(MessageType msg)
@@ -1246,7 +1246,7 @@ namespace pylorak.TinyWall
 
         internal void TimerCallback(Object state)
         {
-            Q.Add(new TwRequest(MessageType.MINUTE_TIMER));
+            Q.Add(new TwRequest(TwMessageSimple.NewRequest(MessageType.MINUTE_TIMER)));
         }
 
         private List<FirewallLogEntry> GetFwLog()
@@ -1281,19 +1281,18 @@ namespace pylorak.TinyWall
             {
                 case MessageType.READ_FW_LOG:
                     {
-                        return new TwMessage(MessageType.RESPONSE_OK, GetFwLog());
+                        var args = (TwMessageReadFwLog)req;
+                        return args.NewResponse(GetFwLog().ToArray());
                     }
                 case MessageType.IS_LOCKED:
                     {
-                        return new TwMessage(MessageType.RESPONSE_OK, ServiceLocker.Locked);
-                    }
-                case MessageType.PING:
-                    {
-                        return new TwMessage(MessageType.RESPONSE_OK);
+                        var args = (TwMessageIsLocked)req;
+                        return args.NewResponse(ServiceLocker.Locked);
                     }
                 case MessageType.MODE_SWITCH:
                     {
-                        FirewallMode newMode = (FirewallMode)req.Arguments[0];
+                        var args = (TwMessageModeSwitch)req;
+                        FirewallMode newMode = args.Mode;
 
                         if (CommitLearnedRules())
                             ActiveConfig.Service.Save(ConfigSavePath);
@@ -1306,7 +1305,7 @@ namespace pylorak.TinyWall
                         {
                             Utils.Log("Cannot enter auto-learn mode. Is the 'eventlog' service running? For details see next log entry.", Utils.LOG_ID_SERVICE);
                             Utils.LogException(e, Utils.LOG_ID_SERVICE);
-                            return new TwMessage(MessageType.RESPONSE_ERROR);
+                            return TwMessageError.Instance;
                         }
 
                         VisibleState.Mode = newMode;
@@ -1321,18 +1320,18 @@ namespace pylorak.TinyWall
                             ActiveConfig.Service.Save(ConfigSavePath);
                         }
 
-                        return new TwMessage(MessageType.RESPONSE_OK);
+                        return args.NewResponse(VisibleState.Mode);
                     }
                 case MessageType.PUT_SETTINGS:
                     {
-                        ServerConfiguration newConf = (ServerConfiguration)req.Arguments[0];
-                        Guid clientChangeset = (Guid)req.Arguments[1];
-                        MessageType resp = (clientChangeset == GlobalInstances.ServerChangeset) ? MessageType.RESPONSE_OK : MessageType.RESPONSE_WARNING;
-                        if (MessageType.RESPONSE_OK == resp)
+                        var args = (TwMessagePutSettings)req;
+
+                        bool warning = (args.Changeset != GlobalInstances.ServerChangeset);
+                        if (!warning)
                         {
                             try
                             {
-                                ActiveConfig.Service = newConf;
+                                ActiveConfig.Service = args.Config;
                                 GlobalInstances.ServerChangeset = Guid.NewGuid();
                                 ActiveConfig.Service.Save(ConfigSavePath);
                                 ReapplySettings();
@@ -1345,15 +1344,15 @@ namespace pylorak.TinyWall
                         }
                         VisibleState.HasPassword = ServiceLocker.HasPassword;
                         VisibleState.Locked = ServiceLocker.Locked;
-                        return new TwMessage(resp, ActiveConfig.Service, GlobalInstances.ServerChangeset, VisibleState);
+                        return args.NewResponse(GlobalInstances.ServerChangeset, ActiveConfig.Service, VisibleState, warning);
                     }
                 case MessageType.ADD_TEMPORARY_EXCEPTION:
                     {
                         var rules = new List<RuleDef>();
                         var rawSocketExceptions = new List<RuleDef>();
-                        var exceptions = (List<FirewallExceptionV3>)req.Arguments[0];
+                        var args = (TwMessageAddTempException)req;
 
-                        foreach (var ex in exceptions)
+                        foreach (var ex in args.Exceptions)
                         {
                             GetRulesForException(ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
                         }
@@ -1361,81 +1360,81 @@ namespace pylorak.TinyWall
                         InstallRules(rules, rawSocketExceptions, true);
                         lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Release(); }
 
-                        return new TwMessage(MessageType.RESPONSE_OK);
+                        return args.NewResponse();
                     }
                 case MessageType.GET_SETTINGS:
                     {
-                        // Get changeset of client
-                        Guid changeset = (Guid)req.Arguments[0];
+                        var args = (TwMessageGetSettings)req;
 
-                        // If our changeset is different, send new settings to client
-                        if (changeset != GlobalInstances.ServerChangeset)
+                        // If our changeset is different from the client's, send new settings
+                        if (args.Changeset != GlobalInstances.ServerChangeset)
                         {
                             VisibleState.HasPassword = ServiceLocker.HasPassword;
                             VisibleState.Locked = ServiceLocker.Locked;
 
-                            var ret = new TwMessage(MessageType.RESPONSE_OK,
-                                GlobalInstances.ServerChangeset,
-                                ActiveConfig.Service,
-                                VisibleState
-                            );
-
-                            VisibleState.ClientNotifs.Clear();
+                            var ret = args.NewResponse(GlobalInstances.ServerChangeset, ActiveConfig.Service, VisibleState);
+                            VisibleState.ClientNotifs.Clear();  // TODO: VisibleState is a reference so it cleants notifs before client could receive them
                             return ret;
                         }
                         else
                         {
                             // Our changeset is the same, so do not send settings again
-                            return new TwMessage(MessageType.RESPONSE_OK, GlobalInstances.ServerChangeset);
+                            return args.NewResponse(GlobalInstances.ServerChangeset);
                         }
                     }
                 case MessageType.REINIT:
                     {
+                        var args = (TwMessageSimple)req;
+
                         if (CommitLearnedRules())
                             ActiveConfig.Service.Save(ConfigSavePath);
 
                         InitFirewall();
-                        return new TwMessage(MessageType.RESPONSE_OK);
+                        return args.NewResponse();
                     }
                 case MessageType.RELOAD_WFP_FILTERS:
                     {
+                        var args = (TwMessageSimple)req;
                         InstallFirewallRules();
-                        return new TwMessage(MessageType.RESPONSE_OK);
+                        return args.NewResponse();
                     }
                 case MessageType.UNLOCK:
                     {
-                        bool success = ServiceLocker.Unlock((string)req.Arguments[0]);
+                        var args = (TwMessageUnlock)req;
+                        bool success = ServiceLocker.Unlock(args.Password);
                         if (success)
-                            return new TwMessage(MessageType.RESPONSE_OK);
+                            return args.NewResponse();
                         else
-                            return new TwMessage(MessageType.RESPONSE_ERROR);
+                            return TwMessageError.Instance;
                     }
                 case MessageType.LOCK:
                     {
+                        var args = (TwMessageSimple)req;
                         ServiceLocker.Locked = true;
-                        return new TwMessage(MessageType.RESPONSE_OK);
+                        return args.NewResponse();
                     }
                 case MessageType.GET_PROCESS_PATH:
                     {
-                        var pid = (uint)req.Arguments[0];
-                        string path = Utils.GetPathOfProcess(pid);
+                        var args = (TwMessageGetProcessPath)req;
+                        string path = Utils.GetPathOfProcess(args.Pid);
                         if (string.IsNullOrEmpty(path))
-                            return new TwMessage(MessageType.RESPONSE_ERROR);
+                            return TwMessageError.Instance;
                         else
-                            return new TwMessage(MessageType.RESPONSE_OK, path);
+                            return args.NewResponse(path);
                     }
                 case MessageType.SET_PASSPHRASE:
                     {
+                        var args = (TwMessageSetPassword)req;
                         FileLocker.Unlock(PasswordManager.PasswordFilePath);
                         try
                         {
-                            ServiceLocker.SetPass((string)req.Arguments[0]);
+                            ServiceLocker.SetPass(args.Password);
                             GlobalInstances.ServerChangeset = Guid.NewGuid();
-                            return new TwMessage(MessageType.RESPONSE_OK);
+                            return args.NewResponse();
                         }
                         catch
                         {
-                            return new TwMessage(MessageType.RESPONSE_ERROR);
+                            return TwMessageError.Instance;
                         }
                         finally
                         {
@@ -1444,17 +1443,19 @@ namespace pylorak.TinyWall
                     }
                 case MessageType.STOP_SERVICE:
                     {
+                        var args = (TwMessageSimple)req;
                         RunService = false;
-                        return new TwMessage(MessageType.RESPONSE_OK);
+                        return args.NewResponse();
                     }
                 case MessageType.MINUTE_TIMER:
                     {
+                        var args = (TwMessageSimple)req;
                         bool needsSave = false;
 
                         // Check for inactivity and lock if necessary
                         if (DateTime.Now - LastControllerCommandTime > TimeSpan.FromMinutes(10))
                         {
-                            Q.Add(new TwRequest(MessageType.LOCK));
+                            Q.Add(new TwRequest(TwMessageSimple.NewRequest(MessageType.LOCK)));
                         }
 
                         // Check all exceptions if any has expired
@@ -1497,27 +1498,28 @@ namespace pylorak.TinyWall
 #endif
                         }
 
-                        return new TwMessage(MessageType.RESPONSE_OK);
+                        return args.NewResponse();
                     }
                 case MessageType.REENUMERATE_ADDRESSES:
                     {
+                        var args = (TwMessageSimple)req;
                         if (ReenumerateAdresses())  // returns true if anything changed
                             InstallFirewallRules();
-                        return new TwMessage(MessageType.RESPONSE_OK);
+                        return args.NewResponse();
                     }
                 case MessageType.DISPLAY_POWER_EVENT:
                     {
-                        bool turnOn = (bool)req.Arguments[0];
-                        if (turnOn != DisplayCurrentlyOn)
+                        var args = (TwMessageDisplayPowerEvent)req;
+                        if (args.PowerOn != DisplayCurrentlyOn)
                         {
-                            DisplayCurrentlyOn = turnOn;
+                            DisplayCurrentlyOn = args.PowerOn;
                             InstallFirewallRules();
                         }
-                        return new TwMessage(MessageType.RESPONSE_OK);
+                        return args.NewResponse(args.PowerOn);
                     }
                 default:
                     {
-                        return new TwMessage(MessageType.RESPONSE_ERROR);
+                        return TwMessageError.Instance;
                     }
             }
         }
@@ -1619,7 +1621,7 @@ namespace pylorak.TinyWall
         public TinyWallServer()
         {
             // Make sure the very-first command is a REINIT
-            Q.Add(new TwRequest(MessageType.REINIT));
+            Q.Add(new TwRequest(TwMessageSimple.NewRequest(MessageType.REINIT)));
 
             // Fire up file protections as soon as possible
             FileLocker.Lock(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
@@ -1657,11 +1659,11 @@ namespace pylorak.TinyWall
             ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
             NetworkInterfaceWatcher.InterfaceChanged += (object sender, EventArgs args) =>
             {
-                Q.Add(new TwRequest(MessageType.REENUMERATE_ADDRESSES));
+                Q.Add(new TwRequest(TwMessageSimple.NewRequest(MessageType.REENUMERATE_ADDRESSES)));
             };
             RuleReloadEventMerger.Event += (object sender, EventArgs args) =>
             {
-                Q.Add(new TwRequest(MessageType.RELOAD_WFP_FILTERS));
+                Q.Add(new TwRequest(TwMessageSimple.NewRequest(MessageType.RELOAD_WFP_FILTERS)));
             };
             MountPointsWatcher.RegistryChanged += (object sender, EventArgs args) =>
             {
@@ -1689,7 +1691,7 @@ namespace pylorak.TinyWall
                 catch (Exception e)
                 {
                     Utils.LogException(e, Utils.LOG_ID_SERVICE);
-                    req.Response = new TwMessage(MessageType.RESPONSE_ERROR);
+                    req.Response = TwMessageError.Instance;
                 }
             }
         }
@@ -1761,7 +1763,7 @@ namespace pylorak.TinyWall
                 if (newExceptions != null)
                 {
                     lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Request(); }
-                    Q.Add(new TwRequest(MessageType.ADD_TEMPORARY_EXCEPTION, newExceptions));
+                    Q.Add(new TwRequest(TwMessageAddTempException.NewRequest(newExceptions.ToArray())));
                 }
             }
             finally
@@ -1855,12 +1857,12 @@ namespace pylorak.TinyWall
             if (((int)reqMsg.Type > 2047) && ServiceLocker.Locked)
             {
                 // Notify that we need to be unlocked first
-                return new TwMessage(MessageType.RESPONSE_LOCKED, 1);
+                return TwMessageLocked.Instance;
             }
             if (((int)reqMsg.Type > 4095))
             {
                 // We cannot receive this from the client
-                return new TwMessage(MessageType.RESPONSE_ERROR);
+                return TwMessageError.Instance;
             }
             else
             {
@@ -1877,14 +1879,14 @@ namespace pylorak.TinyWall
 
         public void RequestStop()
         {
-            var req = new TwRequest(MessageType.STOP_SERVICE);
+            var req = new TwRequest(TwMessageSimple.NewRequest(MessageType.STOP_SERVICE));
             Q.Add(req);
             req.WaitResponse();
         }
 
         public void DisplayPowerEvent(bool turnOn)
         {
-            Q.Add(new TwRequest(MessageType.DISPLAY_POWER_EVENT, turnOn));
+            Q.Add(new TwRequest(TwMessageDisplayPowerEvent.NewRequest(turnOn)));
         }
 
         public void MountedVolumesChangedEvent()
