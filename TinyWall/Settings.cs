@@ -5,10 +5,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using pylorak.Utilities;
+using System.Text.Json.Serialization.Metadata;
 
 namespace pylorak.TinyWall
 {
-    public sealed class ControllerSettings
+    public sealed class ControllerSettings : ISerializable<ControllerSettings>
     {
         // UI Localization
         public string Language = "auto";
@@ -116,6 +117,11 @@ namespace pylorak.TinyWall
             }
 
             return new ControllerSettings();
+        }
+
+        public JsonTypeInfo<ControllerSettings> GetJsonTypeInfo()
+        {
+            return SourceGenerationContext.Default.ControllerSettings;
         }
     }
 

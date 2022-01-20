@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using pylorak.Utilities;
 
 namespace pylorak.TinyWall
@@ -140,7 +141,7 @@ namespace pylorak.TinyWall
     }
 
     [DataContract(Namespace = "TinyWall")]
-    public sealed class ServerConfiguration
+    public sealed class ServerConfiguration : ISerializable<ServerConfiguration>
     {
         public int ConfigVersion { get; set; } = 1;
 
@@ -233,6 +234,10 @@ namespace pylorak.TinyWall
             }
         }
 
+        public JsonTypeInfo<ServerConfiguration> GetJsonTypeInfo()
+        {
+            return SourceGenerationContext.Default.ServerConfiguration;
+        }
 
         internal static string AppDataPath
         {

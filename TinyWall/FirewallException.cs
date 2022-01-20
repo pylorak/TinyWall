@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace pylorak.TinyWall
 {
@@ -18,7 +19,7 @@ namespace pylorak.TinyWall
     }
 
     [DataContract(Namespace = "TinyWall")]
-    public class FirewallExceptionV3
+    public class FirewallExceptionV3 : ISerializable<FirewallExceptionV3>
     {
         public static FirewallExceptionV3 Default { get; } = new FirewallExceptionV3(GlobalSubject.Instance, new UnrestrictedPolicy());
 
@@ -58,6 +59,11 @@ namespace pylorak.TinyWall
         public override string ToString()
         {
             return Subject.ToString();
+        }
+
+        public JsonTypeInfo<FirewallExceptionV3> GetJsonTypeInfo()
+        {
+            return SourceGenerationContext.Default.FirewallExceptionV3;
         }
     }
 }

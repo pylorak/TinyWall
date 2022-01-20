@@ -8,12 +8,13 @@ using System.Text;
 using System.Xml;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace pylorak.TinyWall
 {
     public interface ISerializable<T>
     {
-        public System.Text.Json.Serialization.Metadata.JsonTypeInfo<T> GetJsonTypeInfo();
+        public JsonTypeInfo<T> GetJsonTypeInfo();
     }
 
     [JsonSourceGenerationOptions(
@@ -47,6 +48,9 @@ namespace pylorak.TinyWall
     [JsonSerializable(typeof(UnrestrictedPolicy))]
     [JsonSerializable(typeof(TcpUdpPolicy))]
     [JsonSerializable(typeof(RuleListPolicy))]
+    [JsonSerializable(typeof(FirewallExceptionV3))]
+    [JsonSerializable(typeof(ServerConfiguration))]
+    [JsonSerializable(typeof(ControllerSettings))]
     internal partial class SourceGenerationContext : JsonSerializerContext
     {
     }
@@ -56,6 +60,11 @@ namespace pylorak.TinyWall
         public static byte[] Serialize<T>(T obj) where T : ISerializable<T>
         {
             return JsonSerializer.SerializeToUtf8Bytes<T>(obj, obj.GetJsonTypeInfo());
+        }
+
+        public static T? Deserialize<T>(byte[] utf8bytes, T defInstance) where T : ISerializable<T>
+        {
+            return JsonSerializer.Deserialize<T>(utf8bytes, defInstance.GetJsonTypeInfo());
         }
 
         public static T? Deserialize<T>(Stream stream, T defInstance) where T : ISerializable<T>
