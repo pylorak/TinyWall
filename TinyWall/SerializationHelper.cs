@@ -24,7 +24,7 @@ namespace pylorak.TinyWall
         IgnoreReadOnlyProperties = false,
         IncludeFields = true,
         PropertyNamingPolicy = JsonKnownNamingPolicy.Unspecified,
-        WriteIndented = false
+        WriteIndented = true
         )]
     [JsonSerializable(typeof(TwMessage))]
     [JsonSerializable(typeof(TwMessageGetSettings))]
@@ -71,32 +71,6 @@ namespace pylorak.TinyWall
         {
             return JsonSerializer.Deserialize<T>(stream, defInstance.GetJsonTypeInfo());
         }
-
-        private static readonly Type[] KnownDataContractTypes =
-        {
-            typeof(BlockListSettings),
-            typeof(ServerProfileConfiguration),
-            typeof(ServerConfiguration),
-
-            typeof(ExceptionSubject),
-            typeof(GlobalSubject),
-            typeof(ExecutableSubject),
-            typeof(ServiceSubject),
-            typeof(AppContainerSubject),
-
-            typeof(ExceptionPolicy),
-            typeof(HardBlockPolicy),
-            typeof(UnrestrictedPolicy),
-            typeof(TcpUdpPolicy),
-            typeof(RuleListPolicy),
-
-            typeof(RuleDef),
-            typeof(List<RuleDef>),
-            typeof(FirewallExceptionV3),
-
-            typeof(UpdateModule),
-            typeof(UpdateDescriptor),
-        };
 
         public static void SerializeToPipe<T>(PipeStream pipe, T obj) where T : ISerializable<T>
         {
@@ -146,7 +120,34 @@ namespace pylorak.TinyWall
             return Deserialize<T>(memoryStream, defInstance);
         }
 
+        [Obsolete]
+        private static readonly Type[] KnownDataContractTypes =
+        {
+            typeof(BlockListSettings),
+            typeof(ServerProfileConfiguration),
+            typeof(ServerConfiguration),
 
+            typeof(ExceptionSubject),
+            typeof(GlobalSubject),
+            typeof(ExecutableSubject),
+            typeof(ServiceSubject),
+            typeof(AppContainerSubject),
+
+            typeof(ExceptionPolicy),
+            typeof(HardBlockPolicy),
+            typeof(UnrestrictedPolicy),
+            typeof(TcpUdpPolicy),
+            typeof(RuleListPolicy),
+
+            typeof(RuleDef),
+            typeof(List<RuleDef>),
+            typeof(FirewallExceptionV3),
+
+            typeof(UpdateModule),
+            typeof(UpdateDescriptor),
+        };
+        
+        [Obsolete]
         public static void SerializeDC<T>(Stream stream, T obj)
         {
             var serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
@@ -157,12 +158,14 @@ namespace pylorak.TinyWall
             serializer.WriteObject(writer, obj);
         }
 
+        [Obsolete]
         public static T DeserializeDC<T>(Stream stream)
         {
             var serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
             return (T)serializer.ReadObject(stream);
         }
 
+        [Obsolete]
         public static T LoadFromEncryptedXMLFile<T>(string filepath, string key, string iv)
         {
             // Construct encryptor
@@ -177,6 +180,7 @@ namespace pylorak.TinyWall
             return DeserializeDC<T>(cryptoStream);
         }
 
+        [Obsolete]
         public static void SaveToEncryptedXMLFile<T>(T obj, string filepath, string key, string iv)
         {
             // Construct encryptor
@@ -191,12 +195,14 @@ namespace pylorak.TinyWall
             SerializeDC(cryptoStream, obj);
         }
 
+        [Obsolete]
         public static T LoadFromXMLFile<T>(string filepath)
         {
             using var stream = new FileStream(filepath, FileMode.Open, FileAccess.Read);
             return DeserializeDC<T>(stream);
         }
 
+        [Obsolete]
         public static void SaveToXMLFile<T>(T obj, string filepath)
         {
             using var stream = new FileStream(filepath, FileMode.Create, FileAccess.Write);
