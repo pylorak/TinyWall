@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace pylorak.TinyWall
 {
@@ -19,12 +20,17 @@ namespace pylorak.TinyWall
     }
 
     [DataContract(Namespace = "TinyWall")]
-    public class UpdateDescriptor
+    public class UpdateDescriptor : ISerializable<UpdateDescriptor>
     {
         [DataMember]
         public string MagicWord = "TinyWall Update Descriptor";
         [DataMember]
         public UpdateModule[] Modules = Array.Empty<UpdateModule>();
+
+        public JsonTypeInfo<UpdateDescriptor> GetJsonTypeInfo()
+        {
+            return SourceGenerationContext.Default.UpdateDescriptor;
+        }
     }
 
     public class ServerState

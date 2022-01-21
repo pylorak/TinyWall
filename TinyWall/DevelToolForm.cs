@@ -51,11 +51,8 @@ namespace pylorak.TinyWall
                     if (exe.CertSubject is not null)
                         id.CertificateSubjects.Add(exe.CertSubject);
                 }
-                using var ms = new MemoryStream();
-                SerializationHelper.SerializeDC(ms, id);
-                ms.Seek(0, SeekOrigin.Begin);
-                using var sr = new StreamReader(ms);
-                txtAssocResult.Text = sr.ReadToEnd();
+                var utf8bytes = SerializationHelper.Serialize(id);
+                txtAssocResult.Text = Encoding.UTF8.GetString(utf8bytes);
             }
             else
             {
@@ -90,21 +87,28 @@ namespace pylorak.TinyWall
                 Manager.AvailableProfiles.Add(p);
             }*/
 
-            string[] files = Directory.GetFiles(inputPath, "*.xml", SearchOption.AllDirectories);
+            var defAppInst = new DatabaseClasses.Application();
+            var files = Directory.GetFiles(inputPath, "*.xml", SearchOption.AllDirectories);
             foreach (string fpath in files)
             {
+                DatabaseClasses.Application? loadedAppInst = null;
                 try
                 {
-                    var app = SerializationHelper.LoadFromXMLFile<DatabaseClasses.Application>(fpath);
-                    db.KnownApplications.Add(app);
+                    loadedAppInst = SerializationHelper.DeserializeFromFile(fpath, defAppInst);
                 }
                 catch
                 {
-                    //Debug.Assert(false);
+                    try
+                    {
+                        loadedAppInst = SerializationHelper.LoadFromXMLFile<DatabaseClasses.Application>(fpath);
+                    }
+                    catch { }
                 }
+                if (loadedAppInst is not null)
+                    db.KnownApplications.Add(loadedAppInst);
             }
 
-            db.Save(Path.Combine(outputPath, "profiles.xml"));
+            db.Save(Path.Combine(outputPath, "profiles.json"));
             //Manager.ToNewFormat().Save(Path.Combine(outputPath, Path.GetFileName(DatabaseClasses.AppDatabase.DBPath)));
             MessageBox.Show(this, "Creation of collections finished.", "Success.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -237,11 +241,11 @@ namespace pylorak.TinyWall
             Utils.CompressDeflate(hostsPath, hostsOut);
 
             string updOut = Path.Combine(txtUpdateOutput.Text, XML_OUT_NAME);
-            SerializationHelper.SaveToXMLFile(update, updOut);
+            SerializationHelper.SerializeToFile(update, updOut);
 
             update.Modules[2].DownloadHash = HOSTS_PLACEHOLDER;
             updOut = Path.Combine(txtUpdateOutput.Text, XML_OUT_TEMPLATE_NAME);
-            SerializationHelper.SaveToXMLFile(update, updOut);
+            SerializationHelper.SerializeToFile(update, updOut);
 
             MessageBox.Show(this, "Update created.", "Success.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

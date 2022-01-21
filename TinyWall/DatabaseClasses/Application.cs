@@ -2,11 +2,12 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace pylorak.TinyWall.DatabaseClasses
 {
     [DataContract(Namespace = "TinyWall")]
-    internal class Application
+    internal class Application : ISerializable<Application>
     {
         // Application name
         [DataMember(EmitDefaultValue = false)]
@@ -67,6 +68,11 @@ namespace pylorak.TinyWall.DatabaseClasses
         {
             if (Components == null)
                 Components = new List<SubjectIdentity>();
+        }
+
+        public JsonTypeInfo<Application> GetJsonTypeInfo()
+        {
+            return SourceGenerationContext.Default.Application;
         }
     }
 }

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Globalization;
 using Microsoft.Samples;
+using System.Text.Json.Serialization.Metadata;
 
 namespace pylorak.TinyWall.DatabaseClasses
 {
     [DataContract(Namespace = "TinyWall")]
-    class AppDatabase
+    class AppDatabase : ISerializable<AppDatabase>
     {
         [DataMember(Name = "KnownApplications")]
         private readonly List<Application> _KnownApplications;
@@ -19,13 +20,19 @@ namespace pylorak.TinyWall.DatabaseClasses
 
         public static AppDatabase Load(string filePath)
         {
-            AppDatabase newInstance = SerializationHelper.LoadFromXMLFile<AppDatabase>(filePath);
-            return newInstance;
+            try
+            {
+                return SerializationHelper.DeserializeFromFile(filePath, new AppDatabase());
+            }
+            catch
+            {
+                return SerializationHelper.LoadFromXMLFile<AppDatabase>(filePath);
+            }
         }
 
         public void Save(string filePath)
         {
-            SerializationHelper.SaveToXMLFile(this, filePath);
+            SerializationHelper.SerializeToFile(this, filePath);
         }
 
         public AppDatabase()
@@ -196,6 +203,11 @@ namespace pylorak.TinyWall.DatabaseClasses
             }
 
             return exceptions;
+        }
+
+        public JsonTypeInfo<AppDatabase> GetJsonTypeInfo()
+        {
+            return SourceGenerationContext.Default.AppDatabase;
         }
     }
 }

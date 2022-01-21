@@ -94,7 +94,7 @@ namespace pylorak.TinyWall
             {
                 using (AtomicFileUpdater fileUpdater = new AtomicFileUpdater(SettingsFile))
                 {
-                    SerializationHelper.SaveToXMLFile(this, fileUpdater.TemporaryFilePath);
+                    SerializationHelper.SerializeToFile(this, fileUpdater.TemporaryFilePath);
                     fileUpdater.Commit();
                 }
             }
@@ -110,10 +110,17 @@ namespace pylorak.TinyWall
             {
                 try
                 {
-                    return SerializationHelper.LoadFromXMLFile<ControllerSettings>(SettingsFile);
+                    return SerializationHelper.DeserializeFromFile(SettingsFile, new ControllerSettings());
                 }
                 catch
-                { }
+                {
+                    try
+                    {
+                        return SerializationHelper.LoadFromXMLFile<ControllerSettings>(SettingsFile);
+                    }
+                    catch
+                    { }
+                }
             }
 
             return new ControllerSettings();
@@ -189,7 +196,7 @@ namespace pylorak.TinyWall
         }
     }
 
-    public sealed class ConfigContainer
+    public sealed class ConfigContainer : ISerializable<ConfigContainer>
     {
         public ServerConfiguration Service;
         public ControllerSettings Controller;
@@ -198,6 +205,11 @@ namespace pylorak.TinyWall
         {
             Service = server;
             Controller = client;
+        }
+
+        public JsonTypeInfo<ConfigContainer> GetJsonTypeInfo()
+        {
+            return SourceGenerationContext.Default.ConfigContainer;
         }
     }
 

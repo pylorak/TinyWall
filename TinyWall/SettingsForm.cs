@@ -489,13 +489,21 @@ namespace pylorak.TinyWall
             {
                 try
                 {
-                    TmpConfig = SerializationHelper.LoadFromXMLFile<ConfigContainer>(ofd.FileName);
+                    var defInst = new ConfigContainer(new ServerConfiguration(), new ControllerSettings());
+                    TmpConfig = SerializationHelper.DeserializeFromFile(ofd.FileName, defInst);
                 }
                 catch
                 {
-                    // Fail import.
-                    MessageBox.Show(this, Resources.Messages.ConfigurationImportError, Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    try
+                    {
+                        TmpConfig = SerializationHelper.LoadFromXMLFile<ConfigContainer>(ofd.FileName);
+                    }
+                    catch
+                    {
+                        // Fail import.
+                        MessageBox.Show(this, Resources.Messages.ConfigurationImportError, Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
 
                 InitSettingsUI();
@@ -509,7 +517,7 @@ namespace pylorak.TinyWall
             sfd.DefaultExt = "tws";
             if (sfd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
-                SerializationHelper.SaveToXMLFile(this.TmpConfig, sfd.FileName);
+                SerializationHelper.SerializeToFile(this.TmpConfig, sfd.FileName);
                 MessageBox.Show(this, Resources.Messages.ConfigurationHasBeenExported, Resources.Messages.TinyWallSettingsFileFilter, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }

@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using pylorak.Windows;
 
 namespace pylorak.TinyWall.DatabaseClasses
 {
     [DataContract(Namespace = "TinyWall")]
-    internal sealed class SubjectIdentity
+    internal sealed class SubjectIdentity : ISerializable<SubjectIdentity>
     {
         public SubjectIdentity(ExceptionSubject subject)
         {
@@ -196,6 +197,11 @@ namespace pylorak.TinyWall.DatabaseClasses
         public override string ToString()
         {
             return Subject.ToString();
+        }
+
+        public JsonTypeInfo<SubjectIdentity> GetJsonTypeInfo()
+        {
+            return SourceGenerationContext.Default.SubjectIdentity;
         }
     }
 }

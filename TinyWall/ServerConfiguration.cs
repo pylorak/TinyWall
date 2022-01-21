@@ -216,14 +216,21 @@ namespace pylorak.TinyWall
             string key = Hasher.HashString(ENC_SALT).Substring(0, 16);
 
             using var fileUpdater = new AtomicFileUpdater(filePath);
-            SerializationHelper.SaveToEncryptedXMLFile(this, fileUpdater.TemporaryFilePath, key, ENC_IV);
+            SerializationHelper.SerializeToEncryptedFile(this, fileUpdater.TemporaryFilePath, key, ENC_IV);
             fileUpdater.Commit();
         }
 
         public static ServerConfiguration Load(string filePath)
         {
             string key = Hasher.HashString(ENC_SALT).Substring(0, 16);
-            return SerializationHelper.LoadFromEncryptedXMLFile<ServerConfiguration>(filePath, key, ENC_IV);
+            try
+            {
+                return SerializationHelper.DeserializeFromEncryptedFile(filePath, key, ENC_IV, new ServerConfiguration());
+            }
+            catch
+            {
+                return SerializationHelper.LoadFromEncryptedXMLFile<ServerConfiguration>(filePath, key, ENC_IV);
+            }
         }
 
         public void Normalize()
