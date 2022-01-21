@@ -9,51 +9,73 @@ using System.Text.Json.Serialization.Metadata;
 
 namespace pylorak.TinyWall
 {
+    [DataContract(Namespace = "http://schemas.datacontract.org/2004/07/PKSoft")]
     public sealed class ControllerSettings : ISerializable<ControllerSettings>
     {
         // UI Localization
+        [DataMember(EmitDefaultValue = false)]
         public string Language = "auto";
 
         // Connections window
+        [DataMember(EmitDefaultValue = false)]
         public System.Windows.Forms.FormWindowState ConnFormWindowState = System.Windows.Forms.FormWindowState.Normal;
+        [DataMember(EmitDefaultValue = false)]
         public System.Drawing.Point ConnFormWindowLoc = new System.Drawing.Point(0, 0);
+        [DataMember(EmitDefaultValue = false)]
         public System.Drawing.Size ConnFormWindowSize = new System.Drawing.Size(0, 0);
-        [OptionalField]
+        [DataMember(EmitDefaultValue = false)]
         public Dictionary<string, int> ConnFormColumnWidths = new Dictionary<string, int>();
+        [DataMember(EmitDefaultValue = false)]
         public bool ConnFormShowConnections = true;
+        [DataMember(EmitDefaultValue = false)]
         public bool ConnFormShowOpenPorts = false;
+        [DataMember(EmitDefaultValue = false)]
         public bool ConnFormShowBlocked = false;
 
         // Processes window
+        [DataMember(EmitDefaultValue = false)]
         public System.Windows.Forms.FormWindowState ProcessesFormWindowState = System.Windows.Forms.FormWindowState.Normal;
+        [DataMember(EmitDefaultValue = false)]
         public System.Drawing.Point ProcessesFormWindowLoc = new System.Drawing.Point(0, 0);
+        [DataMember(EmitDefaultValue = false)]
         public System.Drawing.Size ProcessesFormWindowSize = new System.Drawing.Size(0, 0);
-        [OptionalField]
+        [DataMember(EmitDefaultValue = false)]
         public Dictionary<string, int> ProcessesFormColumnWidths = new Dictionary<string, int>();
 
         // Services window
+        [DataMember(EmitDefaultValue = false)]
         public System.Windows.Forms.FormWindowState ServicesFormWindowState = System.Windows.Forms.FormWindowState.Normal;
+        [DataMember(EmitDefaultValue = false)]
         public System.Drawing.Point ServicesFormWindowLoc = new System.Drawing.Point(0, 0);
+        [DataMember(EmitDefaultValue = false)]
         public System.Drawing.Size ServicesFormWindowSize = new System.Drawing.Size(0, 0);
-        [OptionalField]
+        [DataMember(EmitDefaultValue = false)]
         public Dictionary<string, int> ServicesFormColumnWidths = new Dictionary<string, int>();
 
         // UwpPackages window
+        [DataMember(EmitDefaultValue = false)]
         public System.Windows.Forms.FormWindowState UwpPackagesFormWindowState = System.Windows.Forms.FormWindowState.Normal;
+        [DataMember(EmitDefaultValue = false)]
         public System.Drawing.Point UwpPackagesFormWindowLoc = new System.Drawing.Point(0, 0);
+        [DataMember(EmitDefaultValue = false)]
         public System.Drawing.Size UwpPackagesFormWindowSize = new System.Drawing.Size(0, 0);
-        [OptionalField]
+        [DataMember(EmitDefaultValue = false)]
         public Dictionary<string, int> UwpPackagesFormColumnWidths = new Dictionary<string, int>();
 
         // Manage window
+        [DataMember(EmitDefaultValue = false)]
         public bool AskForExceptionDetails = false;
+        [DataMember(EmitDefaultValue = false)]
         public int SettingsTabIndex;
+        [DataMember(EmitDefaultValue = false)]
         public System.Drawing.Point SettingsFormWindowLoc = new System.Drawing.Point(0, 0);
+        [DataMember(EmitDefaultValue = false)]
         public System.Drawing.Size SettingsFormWindowSize = new System.Drawing.Size(0, 0);
-        [OptionalField]
+        [DataMember(EmitDefaultValue = false)]
         public Dictionary<string, int> SettingsFormAppListColumnWidths = new Dictionary<string, int>();
 
         // Hotkeys
+        [DataMember(EmitDefaultValue = false)]
         public bool EnableGlobalHotkeys = true;
 
         [OnDeserialized]
@@ -197,9 +219,12 @@ namespace pylorak.TinyWall
         }
     }
 
-    public sealed class ConfigContainer : ISerializable<ConfigContainer>
+    [DataContract(Namespace = "http://schemas.datacontract.org/2004/07/PKSoft")]
+     public sealed class ConfigContainer : ISerializable<ConfigContainer>
     {
+        [DataMember(EmitDefaultValue = false)]
         public ServerConfiguration Service;
+        [DataMember(EmitDefaultValue = false)]
         public ControllerSettings Controller;
 
         public ConfigContainer(ServerConfiguration server, ControllerSettings client)
