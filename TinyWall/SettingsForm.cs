@@ -489,20 +489,13 @@ namespace pylorak.TinyWall
             {
                 try
                 {
-                    TmpConfig = SerializationHelper.DeserializeFromFile(ofd.FileName, new ConfigContainer());
+                    TmpConfig = SerializationHelper.DeserializeFromFile(ofd.FileName, new ConfigContainer(), true);
                 }
                 catch
                 {
-                    try
-                    {
-                        TmpConfig = SerializationHelper.LoadFromXMLFile<ConfigContainer>(ofd.FileName);
-                    }
-                    catch
-                    {
-                        // Fail import.
-                        MessageBox.Show(this, Resources.Messages.ConfigurationImportError, Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
+                    // Fail import.
+                    MessageBox.Show(this, Resources.Messages.ConfigurationImportError, Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
 
                 InitSettingsUI();

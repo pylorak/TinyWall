@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization.Metadata;
-using pylorak.Utilities;
 
 namespace pylorak.TinyWall
 {
@@ -214,23 +213,13 @@ namespace pylorak.TinyWall
         public void Save(string filePath)
         {
             string key = Hasher.HashString(ENC_SALT).Substring(0, 16);
-
-            using var fileUpdater = new AtomicFileUpdater(filePath);
-            SerializationHelper.SerializeToEncryptedFile(this, fileUpdater.TemporaryFilePath, key, ENC_IV);
-            fileUpdater.Commit();
+            SerializationHelper.SerializeToEncryptedFile(this, filePath, key, ENC_IV);
         }
 
         public static ServerConfiguration Load(string filePath)
         {
             string key = Hasher.HashString(ENC_SALT).Substring(0, 16);
-            try
-            {
-                return SerializationHelper.DeserializeFromEncryptedFile(filePath, key, ENC_IV, new ServerConfiguration());
-            }
-            catch
-            {
-                return SerializationHelper.LoadFromEncryptedXMLFile<ServerConfiguration>(filePath, key, ENC_IV);
-            }
+            return SerializationHelper.DeserializeFromEncryptedFile(filePath, key, ENC_IV, new ServerConfiguration());
         }
 
         public void Normalize()

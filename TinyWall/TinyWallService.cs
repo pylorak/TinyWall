@@ -1075,7 +1075,7 @@ namespace pylorak.TinyWall
 
             try
             {
-                GlobalInstances.AppDatabase = DatabaseClasses.AppDatabase.Load(DatabaseClasses.AppDatabase.DBPath);
+                GlobalInstances.AppDatabase = DatabaseClasses.AppDatabase.Load();
             }
             catch
             {

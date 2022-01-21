@@ -109,42 +109,24 @@ namespace pylorak.TinyWall
             }
         }
 
+        internal static string FilePath => Path.Combine(UserDataPath, "ControllerConfig");
+
         internal void Save()
         {
-            string SettingsFile = Path.Combine(UserDataPath, "ControllerConfig");
             try
             {
-                using (AtomicFileUpdater fileUpdater = new AtomicFileUpdater(SettingsFile))
-                {
-                    SerializationHelper.SerializeToFile(this, fileUpdater.TemporaryFilePath);
-                    fileUpdater.Commit();
-                }
+                SerializationHelper.SerializeToFile(this, FilePath);
             }
             catch { }
         }
 
         internal static ControllerSettings Load()
         {
-            // Construct file path
-            string SettingsFile = Path.Combine(UserDataPath, "ControllerConfig");
-
-            if (File.Exists(SettingsFile))
+            try
             {
-                try
-                {
-                    return SerializationHelper.DeserializeFromFile(SettingsFile, new ControllerSettings());
-                }
-                catch
-                {
-                    try
-                    {
-                        var settings = SerializationHelper.LoadFromXMLFile<ControllerSettings>(SettingsFile);
-                        settings.Save();
-                    }
-                    catch
-                    { }
-                }
+                return SerializationHelper.DeserializeFromFile(FilePath, new ControllerSettings());
             }
+            catch { }
 
             return new ControllerSettings();
         }

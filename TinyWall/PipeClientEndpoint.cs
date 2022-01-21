@@ -51,8 +51,7 @@ namespace pylorak.TinyWall
                 SerializationHelper.SerializeToPipe<TwMessage>(pipeClient, msg);
 
                 // Get response
-                var ret = SerializationHelper.DeserializeFromPipe<TwMessage>(pipeClient, 20000, TwMessageComError.Instance);
-                return ret ?? throw new NullResultExceptions(nameof(SerializationHelper.DeserializeFromPipe));
+                return SerializationHelper.DeserializeFromPipe<TwMessage>(pipeClient, 20000, TwMessageComError.Instance);
             }
             catch
             {

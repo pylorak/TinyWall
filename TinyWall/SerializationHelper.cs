@@ -73,14 +73,14 @@ namespace pylorak.TinyWall
             JsonSerializer.Serialize(stream, obj, obj.GetJsonTypeInfo());
         }
 
-        public static T? Deserialize<T>(byte[] utf8bytes, T defInstance) where T : ISerializable<T>
+        public static T Deserialize<T>(byte[] utf8bytes, T defInstance) where T : ISerializable<T>
         {
-            return JsonSerializer.Deserialize(utf8bytes, defInstance.GetJsonTypeInfo());
+            return JsonSerializer.Deserialize(utf8bytes, defInstance.GetJsonTypeInfo()) ?? throw new NullResultExceptions(nameof(JsonSerializer.Deserialize));
         }
 
-        public static T? Deserialize<T>(Stream stream, T defInstance) where T : ISerializable<T>
+        public static T Deserialize<T>(Stream stream, T defInstance) where T : ISerializable<T>
         {
-            return JsonSerializer.Deserialize(stream, defInstance.GetJsonTypeInfo());
+            return JsonSerializer.Deserialize(stream, defInstance.GetJsonTypeInfo()) ?? throw new NullResultExceptions(nameof(JsonSerializer.Deserialize));
         }
 
         public static void SerializeToPipe<T>(PipeStream pipe, T obj) where T : ISerializable<T>
@@ -95,7 +95,7 @@ namespace pylorak.TinyWall
             pipe.Flush();
         }
 
-        public static T? DeserializeFromPipe<T>(PipeStream pipe, int timeout_ms, T defInstance) where T : ISerializable<T>
+        public static T DeserializeFromPipe<T>(PipeStream pipe, int timeout_ms, T defInstance) where T : ISerializable<T>
         {
             bool pipeClosed = false;
             var buf = new byte[4 * 1024];
@@ -135,33 +135,59 @@ namespace pylorak.TinyWall
             return Deserialize(memoryStream, defInstance);
         }
 
-        public static T DeserializeFromFile<T>(string filepath, T defInstance) where  T : ISerializable<T>
+        public static T DeserializeFromFile<T>(string filepath, T defInstance, bool readOnlySource = false) where  T : ISerializable<T>
         {
-            using var stream = new FileStream(filepath, FileMode.Open, FileAccess.Read);
-            return Deserialize(stream, defInstance) ?? throw new NullResultExceptions(nameof(Deserialize));
+            try
+            {
+                using var stream = new FileStream(filepath, FileMode.Open, FileAccess.Read);
+                return Deserialize(stream, defInstance);
+            }
+            catch
+            {
+                // Try loading from old serialization format, and save in new format if allowed
+                var xmlPath = filepath.EndsWith(".json") ? Path.ChangeExtension(filepath, ".xml") : filepath;
+                var ret = LoadFromXMLFile<T>(xmlPath);
+                if (!readOnlySource) SerializeToFile(ret, filepath);
+                return ret;
+            }
         }
 
         public static void SerializeToFile<T>(T obj, string filepath) where T : ISerializable<T>
         {
-            using var stream = new FileStream(filepath, FileMode.Create, FileAccess.Write);
-            Serialize(stream, obj);
+            using var fileUpdater = new AtomicFileUpdater(filepath);
+            using (var stream = new FileStream(fileUpdater.TemporaryFilePath, FileMode.Create, FileAccess.Write))
+            {
+                Serialize(stream, obj);
+            }
+            fileUpdater.Commit();
         }
 
         public static T DeserializeFromEncryptedFile<T>(string filepath, string key, string iv, T defInst) where T : ISerializable<T>
         {
-            // Construct encryptor
-            using var symmetricKey = new AesCryptoServiceProvider();
-            symmetricKey.Mode = CipherMode.CBC;
-            symmetricKey.Key = Encoding.ASCII.GetBytes(key);
-            symmetricKey.IV = Encoding.ASCII.GetBytes(iv);
+            try
+            {
+                // Construct encryptor
+                using var symmetricKey = new AesCryptoServiceProvider();
+                symmetricKey.Mode = CipherMode.CBC;
+                symmetricKey.Key = Encoding.ASCII.GetBytes(key);
+                symmetricKey.IV = Encoding.ASCII.GetBytes(iv);
 
-            // Decrypt
-            using var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read);
-            using var cryptoStream = new CryptoStream(fs, symmetricKey.CreateDecryptor(), CryptoStreamMode.Read);
-            return Deserialize<T>(cryptoStream, defInst) ?? throw new NullResultExceptions(nameof(Deserialize));
+                // Decrypt
+                using var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read);
+                using var cryptoStream = new CryptoStream(fs, symmetricKey.CreateDecryptor(), CryptoStreamMode.Read);
+                return Deserialize<T>(cryptoStream, defInst);
+            }
+            catch
+            {
+                // Try loading from old serialization format, and save in new format if allowed
+                var xmlPath = filepath.EndsWith(".json") ? Path.ChangeExtension(filepath, ".xml") : filepath;
+                var ret = LoadFromEncryptedXMLFile<T>(xmlPath, key, iv);
+                SerializeToEncryptedFile(ret, filepath, key, iv);
+                return ret;
+            }
         }
 
-        public static void SerializeToEncryptedFile<T>(T obj, string filepath, string key, string iv) where T : ISerializable<T>
+        public static void SerializeToEncryptedFile<T>(T obj, string filePath, string key, string iv) where T : ISerializable<T>
         {
             // Construct encryptor
             using var symmetricKey = new AesCryptoServiceProvider();
@@ -170,9 +196,13 @@ namespace pylorak.TinyWall
             symmetricKey.IV = Encoding.ASCII.GetBytes(iv);
 
             // Encrypt
-            using var fs = new FileStream(filepath, FileMode.Create, FileAccess.Write);
-            using var cryptoStream = new CryptoStream(fs, symmetricKey.CreateEncryptor(), CryptoStreamMode.Write);
-            Serialize(cryptoStream, obj);
+            using var fileUpdater = new AtomicFileUpdater(filePath);
+            using (var fs = new FileStream(fileUpdater.TemporaryFilePath, FileMode.Create, FileAccess.Write))
+            {
+                using var cryptoStream = new CryptoStream(fs, symmetricKey.CreateEncryptor(), CryptoStreamMode.Write);
+                Serialize(cryptoStream, obj);
+            }
+            fileUpdater.Commit();
         }
 
         [Obsolete]
@@ -206,7 +236,7 @@ namespace pylorak.TinyWall
         public static T DeserializeDC<T>(Stream stream)
         {
             var serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
-            return (T)serializer.ReadObject(stream);
+            return ((T?)serializer.ReadObject(stream)) ?? throw new NullResultExceptions("DataContractSerializer.ReadObject()");
         }
 
         [Obsolete]

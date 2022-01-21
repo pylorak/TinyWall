@@ -399,8 +399,7 @@ namespace pylorak.TinyWall
 
         internal static T DeepClone<T>(T obj) where T : ISerializable<T>
         {
-            var tmp = SerializationHelper.Deserialize(SerializationHelper.Serialize(obj), obj);
-            return tmp ?? throw new pylorak.Utilities.NullResultExceptions(nameof(SerializationHelper.Deserialize));
+            return SerializationHelper.Deserialize(SerializationHelper.Serialize(obj), obj);
         }
 
         internal static bool StringArrayContains(string[] arr, string val, StringComparison opts = StringComparison.Ordinal)

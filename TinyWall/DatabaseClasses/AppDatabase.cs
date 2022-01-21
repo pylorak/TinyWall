@@ -19,9 +19,9 @@ namespace pylorak.TinyWall.DatabaseClasses
             get { return System.IO.Path.Combine(Utils.AppDataPath, "profiles.json"); }
         }
 
-        public static AppDatabase Load(string filePath)
+        public static AppDatabase Load()
         {
-            return SerializationHelper.DeserializeFromFile(filePath, new AppDatabase());
+            return SerializationHelper.DeserializeFromFile(DBPath, new AppDatabase());
         }
 
         public void Save(string filePath)

@@ -88,25 +88,16 @@ namespace pylorak.TinyWall
             }*/
 
             var defAppInst = new DatabaseClasses.Application();
-            var files = Directory.GetFiles(inputPath, "*.xml", SearchOption.AllDirectories);
+            var files = Directory.GetFiles(inputPath, "*.json", SearchOption.AllDirectories);
             foreach (string fpath in files)
             {
-                DatabaseClasses.Application? loadedAppInst = null;
                 try
                 {
-                    loadedAppInst = SerializationHelper.DeserializeFromFile(fpath, defAppInst);
+                    var loadedAppInst = SerializationHelper.DeserializeFromFile(fpath, defAppInst);
+                    if (loadedAppInst.Components.Count > 0)
+                        db.KnownApplications.Add(loadedAppInst);
                 }
-                catch
-                {
-                    try
-                    {
-                        loadedAppInst = SerializationHelper.LoadFromXMLFile<DatabaseClasses.Application>(fpath);
-                        SerializationHelper.SerializeToFile(loadedAppInst, fpath.Replace(".xml", ".json"));
-                    }
-                    catch { }
-                }
-                if (loadedAppInst is not null)
-                    db.KnownApplications.Add(loadedAppInst);
+                catch { }
             }
 
             db.Save(Path.Combine(outputPath, "profiles.json"));
