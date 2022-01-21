@@ -489,8 +489,7 @@ namespace pylorak.TinyWall
             {
                 try
                 {
-                    var defInst = new ConfigContainer(new ServerConfiguration(), new ControllerSettings());
-                    TmpConfig = SerializationHelper.DeserializeFromFile(ofd.FileName, defInst);
+                    TmpConfig = SerializationHelper.DeserializeFromFile(ofd.FileName, new ConfigContainer());
                 }
                 catch
                 {

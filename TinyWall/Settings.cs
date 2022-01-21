@@ -227,6 +227,12 @@ namespace pylorak.TinyWall
         [DataMember(EmitDefaultValue = false)]
         public ControllerSettings Controller;
 
+        public ConfigContainer()
+        {
+            Service = new ServerConfiguration();
+            Controller = new ControllerSettings();
+        }
+
         public ConfigContainer(ServerConfiguration server, ControllerSettings client)
         {
             Service = server;
