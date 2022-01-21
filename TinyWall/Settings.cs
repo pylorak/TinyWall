@@ -116,7 +116,8 @@ namespace pylorak.TinyWall
                 {
                     try
                     {
-                        return SerializationHelper.LoadFromXMLFile<ControllerSettings>(SettingsFile);
+                        var settings = SerializationHelper.LoadFromXMLFile<ControllerSettings>(SettingsFile);
+                        settings.Save();
                     }
                     catch
                     { }
