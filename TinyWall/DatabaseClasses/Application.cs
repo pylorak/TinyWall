@@ -2,18 +2,20 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 
 namespace pylorak.TinyWall.DatabaseClasses
 {
     [DataContract(Namespace = "TinyWall")]
-    internal class Application : ISerializable<Application>
+    public class Application : ISerializable<Application>
     {
         // Application name
         [DataMember(EmitDefaultValue = false)]
-        internal string Name { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
-        internal string LocalizedName
+        [JsonIgnore]
+        public string LocalizedName
         {
             get
             {
@@ -31,7 +33,7 @@ namespace pylorak.TinyWall.DatabaseClasses
 
         // Executables that belong to this application
         [DataMember(EmitDefaultValue = false)]
-        internal List<SubjectIdentity> Components { get; set; } = new List<SubjectIdentity>();
+        public List<SubjectIdentity> Components { get; set; } = new List<SubjectIdentity>();
 
         public override string ToString()
         {
@@ -39,15 +41,8 @@ namespace pylorak.TinyWall.DatabaseClasses
         }
 
         [DataMember(Name = "Flags", EmitDefaultValue = false)]
-        private Dictionary<string, string?>? Flags;
+        public Dictionary<string, string?>? Flags { get; set; } = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
 
-        public void SetFlag(string flag, string? value = null)
-        {
-            if (Flags is null)
-                Flags = new Dictionary<string, string?>();
-
-            Flags[flag.ToUpperInvariant()] = value;
-        }
         public bool HasFlag(string flag)
         {
             if (Flags == null)
@@ -55,19 +50,14 @@ namespace pylorak.TinyWall.DatabaseClasses
 
             return Flags.ContainsKey(flag.ToUpperInvariant());
         }
-        public string? GetFlagValue(string flag)
-        {
-            if (Flags == null)
-                throw new KeyNotFoundException();
-
-            return Flags[flag];
-        }
 
         [OnDeserialized()]
         internal void OnDeserializedMethod(StreamingContext context)
         {
             if (Components == null)
                 Components = new List<SubjectIdentity>();
+            if (Flags == null)
+                Flags = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
         }
 
         public JsonTypeInfo<Application> GetJsonTypeInfo()

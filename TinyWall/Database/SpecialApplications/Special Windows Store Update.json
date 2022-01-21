@@ -1,0 +1,39 @@
+{
+  "Name": "Windows_Store_Update",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "{folder:windows}\\WinStore\\WSHost.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*"
+      },
+      "CertificateSubjects": [
+        "CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+      ]
+    },
+    {
+      "Subject": {
+        "SubjectType": 4,
+        "Sid": "S-1-15-2-2434737943-167758768-3180539153-984336765-1107280622-3591121930-2677285773",
+        "DisplayName": "Microsoft.Windows.CloudExperienceHost",
+        "Publisher": "CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "PublisherId": "cw5n1h2txyewy"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*"
+      }
+    }
+  ],
+  "Flags": {
+    "TWUI:SPECIAL": null,
+    "TWUI:RECOMMENDED": null
+  }
+}

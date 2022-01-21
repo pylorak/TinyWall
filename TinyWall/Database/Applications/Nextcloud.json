@@ -1,0 +1,27 @@
+{
+  "Name": "Nextcloud",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "nextcloud.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "",
+        "AllowedLocalTcpListenerPorts": "",
+        "AllowedLocalUdpListenerPorts": ""
+      },
+      "SearchPaths": [
+        "{folder:pf32}\\Nextcloud",
+        "{folder:pf64}\\Nextcloud"
+      ],
+      "CertificateSubjects": [
+        "CN=Nextcloud GmbH, O=Nextcloud GmbH, STREET=Hauptmannsreute 44A, L=Stuttgart, S=Baden-W\u00FCrttemberg, PostalCode=70192, C=DE"
+      ]
+    }
+  ],
+  "Flags": {}
+}

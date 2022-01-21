@@ -1,0 +1,71 @@
+{
+  "Name": "File_and_Printer_Sharing",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 3,
+        "ServiceName": "dnscache",
+        "ExecutablePath": "{folder:sys32}\\svchost.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": true,
+        "AllowedRemoteUdpConnectPorts": "5355",
+        "AllowedLocalUdpListenerPorts": "5355"
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "System"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": true,
+        "AllowedRemoteTcpConnectPorts": "139",
+        "AllowedRemoteUdpConnectPorts": "137,138",
+        "AllowedLocalTcpListenerPorts": "139",
+        "AllowedLocalUdpListenerPorts": "137,138"
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "System"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": true,
+        "AllowedRemoteTcpConnectPorts": "445",
+        "AllowedLocalTcpListenerPorts": "445"
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "{folder:sys32}\\spoolsv.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": true,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "*"
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 3,
+        "ServiceName": "Rpcss",
+        "ExecutablePath": "{folder:sys32}\\svchost.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": true,
+        "AllowedLocalTcpListenerPorts": "*"
+      }
+    }
+  ],
+  "Flags": {
+    "TWUI:SPECIAL": null
+  }
+}

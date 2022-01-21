@@ -101,6 +101,7 @@ namespace pylorak.TinyWall
                     try
                     {
                         loadedAppInst = SerializationHelper.LoadFromXMLFile<DatabaseClasses.Application>(fpath);
+                        SerializationHelper.SerializeToFile(loadedAppInst, fpath.Replace(".xml", ".json"));
                     }
                     catch { }
                 }

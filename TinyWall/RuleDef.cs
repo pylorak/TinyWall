@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace pylorak.TinyWall
 {
@@ -11,6 +12,7 @@ namespace pylorak.TinyWall
         [DataMember]
         public string? Name;
         [DataMember(EmitDefaultValue = false)]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public Guid ExceptionId;
         [DataMember]
         public RuleAction Action;
@@ -36,7 +38,7 @@ namespace pylorak.TinyWall
         public Protocol Protocol;
         [DataMember]
         public RuleDirection Direction;
-
+        [JsonIgnore]
         public ulong Weight;
 
         public RuleDef()

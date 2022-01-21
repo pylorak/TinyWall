@@ -1,0 +1,36 @@
+{
+  "Name": "Windows_Defender",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "{NoTrailingSlash:{reg:SOFTWARE\\Microsoft\\Windows Defender:InstallLocation}}\\MsMpEng.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*"
+      },
+      "CertificateSubjects": [
+        "CN=Microsoft Windows Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+      ]
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "{NoTrailingSlash:{reg:SOFTWARE\\Microsoft\\Windows Defender:InstallLocation}}\\NisSrv.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*"
+      },
+      "CertificateSubjects": [
+        "CN=Microsoft Windows Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+      ]
+    }
+  ],
+  "Flags": {
+    "TWUI:SPECIAL": null
+  }
+}

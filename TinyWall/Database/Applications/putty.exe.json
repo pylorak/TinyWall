@@ -1,0 +1,34 @@
+{
+  "Name": "Putty",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "putty.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "",
+        "AllowedLocalTcpListenerPorts": "",
+        "AllowedLocalUdpListenerPorts": ""
+      },
+      "SearchPaths": [
+        "{folder:pf32}\\PuTTY",
+        "{folder:pf64}\\PuTTY"
+      ],
+      "CertificateSubjects": [
+        "CN=Simon Tatham, O=Simon Tatham, L=Cambridge, S=Cambridgeshire, C=GB"
+      ],
+      "AllowedSha1": [
+        "44AC2504A02AF84EE142ADAA3EA70B868185906F",
+        "89C19274AD51B6FBD12FB59908316088C1135307",
+        "b11a526d3d37be5c38e31a56ab762b9471957cca",
+        "9DED3CE2AE09C37CA173BBD3DCB57258B72CDBD5",
+        "3B1333F826E5FE36395042FE0F1B895F4A373F1B"
+      ]
+    }
+  ],
+  "Flags": {}
+}

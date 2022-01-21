@@ -1,0 +1,46 @@
+{
+  "Name": "Seed4.Me VPN",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "Seed4.Me_VPN.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "*",
+        "AllowedLocalUdpListenerPorts": "*"
+      },
+      "SearchPaths": [
+        "{NoTrailingSlash:{reg:SOFTWARE\\Seed4.Me VPN:InstallLocation}}\\bin"
+      ],
+      "CertificateSubjects": [
+        "CN=\u0022S4M Tech, Inc.\u0022, O=\u0022S4M Tech, Inc.\u0022, POBox=95134, STREET=\u00223500 Palmilla Dr. #3026\u0022, L=San-Jose, S=California, PostalCode=95134, C=US"
+      ]
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "Seed4.Me_service.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "*",
+        "AllowedLocalUdpListenerPorts": "*"
+      },
+      "SearchPaths": [
+        "{NoTrailingSlash:{reg:SOFTWARE\\Seed4.Me VPN:InstallLocation}}\\bin"
+      ],
+      "CertificateSubjects": [
+        "CN=\u0022S4M Tech, Inc.\u0022, O=\u0022S4M Tech, Inc.\u0022, POBox=95134, STREET=\u00223500 Palmilla Dr. #3026\u0022, L=San-Jose, S=California, PostalCode=95134, C=US"
+      ]
+    }
+  ],
+  "Flags": {}
+}

@@ -1,0 +1,57 @@
+{
+  "Name": "Windows_Remote_Desktop",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "{folder:sys32}\\RdpSa.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "*"
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 3,
+        "ServiceName": "termservice",
+        "ExecutablePath": "{folder:sys32}\\svchost.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedLocalTcpListenerPorts": "3389",
+        "AllowedLocalUdpListenerPorts": "3389"
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "{folder:sys32}\\mstsc.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*"
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "System"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedLocalTcpListenerPorts": "3387,3389,3392",
+        "AllowedLocalUdpListenerPorts": "3389"
+      }
+    }
+  ],
+  "Flags": {
+    "TWUI:SPECIAL": null
+  }
+}

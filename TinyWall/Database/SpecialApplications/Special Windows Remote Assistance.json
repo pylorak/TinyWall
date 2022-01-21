@@ -1,0 +1,70 @@
+{
+  "Name": "Windows_Remote_Assistance",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "System"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": true,
+        "AllowedRemoteTcpConnectPorts": "2869",
+        "AllowedLocalTcpListenerPorts": "2869"
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 3,
+        "ServiceName": "ssdpsrv",
+        "ExecutablePath": "{folder:sys32}\\svchost.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": true,
+        "AllowedRemoteUdpConnectPorts": "1900",
+        "AllowedLocalUdpListenerPorts": "1900"
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 3,
+        "ServiceName": "PNRPsvc",
+        "ExecutablePath": "{folder:sys32}\\svchost.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": true,
+        "AllowedRemoteUdpConnectPorts": "3540",
+        "AllowedLocalUdpListenerPorts": "3540"
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "{folder:sys32}\\raserver.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "*"
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "{folder:sys32}\\msra.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "*"
+      }
+    }
+  ],
+  "Flags": {
+    "TWUI:SPECIAL": null
+  }
+}

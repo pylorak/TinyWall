@@ -1,0 +1,77 @@
+{
+  "Name": "Windows_DNS_Client",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 3,
+        "ServiceName": "Dnscache",
+        "ExecutablePath": "{folder:sys32}\\svchost.exe"
+      },
+      "Policy": {
+        "PolicyType": 4,
+        "Rules": [
+          {
+            "Name": "DNS-TCP",
+            "Action": 1,
+            "RemotePorts": "53",
+            "RemoteAddresses": "DNS",
+            "Protocol": 6,
+            "Direction": 2
+          },
+          {
+            "Name": "DNS-UDP",
+            "Action": 1,
+            "RemotePorts": "53",
+            "RemoteAddresses": "DNS",
+            "Protocol": 17,
+            "Direction": 3
+          },
+          {
+            "Name": "DoH/DoT",
+            "Action": 1,
+            "RemotePorts": "443,853",
+            "RemoteAddresses": "DNS",
+            "Protocol": 6,
+            "Direction": 2
+          },
+          {
+            "Name": "LLMNR-UDP",
+            "Action": 1,
+            "RemotePorts": "5355",
+            "RemoteAddresses": "LocalSubnet",
+            "Protocol": 17,
+            "Direction": 2
+          },
+          {
+            "Name": "LLMNR-UDP",
+            "Action": 1,
+            "LocalPorts": "5355",
+            "RemoteAddresses": "LocalSubnet",
+            "Protocol": 17,
+            "Direction": 1
+          },
+          {
+            "Name": "mDNS",
+            "Action": 1,
+            "LocalPorts": "5353",
+            "RemoteAddresses": "LocalSubnet",
+            "Protocol": 17,
+            "Direction": 1
+          },
+          {
+            "Name": "mDNS",
+            "Action": 1,
+            "RemotePorts": "5353",
+            "RemoteAddresses": "LocalSubnet",
+            "Protocol": 17,
+            "Direction": 2
+          }
+        ]
+      }
+    }
+  ],
+  "Flags": {
+    "TWUI:SPECIAL": null,
+    "TWUI:RECOMMENDED": null
+  }
+}

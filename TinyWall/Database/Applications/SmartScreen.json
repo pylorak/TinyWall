@@ -1,0 +1,17 @@
+{
+  "Name": "Windows SmartScreen",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "{folder:sys32}\\smartscreen.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*"
+      }
+    }
+  ],
+  "Flags": {}
+}

@@ -1,0 +1,117 @@
+{
+  "Name": "Filtered_ICMP_Traffic",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 1
+      },
+      "Policy": {
+        "PolicyType": 4,
+        "Rules": [
+          {
+            "Name": "ICMPv4 (echo-req, out)",
+            "Action": 1,
+            "IcmpTypesAndCodes": "8",
+            "Protocol": 1,
+            "Direction": 2
+          },
+          {
+            "Name": "ICMPv4 (echo-reply, in)",
+            "Action": 1,
+            "IcmpTypesAndCodes": "0",
+            "Protocol": 1,
+            "Direction": 1
+          },
+          {
+            "Name": "ICMPv4 (dest.unreachable)",
+            "Action": 1,
+            "IcmpTypesAndCodes": "3:*",
+            "Protocol": 1,
+            "Direction": 1
+          },
+          {
+            "Name": "ICMPv4 (time exceeded)",
+            "Action": 1,
+            "IcmpTypesAndCodes": "11:*",
+            "Protocol": 1,
+            "Direction": 1
+          },
+          {
+            "Name": "ICMPv6 (dest.unreachable)",
+            "Action": 1,
+            "IcmpTypesAndCodes": "1",
+            "Protocol": 58,
+            "Direction": 1
+          },
+          {
+            "Name": "ICMPv6 (packet too big)",
+            "Action": 1,
+            "IcmpTypesAndCodes": "2",
+            "Protocol": 58,
+            "Direction": 1
+          },
+          {
+            "Name": "ICMPv6 (time exceeded)",
+            "Action": 1,
+            "IcmpTypesAndCodes": "3",
+            "Protocol": 58,
+            "Direction": 3
+          },
+          {
+            "Name": "ICMPv6 (param.problem)",
+            "Action": 1,
+            "IcmpTypesAndCodes": "4",
+            "Protocol": 58,
+            "Direction": 1
+          },
+          {
+            "Name": "ICMPv6 (router solicitation)",
+            "Action": 1,
+            "IcmpTypesAndCodes": "133",
+            "Protocol": 58,
+            "Direction": 2
+          },
+          {
+            "Name": "ICMPv6 (router advertisement)",
+            "Action": 1,
+            "IcmpTypesAndCodes": "134",
+            "Protocol": 58,
+            "Direction": 1
+          },
+          {
+            "Name": "ICMPv6 (neighbour discovery)",
+            "Action": 1,
+            "IcmpTypesAndCodes": "135,136",
+            "Protocol": 58,
+            "Direction": 3
+          },
+          {
+            "Name": "ICMPv6 (inverse neighbour discovery)",
+            "Action": 1,
+            "IcmpTypesAndCodes": "141,142",
+            "Protocol": 58,
+            "Direction": 3
+          },
+          {
+            "Name": "ICMPv6 (echo-req, out)",
+            "Action": 1,
+            "IcmpTypesAndCodes": "128",
+            "Protocol": 58,
+            "Direction": 2
+          },
+          {
+            "Name": "ICMPv6 (echo-reply, in)",
+            "Action": 1,
+            "IcmpTypesAndCodes": "129",
+            "Protocol": 58,
+            "Direction": 1
+          }
+        ]
+      }
+    }
+  ],
+  "Flags": {
+    "TWUI:SPECIAL": null,
+    "TWUI:RECOMMENDED": null
+  }
+}

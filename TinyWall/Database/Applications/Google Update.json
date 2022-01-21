@@ -1,0 +1,30 @@
+{
+  "Name": "Google Update",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "GoogleUpdate.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "",
+        "AllowedLocalUdpListenerPorts": ""
+      },
+      "SearchPaths": [
+        "{reg:SOFTWARE\\Wow6432Node\\Google\\Update:path}",
+        "{reg:SOFTWARE\\Google\\Update:path}",
+        "{folder:pf64}\\Google\\Update",
+        "{folder:pf32}\\Google\\Update"
+      ],
+      "CertificateSubjects": [
+        "CN=Google Inc, O=Google Inc, L=Mountain View, S=California, C=US",
+        "CN=Google LLC, O=Google LLC, L=Mountain View, S=California, C=US"
+      ]
+    }
+  ],
+  "Flags": {}
+}

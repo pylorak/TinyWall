@@ -1,0 +1,1418 @@
+{
+  "KnownApplications": [
+    {
+      "Name": "Malware Ports",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 1
+          },
+          "Policy": {
+            "PolicyType": 4,
+            "Rules": [
+              {
+                "Name": "Malware ports",
+                "Action": 2,
+                "RemotePorts": "2,31,41,48,58,59,99,121,133,146,170,315,421,456,531,555,606,667,669,692,777,808,815,911,999,1000,1001,1003,1010,1011,1012,1015,1016,1020,1033,1034,1042,1045,1047,1050,1081,1082,1083,1090,1095,1097,1098,1099,1137,1170,1200,1201,1207,1208,1212,1225,1234,1243,1245,1255,1256,1269,1313,1338,1349,1441,1492,1509,1524,1600,1700,1777,1784,1807,1966,1969,1981,2000,2001,2002,2003,2004,2005,2023,2115,2140,2208,2283,2565,2583,2600,2718,2773,2801,2989,3000,3024,3128,3129,3150,3456,3459,3586,3700,3791,3801,4092,4242,4245,4321,4444,4567,4590,4711,4950,5011,5031,5032,5321,5333,5343,5400,5401,5402,5512,5521,5550,5555,5556,5557,5569,5598,5637,5638,5698,5714,5741,5742,5881,5882,5889,6000,6006,6272,6400,6500,6666,6669,6670,6711,6712,6713,6723,6767,6771,6776,6789,6838,6883,6912,6939,6969,7000,7001,7201,7215,7300,7301,7306,7307,7308,7424,7597,7609,7789,7983,8787,8897,8989,9000,9325,9400,9872,9873,9874,9875,9876,9878,9989,9999,10067,10085,10086,10101,10167,10520,10528,10607,10666,11000,11050,11051,11223,12076,12223,12345,12346,12349,12361,12362,12623,12624,12631,12701,12754,13000,13010,13700,14456,14500,14501,14502,14503,15000,15092,15104,16484,16660,16772,16969,17166,17300,17490,17500,17569,17777,18753,19864,20001,20002,20034,20203,20331,20432,21544,21554,22222,23005,23023,23432,23456,23476,23477,26274,26681,27374,27444,27665,28431,28432,29104,29891,30001,30029,30100,30101,30102,30103,30133,30303,30947,30999,31335,31336,31337,31338,31339,31554,31666,31778,31785,31787,31788,31789,31790,31791,31792,32100,32418,33333,33577,33777,33911,34324,34555,35555,37651,40412,40421,40422,40423,40425,40426,41666,43210,44444,47262,49301,50505,50766,51996,53001,53217,54283,54320,54321,57341,58339,60000,60068,60411,61348,61466,61603,63485,65000,65432,65506,65535",
+                "Protocol": 1025,
+                "Direction": 3
+              }
+            ]
+          }
+        }
+      ],
+      "Flags": {
+        "TWUI:SPECIAL": null,
+        "TWUI:HIDDEN": null
+      }
+    },
+    {
+      "Name": "Google Chrome",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "chrome.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "*",
+            "AllowedLocalUdpListenerPorts": "*"
+          },
+          "SearchPaths": [
+            "{folder:LocalAppData}\\Google\\Chrome\\Application",
+            "{folder:pf32}\\Google\\Chrome\\Application",
+            "{folder:pf64}\\Google\\Chrome\\Application"
+          ],
+          "CertificateSubjects": [
+            "CN=Google LLC, O=Google LLC, L=Mountain View, S=ca, C=US",
+            "CN=Google LLC, O=Google LLC, L=Mountain View, S=California, C=US"
+          ]
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "Mozilla Firefox",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "Firefox.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "*",
+            "AllowedLocalUdpListenerPorts": "*"
+          },
+          "SearchPaths": [
+            "{reg:SOFTWARE\\Wow6432Node\\Mozilla\\Mozilla Firefox\\{reg:SOFTWARE\\Wow6432Node\\Mozilla\\Mozilla Firefox:CurrentVersion}\\Main:Install Directory}",
+            "{reg:SOFTWARE\\Mozilla\\Mozilla Firefox\\{reg:SOFTWARE\\Mozilla\\Mozilla Firefox:CurrentVersion}\\Main:Install Directory}"
+          ],
+          "CertificateSubjects": [
+            "E=\u0022release\u002Bcertificates@mozilla.com\u0022, CN=Mozilla Corporation, OU=Release Engineering, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
+            "E=\u0022release\u002Bcertificates@mozilla.com\u0022, CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
+            "CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US"
+          ]
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "plugin-container.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "",
+            "AllowedLocalUdpListenerPorts": ""
+          },
+          "SearchPaths": [
+            "{reg:SOFTWARE\\Wow6432Node\\Mozilla\\Mozilla Firefox\\{reg:SOFTWARE\\Wow6432Node\\Mozilla\\Mozilla Firefox:CurrentVersion}\\Main:Install Directory}",
+            "{reg:SOFTWARE\\Mozilla\\Mozilla Firefox\\{reg:SOFTWARE\\Mozilla\\Mozilla Firefox:CurrentVersion}\\Main:Install Directory}"
+          ],
+          "CertificateSubjects": [
+            "E=\u0022release\u002Bcertificates@mozilla.com\u0022, CN=Mozilla Corporation, OU=Release Engineering, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
+            "E=\u0022release\u002Bcertificates@mozilla.com\u0022, CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
+            "CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US"
+          ]
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "Google Drive Sync",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "googledrivesync.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "",
+            "AllowedLocalTcpListenerPorts": "",
+            "AllowedLocalUdpListenerPorts": ""
+          },
+          "SearchPaths": [
+            "{parent:{reg:SOFTWARE\\Wow6432Node\\Google\\Drive:InstallLocation}}",
+            "{parent:{reg:SOFTWARE\\Google\\Drive:InstallLocation}}"
+          ],
+          "CertificateSubjects": [
+            "CN=Google LLC, O=Google LLC, L=Mountain View, S=ca, C=US",
+            "CN=Google LLC, O=Google LLC, L=Mountain View, S=California, C=US"
+          ]
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "Google Update",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "GoogleUpdate.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "",
+            "AllowedLocalUdpListenerPorts": ""
+          },
+          "SearchPaths": [
+            "{reg:SOFTWARE\\Wow6432Node\\Google\\Update:path}",
+            "{reg:SOFTWARE\\Google\\Update:path}",
+            "{folder:pf64}\\Google\\Update",
+            "{folder:pf32}\\Google\\Update"
+          ],
+          "CertificateSubjects": [
+            "CN=Google Inc, O=Google Inc, L=Mountain View, S=California, C=US",
+            "CN=Google LLC, O=Google LLC, L=Mountain View, S=California, C=US"
+          ]
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "Internet Explorer",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "iexplore.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "",
+            "AllowedLocalUdpListenerPorts": ""
+          },
+          "SearchPaths": [
+            "{folder:pf32}\\Internet Explorer",
+            "{folder:pf64}\\Internet Explorer"
+          ],
+          "CertificateSubjects": [
+            "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+            "CN=Microsoft Corporation, OU=MOPR, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+          ]
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "Microsoft Edge",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "{folder:pf32}\\Microsoft\\Edge\\Application\\msedge.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "",
+            "AllowedLocalUdpListenerPorts": ""
+          },
+          "CertificateSubjects": [
+            "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+          ]
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "{folder:pf32}\\Microsoft\\EdgeUpdate\\MicrosoftEdgeUpdate.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "",
+            "AllowedLocalUdpListenerPorts": ""
+          },
+          "CertificateSubjects": [
+            "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+          ]
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "Microsoft Edge",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "{folder:sys32}\\MicrosoftEdgeCP.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "",
+            "AllowedLocalUdpListenerPorts": ""
+          },
+          "AllowedSha1": [
+            "ECB05717E416D965255387F4EDC196889AA12C67"
+          ]
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "Nextcloud",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "nextcloud.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "",
+            "AllowedLocalTcpListenerPorts": "",
+            "AllowedLocalUdpListenerPorts": ""
+          },
+          "SearchPaths": [
+            "{folder:pf32}\\Nextcloud",
+            "{folder:pf64}\\Nextcloud"
+          ],
+          "CertificateSubjects": [
+            "CN=Nextcloud GmbH, O=Nextcloud GmbH, STREET=Hauptmannsreute 44A, L=Stuttgart, S=Baden-W\u00FCrttemberg, PostalCode=70192, C=DE"
+          ]
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "Putty",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "putty.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "",
+            "AllowedLocalTcpListenerPorts": "",
+            "AllowedLocalUdpListenerPorts": ""
+          },
+          "SearchPaths": [
+            "{folder:pf32}\\PuTTY",
+            "{folder:pf64}\\PuTTY"
+          ],
+          "CertificateSubjects": [
+            "CN=Simon Tatham, O=Simon Tatham, L=Cambridge, S=Cambridgeshire, C=GB"
+          ],
+          "AllowedSha1": [
+            "44AC2504A02AF84EE142ADAA3EA70B868185906F",
+            "89C19274AD51B6FBD12FB59908316088C1135307",
+            "b11a526d3d37be5c38e31a56ab762b9471957cca",
+            "9DED3CE2AE09C37CA173BBD3DCB57258B72CDBD5",
+            "3B1333F826E5FE36395042FE0F1B895F4A373F1B"
+          ]
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "Seed4.Me VPN",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "Seed4.Me_VPN.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "*",
+            "AllowedLocalUdpListenerPorts": "*"
+          },
+          "SearchPaths": [
+            "{NoTrailingSlash:{reg:SOFTWARE\\Seed4.Me VPN:InstallLocation}}\\bin"
+          ],
+          "CertificateSubjects": [
+            "CN=\u0022S4M Tech, Inc.\u0022, O=\u0022S4M Tech, Inc.\u0022, POBox=95134, STREET=\u00223500 Palmilla Dr. #3026\u0022, L=San-Jose, S=California, PostalCode=95134, C=US"
+          ]
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "Seed4.Me_service.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "*",
+            "AllowedLocalUdpListenerPorts": "*"
+          },
+          "SearchPaths": [
+            "{NoTrailingSlash:{reg:SOFTWARE\\Seed4.Me VPN:InstallLocation}}\\bin"
+          ],
+          "CertificateSubjects": [
+            "CN=\u0022S4M Tech, Inc.\u0022, O=\u0022S4M Tech, Inc.\u0022, POBox=95134, STREET=\u00223500 Palmilla Dr. #3026\u0022, L=San-Jose, S=California, PostalCode=95134, C=US"
+          ]
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "Windows Sidebar",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "sidebar.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "",
+            "AllowedLocalTcpListenerPorts": "",
+            "AllowedLocalUdpListenerPorts": ""
+          },
+          "AllowedSha1": [
+            "E513DD19714559226CD52169FBB4489CA5740E88",
+            "12a602b86fc394b1c88348fb099685eabb876495"
+          ]
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "Skype",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "Skype.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "443,1000-10000,50000-65000,16000-26000",
+            "AllowedLocalUdpListenerPorts": "3478-3481,50000-60000"
+          },
+          "SearchPaths": [
+            "{parent:{reg:SOFTWARE\\Wow6432Node\\Skype\\Phone:SkypePath}}",
+            "{parent:{reg:SOFTWARE\\Skype\\Phone:SkypePath}}",
+            "{folder:pf32}\\Microsoft\\Skype for Desktop",
+            "{folder:pf64}\\Microsoft\\Skype for Desktop"
+          ],
+          "CertificateSubjects": [
+            "CN=Skype Software Sarl, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+          ]
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "Windows SmartScreen",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "{folder:sys32}\\smartscreen.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*"
+          }
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "Steam Client",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "Steam.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "*",
+            "AllowedLocalUdpListenerPorts": "*"
+          },
+          "SearchPaths": [
+            "{reg:SOFTWARE\\Wow6432Node\\Valve\\Steam:InstallPath}",
+            "{reg:SOFTWARE\\Valve\\Steam:InstallPath}"
+          ],
+          "CertificateSubjects": [
+            "CN=Valve, O=Valve, L=Bellevue, S=WA, C=US",
+            "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US"
+          ]
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "GameOverlayUI.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "*",
+            "AllowedLocalUdpListenerPorts": "*"
+          },
+          "SearchPaths": [
+            "{reg:SOFTWARE\\Wow6432Node\\Valve\\Steam:InstallPath}",
+            "{reg:SOFTWARE\\Valve\\Steam:InstallPath}"
+          ],
+          "CertificateSubjects": [
+            "CN=Valve, O=Valve, L=Bellevue, S=WA, C=US",
+            "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US"
+          ]
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "steamwebhelper.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "*",
+            "AllowedLocalUdpListenerPorts": "*"
+          },
+          "SearchPaths": [
+            "{NoTrailingSlash:{reg:SOFTWARE\\Wow6432Node\\Valve\\Steam:InstallPath}}\\bin",
+            "{NoTrailingSlash:{reg:SOFTWARE\\Valve\\Steam:InstallPath}}\\bin",
+            "{NoTrailingSlash:{reg:SOFTWARE\\Wow6432Node\\Valve\\Steam:InstallPath}}\\bin\\cef\\cef.win7x64",
+            "{NoTrailingSlash:{reg:SOFTWARE\\Valve\\Steam:InstallPath}}\\bin\\cef\\cef.win7x64"
+          ],
+          "CertificateSubjects": [
+            "CN=Valve, O=Valve, L=Bellevue, S=WA, C=US",
+            "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US"
+          ]
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "Mozilla Thunderbird",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "thunderbird.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "",
+            "AllowedLocalUdpListenerPorts": ""
+          },
+          "SearchPaths": [
+            "{reg:SOFTWARE\\Wow6432Node\\Mozilla\\Mozilla Thunderbird\\{reg:SOFTWARE\\Wow6432Node\\Mozilla\\Mozilla Thunderbird:CurrentVersion}\\Main:Install Directory}",
+            "{reg:SOFTWARE\\Mozilla\\Mozilla Thunderbird\\{reg:SOFTWARE\\Mozilla\\Mozilla Thunderbird:CurrentVersion}\\Main:Install Directory}"
+          ],
+          "CertificateSubjects": [
+            "E=\u0022release\u002Bcertificates@mozilla.com\u0022, CN=Mozilla Corporation, OU=Release Engineering, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
+            "CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US"
+          ]
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "WinSCP",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "WinSCP.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "",
+            "AllowedLocalTcpListenerPorts": "*",
+            "AllowedLocalUdpListenerPorts": ""
+          },
+          "SearchPaths": [
+            "{folder:pf32}\\WinSCP",
+            "{folder:pf64}\\WinSCP"
+          ],
+          "CertificateSubjects": [
+            "CN=Martin Prikryl, O=Martin Prikryl, L=Prague, S=Hlavni mesto Praha, C=CZ",
+            "CN=Martin Prikryl, O=Martin Prikryl, L=Prague, C=CZ, SERIALNUMBER=87331519, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=CZ"
+          ]
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "File_and_Printer_Sharing",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 3,
+            "ServiceName": "dnscache",
+            "ExecutablePath": "{folder:sys32}\\svchost.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": true,
+            "AllowedRemoteUdpConnectPorts": "5355",
+            "AllowedLocalUdpListenerPorts": "5355"
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "System"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": true,
+            "AllowedRemoteTcpConnectPorts": "139",
+            "AllowedRemoteUdpConnectPorts": "137,138",
+            "AllowedLocalTcpListenerPorts": "139",
+            "AllowedLocalUdpListenerPorts": "137,138"
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "System"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": true,
+            "AllowedRemoteTcpConnectPorts": "445",
+            "AllowedLocalTcpListenerPorts": "445"
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "{folder:sys32}\\spoolsv.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": true,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "*"
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 3,
+            "ServiceName": "Rpcss",
+            "ExecutablePath": "{folder:sys32}\\svchost.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": true,
+            "AllowedLocalTcpListenerPorts": "*"
+          }
+        }
+      ],
+      "Flags": {
+        "TWUI:SPECIAL": null
+      }
+    },
+    {
+      "Name": "Filtered_ICMP_Traffic",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 1
+          },
+          "Policy": {
+            "PolicyType": 4,
+            "Rules": [
+              {
+                "Name": "ICMPv4 (echo-req, out)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "8",
+                "Protocol": 1,
+                "Direction": 2
+              },
+              {
+                "Name": "ICMPv4 (echo-reply, in)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "0",
+                "Protocol": 1,
+                "Direction": 1
+              },
+              {
+                "Name": "ICMPv4 (dest.unreachable)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "3:*",
+                "Protocol": 1,
+                "Direction": 1
+              },
+              {
+                "Name": "ICMPv4 (time exceeded)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "11:*",
+                "Protocol": 1,
+                "Direction": 1
+              },
+              {
+                "Name": "ICMPv6 (dest.unreachable)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "1",
+                "Protocol": 58,
+                "Direction": 1
+              },
+              {
+                "Name": "ICMPv6 (packet too big)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "2",
+                "Protocol": 58,
+                "Direction": 1
+              },
+              {
+                "Name": "ICMPv6 (time exceeded)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "3",
+                "Protocol": 58,
+                "Direction": 3
+              },
+              {
+                "Name": "ICMPv6 (param.problem)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "4",
+                "Protocol": 58,
+                "Direction": 1
+              },
+              {
+                "Name": "ICMPv6 (router solicitation)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "133",
+                "Protocol": 58,
+                "Direction": 2
+              },
+              {
+                "Name": "ICMPv6 (router advertisement)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "134",
+                "Protocol": 58,
+                "Direction": 1
+              },
+              {
+                "Name": "ICMPv6 (neighbour discovery)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "135,136",
+                "Protocol": 58,
+                "Direction": 3
+              },
+              {
+                "Name": "ICMPv6 (inverse neighbour discovery)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "141,142",
+                "Protocol": 58,
+                "Direction": 3
+              },
+              {
+                "Name": "ICMPv6 (echo-req, out)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "128",
+                "Protocol": 58,
+                "Direction": 2
+              },
+              {
+                "Name": "ICMPv6 (echo-reply, in)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "129",
+                "Protocol": 58,
+                "Direction": 1
+              }
+            ]
+          }
+        }
+      ],
+      "Flags": {
+        "TWUI:SPECIAL": null,
+        "TWUI:RECOMMENDED": null
+      }
+    },
+    {
+      "Name": "Pingable_local_machine",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 1
+          },
+          "Policy": {
+            "PolicyType": 4,
+            "Rules": [
+              {
+                "Name": "ICMPv4 (echo-req, in)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "8",
+                "Protocol": 1,
+                "Direction": 1
+              },
+              {
+                "Name": "ICMPv4 (echo-reply, out)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "0",
+                "Protocol": 1,
+                "Direction": 2
+              },
+              {
+                "Name": "ICMPv6 (echo-req, in)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "128",
+                "Protocol": 58,
+                "Direction": 1
+              },
+              {
+                "Name": "ICMPv6 (echo-reply, out)",
+                "Action": 1,
+                "IcmpTypesAndCodes": "129",
+                "Protocol": 58,
+                "Direction": 2
+              }
+            ]
+          }
+        }
+      ],
+      "Flags": {
+        "TWUI:SPECIAL": null
+      }
+    },
+    {
+      "Name": "Windows_Defender",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "{NoTrailingSlash:{reg:SOFTWARE\\Microsoft\\Windows Defender:InstallLocation}}\\MsMpEng.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*"
+          },
+          "CertificateSubjects": [
+            "CN=Microsoft Windows Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+          ]
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "{NoTrailingSlash:{reg:SOFTWARE\\Microsoft\\Windows Defender:InstallLocation}}\\NisSrv.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*"
+          },
+          "CertificateSubjects": [
+            "CN=Microsoft Windows Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+          ]
+        }
+      ],
+      "Flags": {
+        "TWUI:SPECIAL": null
+      }
+    },
+    {
+      "Name": "Windows_DHCP_Client",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 3,
+            "ServiceName": "dhcp",
+            "ExecutablePath": "{folder:sys32}\\svchost.exe"
+          },
+          "Policy": {
+            "PolicyType": 4,
+            "Rules": [
+              {
+                "Name": "DHCP IPv4 client",
+                "Action": 1,
+                "LocalPorts": "68",
+                "RemotePorts": "67",
+                "RemoteAddresses": "LocalSubnet",
+                "Protocol": 17,
+                "Direction": 3
+              },
+              {
+                "Name": "DHCP IPv6 client",
+                "Action": 1,
+                "LocalPorts": "546",
+                "RemotePorts": "547",
+                "RemoteAddresses": "LocalSubnet",
+                "Protocol": 17,
+                "Direction": 3
+              }
+            ]
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 3,
+            "ServiceName": "lmhosts",
+            "ExecutablePath": "{folder:sys32}\\svchost.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteUdpConnectPorts": "67"
+          }
+        }
+      ],
+      "Flags": {
+        "TWUI:SPECIAL": null,
+        "TWUI:RECOMMENDED": null
+      }
+    },
+    {
+      "Name": "Windows_DNS_Client",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 3,
+            "ServiceName": "Dnscache",
+            "ExecutablePath": "{folder:sys32}\\svchost.exe"
+          },
+          "Policy": {
+            "PolicyType": 4,
+            "Rules": [
+              {
+                "Name": "DNS-TCP",
+                "Action": 1,
+                "RemotePorts": "53",
+                "RemoteAddresses": "DNS",
+                "Protocol": 6,
+                "Direction": 2
+              },
+              {
+                "Name": "DNS-UDP",
+                "Action": 1,
+                "RemotePorts": "53",
+                "RemoteAddresses": "DNS",
+                "Protocol": 17,
+                "Direction": 3
+              },
+              {
+                "Name": "DoH/DoT",
+                "Action": 1,
+                "RemotePorts": "443,853",
+                "RemoteAddresses": "DNS",
+                "Protocol": 6,
+                "Direction": 2
+              },
+              {
+                "Name": "LLMNR-UDP",
+                "Action": 1,
+                "RemotePorts": "5355",
+                "RemoteAddresses": "LocalSubnet",
+                "Protocol": 17,
+                "Direction": 2
+              },
+              {
+                "Name": "LLMNR-UDP",
+                "Action": 1,
+                "LocalPorts": "5355",
+                "RemoteAddresses": "LocalSubnet",
+                "Protocol": 17,
+                "Direction": 1
+              },
+              {
+                "Name": "mDNS",
+                "Action": 1,
+                "LocalPorts": "5353",
+                "RemoteAddresses": "LocalSubnet",
+                "Protocol": 17,
+                "Direction": 1
+              },
+              {
+                "Name": "mDNS",
+                "Action": 1,
+                "RemotePorts": "5353",
+                "RemoteAddresses": "LocalSubnet",
+                "Protocol": 17,
+                "Direction": 2
+              }
+            ]
+          }
+        }
+      ],
+      "Flags": {
+        "TWUI:SPECIAL": null,
+        "TWUI:RECOMMENDED": null
+      }
+    },
+    {
+      "Name": "Windows_Network_Discovery",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 3,
+            "ServiceName": "ssdpsrv",
+            "ExecutablePath": "{folder:sys32}\\svchost.exe"
+          },
+          "Policy": {
+            "PolicyType": 4,
+            "Rules": [
+              {
+                "Name": "SSDP",
+                "Action": 1,
+                "LocalPorts": "1900",
+                "RemoteAddresses": "LocalSubnet,239.255.255.250",
+                "Protocol": 17,
+                "Direction": 1
+              },
+              {
+                "Name": "SSDP",
+                "Action": 1,
+                "RemotePorts": "1900",
+                "RemoteAddresses": "LocalSubnet,239.255.255.250",
+                "Protocol": 17,
+                "Direction": 2
+              }
+            ]
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 3,
+            "ServiceName": "upnphost",
+            "ExecutablePath": "{folder:sys32}\\svchost.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": true,
+            "AllowedRemoteTcpConnectPorts": "2869",
+            "AllowedLocalTcpListenerPorts": "2869"
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "System"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": true,
+            "AllowedRemoteTcpConnectPorts": "2869",
+            "AllowedLocalTcpListenerPorts": "2869"
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "{folder:sys32}\\svchost.exe"
+          },
+          "Policy": {
+            "PolicyType": 4,
+            "Rules": [
+              {
+                "Name": "WSD-In",
+                "Action": 1,
+                "LocalPorts": "3702",
+                "RemoteAddresses": "LocalSubnet,239.255.255.250",
+                "Protocol": 17,
+                "Direction": 1
+              }
+            ]
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 3,
+            "ServiceName": "fdrespub",
+            "ExecutablePath": "{folder:sys32}\\svchost.exe"
+          },
+          "Policy": {
+            "PolicyType": 4,
+            "Rules": [
+              {
+                "Name": "Pub WSD-Out",
+                "Action": 1,
+                "RemotePorts": "3702",
+                "RemoteAddresses": "LocalSubnet,239.255.255.250",
+                "Protocol": 17,
+                "Direction": 2
+              }
+            ]
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 3,
+            "ServiceName": "fdphost",
+            "ExecutablePath": "{folder:sys32}\\svchost.exe"
+          },
+          "Policy": {
+            "PolicyType": 4,
+            "Rules": [
+              {
+                "Name": "WSD-Out",
+                "Action": 1,
+                "RemotePorts": "3702",
+                "RemoteAddresses": "LocalSubnet,239.255.255.250",
+                "Protocol": 17,
+                "Direction": 2
+              }
+            ]
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "{folder:sys32}\\dashost.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": true,
+            "AllowedRemoteUdpConnectPorts": "3702",
+            "AllowedLocalUdpListenerPorts": "3702"
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "System"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": true,
+            "AllowedRemoteTcpConnectPorts": "5357,5358",
+            "AllowedLocalTcpListenerPorts": "5357,5358"
+          }
+        }
+      ],
+      "Flags": {
+        "TWUI:SPECIAL": null,
+        "TWUI:RECOMMENDED": null
+      }
+    },
+    {
+      "Name": "Windows_Remote_Assistance",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "System"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": true,
+            "AllowedRemoteTcpConnectPorts": "2869",
+            "AllowedLocalTcpListenerPorts": "2869"
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 3,
+            "ServiceName": "ssdpsrv",
+            "ExecutablePath": "{folder:sys32}\\svchost.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": true,
+            "AllowedRemoteUdpConnectPorts": "1900",
+            "AllowedLocalUdpListenerPorts": "1900"
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 3,
+            "ServiceName": "PNRPsvc",
+            "ExecutablePath": "{folder:sys32}\\svchost.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": true,
+            "AllowedRemoteUdpConnectPorts": "3540",
+            "AllowedLocalUdpListenerPorts": "3540"
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "{folder:sys32}\\raserver.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "*"
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "{folder:sys32}\\msra.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "*"
+          }
+        }
+      ],
+      "Flags": {
+        "TWUI:SPECIAL": null
+      }
+    },
+    {
+      "Name": "Windows_Remote_Desktop",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "{folder:sys32}\\RdpSa.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedLocalTcpListenerPorts": "*"
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 3,
+            "ServiceName": "termservice",
+            "ExecutablePath": "{folder:sys32}\\svchost.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedLocalTcpListenerPorts": "3389",
+            "AllowedLocalUdpListenerPorts": "3389"
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "{folder:sys32}\\mstsc.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*"
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "System"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedLocalTcpListenerPorts": "3387,3389,3392",
+            "AllowedLocalUdpListenerPorts": "3389"
+          }
+        }
+      ],
+      "Flags": {
+        "TWUI:SPECIAL": null
+      }
+    },
+    {
+      "Name": "Windows_Store_Update",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "{folder:windows}\\WinStore\\WSHost.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*"
+          },
+          "CertificateSubjects": [
+            "CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+          ]
+        },
+        {
+          "Subject": {
+            "SubjectType": 4,
+            "Sid": "S-1-15-2-2434737943-167758768-3180539153-984336765-1107280622-3591121930-2677285773",
+            "DisplayName": "Microsoft.Windows.CloudExperienceHost",
+            "Publisher": "CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+            "PublisherId": "cw5n1h2txyewy"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "*"
+          }
+        }
+      ],
+      "Flags": {
+        "TWUI:SPECIAL": null,
+        "TWUI:RECOMMENDED": null
+      }
+    },
+    {
+      "Name": "Windows_Time_Sync",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "{folder:sys32}\\svchost.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteUdpConnectPorts": "123"
+          }
+        }
+      ],
+      "Flags": {
+        "TWUI:SPECIAL": null,
+        "TWUI:RECOMMENDED": null
+      }
+    },
+    {
+      "Name": "Windows_Update",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 3,
+            "ServiceName": "wuauserv",
+            "ExecutablePath": "{folder:sys32}\\svchost.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*"
+          }
+        },
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "{folder:sys32}\\svchost.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "443,80"
+          }
+        }
+      ],
+      "Flags": {
+        "TWUI:SPECIAL": null,
+        "TWUI:RECOMMENDED": null
+      }
+    },
+    {
+      "Name": "VPN_L2TP_IPSec",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 1
+          },
+          "Policy": {
+            "PolicyType": 4,
+            "Rules": [
+              {
+                "Name": "IPSec IKE",
+                "Action": 1,
+                "RemotePorts": "500",
+                "Protocol": 17,
+                "Direction": 3
+              },
+              {
+                "Name": "IPSec NAT-T",
+                "Action": 1,
+                "RemotePorts": "4500",
+                "Protocol": 17,
+                "Direction": 3
+              },
+              {
+                "Name": "LT2P/IPSec Traffic",
+                "Action": 1,
+                "RemotePorts": "1701",
+                "Protocol": 17,
+                "Direction": 3
+              },
+              {
+                "Name": "IPSec ESP",
+                "Action": 1,
+                "Protocol": 50,
+                "Direction": 3
+              },
+              {
+                "Name": "IPSec AH",
+                "Action": 1,
+                "Protocol": 51,
+                "Direction": 3
+              }
+            ]
+          }
+        }
+      ],
+      "Flags": {
+        "TWUI:SPECIAL": null
+      }
+    },
+    {
+      "Name": "VPN_PPTP",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 1
+          },
+          "Policy": {
+            "PolicyType": 4,
+            "Rules": [
+              {
+                "Name": "PPTP Initialization (Client)",
+                "Action": 1,
+                "RemotePorts": "1723",
+                "Protocol": 6,
+                "Direction": 2
+              },
+              {
+                "Name": "PPTP Traffic",
+                "Action": 1,
+                "Protocol": 47,
+                "Direction": 3
+              }
+            ]
+          }
+        }
+      ],
+      "Flags": {
+        "TWUI:SPECIAL": null
+      }
+    },
+    {
+      "Name": "WSL_2",
+      "Components": [],
+      "Flags": {
+        "TWUI:SPECIAL": null,
+        "TWSRV:FLAG": null
+      }
+    }
+  ]
+}

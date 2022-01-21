@@ -1,0 +1,28 @@
+{
+  "Name": "Mozilla Thunderbird",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "thunderbird.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "",
+        "AllowedLocalUdpListenerPorts": ""
+      },
+      "SearchPaths": [
+        "{reg:SOFTWARE\\Wow6432Node\\Mozilla\\Mozilla Thunderbird\\{reg:SOFTWARE\\Wow6432Node\\Mozilla\\Mozilla Thunderbird:CurrentVersion}\\Main:Install Directory}",
+        "{reg:SOFTWARE\\Mozilla\\Mozilla Thunderbird\\{reg:SOFTWARE\\Mozilla\\Mozilla Thunderbird:CurrentVersion}\\Main:Install Directory}"
+      ],
+      "CertificateSubjects": [
+        "E=\u0022release\u002Bcertificates@mozilla.com\u0022, CN=Mozilla Corporation, OU=Release Engineering, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
+        "CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US"
+      ]
+    }
+  ],
+  "Flags": {}
+}

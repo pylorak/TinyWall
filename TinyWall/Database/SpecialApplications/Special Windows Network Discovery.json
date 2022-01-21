@@ -1,0 +1,145 @@
+{
+  "Name": "Windows_Network_Discovery",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 3,
+        "ServiceName": "ssdpsrv",
+        "ExecutablePath": "{folder:sys32}\\svchost.exe"
+      },
+      "Policy": {
+        "PolicyType": 4,
+        "Rules": [
+          {
+            "Name": "SSDP",
+            "Action": 1,
+            "LocalPorts": "1900",
+            "RemoteAddresses": "LocalSubnet,239.255.255.250",
+            "Protocol": 17,
+            "Direction": 1
+          },
+          {
+            "Name": "SSDP",
+            "Action": 1,
+            "RemotePorts": "1900",
+            "RemoteAddresses": "LocalSubnet,239.255.255.250",
+            "Protocol": 17,
+            "Direction": 2
+          }
+        ]
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 3,
+        "ServiceName": "upnphost",
+        "ExecutablePath": "{folder:sys32}\\svchost.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": true,
+        "AllowedRemoteTcpConnectPorts": "2869",
+        "AllowedLocalTcpListenerPorts": "2869"
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "System"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": true,
+        "AllowedRemoteTcpConnectPorts": "2869",
+        "AllowedLocalTcpListenerPorts": "2869"
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "{folder:sys32}\\svchost.exe"
+      },
+      "Policy": {
+        "PolicyType": 4,
+        "Rules": [
+          {
+            "Name": "WSD-In",
+            "Action": 1,
+            "LocalPorts": "3702",
+            "RemoteAddresses": "LocalSubnet,239.255.255.250",
+            "Protocol": 17,
+            "Direction": 1
+          }
+        ]
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 3,
+        "ServiceName": "fdrespub",
+        "ExecutablePath": "{folder:sys32}\\svchost.exe"
+      },
+      "Policy": {
+        "PolicyType": 4,
+        "Rules": [
+          {
+            "Name": "Pub WSD-Out",
+            "Action": 1,
+            "RemotePorts": "3702",
+            "RemoteAddresses": "LocalSubnet,239.255.255.250",
+            "Protocol": 17,
+            "Direction": 2
+          }
+        ]
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 3,
+        "ServiceName": "fdphost",
+        "ExecutablePath": "{folder:sys32}\\svchost.exe"
+      },
+      "Policy": {
+        "PolicyType": 4,
+        "Rules": [
+          {
+            "Name": "WSD-Out",
+            "Action": 1,
+            "RemotePorts": "3702",
+            "RemoteAddresses": "LocalSubnet,239.255.255.250",
+            "Protocol": 17,
+            "Direction": 2
+          }
+        ]
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "{folder:sys32}\\dashost.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": true,
+        "AllowedRemoteUdpConnectPorts": "3702",
+        "AllowedLocalUdpListenerPorts": "3702"
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "System"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": true,
+        "AllowedRemoteTcpConnectPorts": "5357,5358",
+        "AllowedLocalTcpListenerPorts": "5357,5358"
+      }
+    }
+  ],
+  "Flags": {
+    "TWUI:SPECIAL": null,
+    "TWUI:RECOMMENDED": null
+  }
+}

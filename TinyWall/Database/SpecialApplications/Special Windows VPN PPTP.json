@@ -1,0 +1,31 @@
+{
+  "Name": "VPN_PPTP",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 1
+      },
+      "Policy": {
+        "PolicyType": 4,
+        "Rules": [
+          {
+            "Name": "PPTP Initialization (Client)",
+            "Action": 1,
+            "RemotePorts": "1723",
+            "Protocol": 6,
+            "Direction": 2
+          },
+          {
+            "Name": "PPTP Traffic",
+            "Action": 1,
+            "Protocol": 47,
+            "Direction": 3
+          }
+        ]
+      }
+    }
+  ],
+  "Flags": {
+    "TWUI:SPECIAL": null
+  }
+}

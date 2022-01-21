@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Globalization;
 using Microsoft.Samples;
+using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 
 namespace pylorak.TinyWall.DatabaseClasses
@@ -15,19 +16,12 @@ namespace pylorak.TinyWall.DatabaseClasses
 
         public static string DBPath
         {
-            get { return System.IO.Path.Combine(Utils.AppDataPath, "profiles.xml"); }
+            get { return System.IO.Path.Combine(Utils.AppDataPath, "profiles.json"); }
         }
 
         public static AppDatabase Load(string filePath)
         {
-            try
-            {
-                return SerializationHelper.DeserializeFromFile(filePath, new AppDatabase());
-            }
-            catch
-            {
-                return SerializationHelper.LoadFromXMLFile<AppDatabase>(filePath);
-            }
+            return SerializationHelper.DeserializeFromFile(filePath, new AppDatabase());
         }
 
         public void Save(string filePath)
@@ -35,10 +29,15 @@ namespace pylorak.TinyWall.DatabaseClasses
             SerializationHelper.SerializeToFile(this, filePath);
         }
 
-        public AppDatabase()
+        [JsonConstructor]
+        public AppDatabase(List<Application> knownApplications)
         {
-            _KnownApplications = new List<Application>();
+            _KnownApplications = knownApplications;
         }
+
+        public AppDatabase() :
+            this(new List<Application>())
+        { }
 
         public List<Application> KnownApplications
         {

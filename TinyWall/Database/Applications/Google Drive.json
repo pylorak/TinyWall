@@ -1,0 +1,28 @@
+{
+  "Name": "Google Drive Sync",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "googledrivesync.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "",
+        "AllowedLocalTcpListenerPorts": "",
+        "AllowedLocalUdpListenerPorts": ""
+      },
+      "SearchPaths": [
+        "{parent:{reg:SOFTWARE\\Wow6432Node\\Google\\Drive:InstallLocation}}",
+        "{parent:{reg:SOFTWARE\\Google\\Drive:InstallLocation}}"
+      ],
+      "CertificateSubjects": [
+        "CN=Google LLC, O=Google LLC, L=Mountain View, S=ca, C=US",
+        "CN=Google LLC, O=Google LLC, L=Mountain View, S=California, C=US"
+      ]
+    }
+  ],
+  "Flags": {}
+}

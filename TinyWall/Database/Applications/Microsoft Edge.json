@@ -1,0 +1,23 @@
+{
+  "Name": "Microsoft Edge",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "{folder:sys32}\\MicrosoftEdgeCP.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "",
+        "AllowedLocalUdpListenerPorts": ""
+      },
+      "AllowedSha1": [
+        "ECB05717E416D965255387F4EDC196889AA12C67"
+      ]
+    }
+  ],
+  "Flags": {}
+}

@@ -1,0 +1,40 @@
+{
+  "Name": "Microsoft Edge",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "{folder:pf32}\\Microsoft\\Edge\\Application\\msedge.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "",
+        "AllowedLocalUdpListenerPorts": ""
+      },
+      "CertificateSubjects": [
+        "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+      ]
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "{folder:pf32}\\Microsoft\\EdgeUpdate\\MicrosoftEdgeUpdate.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "",
+        "AllowedLocalUdpListenerPorts": ""
+      },
+      "CertificateSubjects": [
+        "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+      ]
+    }
+  ],
+  "Flags": {}
+}

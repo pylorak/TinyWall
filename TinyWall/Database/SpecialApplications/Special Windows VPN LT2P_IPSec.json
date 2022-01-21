@@ -1,0 +1,51 @@
+{
+  "Name": "VPN_L2TP_IPSec",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 1
+      },
+      "Policy": {
+        "PolicyType": 4,
+        "Rules": [
+          {
+            "Name": "IPSec IKE",
+            "Action": 1,
+            "RemotePorts": "500",
+            "Protocol": 17,
+            "Direction": 3
+          },
+          {
+            "Name": "IPSec NAT-T",
+            "Action": 1,
+            "RemotePorts": "4500",
+            "Protocol": 17,
+            "Direction": 3
+          },
+          {
+            "Name": "LT2P/IPSec Traffic",
+            "Action": 1,
+            "RemotePorts": "1701",
+            "Protocol": 17,
+            "Direction": 3
+          },
+          {
+            "Name": "IPSec ESP",
+            "Action": 1,
+            "Protocol": 50,
+            "Direction": 3
+          },
+          {
+            "Name": "IPSec AH",
+            "Action": 1,
+            "Protocol": 51,
+            "Direction": 3
+          }
+        ]
+      }
+    }
+  ],
+  "Flags": {
+    "TWUI:SPECIAL": null
+  }
+}

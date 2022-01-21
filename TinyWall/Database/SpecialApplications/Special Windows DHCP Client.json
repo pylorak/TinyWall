@@ -1,0 +1,51 @@
+{
+  "Name": "Windows_DHCP_Client",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 3,
+        "ServiceName": "dhcp",
+        "ExecutablePath": "{folder:sys32}\\svchost.exe"
+      },
+      "Policy": {
+        "PolicyType": 4,
+        "Rules": [
+          {
+            "Name": "DHCP IPv4 client",
+            "Action": 1,
+            "LocalPorts": "68",
+            "RemotePorts": "67",
+            "RemoteAddresses": "LocalSubnet",
+            "Protocol": 17,
+            "Direction": 3
+          },
+          {
+            "Name": "DHCP IPv6 client",
+            "Action": 1,
+            "LocalPorts": "546",
+            "RemotePorts": "547",
+            "RemoteAddresses": "LocalSubnet",
+            "Protocol": 17,
+            "Direction": 3
+          }
+        ]
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 3,
+        "ServiceName": "lmhosts",
+        "ExecutablePath": "{folder:sys32}\\svchost.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteUdpConnectPorts": "67"
+      }
+    }
+  ],
+  "Flags": {
+    "TWUI:SPECIAL": null,
+    "TWUI:RECOMMENDED": null
+  }
+}

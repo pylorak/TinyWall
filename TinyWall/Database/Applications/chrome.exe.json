@@ -1,0 +1,29 @@
+{
+  "Name": "Google Chrome",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "chrome.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "*",
+        "AllowedLocalUdpListenerPorts": "*"
+      },
+      "SearchPaths": [
+        "{folder:LocalAppData}\\Google\\Chrome\\Application",
+        "{folder:pf32}\\Google\\Chrome\\Application",
+        "{folder:pf64}\\Google\\Chrome\\Application"
+      ],
+      "CertificateSubjects": [
+        "CN=Google LLC, O=Google LLC, L=Mountain View, S=ca, C=US",
+        "CN=Google LLC, O=Google LLC, L=Mountain View, S=California, C=US"
+      ]
+    }
+  ],
+  "Flags": {}
+}

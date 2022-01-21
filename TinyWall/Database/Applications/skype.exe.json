@@ -1,0 +1,29 @@
+{
+  "Name": "Skype",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "Skype.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "443,1000-10000,50000-65000,16000-26000",
+        "AllowedLocalUdpListenerPorts": "3478-3481,50000-60000"
+      },
+      "SearchPaths": [
+        "{parent:{reg:SOFTWARE\\Wow6432Node\\Skype\\Phone:SkypePath}}",
+        "{parent:{reg:SOFTWARE\\Skype\\Phone:SkypePath}}",
+        "{folder:pf32}\\Microsoft\\Skype for Desktop",
+        "{folder:pf64}\\Microsoft\\Skype for Desktop"
+      ],
+      "CertificateSubjects": [
+        "CN=Skype Software Sarl, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+      ]
+    }
+  ],
+  "Flags": {}
+}

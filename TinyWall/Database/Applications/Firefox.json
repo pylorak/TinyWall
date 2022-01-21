@@ -1,0 +1,52 @@
+{
+  "Name": "Mozilla Firefox",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "Firefox.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "*",
+        "AllowedLocalUdpListenerPorts": "*"
+      },
+      "SearchPaths": [
+        "{reg:SOFTWARE\\Wow6432Node\\Mozilla\\Mozilla Firefox\\{reg:SOFTWARE\\Wow6432Node\\Mozilla\\Mozilla Firefox:CurrentVersion}\\Main:Install Directory}",
+        "{reg:SOFTWARE\\Mozilla\\Mozilla Firefox\\{reg:SOFTWARE\\Mozilla\\Mozilla Firefox:CurrentVersion}\\Main:Install Directory}"
+      ],
+      "CertificateSubjects": [
+        "E=\u0022release\u002Bcertificates@mozilla.com\u0022, CN=Mozilla Corporation, OU=Release Engineering, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
+        "E=\u0022release\u002Bcertificates@mozilla.com\u0022, CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
+        "CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US"
+      ]
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "plugin-container.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "",
+        "AllowedLocalUdpListenerPorts": ""
+      },
+      "SearchPaths": [
+        "{reg:SOFTWARE\\Wow6432Node\\Mozilla\\Mozilla Firefox\\{reg:SOFTWARE\\Wow6432Node\\Mozilla\\Mozilla Firefox:CurrentVersion}\\Main:Install Directory}",
+        "{reg:SOFTWARE\\Mozilla\\Mozilla Firefox\\{reg:SOFTWARE\\Mozilla\\Mozilla Firefox:CurrentVersion}\\Main:Install Directory}"
+      ],
+      "CertificateSubjects": [
+        "E=\u0022release\u002Bcertificates@mozilla.com\u0022, CN=Mozilla Corporation, OU=Release Engineering, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
+        "E=\u0022release\u002Bcertificates@mozilla.com\u0022, CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
+        "CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US"
+      ]
+    }
+  ],
+  "Flags": {}
+}

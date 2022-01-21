@@ -1,0 +1,74 @@
+{
+  "Name": "Steam Client",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "Steam.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "*",
+        "AllowedLocalUdpListenerPorts": "*"
+      },
+      "SearchPaths": [
+        "{reg:SOFTWARE\\Wow6432Node\\Valve\\Steam:InstallPath}",
+        "{reg:SOFTWARE\\Valve\\Steam:InstallPath}"
+      ],
+      "CertificateSubjects": [
+        "CN=Valve, O=Valve, L=Bellevue, S=WA, C=US",
+        "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US"
+      ]
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "GameOverlayUI.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "*",
+        "AllowedLocalUdpListenerPorts": "*"
+      },
+      "SearchPaths": [
+        "{reg:SOFTWARE\\Wow6432Node\\Valve\\Steam:InstallPath}",
+        "{reg:SOFTWARE\\Valve\\Steam:InstallPath}"
+      ],
+      "CertificateSubjects": [
+        "CN=Valve, O=Valve, L=Bellevue, S=WA, C=US",
+        "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US"
+      ]
+    },
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "steamwebhelper.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "*",
+        "AllowedLocalUdpListenerPorts": "*"
+      },
+      "SearchPaths": [
+        "{NoTrailingSlash:{reg:SOFTWARE\\Wow6432Node\\Valve\\Steam:InstallPath}}\\bin",
+        "{NoTrailingSlash:{reg:SOFTWARE\\Valve\\Steam:InstallPath}}\\bin",
+        "{NoTrailingSlash:{reg:SOFTWARE\\Wow6432Node\\Valve\\Steam:InstallPath}}\\bin\\cef\\cef.win7x64",
+        "{NoTrailingSlash:{reg:SOFTWARE\\Valve\\Steam:InstallPath}}\\bin\\cef\\cef.win7x64"
+      ],
+      "CertificateSubjects": [
+        "CN=Valve, O=Valve, L=Bellevue, S=WA, C=US",
+        "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US"
+      ]
+    }
+  ],
+  "Flags": {}
+}

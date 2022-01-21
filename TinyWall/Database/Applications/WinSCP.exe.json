@@ -1,0 +1,28 @@
+{
+  "Name": "WinSCP",
+  "Components": [
+    {
+      "Subject": {
+        "SubjectType": 2,
+        "ExecutablePath": "WinSCP.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": false,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedRemoteUdpConnectPorts": "",
+        "AllowedLocalTcpListenerPorts": "*",
+        "AllowedLocalUdpListenerPorts": ""
+      },
+      "SearchPaths": [
+        "{folder:pf32}\\WinSCP",
+        "{folder:pf64}\\WinSCP"
+      ],
+      "CertificateSubjects": [
+        "CN=Martin Prikryl, O=Martin Prikryl, L=Prague, S=Hlavni mesto Praha, C=CZ",
+        "CN=Martin Prikryl, O=Martin Prikryl, L=Prague, C=CZ, SERIALNUMBER=87331519, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=CZ"
+      ]
+    }
+  ],
+  "Flags": {}
+}

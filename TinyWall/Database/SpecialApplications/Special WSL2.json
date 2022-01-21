@@ -1,0 +1,8 @@
+{
+  "Name": "WSL_2",
+  "Components": [],
+  "Flags": {
+    "TWUI:SPECIAL": null,
+    "TWSRV:FLAG": null
+  }
+}

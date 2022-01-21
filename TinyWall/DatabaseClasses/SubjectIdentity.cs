@@ -8,7 +8,7 @@ using pylorak.Windows;
 namespace pylorak.TinyWall.DatabaseClasses
 {
     [DataContract(Namespace = "TinyWall")]
-    internal sealed class SubjectIdentity : ISerializable<SubjectIdentity>
+    public sealed class SubjectIdentity : ISerializable<SubjectIdentity>
     {
         public SubjectIdentity(ExceptionSubject subject)
         {
@@ -16,19 +16,19 @@ namespace pylorak.TinyWall.DatabaseClasses
         }
 
         [DataMember(EmitDefaultValue = false)]
-        internal ExceptionSubject Subject { get; set; } = GlobalSubject.Instance;
+        public ExceptionSubject Subject { get; set; } = GlobalSubject.Instance;
         [DataMember(EmitDefaultValue = false)]
-        internal ExceptionPolicy Policy { get; set; } = new TcpUdpPolicy(true);
+        public ExceptionPolicy Policy { get; set; } = new TcpUdpPolicy(true);
 
         // List of locations that specify where to search for this file.
         // Any string that can be resolved by RecursiveParser is valid.
         [DataMember(EmitDefaultValue = false)]
-        internal List<string>? SearchPaths { get; set; }
+        public List<string>? SearchPaths { get; set; }
 
         // List of possible public keys.
         // If the array has more than one items, only one needs to apply.
         [DataMember(EmitDefaultValue = false)]
-        internal List<string>? CertificateSubjects { get; set; }
+        public List<string>? CertificateSubjects { get; set; }
 
         // List of possible hash strings.
         // If the array has more than one items, only one needs to apply.
