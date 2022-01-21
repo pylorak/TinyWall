@@ -1120,9 +1120,11 @@ namespace pylorak.TinyWall
                 {
                     string filePath = Path.Combine(Utils.AppDataPath, LastUpdateCheck_FILENAME);
                     using var afu = new AtomicFileUpdater(filePath);
-                    using var fs = new FileStream(afu.TemporaryFilePath, FileMode.Create, FileAccess.Write, FileShare.None);
-                    using var sw = new StreamWriter(fs, Encoding.UTF8);
-                    sw.WriteLine(value.ToString("O"));
+                    using (var fs = new FileStream(afu.TemporaryFilePath, FileMode.Create, FileAccess.Write))
+                    {
+                        using var sw = new StreamWriter(fs, Encoding.UTF8);
+                        sw.WriteLine(value.ToString("O"));
+                    }
                     afu.Commit();
                 }
                 catch { }
