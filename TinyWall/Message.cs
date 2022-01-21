@@ -73,6 +73,7 @@ namespace pylorak.TinyWall
     [JsonConverter(typeof(TwMessageConverter))]
     public abstract record TwMessage : ISerializable<TwMessage>
     {
+        [JsonPropertyOrder(-1)]
         public MessageType Type { get; }
 
         [JsonConstructor]

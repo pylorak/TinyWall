@@ -59,6 +59,7 @@ namespace pylorak.TinyWall
     [DataContract(Namespace = "TinyWall")]
     public abstract class ExceptionPolicy
     {
+        [JsonPropertyOrder(-1)]
         public abstract PolicyType PolicyType { get; }
 
         public abstract bool MergeRulesTo(ref ExceptionPolicy other);

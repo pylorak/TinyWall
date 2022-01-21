@@ -57,6 +57,7 @@ namespace pylorak.TinyWall
     [DataContract(Namespace = "TinyWall")]
     public abstract class ExceptionSubject : IEquatable<ExceptionSubject>
     {
+        [JsonPropertyOrder(-1)]
         public abstract SubjectType SubjectType { get; }
 
         public abstract bool Equals(ExceptionSubject other);
