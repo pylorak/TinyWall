@@ -155,7 +155,7 @@ namespace pylorak.TinyWall
         public static void SerializeToFile<T>(T obj, string filepath) where T : ISerializable<T>
         {
             using var fileUpdater = new AtomicFileUpdater(filepath);
-            using (var stream = new FileStream(fileUpdater.TemporaryFilePath, FileMode.Create, FileAccess.Write))
+            using (var stream = new FileStream(fileUpdater.TemporaryFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 Serialize(stream, obj);
             }
@@ -197,7 +197,7 @@ namespace pylorak.TinyWall
 
             // Encrypt
             using var fileUpdater = new AtomicFileUpdater(filePath);
-            using (var fs = new FileStream(fileUpdater.TemporaryFilePath, FileMode.Create, FileAccess.Write))
+            using (var fs = new FileStream(fileUpdater.TemporaryFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 using var cryptoStream = new CryptoStream(fs, symmetricKey.CreateEncryptor(), CryptoStreamMode.Write);
                 Serialize(cryptoStream, obj);
