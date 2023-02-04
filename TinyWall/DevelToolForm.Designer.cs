@@ -312,7 +312,7 @@
             this.txtUpdateURL.Name = "txtUpdateURL";
             this.txtUpdateURL.Size = new System.Drawing.Size(423, 20);
             this.txtUpdateURL.TabIndex = 23;
-            this.txtUpdateURL.Text = "https://tinywall.pados.hu/updates/UpdVer5/";
+            this.txtUpdateURL.Text = "https://tinywall.pados.hu/updates/UpdVer6/";
             // 
             // label8
             // 

@@ -185,8 +185,8 @@ namespace pylorak.TinyWall
 
     internal static class UpdateChecker
     {
-        private const int UPDATER_VERSION = 5;
-        private const string URL_UPDATE_DESCRIPTOR = @"https://tinywall.pados.hu/updates/UpdVer{0}/update.xml";
+        private const int UPDATER_VERSION = 6;
+        private const string URL_UPDATE_DESCRIPTOR = @"https://tinywall.pados.hu/updates/UpdVer{0}/update.json";
 
         internal static UpdateDescriptor GetDescriptor()
         {

@@ -164,20 +164,25 @@ namespace pylorak.TinyWall
             const string HOSTS_PLACEHOLDER = "[HOSTS_SHA256_PLACEHOLDER]";
             const string DB_OUT_NAME = "database.def";
             const string HOSTS_OUT_NAME = "hosts.def";
-            const string XML_OUT_NAME = "update.xml";
-            const string XML_OUT_TEMPLATE_NAME = "update_template.xml";
+            const string DESCRIPTOR_NAME = "update.json";
+            const string DESCRIPTOR_TEMPLATE_NAME = "update_template.json";
             const string MSI_FILENAME = "TinyWall-v3-Installer.msi";
 
             string projectDir = txtUpdateInstallerProjectDir.Text;
             string msiPath = Path.Combine(projectDir, @"bin\Release\" + MSI_FILENAME);
             string hostsPath = Path.Combine(projectDir, @"Sources\CommonAppData\TinyWall\hosts.bck");
-            string profilesPath = Path.Combine(projectDir, @"Sources\CommonAppData\TinyWall\profiles.xml");
+            string profilesPath = Path.Combine(projectDir, @"Sources\CommonAppData\TinyWall\profiles.json");
 
             string twAssemblyPath = Path.Combine(projectDir, @"Sources\ProgramFiles\TinyWall\TinyWall.exe");
 
             void showUpdateFileNotFoundMsg(string file)
             {
                 MessageBox.Show(this, "File\n\n" + file + "\n\nnot found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            void showUpdateDirectoryNotFoundMsg(string file)
+            {
+                MessageBox.Show(this, "Directory\n\n" + file + "\n\nnot found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             if (!File.Exists(msiPath))
@@ -198,6 +203,11 @@ namespace pylorak.TinyWall
             if (!File.Exists(twAssemblyPath))
             {
                 showUpdateFileNotFoundMsg(twAssemblyPath);
+                return;
+            }
+            if (!Directory.Exists(txtUpdateOutput.Text))
+            {
+                showUpdateDirectoryNotFoundMsg(txtUpdateOutput.Text);
                 return;
             }
 
@@ -232,11 +242,11 @@ namespace pylorak.TinyWall
             string hostsOut = Path.Combine(txtUpdateOutput.Text, HOSTS_OUT_NAME);
             Utils.CompressDeflate(hostsPath, hostsOut);
 
-            string updOut = Path.Combine(txtUpdateOutput.Text, XML_OUT_NAME);
+            string updOut = Path.Combine(txtUpdateOutput.Text, DESCRIPTOR_NAME);
             SerializationHelper.SerializeToFile(update, updOut);
 
             update.Modules[2].DownloadHash = HOSTS_PLACEHOLDER;
-            updOut = Path.Combine(txtUpdateOutput.Text, XML_OUT_TEMPLATE_NAME);
+            updOut = Path.Combine(txtUpdateOutput.Text, DESCRIPTOR_TEMPLATE_NAME);
             SerializationHelper.SerializeToFile(update, updOut);
 
             MessageBox.Show(this, "Update created.", "Success.", MessageBoxButtons.OK, MessageBoxIcon.Information);
