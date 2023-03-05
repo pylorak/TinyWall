@@ -237,8 +237,6 @@ namespace pylorak.TinyWall
                 default:
                     throw new NotImplementedException();
             }
-
-            UpdateOKButtonEnabled();
         }
 
         private static string CleanupPortsList(string str)
@@ -285,20 +283,6 @@ namespace pylorak.TinyWall
             res = res.Remove(0, 1);
 
             return res;
-        }
-        
-        private void UpdateOKButtonEnabled()
-        {
-            btnOK.Enabled = TmpExceptionSettings[0].Subject.SubjectType switch
-            {
-                SubjectType.Executable or
-                SubjectType.Service
-                    => DatabaseClasses.SubjectIdentity.IsValidExecutablePath(((ExecutableSubject)TmpExceptionSettings[0].Subject).ExecutablePath),
-                SubjectType.AppContainer or
-                SubjectType.Global
-                    => true,
-                _ => throw new NotImplementedException(),
-            };
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -413,12 +397,10 @@ namespace pylorak.TinyWall
 
         private void txtAppPath_TextChanged(object sender, EventArgs e)
         {
-            UpdateOKButtonEnabled();
         }
 
         private void txtSrvName_TextChanged(object sender, EventArgs e)
         {
-            UpdateOKButtonEnabled();
         }
 
         private void cmbTimer_SelectedIndexChanged(object sender, EventArgs e)
