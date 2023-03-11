@@ -1,0 +1,24 @@
+Future development ideas (in no particular order):
+- Find solution for isolating Windows Update
+- Dark-theme GUI support
+- GUI modernization (Windows App SDK?)
+- Make changelog easier to access
+- Merge the two changelogs
+- Option wheteher to allow inbound connection in default rule
+- Better hosts handling
+- Unified dialog boxes
+- Detect other firewall software
+- WHOIS query to Connections' remote addresses
+- Add block reason to Connections window
+- Context-menu whitelisting
+- Remove port-based blocklist support
+- Add "Open folder" to Processes and Connections windows
+- Checkboxes in mode menu
+- Connections window auto refresh checkbox
+- Connections window always on top checkbox
+- VirusTotal integration
+- App profile submission system
+- IP blocklists
+- SQLite database
+- Action Center integration
+- Updater to detected database format breakage

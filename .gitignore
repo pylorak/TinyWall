@@ -5,22 +5,17 @@
 *.suo
 
 /.vs/
-/Assets/
+/.tx/
 
 /LocalizationPack/**/*.resx
 /LocalizationPack/**/*.pdf
 /LocalizationPack/ZetaResourceEditor/
 
-/Temp
-/SortRESX
 /TinyWall.suo
 /TinyWall.v11.suo
 
 /TinyWall/obj/
 /TinyWall/bin/
-
-/TinyWall.Interface/obj/
-/TinyWall.Interface/bin/
 
 /pylorak.Utilities/obj/
 /pylorak.Utilities/bin/
@@ -34,12 +29,6 @@
 /pylorak.Windows.WFP/bin/
 /pylorak.Windows.WFP/obj/
 
-/Toaster/obj/
-/Toaster/bin/
-
 /MsiSetup/obj/
 /MsiSetup/bin/
 /MsiSetup/Sources/ProgramFiles/
-
-/NativeHelper/Win32/
-/NativeHelper/x64/
