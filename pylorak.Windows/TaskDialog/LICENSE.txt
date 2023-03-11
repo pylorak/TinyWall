@@ -1,0 +1,2 @@
+Sources in this subdirectory written by KevinGre and placed under Public Domain.
+Original URL: https://www.codeproject.com/Articles/17026/TaskDialog-for-WinForms
