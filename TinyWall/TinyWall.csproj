@@ -26,10 +26,6 @@
     <Version>3.3.0</Version>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>TinyWall.key.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
     <ApplicationIcon>Resources\img\firewall.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
