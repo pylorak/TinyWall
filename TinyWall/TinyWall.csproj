@@ -23,7 +23,7 @@
     <Company>Károly Pados</Company>
     <Description>A free, lightweight and non-intrusive firewall.</Description>
     <Copyright>Copyright © 2011 Károly Pados</Copyright>
-    <Version>3.2.99</Version>
+    <Version>3.3.0</Version>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>

@@ -1,12 +1,15 @@
 TinyWall Changelog
 ---------------------
 
-3.3.x - Not yet released (xx.xx.2022.)
-- Require Windows 10 and .Net Framework 4.8
-- Add support for Windows on Arm
+3.3.0 - Major update (05.03.2023.)
+- Windows 10 and .Net Framework 4.8 are now prerequisites
+- Do not require executable to exist when editing firewall exceptions in GUI
+- Migrate serialization formats to JSON to avoid runtime code generation
+- Migrate native libraries to .Net
 - Many memory and performance optimizations
-- Annotate code for and enable null-state static analysis
-- Remove deprecated code
+- Annotate for and enable null-state static analysis
+- Code restructuring and modernization
+- Deprecated code removal
 
 ---------------------
 
