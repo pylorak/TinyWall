@@ -224,6 +224,11 @@
               <File Id="LocSatelliteDLL_nl" Source="Sources\ProgramFiles\TinyWall\nl\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
             </Component>
           </Directory>
+          <Directory Id="LOCDIR_ko" Name="ko">
+            <Component Id="LocSatelliteLib_ko" Guid="{91FD1C6A-3F94-4926-9C7D-27190A191F13}" Win64="$(var.Win64)">
+              <File Id="LocSatelliteDLL_ko" Source="Sources\ProgramFiles\TinyWall\ko\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
+            </Component>
+          </Directory>
           <Directory Id="LOCDIR_pl" Name="pl">
             <Component Id="LocSatelliteLib_pl" Guid="{92858D12-E2A8-4669-AD3C-192DCEFC61F7}" Win64="$(var.Win64)">
               <File Id="LocSatelliteDLL_pl" Source="Sources\ProgramFiles\TinyWall\pl\TinyWall.resources.dll" Vital="yes" KeyPath="yes" Checksum="yes" Assembly=".net" AssemblyApplication="TinyWallEXE" />
@@ -367,6 +372,7 @@
       <ComponentRef Id="LocSatelliteLib_ja"/>
       <ComponentRef Id="LocSatelliteLib_de"/>
       <ComponentRef Id="LocSatelliteLib_nl"/>
+      <ComponentRef Id="LocSatelliteLib_ko"/>
       <ComponentRef Id="LocSatelliteLib_ru"/>
       <ComponentRef Id="LocSatelliteLib_it"/>
       <ComponentRef Id="LocSatelliteLib_zh"/>

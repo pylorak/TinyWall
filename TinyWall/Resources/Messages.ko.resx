@@ -160,7 +160,7 @@
     <comment>Param0 is name, param1 is pid of process.</comment>
   </data>
 	<data name="PasswordFieldsDoNotMatch" xml:space="preserve">
-    <value>비밀번호 입력란이 일치하지 않습니다. 비밀번호를 확인해주세요.</value>
+    <value>암호 입력란이 일치하지 않습니다. 암호를 확인해주세요.</value>
   <comment></comment></data>
 	<data name="AreYouSureYouWantToRemoveAllExceptions" xml:space="preserve">
     <value>정말로 모든 방화벽 예외를 제거하시겠습니까?</value>
@@ -168,7 +168,7 @@
 	<data name="YouDoNotHaveAdministrativePrivilegesNeeded" xml:space="preserve">
     <value>이 작업을 수행하는데 필요한 관리 권한이 없습니다.
 트레이 메뉴에서 권한 상승을 선택하고 다시 시도하세요.</value>
-  <comment></comment></data>
+  </data>
 	<data name="TinyWallSettingsFileFilter" xml:space="preserve">
     <value>TinyWall 설정</value>
     <comment>File filter description</comment>
@@ -179,20 +179,12 @@
   </data>
 	<data name="ConfigurationHasBeenImported" xml:space="preserve">
     <value>구성 파일을 성공적으로 가져왔습니다.  새로운 설정을 적용하려면 관리 창에서 적용을 누르세요.</value>
-  <comment></comment></data>
+  </data>
 	<data name="ConfigurationImportError" xml:space="preserve">
     <value>구성 파일을 가져올 수 없습니다.</value>
-  <comment></comment></data>
+  </data>
 	<data name="ConfigurationHasBeenExported" xml:space="preserve">
     <value>구성 파일을 성공적으로 내보냈습니다.</value>
-  <comment></comment></data>
-	<data name="CurrentZone" xml:space="preserve">
-    <value>현재 영역: {0}</value>
-    <comment>Param0 is name of zone</comment>
-  </data>
-	<data name="Zone" xml:space="preserve">
-    <value>영역</value>
-    <comment>Tray text</comment>
   </data>
 	<data name="Mode" xml:space="preserve">
     <value>모드</value>
@@ -207,7 +199,7 @@
     <comment>Tray menu text</comment>
   </data>
 	<data name="UpdateAvailableBubble" xml:space="preserve">
-    <value>TinyWall의 새로운 버전 {0} 사용 가능! 업데이트 작업을 시작하려면 이 버블을 누르세요.</value>
+    <value>TinyWall의 새 버전 {0} 사용 가능! 업데이트를 시작하려면 이 버블을 누르세요.</value>
     <comment>Param0 is version number of new version</comment>
   </data>
 	<data name="TheFirewallIsNowOperatingAsRecommended" xml:space="preserve">
@@ -217,80 +209,81 @@
     <value>방화벽이 현재 나가는 연결을 허용하지만 들어오는 연결은 차단 중입니다.</value>
   <comment></comment></data>
 	<data name="TheFirewallIsNowBlockingAllInAndOut" xml:space="preserve">
-    <value>방화벽이 현재 모든 인바운드와 아웃바운드 트래픽을 차단 중입니다.</value>
+    <value>방화벽이 현재 모든 수신과 송신 트래픽을 차단 중입니다.</value>
   <comment></comment></data>
 	<data name="TheFirewallIsNowDisabled" xml:space="preserve">
     <value>방화벽이 현재 비활성화되었습니다.</value>
   <comment></comment></data>
 	<data name="TheTinyWallServiceIsUnavailable" xml:space="preserve">
-    <value>TinyWall 서비스 사용 불가! 서비스가 설치되었고 시작되었는지 확인한 다음 다시 시도해주세요.</value>
+    <value>TinyWall 서비스 사용 불가! 서비스가 제대로 설치되었고 시작되었는지 확인한 다음 다시 시도해주세요.</value>
   <comment></comment></data>
 	<data name="TrafficIn" xml:space="preserve">
-    <value>In</value>
+    <value>수신</value>
     <comment>Tray menu text</comment>
   </data>
 	<data name="TrafficOut" xml:space="preserve">
-    <value>Out</value>
+    <value>송신</value>
     <comment>Tray menu text</comment>
   </data>
 	<data name="SettingHaveChangedRetry" xml:space="preserve">
     <value>환경 설정을 수정하는 동안 구성이 변경되었습니다. 설정이 손실되지 않도록 다시 변경해주세요.</value>
-  <comment></comment></data>
+  </data>
 	<data name="TheFirewallSettingsHaveBeenUpdated" xml:space="preserve">
     <value>방화벽 설정이 성공적으로 업데이트되었습니다.</value>
-  <comment></comment></data>
+  </data>
 	<data name="Success" xml:space="preserve">
     <value>성공.</value>
-  <comment></comment></data>
+  </data>
 	<data name="OtherSettingsPreventEffect" xml:space="preserve">
     <value>작업이 성공했지만 다른 설정으로 인해 완전한 효과가 적용되지 않습니다.</value>
-  <comment></comment></data>
+  </data>
 	<data name="OperationFailed" xml:space="preserve">
     <value>작업 실패됨.</value>
-  <comment></comment></data>
+  </data>
 	<data name="CommunicationWithTheServiceError" xml:space="preserve">
     <value>TinyWall 서비스와의 통신 중 오류가 발생했습니다.</value>
-  <comment></comment></data>
+  </data>
 	<data name="ClickOnAWindowWhitelisting" xml:space="preserve">
     <value>허용할 응용 프로그램을 선택하려면 열린 창의 내부 영역을 누릅니다.</value>
-  <comment></comment></data>
+  </data>
 	<data name="WhitelistingCancelled" xml:space="preserve">
     <value>허용이 취소되었습니다.</value>
-  <comment></comment></data>
+  </data>
 	<data name="CannotGetExecutablePathWhitelisting" xml:space="preserve">
     <value>실행 파일의 경로를 확인할 수 없어 허용이 실패되었습니다.</value>
-  <comment></comment></data>
+  </data>
 	<data name="FirewallRulesForRecognizedChanged" xml:space="preserve">
     <value>인식된 {0}의 방화벽 규칙이 변경되었습니다. 예외를 편집하려면 이 팝업을 누르세요.</value>
-  <comment></comment></data>
+  </data>
 	<data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
     <value>인식되지 않은 {0}의 방화벽 규칙이 변경되었습니다. 예외를 편집하려면 이 팝업을 누르세요.</value>
-  <comment></comment></data>
+  </data>
 	<data name="TinyWallHasBeenUnlocked" xml:space="preserve">
     <value>TinyWall이 잠금 해제되었습니다. 이제 구성을 수정하는 명령을 issue할 수 있습니다.</value>
-  <comment></comment></data>
+    <comment>Deprecated</comment>
+  </data>
 	<data name="UnlockFailed" xml:space="preserve">
     <value>잠금 해제 실패됨. 다른 암호로 다시 시도하세요.</value>
-  <comment></comment></data>
+  </data>
 	<data name="CouldNotElevatePrivileges" xml:space="preserve">
     <value>권한을 상승할 수 없습니다.</value>
-  <comment></comment></data>
+  </data>
 	<data name="DatabaseIsMissingOrCorrupt" xml:space="preserve">
     <value>데이터베이스가 누락되었거나 손상되었습니다.</value>
-  <comment></comment></data>
+  </data>
 	<data name="Stop" xml:space="preserve">
     <value>중지</value>
-  <comment></comment></data>
+  </data>
 	<data name="Start" xml:space="preserve">
     <value>시작</value>
-  <comment></comment></data>
+  </data>
 	<data name="SearchingPath" xml:space="preserve">
     <value>검색 중: {0}</value>
     <comment>Param0 is a path which is being searched</comment>
   </data>
 	<data name="SearchResults" xml:space="preserve">
     <value>검색 결과:</value>
-  <comment></comment></data>
+  </data>
 	<data name="RecognizedApplication" xml:space="preserve">
     <value>{0} 인식됨</value>
     <comment>Exception details window banner text. Param0 is name of application.</comment>
@@ -301,10 +294,10 @@
   </data>
 	<data name="Permanent" xml:space="preserve">
     <value>영구적으로</value>
-  <comment></comment></data>
+  </data>
 	<data name="UntilReboot" xml:space="preserve">
     <value>재부팅 때까지</value>
-  <comment></comment></data>
+  </data>
 	<data name="XMinutes" xml:space="preserve">
     <value>{0} 분</value>
     <comment>Param0 is &gt; 1</comment>
@@ -318,48 +311,48 @@
     <comment>Param0 is &gt; 1</comment>
   </data>
 	<data name="FirewallModeAllowOut" xml:space="preserve">
-    <value>전송 허용</value>
-  <comment></comment></data>
+    <value>송신 허용</value>
+  </data>
 	<data name="FirewallModeBlockAll" xml:space="preserve">
     <value>모두 차단</value>
-  <comment></comment></data>
+  </data>
 	<data name="FirewallModeDisabled" xml:space="preserve">
     <value>비활성화됨</value>
-  <comment></comment></data>
+  </data>
 	<data name="FirewallModeNormal" xml:space="preserve">
-    <value>Normal</value>
-  <comment></comment></data>
+    <value>일반</value>
+  </data>
 	<data name="FirewallModeUnknown" xml:space="preserve">
     <value>알 수 없음</value>
-  <comment></comment></data>
+  </data>
 	<data name="CannotGetPathOfProcess" xml:space="preserve">
     <value>프로세스의 경로를 확인할 수 없습니다.</value>
-  <comment></comment></data>
+  </data>
 	<data name="TheFirewallIsNowLearning" xml:space="preserve">
     <value>방화벽이 이제 모든 트레픽을 통과시키면서 학습하고 있습니다.</value>
-  <comment></comment></data>
+  </data>
 	<data name="FirewallModeLearn" xml:space="preserve">
     <value>자동 학습</value>
-  <comment></comment></data>
+  </data>
 	<data name="YouAreAboutToEnterLearningMode" xml:space="preserve">
     <value>자동 학습을 시작하시겠습니까?
-자동 학습 모드에서 TinyWall은 모든 트래픽을 허용하고 네트워크를 사용한 응용 프로그램을 기억합니다. 학습 모드를 종료하면 TinyWall이 자동으로 예외를 추가합니다. 그러나 구성의 "특별 예외"에 대해서는 규칙을 학습 할 수 없음을 알아두세요.
+자동 학습 모드에서 TinyWall은 모든 트래픽을 허용하고 네트워크를 사용한 응용 프로그램을 기억합니다. 학습 모드를 종료하면 TinyWall이 자동으로 예외를 추가합니다. 하지만 구성의 "특별 예외"에 대해서는 규칙을 학습 할 수 없다는 점을 알아두세요.
 
-학습 모드로 진입하기 전에 시스템에 멀웨어가 없는지 확인해주세요. 새로 설치된 시스템에서 학습 모드를 실행하는 것이 가장 좋으며 이 모드를 사용하기 전에 컴퓨터에서 바이러스를 검사하여 무결한 상태에서 학습 모드를 사용하는 것이 좋습니다.
+학습 모드로 진입하기 전에 시스템에 맬웨어가 없는지 확인해주세요. 새로 설치된 시스템에서 학습 모드를 실행하는 것이 가장 좋으며 이 모드를 사용하기 전에 컴퓨터에서 바이러스를 검사하여 무결성을 확인한 상태에서 학습 모드를 사용하는 것이 좋습니다.
 
 지금 학습 모드로 진입하시겠습니까?</value>
-  <comment></comment></data>
+  </data>
 	<data name="DidYouInitiateTheUninstall" xml:space="preserve">
-    <value>TinyWall의 제거/업데이트를 시작했나요?</value>
-  <comment></comment></data>
+    <value>TinyWall의 제거/업데이트를 시작하셨나요?</value>
+  </data>
 	<data name="PortListInvalid" xml:space="preserve">
     <value>포트 목록의 형식이 유효하지 않습니다.
-1-65535 범위에서 하나 이상의 숫자를 사용할 수 있습니다. (쉼표로 구분). 별표(*)를 사용해 가능한 모든 포트를 나타낼 수도 있습니다.</value>
+1-65535 범위에서 하나 이상의 숫자를 사용할 수 있습니다.  (쉼표로 구분). 별표(*)를 사용해 가능한 모든 포트를 나타낼 수도 있습니다.</value>
     <comment>First line is dialog main text. Rest are further information in smaller letters.</comment>
   </data>
 	<data name="UnblockAppCancel" xml:space="preserve">
     <value>허용 취소</value>
-  <comment></comment></data>
+  </data>
 	<data name="UnblockApp" xml:space="preserve">
     <value>관련된 파일 발견됨.
 선택한 실행 파일은 {0}의 일부일 수 있습니다. 이 응용 프로그램을 제한없이 사용하려면, 다른 파일들도 차단 해제하시길 권장합니다.</value>
@@ -367,15 +360,15 @@
   </data>
 	<data name="UnblockAppShowRelated" xml:space="preserve">
     <value>관련된 실행 파일 표시/숨김</value>
-  <comment></comment></data>
+  </data>
 	<data name="UnblockAppUnblockAllRecommended" xml:space="preserve">
     <value>모든 권장된 파일 차단 해제</value>
-  <comment></comment></data>
+  </data>
 	<data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
     <value>선택한 파일만 차단 해제</value>
-  <comment></comment></data>
+  </data>
 	<data name="CompromisedApplication" xml:space="preserve">
-    <value>{0}, possibly compromised</value>
+    <value>{0}, 손상되었을 수 있음</value>
     <comment>Exception details window banner text. Param0 is name of application.</comment>
   </data>
 	<data name="ToastInputNeeded" xml:space="preserve">
@@ -393,5 +386,25 @@
   </data>
 	<data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>내부 오류로 인해 방화벽 설정을 적용할 수 없습니다.</value>
-  <comment></comment></data>
+  </data>
+	<data name="Default" xml:space="preserve">
+    <value>기본</value>
+    <comment>As in, the standard, or default, if nothing else is set.</comment>
+  </data>
+	<data name="AllApplications" xml:space="preserve">
+    <value>모든 응용 프로그램</value>
+    <comment>Shown in settings for application exceptions that are global</comment>
+  </data>
+	<data name="SubjectTypeExecutable" xml:space="preserve">
+    <value>실행 파일</value>
+  </data>
+	<data name="SubjectTypeGlobal" xml:space="preserve">
+    <value />
+  </data>
+	<data name="SubjectTypeService" xml:space="preserve">
+    <value>서비스</value>
+  </data>
+	<data name="SubjectTypeUwpApp" xml:space="preserve">
+    <value>UWP 패키지</value>
+  </data>
 </root>

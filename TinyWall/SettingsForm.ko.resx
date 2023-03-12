@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
+	<!--
     Microsoft ResX Schema
 
     Version 2.0
@@ -59,191 +59,206 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="btnCancel.Text" xml:space="preserve">
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="btnCancel.Text" xml:space="preserve">
     <value>취소</value>
   </data>
-  <data name="btnOK.Text" xml:space="preserve">
+	<data name="btnOK.Text" xml:space="preserve">
     <value>적용</value>
   </data>
-  <data name="txtExceptionListFilter.AccessibleName" xml:space="preserve">
+	<data name="txtExceptionListFilter.AccessibleName" xml:space="preserve">
     <value>필터</value>
   </data>
-  <data name="btnAppRemoveAll.Text" xml:space="preserve">
+	<data name="btnAppRemoveAll.Text" xml:space="preserve">
     <value>모두 제거</value>
   </data>
-  <data name="btnAppAutoDetect.Text" xml:space="preserve">
-    <value>감지</value>
+	<data name="btnAppAutoDetect.Text" xml:space="preserve">
+    <value>검색</value>
   </data>
-  <data name="btnSubmitAssoc.Text" xml:space="preserve">
+	<data name="btnSubmitAssoc.Text" xml:space="preserve">
     <value>전송</value>
   </data>
-  <data name="label3.Text" xml:space="preserve">
-    <value>네트워크 액세스 권한을 부여하려는 응용 프로그램의 목록을 편집합니다. 이 목록의 응용 프로그램만 통신할 수 있습니다. 감지 버튼을 사용하여 TinyWall이 일부 소프트웨어를 자동으로 감지하거나 응용 프로그램을 수동으로 추가할 수 있습니다.</value>
+	<data name="label3.Text" xml:space="preserve">
+    <value>네트워크 액세스 권한을 부여하려는 응용 프로그램의 목록을 편집합니다. 이 목록의 응용 프로그램만 통신할 수 있습니다. 검색 버튼을 사용하여 TinyWall이 일부 소프트웨어를 자동으로 검색하거나 응용 프로그램을 수동으로 추가할 수 있습니다.</value>
   </data>
-  <data name="btnAppRemove.Text" xml:space="preserve">
+	<data name="btnAppRemove.Text" xml:space="preserve">
     <value>제거</value>
   </data>
-  <data name="btnAppModify.Text" xml:space="preserve">
+	<data name="btnAppModify.Text" xml:space="preserve">
     <value>수정</value>
   </data>
-  <data name="btnAppAdd.Text" xml:space="preserve">
+	<data name="btnAppAdd.Text" xml:space="preserve">
     <value>응용 프로그램 추가</value>
   </data>
-  <data name="label4.Text" xml:space="preserve">
+	<data name="label4.Text" xml:space="preserve">
     <value>필터:</value>
   </data>
-  <data name="tabPage3.Text" xml:space="preserve">
+	<data name="tabPage3.Text" xml:space="preserve">
     <value>응용 프로그램 예외</value>
   </data>
-  <data name="label5.Text" xml:space="preserve">
+	<data name="label5.Text" xml:space="preserve">
     <value>이 컴퓨터에서 활성화할 특별한 작업이나 응용 프로그램을 선택합니다. 권장 예외를 비활성화하면 시스템의 사용성과 보안이 심각하게 제한될 수 있습니다.</value>
   </data>
-  <data name="label2.Text" xml:space="preserve">
+	<data name="label2.Text" xml:space="preserve">
     <value>옵션</value>
   </data>
-  <data name="label1.Text" xml:space="preserve">
+	<data name="label1.Text" xml:space="preserve">
     <value>권장</value>
   </data>
-  <data name="tabPage2.Text" xml:space="preserve">
+	<data name="tabPage2.Text" xml:space="preserve">
     <value>특수 예외</value>
   </data>
-  <data name="chkEnableHotkeys.Text" xml:space="preserve">
+	<data name="chkEnableHotkeys.Text" xml:space="preserve">
     <value>글로벌 단축키 사용</value>
   </data>
-  <data name="label11.Text" xml:space="preserve">
+	<data name="label11.Text" xml:space="preserve">
     <value>언어:</value>
   </data>
-  <data name="chkEnableBlocklists.Text" xml:space="preserve">
+	<data name="chkEnableBlocklists.Text" xml:space="preserve">
     <value>차단 목록 사용</value>
   </data>
-  <data name="chkLockHostsFile.Text" xml:space="preserve">
+	<data name="chkLockHostsFile.Text" xml:space="preserve">
     <value>호스트(hosts) 파일 수정 차단</value>
   </data>
-  <data name="chkHostsBlocklist.Text" xml:space="preserve">
-    <value>도메인 기반 멀웨어 및 차단 목록</value>
+	<data name="chkHostsBlocklist.Text" xml:space="preserve">
+    <value>도메인 기반 맬웨어 및 차단 목록</value>
   </data>
-  <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
+	<data name="chkAutoUpdateCheck.Text" xml:space="preserve">
     <value>업데이트 자동 확인</value>
   </data>
-  <data name="chkBlockMalwarePorts.Text" xml:space="preserve">
-    <value>포트 기반 멀웨어 차단 목록</value>
+	<data name="chkBlockMalwarePorts.Text" xml:space="preserve">
+    <value>포트 기반 맬웨어 차단 목록</value>
   </data>
-  <data name="label9.Text" xml:space="preserve">
+	<data name="label9.Text" xml:space="preserve">
     <value>사용 중인 암호 보호를 제거하려면, "암호 변경"에 체크하고 텍스트 입력란을 비워두세요.</value>
   </data>
-  <data name="label8.Text" xml:space="preserve">
+	<data name="label8.Text" xml:space="preserve">
     <value>재입력:</value>
   </data>
-  <data name="label7.Text" xml:space="preserve">
+	<data name="label7.Text" xml:space="preserve">
     <value>암호:</value>
   </data>
-  <data name="chkChangePassword.Text" xml:space="preserve">
+	<data name="chkChangePassword.Text" xml:space="preserve">
     <value>암호 확인</value>
   </data>
-  <data name="groupBox1.Text" xml:space="preserve">
+	<data name="groupBox1.Text" xml:space="preserve">
     <value>암호 보호</value>
   </data>
-  <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
+	<data name="chkAskForExceptionDetails.Text" xml:space="preserve">
     <value>예외 세부 정보 확인</value>
   </data>
-  <data name="tabPage1.Text" xml:space="preserve">
+	<data name="tabPage1.Text" xml:space="preserve">
     <value>일반</value>
   </data>
-  <data name="btnImport.Text" xml:space="preserve">
+	<data name="btnImport.Text" xml:space="preserve">
     <value>가져오기 설정</value>
   </data>
-  <data name="btnExport.Text" xml:space="preserve">
+	<data name="btnExport.Text" xml:space="preserve">
     <value>내보내기 설정</value>
   </data>
-  <data name="btnDonate.AccessibleDescription" xml:space="preserve">
+	<data name="btnDonate.AccessibleDescription" xml:space="preserve">
     <value>후원</value>
   </data>
-  <data name="btnDonate.AccessibleName" xml:space="preserve">
+	<data name="btnDonate.AccessibleName" xml:space="preserve">
     <value>기부하기</value>
   </data>
-  <data name="lblLinkLicense.Text" xml:space="preserve">
+	<data name="lblLinkLicense.Text" xml:space="preserve">
     <value>라이센스</value>
   </data>
-  <data name="label10.Text" xml:space="preserve">
-    <value>이 무료 프로그램이 맘에 들고 사용하고 계신다면, 호스팅, 하드웨어와 소프트웨어 비용을 충당하기 위해 기부를 고려해주시면 감사하겠습니다.</value>
+	<data name="label10.Text" xml:space="preserve">
+    <value>이 무료 프로그램이 맘에 드신다면 호스팅, 하드웨어 및 소프트웨어 비용을 충당하기 위해 소정의 기부를 고려해 주시면 고맙겠습니다.</value>
   </data>
-  <data name="label6.Text" xml:space="preserve">
+	<data name="label6.Text" xml:space="preserve">
     <value>모든 권리 소유.</value>
   </data>
-  <data name="label12.Text" xml:space="preserve">
-    <value>저작권 © 2011-2015 Károly Pados</value>
+	<data name="label12.Text" xml:space="preserve">
+    <value>저작권 © 2011 Károly Pados</value>
   </data>
-  <data name="groupBox2.Text" xml:space="preserve">
+	<data name="groupBox2.Text" xml:space="preserve">
     <value>제품 정보</value>
   </data>
-  <data name="btnUpdate.Text" xml:space="preserve">
+	<data name="btnUpdate.Text" xml:space="preserve">
     <value>업데이트</value>
   </data>
-  <data name="btnWeb.Text" xml:space="preserve">
+	<data name="btnWeb.Text" xml:space="preserve">
     <value>홈페이지 방문</value>
   </data>
-  <data name="tabPage4.Text" xml:space="preserve">
+	<data name="tabPage4.Text" xml:space="preserve">
     <value>유지 관리</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
+	<data name="$this.Text" xml:space="preserve">
     <value>TinyWall 방화벽 설정</value>
   </data>
+	<data name="columnApp.Text" xml:space="preserve">
+		<value>응용 프로그램</value>
+	</data>
+	<data name="columnType.Text" xml:space="preserve">
+		<value>유형</value>
+	</data>
+	<data name="columnDetails.Text" xml:space="preserve">
+		<value>세부 정보</value>
+	</data>
+	<data name="chkDisplayOffBlock.Text" xml:space="preserve">
+		<value>디스플레이 절전 중 인터넷 차단</value>
+	</data>
+	<data name="lblLinkAttributions.Text" xml:space="preserve">
+		<value>속성</value>
+	</data>
 </root>
