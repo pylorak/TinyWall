@@ -415,7 +415,7 @@ namespace pylorak.TinyWall
 
         private void btnWeb_Click(object sender, EventArgs e)
         {
-            ProcessStartInfo psi = new ProcessStartInfo(@"http://tinywall.pados.hu");
+            ProcessStartInfo psi = new ProcessStartInfo(@"https://tinywall.pados.hu");
             psi.UseShellExecute = true;
             Process.Start(psi);
         }
@@ -654,6 +654,13 @@ namespace pylorak.TinyWall
             btnAppModify.Enabled = SingleItemSelected;
             btnAppRemove.Enabled = AnyItemSelected;
             btnSubmitAssoc.Enabled = AnyItemSelected;
+        }
+
+        private void btnGithub_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo psi = new ProcessStartInfo(@"https://github.com/pylorak/tinywall");
+            psi.UseShellExecute = true;
+            Process.Start(psi);
         }
     }
 }

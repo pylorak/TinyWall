@@ -54,15 +54,17 @@
             this.listOptionalGlobalProfiles = new System.Windows.Forms.CheckedListBox();
             this.listRecommendedGlobalProfiles = new System.Windows.Forms.CheckedListBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.chkDisplayOffBlock = new System.Windows.Forms.CheckBox();
-            this.chkEnableHotkeys = new System.Windows.Forms.CheckBox();
-            this.comboLanguages = new System.Windows.Forms.ComboBox();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label11 = new System.Windows.Forms.Label();
-            this.chkEnableBlocklists = new System.Windows.Forms.CheckBox();
-            this.chkLockHostsFile = new System.Windows.Forms.CheckBox();
             this.chkHostsBlocklist = new System.Windows.Forms.CheckBox();
-            this.chkAutoUpdateCheck = new System.Windows.Forms.CheckBox();
+            this.chkEnableBlocklists = new System.Windows.Forms.CheckBox();
             this.chkBlockMalwarePorts = new System.Windows.Forms.CheckBox();
+            this.chkDisplayOffBlock = new System.Windows.Forms.CheckBox();
+            this.chkLockHostsFile = new System.Windows.Forms.CheckBox();
+            this.comboLanguages = new System.Windows.Forms.ComboBox();
+            this.chkEnableHotkeys = new System.Windows.Forms.CheckBox();
+            this.chkAutoUpdateCheck = new System.Windows.Forms.CheckBox();
+            this.chkAskForExceptionDetails = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -70,9 +72,9 @@
             this.chkChangePassword = new System.Windows.Forms.CheckBox();
             this.txtPasswordAgain = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
-            this.chkAskForExceptionDetails = new System.Windows.Forms.CheckBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.btnGithub = new System.Windows.Forms.Button();
             this.btnImport = new System.Windows.Forms.Button();
             this.btnExport = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -88,16 +90,15 @@
             this.btnWeb = new System.Windows.Forms.Button();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tabPage3.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnDonate)).BeginInit();
-            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -291,31 +292,31 @@
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // chkDisplayOffBlock
+            // tableLayoutPanel1
             // 
-            resources.ApplyResources(this.chkDisplayOffBlock, "chkDisplayOffBlock");
-            this.tableLayoutPanel1.SetColumnSpan(this.chkDisplayOffBlock, 2);
-            this.chkDisplayOffBlock.Name = "chkDisplayOffBlock";
-            this.chkDisplayOffBlock.UseVisualStyleBackColor = true;
-            // 
-            // chkEnableHotkeys
-            // 
-            resources.ApplyResources(this.chkEnableHotkeys, "chkEnableHotkeys");
-            this.tableLayoutPanel1.SetColumnSpan(this.chkEnableHotkeys, 2);
-            this.chkEnableHotkeys.Name = "chkEnableHotkeys";
-            this.chkEnableHotkeys.UseVisualStyleBackColor = true;
-            // 
-            // comboLanguages
-            // 
-            resources.ApplyResources(this.comboLanguages, "comboLanguages");
-            this.comboLanguages.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboLanguages.FormattingEnabled = true;
-            this.comboLanguages.Name = "comboLanguages";
+            resources.ApplyResources(this.tableLayoutPanel1, "tableLayoutPanel1");
+            this.tableLayoutPanel1.Controls.Add(this.label11, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.chkHostsBlocklist, 4, 3);
+            this.tableLayoutPanel1.Controls.Add(this.chkEnableBlocklists, 3, 1);
+            this.tableLayoutPanel1.Controls.Add(this.chkBlockMalwarePorts, 4, 2);
+            this.tableLayoutPanel1.Controls.Add(this.chkDisplayOffBlock, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.chkLockHostsFile, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.comboLanguages, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.chkEnableHotkeys, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.chkAutoUpdateCheck, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.chkAskForExceptionDetails, 0, 2);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             // 
             // label11
             // 
             resources.ApplyResources(this.label11, "label11");
             this.label11.Name = "label11";
+            // 
+            // chkHostsBlocklist
+            // 
+            resources.ApplyResources(this.chkHostsBlocklist, "chkHostsBlocklist");
+            this.chkHostsBlocklist.Name = "chkHostsBlocklist";
+            this.chkHostsBlocklist.UseVisualStyleBackColor = true;
             // 
             // chkEnableBlocklists
             // 
@@ -325,6 +326,19 @@
             this.chkEnableBlocklists.UseVisualStyleBackColor = true;
             this.chkEnableBlocklists.CheckedChanged += new System.EventHandler(this.chkEnableBlocklists_CheckedChanged);
             // 
+            // chkBlockMalwarePorts
+            // 
+            resources.ApplyResources(this.chkBlockMalwarePorts, "chkBlockMalwarePorts");
+            this.chkBlockMalwarePorts.Name = "chkBlockMalwarePorts";
+            this.chkBlockMalwarePorts.UseVisualStyleBackColor = true;
+            // 
+            // chkDisplayOffBlock
+            // 
+            resources.ApplyResources(this.chkDisplayOffBlock, "chkDisplayOffBlock");
+            this.tableLayoutPanel1.SetColumnSpan(this.chkDisplayOffBlock, 2);
+            this.chkDisplayOffBlock.Name = "chkDisplayOffBlock";
+            this.chkDisplayOffBlock.UseVisualStyleBackColor = true;
+            // 
             // chkLockHostsFile
             // 
             resources.ApplyResources(this.chkLockHostsFile, "chkLockHostsFile");
@@ -332,11 +346,19 @@
             this.chkLockHostsFile.Name = "chkLockHostsFile";
             this.chkLockHostsFile.UseVisualStyleBackColor = true;
             // 
-            // chkHostsBlocklist
+            // comboLanguages
             // 
-            resources.ApplyResources(this.chkHostsBlocklist, "chkHostsBlocklist");
-            this.chkHostsBlocklist.Name = "chkHostsBlocklist";
-            this.chkHostsBlocklist.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.comboLanguages, "comboLanguages");
+            this.comboLanguages.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboLanguages.FormattingEnabled = true;
+            this.comboLanguages.Name = "comboLanguages";
+            // 
+            // chkEnableHotkeys
+            // 
+            resources.ApplyResources(this.chkEnableHotkeys, "chkEnableHotkeys");
+            this.tableLayoutPanel1.SetColumnSpan(this.chkEnableHotkeys, 2);
+            this.chkEnableHotkeys.Name = "chkEnableHotkeys";
+            this.chkEnableHotkeys.UseVisualStyleBackColor = true;
             // 
             // chkAutoUpdateCheck
             // 
@@ -345,11 +367,12 @@
             this.chkAutoUpdateCheck.Name = "chkAutoUpdateCheck";
             this.chkAutoUpdateCheck.UseVisualStyleBackColor = true;
             // 
-            // chkBlockMalwarePorts
+            // chkAskForExceptionDetails
             // 
-            resources.ApplyResources(this.chkBlockMalwarePorts, "chkBlockMalwarePorts");
-            this.chkBlockMalwarePorts.Name = "chkBlockMalwarePorts";
-            this.chkBlockMalwarePorts.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.chkAskForExceptionDetails, "chkAskForExceptionDetails");
+            this.tableLayoutPanel1.SetColumnSpan(this.chkAskForExceptionDetails, 2);
+            this.chkAskForExceptionDetails.Name = "chkAskForExceptionDetails";
+            this.chkAskForExceptionDetails.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
@@ -397,13 +420,6 @@
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.UseSystemPasswordChar = true;
             // 
-            // chkAskForExceptionDetails
-            // 
-            resources.ApplyResources(this.chkAskForExceptionDetails, "chkAskForExceptionDetails");
-            this.tableLayoutPanel1.SetColumnSpan(this.chkAskForExceptionDetails, 2);
-            this.chkAskForExceptionDetails.Name = "chkAskForExceptionDetails";
-            this.chkAskForExceptionDetails.UseVisualStyleBackColor = true;
-            // 
             // tabControl1
             // 
             resources.ApplyResources(this.tabControl1, "tabControl1");
@@ -416,6 +432,7 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.btnGithub);
             this.tabPage4.Controls.Add(this.btnImport);
             this.tabPage4.Controls.Add(this.btnExport);
             this.tabPage4.Controls.Add(this.groupBox2);
@@ -424,6 +441,14 @@
             resources.ApplyResources(this.tabPage4, "tabPage4");
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // btnGithub
+            // 
+            resources.ApplyResources(this.btnGithub, "btnGithub");
+            this.btnGithub.Image = global::pylorak.TinyWall.Resources.Icons.github_mark;
+            this.btnGithub.Name = "btnGithub";
+            this.btnGithub.UseVisualStyleBackColor = true;
+            this.btnGithub.Click += new System.EventHandler(this.btnGithub_Click);
             // 
             // btnImport
             // 
@@ -528,21 +553,6 @@
             // 
             this.sfd.DefaultExt = "xml";
             // 
-            // tableLayoutPanel1
-            // 
-            resources.ApplyResources(this.tableLayoutPanel1, "tableLayoutPanel1");
-            this.tableLayoutPanel1.Controls.Add(this.label11, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.chkHostsBlocklist, 4, 3);
-            this.tableLayoutPanel1.Controls.Add(this.chkEnableBlocklists, 3, 1);
-            this.tableLayoutPanel1.Controls.Add(this.chkBlockMalwarePorts, 4, 2);
-            this.tableLayoutPanel1.Controls.Add(this.chkDisplayOffBlock, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.chkLockHostsFile, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.comboLanguages, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.chkEnableHotkeys, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.chkAutoUpdateCheck, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.chkAskForExceptionDetails, 0, 2);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            // 
             // SettingsForm
             // 
             resources.ApplyResources(this, "$this");
@@ -564,6 +574,8 @@
             this.tabPage2.PerformLayout();
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
@@ -571,8 +583,6 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnDonate)).EndInit();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -638,5 +648,6 @@
         private System.Windows.Forms.ColumnHeader columnType;
         private System.Windows.Forms.CheckBox chkDisplayOffBlock;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Button btnGithub;
     }
 }
