@@ -34,9 +34,9 @@
 	</Company_Info>
 	<Program_Info>
 		<Program_Name>TinyWall</Program_Name>
-		<Program_Version>3.3.0</Program_Version>
+		<Program_Version>3.3.1</Program_Version>
 		<Program_Release_Month>03</Program_Release_Month>
-		<Program_Release_Day>05</Program_Release_Day>
+		<Program_Release_Day>12</Program_Release_Day>
 		<Program_Release_Year>2023</Program_Release_Year>
 		<Program_Cost_Dollars>0</Program_Cost_Dollars>
 		<Program_Cost_Other_Code />
@@ -45,15 +45,15 @@
 		<Program_Release_Status>Major Update</Program_Release_Status>
 		<Program_Install_Support>Install and Uninstall</Program_Install_Support>
 		<Program_OS_Support>Win10,Win11</Program_OS_Support>
-		<Program_Language>Bulgarian,Chinese,Czech,English,Dutch,French,German,Hebrew,Hungarian,Italian,Japanese,Polish,Portuguese,Russian,Spanish,Turkish</Program_Language>
+		<Program_Language>Bulgarian,Chinese,Czech,English,Dutch,French,German,Hebrew,Hungarian,Italian,Japanese,Korean,Polish,Portuguese,Russian,Spanish,Turkish</Program_Language>
 		<Program_Change_Info>See https://tinywall.pados.hu/changelog.txt</Program_Change_Info>
 		<Program_Specific_Category>Utilities</Program_Specific_Category>
 		<Program_Category_Class>Security &amp; Privacy::Access Control</Program_Category_Class>
 		<Program_System_Requirements>Microsoft .Net Framework 4.8</Program_System_Requirements>
 		<File_Info>
-			<File_Size_Bytes>1744896</File_Size_Bytes>
-			<File_Size_K>1704</File_Size_K>
-			<File_Size_MB>1.66</File_Size_MB>
+			<File_Size_Bytes>1839104</File_Size_Bytes>
+			<File_Size_K>1796</File_Size_K>
+			<File_Size_MB>1.75</File_Size_MB>
 		</File_Info>
 		<Expire_Info>
 			<Has_Expire_Info>N</Has_Expire_Info>
@@ -78,7 +78,7 @@ TinyWall does not display popups that insecurely urge users to grant application
 This approach avoids popups but still keeps the firewall very easy to use. It will also limit the list of unblocked programs to those that the user really needs, which is optimal from a security standpoint, and does not let other applications pass even if they whitelist themselves in Windows' own firewall.
 
 Other key features include:
-- Very lightweight operation. Close to zero RAM and disk impact.
+- Very lightweight operation. Low RAM, CPU and disk impact.
 - No drivers or kernel-components are installed so it does not influence system stability.
 - Automatic learning, blocklists, password lock, firewall tampering protection and built-in tight firewall rules help increase TinyWall's and your computer's security even further.
 - Boot-time filtering, promiscuous application filtering, and port scan protection.
@@ -105,52 +105,20 @@ Other key features include:
 	</Web_Info>
 	<Permissions>
 		<Distribution_Permissions>Distributors must too also abide by the EULA. See EULA for terms on distribution.</Distribution_Permissions>
-		<EULA>END-USER LICENSE AGREEMENT ("EULA")
-
-Definition of SOFTWARE: This installer and all components of TinyWall,
-including but not limited to executables, media, documentation and
-databases installed by this installer.
-
-Definition of AUTHOR: Károly Pados and copyright holders
-
-IMPORTANT-READ CAREFULLY: This End-User License Agreement ("EULA") is a
-legal agreement between you (either an individual or a single entity) and
-AUTHOR. By installing, copying, or otherwise using the SOFTWARE, you
-agree to be bound by the terms of this EULA. If you do not agree to the
-terms of this EULA, do not install or use the SOFTWARE.
-
- 1. Freeware
- You may use the SOFTWARE without charge.
-
- 2. Distribution of SOFTWARE.
-You may make copies of the SOFTWARE as you wish; give exact copies of the
-original SOFTWARE to anyone; and distribute the SOFTWARE in its
-unmodified form via electronic means. You may not charge any fees for the
-copy or use of the SOFTWARE itself. You must not represent in any way
-that you are selling the SOFTWARE itself. Your distribution of the
-SOFTWARE will not entitle you to any compensation from AUTHOR.  You must
-distribute a copy of this EULA with any copy of the SOFTWARE and anyone
-to whom you distribute the SOFTWARE is subject to this EULA.
-
- 3. RESTRICTIONS
-3.1 You may not reverse engineer, de-compile, or disassemble the SOFTWARE.
-3.2 You may not rent, lease, or lend the SOFTWARE.
-3.3 You may permanently transfer all of your rights under this EULA,
-provided the recipient agrees to the terms of this EULA.
-3.4 You may not use the SOFTWARE to perform any unauthorized transfer of
-information or for any illegal purpose.
-3.5 You may not repackage the software or provide alternate installers
-whose main purpose is to install the SOFTWARE.
-
- 4. NO WARRANTIES
-AUTHOR expressly disclaims any warranty for the SOFTWARE. THE SOFTWARE IS
-PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED,
-INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OR MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE, OR NONINFRINGEMENT. THE ENTIRE RISK
-ARISING OUT OF USE OR PERFORMANCE OF THE SOFTWARE REMAINS WITH YOU. IN NO
-EVENT SHALL THE AUTHOR OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-USE OR OTHER DEALINGS IN THE SOFTWARE.</EULA>
+		<EULA>TinyWall - A free, non-intrusive, secure-by-default firewall for Windows
+			Copyright (C) 2011  Károly Pados
+		
+			This program is free software: you can redistribute it and/or modify
+			it under the terms of the GNU General Public License as published by
+			the Free Software Foundation, either version 3 of the License, or
+			(at your option) any later version.
+		
+			This program is distributed in the hope that it will be useful,
+			but WITHOUT ANY WARRANTY; without even the implied warranty of
+			MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+			GNU General Public License for more details.
+		
+			You should have received a copy of the GNU General Public License
+			along with this program.  If not, see <https://www.gnu.org/licenses/>.</EULA>
 	</Permissions>
 </XML_DIZ_INFO>

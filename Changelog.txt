@@ -1,6 +1,14 @@
 TinyWall Changelog
 ---------------------
 
+3.3.1 - Maintenance release (12.03.2023.)
+- Add GitHub button to Settings window
+- Change license to GPLv3
+- Add Korean localization
+- Update Chinese localization
+
+---------------------
+
 3.3.0 - Major update (05.03.2023.)
 - Windows 10 and .Net Framework 4.8 are now prerequisites
 - Do not require executable to exist when editing firewall exceptions in GUI
