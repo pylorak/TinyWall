@@ -2,9 +2,10 @@ TinyWall Changelog
 ---------------------
 
 3.3.1 - Maintenance release (12.03.2023.)
+- TinyWall is now open-source
 - Add GitHub button to Settings window
 - Change license to GPLv3
-- Add Korean localization
+- Fix Korean localization not loading
 - Update Chinese localization
 
 ---------------------
