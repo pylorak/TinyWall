@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+	<!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,134 +59,134 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="btnCancel.Text" xml:space="preserve">
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="btnCancel.Text" xml:space="preserve">
     <value>取消</value>
   </data>
-  <data name="btnOK.Text" xml:space="preserve">
+	<data name="btnOK.Text" xml:space="preserve">
     <value>确定</value>
   </data>
-  <data name="btnBrowse.Text" xml:space="preserve">
+	<data name="btnBrowse.Text" xml:space="preserve">
     <value>浏览文件...</value>
   </data>
-  <data name="btnProcess.Text" xml:space="preserve">
+	<data name="btnProcess.Text" xml:space="preserve">
     <value>选择进程...</value>
   </data>
-  <data name="btnChooseService.Text" xml:space="preserve">
+	<data name="btnChooseService.Text" xml:space="preserve">
     <value>选择服务...</value>
   </data>
-  <data name="ofd.Title" xml:space="preserve">
+	<data name="ofd.Title" xml:space="preserve">
     <value>选择应用程序可执行文件</value>
   </data>
-  <data name="label6.Text" xml:space="preserve">
+	<data name="label6.Text" xml:space="preserve">
     <value>例外期限：</value>
   </data>
-  <data name="transparentLabel1.Text" xml:space="preserve">
+	<data name="transparentLabel1.Text" xml:space="preserve">
     <value>通用占位符</value>
   </data>
-  <data name="chkRestrictToLocalNetwork.Text" xml:space="preserve">
+	<data name="chkRestrictToLocalNetwork.Text" xml:space="preserve">
     <value>只限于本地网络</value>
   </data>
-  <data name="radBlock.Text" xml:space="preserve">
+	<data name="radBlock.Text" xml:space="preserve">
     <value>总是拦截所有网络流量</value>
   </data>
-  <data name="radTcpUdpOut.Text" xml:space="preserve">
+	<data name="radTcpUdpOut.Text" xml:space="preserve">
     <value>允许UDP和TCP发送</value>
   </data>
-  <data name="radTcpUdpUnrestricted.Text" xml:space="preserve">
+	<data name="radTcpUdpUnrestricted.Text" xml:space="preserve">
     <value>不受限的UDP和TCP网络流量</value>
   </data>
-  <data name="radUnrestricted.Text" xml:space="preserve">
+	<data name="radUnrestricted.Text" xml:space="preserve">
     <value>没有限制</value>
   </data>
-  <data name="label5.Text" xml:space="preserve">
+	<data name="label5.Text" xml:space="preserve">
     <value>除以上限制外，打开以下端口。（用逗号分隔列表）</value>
   </data>
-  <data name="txtListenPortUDP.AccessibleName" xml:space="preserve">
+	<data name="txtListenPortUDP.AccessibleName" xml:space="preserve">
     <value>接收UDP</value>
   </data>
-  <data name="txtListenPortTCP.AccessibleName" xml:space="preserve">
+	<data name="txtListenPortTCP.AccessibleName" xml:space="preserve">
     <value>接收TCP</value>
   </data>
-  <data name="label3.Text" xml:space="preserve">
+	<data name="label3.Text" xml:space="preserve">
     <value>TCP接收：</value>
   </data>
-  <data name="label4.Text" xml:space="preserve">
+	<data name="label4.Text" xml:space="preserve">
     <value>UDP接收：</value>
   </data>
-  <data name="txtOutboundPortUDP.AccessibleName" xml:space="preserve">
+	<data name="txtOutboundPortUDP.AccessibleName" xml:space="preserve">
     <value>发送UDP</value>
   </data>
-  <data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
+	<data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
     <value>发送TCP</value>
   </data>
-  <data name="label7.Text" xml:space="preserve">
+	<data name="label7.Text" xml:space="preserve">
     <value>TCP发送：</value>
   </data>
-  <data name="label8.Text" xml:space="preserve">
-    <value>TCP发送：</value>
+	<data name="label8.Text" xml:space="preserve">
+    <value>UDP发送：</value>
   </data>
-  <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
+	<data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
     <value>只允许指定端口</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
+	<data name="$this.Text" xml:space="preserve">
     <value>添加/更改防火墙例外 - TinyWall</value>
   </data>
 </root>
