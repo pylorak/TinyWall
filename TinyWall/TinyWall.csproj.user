@@ -7,14 +7,16 @@
     <StartArguments>/develtool</StartArguments>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="..\pylorak.Windows\TaskDialog\TaskDialogCommonDialog.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Update="Installer\ServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="Installer\TinyWallInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="AppFinderForm.cs.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

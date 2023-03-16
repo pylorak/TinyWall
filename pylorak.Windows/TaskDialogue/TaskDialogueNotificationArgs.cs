@@ -8,20 +8,15 @@
 
 namespace Microsoft.Samples
 {
-    using System;
-    using System.Drawing;
-    using System.Windows.Forms;
-    using System.Runtime.InteropServices;
-
     /// <summary>
     /// Arguments passed to the TaskDialog callback.
     /// </summary>
-    internal class TaskDialogNotificationArgs
+    internal class TaskDialogueNotificationArgs
     {
         /// <summary>
         /// What the TaskDialog callback is a notification of.
         /// </summary>
-        private TaskDialogNotification notification;
+        private TaskDialogueNotification notification;
 
         /// <summary>
         /// The button ID if the notification is about a button. This a DialogResult
@@ -54,7 +49,7 @@ namespace Microsoft.Samples
         /// <summary>
         /// What the TaskDialog callback is a notification of.
         /// </summary>
-        internal TaskDialogNotification Notification
+        internal TaskDialogueNotification Notification
         {
             get { return this.notification; }
             set { this.notification = value; }

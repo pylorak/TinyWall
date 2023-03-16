@@ -9,10 +9,7 @@
 namespace Microsoft.Samples
 {
     using System;
-    using System.Drawing;
-    using System.Windows.Forms;
     using System.Runtime.InteropServices;
-    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// Class to hold native code interop declarations.
@@ -117,9 +114,9 @@ namespace Microsoft.Samples
             TDF_NO_DEFAULT_RADIO_BUTTON = 0x4000,
 
             /// <summary>
-            /// Task Dialog can be minimized.
+            /// Task Dialog can be minimised.
             /// </summary>
-            TDF_CAN_BE_MINIMIZED = 0x8000
+            TDF_CAN_BE_MINIMISED = 0x8000
         }
 
         /// <summary>
@@ -299,13 +296,13 @@ namespace Microsoft.Samples
         /// <param name="wParam">Specifies additional message-specific information.</param>
         /// <param name="lParam">Specifies additional message-specific information as a string.</param>
         /// <returns>The return value specifies the result of the message processing; it depends on the message sent.</returns>
-        [DllImport("user32.dll", EntryPoint="SendMessage")]
+        [DllImport("user32.dll", EntryPoint = "SendMessage")]
         internal static extern IntPtr SendMessageWithString(IntPtr hWnd, uint Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
 
         /// <summary>
         /// TASKDIALOGCONFIG taken from commctl.h.
         /// </summary>
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack=1)]
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
         internal struct TASKDIALOGCONFIG
         {
             /// <summary>
@@ -331,7 +328,7 @@ namespace Microsoft.Samples
             /// <summary>
             /// Bit flags for commonly used buttons.
             /// </summary>
-            internal TaskDialogCommonButtons dwCommonButtons;    // TASKDIALOG_COMMON_BUTTON (TDCBF_XXX) flags
+            internal TaskDialogueCommonButtons dwCommonButtons;    // TASKDIALOG_COMMON_BUTTON (TDCBF_XXX) flags
 
             /// <summary>
             /// Window title.

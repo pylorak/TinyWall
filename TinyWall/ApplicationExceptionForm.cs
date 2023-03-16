@@ -132,23 +132,23 @@ namespace pylorak.TinyWall
                 }
             }
 
-            if (hasSignature && validSignature)
+            switch (hasSignature)
             {
-                // Recognized app
-                panel1.BackgroundImage = Resources.Icons.green_banner;
-                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, Resources.Messages.RecognizedApplication, _tmpExceptionSettings[0].Subject.ToString());
-            }
-            else if (hasSignature && !validSignature)
-            {
-                // Recognized, but compromised app
-                panel1.BackgroundImage = Resources.Icons.red_banner;
-                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, Resources.Messages.CompromisedApplication, _tmpExceptionSettings[0].Subject.ToString());
-            }
-            else
-            {
-                // Unknown app
-                panel1.BackgroundImage = Resources.Icons.blue_banner;
-                transparentLabel1.Text = Resources.Messages.UnknownApplication;
+                case true when validSignature:
+                    // Recognised app
+                    panel1.BackgroundImage = Resources.Icons.green_banner;
+                    transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, Resources.Messages.RecognizedApplication, _tmpExceptionSettings[0].Subject.ToString());
+                    break;
+                case true when !validSignature:
+                    // Recognised, but compromised app
+                    panel1.BackgroundImage = Resources.Icons.red_banner;
+                    transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, Resources.Messages.CompromisedApplication, _tmpExceptionSettings[0].Subject.ToString());
+                    break;
+                default:
+                    // Unknown app
+                    panel1.BackgroundImage = Resources.Icons.blue_banner;
+                    transparentLabel1.Text = Resources.Messages.UnknownApplication;
+                    break;
             }
 
             Utils.CenterControlInParent(transparentLabel1);
@@ -157,8 +157,8 @@ namespace pylorak.TinyWall
             switch (_tmpExceptionSettings[0].Subject.SubjectType)
             {
                 case SubjectType.Global:
-                    listBoxAppPath.Items.Add(Resources.Messages.AllApplications);
-                    txtSrvName.Text = Resources.Messages.SubjectTypeGlobal;
+                    //listBoxAppPath.Items.Add(Resources.Messages.AllApplications);
+                    //txtSrvName.Text = Resources.Messages.SubjectTypeGlobal;
                     break;
                 case SubjectType.Executable:
                     listBoxAppPath.Items.Add(exeSubj!.ExecutablePath);
@@ -309,8 +309,8 @@ namespace pylorak.TinyWall
                     Utils.ShowMessageBox(
                         Resources.Messages.PortListInvalid,
                         Resources.Messages.TinyWall,
-                        Microsoft.Samples.TaskDialogCommonButtons.Ok,
-                        Microsoft.Samples.TaskDialogIcon.Warning,
+                        Microsoft.Samples.TaskDialogueCommonButtons.Ok,
+                        Microsoft.Samples.TaskDialogueIcon.Warning,
                         this);
 
                     return;

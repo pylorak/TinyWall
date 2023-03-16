@@ -15,7 +15,7 @@
 
     <!-- Used for WinRT access in .Net 4.8, not needed with .NET 5+ -->
     <TargetPlatformVersion>8.0</TargetPlatformVersion>
-    
+
   </PropertyGroup>
   <PropertyGroup>
     <Product>TinyWall</Product>
@@ -37,7 +37,7 @@
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Windows.Forms" />
-    
+
     <!-- Used for WinRT access in .Net 4.8, not needed with .NET 5+ -->
     <Reference Include="Windows.Management" />
     <Reference Include="Windows.ApplicationModel" />
@@ -49,7 +49,7 @@
     <Compile Include="../pylorak.Utilities/*.cs" LinkBase="pylorak.Utilities" />
     <Compile Include="../pylorak.Windows/*.cs" LinkBase="pylorak.Windows" />
     <Compile Include="../pylorak.Windows/NetStat/*.cs" LinkBase="pylorak.Windows.NetStat" />
-    <Compile Include="../pylorak.Windows/TaskDialog/*.cs" LinkBase="pylorak.Windows.TaskDialog" />
+    <Compile Include="../pylorak.Windows/TaskDialogue/*.cs" LinkBase="pylorak.Windows.TaskDialogue" />
     <Compile Include="../pylorak.Windows.Services/*.cs" LinkBase="pylorak.Windows.Services" />
     <Compile Include="../pylorak.Windows.WFP/*.cs" LinkBase="pylorak.Windows.WFP" />
     <PackageReference Include="Nullable" Version="1.3.0">
@@ -613,6 +613,6 @@
     <EmbeddedResource Update="UwpPackagesForm.pt-BR.resx">
       <DependentUpon>UwpPackagesForm.cs</DependentUpon>
     </EmbeddedResource>
-    
+
   </ItemGroup>
 </Project>

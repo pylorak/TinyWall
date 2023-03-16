@@ -29,7 +29,7 @@ namespace pylorak.Windows.WFP
 
         public object SyncRoot => _list;
 
-        public bool IsSynchronized => false;
+        public bool IsSynchronised => false;
 
         public bool IsDisposed => _disposed;
 

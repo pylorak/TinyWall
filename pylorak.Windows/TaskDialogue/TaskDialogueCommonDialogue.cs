@@ -17,12 +17,12 @@ namespace Microsoft.Samples
     /// correctly show a modal dialog. This class will allow you to do this and keep access
     /// to the results of the TaskDialog.
     /// </summary>
-    internal class TaskDialogCommonDialog : CommonDialog
+    internal class TaskDialogueCommonDialogue : CommonDialog
     {
         /// <summary>
         /// The TaskDialog we will display.
         /// </summary>
-        private readonly TaskDialog _taskDialog;
+        private readonly TaskDialogue _taskDialogue;
 
         /// <summary>
         /// The result of the dialog, either a DialogResult value for common push buttons set in the TaskDialog.CommonButtons
@@ -42,18 +42,18 @@ namespace Microsoft.Samples
         /// correctly show a modal dialog. This class will allow you to do this and keep access
         /// to the results of the TaskDialog.
         /// </summary>
-        /// <param name="taskDialog">The TaskDialog to show.</param>
-        internal TaskDialogCommonDialog(TaskDialog taskDialog)
+        /// <param name="taskDialogue">The TaskDialog to show.</param>
+        internal TaskDialogueCommonDialogue(TaskDialogue taskDialogue)
         {
-            this._taskDialog = taskDialog ?? throw new ArgumentNullException(nameof(taskDialog));
+            this._taskDialogue = taskDialogue ?? throw new ArgumentNullException(nameof(taskDialogue));
         }
 
         /// <summary>
         /// The TaskDialog to show.
         /// </summary>
-        internal TaskDialog TaskDialog
+        internal TaskDialogue TaskDialogue
         {
-            get { return this._taskDialog; }
+            get { return this._taskDialogue; }
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Microsoft.Samples
         /// </summary>
         public override void Reset()
         {
-            this._taskDialog.Reset();
+            this._taskDialogue.Reset();
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Microsoft.Samples
         /// </returns>
         protected override bool RunDialog(IntPtr hwndOwner)
         {
-            this._taskDialogResult = this._taskDialog.Show(hwndOwner, out this._verificationFlagCheckedResult);
+            this._taskDialogResult = this._taskDialogue.Show(hwndOwner, out this._verificationFlagCheckedResult);
             return (this._taskDialogResult != (int)DialogResult.Cancel);
         }
     }

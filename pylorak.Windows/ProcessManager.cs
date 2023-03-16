@@ -1,11 +1,11 @@
 ﻿
 using System;
-using System.Security;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Text;
-using System.ComponentModel;
 
 namespace pylorak.Windows
 {
@@ -98,8 +98,8 @@ namespace pylorak.Windows
             TokenElevation,
             TokenHasRestrictions,
             TokenAccessInformation,
-            TokenVirtualizationAllowed,
-            TokenVirtualizationEnabled,
+            TokenVirtualisationAllowed,
+            TokenVirtualisationEnabled,
             TokenIntegrityLevel,
             TokenUIAccess,
             TokenMandatoryPolicy,
@@ -216,7 +216,7 @@ namespace pylorak.Windows
             DupHandle = 0x00000040,
             SetInformation = 0x00000200,
             QueryInformation = 0x00000400,
-            Synchronize = 0x00100000,
+            Synchronise = 0x00100000,
             ReadControl = 0x00020000,
             QueryLimitedInformation = 0x00001000,
         }

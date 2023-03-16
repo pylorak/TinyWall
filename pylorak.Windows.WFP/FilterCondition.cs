@@ -1,13 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Net;
-using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.Runtime.ConstrainedExecution;
-using System.Security;
-using System.Security.AccessControl;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
+using System.Net.Sockets;
+using System.Runtime.ConstrainedExecution;
+using System.Runtime.InteropServices;
+using System.Security;
+using System.Security.AccessControl;
 
 namespace pylorak.Windows.WFP
 {
@@ -256,7 +256,7 @@ namespace pylorak.Windows.WFP
             base.Dispose(disposing);
         }
     }
-    
+
     public sealed class PortFilterCondition : FilterCondition
     {
         private SafeHGlobalHandle? rangeNativeMem;
@@ -376,7 +376,7 @@ namespace pylorak.Windows.WFP
             [DllImport("FWPUClnt.dll", EntryPoint = "FwpmGetAppIdFromFileName0")]
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
             internal static extern uint FwpmGetAppIdFromFileName0(
-                [MarshalAs(UnmanagedType.LPWStr), In]  string fileName,
+                [MarshalAs(UnmanagedType.LPWStr), In] string fileName,
                 [Out] out FwpmMemorySafeHandle appId);
         }
 
@@ -543,7 +543,7 @@ namespace pylorak.Windows.WFP
             var sha1 = hasher.ComputeHash(unicode);
 
             // 5: Reverse the byte() string  returned from the SHA1 hash function(on Little Endian systems Not tested on Big Endian systems)
-            // Optimized away by reversing array order in steps 7 and 10.
+            // Optimised away by reversing array order in steps 7 and 10.
 
             // 6: Split the reversed string into 5 blocks of 4 bytes each.
             unsafe
@@ -691,7 +691,7 @@ namespace pylorak.Windows.WFP
     {
         FWP_CONDITION_FLAG_IS_LOOPBACK = 0x00000001,
         FWP_CONDITION_FLAG_IS_IPSEC_SECURED = 0x00000002,
-        FWP_CONDITION_FLAG_IS_REAUTHORIZE = 0x00000004,
+        FWP_CONDITION_FLAG_IS_REAUTHORISE = 0x00000004,
         FWP_CONDITION_FLAG_IS_WILDCARD_BIND = 0x00000008,
         FWP_CONDITION_FLAG_IS_RAW_ENDPOINT = 0x00000010,
         FWP_CONDITION_FLAG_IS_FRAGMENT = 0x00000020,
@@ -711,7 +711,7 @@ namespace pylorak.Windows.WFP
         FWP_CONDITION_FLAG_IS_APPCONTAINER_LOOPBACK = 0x00400000,
         FWP_CONDITION_FLAG_IS_NON_APPCONTAINER_LOOPBACK = 0x00800000,
         FWP_CONDITION_FLAG_IS_RESERVED = 0x01000000,
-        FWP_CONDITION_FLAG_IS_HONORING_POLICY_AUTHORIZE = 0x02000000
+        FWP_CONDITION_FLAG_IS_HONOURING_POLICY_AUTHORISE = 0x02000000
     }
 
     public sealed class FlagsFilterCondition : FilterCondition

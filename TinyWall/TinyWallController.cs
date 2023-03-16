@@ -1285,13 +1285,13 @@ namespace pylorak.TinyWall
 
             Utils.SplitFirstLine(Resources.Messages.YouAreAboutToEnterLearningMode, out string firstLine, out string contentLines);
 
-            var dialog = new TaskDialog();
+            var dialog = new TaskDialogue();
             dialog.CustomMainIcon = Resources.Icons.firewall;
             dialog.WindowTitle = Resources.Messages.TinyWall;
             dialog.MainInstruction = firstLine;
             dialog.Content = contentLines;
             dialog.AllowDialogCancellation = false;
-            dialog.CommonButtons = TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No;
+            dialog.CommonButtons = TaskDialogueCommonButtons.Yes | TaskDialogueCommonButtons.No;
 
             if (dialog.Show() != (int)DialogResult.Yes)
                 return;

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace pylorak.Windows.WFP
 {
@@ -582,7 +579,7 @@ namespace pylorak.Windows.WFP
 
         // -------------------------------------------------- WINDOWS 7 -----------------------------------
 
-        public static readonly Guid FWPM_LAYER_KM_AUTHORIZATION = new(
+        public static readonly Guid FWPM_LAYER_KM_AUTHORISATION = new(
            0x4aa226e9,
            0x9020,
            0x45fb,

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Drawing;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -13,13 +13,13 @@ namespace pylorak.TinyWall
     {
         private Thread? SearcherThread;
         private bool RunSearch;
-        private Size IconSize = new ((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
+        private Size IconSize = new((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
         internal List<FirewallExceptionV3> SelectedExceptions { get; } = new List<FirewallExceptionV3>();
 
         internal AppFinderForm()
         {
-            InitializeComponent();
+            InitialiseComponent();
             Utils.SetRightToLeft(this);
             this.IconList.ImageSize = IconSize;
             this.Icon = Resources.Icons.firewall;
@@ -53,7 +53,7 @@ namespace pylorak.TinyWall
 
         private sealed class SearchResults
         {
-            private readonly Dictionary<DatabaseClasses.Application, List<ExecutableSubject>> _List = new ();
+            private readonly Dictionary<DatabaseClasses.Application, List<ExecutableSubject>> _List = new();
 
             public void Clear()
             {
@@ -78,7 +78,7 @@ namespace pylorak.TinyWall
 
             public List<DatabaseClasses.Application> GetFoundApps()
             {
-                List<DatabaseClasses.Application> ret = new ();
+                List<DatabaseClasses.Application> ret = new();
                 ret.AddRange(_List.Keys);
                 return ret;
             }
@@ -111,7 +111,7 @@ namespace pylorak.TinyWall
                             SearchResult.AddEntry(app, exe);
                             this.BeginInvoke((MethodInvoker)delegate ()
                             {
-                                AddRecognizedAppToList(app, exe.ExecutablePath);
+                                AddRecognisedAppToList(app, exe.ExecutablePath);
                             });
                         }
                     }
@@ -161,7 +161,7 @@ namespace pylorak.TinyWall
             {
                 // Update status
                 RunSearch = false;
-                this.BeginInvoke((MethodInvoker)delegate()
+                this.BeginInvoke((MethodInvoker)delegate ()
                 {
                     try
                     {
@@ -170,7 +170,8 @@ namespace pylorak.TinyWall
                         btnStartDetection.Image = GlobalInstances.ApplyBtnIcon;
                         btnStartDetection.Enabled = true;
                     }
-                    catch {
+                    catch
+                    {
                         // Ignore if the form was already disposed
                     }
                 });
@@ -189,7 +190,7 @@ namespace pylorak.TinyWall
             if (now - LastEnterDoSearchPath > TimeSpan.FromMilliseconds(500))
             {
                 LastEnterDoSearchPath = now;
-                this.BeginInvoke((MethodInvoker)delegate()
+                this.BeginInvoke((MethodInvoker)delegate ()
                 {
                     lblStatus.Text = string.Format(CultureInfo.CurrentCulture, Resources.Messages.SearchingPath, path);
                 });
@@ -211,14 +212,14 @@ namespace pylorak.TinyWall
                         // Try to match file
                         ExecutableSubject subject = (ExecutableSubject)ExceptionSubject.Construct(file, null);
                         DatabaseClasses.Application? app = db.TryGetApp(subject, out FirewallExceptionV3? dummyFwex, false);
-                        if ((app != null)  && (!subject.IsSigned || subject.CertValid))
+                        if ((app != null) && (!subject.IsSigned || subject.CertValid))
                         {
                             SearchResult.AddEntry(app, subject);
 
                             // We have a match. This file belongs to a known application!
-                            this.BeginInvoke((MethodInvoker)delegate()
+                            this.BeginInvoke((MethodInvoker)delegate ()
                             {
-                                AddRecognizedAppToList(app, subject.ExecutablePath);
+                                AddRecognisedAppToList(app, subject.ExecutablePath);
                             });
                         }
                     }
@@ -238,7 +239,7 @@ namespace pylorak.TinyWall
             catch { }
         }
 
-        private void AddRecognizedAppToList(DatabaseClasses.Application app, string path)
+        private void AddRecognisedAppToList(DatabaseClasses.Application app, string path)
         {
             // Check if we've already added this application
             for (int i = 0; i < list.Items.Count; ++i)

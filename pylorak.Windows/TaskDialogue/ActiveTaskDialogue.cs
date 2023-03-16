@@ -17,7 +17,7 @@ namespace Microsoft.Samples
     /// You should not use this object after the TaskDialog Destroy notification callback. Doing so
     /// will result in undefined behavior and likely crash.
     /// </summary>
-    internal class ActiveTaskDialog : IWin32Window
+    internal class ActiveTaskDialogue : IWin32Window
     {
         /// <summary>
         /// The Task Dialog's window handle.
@@ -28,7 +28,7 @@ namespace Microsoft.Samples
         /// Creates a ActiveTaskDialog.
         /// </summary>
         /// <param name="handle">The Task Dialog's window handle.</param>
-        internal ActiveTaskDialog(IntPtr handle)
+        internal ActiveTaskDialogue(IntPtr handle)
         {
             this._handle = (handle != IntPtr.Zero) ? handle : throw new ArgumentNullException(nameof(handle));
         }
@@ -362,7 +362,7 @@ namespace Microsoft.Samples
         /// custom via Icon type) must be used when upating the icon.
         /// </summary>
         /// <param name="icon">Task Dialog standard icon.</param>
-        internal void UpdateMainIcon(TaskDialogIcon icon)
+        internal void UpdateMainIcon(TaskDialogueIcon icon)
         {
             // TDM_UPDATE_ICON = WM_USER+116  // wParam = icon element (TASKDIALOG_ICON_ELEMENTS), lParam = new icon (hIcon if TDF_USE_HICON_* was set, PCWSTR otherwise)
             UnsafeNativeMethods.SendMessage(
@@ -392,7 +392,7 @@ namespace Microsoft.Samples
         /// custom via Icon type) must be used when upating the icon.
         /// </summary>
         /// <param name="icon">Task Dialog standard icon.</param>
-        internal void UpdateFooterIcon(TaskDialogIcon icon)
+        internal void UpdateFooterIcon(TaskDialogueIcon icon)
         {
             // TDM_UPDATE_ICON = WM_USER+116  // wParam = icon element (TASKDIALOG_ICON_ELEMENTS), lParam = new icon (hIcon if TDF_USE_HICON_* was set, PCWSTR otherwise)
             UnsafeNativeMethods.SendMessage(

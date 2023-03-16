@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace pylorak.Windows.WFP
@@ -89,7 +88,7 @@ namespace pylorak.Windows.WFP
 
         public Interop.FWPM_FILTER0_NoStrings Prepare()
         {
-            SynchronizeDisplayData();
+            SynchroniseDisplayData();
 
             if (_conditionsHandle == null)
             {
@@ -123,10 +122,10 @@ namespace pylorak.Windows.WFP
             set { _nativeStruct.filterKey = value; }
         }
 
-        private void SynchronizeDisplayData()
+        private void SynchroniseDisplayData()
         {
             if (_displayDataHandle != null)
-                // Already synchronized
+                // Already synchronised
                 return;
 
             int nameLength = _displayName?.Length ?? 0;
@@ -233,13 +232,13 @@ namespace pylorak.Windows.WFP
         }
         public FilterConditionList Conditions
         {
-            get 
+            get
             {
                 // Invalidate cache
                 _conditionsHandle?.Dispose();
                 _conditionsHandle = null;
 
-                return _conditions; 
+                return _conditions;
             }
         }
         public FilterActions Action

@@ -1,16 +1,16 @@
+using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Specialized;
-using System.Security;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Runtime.ConstrainedExecution;
+using System.Runtime.InteropServices;
+using System.Security;
 using System.Threading;
-using Microsoft.Win32.SafeHandles;
 
 namespace Microsoft.Samples
 {
-    using Win32Exception = System.ComponentModel.Win32Exception;
     using PrivilegeNotHeldException = System.Security.AccessControl.PrivilegeNotHeldException;
+    using Win32Exception = System.ComponentModel.Win32Exception;
 
     internal delegate void PrivilegedCallback(object? state);
 
@@ -128,10 +128,10 @@ namespace Microsoft.Samples
             [DllImport("advapi32", CharSet = CharSet.Unicode, SetLastError = true)]
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
             internal static extern bool AdjustTokenPrivileges(
-                [In]     SafeTokenHandle TokenHandle,
-                [In]     bool DisableAllPrivileges,
-                [In]     ref TOKEN_PRIVILEGE NewState,
-                [In]     uint BufferLength,
+                [In] SafeTokenHandle TokenHandle,
+                [In] bool DisableAllPrivileges,
+                [In] ref TOKEN_PRIVILEGE NewState,
+                [In] uint BufferLength,
                 [In, Out] ref TOKEN_PRIVILEGE PreviousState,
                 [In, Out] ref uint ReturnLength);
 
@@ -142,8 +142,8 @@ namespace Microsoft.Samples
             [DllImport("advapi32", EntryPoint = "LookupPrivilegeValueW", CharSet = CharSet.Unicode, SetLastError = true)]
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
             internal static extern bool LookupPrivilegeValue(
-                [In]     string? lpSystemName,
-                [In]     string lpName,
+                [In] string? lpSystemName,
+                [In] string lpName,
                 [In, Out] ref LUID Luid);
 
             [DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
@@ -157,33 +157,33 @@ namespace Microsoft.Samples
             [DllImport("advapi32", CharSet = CharSet.Unicode, SetLastError = true)]
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
             internal static extern bool OpenProcessToken(
-                [In]     IntPtr ProcessToken,
-                [In]     TokenAccessLevels DesiredAccess,
+                [In] IntPtr ProcessToken,
+                [In] TokenAccessLevels DesiredAccess,
                 [In, Out] ref SafeTokenHandle TokenHandle);
 
             [DllImport("advapi32", CharSet = CharSet.Unicode, SetLastError = true)]
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
             internal static extern bool OpenThreadToken(
-                [In]     IntPtr ThreadToken,
-                [In]     TokenAccessLevels DesiredAccess,
-                [In]     bool OpenAsSelf,
+                [In] IntPtr ThreadToken,
+                [In] TokenAccessLevels DesiredAccess,
+                [In] bool OpenAsSelf,
                 [In, Out] ref SafeTokenHandle TokenHandle);
 
             [DllImport("advapi32", CharSet = CharSet.Unicode, SetLastError = true)]
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
             internal static extern bool DuplicateTokenEx(
-                [In]    SafeTokenHandle ExistingToken,
-                [In]    TokenAccessLevels DesiredAccess,
-                [In]    IntPtr TokenAttributes,
-                [In]    SecurityImpersonationLevel ImpersonationLevel,
-                [In]    TokenType TokenType,
+                [In] SafeTokenHandle ExistingToken,
+                [In] TokenAccessLevels DesiredAccess,
+                [In] IntPtr TokenAttributes,
+                [In] SecurityImpersonationLevel ImpersonationLevel,
+                [In] TokenType TokenType,
                 [In, Out] ref SafeTokenHandle NewToken);
 
             [DllImport("advapi32", CharSet = CharSet.Unicode, SetLastError = true)]
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
             internal static extern bool SetThreadToken(
-                [In]    IntPtr Thread,
-                [In]    SafeTokenHandle Token);
+                [In] IntPtr Thread,
+                [In] SafeTokenHandle Token);
         }
 
         #region Private static members
@@ -203,38 +203,38 @@ namespace Microsoft.Samples
         #endregion
 
         #region Privilege names
-        public const string CreateToken                     = "SeCreateTokenPrivilege";
-        public const string AssignPrimaryToken              = "SeAssignPrimaryTokenPrivilege";
-        public const string LockMemory                      = "SeLockMemoryPrivilege";
-        public const string IncreaseQuota                   = "SeIncreaseQuotaPrivilege";
-        public const string UnsolicitedInput                = "SeUnsolicitedInputPrivilege";
-        public const string MachineAccount                  = "SeMachineAccountPrivilege";
-        public const string TrustedComputingBase            = "SeTcbPrivilege";
-        public const string Security                        = "SeSecurityPrivilege";
-        public const string TakeOwnership                   = "SeTakeOwnershipPrivilege";
-        public const string LoadDriver                      = "SeLoadDriverPrivilege";
-        public const string SystemProfile                   = "SeSystemProfilePrivilege";
-        public const string SystemTime                      = "SeSystemtimePrivilege";
-        public const string ProfileSingleProcess            = "SeProfileSingleProcessPrivilege";
-        public const string IncreaseBasePriority            = "SeIncreaseBasePriorityPrivilege";
-        public const string CreatePageFile                  = "SeCreatePagefilePrivilege";
-        public const string CreatePermanent                 = "SeCreatePermanentPrivilege";
-        public const string Backup                          = "SeBackupPrivilege";
-        public const string Restore                         = "SeRestorePrivilege";
-        public const string Shutdown                        = "SeShutdownPrivilege";
-        public const string Debug                           = "SeDebugPrivilege";
-        public const string Audit                           = "SeAuditPrivilege";
-        public const string SystemEnvironment               = "SeSystemEnvironmentPrivilege";
-        public const string ChangeNotify                    = "SeChangeNotifyPrivilege";
-        public const string RemoteShutdown                  = "SeRemoteShutdownPrivilege";
-        public const string Undock                          = "SeUndockPrivilege";
-        public const string SyncAgent                       = "SeSyncAgentPrivilege";
-        public const string EnableDelegation                = "SeEnableDelegationPrivilege";
-        public const string ManageVolume                    = "SeManageVolumePrivilege";
-        public const string Impersonate                     = "SeImpersonatePrivilege";
-        public const string CreateGlobal                    = "SeCreateGlobalPrivilege";
-        public const string TrustedCredentialManagerAccess  = "SeTrustedCredManAccessPrivilege";
-        public const string ReserveProcessor                = "SeReserveProcessorPrivilege";
+        public const string CreateToken = "SeCreateTokenPrivilege";
+        public const string AssignPrimaryToken = "SeAssignPrimaryTokenPrivilege";
+        public const string LockMemory = "SeLockMemoryPrivilege";
+        public const string IncreaseQuota = "SeIncreaseQuotaPrivilege";
+        public const string UnsolicitedInput = "SeUnsolicitedInputPrivilege";
+        public const string MachineAccount = "SeMachineAccountPrivilege";
+        public const string TrustedComputingBase = "SeTcbPrivilege";
+        public const string Security = "SeSecurityPrivilege";
+        public const string TakeOwnership = "SeTakeOwnershipPrivilege";
+        public const string LoadDriver = "SeLoadDriverPrivilege";
+        public const string SystemProfile = "SeSystemProfilePrivilege";
+        public const string SystemTime = "SeSystemtimePrivilege";
+        public const string ProfileSingleProcess = "SeProfileSingleProcessPrivilege";
+        public const string IncreaseBasePriority = "SeIncreaseBasePriorityPrivilege";
+        public const string CreatePageFile = "SeCreatePagefilePrivilege";
+        public const string CreatePermanent = "SeCreatePermanentPrivilege";
+        public const string Backup = "SeBackupPrivilege";
+        public const string Restore = "SeRestorePrivilege";
+        public const string Shutdown = "SeShutdownPrivilege";
+        public const string Debug = "SeDebugPrivilege";
+        public const string Audit = "SeAuditPrivilege";
+        public const string SystemEnvironment = "SeSystemEnvironmentPrivilege";
+        public const string ChangeNotify = "SeChangeNotifyPrivilege";
+        public const string RemoteShutdown = "SeRemoteShutdownPrivilege";
+        public const string Undock = "SeUndockPrivilege";
+        public const string SyncAgent = "SeSyncAgentPrivilege";
+        public const string EnableDelegation = "SeEnableDelegationPrivilege";
+        public const string ManageVolume = "SeManageVolumePrivilege";
+        public const string Impersonate = "SeImpersonatePrivilege";
+        public const string CreateGlobal = "SeCreateGlobalPrivilege";
+        public const string TrustedCredentialManagerAccess = "SeTrustedCredManAccessPrivilege";
+        public const string ReserveProcessor = "SeReserveProcessorPrivilege";
         #endregion
 
         #region LUID caching logic
@@ -244,8 +244,8 @@ namespace Microsoft.Samples
         // of privilege names to luids
         //
 
-        [ReliabilityContract( Consistency.WillNotCorruptState, Cer.MayFail )]
-        private static NativeMethods.LUID LuidFromPrivilege( string privilege )
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+        private static NativeMethods.LUID LuidFromPrivilege(string privilege)
         {
             NativeMethods.LUID luid;
             luid.LowPart = 0;
@@ -261,7 +261,7 @@ namespace Microsoft.Samples
             {
                 privilegeLock.AcquireReaderLock(Timeout.Infinite);
 
-                if ( luids.Contains( privilege ))
+                if (luids.Contains(privilege))
                 {
                     luid = (NativeMethods.LUID)luids[privilege];
 
@@ -271,25 +271,25 @@ namespace Microsoft.Samples
                 {
                     privilegeLock.ReleaseReaderLock();
 
-                    if ( false == NativeMethods.LookupPrivilegeValue( null, privilege, ref luid ))
+                    if (false == NativeMethods.LookupPrivilegeValue(null, privilege, ref luid))
                     {
                         int error = Marshal.GetLastWin32Error();
 
-                        if ( error == NativeMethods.ERROR_NOT_ENOUGH_MEMORY )
+                        if (error == NativeMethods.ERROR_NOT_ENOUGH_MEMORY)
                         {
                             throw new OutOfMemoryException();
                         }
-                        else if ( error == NativeMethods.ERROR_ACCESS_DENIED )
+                        else if (error == NativeMethods.ERROR_ACCESS_DENIED)
                         {
-                            throw new UnauthorizedAccessException( "Caller does not have the rights to look up privilege local unique identifier" );
+                            throw new UnauthorizedAccessException("Caller does not have the rights to look up privilege local unique identifier");
                         }
-                        else if ( error == NativeMethods.ERROR_NO_SUCH_PRIVILEGE )
+                        else if (error == NativeMethods.ERROR_NO_SUCH_PRIVILEGE)
                         {
                             throw new ArgumentException($"{privilege} is not a valid privilege name", nameof(privilege));
                         }
                         else
                         {
-                            throw new Win32Exception( error );
+                            throw new Win32Exception(error);
                         }
                     }
 
@@ -298,17 +298,17 @@ namespace Microsoft.Samples
             }
             finally
             {
-                if ( privilegeLock.IsReaderLockHeld )
+                if (privilegeLock.IsReaderLockHeld)
                 {
                     privilegeLock.ReleaseReaderLock();
                 }
 
-                if ( privilegeLock.IsWriterLockHeld )
+                if (privilegeLock.IsWriterLockHeld)
                 {
-                    if ( !luids.Contains( privilege ))
+                    if (!luids.Contains(privilege))
                     {
-                        luids[ privilege ] = luid;
-                        privileges[ luid ] = privilege;
+                        luids[privilege] = luid;
+                        privileges[luid] = privilege;
                     }
 
                     privilegeLock.ReleaseWriterLock();
@@ -325,30 +325,30 @@ namespace Microsoft.Samples
             private bool disposed = false;
             private int referenceCount = 1;
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "<Pending>")]
-            private SafeTokenHandle threadHandle = new( IntPtr.Zero );
+            private SafeTokenHandle threadHandle = new(IntPtr.Zero);
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "<Pending>")]
             private bool isImpersonating = false;
 
-            private static SafeTokenHandle processHandle = new( IntPtr.Zero );
+            private static SafeTokenHandle processHandle = new(IntPtr.Zero);
             private static readonly object syncRoot = new();
 
             #region Constructor and finalizer
             public TlsContents()
             {
                 int error = 0;
-				int cachingError = 0;
+                int cachingError = 0;
                 bool success = true;
 
-                if ( processHandle.IsInvalid )
+                if (processHandle.IsInvalid)
                 {
-                    lock ( syncRoot )
+                    lock (syncRoot)
                     {
-                        if ( processHandle.IsInvalid )
+                        if (processHandle.IsInvalid)
                         {
-                            if ( false == NativeMethods.OpenProcessToken(
+                            if (false == NativeMethods.OpenProcessToken(
                                             NativeMethods.GetCurrentProcess(),
                                             TokenAccessLevels.Duplicate,
-                                            ref processHandle ))
+                                            ref processHandle))
                             {
                                 cachingError = Marshal.GetLastWin32Error();
                                 success = false;
@@ -366,96 +366,96 @@ namespace Microsoft.Samples
                     // copy the process token onto the thread
                     //
 
-					if ( false == NativeMethods.OpenThreadToken(
-						NativeMethods.GetCurrentThread(),
-						TokenAccessLevels.TokenQuery | TokenAccessLevels.AdjustPrivileges,
-						true,
-						ref this.threadHandle ))
-					{
-						if ( success == true )
-						{
-							error = Marshal.GetLastWin32Error();
+                    if (false == NativeMethods.OpenThreadToken(
+                        NativeMethods.GetCurrentThread(),
+                        TokenAccessLevels.TokenQuery | TokenAccessLevels.AdjustPrivileges,
+                        true,
+                        ref this.threadHandle))
+                    {
+                        if (success == true)
+                        {
+                            error = Marshal.GetLastWin32Error();
 
-							if ( error != NativeMethods.ERROR_NO_TOKEN )
-							{
-								success = false;
-							}
+                            if (error != NativeMethods.ERROR_NO_TOKEN)
+                            {
+                                success = false;
+                            }
 
-							if ( success == true )
-							{
-								error = 0;
+                            if (success == true)
+                            {
+                                error = 0;
 
-								if ( false == NativeMethods.DuplicateTokenEx(
-									processHandle,
-									TokenAccessLevels.Impersonate | TokenAccessLevels.TokenQuery | TokenAccessLevels.AdjustPrivileges,
-									IntPtr.Zero,
-									SecurityImpersonationLevel.Impersonation,
-									TokenType.Impersonation,
-									ref this.threadHandle ))
-								{
-									error = Marshal.GetLastWin32Error();
-									success = false;
-								}
-							}
+                                if (false == NativeMethods.DuplicateTokenEx(
+                                    processHandle,
+                                    TokenAccessLevels.Impersonate | TokenAccessLevels.TokenQuery | TokenAccessLevels.AdjustPrivileges,
+                                    IntPtr.Zero,
+                                    SecurityImpersonationLevel.Impersonation,
+                                    TokenType.Impersonation,
+                                    ref this.threadHandle))
+                                {
+                                    error = Marshal.GetLastWin32Error();
+                                    success = false;
+                                }
+                            }
 
-							if ( success == true )
-							{
-								if ( false == NativeMethods.SetThreadToken(
-									IntPtr.Zero,
-									this.threadHandle ))
-								{
-									error = Marshal.GetLastWin32Error();
-									success = false;
-								}
-							}
+                            if (success == true)
+                            {
+                                if (false == NativeMethods.SetThreadToken(
+                                    IntPtr.Zero,
+                                    this.threadHandle))
+                                {
+                                    error = Marshal.GetLastWin32Error();
+                                    success = false;
+                                }
+                            }
 
-							if ( success == true )
-							{
-								//
-								// This thread is now impersonating; it needs to be reverted to its original state
-								//
+                            if (success == true)
+                            {
+                                //
+                                // This thread is now impersonating; it needs to be reverted to its original state
+                                //
 
-								this.isImpersonating = true;
-							}
-						}
-						else
-						{
-							error = cachingError;
-						}
-					}
-					else
-					{
-						success = true;
-					}
+                                this.isImpersonating = true;
+                            }
+                        }
+                        else
+                        {
+                            error = cachingError;
+                        }
+                    }
+                    else
+                    {
+                        success = true;
+                    }
                 }
                 finally
                 {
-                    if ( !success )
+                    if (!success)
                     {
                         Dispose();
                     }
                 }
 
-                if ( error == NativeMethods.ERROR_NOT_ENOUGH_MEMORY )
+                if (error == NativeMethods.ERROR_NOT_ENOUGH_MEMORY)
                 {
                     throw new OutOfMemoryException();
                 }
-                else if ( error == NativeMethods.ERROR_ACCESS_DENIED ||
-                    error == NativeMethods.ERROR_CANT_OPEN_ANONYMOUS )
+                else if (error == NativeMethods.ERROR_ACCESS_DENIED ||
+                    error == NativeMethods.ERROR_CANT_OPEN_ANONYMOUS)
                 {
-                    throw new UnauthorizedAccessException( "The caller does not have the rights to perform the operation" );
+                    throw new UnauthorizedAccessException("The caller does not have the rights to perform the operation");
                 }
-                else if ( error != 0 )
+                else if (error != 0)
                 {
-                    throw new Win32Exception( error );
+                    throw new Win32Exception(error);
                 }
             }
 
             ~TlsContents()
             {
-                if ( !this.disposed )
+                if (!this.disposed)
                 {
-                    Dispose( false );
+                    Dispose(false);
                 }
             }
             #endregion
@@ -463,20 +463,20 @@ namespace Microsoft.Samples
             #region IDisposable implementation
             public void Dispose()
             {
-                Dispose( true );
-                GC.SuppressFinalize( this );
+                Dispose(true);
+                GC.SuppressFinalize(this);
             }
 
-            private void Dispose( bool disposing )
+            private void Dispose(bool disposing)
             {
-                if ( this.disposed ) return;
+                if (this.disposed) return;
 
                 if (disposing)
                 {
                     this.threadHandle?.Dispose();
                 }
 
-                if ( this.isImpersonating )
+                if (this.isImpersonating)
                 {
                     NativeMethods.RevertToSelf();
                 }
@@ -495,7 +495,7 @@ namespace Microsoft.Samples
             {
                 int result = --this.referenceCount;
 
-                if ( result == 0 )
+                if (result == 0)
                 {
                     Dispose();
                 }
@@ -524,31 +524,31 @@ namespace Microsoft.Samples
         #endregion
 
         #region Constructor
-        public Privilege( string privilegeName )
+        public Privilege(string privilegeName)
         {
-            if ( privilegeName == null )
+            if (privilegeName == null)
             {
                 throw new ArgumentNullException(nameof(privilegeName));
             }
 
-            this.luid = LuidFromPrivilege( privilegeName );
+            this.luid = LuidFromPrivilege(privilegeName);
         }
         #endregion
 
         #region Public methods and properties
-        [ReliabilityContract( Consistency.WillNotCorruptState, Cer.MayFail )]
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         public void Enable()
         {
-            this.ToggleState( true );
-        }
-        
-        [ReliabilityContract( Consistency.WillNotCorruptState, Cer.MayFail )]
-        public void Disable()
-        {
-            this.ToggleState( false );
+            this.ToggleState(true);
         }
 
-        [ReliabilityContract( Consistency.WillNotCorruptState, Cer.MayFail )]
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+        public void Disable()
+        {
+            this.ToggleState(false);
+        }
+
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         public void Revert()
         {
             int error = 0;
@@ -557,12 +557,12 @@ namespace Microsoft.Samples
             // All privilege operations must take place on the same thread
             //
 
-            if ( !this.currentThread.Equals( Thread.CurrentThread ))
+            if (!this.currentThread.Equals(Thread.CurrentThread))
             {
-                throw new InvalidOperationException( "Operation must take place on the thread that created the object" );
+                throw new InvalidOperationException("Operation must take place on the thread that created the object");
             }
 
-            if ( !this.NeedToRevert )
+            if (!this.NeedToRevert)
             {
                 return;
             }
@@ -592,25 +592,25 @@ namespace Microsoft.Samples
                     // on this Revert, since doing the latter obliterates the thread token anyway
                     //
 
-                    if ( this.stateWasChanged &&
-                        ( this.tlsContents!.ReferenceCountValue > 1 ||
-                        !this.tlsContents.IsImpersonating ))
+                    if (this.stateWasChanged &&
+                        (this.tlsContents!.ReferenceCountValue > 1 ||
+                        !this.tlsContents.IsImpersonating))
                     {
                         var newState = new NativeMethods.TOKEN_PRIVILEGE();
                         newState.PrivilegeCount = 1;
                         newState.Privilege.Luid = this.luid;
-                        newState.Privilege.Attributes = ( this.initialState ? NativeMethods.SE_PRIVILEGE_ENABLED : NativeMethods.SE_PRIVILEGE_DISABLED );
+                        newState.Privilege.Attributes = (this.initialState ? NativeMethods.SE_PRIVILEGE_ENABLED : NativeMethods.SE_PRIVILEGE_DISABLED);
 
                         var previousState = new NativeMethods.TOKEN_PRIVILEGE();
                         uint previousSize = 0;
 
-                        if ( false == NativeMethods.AdjustTokenPrivileges(
+                        if (false == NativeMethods.AdjustTokenPrivileges(
                                         this.tlsContents.ThreadHandle,
                                         false,
                                         ref newState,
-                                        ( uint )Marshal.SizeOf( previousState ),
+                                        (uint)Marshal.SizeOf(previousState),
                                         ref previousState,
-                                        ref previousSize ))
+                                        ref previousSize))
                         {
                             error = Marshal.GetLastWin32Error();
                             success = false;
@@ -619,24 +619,24 @@ namespace Microsoft.Samples
                 }
                 finally
                 {
-                    if ( success )
+                    if (success)
                     {
                         this.Reset();
                     }
                 }
             }
 
-            if ( error == NativeMethods.ERROR_NOT_ENOUGH_MEMORY )
+            if (error == NativeMethods.ERROR_NOT_ENOUGH_MEMORY)
             {
                 throw new OutOfMemoryException();
             }
-            else if ( error == NativeMethods.ERROR_ACCESS_DENIED )
+            else if (error == NativeMethods.ERROR_ACCESS_DENIED)
             {
-                throw new UnauthorizedAccessException( "Caller does not have the permission to change the privilege" );
+                throw new UnauthorizedAccessException("Caller does not have the permission to change the privilege");
             }
-            else if ( error != 0 )
+            else if (error != 0)
             {
-                throw new Win32Exception( error );
+                throw new Win32Exception(error);
             }
         }
 
@@ -645,18 +645,18 @@ namespace Microsoft.Samples
             get { return this.needToRevert; }
         }
 
-        public static void RunWithPrivilege( string privilege, bool enabled, PrivilegedCallback callback, object? state )
+        public static void RunWithPrivilege(string privilege, bool enabled, PrivilegedCallback callback, object? state)
         {
-            if ( callback == null )
+            if (callback == null)
             {
                 throw new ArgumentNullException(nameof(callback));
             }
-            
-            var p = new Privilege( privilege );
+
+            var p = new Privilege(privilege);
 
             RuntimeHelpers.PrepareConstrainedRegions();
 
-            try 
+            try
             {
                 if (enabled)
                 {
@@ -682,8 +682,8 @@ namespace Microsoft.Samples
         #endregion
 
         #region Private implementation
-        [ReliabilityContract( Consistency.WillNotCorruptState, Cer.MayFail )]
-        private void ToggleState( bool enable )
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+        private void ToggleState(bool enable)
         {
             int error = 0;
 
@@ -691,18 +691,18 @@ namespace Microsoft.Samples
             // All privilege operations must take place on the same thread
             //
 
-            if ( !this.currentThread.Equals( Thread.CurrentThread ))
+            if (!this.currentThread.Equals(Thread.CurrentThread))
             {
-                throw new InvalidOperationException( "Operation must take place on the thread that created the object" );
+                throw new InvalidOperationException("Operation must take place on the thread that created the object");
             }
 
             //
             // This privilege was already altered and needs to be reverted before it can be altered again
             //
 
-            if ( this.NeedToRevert )
+            if (this.NeedToRevert)
             {
-                throw new InvalidOperationException( "Must revert the privilege prior to attempting this operation" );
+                throw new InvalidOperationException("Must revert the privilege prior to attempting this operation");
             }
 
             //
@@ -720,7 +720,7 @@ namespace Microsoft.Samples
                 // interrupted by catastrophic exceptions
                 //
             }
-            finally 
+            finally
             {
                 try
                 {
@@ -728,12 +728,12 @@ namespace Microsoft.Samples
                     // Retrieve TLS state
                     //
 
-                    this.tlsContents = Thread.GetData( tlsSlot ) as TlsContents;
+                    this.tlsContents = Thread.GetData(tlsSlot) as TlsContents;
 
-                    if ( this.tlsContents == null )
+                    if (this.tlsContents == null)
                     {
                         this.tlsContents = new TlsContents();
-                        Thread.SetData( tlsSlot, this.tlsContents );
+                        Thread.SetData(tlsSlot, this.tlsContents);
                     }
                     else
                     {
@@ -744,7 +744,7 @@ namespace Microsoft.Samples
                     newState.PrivilegeCount = 1;
                     newState.Privilege.Luid = this.luid;
                     newState.Privilege.Attributes = enable ? NativeMethods.SE_PRIVILEGE_ENABLED : NativeMethods.SE_PRIVILEGE_DISABLED;
-                    
+
                     var previousState = new NativeMethods.TOKEN_PRIVILEGE();
                     uint previousSize = 0;
 
@@ -752,17 +752,17 @@ namespace Microsoft.Samples
                     // Place the new privilege on the thread token and remember the previous state.
                     //
 
-                    if ( false == NativeMethods.AdjustTokenPrivileges(
+                    if (false == NativeMethods.AdjustTokenPrivileges(
                                     this.tlsContents.ThreadHandle,
                                     false,
                                     ref newState,
-                                    ( uint )Marshal.SizeOf( previousState ),
+                                    (uint)Marshal.SizeOf(previousState),
                                     ref previousState,
-                                    ref previousSize ))
+                                    ref previousSize))
                     {
                         error = Marshal.GetLastWin32Error();
                     }
-                    else if ( NativeMethods.ERROR_NOT_ALL_ASSIGNED == Marshal.GetLastWin32Error())
+                    else if (NativeMethods.ERROR_NOT_ALL_ASSIGNED == Marshal.GetLastWin32Error())
                     {
                         error = NativeMethods.ERROR_NOT_ALL_ASSIGNED;
                     }
@@ -772,13 +772,13 @@ namespace Microsoft.Samples
                         // This is the initial state that revert will have to go back to
                         //
 
-                        this.initialState = (( previousState.Privilege.Attributes & NativeMethods.SE_PRIVILEGE_ENABLED ) != 0 );
+                        this.initialState = ((previousState.Privilege.Attributes & NativeMethods.SE_PRIVILEGE_ENABLED) != 0);
 
                         //
                         // Remember whether state has changed at all
                         //
 
-                        this.stateWasChanged = ( this.initialState != enable );
+                        this.stateWasChanged = (this.initialState != enable);
 
                         //
                         // If we had to impersonate, or if the privilege state changed we'll need to revert
@@ -789,33 +789,33 @@ namespace Microsoft.Samples
                 }
                 finally
                 {
-                    if ( !this.needToRevert )
+                    if (!this.needToRevert)
                     {
                         this.Reset();
                     }
                 }
             }
 
-            if ( error == NativeMethods.ERROR_NOT_ALL_ASSIGNED )
+            if (error == NativeMethods.ERROR_NOT_ALL_ASSIGNED)
             {
-                throw new PrivilegeNotHeldException( privileges[this.luid] as string );
+                throw new PrivilegeNotHeldException(privileges[this.luid] as string);
             }
-            if ( error == NativeMethods.ERROR_NOT_ENOUGH_MEMORY )
+            if (error == NativeMethods.ERROR_NOT_ENOUGH_MEMORY)
             {
                 throw new OutOfMemoryException();
             }
-            else if ( error == NativeMethods.ERROR_ACCESS_DENIED ||
-                error == NativeMethods.ERROR_CANT_OPEN_ANONYMOUS )
+            else if (error == NativeMethods.ERROR_ACCESS_DENIED ||
+                error == NativeMethods.ERROR_CANT_OPEN_ANONYMOUS)
             {
-                throw new UnauthorizedAccessException( "The caller does not have the right to change the privilege" );
+                throw new UnauthorizedAccessException("The caller does not have the right to change the privilege");
             }
-            else if ( error != 0 )
+            else if (error != 0)
             {
-                throw new Win32Exception( error );
+                throw new Win32Exception(error);
             }
         }
 
-        [ReliabilityContract( Consistency.WillNotCorruptState, Cer.Success )]
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         private void Reset()
         {
             RuntimeHelpers.PrepareConstrainedRegions();
@@ -831,12 +831,12 @@ namespace Microsoft.Samples
                 this.initialState = false;
                 this.needToRevert = false;
 
-                if ( this.tlsContents != null )
+                if (this.tlsContents != null)
                 {
-                    if ( 0 == this.tlsContents.DecrementReferenceCount())
+                    if (0 == this.tlsContents.DecrementReferenceCount())
                     {
                         this.tlsContents = null;
-                        Thread.SetData( tlsSlot, null );
+                        Thread.SetData(tlsSlot, null);
                     }
                 }
             }

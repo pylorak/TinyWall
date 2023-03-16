@@ -31,13 +31,13 @@ namespace pylorak.TinyWall
             var descriptor = new UpdateDescriptor();
             updater.State = UpdaterState.GettingDescriptor;
 
-            var TDialog = new TaskDialog();
+            var TDialog = new TaskDialogue();
             TDialog.CustomMainIcon = Resources.Icons.firewall;
             TDialog.WindowTitle = Resources.Messages.TinyWall;
             TDialog.MainInstruction = Resources.Messages.TinyWallUpdater;
             TDialog.Content = Resources.Messages.PleaseWaitWhileTinyWallChecksForUpdates;
             TDialog.AllowDialogCancellation = false;
-            TDialog.CommonButtons = TaskDialogCommonButtons.Cancel;
+            TDialog.CommonButtons = TaskDialogueCommonButtons.Cancel;
             TDialog.ShowMarqueeProgressBar = true;
             TDialog.Callback = updater.DownloadTickCallback;
             TDialog.CallbackData = updater;
@@ -68,7 +68,7 @@ namespace pylorak.TinyWall
                     updater.CheckVersion(descriptor);
                     break;
                 case (int)DialogResult.Abort:
-                    Utils.ShowMessageBox(updater.ErrorMsg, Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
+                    Utils.ShowMessageBox(updater.ErrorMsg, Resources.Messages.TinyWall, TaskDialogueCommonButtons.Ok, TaskDialogueIcon.Error);
                     break;
             }
         }
@@ -86,26 +86,26 @@ namespace pylorak.TinyWall
             if (WindowsNew_AnyTwUpdate || WindowsOld_TwMinorFixOnly)
             {
                 string prompt = string.Format(CultureInfo.CurrentCulture, Resources.Messages.UpdateAvailable, UpdateModule.ComponentVersion);
-                if (Utils.ShowMessageBox(prompt, Resources.Messages.TinyWallUpdater, TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No, TaskDialogIcon.Warning) == DialogResult.Yes)
+                if (Utils.ShowMessageBox(prompt, Resources.Messages.TinyWallUpdater, TaskDialogueCommonButtons.Yes | TaskDialogueCommonButtons.No, TaskDialogueIcon.Warning) == DialogResult.Yes)
                     DownloadUpdate(UpdateModule);
             }
             else
             {
                 string prompt = Resources.Messages.NoUpdateAvailable;
-                Utils.ShowMessageBox(prompt, Resources.Messages.TinyWallUpdater, TaskDialogCommonButtons.Ok, TaskDialogIcon.Information);
+                Utils.ShowMessageBox(prompt, Resources.Messages.TinyWallUpdater, TaskDialogueCommonButtons.Ok, TaskDialogueIcon.Information);
             }
         }
 
         private void DownloadUpdate(UpdateModule mainModule)
         {
             ErrorMsg = string.Empty;
-            var TDialog = new TaskDialog();
+            var TDialog = new TaskDialogue();
             TDialog.CustomMainIcon = Resources.Icons.firewall;
             TDialog.WindowTitle = Resources.Messages.TinyWall;
             TDialog.MainInstruction = Resources.Messages.TinyWallUpdater;
             TDialog.Content = Resources.Messages.DownloadingUpdate;
             TDialog.AllowDialogCancellation = false;
-            TDialog.CommonButtons = TaskDialogCommonButtons.Cancel;
+            TDialog.CommonButtons = TaskDialogueCommonButtons.Cancel;
             TDialog.ShowProgressBar = true;
             TDialog.Callback = DownloadTickCallback;
             TDialog.CallbackData = this;
@@ -130,7 +130,7 @@ namespace pylorak.TinyWall
                     InstallUpdate(tmpFile);
                     break;
                 case (int)DialogResult.Abort:
-                    Utils.ShowMessageBox(ErrorMsg, Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
+                    Utils.ShowMessageBox(ErrorMsg, Resources.Messages.TinyWall, TaskDialogueCommonButtons.Ok, TaskDialogueIcon.Error);
                     break;
             }
         }
@@ -156,25 +156,25 @@ namespace pylorak.TinyWall
             DownloadProgress = e.ProgressPercentage;
         }
 
-        private bool DownloadTickCallback(ActiveTaskDialog taskDialog, TaskDialogNotificationArgs args, object? callbackData)
+        private bool DownloadTickCallback(ActiveTaskDialogue taskDialogue, TaskDialogueNotificationArgs args, object? callbackData)
         {
             switch (args.Notification)
             {
-                case TaskDialogNotification.Created:
+                case TaskDialogueNotification.Created:
                     if (State == UpdaterState.GettingDescriptor)
-                        taskDialog.SetProgressBarMarquee(true, 25);
+                        taskDialogue.SetProgressBarMarquee(true, 25);
                     break;
-                case TaskDialogNotification.Timer:
+                case TaskDialogueNotification.Timer:
                     if (!string.IsNullOrEmpty(ErrorMsg))
-                        taskDialog.ClickButton((int)DialogResult.Abort);
+                        taskDialogue.ClickButton((int)DialogResult.Abort);
                     switch (State)
                     {
                         case UpdaterState.DescriptorReady:
                         case UpdaterState.UpdateDownloadReady:
-                            taskDialog.ClickButton((int)DialogResult.OK);
+                            taskDialogue.ClickButton((int)DialogResult.OK);
                             break;
                         case UpdaterState.DownloadingUpdate:
-                        taskDialog.SetProgressBarPosition(DownloadProgress);
+                        taskDialogue.SetProgressBarPosition(DownloadProgress);
                             break;
                     }
                     break;

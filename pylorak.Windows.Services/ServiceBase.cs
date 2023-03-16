@@ -1,10 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Threading;
-using System.Runtime.InteropServices;
 using System.Diagnostics;
-
-using pylorak.Windows;
+using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace pylorak.Windows.Services
 {
@@ -47,7 +45,7 @@ namespace pylorak.Windows.Services
         }
 
         private bool disposed;
-        private readonly bool initialized;
+        private readonly bool initialised;
         private readonly ServiceCtrlHandlerExDelegate ServiceCtrlHandlerExCallback;
         private readonly ManualResetEvent StoppedEventHandle = new(true);
         private readonly ManualResetEvent StartedEventHandle = new(false);
@@ -64,7 +62,7 @@ namespace pylorak.Windows.Services
             ServiceCtrlHandlerExCallback = new ServiceCtrlHandlerExDelegate(ServiceCtrlHandlerEx);
             UnmanagedServiceName = SafeHGlobalHandle.FromString(ServiceName);
 
-            initialized = true;
+            initialised = true;
         }
 
         public bool AutoLog { get; set; } = true;
@@ -139,13 +137,13 @@ namespace pylorak.Windows.Services
                 ServiceState.Running or
                 ServiceState.Stopped or
                 ServiceState.Paused => false,
-                _ => throw new ArgumentException("Unrecognized value.", nameof(state)),
+                _ => throw new ArgumentException("Unrecognised value.", nameof(state)),
             };
         }
 
         public void Start(string[] args)
         {
-            if (!initialized)
+            if (!initialised)
                 throw new InvalidOperationException($"{nameof(ServiceBase)} constructor has not been called.");
 
             StartStateChange(ServiceState.StartPending, args);
@@ -207,7 +205,7 @@ namespace pylorak.Windows.Services
                     }
                     break;
                 case ServiceState.StopPending:
-                    if ( (CurrentState == ServiceState.Running) || (CurrentState == ServiceState.Paused) )
+                    if ((CurrentState == ServiceState.Running) || (CurrentState == ServiceState.Paused))
                     {
                         PreviousState = CurrentState;
                         SetServiceStatePending(newState);
@@ -233,7 +231,7 @@ namespace pylorak.Windows.Services
             switch (CurrentState)
             {
                 case ServiceState.ContinuePending:
-                    // Fall-through
+                // Fall-through
                 case ServiceState.StartPending:
                     SetServiceStateReached(ServiceState.Running, win32ExitCode, serviceSpecificExitCode);
                     StartedEventHandle.Set();
@@ -542,7 +540,7 @@ namespace pylorak.Windows.Services
 
         public void ServiceMain(int argCount, IntPtr argPointer)
         {
-            if (!initialized)
+            if (!initialised)
                 throw new InvalidOperationException($"{nameof(ServiceBase)} constructor has not been called.");
             if (argCount == 0)
                 throw new ArgumentOutOfRangeException(nameof(argCount), "Argument must be larger than zero.");
@@ -581,7 +579,7 @@ namespace pylorak.Windows.Services
                 if (AutoLog)
                     EventLog.WriteEntry(message, errorType);
             }
-#region Stuff not to catch
+            #region Stuff not to catch
             catch (StackOverflowException)
             {
                 throw;
@@ -594,7 +592,7 @@ namespace pylorak.Windows.Services
             {
                 throw;
             }
-#endregion
+            #endregion
             catch { }
         }
 
@@ -617,7 +615,7 @@ namespace pylorak.Windows.Services
                 StoppedEventHandle.Close();
                 StartedEventHandle.Close();
             }
-            
+
             disposed = true;
         }
 

@@ -61,7 +61,7 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to All applications.
         /// </summary>
         internal static string AllApplications {
             get {
