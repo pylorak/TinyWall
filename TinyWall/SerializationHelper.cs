@@ -1,15 +1,14 @@
-﻿using System;
+﻿using pylorak.Utilities;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
 using System.Runtime.Serialization;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
-using System.Xml;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
-using pylorak.Utilities;
 
 namespace pylorak.TinyWall
 {
@@ -73,9 +72,9 @@ namespace pylorak.TinyWall
             JsonSerializer.Serialize(stream, obj, obj.GetJsonTypeInfo());
         }
 
-        public static T Deserialize<T>(byte[] utf8bytes, T defInstance) where T : ISerializable<T>
+        public static T Deserialize<T>(byte[] utf8Bytes, T defInstance) where T : ISerializable<T>
         {
-            return JsonSerializer.Deserialize(utf8bytes, defInstance.GetJsonTypeInfo()) ?? throw new NullResultExceptions(nameof(JsonSerializer.Deserialize));
+            return JsonSerializer.Deserialize(utf8Bytes, defInstance.GetJsonTypeInfo()) ?? throw new NullResultExceptions(nameof(JsonSerializer.Deserialize));
         }
 
         public static T Deserialize<T>(Stream stream, T defInstance) where T : ISerializable<T>
@@ -95,9 +94,9 @@ namespace pylorak.TinyWall
             pipe.Flush();
         }
 
-        public static T DeserializeFromPipe<T>(PipeStream pipe, int timeout_ms, T defInstance) where T : ISerializable<T>
+        public static T DeserializeFromPipe<T>(PipeStream pipe, int timeoutMs, T defInstance) where T : ISerializable<T>
         {
-            bool pipeClosed = false;
+            var pipeClosed = false;
             var buf = new byte[4 * 1024];
 
             using var memoryStream = new MemoryStream();
@@ -105,8 +104,8 @@ namespace pylorak.TinyWall
 
             do
             {
-                int len = 0;
-                var res = pipe.BeginRead(buf, 0, buf.Length, delegate (IAsyncResult r)
+                var len = 0;
+                _ = pipe.BeginRead(buf, 0, buf.Length, delegate (IAsyncResult r)
                 {
                     try
                     {
@@ -115,17 +114,20 @@ namespace pylorak.TinyWall
                             pipeClosed = true;
                         readDone.Set();
                     }
-                    catch { }
+                    catch
+                    {
+                        // ignored
+                    }
                 }, null);
 
-                if (!readDone.WaitOne(timeout_ms))
+                if (!readDone.WaitOne(timeoutMs))
                     throw new TimeoutException("Timeout while waiting for answer from service.");
 
                 if (pipeClosed)
                     throw new IOException("Pipe closed.");
 
                 memoryStream.Write(buf, 0, len);
-                timeout_ms = 1000;
+                timeoutMs = 1000;
             } while (!pipe.IsMessageComplete);
 
             memoryStream.Flush();
@@ -135,7 +137,7 @@ namespace pylorak.TinyWall
             return Deserialize(memoryStream, defInstance);
         }
 
-        public static T DeserializeFromFile<T>(string filepath, T defInstance, bool readOnlySource = false) where  T : ISerializable<T>
+        public static T DeserializeFromFile<T>(string filepath, T defInstance, bool readOnlySource = false) where T : ISerializable<T>
         {
             try
             {
@@ -175,7 +177,7 @@ namespace pylorak.TinyWall
                 // Decrypt
                 using var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read);
                 using var cryptoStream = new CryptoStream(fs, symmetricKey.CreateDecryptor(), CryptoStreamMode.Read);
-                return Deserialize<T>(cryptoStream, defInst);
+                return Deserialize(cryptoStream, defInst);
             }
             catch
             {
@@ -205,7 +207,6 @@ namespace pylorak.TinyWall
             fileUpdater.Commit();
         }
 
-        [Obsolete]
         private static readonly Type[] KnownDataContractTypes =
         {
             typeof(BlockListSettings),
@@ -231,15 +232,13 @@ namespace pylorak.TinyWall
             typeof(UpdateModule),
             typeof(UpdateDescriptor),
         };
-        
-        [Obsolete]
+
         public static T DeserializeDC<T>(Stream stream)
         {
             var serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
-            return ((T?)serializer.ReadObject(stream)) ?? throw new NullResultExceptions("DataContractSerializer.ReadObject()");
+            return (T?)serializer.ReadObject(stream) ?? throw new NullResultExceptions("DataContractSerializer.ReadObject()");
         }
 
-        [Obsolete]
         public static T LoadFromEncryptedXMLFile<T>(string filepath, string key, string iv)
         {
             // Construct encryptor
@@ -254,7 +253,6 @@ namespace pylorak.TinyWall
             return DeserializeDC<T>(cryptoStream);
         }
 
-        [Obsolete]
         public static T LoadFromXMLFile<T>(string filepath)
         {
             using var stream = new FileStream(filepath, FileMode.Open, FileAccess.Read);

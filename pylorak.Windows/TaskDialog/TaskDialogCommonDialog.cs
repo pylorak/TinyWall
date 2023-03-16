@@ -22,19 +22,19 @@ namespace Microsoft.Samples
         /// <summary>
         /// The TaskDialog we will display.
         /// </summary>
-        private readonly TaskDialog taskDialog;
+        private readonly TaskDialog _taskDialog;
 
         /// <summary>
         /// The result of the dialog, either a DialogResult value for common push buttons set in the TaskDialog.CommonButtons
         /// member or the ButtonID from a TaskDialogButton structure set on the TaskDialog.Buttons member.
         /// </summary>
-        private int taskDialogResult;
+        private int _taskDialogResult;
 
         /// <summary>
         /// The verification flag result of the dialog. True if the verification checkbox was checked when the dialog
         /// was dismissed.
         /// </summary>
-        private bool verificationFlagCheckedResult;
+        private bool _verificationFlagCheckedResult;
 
         /// <summary>
         /// TaskDialog wrapped in a CommonDialog class. THis is required to work well in
@@ -45,7 +45,7 @@ namespace Microsoft.Samples
         /// <param name="taskDialog">The TaskDialog to show.</param>
         internal TaskDialogCommonDialog(TaskDialog taskDialog)
         {
-            this.taskDialog = taskDialog ?? throw new ArgumentNullException(nameof(taskDialog));
+            this._taskDialog = taskDialog ?? throw new ArgumentNullException(nameof(taskDialog));
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Microsoft.Samples
         /// </summary>
         internal TaskDialog TaskDialog
         {
-            get { return this.taskDialog; }
+            get { return this._taskDialog; }
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Microsoft.Samples
         /// </summary>
         internal int TaskDialogResult
         {
-            get { return this.taskDialogResult; }
+            get { return this._taskDialogResult; }
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Microsoft.Samples
         /// </summary>
         internal bool VerificationFlagCheckedResult
         {
-            get { return this.verificationFlagCheckedResult; }
+            get { return this._verificationFlagCheckedResult; }
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Microsoft.Samples
         /// </summary>
         public override void Reset()
         {
-            this.taskDialog.Reset();
+            this._taskDialog.Reset();
         }
 
         /// <summary>
@@ -92,8 +92,8 @@ namespace Microsoft.Samples
         /// </returns>
         protected override bool RunDialog(IntPtr hwndOwner)
         {
-            this.taskDialogResult = this.taskDialog.Show(hwndOwner, out this.verificationFlagCheckedResult);
-            return (this.taskDialogResult != (int)DialogResult.Cancel);
+            this._taskDialogResult = this._taskDialog.Show(hwndOwner, out this._verificationFlagCheckedResult);
+            return (this._taskDialogResult != (int)DialogResult.Cancel);
         }
     }
 }

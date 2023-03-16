@@ -1,20 +1,17 @@
-﻿using System;
+﻿using pylorak.Windows;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Windows.Forms;
 using System.Reflection;
-using pylorak.Windows;
+using System.Windows.Forms;
 
 namespace pylorak.TinyWall
 {
     internal partial class ApplicationExceptionForm : Form
     {
-        private List<FirewallExceptionV3> TmpExceptionSettings = new();
+        private List<FirewallExceptionV3> _tmpExceptionSettings = new();
 
-        internal List<FirewallExceptionV3> ExceptionSettings
-        {
-            get { return TmpExceptionSettings; }
-        }
+        internal List<FirewallExceptionV3> ExceptionSettings => _tmpExceptionSettings;
 
         internal ApplicationExceptionForm(FirewallExceptionV3 fwex)
         {
@@ -42,7 +39,7 @@ namespace pylorak.TinyWall
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
 
-            this.TmpExceptionSettings.Add(fwex);
+            this._tmpExceptionSettings.Add(fwex);
 
             panel1.Location = new System.Drawing.Point(0, 0);
             panel1.Width = this.Width;
@@ -106,16 +103,16 @@ namespace pylorak.TinyWall
             // Display timer
             for (int i = 0; i < cmbTimer.Items.Count; ++i)
             {
-                if (((KeyValuePair<string, AppExceptionTimer>)cmbTimer.Items[i]).Value == TmpExceptionSettings[0].Timer)
+                if (((KeyValuePair<string, AppExceptionTimer>)cmbTimer.Items[i]).Value == _tmpExceptionSettings[0].Timer)
                 {
                     cmbTimer.SelectedIndex = i;
                     break;
                 }
             }
 
-            var exeSubj = TmpExceptionSettings[0].Subject as ExecutableSubject;
-            var srvSubj = TmpExceptionSettings[0].Subject as ServiceSubject;
-            var uwpSubj = TmpExceptionSettings[0].Subject as AppContainerSubject;
+            var exeSubj = _tmpExceptionSettings[0].Subject as ExecutableSubject;
+            var srvSubj = _tmpExceptionSettings[0].Subject as ServiceSubject;
+            var uwpSubj = _tmpExceptionSettings[0].Subject as AppContainerSubject;
 
             // Update top colored banner
             bool hasSignature = false;
@@ -139,13 +136,13 @@ namespace pylorak.TinyWall
             {
                 // Recognized app
                 panel1.BackgroundImage = Resources.Icons.green_banner;
-                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, Resources.Messages.RecognizedApplication, TmpExceptionSettings[0].Subject.ToString());
+                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, Resources.Messages.RecognizedApplication, _tmpExceptionSettings[0].Subject.ToString());
             }
             else if (hasSignature && !validSignature)
             {
                 // Recognized, but compromised app
                 panel1.BackgroundImage = Resources.Icons.red_banner;
-                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, Resources.Messages.CompromisedApplication, TmpExceptionSettings[0].Subject.ToString());
+                transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, Resources.Messages.CompromisedApplication, _tmpExceptionSettings[0].Subject.ToString());
             }
             else
             {
@@ -157,33 +154,34 @@ namespace pylorak.TinyWall
             Utils.CenterControlInParent(transparentLabel1);
 
             // Update subject fields
-            switch (TmpExceptionSettings[0].Subject.SubjectType)
+            switch (_tmpExceptionSettings[0].Subject.SubjectType)
             {
                 case SubjectType.Global:
-                    txtAppPath.Text = Resources.Messages.AllApplications;
+                    listBoxAppPath.Items.Add(Resources.Messages.AllApplications);
                     txtSrvName.Text = Resources.Messages.SubjectTypeGlobal;
                     break;
                 case SubjectType.Executable:
-                    txtAppPath.Text = exeSubj!.ExecutablePath;
+                    listBoxAppPath.Items.Add(exeSubj!.ExecutablePath);
                     txtSrvName.Text = Resources.Messages.SubjectTypeExecutable;
                     break;
                 case SubjectType.Service:
-                    txtAppPath.Text = srvSubj!.ServiceName + " (" + srvSubj.ExecutablePath + ")";
+                    listBoxAppPath.Items.Add($@"{srvSubj!.ServiceName} ({srvSubj.ExecutablePath})");
                     txtSrvName.Text = Resources.Messages.SubjectTypeService;
                     break;
                 case SubjectType.AppContainer:
-                    txtAppPath.Text = uwpSubj!.DisplayName;
+                    listBoxAppPath.Items.Add(uwpSubj!.DisplayName);
                     txtSrvName.Text = Resources.Messages.SubjectTypeUwpApp;
                     break;
+                case SubjectType.Invalid:
                 default:
                     throw new NotImplementedException();
             }
 
             // Update rule/policy fields
 
-            chkInheritToChildren.Checked = TmpExceptionSettings[0].ChildProcessesInherit;
+            chkInheritToChildren.Checked = _tmpExceptionSettings[0].ChildProcessesInherit;
 
-            switch (TmpExceptionSettings[0].Policy.PolicyType)
+            switch (_tmpExceptionSettings[0].Policy.PolicyType)
             {
                 case PolicyType.HardBlock:
                     radBlock.Checked = true;
@@ -199,7 +197,7 @@ namespace pylorak.TinyWall
                     chkRestrictToLocalNetwork.Checked = false;
                     break;
                 case PolicyType.TcpUdpOnly:
-                    TcpUdpPolicy pol = (TcpUdpPolicy)TmpExceptionSettings[0].Policy;
+                    TcpUdpPolicy pol = (TcpUdpPolicy)_tmpExceptionSettings[0].Policy;
                     if (
                         string.Equals(pol.AllowedLocalTcpListenerPorts, "*")
                         && string.Equals(pol.AllowedLocalUdpListenerPorts, "*")
@@ -229,7 +227,7 @@ namespace pylorak.TinyWall
                     txtListenPortUDP.Text = (pol.AllowedLocalUdpListenerPorts is null) ? string.Empty : pol.AllowedLocalUdpListenerPorts.Replace(",", ", ");
                     break;
                 case PolicyType.Unrestricted:
-                    UnrestrictedPolicy upol = (UnrestrictedPolicy)TmpExceptionSettings[0].Policy;
+                    UnrestrictedPolicy upol = (UnrestrictedPolicy)_tmpExceptionSettings[0].Policy;
                     radUnrestricted.Checked = true;
                     radRestriction_CheckedChanged(this, EventArgs.Empty);
                     chkRestrictToLocalNetwork.Checked = upol.LocalNetworkOnly;
@@ -254,7 +252,7 @@ namespace pylorak.TinyWall
                 return string.Empty;
 
             // Check validity
-            string[] elems = res.Split(new char[]{','}, StringSplitOptions.RemoveEmptyEntries);
+            string[] elems = res.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             res = string.Empty;
             foreach (var e in elems)
             {
@@ -262,8 +260,8 @@ namespace pylorak.TinyWall
                 if (isRange)
                 {
                     string[] minmax = e.Split('-');
-                    ushort x = ushort.Parse(minmax[0], System.Globalization.CultureInfo.InvariantCulture);
-                    ushort y = ushort.Parse(minmax[1], System.Globalization.CultureInfo.InvariantCulture);
+                    ushort x = ushort.Parse(minmax[0], CultureInfo.InvariantCulture);
+                    ushort y = ushort.Parse(minmax[1], CultureInfo.InvariantCulture);
                     ushort min = Math.Min(x, y);
                     ushort max = Math.Max(x, y);
                     res = $"{res},{min:D}-{max:D}";
@@ -274,7 +272,7 @@ namespace pylorak.TinyWall
                         // If we have a wildcard, all other list elements are redundant
                         return "*";
 
-                    ushort x = ushort.Parse(e, System.Globalization.CultureInfo.InvariantCulture);
+                    ushort x = ushort.Parse(e, CultureInfo.InvariantCulture);
                     res = $"{res},{x:D}";
                 }
             }
@@ -287,11 +285,11 @@ namespace pylorak.TinyWall
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            TmpExceptionSettings[0].ChildProcessesInherit = chkInheritToChildren.Checked;
+            _tmpExceptionSettings[0].ChildProcessesInherit = chkInheritToChildren.Checked;
 
             if (radBlock.Checked)
             {
-                TmpExceptionSettings[0].Policy = HardBlockPolicy.Instance;
+                _tmpExceptionSettings[0].Policy = HardBlockPolicy.Instance;
             }
             else if (radOnlySpecifiedPorts.Checked || radTcpUdpOut.Checked || radTcpUdpUnrestricted.Checked)
             {
@@ -304,7 +302,7 @@ namespace pylorak.TinyWall
                     pol.AllowedRemoteUdpConnectPorts = CleanupPortsList(txtOutboundPortUDP.Text);
                     pol.AllowedLocalTcpListenerPorts = CleanupPortsList(txtListenPortTCP.Text);
                     pol.AllowedLocalUdpListenerPorts = CleanupPortsList(txtListenPortUDP.Text);
-                    TmpExceptionSettings[0].Policy = pol;
+                    _tmpExceptionSettings[0].Policy = pol;
                 }
                 catch
                 {
@@ -322,17 +320,17 @@ namespace pylorak.TinyWall
             {
                 var pol = new UnrestrictedPolicy();
                 pol.LocalNetworkOnly = chkRestrictToLocalNetwork.Checked;
-                TmpExceptionSettings[0].Policy = pol;
+                _tmpExceptionSettings[0].Policy = pol;
             }
 
-            this.TmpExceptionSettings[0].CreationDate = DateTime.Now;
-            
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this._tmpExceptionSettings[0].CreationDate = DateTime.Now;
+
+            this.DialogResult = DialogResult.OK;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.DialogResult = DialogResult.Cancel;
         }
 
         private void btnProcess_Click(object sender, EventArgs e)
@@ -340,8 +338,8 @@ namespace pylorak.TinyWall
             var procList = new List<ProcessInfo>();
             using (var pf = new ProcessesForm(false))
             {
-                    if (pf.ShowDialog(this) == DialogResult.Cancel)
-                        return;
+                if (pf.ShowDialog(this) == DialogResult.Cancel)
+                    return;
 
                 procList.AddRange(pf.Selection);
             }
@@ -351,14 +349,14 @@ namespace pylorak.TinyWall
             if (procList[0].Package.HasValue)
                 subject = new AppContainerSubject(procList[0].Package!.Value);
             else
-                subject = new ExecutableSubject(procList[0].Path!);
+                subject = new ExecutableSubject(procList[0].Path);
 
             ReinitFormFromSubject(subject);
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            if (ofd.ShowDialog(this) != System.Windows.Forms.DialogResult.OK)
+            if (ofd.ShowDialog(this) != DialogResult.OK)
                 return;
 
             ReinitFormFromSubject(new ExecutableSubject(PathMapper.Instance.ConvertPathIgnoreErrors(ofd.FileName, PathFormat.Win32)));
@@ -383,20 +381,22 @@ namespace pylorak.TinyWall
         private void ReinitFormFromSubject(ExceptionSubject subject)
         {
             List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out _);
+
             if (exceptions.Count == 0)
                 return;
 
-            TmpExceptionSettings = exceptions;
+            _tmpExceptionSettings = exceptions;
 
             UpdateUI();
 
-            if (TmpExceptionSettings.Count > 1)
+            if (_tmpExceptionSettings.Count > 1)
                 // Multiple known files, just accept them as is
                 this.DialogResult = DialogResult.OK;
         }
 
-        private void txtAppPath_TextChanged(object sender, EventArgs e)
+        private void listBoxAppPath_SizeChanged(object sender, EventArgs e)
         {
+
         }
 
         private void txtSrvName_TextChanged(object sender, EventArgs e)
@@ -405,7 +405,7 @@ namespace pylorak.TinyWall
 
         private void cmbTimer_SelectedIndexChanged(object sender, EventArgs e)
         {
-            TmpExceptionSettings[0].Timer = ((KeyValuePair<string, AppExceptionTimer>)cmbTimer.SelectedItem).Value;
+            _tmpExceptionSettings[0].Timer = ((KeyValuePair<string, AppExceptionTimer>)cmbTimer.SelectedItem).Value;
         }
 
         private void radRestriction_CheckedChanged(object sender, EventArgs e)
@@ -438,8 +438,8 @@ namespace pylorak.TinyWall
                 panel3.Enabled = true;
                 txtListenPortTCP.Text = string.Empty;
                 txtListenPortUDP.Text = string.Empty;
-                txtOutboundPortTCP.Text = "*";
-                txtOutboundPortUDP.Text = "*";
+                txtOutboundPortTCP.Text = @"*";
+                txtOutboundPortUDP.Text = @"*";
                 txtOutboundPortTCP.Enabled = false;
                 txtOutboundPortUDP.Enabled = false;
                 label7.Enabled = false;
@@ -449,19 +449,19 @@ namespace pylorak.TinyWall
             else if (radTcpUdpUnrestricted.Checked)
             {
                 panel3.Enabled = false;
-                txtListenPortTCP.Text = "*";
-                txtListenPortUDP.Text = "*";
-                txtOutboundPortTCP.Text = "*";
-                txtOutboundPortUDP.Text = "*";
+                txtListenPortTCP.Text = @"*";
+                txtListenPortUDP.Text = @"*";
+                txtOutboundPortTCP.Text = @"*";
+                txtOutboundPortUDP.Text = @"*";
                 chkRestrictToLocalNetwork.Enabled = true;
             }
             else if (radUnrestricted.Checked)
             {
                 panel3.Enabled = false;
-                txtListenPortTCP.Text = "*";
-                txtListenPortUDP.Text = "*";
-                txtOutboundPortTCP.Text = "*";
-                txtOutboundPortUDP.Text = "*";
+                txtListenPortTCP.Text = @"*";
+                txtListenPortUDP.Text = @"*";
+                txtOutboundPortTCP.Text = @"*";
+                txtOutboundPortUDP.Text = @"*";
                 chkRestrictToLocalNetwork.Enabled = true;
             }
             else

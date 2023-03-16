@@ -250,10 +250,10 @@ Select Elevate from the tray menu and try again.</value>
     <value>Cannot get executable path. Whitelisting failed.</value>
   </data>
   <data name="FirewallRulesForRecognizedChanged" xml:space="preserve">
-    <value>Firewall rules for recognized {0} have been changed. Click this popup to edit the exception.</value>
+    <value>Firewall rules for recognised {0} have been changed. Click this popup to edit the exception.</value>
   </data>
   <data name="FirewallRulesForUnrecognizedChanged" xml:space="preserve">
-    <value>Firewall rules for unrecognized {0} have been changed. Click this popup to edit the exception.</value>
+    <value>Firewall rules for unrecognised {0} have been changed. Click this popup to edit the exception.</value>
   </data>
   <data name="TinyWallHasBeenUnlocked" xml:space="preserve">
     <value>TinyWall has been unlocked. You may now issue commands that modify the configuration.</value>
@@ -282,7 +282,7 @@ Select Elevate from the tray menu and try again.</value>
     <value>Search results:</value>
   </data>
   <data name="RecognizedApplication" xml:space="preserve">
-    <value>Recognized {0}</value>
+    <value>Recognised {0}</value>
     <comment>Exception details window banner text. Param0 is name of application.</comment>
   </data>
   <data name="UnknownApplication" xml:space="preserve">
@@ -345,7 +345,7 @@ Do you want to enter learning mode now?</value>
   <data name="PortListInvalid" xml:space="preserve">
     <value>The format of the port list is invalid.
 You can use one or more numbers in the range of 1-65535, separated by commas. An asterix (*) can also be used to refer to all possible ports.</value>
-    <comment>First line is dialog main text. Rest are further information in smaller letters.</comment>
+    <comment>First line is dialogue main text. Rest are further information in smaller letters.</comment>
   </data>
   <data name="UnblockAppCancel" xml:space="preserve">
     <value>Cancel whitelisting</value>

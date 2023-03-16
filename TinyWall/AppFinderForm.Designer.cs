@@ -52,7 +52,6 @@
             // btnStartDetection
             // 
             resources.ApplyResources(this.btnStartDetection, "btnStartDetection");
-            this.btnStartDetection.Image = global::pylorak.TinyWall.Resources.Icons.accept;
             this.btnStartDetection.Name = "btnStartDetection";
             this.btnStartDetection.UseVisualStyleBackColor = true;
             this.btnStartDetection.Click += new System.EventHandler(this.btnStartDetection_Click);
@@ -89,7 +88,6 @@
             // 
             resources.ApplyResources(this.btnCancel, "btnCancel");
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Image = global::pylorak.TinyWall.Resources.Icons.cancel;
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -97,7 +95,6 @@
             // btnOK
             // 
             resources.ApplyResources(this.btnOK, "btnOK");
-            this.btnOK.Image = global::pylorak.TinyWall.Resources.Icons.accept;
             this.btnOK.Name = "btnOK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);

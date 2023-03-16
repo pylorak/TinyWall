@@ -34,7 +34,6 @@
             this.lblApplication = new System.Windows.Forms.Label();
             this.lblApplicationType = new System.Windows.Forms.Label();
             this.txtSrvName = new System.Windows.Forms.TextBox();
-            this.txtAppPath = new System.Windows.Forms.TextBox();
             this.btnBrowse = new System.Windows.Forms.Button();
             this.btnProcess = new System.Windows.Forms.Button();
             this.btnChooseService = new System.Windows.Forms.Button();
@@ -44,6 +43,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.transparentLabel1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.listBoxAppPath = new System.Windows.Forms.ListBox();
             this.btnSelectUwpApp = new System.Windows.Forms.Button();
             this.chkRestrictToLocalNetwork = new System.Windows.Forms.CheckBox();
             this.radBlock = new System.Windows.Forms.RadioButton();
@@ -106,14 +106,6 @@
             this.txtSrvName.ReadOnly = true;
             this.txtSrvName.TextChanged += new System.EventHandler(this.txtSrvName_TextChanged);
             // 
-            // txtAppPath
-            // 
-            resources.ApplyResources(this.txtAppPath, "txtAppPath");
-            this.txtAppPath.BackColor = System.Drawing.SystemColors.Window;
-            this.txtAppPath.Name = "txtAppPath";
-            this.txtAppPath.ReadOnly = true;
-            this.txtAppPath.TextChanged += new System.EventHandler(this.txtAppPath_TextChanged);
-            // 
             // btnBrowse
             // 
             resources.ApplyResources(this.btnBrowse, "btnBrowse");
@@ -175,17 +167,24 @@
             // 
             resources.ApplyResources(this.panel2, "panel2");
             this.panel2.BackColor = System.Drawing.SystemColors.Window;
+            this.panel2.Controls.Add(this.listBoxAppPath);
             this.panel2.Controls.Add(this.btnSelectUwpApp);
             this.panel2.Controls.Add(this.cmbTimer);
             this.panel2.Controls.Add(this.label6);
             this.panel2.Controls.Add(this.lblApplication);
             this.panel2.Controls.Add(this.lblApplicationType);
             this.panel2.Controls.Add(this.txtSrvName);
-            this.panel2.Controls.Add(this.txtAppPath);
             this.panel2.Controls.Add(this.btnBrowse);
             this.panel2.Controls.Add(this.btnProcess);
             this.panel2.Controls.Add(this.btnChooseService);
             this.panel2.Name = "panel2";
+            // 
+            // listBoxAppPath
+            // 
+            resources.ApplyResources(this.listBoxAppPath, "listBoxAppPath");
+            this.listBoxAppPath.FormattingEnabled = true;
+            this.listBoxAppPath.Name = "listBoxAppPath";
+            this.listBoxAppPath.SizeChanged += new System.EventHandler(this.listBoxAppPath_SizeChanged);
             // 
             // btnSelectUwpApp
             // 
@@ -364,7 +363,6 @@
         private System.Windows.Forms.Label lblApplication;
         private System.Windows.Forms.Label lblApplicationType;
         private System.Windows.Forms.TextBox txtSrvName;
-        private System.Windows.Forms.TextBox txtAppPath;
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.Button btnProcess;
         private System.Windows.Forms.Button btnChooseService;
@@ -394,5 +392,6 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.CheckBox chkInheritToChildren;
         private System.Windows.Forms.Button btnSelectUwpApp;
+        private System.Windows.Forms.ListBox listBoxAppPath;
     }
 }
