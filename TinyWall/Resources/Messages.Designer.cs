@@ -19,7 +19,7 @@ namespace pylorak.TinyWall.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Messages {
@@ -61,7 +61,7 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All applications.
+        ///   Looks up a localized string similar to .
         /// </summary>
         internal static string AllApplications {
             get {
@@ -314,7 +314,7 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Firewall rules for recognized {0} have been changed. Click this popup to edit the exception..
+        ///   Looks up a localized string similar to Firewall rules for recognised {0} have been changed. Click this popup to edit the exception..
         /// </summary>
         internal static string FirewallRulesForRecognizedChanged {
             get {
@@ -323,7 +323,7 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Firewall rules for unrecognized {0} have been changed. Click this popup to edit the exception..
+        ///   Looks up a localized string similar to Firewall rules for unrecognised {0} have been changed. Click this popup to edit the exception..
         /// </summary>
         internal static string FirewallRulesForUnrecognizedChanged {
             get {
@@ -405,7 +405,7 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recognized {0}.
+        ///   Looks up a localized string similar to Recognised {0}.
         /// </summary>
         internal static string RecognizedApplication {
             get {
