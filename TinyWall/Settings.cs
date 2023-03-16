@@ -115,7 +115,7 @@ namespace pylorak.TinyWall
         {
             try
             {
-                SerializationHelper.SerializeToFile(this, FilePath);
+                SerialisationHelper.SerialiseToFile(this, FilePath);
             }
             catch { }
         }
@@ -124,7 +124,7 @@ namespace pylorak.TinyWall
         {
             try
             {
-                return SerializationHelper.DeserializeFromFile(FilePath, new ControllerSettings());
+                return SerialisationHelper.DeserialiseFromFile(FilePath, new ControllerSettings());
             }
             catch { }
 

@@ -201,7 +201,7 @@ namespace pylorak.TinyWall
                     HTTPClient.DownloadFile(url, tmpFile);
                 }
 
-                var descriptor = SerializationHelper.DeserializeFromFile(tmpFile, new UpdateDescriptor());
+                var descriptor = SerialisationHelper.DeserialiseFromFile(tmpFile, new UpdateDescriptor());
                 if (descriptor.MagicWord != "TinyWall Update Descriptor")
                     throw new ApplicationException("Bad update descriptor file.");
 

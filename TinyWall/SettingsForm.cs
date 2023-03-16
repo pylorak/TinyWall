@@ -489,7 +489,7 @@ namespace pylorak.TinyWall
             {
                 try
                 {
-                    TmpConfig = SerializationHelper.DeserializeFromFile(ofd.FileName, new ConfigContainer(), true);
+                    TmpConfig = SerialisationHelper.DeserialiseFromFile(ofd.FileName, new ConfigContainer(), true);
                 }
                 catch
                 {
@@ -509,7 +509,7 @@ namespace pylorak.TinyWall
             sfd.DefaultExt = "tws";
             if (sfd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
-                SerializationHelper.SerializeToFile(this.TmpConfig, sfd.FileName);
+                SerialisationHelper.SerialiseToFile(this.TmpConfig, sfd.FileName);
                 MessageBox.Show(this, Resources.Messages.ConfigurationHasBeenExported, Resources.Messages.TinyWallSettingsFileFilter, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }

@@ -7,6 +7,9 @@
     <StartArguments>/develtool</StartArguments>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Update="..\pylorak.Windows\TaskDialogue\TaskDialogueCommonDialogue.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="Installer\ServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>

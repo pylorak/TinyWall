@@ -21,12 +21,12 @@ namespace pylorak.TinyWall.DatabaseClasses
 
         public static AppDatabase Load()
         {
-            return SerializationHelper.DeserializeFromFile(DBPath, new AppDatabase());
+            return SerialisationHelper.DeserialiseFromFile(DBPath, new AppDatabase());
         }
 
         public void Save(string filePath)
         {
-            SerializationHelper.SerializeToFile(this, filePath);
+            SerialisationHelper.SerialiseToFile(this, filePath);
         }
 
         [JsonConstructor]

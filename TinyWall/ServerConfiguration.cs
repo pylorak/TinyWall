@@ -213,13 +213,13 @@ namespace pylorak.TinyWall
         public void Save(string filePath)
         {
             string key = Hasher.HashString(ENC_SALT).Substring(0, 16);
-            SerializationHelper.SerializeToEncryptedFile(this, filePath, key, ENC_IV);
+            SerialisationHelper.SerialiseToEncryptedFile(this, filePath, key, ENC_IV);
         }
 
         public static ServerConfiguration Load(string filePath)
         {
             string key = Hasher.HashString(ENC_SALT).Substring(0, 16);
-            return SerializationHelper.DeserializeFromEncryptedFile(filePath, key, ENC_IV, new ServerConfiguration());
+            return SerialisationHelper.DeserialiseFromEncryptedFile(filePath, key, ENC_IV, new ServerConfiguration());
         }
 
         public void Normalize()

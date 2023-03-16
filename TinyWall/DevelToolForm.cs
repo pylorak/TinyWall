@@ -51,7 +51,7 @@ namespace pylorak.TinyWall
                     if (exe.CertSubject is not null)
                         id.CertificateSubjects.Add(exe.CertSubject);
                 }
-                var utf8bytes = SerializationHelper.Serialize(id);
+                var utf8bytes = SerialisationHelper.Serialise(id);
                 txtAssocResult.Text = Encoding.UTF8.GetString(utf8bytes);
             }
             else
@@ -93,7 +93,7 @@ namespace pylorak.TinyWall
             {
                 try
                 {
-                    var loadedAppInst = SerializationHelper.DeserializeFromFile(fpath, defAppInst);
+                    var loadedAppInst = SerialisationHelper.DeserialiseFromFile(fpath, defAppInst);
                     if (loadedAppInst.Components.Count > 0)
                         db.KnownApplications.Add(loadedAppInst);
                 }
@@ -243,11 +243,11 @@ namespace pylorak.TinyWall
             Utils.CompressDeflate(hostsPath, hostsOut);
 
             string updOut = Path.Combine(txtUpdateOutput.Text, DESCRIPTOR_NAME);
-            SerializationHelper.SerializeToFile(update, updOut);
+            SerialisationHelper.SerialiseToFile(update, updOut);
 
             update.Modules[2].DownloadHash = HOSTS_PLACEHOLDER;
             updOut = Path.Combine(txtUpdateOutput.Text, DESCRIPTOR_TEMPLATE_NAME);
-            SerializationHelper.SerializeToFile(update, updOut);
+            SerialisationHelper.SerialiseToFile(update, updOut);
 
             MessageBox.Show(this, "Update created.", "Success.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

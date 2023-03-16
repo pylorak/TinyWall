@@ -151,7 +151,7 @@ namespace pylorak.TinyWall
                     break;
             }
 
-            Utils.CenterControlInParent(transparentLabel1);
+            Utils.CentreControlInParent(transparentLabel1);
 
             // Update subject fields
             switch (_tmpExceptionSettings[0].Subject.SubjectType)

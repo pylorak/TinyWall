@@ -75,9 +75,9 @@ namespace pylorak.TinyWall
                             throw new InvalidOperationException("Client authentication failed.");
                     }
 
-                    var req = SerializationHelper.DeserializeFromPipe<TwMessage>(pipeServer, 3000, TwMessageComError.Instance);
+                    var req = SerialisationHelper.DeserialiseFromPipe<TwMessage>(pipeServer, 3000, TwMessageComError.Instance);
                     var resp = m_RcvCallback(req);
-                    SerializationHelper.SerializeToPipe(pipeServer, resp);
+                    SerialisationHelper.SerialiseToPipe(pipeServer, resp);
                 }
                 catch
                 {

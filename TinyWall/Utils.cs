@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Microsoft.Samples;
+using pylorak.Windows;
+using System;
 using System.Collections.Generic;
-using System.Security;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
@@ -8,12 +9,11 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Security.Principal;
 using System.Text;
-using System.Windows.Forms;
 using System.Threading;
-using Microsoft.Samples;
-using pylorak.Windows;
+using System.Windows.Forms;
 
 namespace pylorak.TinyWall
 {
@@ -125,7 +125,7 @@ namespace pylorak.TinyWall
             #endregion
         }
 
-        private static readonly Random _rng = new ();
+        private static readonly Random _rng = new();
 
         public static string ExecutablePath { get; } = System.Reflection.Assembly.GetEntryAssembly().Location;
 
@@ -399,7 +399,7 @@ namespace pylorak.TinyWall
 
         internal static T DeepClone<T>(T obj) where T : ISerializable<T>
         {
-            return SerializationHelper.Deserialize(SerializationHelper.Serialize(obj), obj);
+            return SerialisationHelper.Deserialise(SerialisationHelper.Serialise(obj), obj);
         }
 
         internal static bool StringArrayContains(string[] arr, string val, StringComparison opts = StringComparison.Ordinal)
@@ -534,7 +534,7 @@ namespace pylorak.TinyWall
             }
         }
 
-        internal static void CenterControlInParent(Control control)
+        internal static void CentreControlInParent(Control control)
         {
             Control parent = control.Parent;
 
@@ -605,8 +605,8 @@ namespace pylorak.TinyWall
         internal static Version TinyWallVersion { get; } = typeof(Utils).Assembly.GetName().Version;
 
         private readonly static object logLocker = new();
-        internal static readonly string LOG_ID_SERVICE   = "service";
-        internal static readonly string LOG_ID_GUI       = "gui";
+        internal static readonly string LOG_ID_SERVICE = "service";
+        internal static readonly string LOG_ID_GUI = "gui";
         internal static readonly string LOG_ID_INSTALLER = "installer";
         internal static void LogException(Exception e, string logname)
         {
