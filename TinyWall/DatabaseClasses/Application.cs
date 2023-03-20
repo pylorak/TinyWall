@@ -15,7 +15,7 @@ namespace pylorak.TinyWall.DatabaseClasses
         public string Name { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public string LocalizedName
+        public string LocalisedName
         {
             get
             {
