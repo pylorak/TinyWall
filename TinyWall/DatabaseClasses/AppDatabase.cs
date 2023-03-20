@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Microsoft.Samples;
+using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.Globalization;
-using Microsoft.Samples;
+using System.Linq;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 
@@ -140,30 +141,30 @@ namespace pylorak.TinyWall.DatabaseClasses
                 {
 
                     // Try to get localized name
-                    string localizedAppName = Resources.Exceptions.ResourceManager.GetString(app.Name);
-                    localizedAppName = string.IsNullOrEmpty(localizedAppName) ? app.Name : localizedAppName;
+                    string localisedAppName = Resources.Exceptions.ResourceManager.GetString(app.Name);
+                    localisedAppName = string.IsNullOrWhiteSpace(localisedAppName) ? app.Name : localisedAppName;
 
-                    Utils.SplitFirstLine(string.Format(CultureInfo.InvariantCulture, Resources.Messages.UnblockApp, localizedAppName), out string firstLine, out string contentLines);
+                    Utils.SplitFirstLine(string.Format(CultureInfo.InvariantCulture, Resources.Messages.UnblockApp, localisedAppName), out string firstLine, out string contentLines);
 
-                    var dialog = new TaskDialogue();
-                    dialog.CustomMainIcon = Resources.Icons.firewall;
-                    dialog.WindowTitle = Resources.Messages.TinyWall;
-                    dialog.MainInstruction = firstLine;
-                    dialog.Content = contentLines;
-                    dialog.DefaultButton = 1;
-                    dialog.ExpandedControlText = Resources.Messages.UnblockAppShowRelated;
-                    dialog.ExpandFooterArea = true;
-                    dialog.AllowDialogCancellation = false;
-                    dialog.UseCommandLinks = true;
+                    var dialog = new TaskDialogue
+                    {
+                        CustomMainIcon = Resources.Icons.firewall,
+                        WindowTitle = Resources.Messages.TinyWall,
+                        MainInstruction = firstLine,
+                        Content = contentLines,
+                        DefaultButton = 1,
+                        ExpandedControlText = Resources.Messages.UnblockAppShowRelated,
+                        ExpandFooterArea = true,
+                        AllowDialogCancellation = false,
+                        UseCommandLinks = true
+                    };
 
                     var button1 = new TaskDialogueButton(101, Resources.Messages.UnblockAppUnblockAllRecommended);
                     var button2 = new TaskDialogueButton(102, Resources.Messages.UnblockAppUnblockOnlySelected);
                     var button3 = new TaskDialogueButton(103, Resources.Messages.UnblockAppCancel);
                     dialog.Buttons = new TaskDialogueButton[] { button1, button2, button3 };
 
-                    string fileListStr = string.Empty;
-                    foreach (FirewallExceptionV3 fwex in exceptions)
-                        fileListStr += fwex.Subject.ToString() + Environment.NewLine;
+                    string fileListStr = exceptions.Aggregate(string.Empty, (current, fwex) => current + (fwex.Subject.ToString() + Environment.NewLine));
                     dialog.ExpandedInformation = fileListStr.Trim();
 
                     switch (dialog.Show())

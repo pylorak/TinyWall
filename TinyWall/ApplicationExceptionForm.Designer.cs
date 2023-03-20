@@ -31,9 +31,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApplicationExceptionForm));
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
-            this.lblApplication = new System.Windows.Forms.Label();
-            this.lblApplicationType = new System.Windows.Forms.Label();
-            this.txtSrvName = new System.Windows.Forms.TextBox();
             this.btnBrowse = new System.Windows.Forms.Button();
             this.btnProcess = new System.Windows.Forms.Button();
             this.btnChooseService = new System.Windows.Forms.Button();
@@ -43,7 +40,9 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.transparentLabel1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.listBoxAppPath = new System.Windows.Forms.ListBox();
+            this.listViewAppPath = new System.Windows.Forms.ListView();
+            this.ApplicationColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.TypeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnSelectUwpApp = new System.Windows.Forms.Button();
             this.chkRestrictToLocalNetwork = new System.Windows.Forms.CheckBox();
             this.radBlock = new System.Windows.Forms.RadioButton();
@@ -85,26 +84,6 @@
             this.btnOK.Name = "btnOK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // lblApplication
-            // 
-            resources.ApplyResources(this.lblApplication, "lblApplication");
-            this.lblApplication.BackColor = System.Drawing.SystemColors.Window;
-            this.lblApplication.Name = "lblApplication";
-            // 
-            // lblApplicationType
-            // 
-            resources.ApplyResources(this.lblApplicationType, "lblApplicationType");
-            this.lblApplicationType.BackColor = System.Drawing.SystemColors.Window;
-            this.lblApplicationType.Name = "lblApplicationType";
-            // 
-            // txtSrvName
-            // 
-            resources.ApplyResources(this.txtSrvName, "txtSrvName");
-            this.txtSrvName.BackColor = System.Drawing.SystemColors.Window;
-            this.txtSrvName.Name = "txtSrvName";
-            this.txtSrvName.ReadOnly = true;
-            this.txtSrvName.TextChanged += new System.EventHandler(this.txtSrvName_TextChanged);
             // 
             // btnBrowse
             // 
@@ -167,24 +146,36 @@
             // 
             resources.ApplyResources(this.panel2, "panel2");
             this.panel2.BackColor = System.Drawing.SystemColors.Window;
-            this.panel2.Controls.Add(this.listBoxAppPath);
+            this.panel2.Controls.Add(this.listViewAppPath);
             this.panel2.Controls.Add(this.btnSelectUwpApp);
             this.panel2.Controls.Add(this.cmbTimer);
             this.panel2.Controls.Add(this.label6);
-            this.panel2.Controls.Add(this.lblApplication);
-            this.panel2.Controls.Add(this.lblApplicationType);
-            this.panel2.Controls.Add(this.txtSrvName);
             this.panel2.Controls.Add(this.btnBrowse);
             this.panel2.Controls.Add(this.btnProcess);
             this.panel2.Controls.Add(this.btnChooseService);
             this.panel2.Name = "panel2";
             // 
-            // listBoxAppPath
+            // listViewAppPath
             // 
-            resources.ApplyResources(this.listBoxAppPath, "listBoxAppPath");
-            this.listBoxAppPath.FormattingEnabled = true;
-            this.listBoxAppPath.Name = "listBoxAppPath";
-            this.listBoxAppPath.SizeChanged += new System.EventHandler(this.listBoxAppPath_SizeChanged);
+            resources.ApplyResources(this.listViewAppPath, "listViewAppPath");
+            this.listViewAppPath.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.ApplicationColumnHeader,
+            this.TypeColumnHeader});
+            this.listViewAppPath.FullRowSelect = true;
+            this.listViewAppPath.GridLines = true;
+            this.listViewAppPath.HideSelection = false;
+            this.listViewAppPath.Name = "listViewAppPath";
+            this.listViewAppPath.OwnerDraw = true;
+            this.listViewAppPath.UseCompatibleStateImageBehavior = false;
+            this.listViewAppPath.View = System.Windows.Forms.View.Details;
+            // 
+            // ApplicationColumnHeader
+            // 
+            resources.ApplyResources(this.ApplicationColumnHeader, "ApplicationColumnHeader");
+            // 
+            // TypeColumnHeader
+            // 
+            resources.ApplyResources(this.TypeColumnHeader, "TypeColumnHeader");
             // 
             // btnSelectUwpApp
             // 
@@ -360,9 +351,6 @@
 
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Label lblApplication;
-        private System.Windows.Forms.Label lblApplicationType;
-        private System.Windows.Forms.TextBox txtSrvName;
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.Button btnProcess;
         private System.Windows.Forms.Button btnChooseService;
@@ -392,6 +380,8 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.CheckBox chkInheritToChildren;
         private System.Windows.Forms.Button btnSelectUwpApp;
-        private System.Windows.Forms.ListBox listBoxAppPath;
+        private System.Windows.Forms.ListView listViewAppPath;
+        private System.Windows.Forms.ColumnHeader ApplicationColumnHeader;
+        private System.Windows.Forms.ColumnHeader TypeColumnHeader;
     }
 }

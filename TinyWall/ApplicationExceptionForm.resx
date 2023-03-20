@@ -186,93 +186,6 @@
   <data name="&gt;&gt;btnOK.ZOrder" xml:space="preserve">
     <value>8</value>
   </data>
-  <data name="lblApplication.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="lblApplication.Location" type="System.Drawing.Point, System.Drawing">
-    <value>38, 115</value>
-  </data>
-  <data name="lblApplication.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 0, 6, 0</value>
-  </data>
-  <data name="lblApplication.Size" type="System.Drawing.Size, System.Drawing">
-    <value>124, 25</value>
-  </data>
-  <data name="lblApplication.TabIndex" type="System.Int32, mscorlib">
-    <value>14</value>
-  </data>
-  <data name="lblApplication.Text" xml:space="preserve">
-    <value>Application:</value>
-  </data>
-  <data name="&gt;&gt;lblApplication.Name" xml:space="preserve">
-    <value>lblApplication</value>
-  </data>
-  <data name="&gt;&gt;lblApplication.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;lblApplication.Parent" xml:space="preserve">
-    <value>panel2</value>
-  </data>
-  <data name="&gt;&gt;lblApplication.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="lblApplicationType.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="lblApplicationType.Location" type="System.Drawing.Point, System.Drawing">
-    <value>38, 318</value>
-  </data>
-  <data name="lblApplicationType.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 0, 6, 0</value>
-  </data>
-  <data name="lblApplicationType.Size" type="System.Drawing.Size, System.Drawing">
-    <value>66, 25</value>
-  </data>
-  <data name="lblApplicationType.TabIndex" type="System.Int32, mscorlib">
-    <value>15</value>
-  </data>
-  <data name="lblApplicationType.Text" xml:space="preserve">
-    <value>Type:</value>
-  </data>
-  <data name="&gt;&gt;lblApplicationType.Name" xml:space="preserve">
-    <value>lblApplicationType</value>
-  </data>
-  <data name="&gt;&gt;lblApplicationType.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;lblApplicationType.Parent" xml:space="preserve">
-    <value>panel2</value>
-  </data>
-  <data name="&gt;&gt;lblApplicationType.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="txtSrvName.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
-  </data>
-  <data name="txtSrvName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>252, 313</value>
-  </data>
-  <data name="txtSrvName.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 6, 6, 6</value>
-  </data>
-  <data name="txtSrvName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>447, 31</value>
-  </data>
-  <data name="txtSrvName.TabIndex" type="System.Int32, mscorlib">
-    <value>46</value>
-  </data>
-  <data name="&gt;&gt;txtSrvName.Name" xml:space="preserve">
-    <value>txtSrvName</value>
-  </data>
-  <data name="&gt;&gt;txtSrvName.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txtSrvName.Parent" xml:space="preserve">
-    <value>panel2</value>
-  </data>
-  <data name="&gt;&gt;txtSrvName.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
   <data name="btnBrowse.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
   </data>
@@ -304,7 +217,7 @@
     <value>panel2</value>
   </data>
   <data name="&gt;&gt;btnBrowse.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>4</value>
   </data>
   <data name="btnProcess.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
@@ -337,7 +250,7 @@
     <value>panel2</value>
   </data>
   <data name="&gt;&gt;btnProcess.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>5</value>
   </data>
   <data name="btnChooseService.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
@@ -370,7 +283,7 @@
     <value>panel2</value>
   </data>
   <data name="&gt;&gt;btnChooseService.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>6</value>
   </data>
   <metadata name="ofd.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
@@ -444,30 +357,6 @@
   <data name="panel1.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
     <value>Stretch</value>
   </data>
-  <data name="transparentLabel1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
-  </data>
-  <data name="transparentLabel1.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="transparentLabel1.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 14.25pt</value>
-  </data>
-  <data name="transparentLabel1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>324, 23</value>
-  </data>
-  <data name="transparentLabel1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 0, 6, 0</value>
-  </data>
-  <data name="transparentLabel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>426, 44</value>
-  </data>
-  <data name="transparentLabel1.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="transparentLabel1.Text" xml:space="preserve">
-    <value>Recognized placeholder</value>
-  </data>
   <data name="&gt;&gt;transparentLabel1.Name" xml:space="preserve">
     <value>transparentLabel1</value>
   </data>
@@ -504,37 +393,79 @@
   <data name="&gt;&gt;panel1.ZOrder" xml:space="preserve">
     <value>9</value>
   </data>
+  <data name="transparentLabel1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="transparentLabel1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="transparentLabel1.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 14.25pt</value>
+  </data>
+  <data name="transparentLabel1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>324, 23</value>
+  </data>
+  <data name="transparentLabel1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
+  </data>
+  <data name="transparentLabel1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>426, 44</value>
+  </data>
+  <data name="transparentLabel1.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="transparentLabel1.Text" xml:space="preserve">
+    <value>Recognised placeholder</value>
+  </data>
+  <data name="&gt;&gt;transparentLabel1.Name" xml:space="preserve">
+    <value>transparentLabel1</value>
+  </data>
+  <data name="&gt;&gt;transparentLabel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;transparentLabel1.Parent" xml:space="preserve">
+    <value>panel1</value>
+  </data>
+  <data name="&gt;&gt;transparentLabel1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="panel2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
-  <data name="listBoxAppPath.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+  <data name="listViewAppPath.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
   </data>
-  <data name="listBoxAppPath.HorizontalScrollbar" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="ApplicationColumnHeader.Text" xml:space="preserve">
+    <value>Application</value>
   </data>
-  <data name="listBoxAppPath.ItemHeight" type="System.Int32, mscorlib">
-    <value>25</value>
+  <data name="ApplicationColumnHeader.Width" type="System.Int32, mscorlib">
+    <value>511</value>
   </data>
-  <data name="listBoxAppPath.Location" type="System.Drawing.Point, System.Drawing">
-    <value>252, 115</value>
+  <data name="TypeColumnHeader.Text" xml:space="preserve">
+    <value>Type</value>
   </data>
-  <data name="listBoxAppPath.Size" type="System.Drawing.Size, System.Drawing">
-    <value>447, 179</value>
+  <data name="TypeColumnHeader.Width" type="System.Int32, mscorlib">
+    <value>307</value>
   </data>
-  <data name="listBoxAppPath.TabIndex" type="System.Int32, mscorlib">
-    <value>1001</value>
+  <data name="listViewAppPath.Location" type="System.Drawing.Point, System.Drawing">
+    <value>44, 100</value>
   </data>
-  <data name="&gt;&gt;listBoxAppPath.Name" xml:space="preserve">
-    <value>listBoxAppPath</value>
+  <data name="listViewAppPath.Size" type="System.Drawing.Size, System.Drawing">
+    <value>667, 250</value>
   </data>
-  <data name="&gt;&gt;listBoxAppPath.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="listViewAppPath.TabIndex" type="System.Int32, mscorlib">
+    <value>1002</value>
   </data>
-  <data name="&gt;&gt;listBoxAppPath.Parent" xml:space="preserve">
+  <data name="&gt;&gt;listViewAppPath.Name" xml:space="preserve">
+    <value>listViewAppPath</value>
+  </data>
+  <data name="&gt;&gt;listViewAppPath.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;listViewAppPath.Parent" xml:space="preserve">
     <value>panel2</value>
   </data>
-  <data name="&gt;&gt;listBoxAppPath.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;listViewAppPath.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <data name="btnSelectUwpApp.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
@@ -1217,6 +1148,18 @@
   </data>
   <data name="&gt;&gt;ofd.Type" xml:space="preserve">
     <value>System.Windows.Forms.OpenFileDialog, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ApplicationColumnHeader.Name" xml:space="preserve">
+    <value>ApplicationColumnHeader</value>
+  </data>
+  <data name="&gt;&gt;ApplicationColumnHeader.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;TypeColumnHeader.Name" xml:space="preserve">
+    <value>TypeColumnHeader</value>
+  </data>
+  <data name="&gt;&gt;TypeColumnHeader.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>ApplicationExceptionForm</value>

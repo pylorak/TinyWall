@@ -102,19 +102,21 @@ namespace pylorak.TinyWall
 
         private void UpdateUI()
         {
+            var index = _tmpExceptionSettings.Count - 1;
+
             // Display timer
             for (var i = 0; i < cmbTimer.Items.Count; ++i)
             {
-                if (((KeyValuePair<string, AppExceptionTimer>)cmbTimer.Items[i]).Value == _tmpExceptionSettings[0].Timer)
+                if (((KeyValuePair<string, AppExceptionTimer>)cmbTimer.Items[i]).Value == _tmpExceptionSettings[index].Timer)
                 {
                     cmbTimer.SelectedIndex = i;
                     break;
                 }
             }
 
-            var exeSubj = _tmpExceptionSettings[0].Subject as ExecutableSubject;
-            var srvSubj = _tmpExceptionSettings[0].Subject as ServiceSubject;
-            var uwpSubj = _tmpExceptionSettings[0].Subject as AppContainerSubject;
+            var exeSubj = _tmpExceptionSettings[index].Subject as ExecutableSubject;
+            var srvSubj = _tmpExceptionSettings[index].Subject as ServiceSubject;
+            var uwpSubj = _tmpExceptionSettings[index].Subject as AppContainerSubject;
 
             // Update top colored banner
             bool hasSignature = false;
@@ -141,12 +143,12 @@ namespace pylorak.TinyWall
                 case true when validSignature:
                     // Recognised app
                     panel1.BackgroundImage = Resources.Icons.green_banner;
-                    transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, Resources.Messages.RecognizedApplication, _tmpExceptionSettings[0].Subject.ToString());
+                    transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, Resources.Messages.RecognizedApplication, _tmpExceptionSettings[index].Subject.ToString());
                     break;
                 case true when !validSignature:
                     // Recognised, but compromised app
                     panel1.BackgroundImage = Resources.Icons.red_banner;
-                    transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, Resources.Messages.CompromisedApplication, _tmpExceptionSettings[0].Subject.ToString());
+                    transparentLabel1.Text = string.Format(CultureInfo.InvariantCulture, Resources.Messages.CompromisedApplication, _tmpExceptionSettings[index].Subject.ToString());
                     break;
                 default:
                     // Unknown app
@@ -158,23 +160,20 @@ namespace pylorak.TinyWall
             Utils.CentreControlInParent(transparentLabel1);
 
             // Update subject fields
-            switch (_tmpExceptionSettings[0].Subject.SubjectType)
+            switch (_tmpExceptionSettings[index].Subject.SubjectType)
             {
                 case SubjectType.Global:
                     //listBoxAppPath.Items.Add(Resources.Messages.AllApplications);
                     //txtSrvName.Text = Resources.Messages.SubjectTypeGlobal;
                     break;
                 case SubjectType.Executable:
-                    listBoxAppPath.Items.Add(exeSubj!.ExecutablePath);
-                    txtSrvName.Text = Resources.Messages.SubjectTypeExecutable;
+                    listViewAppPath.Items.Add(new ListViewItem(new string[] { exeSubj!.ExecutablePath, Resources.Messages.SubjectTypeExecutable }));
                     break;
                 case SubjectType.Service:
-                    listBoxAppPath.Items.Add($@"{srvSubj!.ServiceName} ({srvSubj.ExecutablePath})");
-                    txtSrvName.Text = Resources.Messages.SubjectTypeService;
+                    listViewAppPath.Items.Add(new ListViewItem(new string[] { $@"{srvSubj!.ServiceName} ({srvSubj.ExecutablePath})", Resources.Messages.SubjectTypeService }));
                     break;
                 case SubjectType.AppContainer:
-                    listBoxAppPath.Items.Add(uwpSubj!.DisplayName);
-                    txtSrvName.Text = Resources.Messages.SubjectTypeUwpApp;
+                    listViewAppPath.Items.Add(new ListViewItem(new string[] { uwpSubj!.DisplayName, Resources.Messages.SubjectTypeUwpApp }));
                     break;
                 case SubjectType.Invalid:
                 default:
@@ -183,9 +182,9 @@ namespace pylorak.TinyWall
 
             // Update rule/policy fields
 
-            chkInheritToChildren.Checked = _tmpExceptionSettings[0].ChildProcessesInherit;
+            chkInheritToChildren.Checked = _tmpExceptionSettings[index].ChildProcessesInherit;
 
-            switch (_tmpExceptionSettings[0].Policy.PolicyType)
+            switch (_tmpExceptionSettings[index].Policy.PolicyType)
             {
                 case PolicyType.HardBlock:
                     radBlock.Checked = true;
@@ -201,7 +200,7 @@ namespace pylorak.TinyWall
                     chkRestrictToLocalNetwork.Checked = false;
                     break;
                 case PolicyType.TcpUdpOnly:
-                    TcpUdpPolicy pol = (TcpUdpPolicy)_tmpExceptionSettings[0].Policy;
+                    TcpUdpPolicy pol = (TcpUdpPolicy)_tmpExceptionSettings[index].Policy;
                     if (
                         string.Equals(pol.AllowedLocalTcpListenerPorts, "*")
                         && string.Equals(pol.AllowedLocalUdpListenerPorts, "*")
@@ -231,7 +230,7 @@ namespace pylorak.TinyWall
                     txtListenPortUDP.Text = (pol.AllowedLocalUdpListenerPorts is null) ? string.Empty : pol.AllowedLocalUdpListenerPorts.Replace(",", ", ");
                     break;
                 case PolicyType.Unrestricted:
-                    UnrestrictedPolicy upol = (UnrestrictedPolicy)_tmpExceptionSettings[0].Policy;
+                    UnrestrictedPolicy upol = (UnrestrictedPolicy)_tmpExceptionSettings[index].Policy;
                     radUnrestricted.Checked = true;
                     radRestriction_CheckedChanged(this, EventArgs.Empty);
                     chkRestrictToLocalNetwork.Checked = upol.LocalNetworkOnly;
@@ -416,23 +415,20 @@ namespace pylorak.TinyWall
             List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out _);
 
             if (!exceptions.Any()) return;
+            if (_tmpExceptionSettings.Exists(e => e.Subject.Equals(exceptions[0].Subject))) return;
 
-            _tmpExceptionSettings = exceptions;
+            Parallel.ForEach(exceptions, e =>
+            {
+                _tmpExceptionSettings.Add(e);
+            });
+
+            //_tmpExceptionSettings = exceptions;
 
             UpdateUI();
 
-            if (_tmpExceptionSettings.Any())
-                // Multiple known files, just accept them as is
-                this.DialogResult = DialogResult.OK;
-        }
-
-        private void listBoxAppPath_SizeChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtSrvName_TextChanged(object sender, EventArgs e)
-        {
+            //if (_tmpExceptionSettings.Any())
+            //    // Multiple known files, just accept them as is
+            //    this.DialogResult = DialogResult.OK;
         }
 
         private void cmbTimer_SelectedIndexChanged(object sender, EventArgs e)
