@@ -308,17 +308,21 @@ namespace pylorak.TinyWall
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            _tmpExceptionSettings[0].ChildProcessesInherit = chkInheritToChildren.Checked;
+            Parallel.For(0, _tmpExceptionSettings.Count - 1, (i, state) =>
+            {
+                _tmpExceptionSettings[i].ChildProcessesInherit = chkInheritToChildren.Checked;
+            });
+
+            //_tmpExceptionSettings[0].ChildProcessesInherit = chkInheritToChildren.Checked;
 
             if (radBlock.Checked)
             {
                 //_tmpExceptionSettings[0].Policy = HardBlockPolicy.Instance;
 
-                Parallel.ForEach(_tmpExceptionSettings, tmpExceptionSetting =>
+                Parallel.For(0, _tmpExceptionSettings.Count - 1, (i, state) =>
                 {
-                    tmpExceptionSetting.Policy = HardBlockPolicy.Instance;
+                    _tmpExceptionSettings[i].Policy = HardBlockPolicy.Instance;
                 });
-
             }
             else if (radOnlySpecifiedPorts.Checked || radTcpUdpOut.Checked || radTcpUdpUnrestricted.Checked)
             {
@@ -333,9 +337,9 @@ namespace pylorak.TinyWall
                     pol.AllowedLocalUdpListenerPorts = CleanupPortsList(txtListenPortUDP.Text);
                     //_tmpExceptionSettings[0].Policy = pol;
 
-                    Parallel.ForEach(_tmpExceptionSettings, tmpExceptionSetting =>
+                    Parallel.For(0, _tmpExceptionSettings.Count - 1, (i, state) =>
                     {
-                        tmpExceptionSetting.Policy = pol;
+                        _tmpExceptionSettings[i].Policy = pol;
                     });
                 }
                 catch
@@ -358,18 +362,18 @@ namespace pylorak.TinyWall
                 };
                 //_tmpExceptionSettings[0].Policy = pol;
 
-                Parallel.ForEach(_tmpExceptionSettings, tmpExceptionSetting =>
+                Parallel.For(0, _tmpExceptionSettings.Count - 1, (i, state) =>
                 {
-                    tmpExceptionSetting.Policy = pol;
+                    _tmpExceptionSettings[i].Policy = pol;
                 });
 
             }
 
             //this._tmpExceptionSettings[0].CreationDate = DateTime.Now;
             var dateTimeNow = DateTime.Now;
-            Parallel.ForEach(_tmpExceptionSettings, tmpExceptionSetting =>
+            Parallel.For(0, _tmpExceptionSettings.Count - 1, (i, state) =>
             {
-                tmpExceptionSetting.CreationDate = dateTimeNow;
+                _tmpExceptionSettings[i].CreationDate = dateTimeNow;
             });
 
             this.DialogResult = DialogResult.OK;
