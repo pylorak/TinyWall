@@ -158,14 +158,17 @@
             // listViewAppPath
             // 
             resources.ApplyResources(this.listViewAppPath, "listViewAppPath");
+            this.listViewAppPath.AutoArrange = false;
             this.listViewAppPath.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ApplicationColumnHeader,
             this.TypeColumnHeader});
             this.listViewAppPath.FullRowSelect = true;
             this.listViewAppPath.GridLines = true;
             this.listViewAppPath.HideSelection = false;
+            this.listViewAppPath.MultiSelect = false;
             this.listViewAppPath.Name = "listViewAppPath";
             this.listViewAppPath.OwnerDraw = true;
+            this.listViewAppPath.ShowItemToolTips = true;
             this.listViewAppPath.UseCompatibleStateImageBehavior = false;
             this.listViewAppPath.View = System.Windows.Forms.View.Details;
             // 

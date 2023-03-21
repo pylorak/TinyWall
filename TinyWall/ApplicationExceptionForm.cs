@@ -167,13 +167,26 @@ namespace pylorak.TinyWall
                     //txtSrvName.Text = Resources.Messages.SubjectTypeGlobal;
                     break;
                 case SubjectType.Executable:
-                    listViewAppPath.Items.Add(new ListViewItem(new string[] { exeSubj!.ExecutablePath, Resources.Messages.SubjectTypeExecutable }));
+                    //listViewAppPath.Items.Add(new ListViewItem(new string[] { exeSubj!.ExecutablePath, Resources.Messages.SubjectTypeExecutable }));
+                    listViewAppPath.Items.Add(new ListViewItem()
+                    {
+                        Text = exeSubj!.ExecutablePath,
+                        SubItems = { Resources.Messages.SubjectTypeExecutable }
+                    });
                     break;
                 case SubjectType.Service:
-                    listViewAppPath.Items.Add(new ListViewItem(new string[] { $@"{srvSubj!.ServiceName} ({srvSubj.ExecutablePath})", Resources.Messages.SubjectTypeService }));
+                    listViewAppPath.Items.Add(new ListViewItem()
+                    {
+                        Text = $@"{srvSubj!.ServiceName} ({srvSubj.ExecutablePath})",
+                        SubItems = { Resources.Messages.SubjectTypeService }
+                    });
                     break;
                 case SubjectType.AppContainer:
-                    listViewAppPath.Items.Add(new ListViewItem(new string[] { uwpSubj!.DisplayName, Resources.Messages.SubjectTypeUwpApp }));
+                    listViewAppPath.Items.Add(new ListViewItem()
+                    {
+                        Text = uwpSubj!.DisplayName,
+                        SubItems = { Resources.Messages.SubjectTypeUwpApp }
+                    });
                     break;
                 case SubjectType.Invalid:
                 default:
@@ -414,13 +427,9 @@ namespace pylorak.TinyWall
         {
             List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out _);
 
-            if (!exceptions.Any()) return;
-            if (_tmpExceptionSettings.Exists(e => e.Subject.Equals(exceptions[0].Subject))) return;
+            if (!exceptions.Any() || _tmpExceptionSettings.Exists(e => e.Subject.Equals(exceptions[0].Subject))) return;
 
-            Parallel.ForEach(exceptions, e =>
-            {
-                _tmpExceptionSettings.Add(e);
-            });
+            _tmpExceptionSettings.AddRange(exceptions);
 
             //_tmpExceptionSettings = exceptions;
 
