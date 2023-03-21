@@ -423,29 +423,14 @@
   <data name="listViewAppPath.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
   </data>
-  <data name="ApplicationColumnHeader.Text" xml:space="preserve">
-    <value>Application</value>
-  </data>
-  <data name="ApplicationColumnHeader.Width" type="System.Int32, mscorlib">
-    <value>511</value>
-  </data>
-  <data name="TypeColumnHeader.Text" xml:space="preserve">
-    <value>Type</value>
-  </data>
-  <data name="TypeColumnHeader.Width" type="System.Int32, mscorlib">
-    <value>307</value>
-  </data>
-  <data name="listViewAppPath.LabelWrap" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
   <data name="listViewAppPath.Location" type="System.Drawing.Point, System.Drawing">
-    <value>43, 100</value>
+    <value>43, 109</value>
   </data>
   <data name="listViewAppPath.Size" type="System.Drawing.Size, System.Drawing">
-    <value>667, 250</value>
+    <value>676, 241</value>
   </data>
   <data name="listViewAppPath.TabIndex" type="System.Int32, mscorlib">
-    <value>1002</value>
+    <value>41</value>
   </data>
   <data name="&gt;&gt;listViewAppPath.Name" xml:space="preserve">
     <value>listViewAppPath</value>
@@ -1139,18 +1124,6 @@
   </data>
   <data name="&gt;&gt;ofd.Type" xml:space="preserve">
     <value>System.Windows.Forms.OpenFileDialog, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;ApplicationColumnHeader.Name" xml:space="preserve">
-    <value>ApplicationColumnHeader</value>
-  </data>
-  <data name="&gt;&gt;ApplicationColumnHeader.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;TypeColumnHeader.Name" xml:space="preserve">
-    <value>TypeColumnHeader</value>
-  </data>
-  <data name="&gt;&gt;TypeColumnHeader.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>ApplicationExceptionForm</value>

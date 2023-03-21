@@ -163,11 +163,15 @@ namespace pylorak.TinyWall
             switch (_tmpExceptionSettings[index].Subject.SubjectType)
             {
                 case SubjectType.Global:
-                    //listBoxAppPath.Items.Add(Resources.Messages.AllApplications);
                     //txtSrvName.Text = Resources.Messages.SubjectTypeGlobal;
+
+                    listViewAppPath.Columns.AddRange(new ColumnHeader[]
+                    {
+                        new ColumnHeader() { Text = @"Application", Width = 100 },
+                        new ColumnHeader() { Text = @"Type", Width = 100 }
+                    });
                     break;
                 case SubjectType.Executable:
-                    //listViewAppPath.Items.Add(new ListViewItem(new string[] { exeSubj!.ExecutablePath, Resources.Messages.SubjectTypeExecutable }));
                     listViewAppPath.Items.Add(new ListViewItem()
                     {
                         Text = exeSubj!.ExecutablePath,

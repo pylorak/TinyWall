@@ -41,8 +41,6 @@
             this.transparentLabel1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.listViewAppPath = new System.Windows.Forms.ListView();
-            this.ApplicationColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.TypeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnSelectUwpApp = new System.Windows.Forms.Button();
             this.chkRestrictToLocalNetwork = new System.Windows.Forms.CheckBox();
             this.radBlock = new System.Windows.Forms.RadioButton();
@@ -158,27 +156,12 @@
             // listViewAppPath
             // 
             resources.ApplyResources(this.listViewAppPath, "listViewAppPath");
-            this.listViewAppPath.AutoArrange = false;
-            this.listViewAppPath.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.ApplicationColumnHeader,
-            this.TypeColumnHeader});
             this.listViewAppPath.FullRowSelect = true;
             this.listViewAppPath.GridLines = true;
             this.listViewAppPath.HideSelection = false;
-            this.listViewAppPath.MultiSelect = false;
             this.listViewAppPath.Name = "listViewAppPath";
-            this.listViewAppPath.OwnerDraw = true;
-            this.listViewAppPath.ShowItemToolTips = true;
             this.listViewAppPath.UseCompatibleStateImageBehavior = false;
             this.listViewAppPath.View = System.Windows.Forms.View.Details;
-            // 
-            // ApplicationColumnHeader
-            // 
-            resources.ApplyResources(this.ApplicationColumnHeader, "ApplicationColumnHeader");
-            // 
-            // TypeColumnHeader
-            // 
-            resources.ApplyResources(this.TypeColumnHeader, "TypeColumnHeader");
             // 
             // btnSelectUwpApp
             // 
@@ -384,7 +367,5 @@
         private System.Windows.Forms.CheckBox chkInheritToChildren;
         private System.Windows.Forms.Button btnSelectUwpApp;
         private System.Windows.Forms.ListView listViewAppPath;
-        private System.Windows.Forms.ColumnHeader ApplicationColumnHeader;
-        private System.Windows.Forms.ColumnHeader TypeColumnHeader;
     }
 }
