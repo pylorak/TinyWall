@@ -5,30 +5,32 @@ namespace pylorak.TinyWall
 {
     public class TwRequest
     {
-        private TwMessage? _Response;
-        private object ResponseSyncRoot { get { return this; } }
+        private TwMessage? _response;
+
+        private object ResponseSyncRoot => this;
 
         public TwMessage Request { get; init; }
+
         public TwMessage Response
         {
             get
             {
                 lock (ResponseSyncRoot)
                 {
-                    while (_Response is null)
+                    while (_response is null)
                     {
                         Monitor.Wait(ResponseSyncRoot);
                     }
-                    return _Response;
+                    return _response;
                 }
             }
             set
             {
                 lock (ResponseSyncRoot)
                 {
-                    if (_Response is not null)
+                    if (_response is not null)
                         throw new InvalidOperationException("Repeated assignment to Response property is not allowed.");
-                    _Response = value;
+                    _response = value;
                     Monitor.Pulse(ResponseSyncRoot);
                 }
             }
@@ -44,4 +46,10 @@ namespace pylorak.TinyWall
             Request = reqMsg;
         }
     }
+}
+
+//Bug in .NET/Type doesn't exist in - do not remove if you want 'init' in properties
+namespace System.Runtime.CompilerServices
+{
+    internal static class IsExternalInit { }
 }

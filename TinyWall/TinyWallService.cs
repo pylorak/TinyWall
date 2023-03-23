@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Management;
-using System.Threading;
+﻿using pylorak.Utilities;
 using pylorak.Windows;
 using pylorak.Windows.Services;
 using pylorak.Windows.WFP;
 using pylorak.Windows.WFP.Interop;
-using pylorak.Utilities;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Management;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Text;
+using System.Threading;
 
 namespace pylorak.TinyWall
 {
@@ -887,7 +887,7 @@ namespace pylorak.TinyWall
         {
             if (ex.Id == Guid.Empty)
             {
-                // Do not let the service crash if a rule cannot be constructed 
+                // Do not let the service crash if a rule cannot be constructed
 #if DEBUG
                 throw new InvalidOperationException("Firewall exception specification must have an ID.");
 #else
@@ -1133,7 +1133,7 @@ namespace pylorak.TinyWall
 
         private void UpdaterMethod()
         {
-            UpdateDescriptor? update = null; 
+            UpdateDescriptor? update = null;
             try
             {
                 if (DateTime.Now - LastUpdateCheck >= TimeSpan.FromDays(2))
@@ -1941,12 +1941,12 @@ namespace pylorak.TinyWall
             // Basic software health checks
             TinyWallDoctor.EnsureHealth(Utils.LOG_ID_SERVICE);
 #else
-                using (var wfp = new Engine("TinyWall Cleanup Session", "", FWPM_SESSION_FLAGS.None, 5000))
-                using (var trx = wfp.BeginTransaction())
-                {
-                    DeleteWfpObjects(wfp, true);
-                    trx.Commit();
-                }
+            using (var wfp = new Engine("TinyWall Cleanup Session", "", FWPM_SESSION_FLAGS.None, 5000))
+            using (var trx = wfp.BeginTransaction())
+            {
+                DeleteWfpObjects(wfp, true);
+                trx.Commit();
+            }
 #endif
             PathMapper.Instance.Dispose();
         }
