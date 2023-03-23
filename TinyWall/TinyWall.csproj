@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net481</TargetFramework>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>9.0</LangVersion>
     <OutputType>WinExe</OutputType>
@@ -14,7 +14,6 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
 
     <!-- Used for WinRT access in .Net 4.8, not needed with .NET 5+ -->
-    <TargetPlatformVersion>8.0</TargetPlatformVersion>
 
   </PropertyGroup>
   <PropertyGroup>
