@@ -544,5 +544,22 @@ namespace pylorak.TinyWall
                 throw new InvalidOperationException();
             }
         }
+
+        private void btnRemoveSoftware_Click(object sender, EventArgs e)
+        {
+            if (listViewAppPath.Items.Count <= 0 || listViewAppPath.SelectedItems.Count <= 0)
+            {
+                MessageBox.Show(@"Select a software entry from the list!", @"Select an item to remove", MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            FirewallExceptionV3 firewallExceptionV3 = _tmpExceptionSettings.Find(f => listViewAppPath.SelectedItems[0].Text.Contains(f.ToString()));
+
+            if (firewallExceptionV3 is null) return;
+
+            _tmpExceptionSettings.Remove(firewallExceptionV3);
+            listViewAppPath.SelectedItems[0].Remove();
+        }
     }
 }

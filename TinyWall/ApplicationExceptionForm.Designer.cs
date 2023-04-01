@@ -61,6 +61,7 @@
             this.radOnlySpecifiedPorts = new System.Windows.Forms.RadioButton();
             this.panel3 = new System.Windows.Forms.Panel();
             this.chkInheritToChildren = new System.Windows.Forms.CheckBox();
+            this.btnRemoveSoftware = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -144,6 +145,7 @@
             // 
             resources.ApplyResources(this.panel2, "panel2");
             this.panel2.BackColor = System.Drawing.SystemColors.Window;
+            this.panel2.Controls.Add(this.btnRemoveSoftware);
             this.panel2.Controls.Add(this.listViewAppPath);
             this.panel2.Controls.Add(this.btnSelectUwpApp);
             this.panel2.Controls.Add(this.cmbTimer);
@@ -297,6 +299,14 @@
             this.chkInheritToChildren.Name = "chkInheritToChildren";
             this.chkInheritToChildren.UseVisualStyleBackColor = true;
             // 
+            // btnRemoveSoftware
+            // 
+            resources.ApplyResources(this.btnRemoveSoftware, "btnRemoveSoftware");
+            this.btnRemoveSoftware.BackColor = System.Drawing.Color.AliceBlue;
+            this.btnRemoveSoftware.Name = "btnRemoveSoftware";
+            this.btnRemoveSoftware.UseVisualStyleBackColor = false;
+            this.btnRemoveSoftware.Click += new System.EventHandler(this.btnRemoveSoftware_Click);
+            // 
             // ApplicationExceptionForm
             // 
             this.AcceptButton = this.btnOK;
@@ -367,5 +377,6 @@
         private System.Windows.Forms.CheckBox chkInheritToChildren;
         private System.Windows.Forms.Button btnSelectUwpApp;
         private System.Windows.Forms.ListView listViewAppPath;
+        private System.Windows.Forms.Button btnRemoveSoftware;
     }
 }
