@@ -54,12 +54,7 @@ namespace pylorak.TinyWall
             if (fwex is not null)
             {
                 _tmpExceptionSettings.Add(fwex);
-                listViewAppPath.Items.Add(new ListViewItem()
-                {
-                    Text = fwex.Subject.ToString(),
-                    SubItems = { fwex.Subject.ToString() }
-                });
-
+                UpdateUI();
             }
 
             panel1.Location = new System.Drawing.Point(0, 0);
