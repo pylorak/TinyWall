@@ -11,20 +11,30 @@ namespace pylorak.TinyWall
 {
     internal partial class ApplicationExceptionForm : Form
     {
-        private List<FirewallExceptionV3> _tmpExceptionSettings = new();
+        private readonly List<FirewallExceptionV3> _tmpExceptionSettings = new();
 
         internal List<FirewallExceptionV3> ExceptionSettings => _tmpExceptionSettings;
 
         internal ApplicationExceptionForm(FirewallExceptionV3 fwex)
+        {
+            ApplicationExceptionFormInitialise(fwex);
+        }
+
+        internal ApplicationExceptionForm()
+        {
+            ApplicationExceptionFormInitialise(null);
+        }
+
+        private void ApplicationExceptionFormInitialise(FirewallExceptionV3? fwex)
         {
             InitializeComponent();
             Utils.SetRightToLeft(this);
 
             try
             {
-                Type type = transparentLabel1.GetType();
-                BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
-                MethodInfo method = type.GetMethod("SetStyle", flags);
+                var type = transparentLabel1.GetType();
+                const BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
+                MethodInfo? method = type.GetMethod("SetStyle", flags);
 
                 if (method != null)
                 {
@@ -37,16 +47,25 @@ namespace pylorak.TinyWall
                 // Don't do anything, we are running in a trusted context.
             }
 
-            this.Icon = Resources.Icons.firewall;
-            this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
-            this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
+            Icon = Resources.Icons.firewall;
+            btnOK.Image = GlobalInstances.ApplyBtnIcon;
+            btnCancel.Image = GlobalInstances.CancelBtnIcon;
 
-            this._tmpExceptionSettings.Add(fwex);
+            if (fwex is not null)
+            {
+                _tmpExceptionSettings.Add(fwex);
+                listViewAppPath.Items.Add(new ListViewItem()
+                {
+                    Text = fwex.Subject.ToString(),
+                    SubItems = { fwex.Subject.ToString() }
+                });
+
+            }
 
             panel1.Location = new System.Drawing.Point(0, 0);
-            panel1.Width = this.Width;
+            panel1.Width = Width;
             panel2.Location = new System.Drawing.Point(0, panel1.Height);
-            panel2.Width = this.Width;
+            panel2.Width = Width;
 
             cmbTimer.SuspendLayout();
             var timerTexts = new Dictionary<AppExceptionTimer, KeyValuePair<string, AppExceptionTimer>>
@@ -56,32 +75,41 @@ namespace pylorak.TinyWall
                     new KeyValuePair<string, AppExceptionTimer>(Resources.Messages.Permanent, AppExceptionTimer.Permanent)
                 },
                 {
-                    AppExceptionTimer.Until_Reboot,
-                    new KeyValuePair<string, AppExceptionTimer>(Resources.Messages.UntilReboot, AppExceptionTimer.Until_Reboot)
+                    AppExceptionTimer.UNTIL_REBOOT,
+                    new KeyValuePair<string, AppExceptionTimer>(Resources.Messages.UntilReboot, AppExceptionTimer.UNTIL_REBOOT)
                 },
                 {
-                    AppExceptionTimer.For_5_Minutes,
-                    new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XMinutes, 5), AppExceptionTimer.For_5_Minutes)
+                    AppExceptionTimer.FOR_5_MINUTES,
+                    new KeyValuePair<string, AppExceptionTimer>(
+                        string.Format(CultureInfo.CurrentCulture, Resources.Messages.XMinutes, 5),
+                        AppExceptionTimer.FOR_5_MINUTES)
                 },
                 {
-                    AppExceptionTimer.For_30_Minutes,
-                    new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XMinutes, 30), AppExceptionTimer.For_30_Minutes)
+                    AppExceptionTimer.FOR_30_MINUTES,
+                    new KeyValuePair<string, AppExceptionTimer>(
+                        string.Format(CultureInfo.CurrentCulture, Resources.Messages.XMinutes, 30),
+                        AppExceptionTimer.FOR_30_MINUTES)
                 },
                 {
-                    AppExceptionTimer.For_1_Hour,
-                    new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHour, 1), AppExceptionTimer.For_1_Hour)
+                    AppExceptionTimer.FOR_1_HOUR,
+                    new KeyValuePair<string, AppExceptionTimer>(
+                        string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHour, 1), AppExceptionTimer.FOR_1_HOUR)
                 },
                 {
-                    AppExceptionTimer.For_4_Hours,
-                    new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHours, 4), AppExceptionTimer.For_4_Hours)
+                    AppExceptionTimer.FOR_4_HOURS,
+                    new KeyValuePair<string, AppExceptionTimer>(
+                        string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHours, 4), AppExceptionTimer.FOR_4_HOURS)
                 },
                 {
-                    AppExceptionTimer.For_9_Hours,
-                    new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHours, 9), AppExceptionTimer.For_9_Hours)
+                    AppExceptionTimer.FOR_9_HOURS,
+                    new KeyValuePair<string, AppExceptionTimer>(
+                        string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHours, 9), AppExceptionTimer.FOR_9_HOURS)
                 },
                 {
-                    AppExceptionTimer.For_24_Hours,
-                    new KeyValuePair<string, AppExceptionTimer>(string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHours, 24), AppExceptionTimer.For_24_Hours)
+                    AppExceptionTimer.FOR_24_HOURS,
+                    new KeyValuePair<string, AppExceptionTimer>(
+                        string.Format(CultureInfo.CurrentCulture, Resources.Messages.XHours, 24),
+                        AppExceptionTimer.FOR_24_HOURS)
                 }
             };
 
@@ -90,6 +118,7 @@ namespace pylorak.TinyWall
                 if (timerVal != AppExceptionTimer.Invalid)
                     cmbTimer.Items.Add(timerTexts[timerVal]);
             }
+
             cmbTimer.DisplayMember = "Key";
             cmbTimer.ValueMember = "Value";
             cmbTimer.ResumeLayout(true);
@@ -97,7 +126,14 @@ namespace pylorak.TinyWall
 
         private void ApplicationExceptionForm_Load(object sender, EventArgs e)
         {
-            UpdateUI();
+            //UpdateUI();
+
+            //BUG: ??? - Have to add columns in ListView by using code below otherwise they don't appear when using the UI method
+            listViewAppPath.Columns.AddRange(new ColumnHeader[]
+            {
+                new ColumnHeader() { Text = @"Application", Width = 800 },
+                new ColumnHeader() { Text = @"Type", Width = 200 }
+            });
         }
 
         private void UpdateUI()
@@ -107,11 +143,10 @@ namespace pylorak.TinyWall
             // Display timer
             for (var i = 0; i < cmbTimer.Items.Count; ++i)
             {
-                if (((KeyValuePair<string, AppExceptionTimer>)cmbTimer.Items[i]).Value == _tmpExceptionSettings[index].Timer)
-                {
-                    cmbTimer.SelectedIndex = i;
-                    break;
-                }
+                if (((KeyValuePair<string, AppExceptionTimer>)cmbTimer.Items[i]).Value != _tmpExceptionSettings[index].Timer) continue;
+
+                cmbTimer.SelectedIndex = i;
+                break;
             }
 
             var exeSubj = _tmpExceptionSettings[index].Subject as ExecutableSubject;
@@ -474,8 +509,8 @@ namespace pylorak.TinyWall
                 txtOutboundPortUDP.Text = string.Empty;
                 txtOutboundPortTCP.Enabled = true;
                 txtOutboundPortUDP.Enabled = true;
-                label7.Enabled = true;
-                label8.Enabled = true;
+                OutTCPLabel.Enabled = true;
+                OutUDPLabel.Enabled = true;
                 chkRestrictToLocalNetwork.Enabled = true;
             }
             else if (radTcpUdpOut.Checked)
@@ -487,8 +522,8 @@ namespace pylorak.TinyWall
                 txtOutboundPortUDP.Text = @"*";
                 txtOutboundPortTCP.Enabled = false;
                 txtOutboundPortUDP.Enabled = false;
-                label7.Enabled = false;
-                label8.Enabled = false;
+                OutTCPLabel.Enabled = false;
+                OutUDPLabel.Enabled = false;
                 chkRestrictToLocalNetwork.Enabled = true;
             }
             else if (radTcpUdpUnrestricted.Checked)

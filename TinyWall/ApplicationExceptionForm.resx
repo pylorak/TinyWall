@@ -126,7 +126,7 @@
     <value>MiddleLeft</value>
   </data>
   <data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>844, 1197</value>
+    <value>1201, 1197</value>
   </data>
   <data name="btnCancel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>6, 6, 6, 6</value>
@@ -160,7 +160,7 @@
     <value>MiddleLeft</value>
   </data>
   <data name="btnOK.Location" type="System.Drawing.Point, System.Drawing">
-    <value>632, 1197</value>
+    <value>989, 1197</value>
   </data>
   <data name="btnOK.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>6, 6, 6, 6</value>
@@ -193,7 +193,7 @@
     <value>Flat</value>
   </data>
   <data name="btnBrowse.Location" type="System.Drawing.Point, System.Drawing">
-    <value>728, 131</value>
+    <value>1085, 131</value>
   </data>
   <data name="btnBrowse.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>6, 6, 6, 6</value>
@@ -226,7 +226,7 @@
     <value>Flat</value>
   </data>
   <data name="btnProcess.Location" type="System.Drawing.Point, System.Drawing">
-    <value>728, 54</value>
+    <value>1085, 54</value>
   </data>
   <data name="btnProcess.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>6, 6, 6, 6</value>
@@ -259,7 +259,7 @@
     <value>Flat</value>
   </data>
   <data name="btnChooseService.Location" type="System.Drawing.Point, System.Drawing">
-    <value>728, 208</value>
+    <value>1085, 208</value>
   </data>
   <data name="btnChooseService.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>6, 6, 6, 6</value>
@@ -334,7 +334,7 @@
     <value>6, 6, 6, 6</value>
   </data>
   <data name="cmbTimer.Size" type="System.Drawing.Size, System.Drawing">
-    <value>284, 33</value>
+    <value>824, 33</value>
   </data>
   <data name="cmbTimer.TabIndex" type="System.Int32, mscorlib">
     <value>40</value>
@@ -400,7 +400,7 @@
     <value>6, 6, 6, 6</value>
   </data>
   <data name="panel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1070, 92</value>
+    <value>1427, 92</value>
   </data>
   <data name="panel1.TabIndex" type="System.Int32, mscorlib">
     <value>30</value>
@@ -427,7 +427,7 @@
     <value>43, 109</value>
   </data>
   <data name="listViewAppPath.Size" type="System.Drawing.Size, System.Drawing">
-    <value>676, 241</value>
+    <value>1033, 241</value>
   </data>
   <data name="listViewAppPath.TabIndex" type="System.Int32, mscorlib">
     <value>41</value>
@@ -454,7 +454,7 @@
     <value>NoControl</value>
   </data>
   <data name="btnSelectUwpApp.Location" type="System.Drawing.Point, System.Drawing">
-    <value>728, 285</value>
+    <value>1085, 285</value>
   </data>
   <data name="btnSelectUwpApp.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>6, 6, 6, 6</value>
@@ -487,7 +487,7 @@
     <value>6, 6, 6, 6</value>
   </data>
   <data name="panel2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1070, 400</value>
+    <value>1427, 400</value>
   </data>
   <data name="panel2.TabIndex" type="System.Int32, mscorlib">
     <value>31</value>
@@ -706,13 +706,13 @@
     <value>Top, Right</value>
   </data>
   <data name="txtListenPortUDP.Location" type="System.Drawing.Point, System.Drawing">
-    <value>656, 194</value>
+    <value>876, 194</value>
   </data>
   <data name="txtListenPortUDP.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>6, 6, 6, 6</value>
   </data>
   <data name="txtListenPortUDP.Size" type="System.Drawing.Size, System.Drawing">
-    <value>276, 31</value>
+    <value>486, 31</value>
   </data>
   <data name="txtListenPortUDP.TabIndex" type="System.Int32, mscorlib">
     <value>150</value>
@@ -739,7 +739,7 @@
     <value>6, 6, 6, 6</value>
   </data>
   <data name="txtListenPortTCP.Size" type="System.Drawing.Size, System.Drawing">
-    <value>276, 31</value>
+    <value>486, 31</value>
   </data>
   <data name="txtListenPortTCP.TabIndex" type="System.Int32, mscorlib">
     <value>130</value>
@@ -756,73 +756,73 @@
   <data name="&gt;&gt;txtListenPortTCP.ZOrder" xml:space="preserve">
     <value>9</value>
   </data>
-  <data name="label3.AutoSize" type="System.Boolean, mscorlib">
+  <data name="InTCPLabel.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="label3.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+  <data name="InTCPLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="InTCPLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>38, 200</value>
   </data>
-  <data name="label3.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+  <data name="InTCPLabel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>6, 0, 6, 0</value>
   </data>
-  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="InTCPLabel.Size" type="System.Drawing.Size, System.Drawing">
     <value>83, 25</value>
   </data>
-  <data name="label3.TabIndex" type="System.Int32, mscorlib">
+  <data name="InTCPLabel.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="label3.Text" xml:space="preserve">
+  <data name="InTCPLabel.Text" xml:space="preserve">
     <value>In TCP:</value>
   </data>
-  <data name="&gt;&gt;label3.Name" xml:space="preserve">
-    <value>label3</value>
+  <data name="&gt;&gt;InTCPLabel.Name" xml:space="preserve">
+    <value>InTCPLabel</value>
   </data>
-  <data name="&gt;&gt;label3.Type" xml:space="preserve">
+  <data name="&gt;&gt;InTCPLabel.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;label3.Parent" xml:space="preserve">
+  <data name="&gt;&gt;InTCPLabel.Parent" xml:space="preserve">
     <value>panel3</value>
   </data>
-  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;InTCPLabel.ZOrder" xml:space="preserve">
     <value>8</value>
   </data>
-  <data name="label4.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+  <data name="InUDPLabel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
   </data>
-  <data name="label4.AutoSize" type="System.Boolean, mscorlib">
+  <data name="InUDPLabel.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="label4.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+  <data name="InUDPLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>518, 200</value>
+  <data name="InUDPLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>738, 200</value>
   </data>
-  <data name="label4.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+  <data name="InUDPLabel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>6, 0, 6, 0</value>
   </data>
-  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="InUDPLabel.Size" type="System.Drawing.Size, System.Drawing">
     <value>85, 25</value>
   </data>
-  <data name="label4.TabIndex" type="System.Int32, mscorlib">
+  <data name="InUDPLabel.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
-  <data name="label4.Text" xml:space="preserve">
+  <data name="InUDPLabel.Text" xml:space="preserve">
     <value>In UDP:</value>
   </data>
-  <data name="&gt;&gt;label4.Name" xml:space="preserve">
-    <value>label4</value>
+  <data name="&gt;&gt;InUDPLabel.Name" xml:space="preserve">
+    <value>InUDPLabel</value>
   </data>
-  <data name="&gt;&gt;label4.Type" xml:space="preserve">
+  <data name="&gt;&gt;InUDPLabel.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;label4.Parent" xml:space="preserve">
+  <data name="&gt;&gt;InUDPLabel.Parent" xml:space="preserve">
     <value>panel3</value>
   </data>
-  <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;InUDPLabel.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
   <data name="txtOutboundPortUDP.AccessibleName" xml:space="preserve">
@@ -832,13 +832,13 @@
     <value>Top, Right</value>
   </data>
   <data name="txtOutboundPortUDP.Location" type="System.Drawing.Point, System.Drawing">
-    <value>656, 117</value>
+    <value>876, 117</value>
   </data>
   <data name="txtOutboundPortUDP.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>6, 6, 6, 6</value>
   </data>
   <data name="txtOutboundPortUDP.Size" type="System.Drawing.Size, System.Drawing">
-    <value>276, 31</value>
+    <value>486, 31</value>
   </data>
   <data name="txtOutboundPortUDP.TabIndex" type="System.Int32, mscorlib">
     <value>140</value>
@@ -865,7 +865,7 @@
     <value>6, 6, 6, 6</value>
   </data>
   <data name="txtOutboundPortTCP.Size" type="System.Drawing.Size, System.Drawing">
-    <value>276, 31</value>
+    <value>486, 31</value>
   </data>
   <data name="txtOutboundPortTCP.TabIndex" type="System.Int32, mscorlib">
     <value>120</value>
@@ -882,73 +882,73 @@
   <data name="&gt;&gt;txtOutboundPortTCP.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="label7.AutoSize" type="System.Boolean, mscorlib">
+  <data name="OutTCPLabel.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="label7.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+  <data name="OutTCPLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="OutTCPLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>38, 123</value>
   </data>
-  <data name="label7.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+  <data name="OutTCPLabel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>6, 0, 6, 0</value>
   </data>
-  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="OutTCPLabel.Size" type="System.Drawing.Size, System.Drawing">
     <value>100, 25</value>
   </data>
-  <data name="label7.TabIndex" type="System.Int32, mscorlib">
+  <data name="OutTCPLabel.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="label7.Text" xml:space="preserve">
+  <data name="OutTCPLabel.Text" xml:space="preserve">
     <value>Out TCP:</value>
   </data>
-  <data name="&gt;&gt;label7.Name" xml:space="preserve">
-    <value>label7</value>
+  <data name="&gt;&gt;OutTCPLabel.Name" xml:space="preserve">
+    <value>OutTCPLabel</value>
   </data>
-  <data name="&gt;&gt;label7.Type" xml:space="preserve">
+  <data name="&gt;&gt;OutTCPLabel.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;label7.Parent" xml:space="preserve">
+  <data name="&gt;&gt;OutTCPLabel.Parent" xml:space="preserve">
     <value>panel3</value>
   </data>
-  <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;OutTCPLabel.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="label8.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+  <data name="OutUDPLabel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
   </data>
-  <data name="label8.AutoSize" type="System.Boolean, mscorlib">
+  <data name="OutUDPLabel.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="label8.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+  <data name="OutUDPLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="label8.Location" type="System.Drawing.Point, System.Drawing">
-    <value>518, 123</value>
+  <data name="OutUDPLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>738, 123</value>
   </data>
-  <data name="label8.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+  <data name="OutUDPLabel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>6, 0, 6, 0</value>
   </data>
-  <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="OutUDPLabel.Size" type="System.Drawing.Size, System.Drawing">
     <value>102, 25</value>
   </data>
-  <data name="label8.TabIndex" type="System.Int32, mscorlib">
+  <data name="OutUDPLabel.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
-  <data name="label8.Text" xml:space="preserve">
+  <data name="OutUDPLabel.Text" xml:space="preserve">
     <value>Out UDP:</value>
   </data>
-  <data name="&gt;&gt;label8.Name" xml:space="preserve">
-    <value>label8</value>
+  <data name="&gt;&gt;OutUDPLabel.Name" xml:space="preserve">
+    <value>OutUDPLabel</value>
   </data>
-  <data name="&gt;&gt;label8.Type" xml:space="preserve">
+  <data name="&gt;&gt;OutUDPLabel.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;label8.Parent" xml:space="preserve">
+  <data name="&gt;&gt;OutUDPLabel.Parent" xml:space="preserve">
     <value>panel3</value>
   </data>
-  <data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;OutUDPLabel.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
   <data name="label9.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
@@ -961,7 +961,7 @@
     <value>6, 0, 6, 0</value>
   </data>
   <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1020, 4</value>
+    <value>1377, 4</value>
   </data>
   <data name="label9.TabIndex" type="System.Int32, mscorlib">
     <value>41</value>
@@ -991,7 +991,7 @@
     <value>6, 0, 6, 0</value>
   </data>
   <data name="label10.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1020, 4</value>
+    <value>1377, 4</value>
   </data>
   <data name="label10.TabIndex" type="System.Int32, mscorlib">
     <value>42</value>
@@ -1051,7 +1051,7 @@
     <value>6, 6, 6, 6</value>
   </data>
   <data name="panel3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1070, 294</value>
+    <value>1427, 294</value>
   </data>
   <data name="panel3.TabIndex" type="System.Int32, mscorlib">
     <value>115</value>
@@ -1111,7 +1111,7 @@
     <value>12, 25</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>1068, 1284</value>
+    <value>1425, 1284</value>
   </data>
   <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>6, 6, 6, 6</value>

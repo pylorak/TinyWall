@@ -164,7 +164,7 @@ namespace pylorak.TinyWall.DatabaseClasses
                     var button3 = new TaskDialogueButton(103, Resources.Messages.UnblockAppCancel);
                     dialog.Buttons = new TaskDialogueButton[] { button1, button2, button3 };
 
-                    string fileListStr = exceptions.Aggregate(string.Empty, (current, fwex) => current + (fwex.Subject.ToString() + Environment.NewLine));
+                    var fileListStr = exceptions.Aggregate(string.Empty, (current, fwex) => current + (fwex.Subject.ToString() + Environment.NewLine));
                     dialog.ExpandedInformation = fileListStr.Trim();
 
                     switch (dialog.Show())
@@ -173,15 +173,14 @@ namespace pylorak.TinyWall.DatabaseClasses
                             break;
                         case 102:
                             // Remove all exceptions with a different subject than the input argument
-                            for (int i = exceptions.Count - 1; i >= 0; --i)
+                            for (var i = exceptions.Count - 1; i >= 0; --i)
                             {
                                 if (exceptions[i].Subject is ExecutableSubject exesub)
                                 {
-                                    if (!exesub.ExecutablePath.Equals(exeSubject.ExecutablePath, StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        exceptions.RemoveAt(i);
-                                        continue;
-                                    }
+                                    if (exesub.ExecutablePath.Equals(exeSubject.ExecutablePath, StringComparison.OrdinalIgnoreCase)) continue;
+
+                                    exceptions.RemoveAt(i);
+                                    continue;
                                 }
                                 else
                                 {

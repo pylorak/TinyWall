@@ -8,13 +8,13 @@ namespace pylorak.TinyWall
     public enum AppExceptionTimer
     {
         Permanent = 0,
-        Until_Reboot = -1,
-        For_5_Minutes = 5,
-        For_30_Minutes = 30,
-        For_1_Hour = 60,
-        For_4_Hours = 240,
-        For_9_Hours = 540,
-        For_24_Hours = 1140,
+        UNTIL_REBOOT = -1,
+        FOR_5_MINUTES = 5,
+        FOR_30_MINUTES = 30,
+        FOR_1_HOUR = 60,
+        FOR_4_HOURS = 240,
+        FOR_9_HOURS = 540,
+        FOR_24_HOURS = 1140,
         Invalid
     }
 

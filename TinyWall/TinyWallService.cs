@@ -1908,7 +1908,7 @@ namespace pylorak.TinyWall
                 for (int i = exs.Count - 1; i >= 0; --i)
                 {
                     // Did this one expire?
-                    if (exs[i].Timer == AppExceptionTimer.Until_Reboot)
+                    if (exs[i].Timer == AppExceptionTimer.UNTIL_REBOOT)
                     {
                         // Remove exception
                         exs.RemoveAt(i);

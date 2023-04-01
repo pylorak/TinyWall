@@ -50,12 +50,12 @@
             this.label5 = new System.Windows.Forms.Label();
             this.txtListenPortUDP = new System.Windows.Forms.TextBox();
             this.txtListenPortTCP = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.InTCPLabel = new System.Windows.Forms.Label();
+            this.InUDPLabel = new System.Windows.Forms.Label();
             this.txtOutboundPortUDP = new System.Windows.Forms.TextBox();
             this.txtOutboundPortTCP = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
+            this.OutTCPLabel = new System.Windows.Forms.Label();
+            this.OutUDPLabel = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.radOnlySpecifiedPorts = new System.Windows.Forms.RadioButton();
@@ -225,15 +225,15 @@
             resources.ApplyResources(this.txtListenPortTCP, "txtListenPortTCP");
             this.txtListenPortTCP.Name = "txtListenPortTCP";
             // 
-            // label3
+            // InTCPLabel
             // 
-            resources.ApplyResources(this.label3, "label3");
-            this.label3.Name = "label3";
+            resources.ApplyResources(this.InTCPLabel, "InTCPLabel");
+            this.InTCPLabel.Name = "InTCPLabel";
             // 
-            // label4
+            // InUDPLabel
             // 
-            resources.ApplyResources(this.label4, "label4");
-            this.label4.Name = "label4";
+            resources.ApplyResources(this.InUDPLabel, "InUDPLabel");
+            this.InUDPLabel.Name = "InUDPLabel";
             // 
             // txtOutboundPortUDP
             // 
@@ -245,15 +245,15 @@
             resources.ApplyResources(this.txtOutboundPortTCP, "txtOutboundPortTCP");
             this.txtOutboundPortTCP.Name = "txtOutboundPortTCP";
             // 
-            // label7
+            // OutTCPLabel
             // 
-            resources.ApplyResources(this.label7, "label7");
-            this.label7.Name = "label7";
+            resources.ApplyResources(this.OutTCPLabel, "OutTCPLabel");
+            this.OutTCPLabel.Name = "OutTCPLabel";
             // 
-            // label8
+            // OutUDPLabel
             // 
-            resources.ApplyResources(this.label8, "label8");
-            this.label8.Name = "label8";
+            resources.ApplyResources(this.OutUDPLabel, "OutUDPLabel");
+            this.OutUDPLabel.Name = "OutUDPLabel";
             // 
             // label9
             // 
@@ -280,13 +280,13 @@
             resources.ApplyResources(this.panel3, "panel3");
             this.panel3.Controls.Add(this.label5);
             this.panel3.Controls.Add(this.label10);
-            this.panel3.Controls.Add(this.label7);
+            this.panel3.Controls.Add(this.OutTCPLabel);
             this.panel3.Controls.Add(this.txtListenPortUDP);
             this.panel3.Controls.Add(this.txtOutboundPortTCP);
             this.panel3.Controls.Add(this.txtOutboundPortUDP);
-            this.panel3.Controls.Add(this.label8);
-            this.panel3.Controls.Add(this.label4);
-            this.panel3.Controls.Add(this.label3);
+            this.panel3.Controls.Add(this.OutUDPLabel);
+            this.panel3.Controls.Add(this.InUDPLabel);
+            this.panel3.Controls.Add(this.InTCPLabel);
             this.panel3.Controls.Add(this.txtListenPortTCP);
             this.panel3.Controls.Add(this.label9);
             this.panel3.Name = "panel3";
@@ -354,12 +354,12 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtListenPortUDP;
         private System.Windows.Forms.TextBox txtListenPortTCP;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label InTCPLabel;
+        private System.Windows.Forms.Label InUDPLabel;
         private System.Windows.Forms.TextBox txtOutboundPortUDP;
         private System.Windows.Forms.TextBox txtOutboundPortTCP;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label OutTCPLabel;
+        private System.Windows.Forms.Label OutUDPLabel;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.RadioButton radOnlySpecifiedPorts;

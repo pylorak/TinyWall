@@ -389,7 +389,8 @@ namespace pylorak.TinyWall
 
         private void btnAppAdd_Click(object sender, EventArgs e)
         {
-            using var f = new ApplicationExceptionForm(FirewallExceptionV3.Default);
+            //using var f = new ApplicationExceptionForm(FirewallExceptionV3.Default);
+            using var f = new ApplicationExceptionForm();
 
             if (f.ShowDialog(this) != DialogResult.OK) return;
 
