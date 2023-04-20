@@ -157,13 +157,13 @@
     <value>启用黑名单</value>
   </data>
   <data name="mnuWhitelistByExecutable.Text" xml:space="preserve">
-    <value>按照可执行文件的白名单</value>
+    <value>将可执行文件添加到白名单</value>
   </data>
   <data name="mnuWhitelistByProcess.Text" xml:space="preserve">
-    <value>按照进程的白名单</value>
+    <value>将进程添加到白名单</value>
   </data>
   <data name="mnuWhitelistByWindow.Text" xml:space="preserve">
-    <value>按照窗口的白名单</value>
+    <value>将窗口添加到白名单</value>
   </data>
   <data name="mnuQuit.Text" xml:space="preserve">
     <value>退出</value>

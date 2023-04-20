@@ -135,6 +135,18 @@
   <data name="btnSubmitAssoc.Text" xml:space="preserve">
     <value>提交</value>
   </data>
+  <data name="chkDisplayOffBlock.Text" xml:space="preserve">
+    <value>在显示器省电关屏期间阻止外网流量</value>
+  </data>
+  <data name="columnApp.Text" xml:space="preserve">
+    <value>程序</value>
+  </data>
+  <data name="columnType.Text" xml:space="preserve">
+    <value>类型</value>
+  </data>
+  <data name="columnDetails.Text" xml:space="preserve">
+    <value>路径</value>
+  </data>
   <data name="label3.Text" xml:space="preserve">
     <value>编辑您希望对其授予网络使用权限的应用程序列表。只有该列表中的应用程序能够进行网络通信。使用检测按钮让TinyWall进行软件检测或手动添加应用程序。</value>
   </data>
