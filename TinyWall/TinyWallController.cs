@@ -1242,6 +1242,11 @@ namespace pylorak.TinyWall
             {
                 Utils.SafeNativeMethods.DoMouseRightClick();
             }
+            
+            if (e.Button == System.Windows.Forms.MouseButtons.Middle)
+            {
+                mnuConnections_Click(sender, e);
+            }
         }
 
         private void Tray_BalloonTipClicked(object sender, EventArgs e)
