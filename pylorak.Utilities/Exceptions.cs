@@ -6,7 +6,7 @@ namespace pylorak.Utilities
     public class UnexpectedResultExceptions : Exception
     {
         public UnexpectedResultExceptions(string methodName)
-            : base($"The method {methodName}() returned an expected result.")
+            : base($"The method {methodName}() returned an unexpected result.")
         { }
     }
 
