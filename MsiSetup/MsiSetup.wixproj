@@ -35,7 +35,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CustomWelcomeDlg.wxs" />
-    <Compile Include="DotNetFx48.wxs" />
     <Compile Include="RemoteWarnDlg.wxs" />
     <Compile Include="Product.wxs" />
     <Compile Include="WixUI_InstallDir_Custom.wxs" />

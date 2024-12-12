@@ -17,9 +17,8 @@ This is the source code of TinyWall as found at its [website](https://tinywall.p
 ## How to build
 
 ### Necessary tools
-- Microsoft Visual Studio 2019 (v16.11.xx)  
-  (VS 2022 should also work but not tested)
-- [Wix v3 Toolset](https://github.com/wixtoolset/wix3/releases/tag/wix3112rtm)
+- Microsoft Visual Studio 2019 or 2022  
+- [Wix v3.14 Toolset](https://github.com/wixtoolset/wix3/releases/tag/wix3141rtm)
 - [Visual Studio extension for Wix v3 Toolset](https://marketplace.visualstudio.com/items?itemName=WixToolset.WiXToolset)
 
 ### To build the application
