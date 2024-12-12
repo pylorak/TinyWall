@@ -66,11 +66,15 @@ namespace pylorak.Windows
 
 			if (shinfo.hIcon != IntPtr.Zero)
 			{
-				// create the icon from the native handle and make a managed copy of it
-				Icon icon = (Icon)Icon.FromHandle(shinfo.hIcon).Clone();
-				NativeMethods.DestroyIcon(shinfo.hIcon);
-				return icon;
-			}
+				try
+				{
+					return (Icon)Icon.FromHandle(shinfo.hIcon).Clone();
+				}
+				finally
+				{
+                    NativeMethods.DestroyIcon(shinfo.hIcon);
+                }
+            }
 
 			throw new UnexpectedResultExceptions(nameof(NativeMethods.SHGetFileInfo));
 		}
