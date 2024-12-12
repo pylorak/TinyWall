@@ -45,11 +45,11 @@ namespace pylorak.Windows
 			public extern static bool DestroyIcon(IntPtr handle);
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 		private struct SHFILEINFO
 		{
 			public IntPtr hIcon;
-			public IntPtr iIcon;
+			public int iIcon;
 			public uint dwAttributes;
 			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
 			public string szDisplayName;
