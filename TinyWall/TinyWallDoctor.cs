@@ -281,10 +281,11 @@ namespace pylorak.TinyWall
                 td.Settings.Hidden = false;
                 td.Settings.DisallowStartIfOnBatteries = false;
                 td.Settings.ExecutionTimeLimit = "PT0S";
+                td.Settings.MultipleInstances = _TASK_INSTANCES_POLICY.TASK_INSTANCES_PARALLEL;
                 td.Triggers.Create(_TASK_TRIGGER_TYPE2.TASK_TRIGGER_LOGON);
                 var act = (IExecAction)td.Actions.Create(_TASK_ACTION_TYPE.TASK_ACTION_EXEC);
                 act.Path = Utils.ExecutablePath;
-                taskService.GetFolder(@"\").RegisterTaskDefinition(CONTROLLER_START_TASKSCH_NAME, td, TASK_CREATE_OR_UPDATE, null, null, _TASK_LOGON_TYPE.TASK_LOGON_NONE);
+                taskService.GetFolder(@"\").RegisterTaskDefinition(CONTROLLER_START_TASKSCH_NAME, td, TASK_CREATE_OR_UPDATE, null, null, _TASK_LOGON_TYPE.TASK_LOGON_INTERACTIVE_TOKEN);
             }
             catch (System.Runtime.InteropServices.COMException e)
             {
