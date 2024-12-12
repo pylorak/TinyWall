@@ -3,6 +3,7 @@
 // (updated 2014/11/13)
 
 using System;
+using System.IO;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -81,9 +82,25 @@ namespace pylorak.Windows
 
 		internal static Icon GetIconForExtension(string extension, ShellIconSize size)
 		{
-			// repeat the process used for files, but instruct the API not to access the file
-			size |= (ShellIconSize)SHGFI_USEFILEATTRIBUTES;
-			return GetIconForFile(extension, size);
-		}
+            size |= (ShellIconSize)SHGFI_USEFILEATTRIBUTES;
+            try
+            {
+                return GetIconForFile(extension, size);
+			}
+			catch
+			{
+				var ext = Path.GetExtension(extension);
+				if (string.IsNullOrEmpty(ext))
+				{
+					// If we cannot determine the file extension, assume an executable
+					return GetIconForFile("file.exe", size);
+				}
+				else
+				{
+					// Get generic icon for whatever file extension was specified
+					return GetIconForFile("file" + ext, size);
+				}
+            }
+        }
 	}
 }
