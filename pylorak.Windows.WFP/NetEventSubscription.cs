@@ -29,12 +29,13 @@ namespace pylorak.Windows.WFP
             sb.Length = 0;
             if (isIpV6)
             {
+                const int IPV6_BYTELEN = 16;
                 unsafe
                 {
-                    for (int i = 15; i >= 0; i -= 2)
+                    for (int i = 0; i < IPV6_BYTELEN; i += 2)
                     {
                         byte b1 = addr.AddrV6[i];
-                        byte b0 = addr.AddrV6[i - 1];
+                        byte b0 = addr.AddrV6[i + 1];
                         if (
                             (b1 == 0)
                             && (b0 == 0)
@@ -47,7 +48,7 @@ namespace pylorak.Windows.WFP
                             ToHex(b1, sb);
                             ToHex(b0, sb);
                         }
-                        if (i > 2)
+                        if (i != IPV6_BYTELEN - 2)
                             sb.Append(':');
                     }
                 }
