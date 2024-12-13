@@ -124,19 +124,19 @@
     <value>Ścieżka do pliku exe:</value>
   </data>
 	<data name="label2.Text" xml:space="preserve">
-    <value>Nazwa usługi:</value>
+    <value>Opcjonalne</value>
   </data>
 	<data name="btnBrowse.Text" xml:space="preserve">
-    <value>Wybór .exe…</value>
+    <value>Przeglądaj pliki…</value>
   </data>
 	<data name="btnProcess.Text" xml:space="preserve">
-    <value>Wybór procesu…</value>
+    <value>Wybierz proces…</value>
   </data>
 	<data name="btnChooseService.Text" xml:space="preserve">
-    <value>Wybór usługi…</value>
+    <value>Wybierz usługę…</value>
   </data>
 	<data name="ofd.Title" xml:space="preserve">
-    <value>Wybór binarki .exe</value>
+    <value>Wybierz plik wykonywalny aplikacji .exe</value>
   </data>
 	<data name="label6.Text" xml:space="preserve">
     <value>Wygasa po:</value>
@@ -189,4 +189,19 @@
 	<data name="$this.Text" xml:space="preserve">
     <value>Dodaj/modyfikuj regułę zapory - TinyWall</value>
   </data>
+	<data name="btnSelectUwpApp.Text" xml:space="preserve">
+		<value>Wybierz aplikację UWP...</value>
+	</data>
+	<data name="lblApplication.Text" xml:space="preserve">
+		<value>Aplikacja:</value>
+	</data>
+	<data name="chkInheritToChildren.Text" xml:space="preserve">
+		<value>Zastosuj te same zasady do procesów podrzędnych</value>
+	</data>
+	<data name="lblApplicationType.Text" xml:space="preserve">
+		<value>Wpisz:</value>
+	</data>
+	<data name="transparentLabel1.Text" xml:space="preserve">
+		<value>Rozpoznany element zastępczy</value>
+	</data>
 </root>

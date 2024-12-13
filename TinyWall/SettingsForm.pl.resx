@@ -163,7 +163,7 @@
     <value>Wybierz specjalne zadania lub aplikacje, które chcesz włączyć na tym komputerze. Należy pamiętać, że wyłączenie zalecanych wyjątków może poważnie ograniczyć użyteczność i bezpieczeństwo systemu.</value>
   </data>
 	<data name="label2.Text" xml:space="preserve">
-    <value>Opcjonalnie</value>
+    <value>Opcjonalne</value>
   </data>
 	<data name="label1.Text" xml:space="preserve">
     <value>Rekomendowane</value>
@@ -184,7 +184,7 @@
     <value>Zapobiegaj modyfikacji pliku hosts</value>
   </data>
 	<data name="chkHostsBlocklist.Text" xml:space="preserve">
-    <value>Blokuj domeny reklam i szkodników</value>
+    <value>Blokuj domeny reklam i szkodliwego oprogramowania</value>
   </data>
 	<data name="chkAutoUpdateCheck.Text" xml:space="preserve">
     <value>Automatycznie sprawdzaj aktualizacje</value>
@@ -223,19 +223,19 @@
     <value>Uznanie</value>
   </data>
 	<data name="btnDonate.AccessibleDescription" xml:space="preserve">
-    <value>Wesprzyj</value>
+    <value>Wpłać darowiznę</value>
   </data>
 	<data name="btnDonate.AccessibleName" xml:space="preserve">
-    <value>Wsparcie</value>
+    <value>Darowizna</value>
   </data>
 	<data name="lblLinkLicense.Text" xml:space="preserve">
     <value>Licencja</value>
   </data>
 	<data name="label10.Text" xml:space="preserve">
-    <value>Proszę rozważyć przekazanie dotacji na pokrycie kosztów hostingu, sprzętu i oprogramowania.</value>
+    <value>Proszę rozważyć przekazanie darowizny na pokrycie kosztów hostingu, sprzętu i oprogramowania.</value>
   </data>
 	<data name="groupBox2.Text" xml:space="preserve">
-    <value>O nas</value>
+    <value>O programie</value>
   </data>
 	<data name="btnUpdate.Text" xml:space="preserve">
     <value>Aktualizacja</value>

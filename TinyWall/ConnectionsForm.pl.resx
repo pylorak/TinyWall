@@ -151,7 +151,7 @@
     <value>Odblokuj</value>
   </data>
 	<data name="mnuCloseProcess.Text" xml:space="preserve">
-    <value>Ubij proces</value>
+    <value>Zakończ proces</value>
   </data>
 	<data name="mnuVirusTotal.Text" xml:space="preserve">
     <value>w VirusTotal</value>
@@ -163,7 +163,7 @@
     <value>nazwę pliku w Google</value>
   </data>
 	<data name="mnuRemoteAddressOnTheWeb.Text" xml:space="preserve">
-    <value>IP w Google</value>
+    <value>docelowy adres IP w Google</value>
   </data>
 	<data name="mnuSearch.Text" xml:space="preserve">
     <value>Wyszukaj…</value>
@@ -181,7 +181,7 @@
     <value>Pokaż aktywne połączenia</value>
   </data>
 	<data name="chkShowBlocked.Text" xml:space="preserve">
-    <value>Pokaż blokowane aplikacje (w ciągu ostatnich 2 minut)</value>
+    <value>Pokaż blokowane aplikacje (w ciągu ostatnich 5 minut)</value>
   </data>
 	<data name="$this.Text" xml:space="preserve">
     <value>Połączenia - TinyWall</value>
