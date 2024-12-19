@@ -17,6 +17,7 @@ namespace pylorak.TinyWall
     {
         private readonly TinyWallController Controller;
         private readonly Size IconSize = new((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
+        private bool EnableListUpdate = false;
 
         internal ConnectionsForm(TinyWallController ctrl)
         {
@@ -50,6 +51,11 @@ namespace pylorak.TinyWall
 
         private void UpdateList()
         {
+            if (!EnableListUpdate)
+            {
+                return;
+            }
+
             var fwLogRequest = GlobalInstances.Controller.BeginReadFwLog();
 
             var uwpPackages = new UwpPackage();
@@ -350,6 +356,7 @@ namespace pylorak.TinyWall
                     col.Width = width;
             }
 
+            EnableListUpdate = true;
             UpdateList();
         }
 
