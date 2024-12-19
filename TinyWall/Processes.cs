@@ -5,12 +5,14 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Linq;
 using pylorak.Windows;
+using pylorak.Utilities;
 
 namespace pylorak.TinyWall
 {
     internal partial class ProcessesForm : Form
     {
-        internal readonly List<ProcessInfo> Selection = new List<ProcessInfo>();
+        internal readonly List<ProcessInfo> Selection = new();
+        private readonly BackgroundTask IconScanner = new();
         private readonly Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
         internal ProcessesForm(bool multiSelect)
@@ -73,11 +75,15 @@ namespace pylorak.TinyWall
                     col.Width = width;
             }
 
+            const string TEMP_ICON_KEY = ".exe";
+            IconList.Images.Add(TEMP_ICON_KEY, Utils.GetIconContained(".exe", IconSize.Width, IconSize.Height));
+            IconScanner.CancelTask();
+
             List<ListViewItem> itemColl = new List<ListViewItem>();
             UwpPackage packages = new UwpPackage();
             ServicePidMap service_pids = new ServicePidMap();
-
             Process[] procs = Process.GetProcesses();
+
             for (int i = 0; i < procs.Length; ++i)
             {
                 using (Process p = procs[i])
@@ -124,11 +130,10 @@ namespace pylorak.TinyWall
                         {
                             li.ImageKey = "network-drive";
                         }
-                        else if (System.IO.Path.IsPathRooted(e.Path) && System.IO.File.Exists(e.Path))
+                        else
                         {
-                            if (!IconList.Images.ContainsKey(e.Path))
-                                IconList.Images.Add(e.Path, Utils.GetIconContained(e.Path, IconSize.Width, IconSize.Height));
-                            li.ImageKey = e.Path;
+                            // Real icon will be loaded later asynchronously, for now just assign a generic icon
+                            li.ImageKey = TEMP_ICON_KEY;
                         }
                     }
                     catch
@@ -142,6 +147,43 @@ namespace pylorak.TinyWall
             listView.ListViewItemSorter = new ListViewItemComparer(0);
             listView.Items.AddRange(itemColl.ToArray());
             listView.EndUpdate();
+
+            // Load process icons asynchronously
+            IconScanner.Restart(() =>
+            {
+                var st = Stopwatch.StartNew();
+                var loaded_icons = new HashSet<string>();
+                foreach (var li in itemColl)
+                {
+                    IconScanner.CancellationToken.ThrowIfCancellationRequested();
+
+                    var icon_path = (li.Tag as ProcessInfo)!.Path;
+                    if (li.ImageKey.Equals(TEMP_ICON_KEY))
+                    {
+                        var is_icon_new = !loaded_icons.Contains(icon_path);
+                        var icon = is_icon_new ? Utils.GetIconContained(icon_path, IconSize.Width, IconSize.Height) : null;
+                        loaded_icons.Add(icon_path);
+
+                        if (!is_icon_new || (is_icon_new && (icon is not null)))
+                        {
+                            listView.BeginInvoke((MethodInvoker)delegate
+                            {
+                                if (is_icon_new)
+                                    IconList.Images.Add(icon_path, icon);
+                                li.ImageKey = icon_path;
+
+                                // Live-update listview, but throttle to conserve CPU since this is pretty expensive
+                                if (st.ElapsedMilliseconds >= 200)
+                                {
+                                    st.Restart();
+                                    listView.Refresh();
+                                }
+                            });
+                        }
+                    }
+                }
+                listView.BeginInvoke((MethodInvoker)delegate { listView.Refresh(); });
+            });
         }
 
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
@@ -173,6 +215,7 @@ namespace pylorak.TinyWall
                 ActiveConfig.Controller.ProcessesFormColumnWidths.Add((string)col.Tag, col.Width);
 
             ActiveConfig.Controller.Save();
+            IconScanner.Dispose();
         }
     }
 }
