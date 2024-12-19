@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
+using pylorak.Utilities;
 using pylorak.Windows;
 
 namespace pylorak.TinyWall
@@ -30,6 +31,8 @@ namespace pylorak.TinyWall
 
         internal ConfigContainer TmpConfig;
 
+        private const string TEMP_ICON_KEY = ".exe";
+        private BackgroundTask IconScanner = new();
         private List<ListViewItem> ExceptionItems = new();
         private List<ListViewItem> FilteredExceptionItems = new();
         private bool LoadingSettings;
@@ -158,6 +161,8 @@ namespace pylorak.TinyWall
 
         private void RebuildExceptionsList()
         {
+            IconScanner.CancelTask();
+
             UwpPackage packageList = new UwpPackage();
             ExceptionItems.Clear();
             for (int i = 0; i < TmpConfig.Service.ActiveProfile.AppExceptions.Count; ++i)
@@ -169,6 +174,38 @@ namespace pylorak.TinyWall
             ExceptionItems.Sort(listApplications.ListViewItemSorter as ListViewItemComparer);
 
             ApplyExceptionFilter();
+
+            // Load application icons asynchronously
+            IconScanner.Restart(() =>
+            {
+                var TEMP_ICON_IDX = IconList.Images.IndexOfKey(TEMP_ICON_KEY);
+                var st = Stopwatch.StartNew();
+                foreach (var li in ExceptionItems)
+                {
+                    IconScanner.CancellationToken.ThrowIfCancellationRequested();
+
+                    var exeSubj = (li.Tag as FirewallExceptionV3)!.Subject as ExecutableSubject;
+                    if ((li.ImageIndex == TEMP_ICON_IDX) && (exeSubj is not null))
+                    {
+                        if (!IconList.Images.ContainsKey(exeSubj.ExecutablePath))
+                            IconList.Images.Add(exeSubj.ExecutablePath, Utils.GetIconContained(exeSubj.ExecutablePath, IconSize.Width, IconSize.Height));
+                        var icon_idx = IconList.Images.IndexOfKey(exeSubj.ExecutablePath);
+
+                        listApplications.BeginInvoke((MethodInvoker)delegate
+                        {
+                            li.ImageIndex = icon_idx;
+
+                            // Live-update listview, but throttle to conserve CPU since this is pretty expensive
+                            if (st.ElapsedMilliseconds >= 200)
+                            {
+                                st.Restart();
+                                listApplications.Refresh();
+                            }
+                        });
+                    }
+                }
+                listApplications.BeginInvoke((MethodInvoker) delegate { listApplications.Refresh(); });
+            });
         }
 
         private void ApplyExceptionFilter()
@@ -267,15 +304,16 @@ namespace pylorak.TinyWall
                      */
                     li.ImageIndex = IconList.Images.IndexOfKey("network-drive");
                 }
-                else if (File.Exists(exeSubj.ExecutablePath))
-                {
-                    if (!IconList.Images.ContainsKey(exeSubj.ExecutablePath))
-                        IconList.Images.Add(exeSubj.ExecutablePath, Utils.GetIconContained(exeSubj.ExecutablePath, IconSize.Width, IconSize.Height));
-                    li.ImageIndex = IconList.Images.IndexOfKey(exeSubj.ExecutablePath);
-                }
                 else if (exeSubj.ExecutablePath == "System")
                 {
                     li.ImageIndex = IconList.Images.IndexOfKey("system");
+                }
+                else if (File.Exists(exeSubj.ExecutablePath))
+                {
+                    // Real icon will be loaded later asynchronously, for now just assign a generic icon
+                    li.ImageIndex = IconList.Images.ContainsKey(exeSubj.ExecutablePath)
+                        ? IconList.Images.IndexOfKey(exeSubj.ExecutablePath)
+                        : IconList.Images.IndexOfKey(TEMP_ICON_KEY);
                 }
                 else
                 {
@@ -561,6 +599,7 @@ namespace pylorak.TinyWall
             IconList.Images.Add("window", Resources.Icons.window);
             IconList.Images.Add("store", Resources.Icons.store);
             IconList.Images.Add("system", Resources.Icons.windows_small);
+            IconList.Images.Add(TEMP_ICON_KEY, Utils.GetIconContained(".exe", IconSize.Width, IconSize.Height));
 
             lblVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0} {1}", lblVersion.Text, System.Windows.Forms.Application.ProductVersion.ToString());
 
@@ -635,6 +674,8 @@ namespace pylorak.TinyWall
             }
 
             ActiveConfig.Controller.Save();
+
+            IconScanner.Dispose();
         }
 
         private void listApplications_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
