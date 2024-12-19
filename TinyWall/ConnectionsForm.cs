@@ -7,7 +7,6 @@ using System.Net.NetworkInformation;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Linq;
-
 using pylorak.Windows;
 using pylorak.Windows.NetStat;
 
@@ -15,7 +14,9 @@ namespace pylorak.TinyWall
 {
     internal partial class ConnectionsForm : Form
     {
+        const string TEMP_ICON_KEY = ".exe";
         private readonly TinyWallController Controller;
+        private readonly BackgroundTask IconScanner = new();
         private readonly Size IconSize = new((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
         private bool EnableListUpdate = false;
 
@@ -27,6 +28,7 @@ namespace pylorak.TinyWall
             this.Icon = Resources.Icons.firewall;
             this.Controller = ctrl;
 
+            this.IconList.Images.Add(TEMP_ICON_KEY, Utils.GetIconContained(".exe", IconSize.Width, IconSize.Height));
             this.IconList.Images.Add("store", Resources.Icons.store);
             this.IconList.Images.Add("system", Resources.Icons.windows_small);
             this.IconList.Images.Add("network-drive", Resources.Icons.network_drive_small);
@@ -56,6 +58,7 @@ namespace pylorak.TinyWall
                 return;
             }
 
+            IconScanner.CancelTask();
             var fwLogRequest = GlobalInstances.Controller.BeginReadFwLog();
 
             var uwpPackages = new UwpPackage();
@@ -209,6 +212,36 @@ namespace pylorak.TinyWall
             list.Items.Clear();
             list.Items.AddRange(itemColl.ToArray());
             list.EndUpdate();
+
+            // Load process icons asynchronously
+            IconScanner.Restart(() =>
+            {
+                var st = Stopwatch.StartNew();
+                foreach (var li in itemColl)
+                {
+                    IconScanner.CancellationToken.ThrowIfCancellationRequested();
+
+                    var icon_path = (li.Tag as ProcessInfo)!.Path;
+                    if (li.ImageKey.Equals(TEMP_ICON_KEY))
+                    {
+                        if (!IconList.Images.ContainsKey(icon_path))
+                            IconList.Images.Add(icon_path, Utils.GetIconContained(icon_path, IconSize.Width, IconSize.Height));
+
+                        list.BeginInvoke((MethodInvoker)delegate
+                        {
+                            li.ImageKey = icon_path;
+
+                            // Live-update listview, but throttle to conserve CPU since this is pretty expensive
+                            if (st.ElapsedMilliseconds >= 200)
+                            {
+                                st.Restart();
+                                list.Refresh();
+                            }
+                        });
+                    }
+                }
+                list.BeginInvoke((MethodInvoker)delegate { list.Refresh(); });
+            });
         }
 
         private void ConstructListItem(List<ListViewItem> itemColl, ProcessInfo e, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, RuleDirection dir)
@@ -235,14 +268,9 @@ namespace pylorak.TinyWall
                 {
                     li.ImageKey = "network-drive";
                 }
-                else if (System.IO.Path.IsPathRooted(e.Path) && System.IO.File.Exists(e.Path))
+                else
                 {
-                    if (!IconList.Images.ContainsKey(e.Path))
-                    {
-                        // Get icon
-                        IconList.Images.Add(e.Path, Utils.GetIconContained(e.Path, IconSize.Width, IconSize.Height));
-                    }
-                    li.ImageKey = e.Path;
+                    li.ImageKey = IconList.Images.ContainsKey(e.Path) ? e.Path : TEMP_ICON_KEY;
                 }
 
                 if (e.Pid == 0)
@@ -332,6 +360,7 @@ namespace pylorak.TinyWall
                 ActiveConfig.Controller.ConnFormColumnWidths.Add((string)col.Tag, col.Width);
 
             ActiveConfig.Controller.Save();
+            IconScanner.Dispose();
         }
 
         private void ConnectionsForm_Load(object sender, EventArgs e)
