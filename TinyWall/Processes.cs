@@ -12,7 +12,7 @@ namespace pylorak.TinyWall
     internal partial class ProcessesForm : Form
     {
         internal readonly List<ProcessInfo> Selection = new();
-        private readonly BackgroundTask IconScanner = new();
+        private readonly AsyncIconScanner IconScanner;
         private readonly Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
         internal ProcessesForm(bool multiSelect)
@@ -25,9 +25,12 @@ namespace pylorak.TinyWall
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
 
+            const string TEMP_ICON_KEY = "generic-executable";
+            this.IconList.Images.Add(TEMP_ICON_KEY, Utils.GetIconContained(".exe", IconSize.Width, IconSize.Height));
             this.IconList.Images.Add("store", Resources.Icons.store);
             this.IconList.Images.Add("system", Resources.Icons.windows_small);
             this.IconList.Images.Add("network-drive", Resources.Icons.network_drive_small);
+            this.IconScanner = new AsyncIconScanner((ListViewItem li) => { return (li.Tag as ProcessInfo)!.Path; }, IconList.Images.IndexOfKey(TEMP_ICON_KEY));
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -75,10 +78,6 @@ namespace pylorak.TinyWall
                     col.Width = width;
             }
 
-            const string TEMP_ICON_KEY = ".exe";
-            IconList.Images.Add(TEMP_ICON_KEY, Utils.GetIconContained(".exe", IconSize.Width, IconSize.Height));
-            IconScanner.CancelTask();
-
             List<ListViewItem> itemColl = new List<ListViewItem>();
             UwpPackage packages = new UwpPackage();
             ServicePidMap service_pids = new ServicePidMap();
@@ -120,20 +119,20 @@ namespace pylorak.TinyWall
                         // Add icon
                         if (e.Package.HasValue)
                         {
-                            li.ImageKey = "store";
+                            li.ImageIndex = IconList.Images.IndexOfKey("store");
                         }
                         else if (e.Path == "System")
                         {
-                            li.ImageKey = "system";
+                            li.ImageIndex = IconList.Images.IndexOfKey("system");
                         }
                         else if (NetworkPath.IsNetworkPath(e.Path))
                         {
-                            li.ImageKey = "network-drive";
+                            li.ImageIndex = IconList.Images.IndexOfKey("network-drive");
                         }
                         else
                         {
                             // Real icon will be loaded later asynchronously, for now just assign a generic icon
-                            li.ImageKey = TEMP_ICON_KEY;
+                            li.ImageIndex = IconScanner.TemporaryIconIdx;
                         }
                     }
                     catch
@@ -149,41 +148,7 @@ namespace pylorak.TinyWall
             listView.EndUpdate();
 
             // Load process icons asynchronously
-            IconScanner.Restart(() =>
-            {
-                var st = Stopwatch.StartNew();
-                var loaded_icons = new HashSet<string>();
-                foreach (var li in itemColl)
-                {
-                    IconScanner.CancellationToken.ThrowIfCancellationRequested();
-
-                    var icon_path = (li.Tag as ProcessInfo)!.Path;
-                    if (li.ImageKey.Equals(TEMP_ICON_KEY))
-                    {
-                        var is_icon_new = !loaded_icons.Contains(icon_path);
-                        var icon = is_icon_new ? Utils.GetIconContained(icon_path, IconSize.Width, IconSize.Height) : null;
-                        loaded_icons.Add(icon_path);
-
-                        if (!is_icon_new || (is_icon_new && (icon is not null)))
-                        {
-                            listView.BeginInvoke((MethodInvoker)delegate
-                            {
-                                if (is_icon_new)
-                                    IconList.Images.Add(icon_path, icon);
-                                li.ImageKey = icon_path;
-
-                                // Live-update listview, but throttle to conserve CPU since this is pretty expensive
-                                if (st.ElapsedMilliseconds >= 200)
-                                {
-                                    st.Restart();
-                                    listView.Refresh();
-                                }
-                            });
-                        }
-                    }
-                }
-                listView.BeginInvoke((MethodInvoker)delegate { listView.Refresh(); });
-            });
+            IconScanner.Rescan(itemColl, listView, IconList);
         }
 
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)

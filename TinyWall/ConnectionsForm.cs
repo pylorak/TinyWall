@@ -14,9 +14,8 @@ namespace pylorak.TinyWall
 {
     internal partial class ConnectionsForm : Form
     {
-        const string TEMP_ICON_KEY = ".exe";
         private readonly TinyWallController Controller;
-        private readonly BackgroundTask IconScanner = new();
+        private readonly AsyncIconScanner IconScanner;
         private readonly Size IconSize = new((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
         private bool EnableListUpdate = false;
 
@@ -28,10 +27,12 @@ namespace pylorak.TinyWall
             this.Icon = Resources.Icons.firewall;
             this.Controller = ctrl;
 
+            const string TEMP_ICON_KEY = "generic-executable";
             this.IconList.Images.Add(TEMP_ICON_KEY, Utils.GetIconContained(".exe", IconSize.Width, IconSize.Height));
             this.IconList.Images.Add("store", Resources.Icons.store);
             this.IconList.Images.Add("system", Resources.Icons.windows_small);
             this.IconList.Images.Add("network-drive", Resources.Icons.network_drive_small);
+            this.IconScanner = new AsyncIconScanner((ListViewItem li) => { return (li.Tag as ProcessInfo)!.Path; }, IconList.Images.IndexOfKey(TEMP_ICON_KEY));
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -58,7 +59,7 @@ namespace pylorak.TinyWall
                 return;
             }
 
-            IconScanner.CancelTask();
+            IconScanner.CancelScan();
             var fwLogRequest = GlobalInstances.Controller.BeginReadFwLog();
 
             var uwpPackages = new UwpPackage();
@@ -214,34 +215,7 @@ namespace pylorak.TinyWall
             list.EndUpdate();
 
             // Load process icons asynchronously
-            IconScanner.Restart(() =>
-            {
-                var st = Stopwatch.StartNew();
-                foreach (var li in itemColl)
-                {
-                    IconScanner.CancellationToken.ThrowIfCancellationRequested();
-
-                    var icon_path = (li.Tag as ProcessInfo)!.Path;
-                    if (li.ImageKey.Equals(TEMP_ICON_KEY))
-                    {
-                        if (!IconList.Images.ContainsKey(icon_path))
-                            IconList.Images.Add(icon_path, Utils.GetIconContained(icon_path, IconSize.Width, IconSize.Height));
-
-                        list.BeginInvoke((MethodInvoker)delegate
-                        {
-                            li.ImageKey = icon_path;
-
-                            // Live-update listview, but throttle to conserve CPU since this is pretty expensive
-                            if (st.ElapsedMilliseconds >= 200)
-                            {
-                                st.Restart();
-                                list.Refresh();
-                            }
-                        });
-                    }
-                }
-                list.BeginInvoke((MethodInvoker)delegate { list.Refresh(); });
-            });
+            IconScanner.Rescan(itemColl, list, IconList);
         }
 
         private void ConstructListItem(List<ListViewItem> itemColl, ProcessInfo e, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, RuleDirection dir)
@@ -258,19 +232,19 @@ namespace pylorak.TinyWall
                 // Add icon
                 if (e.Package.HasValue)
                 {
-                    li.ImageKey = "store";
+                    li.ImageIndex = IconList.Images.IndexOfKey("store");
                 }
                 else if (e.Path == "System")
                 {
-                    li.ImageKey = "system";
+                    li.ImageIndex = IconList.Images.IndexOfKey("system");
                 }
                 else if (NetworkPath.IsNetworkPath(e.Path))
                 {
-                    li.ImageKey = "network-drive";
+                    li.ImageIndex = IconList.Images.IndexOfKey("network-drive");
                 }
                 else
                 {
-                    li.ImageKey = IconList.Images.ContainsKey(e.Path) ? e.Path : TEMP_ICON_KEY;
+                    li.ImageIndex = IconList.Images.ContainsKey(e.Path) ? IconList.Images.IndexOfKey(e.Path) : IconScanner.TemporaryIconIdx;
                 }
 
                 if (e.Pid == 0)
