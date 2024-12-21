@@ -10,10 +10,10 @@
     <Compile Update="..\pylorak.Windows\TaskDialog\TaskDialogCommonDialog.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Installer\ServiceInstaller.cs">
+    <Compile Update="Installer\TinyWallInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Installer\TinyWallInstaller.cs">
+    <Compile Update="Installer\TinyWallServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>

@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel;
-using System.Configuration.Install;
 
-namespace pylorak.TinyWall
+namespace pylorak.TinyWall.Installer
 {
     [RunInstaller(true)]
-    public class TinyWallInstaller : Installer
+    public class TinyWallInstaller : System.Configuration.Install.Installer
     {
         public TinyWallInstaller()
         {
-            this.Installers.Add(new ServiceInstaller());
+            this.Installers.Add(new TinyWallServiceInstaller());
         }
     }
 }
