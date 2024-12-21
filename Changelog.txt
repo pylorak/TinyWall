@@ -1,6 +1,17 @@
 TinyWall Changelog
 ---------------------
 
+3.4.0 - not yet released
+- Performance enhancements for Connections, Processes and Settings windows
+- Fix blocked IPv6 addresses shown backwards
+- Fix for possible crash when extracting an application's icon
+- Mitigation for tray icon not visible after boot
+- Add ability to open connections view by middle-clicking on the tray icon
+- Update System.Text.Json to close potential vulnerability
+- Update Chinese and Polish localizations
+
+---------------------
+
 3.3.1 - Maintenance release (12.03.2023.)
 - TinyWall is now open-source
 - Add GitHub button to Settings window
