@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using pylorak.Windows;
+using pylorak.TinyWall.Parser;
 
 namespace pylorak.TinyWall
 {

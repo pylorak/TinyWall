@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using pylorak.Windows;
+using pylorak.TinyWall.Parser;
 
 namespace pylorak.TinyWall.DatabaseClasses
 {

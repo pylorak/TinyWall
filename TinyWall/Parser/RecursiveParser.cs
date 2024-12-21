@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace pylorak.TinyWall
+namespace pylorak.TinyWall.Parser
 {
     public static class RecursiveParser
     {

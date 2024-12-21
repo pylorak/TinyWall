@@ -2,7 +2,7 @@
 using pylorak.Windows;
 using Microsoft.Win32;
 
-namespace pylorak.TinyWall
+namespace pylorak.TinyWall.Parser
 {
     public sealed class ParserRegistryVariable : ParserVariable
     {
