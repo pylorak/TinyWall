@@ -40,10 +40,10 @@ namespace pylorak.TinyWall
             this.Close();
         }
 
-        private string GetPathFromPidCached(Dictionary<uint, string> cache, uint pid)
+        private static string GetPathFromPidCached(Dictionary<uint, string> cache, uint pid)
         {
-            if (cache.ContainsKey(pid))
-                return cache[pid];
+            if (cache.TryGetValue(pid, out string path))
+                return path;
             else
             {
                 string ret = Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller);
@@ -430,7 +430,7 @@ namespace pylorak.TinyWall
             ListViewItem li = list.SelectedItems[0];
             string clipboardData = li.SubItems[6].Text;
 
-            IDataObject dataObject = new DataObject();
+            var dataObject = new DataObject();
             dataObject.SetData(DataFormats.UnicodeText, false, clipboardData);
             try
             {

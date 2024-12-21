@@ -32,8 +32,8 @@ namespace pylorak.TinyWall
         internal ConfigContainer TmpConfig;
 
         private readonly AsyncIconScanner IconScanner;
-        private List<ListViewItem> ExceptionItems = new();
-        private List<ListViewItem> FilteredExceptionItems = new();
+        private readonly List<ListViewItem> ExceptionItems = new();
+        private readonly List<ListViewItem> FilteredExceptionItems = new();
         private bool LoadingSettings;
         private string? m_NewPassword;
         private Size IconSize = new((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
@@ -77,7 +77,7 @@ namespace pylorak.TinyWall
 
         private void ListApplications_DragDrop(object sender, DragEventArgs e)
         {
-            List<FirewallExceptionV3> list = new List<FirewallExceptionV3>();
+            var list = new List<FirewallExceptionV3>();
 
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
             foreach (string file in files)
@@ -144,7 +144,7 @@ namespace pylorak.TinyWall
                     if (app.HasFlag("TWUI:Special") && !app.HasFlag("TWUI:Hidden"))
                     {
                         // Get localized name
-                        IdWithName item = new IdWithName(app.Name, app.LocalizedName);
+                        var item = new IdWithName(app.Name, app.LocalizedName);
 
                         // Construct default name in case no localization exists
                         if (string.IsNullOrEmpty(item.Name))
@@ -171,7 +171,7 @@ namespace pylorak.TinyWall
         {
             IconScanner.CancelScan();
 
-            UwpPackage packageList = new UwpPackage();
+            var packageList = new UwpPackage();
             ExceptionItems.Clear();
             for (int i = 0; i < TmpConfig.Service.ActiveProfile.AppExceptions.Count; ++i)
             {
@@ -387,7 +387,7 @@ namespace pylorak.TinyWall
             FirewallExceptionV3 oldEx = (FirewallExceptionV3)li.Tag;
             FirewallExceptionV3 newEx = Utils.DeepClone(oldEx);
             newEx.RegenerateId();
-            using (ApplicationExceptionForm f = new ApplicationExceptionForm(newEx))
+            using (var f = new ApplicationExceptionForm(newEx))
             {
                 if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {
@@ -430,7 +430,7 @@ namespace pylorak.TinyWall
 
         private void btnWeb_Click(object sender, EventArgs e)
         {
-            ProcessStartInfo psi = new ProcessStartInfo(@"https://tinywall.pados.hu");
+            var psi = new ProcessStartInfo(@"https://tinywall.pados.hu");
             psi.UseShellExecute = true;
             Process.Start(psi);
         }
@@ -450,13 +450,11 @@ namespace pylorak.TinyWall
 
         private void btnAppAutoDetect_Click(object sender, EventArgs e)
         {
-            using (AppFinderForm aff = new AppFinderForm())
+            using var aff = new AppFinderForm();
+            if (aff.ShowDialog(this) == DialogResult.OK)
             {
-                if (aff.ShowDialog(this) == DialogResult.OK)
-                {
-                    TmpConfig.Service.ActiveProfile.AddExceptions(aff.SelectedExceptions);
-                    RebuildExceptionsList();
-                }
+                TmpConfig.Service.ActiveProfile.AddExceptions(aff.SelectedExceptions);
+                RebuildExceptionsList();
             }
         }
 
@@ -469,7 +467,7 @@ namespace pylorak.TinyWall
         {
             try
             {
-                ProcessStartInfo psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "License.rtf"));
+                var psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "License.rtf"));
                 psi.UseShellExecute = true;
                 Process.Start(psi);
             }
@@ -480,7 +478,7 @@ namespace pylorak.TinyWall
         {
             try
             {
-                ProcessStartInfo psi = new ProcessStartInfo(@"https://tinywall.pados.hu/donate.php");
+                var psi = new ProcessStartInfo(@"https://tinywall.pados.hu/donate.php");
                 psi.UseShellExecute = true;
                 Process.Start(psi);
             }
@@ -593,8 +591,8 @@ namespace pylorak.TinyWall
 
         private void listApplications_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            ListViewItemComparer oldSorter = (ListViewItemComparer)listApplications.ListViewItemSorter;
-            ListViewItemComparer newSorter = new ListViewItemComparer(e.Column, IconList);
+            var oldSorter = (ListViewItemComparer)listApplications.ListViewItemSorter;
+            var newSorter = new ListViewItemComparer(e.Column, IconList);
             if ((oldSorter != null) && (oldSorter.Column == newSorter.Column))
                 newSorter.Ascending = !oldSorter.Ascending;
 
@@ -612,7 +610,7 @@ namespace pylorak.TinyWall
         {
             try
             {
-                ProcessStartInfo psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "Attributions.txt"));
+                var psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "Attributions.txt"));
                 psi.UseShellExecute = true;
                 Process.Start(psi);
             }
@@ -669,7 +667,7 @@ namespace pylorak.TinyWall
 
         private void btnGithub_Click(object sender, EventArgs e)
         {
-            ProcessStartInfo psi = new ProcessStartInfo(@"https://github.com/pylorak/tinywall");
+            var psi = new ProcessStartInfo(@"https://github.com/pylorak/tinywall");
             psi.UseShellExecute = true;
             Process.Start(psi);
         }

@@ -13,7 +13,7 @@ namespace pylorak.TinyWall
     {
         internal readonly List<ProcessInfo> Selection = new();
         private readonly AsyncIconScanner IconScanner;
-        private readonly Size IconSize = new Size((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
+        private readonly Size IconSize = new((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
         internal ProcessesForm(bool multiSelect)
         {
@@ -78,66 +78,64 @@ namespace pylorak.TinyWall
                     col.Width = width;
             }
 
-            List<ListViewItem> itemColl = new List<ListViewItem>();
-            UwpPackage packages = new UwpPackage();
-            ServicePidMap service_pids = new ServicePidMap();
-            Process[] procs = Process.GetProcesses();
+            var itemColl = new List<ListViewItem>();
+            var packages = new UwpPackage();
+            var service_pids = new ServicePidMap();
+            var procs = Process.GetProcesses();
 
             for (int i = 0; i < procs.Length; ++i)
             {
-                using (Process p = procs[i])
+                try
                 {
-                    try
+                    using var p = procs[i];
+                    var pid = unchecked((uint)p.Id);
+                    var e = ProcessInfo.Create(pid, packages, service_pids);
+
+                    if (string.IsNullOrEmpty(e.Path))
+                        continue;
+
+                    // Scan list of already added items to prevent duplicates
+                    bool skip = false;
+                    for (int j = 0; j < itemColl.Count; ++j)
                     {
-                        var pid = unchecked((uint)p.Id);
-                        var e = ProcessInfo.Create(pid, packages, service_pids);
-
-                        if (string.IsNullOrEmpty(e.Path))
-                            continue;
-
-                        // Scan list of already added items to prevent duplicates
-                        bool skip = false;
-                        for (int j = 0; j < itemColl.Count; ++j)
+                        ProcessInfo opi = (ProcessInfo)itemColl[j].Tag;
+                        if ((e.Package == opi.Package) && (e.Path == opi.Path) && (e.Services.SetEquals(opi.Services)))
                         {
-                            ProcessInfo opi = (ProcessInfo)itemColl[j].Tag;
-                            if ((e.Package == opi.Package) && (e.Path == opi.Path) && (e.Services.SetEquals(opi.Services)))
-                            {
-                                skip = true;
-                                break;
-                            }
-                        }
-                        if (skip)
-                            continue;
-
-                        // Add list item
-                        ListViewItem li = new ListViewItem(e.Package.HasValue ? e.Package.Value.Name : p.ProcessName);
-                        li.SubItems.Add(string.Join(", ", e.Services.ToArray()));
-                        li.SubItems.Add(e.Path);
-                        li.Tag = e;
-                        itemColl.Add(li);
-
-                        // Add icon
-                        if (e.Package.HasValue)
-                        {
-                            li.ImageIndex = IconList.Images.IndexOfKey("store");
-                        }
-                        else if (e.Path == "System")
-                        {
-                            li.ImageIndex = IconList.Images.IndexOfKey("system");
-                        }
-                        else if (NetworkPath.IsNetworkPath(e.Path))
-                        {
-                            li.ImageIndex = IconList.Images.IndexOfKey("network-drive");
-                        }
-                        else
-                        {
-                            // Real icon will be loaded later asynchronously, for now just assign a generic icon
-                            li.ImageIndex = IconScanner.TemporaryIconIdx;
+                            skip = true;
+                            break;
                         }
                     }
-                    catch
+                    if (skip)
+                        continue;
+
+                    // Add list item
+                    var li = new ListViewItem(e.Package.HasValue ? e.Package.Value.Name : p.ProcessName);
+                    li.SubItems.Add(string.Join(", ", e.Services.ToArray()));
+                    li.SubItems.Add(e.Path);
+                    li.Tag = e;
+                    itemColl.Add(li);
+
+                    // Add icon
+                    if (e.Package.HasValue)
                     {
+                        li.ImageIndex = IconList.Images.IndexOfKey("store");
                     }
+                    else if (e.Path == "System")
+                    {
+                        li.ImageIndex = IconList.Images.IndexOfKey("system");
+                    }
+                    else if (NetworkPath.IsNetworkPath(e.Path))
+                    {
+                        li.ImageIndex = IconList.Images.IndexOfKey("network-drive");
+                    }
+                    else
+                    {
+                        // Real icon will be loaded later asynchronously, for now just assign a generic icon
+                        li.ImageIndex = IconScanner.TemporaryIconIdx;
+                    }
+                }
+                catch
+                {
                 }
             }
 
