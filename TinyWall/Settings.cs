@@ -20,11 +20,11 @@ namespace pylorak.TinyWall
         [DataMember(EmitDefaultValue = false)]
         public System.Windows.Forms.FormWindowState ConnFormWindowState = System.Windows.Forms.FormWindowState.Normal;
         [DataMember(EmitDefaultValue = false)]
-        public System.Drawing.Point ConnFormWindowLoc = new System.Drawing.Point(0, 0);
+        public System.Drawing.Point ConnFormWindowLoc = new(0, 0);
         [DataMember(EmitDefaultValue = false)]
-        public System.Drawing.Size ConnFormWindowSize = new System.Drawing.Size(0, 0);
+        public System.Drawing.Size ConnFormWindowSize = new(0, 0);
         [DataMember(EmitDefaultValue = false)]
-        public Dictionary<string, int> ConnFormColumnWidths = new Dictionary<string, int>();
+        public Dictionary<string, int> ConnFormColumnWidths = new();
         [DataMember(EmitDefaultValue = false)]
         public bool ConnFormShowConnections = true;
         [DataMember(EmitDefaultValue = false)]
@@ -36,31 +36,31 @@ namespace pylorak.TinyWall
         [DataMember(EmitDefaultValue = false)]
         public System.Windows.Forms.FormWindowState ProcessesFormWindowState = System.Windows.Forms.FormWindowState.Normal;
         [DataMember(EmitDefaultValue = false)]
-        public System.Drawing.Point ProcessesFormWindowLoc = new System.Drawing.Point(0, 0);
+        public System.Drawing.Point ProcessesFormWindowLoc = new(0, 0);
         [DataMember(EmitDefaultValue = false)]
-        public System.Drawing.Size ProcessesFormWindowSize = new System.Drawing.Size(0, 0);
+        public System.Drawing.Size ProcessesFormWindowSize = new(0, 0);
         [DataMember(EmitDefaultValue = false)]
-        public Dictionary<string, int> ProcessesFormColumnWidths = new Dictionary<string, int>();
+        public Dictionary<string, int> ProcessesFormColumnWidths = new();
 
         // Services window
         [DataMember(EmitDefaultValue = false)]
         public System.Windows.Forms.FormWindowState ServicesFormWindowState = System.Windows.Forms.FormWindowState.Normal;
         [DataMember(EmitDefaultValue = false)]
-        public System.Drawing.Point ServicesFormWindowLoc = new System.Drawing.Point(0, 0);
+        public System.Drawing.Point ServicesFormWindowLoc = new(0, 0);
         [DataMember(EmitDefaultValue = false)]
-        public System.Drawing.Size ServicesFormWindowSize = new System.Drawing.Size(0, 0);
+        public System.Drawing.Size ServicesFormWindowSize = new(0, 0);
         [DataMember(EmitDefaultValue = false)]
-        public Dictionary<string, int> ServicesFormColumnWidths = new Dictionary<string, int>();
+        public Dictionary<string, int> ServicesFormColumnWidths = new();
 
         // UwpPackages window
         [DataMember(EmitDefaultValue = false)]
         public System.Windows.Forms.FormWindowState UwpPackagesFormWindowState = System.Windows.Forms.FormWindowState.Normal;
         [DataMember(EmitDefaultValue = false)]
-        public System.Drawing.Point UwpPackagesFormWindowLoc = new System.Drawing.Point(0, 0);
+        public System.Drawing.Point UwpPackagesFormWindowLoc = new(0, 0);
         [DataMember(EmitDefaultValue = false)]
-        public System.Drawing.Size UwpPackagesFormWindowSize = new System.Drawing.Size(0, 0);
+        public System.Drawing.Size UwpPackagesFormWindowSize = new(0, 0);
         [DataMember(EmitDefaultValue = false)]
-        public Dictionary<string, int> UwpPackagesFormColumnWidths = new Dictionary<string, int>();
+        public Dictionary<string, int> UwpPackagesFormColumnWidths = new();
 
         // Manage window
         [DataMember(EmitDefaultValue = false)]
@@ -68,11 +68,11 @@ namespace pylorak.TinyWall
         [DataMember(EmitDefaultValue = false)]
         public int SettingsTabIndex;
         [DataMember(EmitDefaultValue = false)]
-        public System.Drawing.Point SettingsFormWindowLoc = new System.Drawing.Point(0, 0);
+        public System.Drawing.Point SettingsFormWindowLoc = new(0, 0);
         [DataMember(EmitDefaultValue = false)]
-        public System.Drawing.Size SettingsFormWindowSize = new System.Drawing.Size(0, 0);
+        public System.Drawing.Size SettingsFormWindowSize = new(0, 0);
         [DataMember(EmitDefaultValue = false)]
-        public Dictionary<string, int> SettingsFormAppListColumnWidths = new Dictionary<string, int>();
+        public Dictionary<string, int> SettingsFormAppListColumnWidths = new();
 
         // Hotkeys
         [DataMember(EmitDefaultValue = false)]
@@ -81,16 +81,11 @@ namespace pylorak.TinyWall
         [OnDeserialized]
         private void OnDeserialized(StreamingContext sc)
         {
-            if (ConnFormColumnWidths == null)
-                ConnFormColumnWidths = new Dictionary<string, int>();
-            if (ProcessesFormColumnWidths == null)
-                ProcessesFormColumnWidths = new Dictionary<string, int>();
-            if (ServicesFormColumnWidths == null)
-                ServicesFormColumnWidths = new Dictionary<string, int>();
-            if (UwpPackagesFormColumnWidths == null)
-                UwpPackagesFormColumnWidths = new Dictionary<string, int>();
-            if (SettingsFormAppListColumnWidths == null)
-                SettingsFormAppListColumnWidths = new Dictionary<string, int>();
+            ConnFormColumnWidths ??= new Dictionary<string, int>();
+            ProcessesFormColumnWidths ??= new Dictionary<string, int>();
+            ServicesFormColumnWidths ??= new Dictionary<string, int>();
+            UwpPackagesFormColumnWidths ??= new Dictionary<string, int>();
+            SettingsFormAppListColumnWidths ??= new Dictionary<string, int>();
         }
 
         internal static string UserDataPath
@@ -137,13 +132,13 @@ namespace pylorak.TinyWall
         }
     }
 
-    public sealed class PasswordManager
+    public static class PasswordLock
     {
         internal static string PasswordFilePath { get; } = Path.Combine(Utils.AppDataPath, "pwd");
 
-        private bool _Locked;
+        private static bool _Locked;
 
-        internal bool Locked
+        internal static bool Locked
         {
             get { return _Locked && HasPassword; }
             set
@@ -153,7 +148,7 @@ namespace pylorak.TinyWall
             }
         }
 
-        internal void SetPass(string password)
+        internal static void SetPass(string password)
         {
             // Construct file path
             string SettingsFile = PasswordFilePath;
@@ -163,17 +158,15 @@ namespace pylorak.TinyWall
                 File.Delete(SettingsFile);
             else
             {
-                using (AtomicFileUpdater fileUpdater = new AtomicFileUpdater(PasswordFilePath))
-                {
-                    string salt = Utils.RandomString(8);
-                    string hash = Pbkdf2.GetHashForStorage(password, salt, 150000, 16);
-                    File.WriteAllText(fileUpdater.TemporaryFilePath, hash, Encoding.UTF8);
-                    fileUpdater.Commit();
-                }
+                using var fileUpdater = new AtomicFileUpdater(PasswordFilePath);
+                string salt = Utils.RandomString(8);
+                string hash = Pbkdf2.GetHashForStorage(password, salt, 150000, 16);
+                File.WriteAllText(fileUpdater.TemporaryFilePath, hash, Encoding.UTF8);
+                fileUpdater.Commit();
             }
         }
 
-        internal bool Unlock(string password)
+        internal static bool Unlock(string password)
         {
             if (!HasPassword)
                 return true;
@@ -188,14 +181,14 @@ namespace pylorak.TinyWall
             return !_Locked;
         }
 
-        internal bool HasPassword
+        internal static bool HasPassword
         {
             get
             {
                 if (!File.Exists(PasswordFilePath))
                     return false;
 
-                FileInfo fi = new FileInfo(PasswordFilePath);
+                var fi = new FileInfo(PasswordFilePath);
                 return (fi.Length != 0);
             }
         }

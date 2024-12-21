@@ -204,6 +204,7 @@ namespace pylorak.TinyWall
             return true;
         }
 
+        private static readonly char[] LIST_SEPARATORS = new[]{ ',' };
         private static string? MergeStringList(string? str1, string? str2)
         {
             if (str1 == null)
@@ -216,14 +217,14 @@ namespace pylorak.TinyWall
             // a wildcard into the new merged rule too.
             // Otherwise, we just join the two port lists.
 
-            string[] list1 = str1.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] list1 = str1.Split(LIST_SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
             foreach (string elem in list1)
             {
                 if (elem.Equals("*"))
                     return "*";
             }
 
-            string[] list2 = str2.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] list2 = str2.Split(LIST_SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
             foreach (string elem in list2)
             {
                 if (elem.Equals("*"))

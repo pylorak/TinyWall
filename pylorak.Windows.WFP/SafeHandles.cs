@@ -342,7 +342,7 @@ namespace pylorak.Windows.WFP
 
         public static SafeHGlobalHandle FromStruct<T>(T obj) where T : unmanaged
         {
-            var size = Marshal.SizeOf(typeof(T));
+            var size = Marshal.SizeOf<T>();
             var ret = Alloc(size, true);
             ret.MarshalFromStruct(obj);
             return ret;
@@ -350,7 +350,7 @@ namespace pylorak.Windows.WFP
 
         public static SafeHGlobalHandle FromManagedStruct<T>(T obj)
         {
-            var size = Marshal.SizeOf(typeof(T));
+            var size = Marshal.SizeOf<T>();
             var ret = Alloc(size, true);
             ret.MarshalFromManagedStruct(obj);
             return ret;
@@ -361,7 +361,7 @@ namespace pylorak.Windows.WFP
             if (NeedsMarshalDestroy)
                 Marshal.DestroyStructure(this.handle, MarshalDestroyType);
 
-            int size = Marshal.SizeOf(typeof(T));
+            int size = Marshal.SizeOf<T>();
             unsafe
             {
                 System.Diagnostics.Debug.Assert(sizeof(T) == size);
@@ -379,7 +379,7 @@ namespace pylorak.Windows.WFP
         public T ToStruct<T>() where T : unmanaged
         {
             T ret = default;
-            var size = Marshal.SizeOf(typeof(T));
+            var size = Marshal.SizeOf<T>();
             unsafe
             {
                 System.Diagnostics.Debug.Assert(sizeof(T) == size);

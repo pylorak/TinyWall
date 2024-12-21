@@ -1100,27 +1100,25 @@ namespace pylorak.TinyWall
             if (!Locked)
                 return true;
 
-            using (var pf = new PasswordForm())
+            using var pf = new PasswordForm();
+            pf.BringToFront();
+            pf.Activate();
+            if (pf.ShowDialog() == DialogResult.OK)
             {
-                pf.BringToFront();
-                pf.Activate();
-                if (pf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                MessageType resp = GlobalInstances.Controller.TryUnlockServer(pf.PassHash);
+                switch (resp)
                 {
-                    MessageType resp = GlobalInstances.Controller.TryUnlockServer(pf.PassHash);
-                    switch (resp)
-                    {
-                        case MessageType.UNLOCK:
-                            this.Locked = false;
-                            return true;
-                        case MessageType.RESPONSE_ERROR:
-                            if (showUi)
-                                ShowBalloonTip(Resources.Messages.UnlockFailed, ToolTipIcon.Error);
-                            break;
-                        default:
-                            if (showUi)
-                                DefaultPopups(resp);
-                            break;
-                    }
+                    case MessageType.UNLOCK:
+                        this.Locked = false;
+                        return true;
+                    case MessageType.RESPONSE_ERROR:
+                        if (showUi)
+                            ShowBalloonTip(Resources.Messages.UnlockFailed, ToolTipIcon.Error);
+                        break;
+                    default:
+                        if (showUi)
+                            DefaultPopups(resp);
+                        break;
                 }
             }
 

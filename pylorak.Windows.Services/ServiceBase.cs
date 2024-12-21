@@ -628,7 +628,7 @@ namespace pylorak.Windows.Services
 
         public static void Run(ServiceBase[] services)
         {
-            int ENTRY_SIZE = Marshal.SizeOf(typeof(SERVICE_TABLE_ENTRY));
+            int ENTRY_SIZE = Marshal.SizeOf<SERVICE_TABLE_ENTRY>();
             ServiceType serviceType = (services.Length > 1) ? ServiceType.SERVICE_TYPE_WIN32_SHARE_PROCESS : ServiceType.SERVICE_TYPE_WIN32_OWN_PROCESS;
             using var nativeEntriesTable = SafeHGlobalHandle.Alloc((services.Length + 1) * ENTRY_SIZE);
             SERVICE_TABLE_ENTRY[] entries = new SERVICE_TABLE_ENTRY[services.Length];

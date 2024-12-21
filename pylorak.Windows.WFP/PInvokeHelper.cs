@@ -21,7 +21,7 @@ namespace pylorak.Windows.WFP
         public static T PtrToStructure<T>(IntPtr src) where T : unmanaged
         {
             var ret = default(T);
-            var size = Marshal.SizeOf(typeof(T));
+            var size = Marshal.SizeOf<T>();
             unsafe
             {
                 System.Diagnostics.Debug.Assert(sizeof(T) == size);
@@ -32,7 +32,7 @@ namespace pylorak.Windows.WFP
 
         public static void StructureToPtr<T>(T src, IntPtr dst) where T : unmanaged
         {
-            var size = Marshal.SizeOf(typeof(T));
+            var size = Marshal.SizeOf<T>();
             unsafe
             {
                 System.Diagnostics.Debug.Assert(sizeof(T) == size);
@@ -44,7 +44,7 @@ namespace pylorak.Windows.WFP
         {
             // Reserve buffer
             var bufSize = nullTerminateUnicodeData ? dataSize + 2 : dataSize;
-            var blobSize = Marshal.SizeOf(typeof(Interop.FWP_BYTE_BLOB));
+            var blobSize = Marshal.SizeOf<Interop.FWP_BYTE_BLOB>();
             var nativeMemHndl = SafeHGlobalHandle.Alloc(blobSize + bufSize);
             var blobPtr = nativeMemHndl.DangerousGetHandle();
             var bufPtr = blobPtr + blobSize;

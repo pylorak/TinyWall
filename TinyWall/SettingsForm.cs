@@ -569,7 +569,7 @@ namespace pylorak.TinyWall
             comboLanguages.Items.Add(new IdWithName("ko", "한국어"));
             comboLanguages.Items.Add(new IdWithName("zh", "汉语"));
 
-            lblVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0} {1}", lblVersion.Text, System.Windows.Forms.Application.ProductVersion.ToString());
+            lblVersion.Text = string.Format(CultureInfo.CurrentCulture, "{0} {1}", lblVersion.Text, Application.ProductVersion);
 
             InitSettingsUI();
 

@@ -81,7 +81,7 @@ namespace pylorak.Windows
         public UNICODE_STRING ToStruct()
         {
             var ret = new UNICODE_STRING();
-            var size = Marshal.SizeOf(typeof(UNICODE_STRING));
+            var size = Marshal.SizeOf<UNICODE_STRING>();
             unsafe
             {
                 Buffer.MemoryCopy(handle.ToPointer(), &ret, size, size);
@@ -93,7 +93,7 @@ namespace pylorak.Windows
         {
             var capacityInBytes = sizeof(char) * capacityInChars;
             var lengthInBytes = (str?.Length ?? 0) * 2;
-            var structLen = Marshal.SizeOf(typeof(UNICODE_STRING));
+            var structLen = Marshal.SizeOf<UNICODE_STRING>();
             Debug.Assert(capacityInBytes >= lengthInBytes);
 
             if (capacityInBytes > ushort.MaxValue)
@@ -151,12 +151,12 @@ namespace pylorak.Windows
         public ushort maximumLength;
         public IntPtr buffer;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return Marshal.PtrToStringUni(buffer, length / 2);
         }
 
-        public bool StartsWith(UNICODE_STRING needle, bool caseInSensitive = false)
+        public readonly bool StartsWith(UNICODE_STRING needle, bool caseInSensitive = false)
         {
             if (needle.length > this.length)
                 return false;
@@ -196,7 +196,7 @@ namespace pylorak.Windows
             }
 
             [Flags]
-            [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1069:Enums values should not be duplicated", Justification = "Mirroring native API.")]
+            [SuppressMessage("Design", "CA1069:Enums values should not be duplicated", Justification = "Mirroring native API.")]
             public enum AccessMask : uint
             {
                 None = 0,
@@ -270,7 +270,7 @@ namespace pylorak.Windows
         {
             return new NativeMethods.OBJECT_ATTRIBUTES()
             {
-                length = Marshal.SizeOf(typeof(NativeMethods.OBJECT_ATTRIBUTES)),
+                length = Marshal.SizeOf<NativeMethods.OBJECT_ATTRIBUTES>(),
                 rootDirectory = parentObject?.DangerousGetHandle() ?? IntPtr.Zero,
                 attributes = NativeMethods.OBJECT_ATTRIBUTES.Attributes.OBJ_CASE_INSENSITIVE,
                 securityDescriptor = IntPtr.Zero,

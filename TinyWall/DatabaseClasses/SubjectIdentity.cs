@@ -41,7 +41,7 @@ namespace pylorak.TinyWall.DatabaseClasses
             return new FirewallExceptionV3(withSubject, this.Policy);
         }
 
-        private ExceptionSubject? FromFolder(string parentFolder)
+        private ExecutableSubject? FromFolder(string parentFolder)
         {
             if (Subject is ExecutableSubject exesub)
             {

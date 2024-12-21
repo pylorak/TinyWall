@@ -28,7 +28,7 @@ namespace pylorak.Windows.NetStat
                     {
                         // TODO: Use memcpy instead
                         tcpRows.Add(new TcpRow(Marshal.PtrToStructure<NativeMethods.Tcp4Row>(rowPtr)));
-                        rowPtr += Marshal.SizeOf(typeof(NativeMethods.Tcp4Row));
+                        rowPtr += Marshal.SizeOf<NativeMethods.Tcp4Row>();
                     }
                 }
             }
@@ -53,7 +53,7 @@ namespace pylorak.Windows.NetStat
                     {
                         // TODO: Use memcpy instead
                         tcpRows.Add(new TcpRow(Marshal.PtrToStructure<NativeMethods.Tcp6Row>(rowPtr)));
-                        rowPtr += Marshal.SizeOf(typeof(NativeMethods.Tcp6Row));
+                        rowPtr += Marshal.SizeOf<NativeMethods.Tcp6Row>();
                     }
                 }
             }
@@ -78,7 +78,7 @@ namespace pylorak.Windows.NetStat
                     {
                         // TODO: Use memcpy instead
                         udpRows.Add(new UdpRow(Marshal.PtrToStructure<NativeMethods.Udp4Row>(rowPtr)));
-                        rowPtr += Marshal.SizeOf(typeof(NativeMethods.Udp4Row));
+                        rowPtr += Marshal.SizeOf<NativeMethods.Udp4Row>();
                     }
                 }
             }
@@ -103,7 +103,7 @@ namespace pylorak.Windows.NetStat
                     {
                         // TODO: Use memcpy instead
                         udpRows.Add(new UdpRow(Marshal.PtrToStructure<NativeMethods.Udp6Row>(rowPtr)));
-                        rowPtr += Marshal.SizeOf(typeof(NativeMethods.Udp6Row));
+                        rowPtr += Marshal.SizeOf<NativeMethods.Udp6Row>();
                     }
                 }
             }

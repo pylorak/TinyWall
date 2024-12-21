@@ -41,7 +41,7 @@ namespace pylorak.Windows.WFP
         private Filter(FilterConditionList conditions)
         {
             _conditions = conditions;
-            _weightAndProviderKeyHandle = SafeHGlobalHandle.Alloc(sizeof(ulong) + Marshal.SizeOf(typeof(Guid)));
+            _weightAndProviderKeyHandle = SafeHGlobalHandle.Alloc(sizeof(ulong) + Marshal.SizeOf<Guid>());
             _nativeStruct.weight.type = Interop.FWP_DATA_TYPE.FWP_UINT64;
             _nativeStruct.weight.value.uint64 = _weightAndProviderKeyHandle.DangerousGetHandle();
             _nativeStruct.providerKey = _weightAndProviderKeyHandle.DangerousGetHandle() + sizeof(ulong);
@@ -76,7 +76,7 @@ namespace pylorak.Windows.WFP
 
             if (getConditions)
             {
-                int condSize = Marshal.SizeOf(typeof(Interop.FWPM_FILTER_CONDITION0));
+                int condSize = Marshal.SizeOf<Interop.FWPM_FILTER_CONDITION0>();
                 _conditions.Capacity = (int)_nativeStruct.numFilterConditions;
                 for (int i = 0; i < (int)_nativeStruct.numFilterConditions; ++i)
                 {
@@ -93,7 +93,7 @@ namespace pylorak.Windows.WFP
 
             if (_conditionsHandle == null)
             {
-                int condSize = Marshal.SizeOf(typeof(Interop.FWPM_FILTER_CONDITION0));
+                int condSize = Marshal.SizeOf<Interop.FWPM_FILTER_CONDITION0>();
                 _conditionsHandle?.Dispose();
                 _conditionsHandle = SafeHGlobalHandle.Alloc(_conditions.Count * condSize);
                 _nativeStruct.filterConditions = _conditionsHandle.DangerousGetHandle();

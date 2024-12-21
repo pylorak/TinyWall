@@ -70,8 +70,7 @@ namespace pylorak.Windows
 
                 lock (_singletonLock)
                 {
-                    if (_instance == null)
-                        _instance = new PathMapper();
+                    _instance ??= new PathMapper();
                 }
 
                 return _instance;

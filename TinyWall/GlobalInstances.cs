@@ -16,8 +16,7 @@ namespace pylorak.TinyWall
 
         public static void InitClient()
         {
-            if (Controller == null)
-                Controller = new Controller("TinyWallController");
+            Controller ??= new Controller("TinyWallController");
         }
 
         [AllowNull]

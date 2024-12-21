@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Security;
 using Windows.Management.Deployment;
+using pylorak.Windows;
 
-namespace pylorak.Windows
+namespace pylorak.TinyWall
 {
     public class UwpPackage
     {

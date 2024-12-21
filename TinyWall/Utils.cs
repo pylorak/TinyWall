@@ -554,8 +554,7 @@ namespace pylorak.TinyWall
 
         internal static void Invoke(SynchronizationContext syncCtx, SendOrPostCallback method)
         {
-            if (syncCtx != null)
-                syncCtx.Send(method, null);
+            syncCtx?.Send(method, null);
         }
 
         internal static void Invoke(Control ctrl, MethodInvoker method)

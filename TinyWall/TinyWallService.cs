@@ -36,7 +36,6 @@ namespace pylorak.TinyWall
         private readonly Timer MinuteTimer;
 
         private readonly CircularBuffer<FirewallLogEntry> FirewallLogEntries = new(500);
-        private readonly PasswordManager ServiceLocker = new();
         private readonly FileLocker FileLocker = new();
         private readonly HostsFileManager HostsFileManager = new();
         private DateTime LastControllerCommandTime = DateTime.Now;
@@ -151,7 +150,7 @@ namespace pylorak.TinyWall
                 // Initialize the collection with our own binary
                 var UserExceptions = new List<FirewallExceptionV3>
                 {
-                    new FirewallExceptionV3(
+                    new(
                         new ExecutableSubject(ProcessManager.ExecutablePath),
                         new TcpUdpPolicy()
                         {
@@ -218,8 +217,8 @@ namespace pylorak.TinyWall
                         for (var parentEntry = procTree[pair.Key]; ;)
                         {
                             long childCreationTime = parentEntry.CreationTime;
-                            if (procTree.ContainsKey(parentEntry.ParentProcessId))
-                                parentEntry = procTree[parentEntry.ParentProcessId];
+                            if (procTree.TryGetValue(parentEntry.ParentProcessId, out var val))
+                                parentEntry = val;
                             else
                                 // We reached top of process tree (with non-existing parent)
                                 break;
@@ -243,9 +242,12 @@ namespace pylorak.TinyWall
                                 // We cannot get the path, so let's skip this parent
                                 continue;
 
-                            if (ChildInheritedSubjectExes.ContainsKey(procPath) && ChildInheritedSubjectExes[procPath].Contains(parentEntry.ImagePath))
-                                // We have already processed this parent-child combination
-                                break;
+                            if (ChildInheritedSubjectExes.TryGetValue(procPath, out var childVal))
+                            { 
+                                if (childVal.Contains(parentEntry.ImagePath))
+                                    // We have already processed this parent-child combination
+                                    break;
+                            }
 
                             if (ChildInheritance.TryGetValue(parentEntry.ImagePath, out List<FirewallExceptionV3> exList))
                             {
@@ -913,11 +915,8 @@ namespace pylorak.TinyWall
                             def.RemoteAddresses = RuleDef.LOCALSUBNET_ID;
                         results.Add(def);
 
-                        if (rawSocketExceptions != null)
-                        {
-                            // Make exception for promiscuous mode
-                            rawSocketExceptions.Add(def);
-                        }
+                        // Make exception for promiscuous mode
+                        rawSocketExceptions?.Add(def);
 
                         break;
                     }
@@ -1083,8 +1082,10 @@ namespace pylorak.TinyWall
             }
         }
 
+#if !DEBUG
         private DateTime? LastUpdateCheck_ = null;
         private const string LastUpdateCheck_FILENAME = "updatecheck";
+
         private DateTime LastUpdateCheck
         {
             get
@@ -1237,7 +1238,7 @@ namespace pylorak.TinyWall
             }
             FileLocker.Lock(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
             NotifyController(MessageType.DATABASE_UPDATED);
-            Q.Add(new TwRequest(TwMessageSimple.NewRequest(MessageType.REINIT)));
+            Q.Add(new TwRequest(TwMessageSimple.CreateRequest(MessageType.REINIT)));
         }
 
         private void NotifyController(MessageType msg)
@@ -1245,10 +1246,11 @@ namespace pylorak.TinyWall
             VisibleState.ClientNotifs.Add(msg);
             GlobalInstances.ServerChangeset = Guid.NewGuid();
         }
+#endif
 
         internal void TimerCallback(Object state)
         {
-            Q.Add(new TwRequest(TwMessageSimple.NewRequest(MessageType.MINUTE_TIMER)));
+            Q.Add(new TwRequest(TwMessageSimple.CreateRequest(MessageType.MINUTE_TIMER)));
         }
 
         private List<FirewallLogEntry> GetFwLog()
@@ -1284,12 +1286,12 @@ namespace pylorak.TinyWall
                 case MessageType.READ_FW_LOG:
                     {
                         var args = (TwMessageReadFwLog)req;
-                        return args.NewResponse(GetFwLog().ToArray());
+                        return args.CreateResponse(GetFwLog().ToArray());
                     }
                 case MessageType.IS_LOCKED:
                     {
                         var args = (TwMessageIsLocked)req;
-                        return args.NewResponse(ServiceLocker.Locked);
+                        return args.CreateResponse(PasswordLock.Locked);
                     }
                 case MessageType.MODE_SWITCH:
                     {
@@ -1322,7 +1324,7 @@ namespace pylorak.TinyWall
                             ActiveConfig.Service.Save(ConfigSavePath);
                         }
 
-                        return args.NewResponse(VisibleState.Mode);
+                        return args.CreateResponse(VisibleState.Mode);
                     }
                 case MessageType.PUT_SETTINGS:
                     {
@@ -1344,9 +1346,9 @@ namespace pylorak.TinyWall
                                 Utils.LogException(e, Utils.LOG_ID_SERVICE);
                             }
                         }
-                        VisibleState.HasPassword = ServiceLocker.HasPassword;
-                        VisibleState.Locked = ServiceLocker.Locked;
-                        return args.NewResponse(GlobalInstances.ServerChangeset, ActiveConfig.Service, VisibleState, warning);
+                        VisibleState.HasPassword = PasswordLock.HasPassword;
+                        VisibleState.Locked = PasswordLock.Locked;
+                        return args.CreateResponse(GlobalInstances.ServerChangeset, ActiveConfig.Service, VisibleState, warning);
                     }
                 case MessageType.ADD_TEMPORARY_EXCEPTION:
                     {
@@ -1362,7 +1364,7 @@ namespace pylorak.TinyWall
                         InstallRules(rules, rawSocketExceptions, true);
                         lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Release(); }
 
-                        return args.NewResponse();
+                        return args.CreateResponse();
                     }
                 case MessageType.GET_SETTINGS:
                     {
@@ -1371,17 +1373,17 @@ namespace pylorak.TinyWall
                         // If our changeset is different from the client's, send new settings
                         if (args.Changeset != GlobalInstances.ServerChangeset)
                         {
-                            VisibleState.HasPassword = ServiceLocker.HasPassword;
-                            VisibleState.Locked = ServiceLocker.Locked;
+                            VisibleState.HasPassword = PasswordLock.HasPassword;
+                            VisibleState.Locked = PasswordLock.Locked;
 
-                            var ret = args.NewResponse(GlobalInstances.ServerChangeset, ActiveConfig.Service, VisibleState);
+                            var ret = args.CreateResponse(GlobalInstances.ServerChangeset, ActiveConfig.Service, VisibleState);
                             VisibleState.ClientNotifs.Clear();  // TODO: VisibleState is a reference so it cleants notifs before client could receive them
                             return ret;
                         }
                         else
                         {
                             // Our changeset is the same, so do not send settings again
-                            return args.NewResponse(GlobalInstances.ServerChangeset);
+                            return args.CreateResponse(GlobalInstances.ServerChangeset);
                         }
                     }
                 case MessageType.REINIT:
@@ -1392,28 +1394,28 @@ namespace pylorak.TinyWall
                             ActiveConfig.Service.Save(ConfigSavePath);
 
                         InitFirewall();
-                        return args.NewResponse();
+                        return args.CreateResponse();
                     }
                 case MessageType.RELOAD_WFP_FILTERS:
                     {
                         var args = (TwMessageSimple)req;
                         InstallFirewallRules();
-                        return args.NewResponse();
+                        return args.CreateResponse();
                     }
                 case MessageType.UNLOCK:
                     {
                         var args = (TwMessageUnlock)req;
-                        bool success = ServiceLocker.Unlock(args.Password);
+                        bool success = PasswordLock.Unlock(args.Password);
                         if (success)
-                            return args.NewResponse();
+                            return args.CreateResponse();
                         else
                             return TwMessageError.Instance;
                     }
                 case MessageType.LOCK:
                     {
                         var args = (TwMessageSimple)req;
-                        ServiceLocker.Locked = true;
-                        return args.NewResponse();
+                        PasswordLock.Locked = true;
+                        return args.CreateResponse();
                     }
                 case MessageType.GET_PROCESS_PATH:
                     {
@@ -1422,17 +1424,17 @@ namespace pylorak.TinyWall
                         if (string.IsNullOrEmpty(path))
                             return TwMessageError.Instance;
                         else
-                            return args.NewResponse(path);
+                            return args.CreateResponse(path);
                     }
                 case MessageType.SET_PASSPHRASE:
                     {
                         var args = (TwMessageSetPassword)req;
-                        FileLocker.Unlock(PasswordManager.PasswordFilePath);
+                        FileLocker.Unlock(PasswordLock.PasswordFilePath);
                         try
                         {
-                            ServiceLocker.SetPass(args.Password);
+                            PasswordLock.SetPass(args.Password);
                             GlobalInstances.ServerChangeset = Guid.NewGuid();
-                            return args.NewResponse();
+                            return args.CreateResponse();
                         }
                         catch
                         {
@@ -1440,14 +1442,14 @@ namespace pylorak.TinyWall
                         }
                         finally
                         {
-                            FileLocker.Lock(PasswordManager.PasswordFilePath, FileAccess.Read, FileShare.Read);
+                            FileLocker.Lock(PasswordLock.PasswordFilePath, FileAccess.Read, FileShare.Read);
                         }
                     }
                 case MessageType.STOP_SERVICE:
                     {
                         var args = (TwMessageSimple)req;
                         RunService = false;
-                        return args.NewResponse();
+                        return args.CreateResponse();
                     }
                 case MessageType.MINUTE_TIMER:
                     {
@@ -1457,7 +1459,7 @@ namespace pylorak.TinyWall
                         // Check for inactivity and lock if necessary
                         if (DateTime.Now - LastControllerCommandTime > TimeSpan.FromMinutes(10))
                         {
-                            Q.Add(new TwRequest(TwMessageSimple.NewRequest(MessageType.LOCK)));
+                            Q.Add(new TwRequest(TwMessageSimple.CreateRequest(MessageType.LOCK)));
                         }
 
                         // Check all exceptions if any has expired
@@ -1500,14 +1502,14 @@ namespace pylorak.TinyWall
 #endif
                         }
 
-                        return args.NewResponse();
+                        return args.CreateResponse();
                     }
                 case MessageType.REENUMERATE_ADDRESSES:
                     {
                         var args = (TwMessageSimple)req;
                         if (ReenumerateAdresses())  // returns true if anything changed
                             InstallFirewallRules();
-                        return args.NewResponse();
+                        return args.CreateResponse();
                     }
                 case MessageType.DISPLAY_POWER_EVENT:
                     {
@@ -1517,7 +1519,7 @@ namespace pylorak.TinyWall
                             DisplayCurrentlyOn = args.PowerOn;
                             InstallFirewallRules();
                         }
-                        return args.NewResponse(args.PowerOn);
+                        return args.CreateResponse(args.PowerOn);
                     }
                 default:
                     {
@@ -1623,15 +1625,15 @@ namespace pylorak.TinyWall
         public TinyWallServer()
         {
             // Make sure the very-first command is a REINIT
-            Q.Add(new TwRequest(TwMessageSimple.NewRequest(MessageType.REINIT)));
+            Q.Add(new TwRequest(TwMessageSimple.CreateRequest(MessageType.REINIT)));
 
             // Fire up file protections as soon as possible
             FileLocker.Lock(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
-            FileLocker.Lock(PasswordManager.PasswordFilePath, FileAccess.Read, FileShare.Read);
+            FileLocker.Lock(PasswordLock.PasswordFilePath, FileAccess.Read, FileShare.Read);
 
             // Lock configuration if we have a password
-            if (ServiceLocker.HasPassword)
-                ServiceLocker.Locked = true;
+            if (PasswordLock.HasPassword)
+                PasswordLock.Locked = true;
 
             LogWatcher.NewLogEntry += (FirewallLogWatcher sender, FirewallLogEntry entry) => { AutoLearnLogEntry(entry); };
             MinuteTimer = new Timer(new TimerCallback(TimerCallback), null, Timeout.Infinite, Timeout.Infinite);
@@ -1661,11 +1663,11 @@ namespace pylorak.TinyWall
             ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
             NetworkInterfaceWatcher.InterfaceChanged += (object sender, EventArgs args) =>
             {
-                Q.Add(new TwRequest(TwMessageSimple.NewRequest(MessageType.REENUMERATE_ADDRESSES)));
+                Q.Add(new TwRequest(TwMessageSimple.CreateRequest(MessageType.REENUMERATE_ADDRESSES)));
             };
             RuleReloadEventMerger.Event += (object sender, EventArgs args) =>
             {
-                Q.Add(new TwRequest(TwMessageSimple.NewRequest(MessageType.RELOAD_WFP_FILTERS)));
+                Q.Add(new TwRequest(TwMessageSimple.CreateRequest(MessageType.RELOAD_WFP_FILTERS)));
             };
             MountPointsWatcher.RegistryChanged += (object sender, EventArgs args) =>
             {
@@ -1744,8 +1746,11 @@ namespace pylorak.TinyWall
                             continue;
 
                         // Skip if we have already processed this parent-child combination
-                        if (ChildInheritedSubjectExes.ContainsKey(path) && ChildInheritedSubjectExes[path].Contains(parentPath))
-                            break;
+                        if (ChildInheritedSubjectExes.TryGetValue(path, out var childVar))
+                        {
+                            if (childVar.Contains(parentPath))
+                                break;
+                        }
 
                         if (ChildInheritance.TryGetValue(parentPath, out List<FirewallExceptionV3> exList))
                         {
@@ -1765,7 +1770,7 @@ namespace pylorak.TinyWall
                 if (newExceptions != null)
                 {
                     lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Request(); }
-                    Q.Add(new TwRequest(TwMessageAddTempException.NewRequest(newExceptions.ToArray())));
+                    Q.Add(new TwRequest(TwMessageAddTempException.CreateRequest(newExceptions.ToArray())));
                 }
             }
             finally
@@ -1856,7 +1861,7 @@ namespace pylorak.TinyWall
         // Entry point for thread that listens to commands from the controller application.
         private TwMessage PipeServerDataReceived(TwMessage reqMsg)
         {
-            if (((int)reqMsg.Type > 2047) && ServiceLocker.Locked)
+            if (((int)reqMsg.Type > 2047) && PasswordLock.Locked)
             {
                 // Notify that we need to be unlocked first
                 return TwMessageLocked.Instance;
@@ -1881,14 +1886,14 @@ namespace pylorak.TinyWall
 
         public void RequestStop()
         {
-            var req = new TwRequest(TwMessageSimple.NewRequest(MessageType.STOP_SERVICE));
+            var req = new TwRequest(TwMessageSimple.CreateRequest(MessageType.STOP_SERVICE));
             Q.Add(req);
             req.WaitResponse();
         }
 
         public void DisplayPowerEvent(bool turnOn)
         {
-            Q.Add(new TwRequest(TwMessageDisplayPowerEvent.NewRequest(turnOn)));
+            Q.Add(new TwRequest(TwMessageDisplayPowerEvent.CreateRequest(turnOn)));
         }
 
         public void MountedVolumesChangedEvent()

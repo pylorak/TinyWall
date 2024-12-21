@@ -205,7 +205,7 @@ namespace pylorak.TinyWall
             fileUpdater.Commit();
         }
 
-        [Obsolete]
+        [Obsolete("XML serializer kept around for importing pre-3.0 configs.")]
         private static readonly Type[] KnownDataContractTypes =
         {
             typeof(BlockListSettings),
@@ -232,14 +232,14 @@ namespace pylorak.TinyWall
             typeof(UpdateDescriptor),
         };
         
-        [Obsolete]
+        [Obsolete("XML serializer kept around for importing pre-3.0 configs.")]
         public static T DeserializeDC<T>(Stream stream)
         {
             var serializer = new DataContractSerializer(typeof(T), KnownDataContractTypes);
             return ((T?)serializer.ReadObject(stream)) ?? throw new NullResultExceptions("DataContractSerializer.ReadObject()");
         }
 
-        [Obsolete]
+        [Obsolete("XML serializer kept around for importing pre-3.0 configs.")]
         public static T LoadFromEncryptedXMLFile<T>(string filepath, string key, string iv)
         {
             // Construct encryptor
@@ -254,7 +254,7 @@ namespace pylorak.TinyWall
             return DeserializeDC<T>(cryptoStream);
         }
 
-        [Obsolete]
+        [Obsolete("XML serializer kept around for importing pre-3.0 configs.")]
         public static T LoadFromXMLFile<T>(string filepath)
         {
             using var stream = new FileStream(filepath, FileMode.Open, FileAccess.Read);

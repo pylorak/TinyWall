@@ -341,7 +341,7 @@ namespace pylorak.Windows
             const int ERROR_NO_MORE_FILES = 18;
 
             var pe32 = new PROCESSENTRY32();
-            pe32.dwSize = (uint)Marshal.SizeOf(typeof(PROCESSENTRY32));
+            pe32.dwSize = (uint)Marshal.SizeOf<PROCESSENTRY32>();
             using var hSnapshot = NativeMethods.CreateToolhelp32Snapshot(SnapshotFlags.Process, 0);
             if (hSnapshot.IsInvalid)
                 throw new Win32Exception(Marshal.GetLastWin32Error());

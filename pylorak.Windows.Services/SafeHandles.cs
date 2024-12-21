@@ -89,7 +89,7 @@ namespace pylorak.Windows.Services
         public static SafeHandleDeviceNotification Create(IntPtr recipient, Guid devIfaceClsGuid, DeviceNotifFlags flags)
         {
             var filter = new DEV_BROADCAST_DEVICEINTERFACE_Filter();
-            filter.Size = Marshal.SizeOf(typeof(DEV_BROADCAST_DEVICEINTERFACE_Filter));
+            filter.Size = Marshal.SizeOf<DEV_BROADCAST_DEVICEINTERFACE_Filter>();
             filter.DeviceType = DeviceBroadcastHdrDevType.DBT_DEVTYP_DEVICEINTERFACE;
             filter.ClassGuid = devIfaceClsGuid;
             filter.Name = 0;

@@ -23,7 +23,7 @@ namespace pylorak.TinyWall
             serverConfig = null;
             serverState = null;
 
-            var resp = Endpoint.QueueMessage(TwMessageGetSettings.NewRequest(clientChangeset)).Response;
+            var resp = Endpoint.QueueMessage(TwMessageGetSettings.CreateRequest(clientChangeset)).Response;
             if (resp.Type == MessageType.GET_SETTINGS)
             {
                 var respArgs = (TwMessageGetSettings)resp;
@@ -40,12 +40,12 @@ namespace pylorak.TinyWall
 
         public TwMessage SetServerConfig(ServerConfiguration serverConfig, Guid clientChangeset)
         {
-            return Endpoint.QueueMessage(TwMessagePutSettings.NewRequest(clientChangeset, serverConfig)).Response;
+            return Endpoint.QueueMessage(TwMessagePutSettings.CreateRequest(clientChangeset, serverConfig)).Response;
         }
 
         public TwRequest BeginReadFwLog()
         {
-            return Endpoint.QueueMessage(TwMessageReadFwLog.NewRequest());
+            return Endpoint.QueueMessage(TwMessageReadFwLog.CreateRequest());
         }
 
         public static FirewallLogEntry[] EndReadFwLog(TwMessage twResp)
@@ -59,19 +59,19 @@ namespace pylorak.TinyWall
 
         public MessageType SwitchFirewallMode(FirewallMode mode)
         {
-            return Endpoint.QueueMessage(TwMessageModeSwitch.NewRequest(mode)).Response.Type;
+            return Endpoint.QueueMessage(TwMessageModeSwitch.CreateRequest(mode)).Response.Type;
         }
 
         public MessageType RequestServerStop()
         {
-            return Endpoint.QueueMessage(TwMessageSimple.NewRequest(MessageType.STOP_SERVICE)).Response.Type;
+            return Endpoint.QueueMessage(TwMessageSimple.CreateRequest(MessageType.STOP_SERVICE)).Response.Type;
         }
 
         public bool IsServerLocked
         {
             get
             {
-                var resp = Endpoint.QueueMessage(TwMessageIsLocked.NewRequest()).Response;
+                var resp = Endpoint.QueueMessage(TwMessageIsLocked.CreateRequest()).Response;
                 if (resp is TwMessageIsLocked isLockedResp)
                     return isLockedResp.LockedStatus;
                 else
@@ -81,22 +81,22 @@ namespace pylorak.TinyWall
 
         public MessageType SetPassphrase(string pwd)
         {
-            return Endpoint.QueueMessage(TwMessageSetPassword.NewRequest(pwd)).Response.Type;
+            return Endpoint.QueueMessage(TwMessageSetPassword.CreateRequest(pwd)).Response.Type;
         }
 
         public MessageType TryUnlockServer(string pwd)
         {
-            return Endpoint.QueueMessage(TwMessageUnlock.NewRequest(pwd)).Response.Type;
+            return Endpoint.QueueMessage(TwMessageUnlock.CreateRequest(pwd)).Response.Type;
         }
 
         public MessageType LockServer()
         {
-            return Endpoint.QueueMessage(TwMessageSimple.NewRequest(MessageType.LOCK)).Response.Type;
+            return Endpoint.QueueMessage(TwMessageSimple.CreateRequest(MessageType.LOCK)).Response.Type;
         }
 
         public string TryGetProcessPath(uint pid)
         {
-            var resp = Endpoint.QueueMessage(TwMessageGetProcessPath.NewRequest(pid)).Response;
+            var resp = Endpoint.QueueMessage(TwMessageGetProcessPath.CreateRequest(pid)).Response;
             if (resp.Type == MessageType.GET_PROCESS_PATH)
             {
                 var respArgs = (TwMessageGetProcessPath)resp;

@@ -112,7 +112,7 @@ namespace pylorak.Windows.Services
         {
             const uint delay = 1000;
             const int MAX_ACTIONS = 2;
-            int SC_ACTION_SIZE = Marshal.SizeOf(typeof(SC_ACTION));
+            int SC_ACTION_SIZE = Marshal.SizeOf<SC_ACTION>();
 
             // Open the service
             using var service = OpenService(

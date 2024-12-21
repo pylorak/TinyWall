@@ -563,7 +563,7 @@ namespace pylorak.Windows.WFP
                 // 9: Create the first part of the SID "S-1-5-80-"
                 // 10: Tack on each block of Decimal strings with a "-" in between each block that was converted and reversed.
                 // 11: Finally out put the complete SID for the service.
-                return $"S-1-5-80-{dec[0].ToString()}-{dec[1].ToString()}-{dec[2].ToString()}-{dec[3].ToString()}-{dec[4].ToString()}";
+                return $"S-1-5-80-{dec[0]}-{dec[1]}-{dec[2]}-{dec[3]}-{dec[4]}";
             }
         }
     }

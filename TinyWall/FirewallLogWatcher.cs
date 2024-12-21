@@ -11,7 +11,7 @@ namespace pylorak.TinyWall
     internal class FirewallLogWatcher : Disposable
     {
         //private readonly string FIREWALLLOG_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"LogFiles\Firewall\pfirewall.log");
-        private EventLogWatcher LogWatcher;
+        private readonly EventLogWatcher LogWatcher;
 
         public delegate void NewLogEntryDelegate(FirewallLogWatcher sender, FirewallLogEntry entry);
         public event NewLogEntryDelegate? NewLogEntry;
@@ -42,7 +42,7 @@ namespace pylorak.TinyWall
         internal FirewallLogWatcher()
         {
             // Create event notifier
-            EventLogQuery evquery = new EventLogQuery("Security", PathType.LogName, "*[System[(EventID=5154 or EventID=5155 or EventID=5157 or EventID=5159 or EventID=5156 or EventID=5158)]]");
+            EventLogQuery evquery = new("Security", PathType.LogName, "*[System[(EventID=5154 or EventID=5155 or EventID=5157 or EventID=5159 or EventID=5156 or EventID=5158)]]");
             LogWatcher = new EventLogWatcher(evquery);
             LogWatcher.Enabled = false;
             LogWatcher.EventRecordWritten += new EventHandler<EventRecordWrittenEventArgs>(LogWatcher_EventRecordWritten);
@@ -69,9 +69,9 @@ namespace pylorak.TinyWall
             }
         }
 
-        private FirewallLogEntry ParseLogEntry(EventRecordWrittenEventArgs e)
+        private static FirewallLogEntry ParseLogEntry(EventRecordWrittenEventArgs e)
         {
-            FirewallLogEntry entry = new FirewallLogEntry();
+            var entry = new FirewallLogEntry();
             entry.Timestamp = DateTime.Now;
             entry.Event = (EventLogEvent)e.EventRecord.Id;
 
@@ -166,12 +166,12 @@ namespace pylorak.TinyWall
             internal static extern bool AuditSetSystemPolicy([In] ref AUDIT_POLICY_INFORMATION pAuditPolicy, uint policyCount);
         }
 
-        private static readonly Guid PACKET_LOGGING_AUDIT_SUBCAT = new Guid("{0CCE9225-69AE-11D9-BED3-505054503030}");
-        private static readonly Guid CONNECTION_LOGGING_AUDIT_SUBCAT = new Guid("{0CCE9226-69AE-11D9-BED3-505054503030}");
+        private static readonly Guid PACKET_LOGGING_AUDIT_SUBCAT = new("{0CCE9225-69AE-11D9-BED3-505054503030}");
+        private static readonly Guid CONNECTION_LOGGING_AUDIT_SUBCAT = new("{0CCE9226-69AE-11D9-BED3-505054503030}");
 
         private static void AuditSetSystemPolicy(Guid guid, bool success, bool failure)
         {
-            NativeMethods.AUDIT_POLICY_INFORMATION pol = new NativeMethods.AUDIT_POLICY_INFORMATION();
+            var pol = new NativeMethods.AUDIT_POLICY_INFORMATION();
             pol.AuditCategoryGuid = guid;
             pol.AuditSubCategoryGuid = guid;
             if (success || failure)

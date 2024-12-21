@@ -45,7 +45,7 @@ namespace pylorak.Windows.WFP
             else
                 throw new WfpException(err, "FwpmFilterCreateEnumHandle0");
 
-            FWPM_FILTER0_SIZE = Marshal.SizeOf(typeof(Interop.FWPM_FILTER0_NoStrings));
+            FWPM_FILTER0_SIZE = Marshal.SizeOf<Interop.FWPM_FILTER0_NoStrings>();
         }
 
         public bool MoveNext()

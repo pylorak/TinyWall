@@ -70,6 +70,13 @@ namespace pylorak.Windows
         private readonly SafeIpHlprNotifyHandle NotifyRouteChangeHandle;
         private readonly RegistryWatcher DnsChangeNotifier;
         private readonly EventMerger ChangeEventMerger = new(1000);
+        private static readonly string[] WATCHED_DNS_KEYS = new[] {
+                @"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces",
+                @"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters\Interfaces"
+        };
+        private static readonly string[] WATCHED_DNS_KEYS_IPV4ONLY = new[] {
+                @"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces"
+        };
 
         public event EventHandler? InterfaceChanged;
 
@@ -91,25 +98,16 @@ namespace pylorak.Windows
 
             try
             {
-                DnsChangeNotifier = new RegistryWatcher(
-                    new string[] {
-                        @"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces",
-                        @"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters\Interfaces"
-                    },
-                    true);
+                DnsChangeNotifier = new RegistryWatcher(WATCHED_DNS_KEYS, true);
             }
             catch
             {
-                // TODO: This case is implemented just-in-case if Tcpip6 regkey is not avialable when
+                // TODO: This case is implemented just-in-case if Tcpip6 regkey is not available when
                 //      IPv6 support in OS is not installed, but it might not be necessary. Should be tested
                 //      if this can be removed.
 
                 // Try without IPv6 support
-                DnsChangeNotifier = new RegistryWatcher(
-                    new string[] {
-                        @"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces",
-                    },
-                    true);
+                DnsChangeNotifier = new RegistryWatcher(WATCHED_DNS_KEYS_IPV4ONLY, true);
             }
             DnsChangeNotifier.RegistryChanged += DnsChangeNotifier_RegistryChanged;
             DnsChangeNotifier.Enabled = true;

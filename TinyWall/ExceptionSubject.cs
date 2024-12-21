@@ -171,9 +171,7 @@ namespace pylorak.TinyWall
         {
             get
             {
-                if (_HashSha1 is null)
-                    _HashSha1 = Hasher.HashFileSha1(this.ExecutablePath);
-
+                _HashSha1 ??= Hasher.HashFileSha1(this.ExecutablePath);
                 return _HashSha1;
             }
         }
