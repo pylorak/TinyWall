@@ -3,6 +3,7 @@ TinyWall Changelog
 
 3.4.0 - not yet released
 - Performance enhancements for Connections, Processes and Settings windows
+- Fix Connections windows might occasionally show empty list of active/listener sockets
 - Fix blocked IPv6 addresses shown backwards
 - Fix for possible crash when extracting an application's icon
 - Mitigation for tray icon not visible after boot

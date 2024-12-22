@@ -19,6 +19,7 @@ namespace pylorak.Windows.NetStat
 
             if (NativeMethods.GetExtendedTcpTable(IntPtr.Zero, ref tcpTableLength, sorted, NativeMethods.AfInet, NativeMethods.TcpTableType.OwnerPidAll, 0) != 0)
             {
+                tcpTableLength *= 2;    // account for possible new entries between calls to get the table
                 using var tcpTable = new AllocHLocalSafeHandle(tcpTableLength);
                 var tableMemPtr = tcpTable.DangerousGetHandle();
                 if (NativeMethods.GetExtendedTcpTable(tableMemPtr, ref tcpTableLength, sorted, NativeMethods.AfInet, NativeMethods.TcpTableType.OwnerPidAll, 0) == 0)
@@ -45,6 +46,7 @@ namespace pylorak.Windows.NetStat
 
             if (NativeMethods.GetExtendedTcpTable(IntPtr.Zero, ref tcpTableLength, sorted, NativeMethods.AfInet6, NativeMethods.TcpTableType.OwnerPidAll, 0) != 0)
             {
+                tcpTableLength *= 2;    // account for possible new entries between calls to get the table
                 using var tcpTable = new AllocHLocalSafeHandle(tcpTableLength);
                 var tableMemPtr = tcpTable.DangerousGetHandle();
                 if (NativeMethods.GetExtendedTcpTable(tableMemPtr, ref tcpTableLength, sorted, NativeMethods.AfInet6, NativeMethods.TcpTableType.OwnerPidAll, 0) == 0)
@@ -71,6 +73,7 @@ namespace pylorak.Windows.NetStat
 
             if (NativeMethods.GetExtendedUdpTable(IntPtr.Zero, ref udpTableLength, sorted, NativeMethods.AfInet, NativeMethods.UdpTableType.OwnerPid, 0) != 0)
             {
+                udpTableLength *= 2;    // account for possible new entries between calls to get the table
                 using var udpTable = new AllocHLocalSafeHandle(udpTableLength);
                 var tableMemPtr = udpTable.DangerousGetHandle();
                 if (NativeMethods.GetExtendedUdpTable(tableMemPtr, ref udpTableLength, sorted, NativeMethods.AfInet, NativeMethods.UdpTableType.OwnerPid, 0) == 0)
@@ -97,6 +100,7 @@ namespace pylorak.Windows.NetStat
 
             if (NativeMethods.GetExtendedUdpTable(IntPtr.Zero, ref udpTableLength, sorted, NativeMethods.AfInet6, NativeMethods.UdpTableType.OwnerPid, 0) != 0)
             {
+                udpTableLength *= 2;    // account for possible new entries between calls to get the table
                 using var udpTable = new AllocHLocalSafeHandle(udpTableLength);
                 var tableMemPtr = udpTable.DangerousGetHandle();
                 if (NativeMethods.GetExtendedUdpTable(tableMemPtr, ref udpTableLength, sorted, NativeMethods.AfInet6, NativeMethods.UdpTableType.OwnerPid, 0) == 0)
