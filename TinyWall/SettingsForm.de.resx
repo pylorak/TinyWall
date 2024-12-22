@@ -150,6 +150,9 @@
   <data name="columnType.Text" xml:space="preserve">
     <value>Typ</value>
   </data>
+  <data name="columnLastModified.Text" xml:space="preserve">
+    <value>Geändert am</value>
+  </data>
   <data name="tabPage3.Text" xml:space="preserve">
     <value>Ausnahmen von Anwendungen</value>
   </data>

@@ -2,6 +2,7 @@ TinyWall Changelog
 ---------------------
 
 3.4.0 - not yet released
+- Add Last Modified column to application exceptions list
 - Performance enhancements for Connections, Processes and Settings windows
 - Fix Connections windows might occasionally show empty list of active/listener sockets
 - Fix blocked IPv6 addresses shown backwards

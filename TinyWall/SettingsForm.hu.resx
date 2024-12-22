@@ -156,6 +156,9 @@
   <data name="columnDetails.Text" xml:space="preserve">
 		<value>Részletek</value>
 	</data>
+  <data name="columnLastModified.Text" xml:space="preserve">
+    <value>Módosítva</value>
+  </data>
   <data name="label4.Text" xml:space="preserve">
     <value>Szűrő:</value>
   </data>

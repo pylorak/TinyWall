@@ -465,6 +465,9 @@
   <data name="columnDetails.Width" type="System.Int32, mscorlib">
     <value>356</value>
   </data>
+  <data name="columnLastModified.Text" xml:space="preserve">
+    <value>Last Modified</value>
+  </data>
   <data name="listApplications.Location" type="System.Drawing.Point, System.Drawing">
     <value>26, 97</value>
   </data>
@@ -1738,6 +1741,12 @@
     <value>columnDetails</value>
   </data>
   <data name="&gt;&gt;columnDetails.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;columnLastModified.Name" xml:space="preserve">
+    <value>columnLastModified</value>
+  </data>
+  <data name="&gt;&gt;columnLastModified.Type" xml:space="preserve">
     <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;IconList.Name" xml:space="preserve">
