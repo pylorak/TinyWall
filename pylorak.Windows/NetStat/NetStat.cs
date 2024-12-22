@@ -21,7 +21,7 @@ namespace pylorak.Windows.NetStat
             {
                 using var tcpTable = new AllocHLocalSafeHandle(tcpTableLength);
                 var tableMemPtr = tcpTable.DangerousGetHandle();
-                if (NativeMethods.GetExtendedTcpTable(tableMemPtr, ref tcpTableLength, true, NativeMethods.AfInet, NativeMethods.TcpTableType.OwnerPidAll, 0) == 0)
+                if (NativeMethods.GetExtendedTcpTable(tableMemPtr, ref tcpTableLength, sorted, NativeMethods.AfInet, NativeMethods.TcpTableType.OwnerPidAll, 0) == 0)
                 {
                     var table = Marshal.PtrToStructure<NativeMethods.Tcp4Table>(tableMemPtr);
                     var rowPtr = tableMemPtr + Marshal.SizeOf(table.length);
@@ -47,7 +47,7 @@ namespace pylorak.Windows.NetStat
             {
                 using var tcpTable = new AllocHLocalSafeHandle(tcpTableLength);
                 var tableMemPtr = tcpTable.DangerousGetHandle();
-                if (NativeMethods.GetExtendedTcpTable(tableMemPtr, ref tcpTableLength, true, NativeMethods.AfInet6, NativeMethods.TcpTableType.OwnerPidAll, 0) == 0)
+                if (NativeMethods.GetExtendedTcpTable(tableMemPtr, ref tcpTableLength, sorted, NativeMethods.AfInet6, NativeMethods.TcpTableType.OwnerPidAll, 0) == 0)
                 {
                     var table = Marshal.PtrToStructure<NativeMethods.Tcp6Table>(tableMemPtr);
                     var rowPtr = tableMemPtr + Marshal.SizeOf(table.length);
@@ -73,7 +73,7 @@ namespace pylorak.Windows.NetStat
             {
                 using var udpTable = new AllocHLocalSafeHandle(udpTableLength);
                 var tableMemPtr = udpTable.DangerousGetHandle();
-                if (NativeMethods.GetExtendedUdpTable(tableMemPtr, ref udpTableLength, true, NativeMethods.AfInet, NativeMethods.UdpTableType.OwnerPid, 0) == 0)
+                if (NativeMethods.GetExtendedUdpTable(tableMemPtr, ref udpTableLength, sorted, NativeMethods.AfInet, NativeMethods.UdpTableType.OwnerPid, 0) == 0)
                 {
                     var table = Marshal.PtrToStructure<NativeMethods.Udp4Table>(tableMemPtr);
                     var rowPtr = tableMemPtr + Marshal.SizeOf(table.length);
@@ -99,7 +99,7 @@ namespace pylorak.Windows.NetStat
             {
                 using var udpTable = new AllocHLocalSafeHandle(udpTableLength);
                 var tableMemPtr = udpTable.DangerousGetHandle();
-                if (NativeMethods.GetExtendedUdpTable(tableMemPtr, ref udpTableLength, true, NativeMethods.AfInet6, NativeMethods.UdpTableType.OwnerPid, 0) == 0)
+                if (NativeMethods.GetExtendedUdpTable(tableMemPtr, ref udpTableLength, sorted, NativeMethods.AfInet6, NativeMethods.UdpTableType.OwnerPid, 0) == 0)
                 {
                     var table = Marshal.PtrToStructure<NativeMethods.Udp6Table>(tableMemPtr);
                     var rowPtr = tableMemPtr + Marshal.SizeOf(table.length);
