@@ -1051,6 +1051,9 @@ namespace pylorak.TinyWall
             VisibleState.Mode = ActiveConfig.Service.StartupMode;
             GlobalInstances.ServerChangeset = Guid.NewGuid();
 
+            if (CommitLearnedRules() || PruneExpiredRules())
+                ActiveConfig.Service.Save(ConfigSavePath);
+
             ReapplySettings();
             InstallFirewallRules();
         }
@@ -1265,18 +1268,67 @@ namespace pylorak.TinyWall
 
         private bool CommitLearnedRules()
         {
+            bool config_changed = false;
+
             lock (LearningNewExceptions)
             {
-                bool needSave = (LearningNewExceptions.Count > 0);
-                if (!needSave)
-                    return false;
-
-                ActiveConfig.Service.ActiveProfile.AddExceptions(LearningNewExceptions);
-                LearningNewExceptions.Clear();
+                if (LearningNewExceptions.Count > 0)
+                {
+                    GlobalInstances.ServerChangeset = Guid.NewGuid();
+                    ActiveConfig.Service.ActiveProfile.AddExceptions(LearningNewExceptions);
+                    LearningNewExceptions.Clear();
+                    config_changed = true;
+                }
             }
 
-            GlobalInstances.ServerChangeset = Guid.NewGuid();
-            return true;
+            return config_changed;
+        }
+
+        private static bool HasSystemRebooted()
+        {
+            try
+            {
+                const string ATOM_NAME = "TinyWall-NoMachineReboot";
+                bool rebooted = !GlobalAtomTable.Exists(ATOM_NAME);
+                if (rebooted)
+                    GlobalAtomTable.Add(ATOM_NAME);
+                return rebooted;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+
+        private static bool PruneExpiredRules()
+        {
+            bool system_rebooted = HasSystemRebooted();
+            bool config_changed = false;
+
+            List<FirewallExceptionV3> exs = ActiveConfig.Service.ActiveProfile.AppExceptions;
+            for (int i = exs.Count - 1; i >= 0; --i)
+            {
+                // Timer values above zero are the number of minutes to stay active
+
+                if (system_rebooted && (exs[i].Timer == AppExceptionTimer.Until_Reboot))
+                {
+                    exs.RemoveAt(i);
+                    config_changed = true;
+                }
+                else if (((int)exs[i].Timer > 0) && (exs[i].CreationDate.AddMinutes((double)exs[i].Timer) <= DateTime.Now))
+                {
+                    exs.RemoveAt(i);
+                    config_changed = true;
+                }
+            }
+
+            if (config_changed)
+            {
+                GlobalInstances.ServerChangeset = Guid.NewGuid();
+                ActiveConfig.Service.ActiveProfile.AppExceptions = exs;
+            }
+
+            return config_changed;
         }
 
         private TwMessage ProcessCmd(TwMessage req)
@@ -1298,9 +1350,6 @@ namespace pylorak.TinyWall
                         var args = (TwMessageModeSwitch)req;
                         FirewallMode newMode = args.Mode;
 
-                        if (CommitLearnedRules())
-                            ActiveConfig.Service.Save(ConfigSavePath);
-
                         try
                         {
                             LogWatcher.Enabled = (FirewallMode.Learning == newMode);
@@ -1312,18 +1361,19 @@ namespace pylorak.TinyWall
                             return TwMessageError.Instance;
                         }
 
+                        bool save_needed = CommitLearnedRules();
                         VisibleState.Mode = newMode;
-                        InstallFirewallRules();
-
-                        if (
-                               (VisibleState.Mode != FirewallMode.Disabled)
-                            && (VisibleState.Mode != FirewallMode.Learning)
-                           )
+                        if ((ActiveConfig.Service.StartupMode != VisibleState.Mode) &&
+                            (VisibleState.Mode != FirewallMode.Disabled) &&
+                            (VisibleState.Mode != FirewallMode.Learning) )
                         {
                             ActiveConfig.Service.StartupMode = VisibleState.Mode;
-                            ActiveConfig.Service.Save(ConfigSavePath);
+                            save_needed = true;
                         }
+                        if (save_needed)
+                            ActiveConfig.Service.Save(ConfigSavePath);
 
+                        InstallFirewallRules();
                         return args.CreateResponse(VisibleState.Mode);
                     }
                 case MessageType.PUT_SETTINGS:
@@ -1335,8 +1385,8 @@ namespace pylorak.TinyWall
                         {
                             try
                             {
-                                ActiveConfig.Service = args.Config;
                                 GlobalInstances.ServerChangeset = Guid.NewGuid();
+                                ActiveConfig.Service = args.Config;
                                 ActiveConfig.Service.Save(ConfigSavePath);
                                 ReapplySettings();
                                 InstallFirewallRules();
@@ -1389,10 +1439,6 @@ namespace pylorak.TinyWall
                 case MessageType.REINIT:
                     {
                         var args = (TwMessageSimple)req;
-
-                        if (CommitLearnedRules())
-                            ActiveConfig.Service.Save(ConfigSavePath);
-
                         InitFirewall();
                         return args.CreateResponse();
                     }
@@ -1454,7 +1500,8 @@ namespace pylorak.TinyWall
                 case MessageType.MINUTE_TIMER:
                     {
                         var args = (TwMessageSimple)req;
-                        bool needsSave = false;
+                        bool save_needed = false;
+                        bool rule_reload_needed = false;
 
                         // Check for inactivity and lock if necessary
                         if (DateTime.Now - LastControllerCommandTime > TimeSpan.FromMinutes(10))
@@ -1462,45 +1509,35 @@ namespace pylorak.TinyWall
                             Q.Add(new TwRequest(TwMessageSimple.CreateRequest(MessageType.LOCK)));
                         }
 
-                        // Check all exceptions if any has expired
-                        List<FirewallExceptionV3> exs = ActiveConfig.Service.ActiveProfile.AppExceptions;
-                        for (int i = exs.Count - 1; i >= 0; --i)
+                        if (PruneExpiredRules())
                         {
-                            // Timer values above zero are the number of minutes to stay active
-                            if ((int)exs[i].Timer <= 0)
-                                continue;
-
-                            // Did this one expire?
-                            if (exs[i].CreationDate.AddMinutes((double)exs[i].Timer) <= DateTime.Now)
-                            {
-                                // Remove exception
-                                exs.RemoveAt(i);
-                                needsSave = true;
-                            }
-                        }
-                        if (needsSave)
-                        {
-                            ActiveConfig.Service.ActiveProfile.AppExceptions = exs;
-                            GlobalInstances.ServerChangeset = Guid.NewGuid();
-                            ActiveConfig.Service.Save(ConfigSavePath);
-                            InstallFirewallRules();
+                            save_needed = true;
+                            rule_reload_needed = true;
                         }
 
                         // Periodically reload all rules.
-                        // This is needed to clear out temprary rules
-                        // added due to child-process rule inheritance.
+                        // This is needed to clear out temprary rules added due to child-process rule inheritance.
                         if (DateTime.Now - LastRuleReloadTime > TimeSpan.FromMinutes(30))
+                        {
+                            rule_reload_needed = true;
+                        }
+
+                        if (save_needed)
+                        {
+                            ActiveConfig.Service.Save(ConfigSavePath);
+                        }
+                        if (rule_reload_needed)
                         {
                             InstallFirewallRules();
                         }
 
+#if !DEBUG
                         // Check for updates once every 2 days
                         if (ActiveConfig.Service.AutoUpdateCheck)
                         {
-#if !DEBUG
                             UpdaterMethod();
-#endif
                         }
+#endif
 
                         return args.CreateResponse();
                     }
@@ -1907,21 +1944,6 @@ namespace pylorak.TinyWall
             ServerPipe?.Dispose();
             ProcessStartWatcher.Dispose();
 
-            // Check all exceptions if any one has expired
-            {
-                List<FirewallExceptionV3> exs = ActiveConfig.Service.ActiveProfile.AppExceptions;
-                for (int i = exs.Count - 1; i >= 0; --i)
-                {
-                    // Did this one expire?
-                    if (exs[i].Timer == AppExceptionTimer.Until_Reboot)
-                    {
-                        // Remove exception
-                        exs.RemoveAt(i);
-                    }
-                }
-                ActiveConfig.Service.ActiveProfile.AppExceptions = exs;
-            }
-
             if (MinuteTimer != null)
             {
                 using WaitHandle wh = new AutoResetEvent(false);
@@ -1935,7 +1957,6 @@ namespace pylorak.TinyWall
             DnsFilterConditions.Dispose();
             LogWatcher.Dispose();
             CommitLearnedRules();
-            ActiveConfig.Service.Save(ConfigSavePath);
             HostsFileManager.Dispose();
             FileLocker.UnlockAll();
 
