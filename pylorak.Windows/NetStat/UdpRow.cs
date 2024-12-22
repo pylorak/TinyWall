@@ -13,7 +13,7 @@ namespace pylorak.Windows.NetStat
             IPVersion = IPVersion.IPv4;
             ProcessId = udpRow.owningPid;
 
-            var localPort = NetStat.PortNetworkToHost(udpRow.localPort);
+            var localPort = NetStat.NetworkToHostByteOrder((ushort)udpRow.localPort);
             var localAddress = udpRow.localAddr;
             LocalEndPoint = new IPEndPoint(localAddress, localPort);
         }
@@ -22,7 +22,7 @@ namespace pylorak.Windows.NetStat
             IPVersion = IPVersion.IPv6;
             ProcessId = udpRow.owningPid;
 
-            var localPort = NetStat.PortNetworkToHost(udpRow.localPort);
+            var localPort = NetStat.NetworkToHostByteOrder((ushort)udpRow.localPort);
             var localAddress = new IPAddress(udpRow.localAddr);
             LocalEndPoint = new IPEndPoint(localAddress, localPort);
         }

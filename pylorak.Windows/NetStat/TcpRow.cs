@@ -17,11 +17,11 @@ namespace pylorak.Windows.NetStat
             State = tcpRow.state;
             ProcessId = tcpRow.owningPid;
 
-            int localPort = NetStat.PortNetworkToHost(tcpRow.localPort);
+            int localPort = NetStat.NetworkToHostByteOrder((ushort)tcpRow.localPort);
             long localAddress = tcpRow.localAddr;
             LocalEndPoint = new IPEndPoint(localAddress, localPort);
 
-            int remotePort = NetStat.PortNetworkToHost(tcpRow.remotePort);
+            int remotePort = NetStat.NetworkToHostByteOrder((ushort)tcpRow.remotePort);
             long remoteAddress = tcpRow.remoteAddr;
             RemoteEndPoint = new IPEndPoint(remoteAddress, remotePort);
         }
@@ -31,11 +31,11 @@ namespace pylorak.Windows.NetStat
             State = tcpRow.state;
             ProcessId = tcpRow.owningPid;
 
-            var localPort = NetStat.PortNetworkToHost(tcpRow.localPort);
+            var localPort = NetStat.NetworkToHostByteOrder((ushort)tcpRow.localPort);
             var localAddress = new IPAddress(tcpRow.localAddr);
             LocalEndPoint = new IPEndPoint(localAddress, localPort);
 
-            var remotePort = NetStat.PortNetworkToHost(tcpRow.remotePort);
+            var remotePort = NetStat.NetworkToHostByteOrder((ushort)tcpRow.remotePort);
             var remoteAddress = new IPAddress(tcpRow.remoteAddr);
             RemoteEndPoint = new IPEndPoint(remoteAddress, remotePort);
         }

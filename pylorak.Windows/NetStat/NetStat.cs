@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Buffers.Binary;
 
 namespace pylorak.Windows.NetStat
 {
     public static class NetStat
     {
-        public static int PortNetworkToHost(byte[] port)
+        public static ushort NetworkToHostByteOrder(ushort val)
         {
-            return (port[0] << 8) + (port[1]) + (port[2] << 24) + (port[3] << 16);
+            return BitConverter.IsLittleEndian ? BinaryPrimitives.ReverseEndianness(val) : val;
         }
 
         public static TcpTable GetExtendedTcp4Table(bool sorted)
@@ -24,11 +25,12 @@ namespace pylorak.Windows.NetStat
                 {
                     var table = Marshal.PtrToStructure<NativeMethods.Tcp4Table>(tableMemPtr);
                     var rowPtr = tableMemPtr + Marshal.SizeOf(table.length);
+                    var rowSize = Marshal.SizeOf<NativeMethods.Tcp4Row>();
+                    tcpRows.Capacity = (int)table.length;
                     for (int i = 0; i < table.length; ++i)
                     {
-                        // TODO: Use memcpy instead
                         tcpRows.Add(new TcpRow(Marshal.PtrToStructure<NativeMethods.Tcp4Row>(rowPtr)));
-                        rowPtr += Marshal.SizeOf<NativeMethods.Tcp4Row>();
+                        rowPtr += rowSize;
                     }
                 }
             }
@@ -49,11 +51,12 @@ namespace pylorak.Windows.NetStat
                 {
                     var table = Marshal.PtrToStructure<NativeMethods.Tcp6Table>(tableMemPtr);
                     var rowPtr = tableMemPtr + Marshal.SizeOf(table.length);
+                    var rowSize = Marshal.SizeOf<NativeMethods.Tcp6Row>();
+                    tcpRows.Capacity = (int)table.length;
                     for (int i = 0; i < table.length; ++i)
                     {
-                        // TODO: Use memcpy instead
                         tcpRows.Add(new TcpRow(Marshal.PtrToStructure<NativeMethods.Tcp6Row>(rowPtr)));
-                        rowPtr += Marshal.SizeOf<NativeMethods.Tcp6Row>();
+                        rowPtr += rowSize;
                     }
                 }
             }
@@ -74,11 +77,12 @@ namespace pylorak.Windows.NetStat
                 {
                     var table = Marshal.PtrToStructure<NativeMethods.Udp4Table>(tableMemPtr);
                     var rowPtr = tableMemPtr + Marshal.SizeOf(table.length);
+                    var rowSize = Marshal.SizeOf<NativeMethods.Udp4Row>();
+                    udpRows.Capacity = (int)table.length;
                     for (int i = 0; i < table.length; ++i)
                     {
-                        // TODO: Use memcpy instead
                         udpRows.Add(new UdpRow(Marshal.PtrToStructure<NativeMethods.Udp4Row>(rowPtr)));
-                        rowPtr += Marshal.SizeOf<NativeMethods.Udp4Row>();
+                        rowPtr += rowSize;
                     }
                 }
             }
@@ -99,11 +103,12 @@ namespace pylorak.Windows.NetStat
                 {
                     var table = Marshal.PtrToStructure<NativeMethods.Udp6Table>(tableMemPtr);
                     var rowPtr = tableMemPtr + Marshal.SizeOf(table.length);
+                    var rowSize = Marshal.SizeOf<NativeMethods.Udp6Row>();
+                    udpRows.Capacity = (int)table.length;
                     for (int i = 0; i < table.length; ++i)
                     {
-                        // TODO: Use memcpy instead
                         udpRows.Add(new UdpRow(Marshal.PtrToStructure<NativeMethods.Udp6Row>(rowPtr)));
-                        rowPtr += Marshal.SizeOf<NativeMethods.Udp6Row>();
+                        rowPtr += rowSize;
                     }
                 }
             }
