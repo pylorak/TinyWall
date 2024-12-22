@@ -44,8 +44,13 @@
   <div class="container">
     <div class="row">
       <div class="twelvecol last">
+        <h3>Is TinyWall open-source?</h3>
+        <p>Yes! You can find the source repository <a href="https://github.com/pylorak/TinyWall">here on GitHub</a>.</p>
+      </div>
+      <div class="twelvecol last">
         <h3>What are the system requirements to run TinyWall?</h3>
-        <p>TinyWall runs on Intel- or AMD-based (not ARM) Windows 11 / 10 / 8.1 / 8 / 7, as well as on Windows Server 2019 / 2016 / 2012 R2.</p>
+        <p>The latest version of TinyWall runs on Intel- or AMD-based (not ARM) Windows 11 / 10.<br/>
+           An older version, TinyWall 3.2.5 (<a href="https://tinywall.pados.hu/files/TinyWall-v3.2.5.msi">download link</a>), also supports Windows 8.1 / 8 / 7, as well as on Windows Server 2019 / 2016 / 2012 R2.</p>
       </div>
       <div class="twelvecol last">
         <h3>Who is TinyWall best suited for?</h3>
@@ -66,7 +71,7 @@
         <li>TinyWall is compatible with all antivirus file system protections.</li>
         <li>TinyWall is compatible with blocklisting software, such as PeerBlock.</li>
         <li>Some "web shields" of specific security suites may make you unable to control applications separately using TinyWall.</li>
-        <li>With the exception of Windows Firewall, no other firewall software should be active while TinyWall is installed. This includes standalone firewalls as well as software that provide a nicer interface to Windows Firewall. Note that being able to install two firewalls at the same time does not mean they will work without issues in all cases.</li>
+        <li>With the exception of Windows Firewall, no other firewall software should be active while TinyWall is installed. This includes standalone firewalls as well as software that provide a nicer interface to Windows Firewall. Note that being able to install two firewalls at the same time does not mean they will work together without issues.</li>
         <li>If you are using HIPS, anti-malware, or behavioral analysis programs, make sure they are set not to restrict TinyWall. This often needs additional configuration in the other security software.</li>
         <li>If TinyWall is set to do so in its settings, no other software may be used to manage or protect the hosts file.</li>
         </ul>
@@ -116,8 +121,8 @@
         <p>If this option is activated, TinyWall will block internet-related network traffic during the time your monitor is turned off due to inactivity. Applications will not be blocked from using the local network (LAN), so services like file sharing or a media center will continue working when the monitor is off, assuming the necessary whitelisting rules are present. However, internet wlll not be blocked when the monitor is turned off in TinyWall's disabled or autolearning modes, or if the monitor is turned off manually by the user instead of entering its power-save automatically.</p>
       </div>
       <div class="twelvecol last">
-        <h3>How do I get WireShark to work with TinyWall?</h3>
-        <p>You need to whitelist the System process and give it "Unrestricted" access, then reboot the computer. For details and explanation, please refer to <a href="https://www.patreon.com/posts/how-to-use-with-37211929">this</a> online post. Note that a similar procedure might be needed for other software too that do networking inside the Windows kernel.</p>
+        <h3>How do I get WireShark or ProtonVPN to work with TinyWall?</h3>
+        <p>You need to whitelist the System process and give it "Unrestricted" access, then reboot the computer. For details and explanation, please refer to <a href="https://www.patreon.com/posts/how-to-use-with-37211929">this</a> online post. Note that a similar procedure might be needed for other software too that do networking inside the Windows kernel. For example, ProtonVPN is known to be such a case.</p>
       </div>
       <div class="twelvecol last">
         <h3>I have whitelisted an application but it still cannot access the network. What is going on?</h3>
@@ -171,7 +176,7 @@
     <div class="row">
       <div class="twelvecol last centertext">
       <br/>
-      <p>Copyright (c) 2011-2013 Károly Pados</p>
+      <p>Copyright (c) 2011 Károly Pados</p>
     </div>
     </div>
   </div>
