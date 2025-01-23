@@ -122,7 +122,7 @@
       </div>
       <div class="twelvecol last">
         <h3>How do I get WireShark or ProtonVPN to work with TinyWall?</h3>
-        <p>You need to whitelist the System process and give it "Unrestricted" access, then reboot the computer. For details and explanation, please refer to <a href="https://www.patreon.com/posts/how-to-use-with-37211929">this</a> online post. Note that a similar procedure might be needed for other software too that do networking inside the Windows kernel. For example, ProtonVPN is known to be such a case.</p>
+        <p>You need to whitelist the System process and give it "Unrestricted" access, then reboot the computer. For details and explanation, please refer to <a href="https://www.patreon.com/posts/how-to-use-with-37211929">this</a> online post. Note that a similar procedure might be needed for other software too that do networking inside the Windows kernel.</p>
       </div>
       <div class="twelvecol last">
         <h3>I have whitelisted an application but it still cannot access the network. What is going on?</h3>
@@ -148,7 +148,8 @@
       </div>
       <div class="twelvecol last">
         <h3>Whitelisting still does not seem to take effect. / Some apps can access the internet even when they shouldn't.</h3>
-        <p>You probably have Avast! Antivirus, AdMuncher, Mailwasher or similar security software installed. These have modules that work by redirecting other applications to the local computer, then making the internet connection themselves instead of the original program. It is best to disable these modules (such as avast! web-shield) in cases like this.</p>
+        <p>You probably have Avast Antivirus, AdMuncher, Mailwasher or similar security software installed. These have modules that redirect other applications to the local computer, then making the internet connection themselves instead of the original program. It is best to disable these modules (such as avast! web-shield) in cases like this.</p>
+        <p>Another possibility is you have inadvertently created an "All applications" rule that blocks or allows everything on your computer. Check your list of Application Exceptions to see if this is the case.</p>
       </div>
       <div class="twelvecol last">
         <h3>Why doesn't auto-learn learn the rules I need?</h3>
