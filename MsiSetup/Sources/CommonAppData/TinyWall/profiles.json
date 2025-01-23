@@ -49,7 +49,8 @@
           ],
           "CertificateSubjects": [
             "CN=Google LLC, O=Google LLC, L=Mountain View, S=ca, C=US",
-            "CN=Google LLC, O=Google LLC, L=Mountain View, S=California, C=US"
+            "CN=Google LLC, O=Google LLC, L=Mountain View, S=California, C=US",
+            "CN=Google LLC, O=Google LLC, L=Mountain View, S=California, C=US, SERIALNUMBER=3582691, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.2=Delaware, OID.1.3.6.1.4.1.311.60.2.1.3=US"
           ]
         }
       ],
@@ -78,7 +79,8 @@
           "CertificateSubjects": [
             "E=\u0022release\u002Bcertificates@mozilla.com\u0022, CN=Mozilla Corporation, OU=Release Engineering, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
             "E=\u0022release\u002Bcertificates@mozilla.com\u0022, CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
-            "CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US"
+            "CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
+            "CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=San Francisco, S=California, C=US"
           ]
         },
         {
@@ -101,7 +103,31 @@
           "CertificateSubjects": [
             "E=\u0022release\u002Bcertificates@mozilla.com\u0022, CN=Mozilla Corporation, OU=Release Engineering, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
             "E=\u0022release\u002Bcertificates@mozilla.com\u0022, CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
-            "CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US"
+            "CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
+            "CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=San Francisco, S=California, C=US"
+          ]
+        }
+      ],
+      "Flags": {}
+    },
+    {
+      "Name": "Google Drive Sync",
+      "Components": [
+        {
+          "Subject": {
+            "SubjectType": 2,
+            "ExecutablePath": "GoogleDriveFS.exe"
+          },
+          "Policy": {
+            "PolicyType": 3,
+            "LocalNetworkOnly": false,
+            "AllowedRemoteTcpConnectPorts": "*",
+            "AllowedRemoteUdpConnectPorts": "",
+            "AllowedLocalTcpListenerPorts": "",
+            "AllowedLocalUdpListenerPorts": ""
+          },
+          "CertificateSubjects": [
+            "CN=Google LLC, O=Google LLC, L=Mountain View, S=California, C=US, SERIALNUMBER=3582691, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.2=Delaware, OID.1.3.6.1.4.1.311.60.2.1.3=US"
           ]
         }
       ],
@@ -277,7 +303,8 @@
             "{folder:pf64}\\Nextcloud"
           ],
           "CertificateSubjects": [
-            "CN=Nextcloud GmbH, O=Nextcloud GmbH, STREET=Hauptmannsreute 44A, L=Stuttgart, S=Baden-W\u00FCrttemberg, PostalCode=70192, C=DE"
+            "CN=Nextcloud GmbH, O=Nextcloud GmbH, STREET=Hauptmannsreute 44A, L=Stuttgart, S=Baden-W\u00FCrttemberg, PostalCode=70192, C=DE",
+            "CN=Nextcloud GmbH, O=Nextcloud GmbH, S=Baden-W\u00FCrttemberg, C=DE"
           ]
         }
       ],
@@ -304,7 +331,8 @@
             "{folder:pf64}\\PuTTY"
           ],
           "CertificateSubjects": [
-            "CN=Simon Tatham, O=Simon Tatham, L=Cambridge, S=Cambridgeshire, C=GB"
+            "CN=Simon Tatham, O=Simon Tatham, L=Cambridge, S=Cambridgeshire, C=GB",
+            "CN=Simon Tatham, O=Simon Tatham, S=Cambridgeshire, C=GB"
           ],
           "AllowedSha1": [
             "44AC2504A02AF84EE142ADAA3EA70B868185906F",
@@ -312,52 +340,6 @@
             "b11a526d3d37be5c38e31a56ab762b9471957cca",
             "9DED3CE2AE09C37CA173BBD3DCB57258B72CDBD5",
             "3B1333F826E5FE36395042FE0F1B895F4A373F1B"
-          ]
-        }
-      ],
-      "Flags": {}
-    },
-    {
-      "Name": "Seed4.Me VPN",
-      "Components": [
-        {
-          "Subject": {
-            "SubjectType": 2,
-            "ExecutablePath": "Seed4.Me_VPN.exe"
-          },
-          "Policy": {
-            "PolicyType": 3,
-            "LocalNetworkOnly": false,
-            "AllowedRemoteTcpConnectPorts": "*",
-            "AllowedRemoteUdpConnectPorts": "*",
-            "AllowedLocalTcpListenerPorts": "*",
-            "AllowedLocalUdpListenerPorts": "*"
-          },
-          "SearchPaths": [
-            "{NoTrailingSlash:{reg:SOFTWARE\\Seed4.Me VPN:InstallLocation}}\\bin"
-          ],
-          "CertificateSubjects": [
-            "CN=\u0022S4M Tech, Inc.\u0022, O=\u0022S4M Tech, Inc.\u0022, POBox=95134, STREET=\u00223500 Palmilla Dr. #3026\u0022, L=San-Jose, S=California, PostalCode=95134, C=US"
-          ]
-        },
-        {
-          "Subject": {
-            "SubjectType": 2,
-            "ExecutablePath": "Seed4.Me_service.exe"
-          },
-          "Policy": {
-            "PolicyType": 3,
-            "LocalNetworkOnly": false,
-            "AllowedRemoteTcpConnectPorts": "*",
-            "AllowedRemoteUdpConnectPorts": "*",
-            "AllowedLocalTcpListenerPorts": "*",
-            "AllowedLocalUdpListenerPorts": "*"
-          },
-          "SearchPaths": [
-            "{NoTrailingSlash:{reg:SOFTWARE\\Seed4.Me VPN:InstallLocation}}\\bin"
-          ],
-          "CertificateSubjects": [
-            "CN=\u0022S4M Tech, Inc.\u0022, O=\u0022S4M Tech, Inc.\u0022, POBox=95134, STREET=\u00223500 Palmilla Dr. #3026\u0022, L=San-Jose, S=California, PostalCode=95134, C=US"
           ]
         }
       ],
@@ -455,7 +437,8 @@
           ],
           "CertificateSubjects": [
             "CN=Valve, O=Valve, L=Bellevue, S=WA, C=US",
-            "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US"
+            "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US",
+            "CN=Valve Corp., O=Valve Corp., L=Bellevue, S=Washington, C=US"
           ]
         },
         {
@@ -477,7 +460,8 @@
           ],
           "CertificateSubjects": [
             "CN=Valve, O=Valve, L=Bellevue, S=WA, C=US",
-            "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US"
+            "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US",
+            "CN=Valve Corp., O=Valve Corp., L=Bellevue, S=Washington, C=US"
           ]
         },
         {
@@ -501,7 +485,8 @@
           ],
           "CertificateSubjects": [
             "CN=Valve, O=Valve, L=Bellevue, S=WA, C=US",
-            "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US"
+            "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US",
+            "CN=Valve Corp., O=Valve Corp., L=Bellevue, S=Washington, C=US"
           ]
         }
       ],
@@ -529,7 +514,8 @@
           ],
           "CertificateSubjects": [
             "E=\u0022release\u002Bcertificates@mozilla.com\u0022, CN=Mozilla Corporation, OU=Release Engineering, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
-            "CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US"
+            "CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=Mountain View, S=California, C=US",
+            "CN=Mozilla Corporation, OU=Firefox Engineering Operations, O=Mozilla Corporation, L=San Francisco, S=California, C=US"
           ]
         }
       ],
@@ -1404,14 +1390,6 @@
       ],
       "Flags": {
         "TWUI:SPECIAL": null
-      }
-    },
-    {
-      "Name": "WSL_2",
-      "Components": [],
-      "Flags": {
-        "TWUI:SPECIAL": null,
-        "TWSRV:FLAG": null
       }
     }
   ]
