@@ -20,7 +20,8 @@
       ],
       "CertificateSubjects": [
         "CN=Valve, O=Valve, L=Bellevue, S=WA, C=US",
-        "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US"
+        "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US",
+        "CN=Valve Corp., O=Valve Corp., L=Bellevue, S=Washington, C=US"
       ]
     },
     {
@@ -42,7 +43,8 @@
       ],
       "CertificateSubjects": [
         "CN=Valve, O=Valve, L=Bellevue, S=WA, C=US",
-        "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US"
+        "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US",
+        "CN=Valve Corp., O=Valve Corp., L=Bellevue, S=Washington, C=US"
       ]
     },
     {
@@ -66,7 +68,8 @@
       ],
       "CertificateSubjects": [
         "CN=Valve, O=Valve, L=Bellevue, S=WA, C=US",
-        "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US"
+        "CN=Valve, O=Valve, L=Bellevue, S=Washington, C=US",
+        "CN=Valve Corp., O=Valve Corp., L=Bellevue, S=Washington, C=US"
       ]
     }
   ],

@@ -19,7 +19,8 @@
         "{folder:pf64}\\PuTTY"
       ],
       "CertificateSubjects": [
-        "CN=Simon Tatham, O=Simon Tatham, L=Cambridge, S=Cambridgeshire, C=GB"
+        "CN=Simon Tatham, O=Simon Tatham, L=Cambridge, S=Cambridgeshire, C=GB",
+        "CN=Simon Tatham, O=Simon Tatham, S=Cambridgeshire, C=GB"
       ],
       "AllowedSha1": [
         "44AC2504A02AF84EE142ADAA3EA70B868185906F",
