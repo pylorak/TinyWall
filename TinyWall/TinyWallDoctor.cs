@@ -266,14 +266,16 @@ namespace pylorak.TinyWall
             // Ensure that controller will be started for users
             try
             {
-                const string USERS_GROUP_SID = "S-1-5-32-545";
+                const string INTERACTIVE_GROUP_SID = "S-1-5-4";
                 const int TASK_CREATE_OR_UPDATE = 6;
                 var taskService = new TaskScheduler.TaskScheduler();
                 taskService.Connect();
                 var td = taskService.NewTask(0);
+                td.RegistrationInfo.Author = "TinyWall, Károly Pados";
+                td.RegistrationInfo.Description = "This task starts the TinyWall tray icon when a user is logged in.";
                 td.Settings.Enabled = true;
-                td.Principal.GroupId = USERS_GROUP_SID;
-                td.Principal.LogonType = _TASK_LOGON_TYPE.TASK_LOGON_INTERACTIVE_TOKEN_OR_PASSWORD;
+                td.Principal.GroupId = INTERACTIVE_GROUP_SID;
+                td.Principal.LogonType = _TASK_LOGON_TYPE.TASK_LOGON_INTERACTIVE_TOKEN;
                 td.Principal.RunLevel = _TASK_RUNLEVEL.TASK_RUNLEVEL_HIGHEST;
                 td.Settings.Compatibility = _TASK_COMPATIBILITY.TASK_COMPATIBILITY_V2;
                 td.Settings.Enabled = true;
