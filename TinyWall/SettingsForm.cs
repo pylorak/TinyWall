@@ -171,7 +171,7 @@ namespace pylorak.TinyWall
         {
             IconScanner.CancelScan();
 
-            var packageList = new UwpPackage();
+            var packageList = new UwpPackageList();
             ExceptionItems.Clear();
             for (int i = 0; i < TmpConfig.Service.ActiveProfile.AppExceptions.Count; ++i)
             {
@@ -220,7 +220,7 @@ namespace pylorak.TinyWall
             listApplications_SelectedIndexChanged(listApplications, EventArgs.Empty);
         }
 
-        private ListViewItem ListItemFromAppException(FirewallExceptionV3 ex, UwpPackage packageList)
+        private ListViewItem ListItemFromAppException(FirewallExceptionV3 ex, UwpPackageList packageList)
         {
             var li = new ListViewItem();
             li.Tag = ex;

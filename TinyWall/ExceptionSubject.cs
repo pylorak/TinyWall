@@ -380,7 +380,7 @@ namespace pylorak.TinyWall
             this.PublisherId = publisherId;
         }
 
-        public AppContainerSubject(UwpPackage.Package package) :
+        public AppContainerSubject(UwpPackageList.Package package) :
             this(package.Sid, package.Name, package.Publisher, package.PublisherId)
         { }
 

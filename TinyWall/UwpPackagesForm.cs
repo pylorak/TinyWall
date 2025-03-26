@@ -8,7 +8,7 @@ namespace pylorak.TinyWall
 {
     public partial class UwpPackagesForm : Form
     {
-        private readonly List<UwpPackage.Package> SelectedPackages = new ();
+        private readonly List<UwpPackageList.Package> SelectedPackages = new ();
         private readonly Size IconSize = new ((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
 
         public UwpPackagesForm(bool multiSelect)
@@ -24,23 +24,19 @@ namespace pylorak.TinyWall
             IconList.Images.Add("store", Resources.Icons.store);
         }
 
-        internal static List<UwpPackage.Package> ChoosePackage(IWin32Window parent, bool multiSelect)
+        internal static List<UwpPackageList.Package> ChoosePackage(IWin32Window parent, bool multiSelect)
         {
             using var pf = new UwpPackagesForm(multiSelect);
-            var pathList = new List<UwpPackage.Package>();
+            var pathList = new List<UwpPackageList.Package>();
 
-            if (pf.ShowDialog(parent) == DialogResult.Cancel)
-                return pathList;
-
-            pathList.AddRange(pf.SelectedPackages);
-            return pathList;
+            return (pf.ShowDialog(parent) == DialogResult.Cancel) ? new List<UwpPackageList.Package>() : pf.SelectedPackages;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < listView.SelectedItems.Count; ++i)
             {
-                this.SelectedPackages.Add((UwpPackage.Package)listView.SelectedItems[i].Tag);
+                this.SelectedPackages.Add((UwpPackageList.Package)listView.SelectedItems[i].Tag);
             }
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
@@ -78,8 +74,8 @@ namespace pylorak.TinyWall
 
             var itemColl = new List<ListViewItem>();
 
-            var packages = UwpPackage.GetPackages();
-            foreach (var package in packages)
+            var packageList = new UwpPackageList();
+            foreach (var package in packageList)
             {
                 // Add list item
                 ListViewItem li = new ListViewItem(package.Name);

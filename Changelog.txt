@@ -1,7 +1,8 @@
 TinyWall Changelog
 ---------------------
 
-3.4.0 - not yet released
+3.4.1 - not yet released
+- Only enumerate UWP packages on system if actually needed
 - Add Last Modified column to application exceptions list
 - Performance enhancements for Connections, Processes and Settings windows
 - Don't make unnecessary saves to config file
@@ -11,6 +12,7 @@ TinyWall Changelog
 - Mitigation for tray icon not visible after boot
 - Add ability to open connections view by middle-clicking on the tray icon
 - Update System.Text.Json to close potential vulnerability
+- Update application database
 - Update Chinese and Polish localizations
 
 ---------------------

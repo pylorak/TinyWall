@@ -997,9 +997,10 @@ namespace pylorak.TinyWall
                 {
                     MouseInterceptor.Stop();
 
-                    uint pid = Utils.GetPidUnderCursor(x, y);
-                    string exePath = Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller);
-                    UwpPackage.Package? appContainer = UwpPackage.FindPackageDetails(ProcessManager.GetAppContainerSid(pid));
+                    var pid = Utils.GetPidUnderCursor(x, y);
+                    var exePath = Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller);
+                    var packageList = new UwpPackageList();
+                    var appContainer = packageList.FindPackageForProcess(pid);
 
                     ExceptionSubject subj;
                     if (appContainer.HasValue)

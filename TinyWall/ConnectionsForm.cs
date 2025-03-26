@@ -62,7 +62,7 @@ namespace pylorak.TinyWall
             IconScanner.CancelScan();
             var fwLogRequest = GlobalInstances.Controller.BeginReadFwLog();
 
-            var uwpPackages = new UwpPackage();
+            var packageList = new UwpPackageList();
             var itemColl = new List<ListViewItem>();
             var procCache = new Dictionary<uint, string>();
             var servicePids = new ServicePidMap();
@@ -77,7 +77,7 @@ namespace pylorak.TinyWall
                   || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
                 {
                     var path = GetPathFromPidCached(procCache, tcpRow.ProcessId);
-                    var pi = ProcessInfo.Create(tcpRow.ProcessId, path, uwpPackages, servicePids);
+                    var pi = ProcessInfo.Create(tcpRow.ProcessId, path, packageList, servicePids);
                     ConstructListItem(itemColl, pi, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now, RuleDirection.Invalid);
                 }
             }
@@ -88,7 +88,7 @@ namespace pylorak.TinyWall
                  || (chkShowActive.Checked && (tcpRow.State != TcpState.Listen)))
                 {
                     var path = GetPathFromPidCached(procCache, tcpRow.ProcessId);
-                    var pi = ProcessInfo.Create(tcpRow.ProcessId, path, uwpPackages, servicePids);
+                    var pi = ProcessInfo.Create(tcpRow.ProcessId, path, packageList, servicePids);
                     ConstructListItem(itemColl, pi, "TCP", tcpRow.LocalEndPoint, tcpRow.RemoteEndPoint, tcpRow.State.ToString(), now, RuleDirection.Invalid);
                 }
             }
@@ -100,14 +100,14 @@ namespace pylorak.TinyWall
                 foreach (UdpRow udpRow in udpTable)
                 {
                     var path = GetPathFromPidCached(procCache, udpRow.ProcessId);
-                    var pi = ProcessInfo.Create(udpRow.ProcessId, path, uwpPackages, servicePids);
+                    var pi = ProcessInfo.Create(udpRow.ProcessId, path, packageList, servicePids);
                     ConstructListItem(itemColl, pi, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now, RuleDirection.Invalid);
                 }
                 udpTable = NetStat.GetExtendedUdp6Table(false);
                 foreach (UdpRow udpRow in udpTable)
                 {
                     var path = GetPathFromPidCached(procCache, udpRow.ProcessId);
-                    var pi = ProcessInfo.Create(udpRow.ProcessId, path, uwpPackages, servicePids);
+                    var pi = ProcessInfo.Create(udpRow.ProcessId, path, packageList, servicePids);
                     ConstructListItem(itemColl, pi, "UDP", udpRow.LocalEndPoint, dummyEP, "Listen", now, RuleDirection.Invalid);
                 }
             }
@@ -203,7 +203,7 @@ namespace pylorak.TinyWall
                     // to be corrected.
                     entry.AppPath = Utils.GetExactPath(entry.AppPath);
 
-                    var pi = ProcessInfo.Create(entry.ProcessId, entry.AppPath ?? string.Empty, entry.PackageId, uwpPackages, servicePids);
+                    var pi = ProcessInfo.Create(entry.ProcessId, entry.AppPath ?? string.Empty, entry.PackageId, packageList, servicePids);
                     ConstructListItem(itemColl, pi, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.LocalIp), entry.LocalPort), new IPEndPoint(IPAddress.Parse(entry.RemoteIp), entry.RemotePort), "Blocked", entry.Timestamp, entry.Direction);
                 }
             }

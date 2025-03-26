@@ -127,11 +127,12 @@ namespace pylorak.TinyWall
             }
             else if (uwpSubj != null)
             {
-                UwpPackage.Package? package = UwpPackage.FindPackageDetails(uwpSubj.Sid);
-                if (package.HasValue && (package.Value.Tampered != UwpPackage.TamperedState.Unknown))
+                var packageList = new UwpPackageList();
+                var package = packageList.FindPackage(uwpSubj.Sid);
+                if (package.HasValue && (package.Value.Tampered != UwpPackageList.TamperedState.Unknown))
                 {
                     hasSignature = true;
-                    validSignature = (package.Value.Tampered == UwpPackage.TamperedState.No);
+                    validSignature = (package.Value.Tampered == UwpPackageList.TamperedState.No);
                 }
             }
 

@@ -4,10 +4,12 @@ using System.Runtime.InteropServices;
 using System.Security;
 using Windows.Management.Deployment;
 using pylorak.Windows;
+using System.Collections;
+using System.Collections.ObjectModel;
 
 namespace pylorak.TinyWall
 {
-    public class UwpPackage
+    public class UwpPackageList : IReadOnlyList<UwpPackageList.Package>
     {
         public enum TamperedState
         {
@@ -90,7 +92,22 @@ namespace pylorak.TinyWall
             }
         }
 
-        public static Package[] GetPackages()
+        private List<Package>? _Packages;
+        private List<Package> Packages
+        {
+            get
+            {
+                if (_Packages is null)
+                    _Packages = CreatePackageList();
+                return _Packages;
+            }
+        }
+
+        public int Count => ((IReadOnlyCollection<Package>)Packages).Count;
+
+        public Package this[int index] => ((IReadOnlyList<Package>)Packages)[index];
+
+        private static List<Package> CreatePackageList()
         {
             var pm = new PackageManager();
             var packageList = pm.FindPackagesForUser(string.Empty);
@@ -104,15 +121,15 @@ namespace pylorak.TinyWall
                 catch { }
             }
 
-            return resultList.ToArray();
+            return resultList;
         }
 
-        private static Package? FindPackageDetails(string? sid, Package[] list)
+        public Package? FindPackage(string? sid)
         {
             if (string.IsNullOrEmpty(sid))
                 return null;
 
-            foreach (var package in list)
+            foreach (var package in Packages)
             {
                 if (package.Sid.Equals(sid))
                     return package;
@@ -121,26 +138,19 @@ namespace pylorak.TinyWall
             return null;
         }
 
-        public static Package? FindPackageDetails(string? sid)
+        public Package? FindPackageForProcess(uint pid)
         {
-            if (string.IsNullOrEmpty(sid))
-                return null;
-
-            var packages = GetPackages();
-
-            return FindPackageDetails(sid, packages);
+            return FindPackage(ProcessManager.GetAppContainerSid(pid));
         }
 
-        public Package[] Packages { get; private set; }
-
-        public UwpPackage()
+        public IEnumerator<Package> GetEnumerator()
         {
-            Packages = GetPackages();
+            return ((IEnumerable<Package>)Packages).GetEnumerator();
         }
 
-        public Package? FindPackage(string? sid)
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return FindPackageDetails(sid, Packages);
+            return ((IEnumerable)Packages).GetEnumerator();
         }
     }
 }
