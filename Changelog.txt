@@ -6,6 +6,7 @@ TinyWall Changelog
 - Add Last Modified column to application exceptions list
 - Performance enhancements for Connections, Processes and Settings windows
 - Don't make unnecessary saves to config file
+- Fix crash if AppX packages on host cannot be enumerated
 - Fix Connections windows might occasionally show empty list of active/listener sockets
 - Fix blocked IPv6 addresses shown backwards
 - Fix for possible crash when extracting an application's icon

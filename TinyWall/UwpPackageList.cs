@@ -98,7 +98,18 @@ namespace pylorak.TinyWall
             get
             {
                 if (_Packages is null)
-                    _Packages = CreatePackageList();
+                {
+                    try
+                    {
+                        _Packages = CreatePackageList();
+                    }
+                    catch
+                    {
+                        // Return an empty list if we cannot enumerate the packages on the system.
+                        // This happens for exmaple when the AppXSVC service is disabled.
+                        _Packages = new List<Package>();
+                    }
+                }
                 return _Packages;
             }
         }
