@@ -1,7 +1,7 @@
 TinyWall Changelog
 ---------------------
 
-3.4.1 - not yet released
+3.4.1 - Maintenance release (06.04.2025.)
 - Only enumerate UWP packages on system if actually needed
 - Add Last Modified column to application exceptions list
 - Performance enhancements for Connections, Processes and Settings windows
