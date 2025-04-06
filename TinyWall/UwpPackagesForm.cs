@@ -73,12 +73,11 @@ namespace pylorak.TinyWall
             }
 
             var itemColl = new List<ListViewItem>();
-
             var packageList = new UwpPackageList();
             foreach (var package in packageList)
             {
                 // Add list item
-                ListViewItem li = new ListViewItem(package.Name);
+                var li = new ListViewItem(package.Name);
                 li.SubItems.Add(package.PublisherId + ", " + package.Publisher);
                 li.ImageKey = "store";
                 li.Tag = package;

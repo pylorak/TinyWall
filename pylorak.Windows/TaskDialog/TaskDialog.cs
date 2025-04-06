@@ -237,7 +237,7 @@ namespace Microsoft.Samples
         /// </summary>
         internal int ButtonId
         {
-            get { return this.buttonId; }
+            readonly get { return this.buttonId; }
             set { this.buttonId = value; }
         }
 
@@ -246,7 +246,7 @@ namespace Microsoft.Samples
         /// </summary>
         internal string ButtonText
         {
-            get { return this.buttonText; }
+            readonly get { return this.buttonText; }
             set { this.buttonText = value; }
         }
     }

@@ -109,7 +109,7 @@ namespace pylorak.TinyWall
                     col.Width = width;
             }
 
-            List<ListViewItem> itemColl = new List<ListViewItem>();
+            var itemColl = new List<ListViewItem>();
 
             ServiceController[] services = ServiceController.GetServices();
             for (int i = 0; i < services.Length; ++i)
@@ -117,7 +117,7 @@ namespace pylorak.TinyWall
                 ServiceController srv = services[i];
                 try
                 {
-                    ListViewItem li = new ListViewItem(srv.DisplayName);
+                    var li = new ListViewItem(srv.DisplayName);
                     li.SubItems.Add(srv.ServiceName);
                     li.SubItems.Add(GetServiceExecutable(srv.ServiceName));
                     itemColl.Add(li);

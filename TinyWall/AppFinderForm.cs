@@ -267,8 +267,7 @@ namespace pylorak.TinyWall
         private void WaitForThread()
         {
             RunSearch = false;
-            if (null != SearcherThread)
-                SearcherThread.Join();
+            SearcherThread?.Join();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

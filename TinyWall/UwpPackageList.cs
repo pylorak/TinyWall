@@ -18,7 +18,7 @@ namespace pylorak.TinyWall
             Yes
         }
 
-        public readonly struct Package  // TODO: Use record struct from C# 10
+        public readonly struct Package : IEquatable<Package>
         {
             [SuppressUnmanagedCodeSecurity]
             private static class NativeMethods
@@ -63,14 +63,11 @@ namespace pylorak.TinyWall
                     ^ Tampered.GetHashCode();
             }
 
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
-                if (obj is Package other)
-                    return Equals(other);
-                else
-                    return false;
+                return obj is Package other && Equals(other);
             }
-
+            
             public bool Equals(Package other)
             {
                 return

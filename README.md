@@ -9,7 +9,6 @@
   </p>
 </div>
 
-
 ## About this repository
 
 This is the source code of TinyWall as found at its [website](https://tinywall.pados.hu). Upstream development is now largely inactive, but this repository is provided for anyone who would like to submit their own improvements or fork the project.
@@ -17,15 +16,18 @@ This is the source code of TinyWall as found at its [website](https://tinywall.p
 ## How to build
 
 ### Necessary tools
-- Microsoft Visual Studio 2019 or 2022  
+
+- Microsoft Visual Studio 2019 or 2022
 - [Wix v3.14 Toolset](https://github.com/wixtoolset/wix3/releases/tag/wix3141rtm)
 - [Visual Studio extension for Wix v3 Toolset](https://marketplace.visualstudio.com/items?itemName=WixToolset.WiXToolset)
 
 ### To build the application
+
 1. Open the solution file in Visual Studio and compile the `TinyWall` project. The other projects referenced inside the solution need not be compiled separately as they will be statically compiled into the application.
 1. Done.
 
 ### To update/build build the database of known applications
+
 1. Adjust the individual JSON files in the `TinyWall\Database` folder.
 1. Start the application with the `/develtool` flag.
 1. Use the `Database creator` tab to create one combined database file in JSON format. The output file will be called `profiles.json`.
@@ -33,11 +35,11 @@ This is the source code of TinyWall as found at its [website](https://tinywall.p
 1. Done.
 
 ### To build the installer
+
 1. Copy the compiled application files and all dependencies into the `MsiSetup\Sources\ProgramFiles\TinyWall` folder.
 1. Update the files as necessary inside the `MsiSetup\Sources\CommonAppData\TinyWall` folder. See instructions above about creating the database.
 1. Open the solution file in Visual Studio and compile the `MsiSetup` project.
 1. Done.
-
 
 ## Contributing
 
@@ -53,18 +55,15 @@ For complex features or large changes, please contact me first if your changes a
 
 If you prefer that, you can also build and distribute your own version of the binaries. In this case though you need to choose a different name other than TinyWall for your application.
 
-
 ## License
 
 - TaskDialog wrapper (code in directory `pylorak.Windows\TaskDialog`) written by KevinGre ([link](https://www.codeproject.com/Articles/17026/TaskDialog-for-WinForms)) and placed under Public Domain.
-
 - All other code in the repository is under the GNU GPLv3 License. See `LICENSE.txt` for more information.
-
 
 ## Contact
 
 Károly Pados - find e-mail at the bottom of the project website
 
-Website: [https://tinywall.pados.hu](https://tinywall.pados.hu)
+Website: <https://tinywall.pados.hu>
 
-GitHub: [https://github.com/pylorak/tinywall](https://github.com/pylorak/tinywall)
+GitHub: <https://github.com/pylorak/tinywall>

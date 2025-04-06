@@ -9,6 +9,8 @@ namespace pylorak.TinyWall
 {
     internal partial class ApplicationExceptionForm : Form
     {
+        private static readonly char[] PORT_LIST_SEPARATORS = new char[] { ',' };
+
         private List<FirewallExceptionV3> TmpExceptionSettings = new();
 
         internal List<FirewallExceptionV3> ExceptionSettings
@@ -255,7 +257,7 @@ namespace pylorak.TinyWall
                 return string.Empty;
 
             // Check validity
-            string[] elems = res.Split(new char[]{','}, StringSplitOptions.RemoveEmptyEntries);
+            string[] elems = res.Split(PORT_LIST_SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
             res = string.Empty;
             foreach (var e in elems)
             {
