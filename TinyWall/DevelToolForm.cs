@@ -13,6 +13,8 @@ namespace pylorak.TinyWall
 {
     internal partial class DevelToolForm : Form
     {
+        private static readonly string[] SIGNING_FILE_PATTERNS = new string[] { "*.dll", "*.exe", "*.msi" };
+
         // Key - The primary resource
         // Value - List of satellite resources
         private readonly List<KeyValuePair<string, string[]>> ResXInputs = new();
@@ -376,8 +378,11 @@ namespace pylorak.TinyWall
 
         private void btnCertBrowse_Click(object sender, EventArgs e)
         {
-            ofd.InitialDirectory = Path.GetDirectoryName(txtCert.Text);
             ofd.Filter = "All files (*)|*";
+            if (File.Exists(txtCert.Text) || Directory.Exists(txtCert.Text))
+            {
+                ofd.InitialDirectory = Path.GetDirectoryName(txtCert.Text);
+            }
             if (ofd.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
             {
                 txtCert.Text = ofd.FileName;
@@ -395,11 +400,6 @@ namespace pylorak.TinyWall
 
         private void btnBatchSign_Click(object sender, EventArgs e)
         {
-            if (!File.Exists(txtCert.Text))
-            {
-                MessageBox.Show(this, "Certificate not found!");
-                return;
-            }
             if (!Directory.Exists(txtSignDir.Text))
             {
                 MessageBox.Show(this, "Signing directory is invalid!");
@@ -412,58 +412,55 @@ namespace pylorak.TinyWall
             }
 
             btnBatchSign.Enabled = false;
-            SignFiles(txtSignDir.Text, "*.dll");
-            SignFiles(txtSignDir.Text, "*.exe");
-            SignFiles(txtSignDir.Text, "*.msi");
+            SignFiles(txtSignDir.Text, SIGNING_FILE_PATTERNS);
             btnBatchSign.Enabled = true;
-
-            MessageBox.Show(this, "Done signing!");
         }
 
-        private void SignFiles(string dirPath, string filePattern)
+        private void SignFiles(string dirPath, string[] filePatterns)
         {
-            string[] files = Directory.GetFiles(dirPath, filePattern, SearchOption.AllDirectories);
-            for (int i = 0; i < files.Length; ++i)
+            // Collect all files to sign
+            var filesToSign = new List<string>();
+            foreach (var pattern in filePatterns)
             {
-                var signedStatus = pylorak.Windows.WinTrust.VerifyFileAuthenticode(files[i]);
-                if (signedStatus == Windows.WinTrust.VerifyResult.SIGNATURE_MISSING)
+                string[] candidateFiles = Directory.GetFiles(dirPath, pattern, SearchOption.AllDirectories);
+                foreach (var filePath in candidateFiles)
                 {
-                    //                string signParams = string.Format("sign /ac C:/Users/Dev/Desktop/scca.crt /ph /f \"{0}\" /p \"{1}\" /d TinyWall /du \"http://tinywall.pados.hu\" /tr \"{2}\" \"{3}\"",
-                    string signParams = string.Format("sign /ph /f \"{0}\" /p \"{1}\" /d TinyWall /du \"http://tinywall.pados.hu\" /tr \"{2}\" /td sha1 /fd sha1 \"{3}\"",
-                            txtCert.Text,
-                            txtCertPass.Text,
-                            txtTimestampingServ.Text,
-                            files[i]);
-
-                    // Because signing accesses the timestamping server over the web,
-                    // we retry a failed signing multiple times to account for
-                    // internet glitches.
-                    bool signed = false;
-                    for (int retry = 0; retry < 3; ++retry)
+                    var signedStatus = pylorak.Windows.WinTrust.VerifyFileAuthenticode(filePath);
+                    if (signedStatus == Windows.WinTrust.VerifyResult.SIGNATURE_MISSING)
                     {
-                        using (Process p = Utils.StartProcess(txtSigntool.Text, signParams, false, true))
-                        {
-                            p.WaitForExit();
-                            signed = signed || (p.ExitCode == 0);
-                        }
-
-                        if (signed)
-                            break;
-
-                        System.Threading.Thread.Sleep(1000);
+                        filesToSign.Add("\"" + filePath + "\"");
                     }
-                    if (!signed)
+                    else if (signedStatus == Windows.WinTrust.VerifyResult.SIGNATURE_INVALID)
                     {
-                        MessageBox.Show(this, "Failed to sign: " + files[i]);
-                        break;
+                        MessageBox.Show(this, string.Format("File \"{0}\" has pre-existing INVALID certificate. Signing will be aborted for all files.", filePath), "Signing result", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
                     }
-                }
-                else if (signedStatus == Windows.WinTrust.VerifyResult.SIGNATURE_INVALID)
-                {
-                    MessageBox.Show(this, "Has pre-existing INVALID certificate: " + files[i]);
-                    break;
                 }
             }
+
+            if (filesToSign.Count == 0)
+            {
+                MessageBox.Show(this, "No files to sign, or all files are already signed.", "Signing result", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            // Assemble signtool command
+            string signParams = string.Format("sign /d TinyWall /du \"https://tinywall.pados.hu\" /n \"{0}\" /tr \"{1}\" /td sha256 /fd sha256 /v {2}",
+                    txtCert.Text,
+                    txtTimestampingServ.Text,
+                    string.Join(" ", filesToSign));
+
+            // Execute signing process
+            bool signSuccess;
+            using (Process p = Utils.StartProcess(txtSigntool.Text, signParams, false))
+            {
+                p.WaitForExit();
+                signSuccess = (p.ExitCode == 0);
+            }
+            if (signSuccess)
+                MessageBox.Show(this, "Files successfully signed.", "Signing result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            else
+                MessageBox.Show(this, "Failed to sign files.", "Signing result", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void btnSigntoolBrowse_Click(object sender, EventArgs e)

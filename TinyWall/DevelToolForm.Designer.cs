@@ -499,7 +499,7 @@
             this.txtTimestampingServ.Name = "txtTimestampingServ";
             this.txtTimestampingServ.Size = new System.Drawing.Size(329, 20);
             this.txtTimestampingServ.TabIndex = 13;
-            this.txtTimestampingServ.Text = "http://timestamp.digicert.com";
+            this.txtTimestampingServ.Text = "http://time.certum.pl/";
             // 
             // label14
             // 
@@ -526,7 +526,7 @@
             this.txtSigntool.Name = "txtSigntool";
             this.txtSigntool.Size = new System.Drawing.Size(329, 20);
             this.txtSigntool.TabIndex = 10;
-            this.txtSigntool.Text = "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\Signtool.exe";
+            this.txtSigntool.Text = "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.26100.0\\x64\\signtool.exe";
             // 
             // label13
             // 
@@ -563,7 +563,7 @@
             this.txtSignDir.Name = "txtSignDir";
             this.txtSignDir.Size = new System.Drawing.Size(329, 20);
             this.txtSignDir.TabIndex = 6;
-            this.txtSignDir.Text = "C:\\Users\\Karoly\\Nextcloud\\TinyWall\\TinyWall3\\MsiSetup\\";
+            this.txtSignDir.Text = "C:\\data\\Nextcloud\\TinyWall\\TinyWall3\\MsiSetup";
             // 
             // label12
             // 
@@ -576,10 +576,12 @@
             // 
             // txtCertPass
             // 
+            this.txtCertPass.Enabled = false;
             this.txtCertPass.Location = new System.Drawing.Point(9, 82);
             this.txtCertPass.Name = "txtCertPass";
             this.txtCertPass.Size = new System.Drawing.Size(329, 20);
             this.txtCertPass.TabIndex = 4;
+            this.txtCertPass.Text = "Smartcard + PIN";
             // 
             // label11
             // 
@@ -606,16 +608,15 @@
             this.txtCert.Name = "txtCert";
             this.txtCert.Size = new System.Drawing.Size(329, 20);
             this.txtCert.TabIndex = 1;
-            this.txtCert.Text = "C:\\Users\\Karoly\\Nextcloud\\TinyWall\\TinyWall3\\Cert\\KarolyPadosCodeSign.pfx";
             // 
             // label10
             // 
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(6, 27);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(73, 13);
+            this.label10.Size = new System.Drawing.Size(57, 13);
             this.label10.TabIndex = 0;
-            this.label10.Text = "Certificate file:";
+            this.label10.Text = "Certificate:";
             // 
             // DevelToolForm
             // 
