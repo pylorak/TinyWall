@@ -1956,7 +1956,10 @@ namespace pylorak.TinyWall
             GatewayFilterConditions.Dispose();
             DnsFilterConditions.Dispose();
             LogWatcher.Dispose();
-            CommitLearnedRules();
+            
+            if (CommitLearnedRules())
+                ActiveConfig.Service.Save(ConfigSavePath);
+
             HostsFileManager.Dispose();
             FileLocker.UnlockAll();
 
