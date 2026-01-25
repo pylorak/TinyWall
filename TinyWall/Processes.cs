@@ -77,51 +77,92 @@ namespace pylorak.TinyWall
             await UpdateListAsync();
         }
 
-        private Task UpdateListAsync()
+        private async Task UpdateListAsync()
         {
-            lblPleaseWait.Visible = true;
-            Enabled = false;
+            Utils.Invoke(this, () => {
+                lblPleaseWait.Visible = true;
+                Enabled = false;
+            });
 
+            // Load column widths ahead of time to avoid accessing UI thread during background processing
+            Dictionary<string, int> columnWidths = new Dictionary<string, int>();
             foreach (ColumnHeader col in listView.Columns)
             {
                 if (ActiveConfig.Controller.ProcessesFormColumnWidths.TryGetValue((string)col.Tag, out int width))
-                    col.Width = width;
+                    columnWidths[(string)col.Tag] = width;
             }
 
-            List<ListViewItem> itemColl = new List<ListViewItem>();
-            var packageList = new UwpPackageList();
-            ServicePidMap servicePids = new ServicePidMap();
+            // Move heavy operations to background thread
+            var items = await Task.Run(() => {
+                List<ListViewItem> itemColl = new List<ListViewItem>();
+                
+                var packageList = new UwpPackageList();
+                ServicePidMap servicePids = new ServicePidMap();
 
-            Process[] procs = Process.GetProcesses();
+                Process[] procs = Process.GetProcesses();
 
-            if (!string.IsNullOrWhiteSpace(_searchItem))
-                procs = procs.Where(p => p.ProcessName.ToLower().Contains(_searchItem.ToLower())).ToArray();
+                if (!string.IsNullOrWhiteSpace(_searchItem))
+                    procs = procs.Where(p => p.ProcessName.ToLower().Contains(_searchItem.ToLower())).ToArray();
 
-            foreach (var t in procs)
-            {
-                using Process p = t;
-                try
+                foreach (var t in procs)
                 {
-                    var pid = unchecked((uint)p.Id);
-                    var e = ProcessInfo.Create(pid, packageList, servicePids);
+                    // Check if we need to cancel the operation
+                    if (!this.IsHandleCreated) break;
+                    
+                    using Process p = t;
+                    try
+                    {
+                        var pid = unchecked((uint)p.Id);
+                        var e = ProcessInfo.Create(pid, packageList, servicePids);
 
-                    if (string.IsNullOrEmpty(e.Path))
-                        continue;
+                        if (string.IsNullOrEmpty(e.Path))
+                            continue;
 
-                    // Scan list of already added items to prevent duplicates
-                    bool skip = itemColl.Select(t1 => (ProcessInfo)t1.Tag).Any(opi =>
-                        (e.Package == opi.Package) && (e.Path == opi.Path) && (e.Services.SetEquals(opi.Services)));
+                        // Scan list of already added items to prevent duplicates
+                        bool skip = itemColl.Select(t1 => (ProcessInfo)t1.Tag).Any(opi =>
+                            (e.Package == opi.Package) && (e.Path == opi.Path) && (e.Services.SetEquals(opi.Services)));
 
-                    if (skip)
-                        continue;
+                        if (skip)
+                            continue;
 
-                    // Add list item
-                    ListViewItem li = new ListViewItem(e.Package.HasValue ? e.Package.Value.Name : p.ProcessName);
-                    li.SubItems.Add(string.Join(", ", e.Services.ToArray()));
-                    li.SubItems.Add(e.Path);
-                    li.Tag = e;
-                    itemColl.Add(li);
+                        // Create list item without adding icons initially (icons need to be added on UI thread)
+                        ListViewItem li = new ListViewItem(e.Package.HasValue ? e.Package.Value.Name : p.ProcessName);
+                        li.SubItems.Add(string.Join(", ", e.Services.ToArray()));
+                        li.SubItems.Add(e.Path);
+                        li.Tag = e;
+                        itemColl.Add(li);
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                }
 
+                return itemColl;
+            });
+
+            // Update UI on main thread
+            Utils.Invoke(this, () => {
+                // Apply column widths
+                foreach (ColumnHeader col in listView.Columns)
+                {
+                    if (columnWidths.TryGetValue((string)col.Tag, out int width))
+                        col.Width = width;
+                }
+
+                Utils.SetDoubleBuffering(listView, true);
+                listView.BeginUpdate();
+                listView.Items.Clear();
+                listView.ListViewItemSorter = new ListViewItemComparer(0);
+
+                // Add items to the list view
+                listView.Items.AddRange(items.ToArray());
+
+                // Now add icons after items are added to the control
+                foreach (ListViewItem li in listView.Items)
+                {
+                    var e = (ProcessInfo)li.Tag;
+                    
                     // Add icon
                     if (e.Package.HasValue)
                     {
@@ -143,35 +184,12 @@ namespace pylorak.TinyWall
                         li.ImageKey = e.Path;
                     }
                 }
-                catch
-                {
-                    // ignored
-                }
-            }
 
-            Utils.SetDoubleBuffering(listView, true);
-            listView.BeginUpdate();
-            listView.Items.Clear();
-            listView.ListViewItemSorter = new ListViewItemComparer(0);
+                listView.EndUpdate();
 
-            //if (!string.IsNullOrWhiteSpace(_searchItem))
-            //    itemColl = itemColl.Where(item =>
-            //        {
-            //            var subItem = item.SubItems;
-
-            //            return (subItem[0].Text.ToLower().Contains(_searchItem) ||
-            //                    subItem[1].Text.ToLower().Contains(_searchItem) ||
-            //                    subItem[2].Text.ToLower().Contains(_searchItem));
-            //        })
-            //        .ToList();
-
-            listView.Items.AddRange(itemColl.ToArray());
-            listView.EndUpdate();
-
-            lblPleaseWait.Visible = false;
-            Enabled = true;
-
-            return Task.CompletedTask;
+                lblPleaseWait.Visible = false;
+                Enabled = true;
+            });
         }
 
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)

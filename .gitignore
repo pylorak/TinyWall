@@ -1,38 +1,67 @@
+# Documentation files (if needed to ignore)
+*.md
+
+# Build artifacts for C# projects
 *.exe
 *.dll
-*.msi
-*.zip
-*.suo
+*.pdb
+*.userprefs
+*.cache
+*.log
+[Tt]iny[Ff]ile*.tmp
+
+# Dependencies
+packages/
+node_modules/
+.nuget/
+
+# IDE specific
+.vs/
 *.user
+*.suo
+*.userosscache
+*.sln.docstates
 
-/.vs/
-/.tx/
-/.vscode/
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
 
-/LocalizationPack/**/*.resx
-/LocalizationPack/**/*.pdf
-/LocalizationPack/ZetaResourceEditor/
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
 
-/TinyWall.suo
-/TinyWall.v11.suo
+# Configuration files that might contain secrets
+.config/usersecrets/
+.vscode/settings.json
 
-/TinyWall/obj/
-/TinyWall/bin/
+# Performance related files if they are generated
+*.perf
+*.profile
+*.trace
 
-/pylorak.Utilities/obj/
-/pylorak.Utilities/bin/
+# Log files
+*.log
 
-/pylorak.Windows/obj/
-/pylorak.Windows/bin/
+# Backup files
+*.bak
+*.backup
+*~
 
-/pylorak.Windows.Services/obj/
-/pylorak.Windows.Services/bin/
+# Local configuration overrides
+appsettings.Local.json
+*.user.json
 
-/pylorak.Windows.WFP/bin/
-/pylorak.Windows.WFP/obj/
+# Test results
+TestResults/
 
-/MsiSetup/obj/
-/MsiSetup/bin/
-/MsiSetup/Sources/ProgramFiles/
-/ImmenseWall/obj/Debug
-/ImmenseWall/bin/Debug
+# Publish output
+bin/
+obj/

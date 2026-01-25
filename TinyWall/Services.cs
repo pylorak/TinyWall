@@ -111,56 +111,64 @@ namespace pylorak.TinyWall
             await UpdateListAsync();
         }
 
-        private Task UpdateListAsync()
+        private async Task UpdateListAsync()
         {
+            // Load column widths ahead of time to avoid accessing UI thread during background processing
+            Dictionary<string, int> columnWidths = new Dictionary<string, int>();
             foreach (ColumnHeader col in listView.Columns)
             {
                 if (ActiveConfig.Controller.ServicesFormColumnWidths.TryGetValue((string)col.Tag, out int width))
-                    col.Width = width;
+                    columnWidths[(string)col.Tag] = width;
             }
 
-            var itemColl = new List<ListViewItem>();
+            var itemColl = await Task.Run(() => {
+                var items = new List<ListViewItem>();
 
-            ServiceController[] services = ServiceController.GetServices();
+                ServiceController[] services = ServiceController.GetServices();
 
-            if (!string.IsNullOrWhiteSpace(_searchItem))
-                services = services.Where(s =>
-                    s.ServiceName.ToLower().Contains(_searchItem.ToLower())
-                    || s.DisplayName.ToLower().Contains(_searchItem.ToLower())
-                ).ToArray();
+                if (!string.IsNullOrWhiteSpace(_searchItem))
+                    services = services.Where(s =>
+                        s.ServiceName.ToLower().Contains(_searchItem.ToLower())
+                        || s.DisplayName.ToLower().Contains(_searchItem.ToLower())
+                    ).ToArray();
 
-            foreach (var srv in services)
-            {
-                try
+                foreach (var srv in services)
                 {
-                    var li = new ListViewItem(srv.DisplayName);
-                    li.SubItems.Add(srv.ServiceName);
-                    li.SubItems.Add(GetServiceExecutable(srv.ServiceName));
-                    itemColl.Add(li);
+                    // Check if we need to cancel the operation
+                    if (!this.IsHandleCreated) break;
+                    
+                    try
+                    {
+                        var li = new ListViewItem(srv.DisplayName);
+                        li.SubItems.Add(srv.ServiceName);
+                        li.SubItems.Add(GetServiceExecutable(srv.ServiceName));
+                        items.Add(li);
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
-                catch
+
+                return items;
+            });
+
+            Utils.Invoke(this, () => {
+                // Apply column widths
+                foreach (ColumnHeader col in listView.Columns)
                 {
-                    // ignored
+                    if (columnWidths.TryGetValue((string)col.Tag, out int width))
+                        col.Width = width;
                 }
-            }
 
-            Utils.SetDoubleBuffering(listView, true);
-            listView.BeginUpdate();
-            listView.ListViewItemSorter = new ListViewItemComparer(0);
+                Utils.SetDoubleBuffering(listView, true);
+                listView.BeginUpdate();
+                listView.ListViewItemSorter = new ListViewItemComparer(0);
 
-            //if (!string.IsNullOrWhiteSpace(_searchItem))
-            //    itemColl = itemColl.Where(items =>
-            //    {
-            //        var subItem = items.SubItems;
-
-            //        return subItem[0].Text.ToLower().Contains(_searchItem) || subItem[1].Text.ToLower().Contains(_searchItem) ||
-            //               subItem[2].Text.ToLower().Contains(_searchItem);
-            //    }).ToList();
-
-            listView.Items.AddRange(itemColl.ToArray());
-            listView.EndUpdate();
-
-            return Task.CompletedTask;
+                listView.Items.Clear();
+                listView.Items.AddRange(itemColl.ToArray());
+                listView.EndUpdate();
+            });
         }
 
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
