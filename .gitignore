@@ -36,3 +36,6 @@
 /MsiSetup/Sources/ProgramFiles/
 /ImmenseWall/obj/Debug
 /ImmenseWall/bin/Debug
+
+build_errors*.txt
+build_output*.txt

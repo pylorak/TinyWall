@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace pylorak.TinyWall
@@ -64,7 +65,7 @@ namespace pylorak.TinyWall
             TmpConfig.Service.ActiveProfile.Normalise();
         }
 
-        private void ListApplications_DragDrop(object sender, DragEventArgs e)
+        private async void ListApplications_DragDrop(object sender, DragEventArgs e)
         {
             List<FirewallExceptionV3> list = new List<FirewallExceptionV3>();
 
@@ -82,7 +83,7 @@ namespace pylorak.TinyWall
             }
 
             TmpConfig.Service.ActiveProfile.AddExceptions(list);
-            RebuildExceptionsList();
+            await RebuildExceptionsList();
         }
 
         private void ListApplications_DragEnter(object sender, DragEventArgs e)
@@ -92,7 +93,7 @@ namespace pylorak.TinyWall
 
         internal string? NewPassword => _mNewPassword;
 
-        private void InitSettingsUi()
+        private async Task InitSettingsUi()
         {
             _loadingSettings = true;
             try
@@ -146,7 +147,7 @@ namespace pylorak.TinyWall
                 listOptionalGlobalProfiles.EndUpdate();
 
                 // Fill list of applications
-                RebuildExceptionsList();
+                await RebuildExceptionsList();
             }
             finally
             {
@@ -154,9 +155,9 @@ namespace pylorak.TinyWall
             }
         }
 
-        private void RebuildExceptionsList()
+        private async Task RebuildExceptionsList()
         {
-            var packageList = new UwpPackageList();
+            var packageList = await Task.Run(() => new UwpPackageList());
             _exceptionItems.Clear();
 
             foreach (var ex in TmpConfig.Service.ActiveProfile.AppExceptions)
@@ -345,7 +346,7 @@ namespace pylorak.TinyWall
             listRecommendedGlobalProfiles_ItemCheck(sender, e);
         }
 
-        private void btnAppRemove_Click(object sender, EventArgs e)
+        private async void btnAppRemove_Click(object sender, EventArgs e)
         {
             for (var i = listApplications.SelectedIndices.Count - 1; i >= 0; --i)
             {
@@ -354,19 +355,19 @@ namespace pylorak.TinyWall
             }
 
             listApplications.SelectedIndices.Clear();
-            RebuildExceptionsList();
+            await RebuildExceptionsList();
         }
 
-        private void btnAppRemoveAll_Click(object sender, EventArgs e)
+        private async void btnAppRemoveAll_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show(this, Resources.Messages.AreYouSureYouWantToRemoveAllExceptions, Resources.Messages.TinyWall, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.No)
                 return;
 
             TmpConfig.Service.ActiveProfile.AppExceptions.Clear();
-            RebuildExceptionsList();
+            await RebuildExceptionsList();
         }
 
-        private void btnAppModify_Click(object sender, EventArgs e)
+        private async void btnAppModify_Click(object sender, EventArgs e)
         {
             var li = _filteredExceptionItems[listApplications.SelectedIndices[0]];
             var oldEx = (FirewallExceptionV3)li.Tag;
@@ -381,14 +382,14 @@ namespace pylorak.TinyWall
                     TmpConfig.Service.ActiveProfile.AppExceptions.Remove(oldEx);
                     // Add new rule
                     TmpConfig.Service.ActiveProfile.AddExceptions(f.ExceptionSettings);
-                    RebuildExceptionsList();
+                    await RebuildExceptionsList();
                 }
             }
 
             listApplications.Focus();
         }
 
-        private void btnAppAdd_Click(object sender, EventArgs e)
+        private async void btnAppAdd_Click(object sender, EventArgs e)
         {
             //using var f = new ApplicationExceptionForm(FirewallExceptionV3.Default);
             using var f = new ApplicationExceptionForm();
@@ -396,7 +397,7 @@ namespace pylorak.TinyWall
             if (f.ShowDialog(this) != DialogResult.OK) return;
 
             TmpConfig.Service.ActiveProfile.AddExceptions(f.ExceptionSettings);
-            RebuildExceptionsList();
+            await RebuildExceptionsList();
         }
 
         private void chkEnablePassword_CheckedChanged(object sender, EventArgs e)
@@ -434,14 +435,14 @@ namespace pylorak.TinyWall
             Updater.StartUpdate();
         }
 
-        private void btnAppAutoDetect_Click(object sender, EventArgs e)
+        private async void btnAppAutoDetect_Click(object sender, EventArgs e)
         {
             using var aff = new AppFinderForm();
 
             if (aff.ShowDialog(this) != DialogResult.OK) return;
 
             TmpConfig.Service.ActiveProfile.AddExceptions(aff.SelectedExceptions);
-            RebuildExceptionsList();
+            await RebuildExceptionsList();
         }
 
         private void lblAboutHomepageLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -488,7 +489,7 @@ namespace pylorak.TinyWall
             btnDonate.BorderStyle = BorderStyle.None;
         }
 
-        private void btnImport_Click(object sender, EventArgs e)
+        private async void btnImport_Click(object sender, EventArgs e)
         {
             ofd.Filter = string.Format(CultureInfo.CurrentCulture, @"{0} (*.tws)|*.tws|{1} (*)|*", Resources.Messages.TinyWallSettingsFileFilter, Resources.Messages.AllFilesFileFilter);
 
@@ -505,22 +506,22 @@ namespace pylorak.TinyWall
                 return;
             }
 
-            InitSettingsUi();
+            await InitSettingsUi();
             MessageBox.Show(this, Resources.Messages.ConfigurationHasBeenImported, Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void btnExport_Click(object sender, EventArgs e)
+        private async void btnExport_Click(object sender, EventArgs e)
         {
             ofd.Filter = string.Format(CultureInfo.CurrentCulture, @"{0} (*.tws)|*.tws|{1} (*)|*", Resources.Messages.TinyWallSettingsFileFilter, Resources.Messages.AllFilesFileFilter);
             sfd.DefaultExt = "tws";
             if (sfd.ShowDialog(this) == DialogResult.OK)
             {
-                SerialisationHelper.SerialiseToFile(this.TmpConfig, sfd.FileName);
+                await Task.Run(() => SerialisationHelper.SerialiseToFile(this.TmpConfig, sfd.FileName));
                 MessageBox.Show(this, Resources.Messages.ConfigurationHasBeenExported, Resources.Messages.TinyWallSettingsFileFilter, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
-        private void SettingsForm_Load(object sender, EventArgs e)
+        private async void SettingsForm_Load(object sender, EventArgs e)
         {
 #if DEBUG
             //DataCollection.StartProfile(ProfileLevel.Global, DataCollection.CurrentId);
@@ -569,7 +570,7 @@ namespace pylorak.TinyWall
 
             lblVersion.Text = string.Format(CultureInfo.CurrentCulture, @"{0} {1}", lblVersion.Text, Application.ProductVersion);
 
-            InitSettingsUi();
+            await InitSettingsUi();
 
 #if DEBUG
             //          DataCollection.StopProfile(ProfileLevel.Global, DataCollection.CurrentId);
@@ -587,7 +588,7 @@ namespace pylorak.TinyWall
             ApplyExceptionFilter();
         }
 
-        private void listApplications_ColumnClick(object sender, ColumnClickEventArgs e)
+        private async void listApplications_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             ListViewItemComparer oldSorter = (ListViewItemComparer)listApplications.ListViewItemSorter;
             ListViewItemComparer newSorter = new ListViewItemComparer(e.Column, IconList);
@@ -595,7 +596,7 @@ namespace pylorak.TinyWall
                 newSorter.Ascending = !oldSorter.Ascending;
 
             listApplications.ListViewItemSorter = newSorter;
-            RebuildExceptionsList();
+            await RebuildExceptionsList();
         }
 
         private void chkEnableBlocklists_CheckedChanged(object sender, EventArgs e)

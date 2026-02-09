@@ -9,6 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace pylorak.TinyWall
@@ -607,6 +608,20 @@ namespace pylorak.TinyWall
         private void SetMode(FirewallMode mode)
         {
             var resp = GlobalInstances.Controller!.SwitchFirewallMode(mode);
+            HandleSetModeResponse(resp, mode);
+        }
+
+        /// <summary>
+        /// Switches the firewall mode asynchronously without blocking the UI thread.
+        /// </summary>
+        private async Task SetModeAsync(FirewallMode mode)
+        {
+            var resp = await GlobalInstances.Controller!.SwitchFirewallModeAsync(mode);
+            HandleSetModeResponse(resp, mode);
+        }
+
+        private void HandleSetModeResponse(MessageType resp, FirewallMode mode)
+        {
             var userMessage = mode switch
             {
                 FirewallMode.Normal => Resources.Messages.TheFirewallIsNowOperatingAsRecommended,
@@ -650,39 +665,39 @@ namespace pylorak.TinyWall
             }
         }
 
-        private void mnuModeDisabled_Click(object sender, EventArgs e)
+        private async void mnuModeDisabled_Click(object sender, EventArgs e)
         {
-            if (!EnsureUnlockedServer())
+            if (!await EnsureUnlockedServerAsync())
                 return;
 
-            SetMode(FirewallMode.Disabled);
+            await SetModeAsync(FirewallMode.Disabled);
             UpdateDisplay();
         }
 
-        private void mnuModeNormal_Click(object sender, EventArgs e)
+        private async void mnuModeNormal_Click(object sender, EventArgs e)
         {
-            if (!EnsureUnlockedServer())
+            if (!await EnsureUnlockedServerAsync())
                 return;
 
-            SetMode(FirewallMode.Normal);
+            await SetModeAsync(FirewallMode.Normal);
             UpdateDisplay();
         }
 
-        private void mnuModeBlockAll_Click(object sender, EventArgs e)
+        private async void mnuModeBlockAll_Click(object sender, EventArgs e)
         {
-            if (!EnsureUnlockedServer())
+            if (!await EnsureUnlockedServerAsync())
                 return;
 
-            SetMode(FirewallMode.BlockAll);
+            await SetModeAsync(FirewallMode.BlockAll);
             UpdateDisplay();
         }
 
-        private void mnuAllowOutgoing_Click(object sender, EventArgs e)
+        private async void mnuAllowOutgoing_Click(object sender, EventArgs e)
         {
-            if (!EnsureUnlockedServer())
+            if (!await EnsureUnlockedServerAsync())
                 return;
 
-            SetMode(FirewallMode.AllowOutgoing);
+            await SetModeAsync(FirewallMode.AllowOutgoing);
             UpdateDisplay();
         }
 
@@ -751,6 +766,53 @@ namespace pylorak.TinyWall
                         break;
                     default:
                         //throw new ArgumentOutOfRangeException();
+                        break;
+                }
+            }
+
+            _firewallState.ClientNotifs.Clear();
+
+            if (updated)
+                UpdateDisplay();
+
+            return updated;
+        }
+
+        /// <summary>
+        /// Loads settings from the server asynchronously without blocking the UI thread.
+        /// </summary>
+        private async Task<bool> LoadSettingsFromServerAsync(bool force = false)
+        {
+            Guid inChangeset = force ? Guid.Empty : GlobalInstances.ClientChangeset;
+            var (ret, config, state, outChangeset) = await GlobalInstances.Controller!.GetServerConfigAsync(inChangeset);
+
+            bool updated = (inChangeset != outChangeset);
+
+            if (MessageType.GET_SETTINGS == ret)
+            {
+                // Update our config based on what we received
+                GlobalInstances.ClientChangeset = outChangeset;
+                if (config is not null)
+                    ActiveConfig.Service = config;
+                if (state is not null)
+                    _firewallState = state;
+            }
+            else if (MessageType.COM_ERROR != ret)
+            {
+                ActiveConfig.Controller = new ControllerSettings();
+                ActiveConfig.Service = new ServerConfiguration
+                {
+                    ActiveProfileName = Resources.Messages.Default
+                };
+            }
+
+            // See if there is a new notification for the client
+            foreach (var t in _firewallState.ClientNotifs)
+            {
+                switch (t)
+                {
+                    case MessageType.DATABASE_UPDATED:
+                        await LoadDatabaseAsync();
                         break;
                 }
             }
@@ -921,6 +983,43 @@ namespace pylorak.TinyWall
             return resp;
         }
 
+        internal async Task<TwMessage> ApplyFirewallSettingsAsync(ServerConfiguration srvConfig, bool showUi = true)
+        {
+            if (!await EnsureUnlockedServerAsync(showUi))
+                return TwMessageLocked.Instance;
+
+            var resp = await GlobalInstances.Controller!.SetServerConfigAsync(srvConfig, GlobalInstances.ClientChangeset);
+
+            switch (resp.Type)
+            {
+                case MessageType.PUT_SETTINGS:
+                    var respArgs = (TwMessagePutSettings)resp;
+                    if (respArgs.State is not null)
+                        _firewallState = respArgs.State;
+                    ActiveConfig.Service = respArgs.Config;
+                    GlobalInstances.ClientChangeset = respArgs.Changeset;
+                    if (showUi)
+                    {
+                        if (respArgs.Warning)
+                            ShowBalloonTip(Resources.Messages.SettingHaveChangedRetry, ToolTipIcon.Warning);
+                        else
+                            ShowBalloonTip(Resources.Messages.TheFirewallSettingsHaveBeenUpdated, ToolTipIcon.Info);
+                    }
+                    break;
+                case MessageType.RESPONSE_ERROR:
+                    if (showUi)
+                        ShowBalloonTip(Resources.Messages.CouldNotApplySettingsInternalError, ToolTipIcon.Warning);
+                    break;
+                default:
+                    if (showUi)
+                        DefaultPopups(resp.Type);
+                    await LoadSettingsFromServerAsync();
+                    break;
+            }
+
+            return resp;
+        }
+
         private void DefaultPopups(MessageType op)
         {
             switch (op)
@@ -976,9 +1075,9 @@ namespace pylorak.TinyWall
             return FlashIfOpen(frm.GetType());
         }
 
-        private void mnuManage_Click(object sender, EventArgs e)
+        private async void mnuManage_Click(object sender, EventArgs e)
         {
-            if (!EnsureUnlockedServer())
+            if (!await EnsureUnlockedServerAsync())
                 return;
 
             // The settings form should not be used with other windows at the same time
@@ -988,7 +1087,7 @@ namespace pylorak.TinyWall
                 return;
             }
 
-            LoadSettingsFromServer();
+            await LoadSettingsFromServerAsync();
 
             using var sf = new SettingsForm(Utils.DeepClone(ActiveConfig.Service), Utils.DeepClone(ActiveConfig.Controller));
             _activeForms.Add(sf);
@@ -1001,7 +1100,7 @@ namespace pylorak.TinyWall
                 // Save settings
                 ActiveConfig.Controller = sf.TmpConfig.Controller;
                 ActiveConfig.Controller.Save();
-                ApplyFirewallSettings(sf.TmpConfig.Service);
+                await ApplyFirewallSettingsAsync(sf.TmpConfig.Service);
 
                 // Handle password change request
                 string? newPassword = sf.NewPassword;
@@ -1009,7 +1108,7 @@ namespace pylorak.TinyWall
                 {
                     // If the new password is empty, we do not hash it because an empty password
                     // is a special value signalizing the non-existence of a password.
-                    MessageType resp = GlobalInstances.Controller!.SetPassphrase(string.IsNullOrEmpty(newPassword) ? string.Empty : Hasher.HashString(newPassword));
+                    MessageType resp = await GlobalInstances.Controller!.SetPassphraseAsync(string.IsNullOrEmpty(newPassword) ? string.Empty : Hasher.HashString(newPassword));
                     if (resp != MessageType.SET_PASSPHRASE)
                     {
                         // Only display a popup for setting the password if it did not succeed
@@ -1247,6 +1346,60 @@ namespace pylorak.TinyWall
             return false;
         }
 
+        /// <summary>
+        /// Checks if the server is locked and attempts to unlock it asynchronously.
+        /// Does not block the UI thread during the lock check or unlock attempt.
+        /// </summary>
+        internal async Task<bool> EnsureUnlockedServerAsync(bool showUi = true)
+        {
+            Locked = await GlobalInstances.Controller!.IsServerLockedAsync();
+            if (!Locked)
+                return true;
+
+            using var pf = new PasswordForm();
+            pf.BringToFront();
+            pf.Activate();
+            if (pf.ShowDialog() != DialogResult.OK) return false;
+
+            MessageType resp = await GlobalInstances.Controller.TryUnlockServerAsync(pf.PassHash);
+            switch (resp)
+            {
+                case MessageType.UNLOCK:
+                    Locked = false;
+                    return true;
+                case MessageType.RESPONSE_ERROR:
+                    if (showUi)
+                        ShowBalloonTip(Resources.Messages.UnlockFailed, ToolTipIcon.Error);
+                    break;
+                case MessageType.INVALID_COMMAND:
+                case MessageType.RESPONSE_LOCKED:
+                case MessageType.COM_ERROR:
+                case MessageType.GET_SETTINGS:
+                case MessageType.GET_PROCESS_PATH:
+                case MessageType.READ_FW_LOG:
+                case MessageType.IS_LOCKED:
+                case MessageType.MODE_SWITCH:
+                case MessageType.REINIT:
+                case MessageType.PUT_SETTINGS:
+                case MessageType.LOCK:
+                case MessageType.SET_PASSPHRASE:
+                case MessageType.STOP_SERVICE:
+                case MessageType.MINUTE_TIMER:
+                case MessageType.REENUMERATE_ADDRESSES:
+                case MessageType.DATABASE_UPDATED:
+                case MessageType.ADD_TEMPORARY_EXCEPTION:
+                case MessageType.RELOAD_WFP_FILTERS:
+                case MessageType.DISPLAY_POWER_EVENT:
+                    break;
+                default:
+                    if (showUi)
+                        DefaultPopups(resp);
+                    break;
+            }
+
+            return false;
+        }
+
         private void mnuLock_Click(object sender, EventArgs e)
         {
             MessageType lockResp = GlobalInstances.Controller!.LockServer();
@@ -1401,6 +1554,26 @@ namespace pylorak.TinyWall
                             });
                 });
 
+                throw;
+            }
+        }
+
+        private async Task LoadDatabaseAsync()
+        {
+            try
+            {
+                GlobalInstances.AppDatabase = await Task.Run(() => DatabaseClasses.AppDatabase.Load());
+            }
+            catch
+            {
+                GlobalInstances.AppDatabase = new DatabaseClasses.AppDatabase();
+                if (_syncCtx != null)
+                {
+                    Utils.Invoke(_syncCtx, delegate
+                    {
+                        ShowBalloonTip(Resources.Messages.DatabaseIsMissingOrCorrupt, ToolTipIcon.Warning);
+                    });
+                }
                 throw;
             }
         }

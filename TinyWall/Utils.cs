@@ -14,6 +14,7 @@ using System.Security;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace pylorak.TinyWall
@@ -24,6 +25,34 @@ namespace pylorak.TinyWall
         {
             for (int i = 0; i < str.Length; ++i)
                 sb.Append(str[i]);
+        }
+
+        internal static async Task<T> WaitAsync<T>(this Task<T> task, CancellationToken ct)
+        {
+            if (ct == CancellationToken.None) return await task;
+            var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            using (ct.Register(s => ((TaskCompletionSource<bool>)s!).TrySetResult(true), tcs))
+            {
+                if (task != await Task.WhenAny(task, tcs.Task))
+                {
+                    ct.ThrowIfCancellationRequested();
+                }
+            }
+            return await task;
+        }
+
+        internal static async Task WaitAsync(this Task task, CancellationToken ct)
+        {
+            if (ct == CancellationToken.None) { await task; return; }
+            var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            using (ct.Register(s => ((TaskCompletionSource<bool>)s!).TrySetResult(true), tcs))
+            {
+                if (task != await Task.WhenAny(task, tcs.Task))
+                {
+                    ct.ThrowIfCancellationRequested();
+                }
+            }
+            await task;
         }
     }
 
@@ -261,7 +290,7 @@ namespace pylorak.TinyWall
             }
         }
 
-        internal static string GetPathOfProcessUseTwService(uint pid, Controller controller)
+        internal static string GetPathOfProcessUseTwService(uint pid, Controller? controller)
         {
             // Shortcut for special case
             if (pid is 0 or 4)
@@ -269,10 +298,10 @@ namespace pylorak.TinyWall
 
             var ret = GetLongPathName(ProcessManager.GetProcessPath(pid));
 
-            if (string.IsNullOrEmpty(ret))
+            if (string.IsNullOrEmpty(ret) && controller != null)
                 ret = controller.TryGetProcessPath(pid);
 
-            return ret;
+            return ret ?? string.Empty;
         }
 
         internal static string GetPathOfProcess(uint pid)

@@ -1,15 +1,23 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace pylorak.TinyWall
 {
     public class TwRequest
     {
         private TwMessage? _response;
+        private readonly TaskCompletionSource<TwMessage> _responseTask = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
         private object ResponseSyncRoot => this;
 
         public TwMessage Request { get; init; }
+
+        /// <summary>
+        /// Gets a task that completes when the response is available.
+        /// Use this for async/await patterns to avoid blocking the calling thread.
+        /// </summary>
+        public Task<TwMessage> ResponseAsync => _responseTask.Task;
 
         public TwMessage Response
         {
@@ -31,6 +39,7 @@ namespace pylorak.TinyWall
                     if (_response is not null)
                         throw new InvalidOperationException("Repeated assignment to Response property is not allowed.");
                     _response = value;
+                    _responseTask.TrySetResult(value);
                     Monitor.Pulse(ResponseSyncRoot);
                 }
             }
