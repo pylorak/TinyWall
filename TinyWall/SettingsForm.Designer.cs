@@ -108,14 +108,14 @@
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
             // 
             // btnOK
             // 
             resources.ApplyResources(this.btnOK, "btnOK");
             this.btnOK.Name = "btnOK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            this.btnOK.Click += new System.EventHandler(this.BtnOK_Click);
             // 
             // tabPage3
             // 
@@ -137,28 +137,28 @@
             // 
             resources.ApplyResources(this.txtExceptionListFilter, "txtExceptionListFilter");
             this.txtExceptionListFilter.Name = "txtExceptionListFilter";
-            this.txtExceptionListFilter.TextChanged += new System.EventHandler(this.txtExceptionListFilter_TextChanged);
+            this.txtExceptionListFilter.TextChanged += new System.EventHandler(this.TxtExceptionListFilter_TextChanged);
             // 
             // btnAppRemoveAll
             // 
             resources.ApplyResources(this.btnAppRemoveAll, "btnAppRemoveAll");
             this.btnAppRemoveAll.Name = "btnAppRemoveAll";
             this.btnAppRemoveAll.UseVisualStyleBackColor = true;
-            this.btnAppRemoveAll.Click += new System.EventHandler(this.btnAppRemoveAll_Click);
+            this.btnAppRemoveAll.Click += new System.EventHandler(this.BtnAppRemoveAll_Click);
             // 
             // btnAppAutoDetect
             // 
             resources.ApplyResources(this.btnAppAutoDetect, "btnAppAutoDetect");
             this.btnAppAutoDetect.Name = "btnAppAutoDetect";
             this.btnAppAutoDetect.UseVisualStyleBackColor = true;
-            this.btnAppAutoDetect.Click += new System.EventHandler(this.btnAppAutoDetect_Click);
+            this.btnAppAutoDetect.Click += new System.EventHandler(this.BtnAppAutoDetect_Click);
             // 
             // btnSubmitAssoc
             // 
             resources.ApplyResources(this.btnSubmitAssoc, "btnSubmitAssoc");
             this.btnSubmitAssoc.Name = "btnSubmitAssoc";
             this.btnSubmitAssoc.UseVisualStyleBackColor = true;
-            this.btnSubmitAssoc.Click += new System.EventHandler(this.btnSubmitAssoc_Click);
+            this.btnSubmitAssoc.Click += new System.EventHandler(this.BtnSubmitAssoc_Click);
             // 
             // label3
             // 
@@ -170,21 +170,21 @@
             resources.ApplyResources(this.btnAppRemove, "btnAppRemove");
             this.btnAppRemove.Name = "btnAppRemove";
             this.btnAppRemove.UseVisualStyleBackColor = true;
-            this.btnAppRemove.Click += new System.EventHandler(this.btnAppRemove_Click);
+            this.btnAppRemove.Click += new System.EventHandler(this.BtnAppRemove_Click);
             // 
             // btnAppModify
             // 
             resources.ApplyResources(this.btnAppModify, "btnAppModify");
             this.btnAppModify.Name = "btnAppModify";
             this.btnAppModify.UseVisualStyleBackColor = true;
-            this.btnAppModify.Click += new System.EventHandler(this.btnAppModify_Click);
+            this.btnAppModify.Click += new System.EventHandler(this.BtnAppModify_Click);
             // 
             // btnAppAdd
             // 
             resources.ApplyResources(this.btnAppAdd, "btnAppAdd");
             this.btnAppAdd.Name = "btnAppAdd";
             this.btnAppAdd.UseVisualStyleBackColor = true;
-            this.btnAppAdd.Click += new System.EventHandler(this.btnAppAdd_Click);
+            this.btnAppAdd.Click += new System.EventHandler(this.BtnAppAdd_Click);
             // 
             // listApplications
             // 
@@ -202,11 +202,11 @@
             this.listApplications.UseCompatibleStateImageBehavior = false;
             this.listApplications.View = System.Windows.Forms.View.Details;
             this.listApplications.VirtualMode = true;
-            this.listApplications.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listApplications_ColumnClick);
-            this.listApplications.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.listApplications_RetrieveVirtualItem);
-            this.listApplications.SelectedIndexChanged += new System.EventHandler(this.listApplications_SelectedIndexChanged);
-            this.listApplications.VirtualItemsSelectionRangeChanged += new System.Windows.Forms.ListViewVirtualItemsSelectionRangeChangedEventHandler(this.listApplications_VirtualItemsSelectionRangeChanged);
-            this.listApplications.DoubleClick += new System.EventHandler(this.listApplications_DoubleClick);
+            this.listApplications.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.ListApplications_ColumnClick);
+            this.listApplications.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.ListApplications_RetrieveVirtualItem);
+            this.listApplications.SelectedIndexChanged += new System.EventHandler(this.ListApplications_SelectedIndexChanged);
+            this.listApplications.VirtualItemsSelectionRangeChanged += new System.Windows.Forms.ListViewVirtualItemsSelectionRangeChangedEventHandler(this.ListApplications_VirtualItemsSelectionRangeChanged);
+            this.listApplications.DoubleClick += new System.EventHandler(this.ListApplications_DoubleClick);
             // 
             // columnApp
             // 
@@ -271,7 +271,7 @@
             this.listOptionalGlobalProfiles.FormattingEnabled = true;
             this.listOptionalGlobalProfiles.Name = "listOptionalGlobalProfiles";
             this.listOptionalGlobalProfiles.Sorted = true;
-            this.listOptionalGlobalProfiles.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listOptionalGlobalProfiles_ItemCheck);
+            this.listOptionalGlobalProfiles.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.ListOptionalGlobalProfiles_ItemCheck);
             // 
             // listRecommendedGlobalProfiles
             // 
@@ -280,7 +280,7 @@
             this.listRecommendedGlobalProfiles.FormattingEnabled = true;
             this.listRecommendedGlobalProfiles.Name = "listRecommendedGlobalProfiles";
             this.listRecommendedGlobalProfiles.Sorted = true;
-            this.listRecommendedGlobalProfiles.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listRecommendedGlobalProfiles_ItemCheck);
+            this.listRecommendedGlobalProfiles.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.ListRecommendedGlobalProfiles_ItemCheck);
             // 
             // tabPage1
             // 
@@ -322,7 +322,7 @@
             this.tableLayoutPanel1.SetColumnSpan(this.chkEnableBlocklists, 2);
             this.chkEnableBlocklists.Name = "chkEnableBlocklists";
             this.chkEnableBlocklists.UseVisualStyleBackColor = true;
-            this.chkEnableBlocklists.CheckedChanged += new System.EventHandler(this.chkEnableBlocklists_CheckedChanged);
+            this.chkEnableBlocklists.CheckedChanged += new System.EventHandler(this.ChkEnableBlocklists_CheckedChanged);
             // 
             // chkBlockMalwarePorts
             // 
@@ -404,7 +404,7 @@
             resources.ApplyResources(this.chkChangePassword, "chkChangePassword");
             this.chkChangePassword.Name = "chkChangePassword";
             this.chkChangePassword.UseVisualStyleBackColor = true;
-            this.chkChangePassword.CheckedChanged += new System.EventHandler(this.chkEnablePassword_CheckedChanged);
+            this.chkChangePassword.CheckedChanged += new System.EventHandler(this.ChkEnablePassword_CheckedChanged);
             // 
             // txtPasswordAgain
             // 
@@ -445,21 +445,21 @@
             resources.ApplyResources(this.btnGithub, "btnGithub");
             this.btnGithub.Name = "btnGithub";
             this.btnGithub.UseVisualStyleBackColor = true;
-            this.btnGithub.Click += new System.EventHandler(this.btnGithub_Click);
+            this.btnGithub.Click += new System.EventHandler(this.BtnGithub_Click);
             // 
             // btnImport
             // 
             resources.ApplyResources(this.btnImport, "btnImport");
             this.btnImport.Name = "btnImport";
             this.btnImport.UseVisualStyleBackColor = true;
-            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
+            this.btnImport.Click += new System.EventHandler(this.BtnImport_Click);
             // 
             // btnExport
             // 
             resources.ApplyResources(this.btnExport, "btnExport");
             this.btnExport.Name = "btnExport";
             this.btnExport.UseVisualStyleBackColor = true;
-            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            this.btnExport.Click += new System.EventHandler(this.BtnExport_Click);
             // 
             // groupBox2
             // 
@@ -480,7 +480,7 @@
             resources.ApplyResources(this.lblLinkAttributions, "lblLinkAttributions");
             this.lblLinkAttributions.Name = "lblLinkAttributions";
             this.lblLinkAttributions.TabStop = true;
-            this.lblLinkAttributions.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblLinkAttributions_LinkClicked);
+            this.lblLinkAttributions.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LblLinkAttributions_LinkClicked);
             // 
             // btnDonate
             // 
@@ -490,16 +490,16 @@
             this.btnDonate.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnDonate.Name = "btnDonate";
             this.btnDonate.TabStop = false;
-            this.btnDonate.Click += new System.EventHandler(this.btnDonate_Click);
-            this.btnDonate.MouseEnter += new System.EventHandler(this.btnDonate_MouseEnter);
-            this.btnDonate.MouseLeave += new System.EventHandler(this.btnDonate_MouseLeave);
+            this.btnDonate.Click += new System.EventHandler(this.BtnDonate_Click);
+            this.btnDonate.MouseEnter += new System.EventHandler(this.BtnDonate_MouseEnter);
+            this.btnDonate.MouseLeave += new System.EventHandler(this.BtnDonate_MouseLeave);
             // 
             // lblLinkLicense
             // 
             resources.ApplyResources(this.lblLinkLicense, "lblLinkLicense");
             this.lblLinkLicense.Name = "lblLinkLicense";
             this.lblLinkLicense.TabStop = true;
-            this.lblLinkLicense.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblLinkLicense_LinkClicked);
+            this.lblLinkLicense.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LblLinkLicense_LinkClicked);
             // 
             // label10
             // 
@@ -511,7 +511,7 @@
             resources.ApplyResources(this.lblAboutHomepageLink, "lblAboutHomepageLink");
             this.lblAboutHomepageLink.Name = "lblAboutHomepageLink";
             this.lblAboutHomepageLink.TabStop = true;
-            this.lblAboutHomepageLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblAboutHomepageLink_LinkClicked);
+            this.lblAboutHomepageLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LblAboutHomepageLink_LinkClicked);
             // 
             // label6
             // 
@@ -533,14 +533,14 @@
             resources.ApplyResources(this.btnUpdate, "btnUpdate");
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.UseVisualStyleBackColor = true;
-            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
+            this.btnUpdate.Click += new System.EventHandler(this.BtnUpdate_Click);
             // 
             // btnWeb
             // 
             resources.ApplyResources(this.btnWeb, "btnWeb");
             this.btnWeb.Name = "btnWeb";
             this.btnWeb.UseVisualStyleBackColor = true;
-            this.btnWeb.Click += new System.EventHandler(this.btnWeb_Click);
+            this.btnWeb.Click += new System.EventHandler(this.BtnWeb_Click);
             // 
             // sfd
             // 

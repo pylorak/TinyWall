@@ -22,7 +22,7 @@
     <Company>Károly Pados</Company>
     <Description>A free, lightweight and non-intrusive firewall.</Description>
     <Copyright>Copyright © 2011 Károly Pados</Copyright>
-    <Version>3.5.1</Version>
+    <Version>3.7.0</Version>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\img\firewall.ico</ApplicationIcon>
@@ -35,10 +35,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <Optimize>False</Optimize>
     <DebugType>full</DebugType>
+    <PreferNativeArm64>False</PreferNativeArm64>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Optimize>True</Optimize>
     <DebugType>full</DebugType>
+    <PreferNativeArm64>False</PreferNativeArm64>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Configuration.Install" />

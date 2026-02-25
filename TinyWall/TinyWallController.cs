@@ -18,7 +18,7 @@ namespace pylorak.TinyWall
     {
         #region Form-Designer generated code
 
-        private IContainer components = new Container();
+        private Container _components = new();
 
         [MemberNotNull(nameof(Tray),
             nameof(TrayMenu),
@@ -47,10 +47,10 @@ namespace pylorak.TinyWall
         )]
         private void InitializeComponent()
         {
-            components = new Container();
-            ComponentResourceManager resources = new ComponentResourceManager(typeof(TinyWallController));
-            Tray = new NotifyIcon(components);
-            TrayMenu = new ContextMenuStrip(components);
+            _components = new Container();
+            ComponentResourceManager resources = new(typeof(TinyWallController));
+            Tray = new NotifyIcon(_components);
+            TrayMenu = new ContextMenuStrip(_components);
             mnuTrafficRate = new ToolStripMenuItem();
             toolStripMenuItem1 = new ToolStripSeparator();
             mnuMode = new ToolStripMenuItem();
@@ -134,59 +134,59 @@ namespace pylorak.TinyWall
             //
             mnuModeNormal.Name = "mnuModeNormal";
             resources.ApplyResources(mnuModeNormal, "mnuModeNormal");
-            mnuModeNormal.Click += mnuModeNormal_Click;
+            mnuModeNormal.Click += MnuModeNormal_Click;
             //
             // mnuModeBlockAll
             //
             mnuModeBlockAll.Name = "mnuModeBlockAll";
             resources.ApplyResources(mnuModeBlockAll, "mnuModeBlockAll");
-            mnuModeBlockAll.Click += mnuModeBlockAll_Click;
+            mnuModeBlockAll.Click += MnuModeBlockAll_Click;
             //
             // mnuModeAllowOutgoing
             //
             mnuModeAllowOutgoing.Name = "mnuModeAllowOutgoing";
             resources.ApplyResources(mnuModeAllowOutgoing, "mnuModeAllowOutgoing");
-            mnuModeAllowOutgoing.Click += mnuAllowOutgoing_Click;
+            mnuModeAllowOutgoing.Click += MnuAllowOutgoing_Click;
             //
             // mnuModeDisabled
             //
             mnuModeDisabled.Name = "mnuModeDisabled";
             resources.ApplyResources(mnuModeDisabled, "mnuModeDisabled");
-            mnuModeDisabled.Click += mnuModeDisabled_Click;
+            mnuModeDisabled.Click += MnuModeDisabled_Click;
             //
             // mnuModeLearn
             //
             mnuModeLearn.Name = "mnuModeLearn";
             resources.ApplyResources(mnuModeLearn, "mnuModeLearn");
-            mnuModeLearn.Click += mnuModeLearn_Click;
+            mnuModeLearn.Click += MnuModeLearn_Click;
             //
             // mnuManage
             //
             mnuManage.Image = Resources.Icons.manage;
             mnuManage.Name = "mnuManage";
             resources.ApplyResources(mnuManage, "mnuManage");
-            mnuManage.Click += mnuManage_Click;
+            mnuManage.Click += MnuManage_Click;
             //
             // mnuConnections
             //
             mnuConnections.Image = Resources.Icons.connections;
             mnuConnections.Name = "mnuConnections";
             resources.ApplyResources(mnuConnections, "mnuConnections");
-            mnuConnections.Click += mnuConnections_Click;
+            mnuConnections.Click += MnuConnections_Click;
             //
             // mnuLock
             //
             mnuLock.Image = Resources.Icons.lock_small;
             mnuLock.Name = "mnuLock";
             resources.ApplyResources(mnuLock, "mnuLock");
-            mnuLock.Click += mnuLock_Click;
+            mnuLock.Click += MnuLock_Click;
             //
             // mnuElevate
             //
             mnuElevate.Image = Resources.Icons.w7uacshield;
             mnuElevate.Name = "mnuElevate";
             resources.ApplyResources(mnuElevate, "mnuElevate");
-            mnuElevate.Click += mnuElevate_Click;
+            mnuElevate.Click += MnuElevate_Click;
             //
             // toolStripMenuItem2
             //
@@ -197,13 +197,13 @@ namespace pylorak.TinyWall
             //
             mnuAllowLocalSubnet.Name = "mnuAllowLocalSubnet";
             resources.ApplyResources(mnuAllowLocalSubnet, "mnuAllowLocalSubnet");
-            mnuAllowLocalSubnet.Click += mnuAllowLocalSubnet_Click;
+            mnuAllowLocalSubnet.Click += MnuAllowLocalSubnet_Click;
             //
             // mnuEnableHostsBlocklist
             //
             mnuEnableHostsBlocklist.Name = "mnuEnableHostsBlocklist";
             resources.ApplyResources(mnuEnableHostsBlocklist, "mnuEnableHostsBlocklist");
-            mnuEnableHostsBlocklist.Click += mnuEnableHostsBlocklist_Click;
+            mnuEnableHostsBlocklist.Click += MnuEnableHostsBlocklist_Click;
             //
             // toolStripMenuItem3
             //
@@ -215,21 +215,21 @@ namespace pylorak.TinyWall
             mnuWhitelistByExecutable.Image = Resources.Icons.executable;
             mnuWhitelistByExecutable.Name = "mnuWhitelistByExecutable";
             resources.ApplyResources(mnuWhitelistByExecutable, "mnuWhitelistByExecutable");
-            mnuWhitelistByExecutable.Click += mnuWhitelistByExecutable_Click;
+            mnuWhitelistByExecutable.Click += MnuWhitelistByExecutable_Click;
             //
             // mnuWhitelistByProcess
             //
             mnuWhitelistByProcess.Image = Resources.Icons.process;
             mnuWhitelistByProcess.Name = "mnuWhitelistByProcess";
             resources.ApplyResources(mnuWhitelistByProcess, "mnuWhitelistByProcess");
-            mnuWhitelistByProcess.Click += mnuWhitelistByProcess_Click;
+            mnuWhitelistByProcess.Click += MnuWhitelistByProcess_Click;
             //
             // mnuWhitelistByWindow
             //
             mnuWhitelistByWindow.Image = Resources.Icons.window;
             mnuWhitelistByWindow.Name = "mnuWhitelistByWindow";
             resources.ApplyResources(mnuWhitelistByWindow, "mnuWhitelistByWindow");
-            mnuWhitelistByWindow.Click += mnuWhitelistByWindow_Click;
+            mnuWhitelistByWindow.Click += MnuWhitelistByWindow_Click;
             //
             // toolStripMenuItem5
             //
@@ -241,7 +241,7 @@ namespace pylorak.TinyWall
             mnuQuit.Image = Resources.Icons.exit;
             mnuQuit.Name = "mnuQuit";
             resources.ApplyResources(mnuQuit, "mnuQuit");
-            mnuQuit.Click += mnuQuit_Click;
+            mnuQuit.Click += MnuQuit_Click;
             //
             // ofd
             //
@@ -350,7 +350,7 @@ namespace pylorak.TinyWall
             _mouseInterceptor.MouseLButtonDown += MouseInterceptor_MouseLButtonDown;
             _trafficTimer = new System.Threading.Timer(TrafficTimerTick, null, Timeout.Infinite, Timeout.Infinite);
             _updateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(240));
-            _serviceTimer = new System.Windows.Forms.Timer(components);
+            _serviceTimer = new System.Windows.Forms.Timer(_components);
 
             Application.Idle += Application_Idle;
             using var p = Process.GetCurrentProcess();
@@ -373,7 +373,7 @@ namespace pylorak.TinyWall
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing && (_components != null))
             {
                 // Manually added
                 _hotKeyWhitelistExecutable?.Dispose();
@@ -394,7 +394,7 @@ namespace pylorak.TinyWall
                 }
                 _trafficMonitor?.Dispose();
 
-                components.Dispose();
+                _components.Dispose();
                 PathMapper.Instance.Dispose();
             }
 
@@ -448,7 +448,7 @@ namespace pylorak.TinyWall
 
             try
             {
-                _trafficMonitor.Update();
+                _trafficMonitor!.Update();
                 UpdateTrafficRateText(_trafficMonitor.BytesReceivedPerSec, _trafficMonitor.BytesSentPerSec);
                 TrafficRateVisible = true;
             }
@@ -528,20 +528,20 @@ namespace pylorak.TinyWall
 
         private void HotKeyWhitelistProcess_Pressed(object sender, HandledEventArgs e)
         {
-            mnuWhitelistByProcess_Click(this, EventArgs.Empty);
+            MnuWhitelistByProcess_Click(this, EventArgs.Empty);
         }
 
         private void HotKeyWhitelistExecutable_Pressed(object sender, HandledEventArgs e)
         {
-            mnuWhitelistByExecutable_Click(this, EventArgs.Empty);
+            MnuWhitelistByExecutable_Click(this, EventArgs.Empty);
         }
 
         private void HotKeyWhitelistWindow_Pressed(object sender, HandledEventArgs e)
         {
-            mnuWhitelistByWindow_Click(this, EventArgs.Empty);
+            MnuWhitelistByWindow_Click(this, EventArgs.Empty);
         }
 
-        private void mnuQuit_Click(object sender, EventArgs e)
+        private void MnuQuit_Click(object sender, EventArgs e)
         {
             Tray.Visible = false;
             ExitThread();
@@ -665,7 +665,7 @@ namespace pylorak.TinyWall
             }
         }
 
-        private async void mnuModeDisabled_Click(object sender, EventArgs e)
+        private async void MnuModeDisabled_Click(object sender, EventArgs e)
         {
             if (!await EnsureUnlockedServerAsync())
                 return;
@@ -674,7 +674,7 @@ namespace pylorak.TinyWall
             UpdateDisplay();
         }
 
-        private async void mnuModeNormal_Click(object sender, EventArgs e)
+        private async void MnuModeNormal_Click(object sender, EventArgs e)
         {
             if (!await EnsureUnlockedServerAsync())
                 return;
@@ -683,7 +683,7 @@ namespace pylorak.TinyWall
             UpdateDisplay();
         }
 
-        private async void mnuModeBlockAll_Click(object sender, EventArgs e)
+        private async void MnuModeBlockAll_Click(object sender, EventArgs e)
         {
             if (!await EnsureUnlockedServerAsync())
                 return;
@@ -692,7 +692,7 @@ namespace pylorak.TinyWall
             UpdateDisplay();
         }
 
-        private async void mnuAllowOutgoing_Click(object sender, EventArgs e)
+        private async void MnuAllowOutgoing_Click(object sender, EventArgs e)
         {
             if (!await EnsureUnlockedServerAsync())
                 return;
@@ -704,7 +704,7 @@ namespace pylorak.TinyWall
         // Returns true if the local copy of the settings have been updated.
         private bool LoadSettingsFromServer()
         {
-            return LoadSettingsFromServer(out var comError, false);
+            return LoadSettingsFromServer(out var comError, false) && comError;
         }
 
         // Returns true if the local copy of the settings have been updated.
@@ -844,7 +844,7 @@ namespace pylorak.TinyWall
             UpdateDisplay();
         }
 
-        private void mnuWhitelistByExecutable_Click(object sender, EventArgs e)
+        private void MnuWhitelistByExecutable_Click(object sender, EventArgs e)
         {
             if (FlashIfOpen(typeof(SettingsForm)))
                 return;
@@ -897,7 +897,7 @@ namespace pylorak.TinyWall
             AddExceptions(exceptions);
         }
 
-        private void mnuWhitelistByProcess_Click(object sender, EventArgs e)
+        private void MnuWhitelistByProcess_Click(object sender, EventArgs e)
         {
             if (FlashIfOpen(typeof(SettingsForm)))
                 return;
@@ -1075,7 +1075,7 @@ namespace pylorak.TinyWall
             return FlashIfOpen(frm.GetType());
         }
 
-        private async void mnuManage_Click(object sender, EventArgs e)
+        private async void MnuManage_Click(object sender, EventArgs e)
         {
             if (!await EnsureUnlockedServerAsync())
                 return;
@@ -1136,7 +1136,7 @@ namespace pylorak.TinyWall
             }
         }
 
-        private void mnuWhitelistByWindow_Click(object sender, EventArgs e)
+        private void MnuWhitelistByWindow_Click(object sender, EventArgs e)
         {
             if (!EnsureUnlockedServer())
                 return;
@@ -1400,7 +1400,7 @@ namespace pylorak.TinyWall
             return false;
         }
 
-        private void mnuLock_Click(object sender, EventArgs e)
+        private void MnuLock_Click(object sender, EventArgs e)
         {
             MessageType lockResp = GlobalInstances.Controller!.LockServer();
 
@@ -1412,7 +1412,7 @@ namespace pylorak.TinyWall
             UpdateDisplay();
         }
 
-        private void mnuAllowLocalSubnet_Click(object sender, EventArgs e)
+        private void MnuAllowLocalSubnet_Click(object sender, EventArgs e)
         {
             if (!EnsureUnlockedServer())
                 return;
@@ -1427,7 +1427,7 @@ namespace pylorak.TinyWall
             mnuAllowLocalSubnet.Checked = ActiveConfig.Service.ActiveProfile.AllowLocalSubnet;
         }
 
-        private void mnuEnableHostsBlocklist_Click(object sender, EventArgs e)
+        private void MnuEnableHostsBlocklist_Click(object sender, EventArgs e)
         {
             if (!EnsureUnlockedServer())
                 return;
@@ -1478,7 +1478,7 @@ namespace pylorak.TinyWall
             SetHotkey(resources, ref _hotKeyWhitelistProcess, HotKeyWhitelistProcess_Pressed, Keys.P, mnuWhitelistByProcess, "mnuWhitelistByProcess");
         }
 
-        private void mnuElevate_Click(object sender, EventArgs e)
+        private void MnuElevate_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1491,7 +1491,7 @@ namespace pylorak.TinyWall
             }
         }
 
-        private void mnuConnections_Click(object sender, EventArgs e)
+        private void MnuConnections_Click(object sender, EventArgs e)
         {
             if (FlashIfOpen(typeof(SettingsForm)))
                 return;
@@ -1519,7 +1519,7 @@ namespace pylorak.TinyWall
                     Utils.SafeNativeMethods.DoMouseRightClick();
                     break;
                 case MouseButtons.Middle:
-                    mnuConnections_Click(sender, e);
+                    MnuConnections_Click(sender, e);
                     break;
                 case MouseButtons.None:
                 case MouseButtons.Right:
@@ -1527,7 +1527,7 @@ namespace pylorak.TinyWall
                 case MouseButtons.XButton2:
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    break;
             }
         }
 
@@ -1586,7 +1586,7 @@ namespace pylorak.TinyWall
             ApplyFirewallSettings(confCopy);
         }
 
-        private void mnuModeLearn_Click(object sender, EventArgs e)
+        private void MnuModeLearn_Click(object sender, EventArgs e)
         {
             if (!EnsureUnlockedServer())
                 return;

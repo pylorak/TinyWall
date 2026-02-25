@@ -67,14 +67,14 @@ namespace pylorak.TinyWall
 
         private async void ListApplications_DragDrop(object sender, DragEventArgs e)
         {
-            List<FirewallExceptionV3> list = new List<FirewallExceptionV3>();
+            List<FirewallExceptionV3> list = new();
 
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
             foreach (string file in files)
             {
                 try
                 {
-                    list.AddRange(GlobalInstances.AppDatabase.GetExceptionsForApp(new ExecutableSubject(file), true, out _));
+                    list.AddRange(GlobalInstances.AppDatabase!.GetExceptionsForApp(new ExecutableSubject(file), true, out _));
                 }
                 catch
                 {
@@ -120,19 +120,19 @@ namespace pylorak.TinyWall
                 chkHostsBlocklist.Checked = TmpConfig.Service.Blocklists.EnableHostsBlocklist;
                 chkBlockMalwarePorts.Checked = TmpConfig.Service.Blocklists.EnablePortBlocklist;
                 chkEnableBlocklists.Checked = TmpConfig.Service.Blocklists.EnableBlocklists;
-                chkEnableBlocklists_CheckedChanged(this, EventArgs.Empty);
+                ChkEnableBlocklists_CheckedChanged(this, EventArgs.Empty);
 
                 // Fill lists of special exceptions
                 listRecommendedGlobalProfiles.BeginUpdate();
                 listOptionalGlobalProfiles.BeginUpdate();
                 listRecommendedGlobalProfiles.Items.Clear();
                 listOptionalGlobalProfiles.Items.Clear();
-                foreach (DatabaseClasses.Application app in GlobalInstances.AppDatabase.KnownApplications)
+                foreach (DatabaseClasses.Application app in GlobalInstances.AppDatabase!.KnownApplications)
                 {
                     if (!app.HasFlag("TWUI:Special") || app.HasFlag("TWUI:Hidden")) continue;
 
                     // Get localised name
-                    IdWithName item = new IdWithName(app.Name, app.LocalisedName);
+                    IdWithName item = new(app.Name, app.LocalisedName);
 
                     // Construct default name in case no localization exists
                     if (string.IsNullOrEmpty(item.Name))
@@ -200,7 +200,7 @@ namespace pylorak.TinyWall
             listApplications.Refresh();
 
             // Update buttons
-            listApplications_SelectedIndexChanged(listApplications, EventArgs.Empty);
+            ListApplications_SelectedIndexChanged(listApplications, EventArgs.Empty);
         }
 
         private ListViewItem ListItemFromAppException(FirewallExceptionV3 ex, UwpPackageList packageList)
@@ -287,7 +287,7 @@ namespace pylorak.TinyWall
             return li;
         }
 
-        private void btnOK_Click(object sender, EventArgs e)
+        private void BtnOK_Click(object sender, EventArgs e)
         {
             // Check password input
             if (chkChangePassword.Checked)
@@ -318,12 +318,12 @@ namespace pylorak.TinyWall
             DialogResult = DialogResult.OK;
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void BtnCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
         }
 
-        private void listRecommendedGlobalProfiles_ItemCheck(object sender, ItemCheckEventArgs e)
+        private void ListRecommendedGlobalProfiles_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (_loadingSettings) return;
 
@@ -340,13 +340,13 @@ namespace pylorak.TinyWall
             }
         }
 
-        private void listOptionalGlobalProfiles_ItemCheck(object sender, ItemCheckEventArgs e)
+        private void ListOptionalGlobalProfiles_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             // The code is exactly the same as for listRecommendedGlobalProfiles
-            listRecommendedGlobalProfiles_ItemCheck(sender, e);
+            ListRecommendedGlobalProfiles_ItemCheck(sender, e);
         }
 
-        private async void btnAppRemove_Click(object sender, EventArgs e)
+        private async void BtnAppRemove_Click(object sender, EventArgs e)
         {
             for (var i = listApplications.SelectedIndices.Count - 1; i >= 0; --i)
             {
@@ -358,7 +358,7 @@ namespace pylorak.TinyWall
             await RebuildExceptionsList();
         }
 
-        private async void btnAppRemoveAll_Click(object sender, EventArgs e)
+        private async void BtnAppRemoveAll_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show(this, Resources.Messages.AreYouSureYouWantToRemoveAllExceptions, Resources.Messages.TinyWall, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.No)
                 return;
@@ -367,7 +367,7 @@ namespace pylorak.TinyWall
             await RebuildExceptionsList();
         }
 
-        private async void btnAppModify_Click(object sender, EventArgs e)
+        private async void BtnAppModify_Click(object sender, EventArgs e)
         {
             var li = _filteredExceptionItems[listApplications.SelectedIndices[0]];
             var oldEx = (FirewallExceptionV3)li.Tag;
@@ -389,7 +389,7 @@ namespace pylorak.TinyWall
             listApplications.Focus();
         }
 
-        private async void btnAppAdd_Click(object sender, EventArgs e)
+        private async void BtnAppAdd_Click(object sender, EventArgs e)
         {
             //using var f = new ApplicationExceptionForm(FirewallExceptionV3.Default);
             using var f = new ApplicationExceptionForm();
@@ -400,12 +400,12 @@ namespace pylorak.TinyWall
             await RebuildExceptionsList();
         }
 
-        private void chkEnablePassword_CheckedChanged(object sender, EventArgs e)
+        private void ChkEnablePassword_CheckedChanged(object sender, EventArgs e)
         {
             txtPassword.Enabled = txtPasswordAgain.Enabled = chkChangePassword.Checked;
         }
 
-        private void btnSubmitAssoc_Click(object sender, EventArgs e)
+        private void BtnSubmitAssoc_Click(object sender, EventArgs e)
         {
             /* Not implemented */
         }
@@ -416,26 +416,26 @@ namespace pylorak.TinyWall
             Activate();
         }
 
-        private void btnWeb_Click(object sender, EventArgs e)
+        private void BtnWeb_Click(object sender, EventArgs e)
         {
             var psi = new ProcessStartInfo(@"https://tinywall.pados.hu") { UseShellExecute = true };
             Process.Start(psi);
         }
 
-        private void listApplications_DoubleClick(object sender, EventArgs e)
+        private void ListApplications_DoubleClick(object sender, EventArgs e)
         {
             if (listApplications.SelectedIndices.Count == 0)
                 return;
 
-            btnAppModify_Click(this, EventArgs.Empty);
+            BtnAppModify_Click(this, EventArgs.Empty);
         }
 
-        private void btnUpdate_Click(object sender, EventArgs e)
+        private void BtnUpdate_Click(object sender, EventArgs e)
         {
             Updater.StartUpdate();
         }
 
-        private async void btnAppAutoDetect_Click(object sender, EventArgs e)
+        private async void BtnAppAutoDetect_Click(object sender, EventArgs e)
         {
             using var aff = new AppFinderForm();
 
@@ -445,12 +445,12 @@ namespace pylorak.TinyWall
             await RebuildExceptionsList();
         }
 
-        private void lblAboutHomepageLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LblAboutHomepageLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            btnWeb_Click(sender, EventArgs.Empty);
+            BtnWeb_Click(sender, EventArgs.Empty);
         }
 
-        private void lblLinkLicense_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LblLinkLicense_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             try
             {
@@ -466,7 +466,7 @@ namespace pylorak.TinyWall
             }
         }
 
-        private void btnDonate_Click(object sender, EventArgs e)
+        private void BtnDonate_Click(object sender, EventArgs e)
         {
             try
             {
@@ -479,17 +479,17 @@ namespace pylorak.TinyWall
             }
         }
 
-        private void btnDonate_MouseEnter(object sender, EventArgs e)
+        private void BtnDonate_MouseEnter(object sender, EventArgs e)
         {
             btnDonate.BorderStyle = BorderStyle.FixedSingle;
         }
 
-        private void btnDonate_MouseLeave(object sender, EventArgs e)
+        private void BtnDonate_MouseLeave(object sender, EventArgs e)
         {
             btnDonate.BorderStyle = BorderStyle.None;
         }
 
-        private async void btnImport_Click(object sender, EventArgs e)
+        private async void BtnImport_Click(object sender, EventArgs e)
         {
             ofd.Filter = string.Format(CultureInfo.CurrentCulture, @"{0} (*.tws)|*.tws|{1} (*)|*", Resources.Messages.TinyWallSettingsFileFilter, Resources.Messages.AllFilesFileFilter);
 
@@ -510,7 +510,7 @@ namespace pylorak.TinyWall
             MessageBox.Show(this, Resources.Messages.ConfigurationHasBeenImported, Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private async void btnExport_Click(object sender, EventArgs e)
+        private async void BtnExport_Click(object sender, EventArgs e)
         {
             ofd.Filter = string.Format(CultureInfo.CurrentCulture, @"{0} (*.tws)|*.tws|{1} (*)|*", Resources.Messages.TinyWallSettingsFileFilter, Resources.Messages.AllFilesFileFilter);
             sfd.DefaultExt = "tws";
@@ -583,15 +583,15 @@ namespace pylorak.TinyWall
             //            loadingDone.Value = true;
         }
 
-        private void txtExceptionListFilter_TextChanged(object sender, EventArgs e)
+        private void TxtExceptionListFilter_TextChanged(object sender, EventArgs e)
         {
             ApplyExceptionFilter();
         }
 
-        private async void listApplications_ColumnClick(object sender, ColumnClickEventArgs e)
+        private async void ListApplications_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             ListViewItemComparer oldSorter = (ListViewItemComparer)listApplications.ListViewItemSorter;
-            ListViewItemComparer newSorter = new ListViewItemComparer(e.Column, IconList);
+            ListViewItemComparer newSorter = new(e.Column, IconList);
             if ((oldSorter != null) && (oldSorter.Column == newSorter.Column))
                 newSorter.Ascending = !oldSorter.Ascending;
 
@@ -599,13 +599,13 @@ namespace pylorak.TinyWall
             await RebuildExceptionsList();
         }
 
-        private void chkEnableBlocklists_CheckedChanged(object sender, EventArgs e)
+        private void ChkEnableBlocklists_CheckedChanged(object sender, EventArgs e)
         {
             chkHostsBlocklist.Enabled = chkEnableBlocklists.Checked;
             chkBlockMalwarePorts.Enabled = chkEnableBlocklists.Checked;
         }
 
-        private void lblLinkAttributions_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LblLinkAttributions_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             try
             {
@@ -622,7 +622,7 @@ namespace pylorak.TinyWall
         {
             if (listApplications.Focused && (e.KeyCode == Keys.Delete))
             {
-                btnAppRemove_Click(btnAppRemove, EventArgs.Empty);
+                BtnAppRemove_Click(btnAppRemove, EventArgs.Empty);
                 e.Handled = true;
             }
         }
@@ -645,17 +645,17 @@ namespace pylorak.TinyWall
             ActiveConfig.Controller.Save();
         }
 
-        private void listApplications_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
+        private void ListApplications_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
             e.Item = _filteredExceptionItems[e.ItemIndex];
         }
 
-        private void listApplications_VirtualItemsSelectionRangeChanged(object sender, ListViewVirtualItemsSelectionRangeChangedEventArgs e)
+        private void ListApplications_VirtualItemsSelectionRangeChanged(object sender, ListViewVirtualItemsSelectionRangeChangedEventArgs e)
         {
-            listApplications_SelectedIndexChanged(sender, EventArgs.Empty);
+            ListApplications_SelectedIndexChanged(sender, EventArgs.Empty);
         }
 
-        private void listApplications_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListApplications_SelectedIndexChanged(object sender, EventArgs e)
         {
             bool anyItemSelected = listApplications.SelectedIndices.Count != 0;
             bool singleItemSelected = listApplications.SelectedIndices.Count == 1;
@@ -664,7 +664,7 @@ namespace pylorak.TinyWall
             btnSubmitAssoc.Enabled = anyItemSelected;
         }
 
-        private void btnGithub_Click(object sender, EventArgs e)
+        private void BtnGithub_Click(object sender, EventArgs e)
         {
             var psi = new ProcessStartInfo(@"https://github.com/ShirazAdam/tinywall") { UseShellExecute = true };
             Process.Start(psi);

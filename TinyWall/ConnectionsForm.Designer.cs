@@ -71,7 +71,7 @@
             resources.ApplyResources(this.btnClose, "btnClose");
             this.btnClose.Name = "btnClose";
             this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            this.btnClose.Click += new System.EventHandler(this.BtnClose_Click);
             // 
             // list
             // 
@@ -97,7 +97,7 @@
             this.list.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.list.UseCompatibleStateImageBehavior = false;
             this.list.View = System.Windows.Forms.View.Details;
-            this.list.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.list_ColumnClick);
+            this.list.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.List_ColumnClick);
             // 
             // columnHeader1
             // 
@@ -159,21 +159,21 @@
             this.mnuCopyRemoteAddress});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
-            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenuStrip1_Opening);
             // 
             // mnuUnblock
             // 
             this.mnuUnblock.Image = global::pylorak.TinyWall.Resources.Icons.executable;
             this.mnuUnblock.Name = "mnuUnblock";
             resources.ApplyResources(this.mnuUnblock, "mnuUnblock");
-            this.mnuUnblock.Click += new System.EventHandler(this.mnuUnblock_Click);
+            this.mnuUnblock.Click += new System.EventHandler(this.MnuUnblock_Click);
             // 
             // mnuCloseProcess
             // 
             this.mnuCloseProcess.Image = global::pylorak.TinyWall.Resources.Icons.exit;
             this.mnuCloseProcess.Name = "mnuCloseProcess";
             resources.ApplyResources(this.mnuCloseProcess, "mnuCloseProcess");
-            this.mnuCloseProcess.Click += new System.EventHandler(this.mnuCloseProcess_Click);
+            this.mnuCloseProcess.Click += new System.EventHandler(this.MnuCloseProcess_Click);
             // 
             // mnuSearch
             // 
@@ -190,31 +190,31 @@
             // 
             this.mnuVirusTotal.Name = "mnuVirusTotal";
             resources.ApplyResources(this.mnuVirusTotal, "mnuVirusTotal");
-            this.mnuVirusTotal.Click += new System.EventHandler(this.mnuVirusTotal_Click);
+            this.mnuVirusTotal.Click += new System.EventHandler(this.MnuVirusTotal_Click);
             // 
             // mnuProcessLibrary
             // 
             this.mnuProcessLibrary.Name = "mnuProcessLibrary";
             resources.ApplyResources(this.mnuProcessLibrary, "mnuProcessLibrary");
-            this.mnuProcessLibrary.Click += new System.EventHandler(this.mnuProcessLibrary_Click);
+            this.mnuProcessLibrary.Click += new System.EventHandler(this.MnuProcessLibrary_Click);
             // 
             // mnuFileNameOnTheWeb
             // 
             this.mnuFileNameOnTheWeb.Name = "mnuFileNameOnTheWeb";
             resources.ApplyResources(this.mnuFileNameOnTheWeb, "mnuFileNameOnTheWeb");
-            this.mnuFileNameOnTheWeb.Click += new System.EventHandler(this.mnuFileNameOnTheWeb_Click);
+            this.mnuFileNameOnTheWeb.Click += new System.EventHandler(this.MnuFileNameOnTheWeb_Click);
             // 
             // mnuRemoteAddressOnTheWeb
             // 
             this.mnuRemoteAddressOnTheWeb.Name = "mnuRemoteAddressOnTheWeb";
             resources.ApplyResources(this.mnuRemoteAddressOnTheWeb, "mnuRemoteAddressOnTheWeb");
-            this.mnuRemoteAddressOnTheWeb.Click += new System.EventHandler(this.mnuRemoteAddressOnTheWeb_Click);
+            this.mnuRemoteAddressOnTheWeb.Click += new System.EventHandler(this.MnuRemoteAddressOnTheWeb_Click);
             // 
             // mnuCopyRemoteAddress
             // 
             this.mnuCopyRemoteAddress.Name = "mnuCopyRemoteAddress";
             resources.ApplyResources(this.mnuCopyRemoteAddress, "mnuCopyRemoteAddress");
-            this.mnuCopyRemoteAddress.Click += new System.EventHandler(this.mnuCopyRemoteAddress_Click);
+            this.mnuCopyRemoteAddress.Click += new System.EventHandler(this.MnuCopyRemoteAddress_Click);
             // 
             // IconList
             // 
@@ -227,14 +227,14 @@
             resources.ApplyResources(this.btnRefresh, "btnRefresh");
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.UseVisualStyleBackColor = true;
-            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            this.btnRefresh.Click += new System.EventHandler(this.BtnRefresh_Click);
             // 
             // chkShowListen
             // 
             resources.ApplyResources(this.chkShowListen, "chkShowListen");
             this.chkShowListen.Name = "chkShowListen";
             this.chkShowListen.UseVisualStyleBackColor = true;
-            this.chkShowListen.CheckedChanged += new System.EventHandler(this.chkShowListen_CheckedChanged);
+            this.chkShowListen.CheckedChanged += new System.EventHandler(this.ChkShowListen_CheckedChanged);
             // 
             // chkShowActive
             // 
@@ -243,14 +243,14 @@
             this.chkShowActive.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkShowActive.Name = "chkShowActive";
             this.chkShowActive.UseVisualStyleBackColor = true;
-            this.chkShowActive.CheckedChanged += new System.EventHandler(this.chkShowActive_CheckedChanged);
+            this.chkShowActive.CheckedChanged += new System.EventHandler(this.ChkShowActive_CheckedChanged);
             // 
             // chkShowBlocked
             // 
             resources.ApplyResources(this.chkShowBlocked, "chkShowBlocked");
             this.chkShowBlocked.Name = "chkShowBlocked";
             this.chkShowBlocked.UseVisualStyleBackColor = true;
-            this.chkShowBlocked.CheckedChanged += new System.EventHandler(this.chkShowBlocked_CheckedChanged);
+            this.chkShowBlocked.CheckedChanged += new System.EventHandler(this.ChkShowBlocked_CheckedChanged);
             // 
             // tableLayoutPanel1
             // 
@@ -264,7 +264,7 @@
             // 
             resources.ApplyResources(this.txtSearch, "txtSearch");
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
+            this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtSearch_KeyDown);
             // 
             // LblSearch
             // 
@@ -276,7 +276,7 @@
             resources.ApplyResources(this.btnSearch, "btnSearch");
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.UseVisualStyleBackColor = true;
-            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            this.btnSearch.Click += new System.EventHandler(this.BtnSearch_Click);
             // 
             // BtnClear
             // 

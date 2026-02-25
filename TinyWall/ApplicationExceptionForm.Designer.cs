@@ -76,7 +76,7 @@
             this.btnCancel.Image = global::pylorak.TinyWall.Resources.Icons.cancel;
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
             // 
             // btnOK
             // 
@@ -84,7 +84,7 @@
             this.btnOK.Image = global::pylorak.TinyWall.Resources.Icons.accept;
             this.btnOK.Name = "btnOK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            this.btnOK.Click += new System.EventHandler(this.BtnOK_Click);
             // 
             // btnBrowse
             // 
@@ -92,7 +92,7 @@
             this.btnBrowse.BackColor = System.Drawing.Color.AliceBlue;
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.UseVisualStyleBackColor = false;
-            this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
+            this.btnBrowse.Click += new System.EventHandler(this.BtnBrowse_Click);
             // 
             // btnProcess
             // 
@@ -100,7 +100,7 @@
             this.btnProcess.BackColor = System.Drawing.Color.AliceBlue;
             this.btnProcess.Name = "btnProcess";
             this.btnProcess.UseVisualStyleBackColor = false;
-            this.btnProcess.Click += new System.EventHandler(this.btnProcess_Click);
+            this.btnProcess.Click += new System.EventHandler(this.BtnProcess_Click);
             // 
             // btnChooseService
             // 
@@ -108,7 +108,7 @@
             this.btnChooseService.BackColor = System.Drawing.Color.AliceBlue;
             this.btnChooseService.Name = "btnChooseService";
             this.btnChooseService.UseVisualStyleBackColor = false;
-            this.btnChooseService.Click += new System.EventHandler(this.btnChooseService_Click);
+            this.btnChooseService.Click += new System.EventHandler(this.BtnChooseService_Click);
             // 
             // ofd
             // 
@@ -127,7 +127,7 @@
             this.cmbTimer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbTimer.FormattingEnabled = true;
             this.cmbTimer.Name = "cmbTimer";
-            this.cmbTimer.SelectedIndexChanged += new System.EventHandler(this.cmbTimer_SelectedIndexChanged);
+            this.cmbTimer.SelectedIndexChanged += new System.EventHandler(this.CmbTimer_SelectedIndexChanged);
             // 
             // panel1
             // 
@@ -163,7 +163,7 @@
             this.btnRemoveSoftware.BackColor = System.Drawing.Color.AliceBlue;
             this.btnRemoveSoftware.Name = "btnRemoveSoftware";
             this.btnRemoveSoftware.UseVisualStyleBackColor = false;
-            this.btnRemoveSoftware.Click += new System.EventHandler(this.btnRemoveSoftware_Click);
+            this.btnRemoveSoftware.Click += new System.EventHandler(this.BtnRemoveSoftware_Click);
             // 
             // listViewAppPath
             // 
@@ -192,7 +192,7 @@
             this.btnSelectUwpApp.BackColor = System.Drawing.Color.AliceBlue;
             this.btnSelectUwpApp.Name = "btnSelectUwpApp";
             this.btnSelectUwpApp.UseVisualStyleBackColor = false;
-            this.btnSelectUwpApp.Click += new System.EventHandler(this.btnSelectUwpApp_Click);
+            this.btnSelectUwpApp.Click += new System.EventHandler(this.BtnSelectUwpApp_Click);
             // 
             // chkRestrictToLocalNetwork
             // 
@@ -206,7 +206,7 @@
             this.radBlock.Name = "radBlock";
             this.radBlock.TabStop = true;
             this.radBlock.UseVisualStyleBackColor = true;
-            this.radBlock.CheckedChanged += new System.EventHandler(this.radRestriction_CheckedChanged);
+            this.radBlock.CheckedChanged += new System.EventHandler(this.RadRestriction_CheckedChanged);
             // 
             // radTcpUdpOut
             // 
@@ -214,7 +214,7 @@
             this.radTcpUdpOut.Name = "radTcpUdpOut";
             this.radTcpUdpOut.TabStop = true;
             this.radTcpUdpOut.UseVisualStyleBackColor = true;
-            this.radTcpUdpOut.CheckedChanged += new System.EventHandler(this.radRestriction_CheckedChanged);
+            this.radTcpUdpOut.CheckedChanged += new System.EventHandler(this.RadRestriction_CheckedChanged);
             // 
             // radTcpUdpUnrestricted
             // 
@@ -223,7 +223,7 @@
             this.radTcpUdpUnrestricted.Name = "radTcpUdpUnrestricted";
             this.radTcpUdpUnrestricted.TabStop = true;
             this.radTcpUdpUnrestricted.UseVisualStyleBackColor = true;
-            this.radTcpUdpUnrestricted.CheckedChanged += new System.EventHandler(this.radRestriction_CheckedChanged);
+            this.radTcpUdpUnrestricted.CheckedChanged += new System.EventHandler(this.RadRestriction_CheckedChanged);
             // 
             // radUnrestricted
             // 
@@ -231,7 +231,7 @@
             this.radUnrestricted.Name = "radUnrestricted";
             this.radUnrestricted.TabStop = true;
             this.radUnrestricted.UseVisualStyleBackColor = true;
-            this.radUnrestricted.CheckedChanged += new System.EventHandler(this.radRestriction_CheckedChanged);
+            this.radUnrestricted.CheckedChanged += new System.EventHandler(this.RadRestriction_CheckedChanged);
             // 
             // label5
             // 
@@ -296,7 +296,7 @@
             this.radOnlySpecifiedPorts.Name = "radOnlySpecifiedPorts";
             this.radOnlySpecifiedPorts.TabStop = true;
             this.radOnlySpecifiedPorts.UseVisualStyleBackColor = true;
-            this.radOnlySpecifiedPorts.CheckedChanged += new System.EventHandler(this.radRestriction_CheckedChanged);
+            this.radOnlySpecifiedPorts.CheckedChanged += new System.EventHandler(this.RadRestriction_CheckedChanged);
             // 
             // panel3
             // 

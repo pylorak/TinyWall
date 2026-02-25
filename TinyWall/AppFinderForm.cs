@@ -32,7 +32,7 @@ namespace pylorak.TinyWall
             btnSelectImportant.Visible = false;
         }
 
-        private void btnStartDetection_Click(object sender, EventArgs e)
+        private void BtnStartDetection_Click(object sender, EventArgs e)
         {
             if (!_runSearch)
             {
@@ -95,10 +95,7 @@ namespace pylorak.TinyWall
         {
             _searchResult.Clear();
 
-            // ------------------------------------
-            //       First, do a fast search
-            // ------------------------------------
-            foreach (DatabaseClasses.Application app in GlobalInstances.AppDatabase.KnownApplications)
+            foreach (DatabaseClasses.Application app in GlobalInstances.AppDatabase!.KnownApplications)
             {
                 if (app.HasFlag("TWUI:Special"))
                     continue;
@@ -265,13 +262,13 @@ namespace pylorak.TinyWall
             _searcherThread?.Join();
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void BtnCancel_Click(object sender, EventArgs e)
         {
             WaitForThread();
             DialogResult = DialogResult.Cancel;
         }
 
-        private void btnSelectImportant_Click(object sender, EventArgs e)
+        private void BtnSelectImportant_Click(object sender, EventArgs e)
         {
             foreach (ListViewItem li in list.Items)
             {
@@ -281,7 +278,7 @@ namespace pylorak.TinyWall
             }
         }
 
-        private void btnSelectAll_Click(object sender, EventArgs e)
+        private void BtnSelectAll_Click(object sender, EventArgs e)
         {
             foreach (ListViewItem li in list.Items)
             {
@@ -289,7 +286,7 @@ namespace pylorak.TinyWall
             }
         }
 
-        private void btnDeselectAll_Click(object sender, EventArgs e)
+        private void BtnDeselectAll_Click(object sender, EventArgs e)
         {
             foreach (ListViewItem li in list.Items)
             {
@@ -297,7 +294,7 @@ namespace pylorak.TinyWall
             }
         }
 
-        private void btnOK_Click(object sender, EventArgs e)
+        private void BtnOK_Click(object sender, EventArgs e)
         {
             WaitForThread();
 
@@ -309,7 +306,7 @@ namespace pylorak.TinyWall
                 var appFoundFiles = _searchResult.GetFoundComponents(app);
                 foreach (ExecutableSubject subject in appFoundFiles)
                 {
-                    app = GlobalInstances.AppDatabase.TryGetApp(subject, out FirewallExceptionV3? fwex, false);
+                    app = GlobalInstances.AppDatabase!.TryGetApp(subject, out FirewallExceptionV3? fwex, false);
                     if ((fwex != null) && (app != null) && (!subject.IsSigned || subject.CertValid))
                     {
                         SelectedExceptions.Add(fwex);
@@ -324,7 +321,7 @@ namespace pylorak.TinyWall
         {
             Activate();
             BringToFront();
-            btnStartDetection_Click(btnStartDetection, EventArgs.Empty);
+            BtnStartDetection_Click(btnStartDetection, EventArgs.Empty);
             Utils.SetDoubleBuffering(list, true);
         }
     }

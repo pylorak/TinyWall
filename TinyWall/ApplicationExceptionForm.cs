@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -222,7 +221,7 @@ namespace pylorak.TinyWall
             {
                 case PolicyType.HardBlock:
                     radBlock.Checked = true;
-                    radRestriction_CheckedChanged(this, EventArgs.Empty);
+                    RadRestriction_CheckedChanged(this, EventArgs.Empty);
                     break;
                 case PolicyType.RuleList:
                     radBlock.Enabled = false;
@@ -256,7 +255,7 @@ namespace pylorak.TinyWall
                         radOnlySpecifiedPorts.Checked = true;
                     }
 
-                    radRestriction_CheckedChanged(this, EventArgs.Empty);
+                    RadRestriction_CheckedChanged(this, EventArgs.Empty);
                     chkRestrictToLocalNetwork.Checked = pol.LocalNetworkOnly;
                     txtOutboundPortTCP.Text = (pol.AllowedRemoteTcpConnectPorts is null) ? string.Empty : pol.AllowedRemoteTcpConnectPorts.Replace(",", ", ");
                     txtOutboundPortUDP.Text = (pol.AllowedRemoteUdpConnectPorts is null) ? string.Empty : pol.AllowedRemoteUdpConnectPorts.Replace(",", ", ");
@@ -266,7 +265,7 @@ namespace pylorak.TinyWall
                 case PolicyType.Unrestricted:
                     UnrestrictedPolicy upol = (UnrestrictedPolicy)ExceptionSettings[index].Policy;
                     radUnrestricted.Checked = true;
-                    radRestriction_CheckedChanged(this, EventArgs.Empty);
+                    RadRestriction_CheckedChanged(this, EventArgs.Empty);
                     chkRestrictToLocalNetwork.Checked = upol.LocalNetworkOnly;
                     break;
                 case PolicyType.Invalid:
@@ -323,7 +322,7 @@ namespace pylorak.TinyWall
             return res;
         }
 
-        private async void btnOK_Click(object sender, EventArgs e)
+        private async void BtnOK_Click(object sender, EventArgs e)
         {
             Parallel.For(0, ExceptionSettings.Count - 1, (i, _) =>
             {
@@ -386,15 +385,15 @@ namespace pylorak.TinyWall
                 ExceptionSettings[i].CreationDate = dateTimeNow;
             });
 
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void BtnCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
-        private void btnProcess_Click(object sender, EventArgs e)
+        private void BtnProcess_Click(object sender, EventArgs e)
         {
             var procList = new List<ProcessInfo>();
 
@@ -417,14 +416,14 @@ namespace pylorak.TinyWall
             ReinitFormFromSubject(subject);
         }
 
-        private void btnBrowse_Click(object sender, EventArgs e)
+        private void BtnBrowse_Click(object sender, EventArgs e)
         {
             if (ofd.ShowDialog(this) != DialogResult.OK) return;
 
             ReinitFormFromSubject(new ExecutableSubject(PathMapper.Instance.ConvertPathIgnoreErrors(ofd.FileName, PathFormat.Win32)));
         }
 
-        private void btnChooseService_Click(object sender, EventArgs e)
+        private void BtnChooseService_Click(object sender, EventArgs e)
         {
             ServiceSubject? subject = ServicesForm.ChooseService(this);
 
@@ -433,32 +432,32 @@ namespace pylorak.TinyWall
             ReinitFormFromSubject(subject);
         }
 
-        private void btnSelectUwpApp_Click(object sender, EventArgs e)
+        private void BtnSelectUwpApp_Click(object sender, EventArgs e)
         {
             var packageList = UwpPackagesForm.ChoosePackage(this, false);
 
-            if (!packageList.Any()) return;
+            if (packageList.Count == 0) return;
 
             ReinitFormFromSubject(new AppContainerSubject(packageList[0]));
         }
 
         private void ReinitFormFromSubject(ExceptionSubject subject)
         {
-            List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out _);
+            List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase!.GetExceptionsForApp(subject, true, out _);
 
-            if (!exceptions.Any() || ExceptionSettings.Exists(e => e.Subject.Equals(exceptions[0].Subject))) return;
+            if (exceptions.Count == 0 || ExceptionSettings.Exists(e => e.Subject.Equals(exceptions[0].Subject))) return;
 
             ExceptionSettings.AddRange(exceptions);
 
             UpdateUi();
         }
 
-        private void cmbTimer_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbTimer_SelectedIndexChanged(object sender, EventArgs e)
         {
             ExceptionSettings[0].Timer = ((KeyValuePair<string, AppExceptionTimer>)cmbTimer.SelectedItem).Value;
         }
 
-        private void radRestriction_CheckedChanged(object sender, EventArgs e)
+        private void RadRestriction_CheckedChanged(object sender, EventArgs e)
         {
             if (radBlock.Checked)
             {
@@ -520,7 +519,7 @@ namespace pylorak.TinyWall
             }
         }
 
-        private void btnRemoveSoftware_Click(object sender, EventArgs e)
+        private void BtnRemoveSoftware_Click(object sender, EventArgs e)
         {
             if (listViewAppPath.Items.Count <= 0 || listViewAppPath.SelectedItems.Count <= 0)
             {

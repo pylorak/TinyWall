@@ -54,7 +54,7 @@
             resources.ApplyResources(this.btnStartDetection, "btnStartDetection");
             this.btnStartDetection.Name = "btnStartDetection";
             this.btnStartDetection.UseVisualStyleBackColor = true;
-            this.btnStartDetection.Click += new System.EventHandler(this.btnStartDetection_Click);
+            this.btnStartDetection.Click += new System.EventHandler(this.BtnStartDetection_Click);
             // 
             // list
             // 
@@ -90,35 +90,35 @@
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
             // 
             // btnOK
             // 
             resources.ApplyResources(this.btnOK, "btnOK");
             this.btnOK.Name = "btnOK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            this.btnOK.Click += new System.EventHandler(this.BtnOK_Click);
             // 
             // btnSelectImportant
             // 
             resources.ApplyResources(this.btnSelectImportant, "btnSelectImportant");
             this.btnSelectImportant.Name = "btnSelectImportant";
             this.btnSelectImportant.UseVisualStyleBackColor = true;
-            this.btnSelectImportant.Click += new System.EventHandler(this.btnSelectImportant_Click);
+            this.btnSelectImportant.Click += new System.EventHandler(this.BtnSelectImportant_Click);
             // 
             // btnSelectAll
             // 
             resources.ApplyResources(this.btnSelectAll, "btnSelectAll");
             this.btnSelectAll.Name = "btnSelectAll";
             this.btnSelectAll.UseVisualStyleBackColor = true;
-            this.btnSelectAll.Click += new System.EventHandler(this.btnSelectAll_Click);
+            this.btnSelectAll.Click += new System.EventHandler(this.BtnSelectAll_Click);
             // 
             // btnDeselectAll
             // 
             resources.ApplyResources(this.btnDeselectAll, "btnDeselectAll");
             this.btnDeselectAll.Name = "btnDeselectAll";
             this.btnDeselectAll.UseVisualStyleBackColor = true;
-            this.btnDeselectAll.Click += new System.EventHandler(this.btnDeselectAll_Click);
+            this.btnDeselectAll.Click += new System.EventHandler(this.BtnDeselectAll_Click);
             // 
             // label2
             // 
