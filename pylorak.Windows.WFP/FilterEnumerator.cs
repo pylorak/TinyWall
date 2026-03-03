@@ -29,15 +29,17 @@ namespace pylorak.Windows.WFP
         private readonly Engine _engine;
         private readonly FwpmFilterEnumSafeHandle _enumSafeHandle;
         private readonly int FWPM_FILTER0_SIZE;
+        private readonly IDisposable? _ownedResource;
 
         private FwpmMemorySafeHandle? _entries;
         private IntPtr _entryListItemPtr;
         private int _entriesRemain;
         private bool _disposed;
 
-        protected FilterEnumeratorBase(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0? template)
+        protected FilterEnumeratorBase(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0? template, IDisposable? ownedResource = null)
         {
             _engine = engine;
+            _ownedResource = ownedResource;
 
             var err = NativeMethods.FwpmFilterCreateEnumHandle0(engine.NativePtr, template, out IntPtr outHndl);
             if (0 == err)
@@ -91,6 +93,7 @@ namespace pylorak.Windows.WFP
                 {
                     _enumSafeHandle.Dispose();
                     _entries?.Dispose();
+                    _ownedResource?.Dispose();
                 }
 
                 _disposed = true;
@@ -114,8 +117,8 @@ namespace pylorak.Windows.WFP
         [DisallowNull]
         public Filter? Current { get; private set; }
 
-        public FilterEnumerator(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0? template, bool getFilterConditions)
-            : base(engine, template)
+        public FilterEnumerator(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0? template, bool getFilterConditions, IDisposable? ownedResource = null)
+            : base(engine, template, ownedResource)
         {
             _getFilterConditions = getFilterConditions;
         }
@@ -132,8 +135,8 @@ namespace pylorak.Windows.WFP
 
         public Guid Current { get; private set; }
 
-        public FilterKeyEnumerator(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0? template)
-            : base(engine, template)
+        public FilterKeyEnumerator(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0? template, IDisposable? ownedResource = null)
+            : base(engine, template, ownedResource)
         { }
 
         protected override unsafe void SetCurrentItem(Interop.FWPM_FILTER0_NoStrings* native)

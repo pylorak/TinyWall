@@ -198,7 +198,7 @@ namespace pylorak.Windows.WFP
 
         public FilterEnumerator EnumerateFilters(bool getFilterConditions, Guid provider, Guid layer)
         {
-            using var providerGuidHandle = SafeHGlobalHandle.FromStruct(provider);
+            var providerGuidHandle = SafeHGlobalHandle.FromStruct(provider);
             var template = new Interop.FWPM_FILTER_ENUM_TEMPLATE0
             {
                 providerKey = providerGuidHandle.DangerousGetHandle(),
@@ -207,8 +207,8 @@ namespace pylorak.Windows.WFP
                 numFilterConditions = 0,
                 actionMask = 0xFFFFFFFFu,
             };
-            
-            return new FilterEnumerator(this, template, getFilterConditions);
+
+            return new FilterEnumerator(this, template, getFilterConditions, providerGuidHandle);
         }
 
         public FilterKeyEnumerator EnumerateFilterKeys()
@@ -218,7 +218,7 @@ namespace pylorak.Windows.WFP
 
         public FilterKeyEnumerator EnumerateFilterKeys(Guid provider, Guid layer)
         {
-            using var providerGuidHandle = SafeHGlobalHandle.FromStruct(provider);
+            var providerGuidHandle = SafeHGlobalHandle.FromStruct(provider);
             var template = new Interop.FWPM_FILTER_ENUM_TEMPLATE0
             {
                 providerKey = providerGuidHandle.DangerousGetHandle(),
@@ -228,7 +228,7 @@ namespace pylorak.Windows.WFP
                 actionMask = 0xFFFFFFFFu,
             };
 
-            return new FilterKeyEnumerator(this, template);
+            return new FilterKeyEnumerator(this, template, providerGuidHandle);
         }
 
         public Guid RegisterProvider(ref Interop.FWPM_PROVIDER0 provider)
