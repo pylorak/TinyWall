@@ -49,6 +49,7 @@ namespace pylorak.TinyWall
                                 if (is_icon_new)
                                 {
                                     imageList.Images.Add(icon_path, icon);
+                                    icon.Dispose();
                                     icon_idx = imageList.Images.IndexOfKey(icon_path);
                                     LoadedIcons.TryAdd(icon_path, icon_idx);
                                 }
