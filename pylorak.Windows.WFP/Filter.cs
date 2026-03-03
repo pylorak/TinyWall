@@ -94,7 +94,6 @@ namespace pylorak.Windows.WFP
             if (_conditionsHandle == null)
             {
                 int condSize = Marshal.SizeOf<Interop.FWPM_FILTER_CONDITION0>();
-                _conditionsHandle?.Dispose();
                 _conditionsHandle = SafeHGlobalHandle.Alloc(_conditions.Count * condSize);
                 _nativeStruct.filterConditions = _conditionsHandle.DangerousGetHandle();
                 _nativeStruct.numFilterConditions = (uint)_conditions.Count;
