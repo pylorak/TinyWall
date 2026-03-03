@@ -28,9 +28,7 @@ namespace pylorak.TinyWall
             this.Controller = ctrl;
 
             const string TEMP_ICON_KEY = "generic-executable";
-            var tempIcon = Utils.GetIconContained(".exe", IconSize.Width, IconSize.Height);
-            this.IconList.Images.Add(TEMP_ICON_KEY, tempIcon);
-            tempIcon.Dispose();
+            this.IconList.Images.Add(TEMP_ICON_KEY, Utils.GetIconContained(".exe", IconSize.Width, IconSize.Height));
             this.IconList.Images.Add("store", Resources.Icons.store);
             this.IconList.Images.Add("system", Resources.Icons.windows_small);
             this.IconList.Images.Add("network-drive", Resources.Icons.network_drive_small);
