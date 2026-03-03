@@ -13,18 +13,26 @@ namespace pylorak.TinyWall
         {
             using var scm = new ServiceControlManager();
             var services = ServiceController.GetServices();
-            foreach (var service in services)
+            try
             {
-                if (service.Status != ServiceControllerStatus.Running)
-                    continue;
-
-                uint pid = scm.GetServicePid(service.ServiceName) ?? 0;
-                if (pid != 0)
+                foreach (var service in services)
                 {
-                    if (!Cache.ContainsKey(pid))
-                        Cache.Add(pid, new HashSet<string>());
-                    Cache[pid].Add(service.ServiceName);
+                    if (service.Status != ServiceControllerStatus.Running)
+                        continue;
+
+                    uint pid = scm.GetServicePid(service.ServiceName) ?? 0;
+                    if (pid != 0)
+                    {
+                        if (!Cache.ContainsKey(pid))
+                            Cache.Add(pid, new HashSet<string>());
+                        Cache[pid].Add(service.ServiceName);
+                    }
                 }
+            }
+            finally
+            {
+                foreach (var service in services)
+                    service.Dispose();
             }
         }
 
