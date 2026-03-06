@@ -52,9 +52,10 @@ namespace pylorak.Windows
 
             if (disposing)
             {
-                Application.RemoveMessageFilter(this);
+				// Dispose managed resources - nothing here for now
             }
 
+            Application.RemoveMessageFilter(this);
             Unregister();
             base.Dispose(disposing);
         }
