@@ -583,7 +583,7 @@ namespace pylorak.TinyWall
 
                 case FirewallMode.Unknown:
                     Tray.Icon = Resources.Icons.shield_grey_small;
-                    mnuMode.Image = Resources.Icons.shield_grey_small.ToBitmap();
+                    mnuMode.Image = mnuModeDisabled.Image;
                     FirewallModeName = Resources.Messages.FirewallModeUnknown;
                     break;
             }

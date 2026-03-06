@@ -430,7 +430,7 @@ namespace pylorak.TinyWall
 
         internal static bool RunningAsAdmin()
         {
-            var wi = WindowsIdentity.GetCurrent();
+            using var wi = WindowsIdentity.GetCurrent();
             var wp = new WindowsPrincipal(wi);
             return wp.IsInRole(WindowsBuiltInRole.Administrator);
         }

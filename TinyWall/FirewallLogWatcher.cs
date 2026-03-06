@@ -140,6 +140,10 @@ namespace pylorak.TinyWall
                 NewLogEntry?.Invoke(this, ParseLogEntry(e));
             }
             catch { }
+            finally
+            {
+                e.EventRecord?.Dispose();
+            }
         }
 
         private static class NativeMethods

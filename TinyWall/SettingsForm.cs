@@ -432,7 +432,7 @@ namespace pylorak.TinyWall
         {
             var psi = new ProcessStartInfo(@"https://tinywall.pados.hu");
             psi.UseShellExecute = true;
-            Process.Start(psi);
+            Process.Start(psi)?.Dispose();
         }
 
         private void listApplications_DoubleClick(object sender, EventArgs e)
@@ -469,7 +469,7 @@ namespace pylorak.TinyWall
             {
                 var psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "License.rtf"));
                 psi.UseShellExecute = true;
-                Process.Start(psi);
+                Process.Start(psi)?.Dispose();
             }
             catch { }
         }
@@ -480,7 +480,7 @@ namespace pylorak.TinyWall
             {
                 var psi = new ProcessStartInfo(@"https://tinywall.pados.hu/donate.php");
                 psi.UseShellExecute = true;
-                Process.Start(psi);
+                Process.Start(psi)?.Dispose();
             }
             catch { }
         }
@@ -612,7 +612,7 @@ namespace pylorak.TinyWall
             {
                 var psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "Attributions.txt"));
                 psi.UseShellExecute = true;
-                Process.Start(psi);
+                Process.Start(psi)?.Dispose();
             }
             catch { }
         }
@@ -669,7 +669,7 @@ namespace pylorak.TinyWall
         {
             var psi = new ProcessStartInfo(@"https://github.com/pylorak/tinywall");
             psi.UseShellExecute = true;
-            Process.Start(psi);
+            Process.Start(psi)?.Dispose();
         }
     }
 }

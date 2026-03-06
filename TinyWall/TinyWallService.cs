@@ -369,7 +369,7 @@ namespace pylorak.TinyWall
             foreach (var layer in layerKeys)
             {
                 var slKey = GetSublayerKey(layer);
-                var wfpSublayer = new Sublayer($"TinyWall Sublayer for {layer}");
+                using var wfpSublayer = new Sublayer($"TinyWall Sublayer for {layer}");
                 wfpSublayer.Weight = ushort.MaxValue >> 4;
                 wfpSublayer.SublayerKey = slKey;
                 wfpSublayer.ProviderKey = TINYWALL_PROVIDER_KEY;
@@ -1964,6 +1964,7 @@ namespace pylorak.TinyWall
 
             FirewallThreadThrottler?.Dispose();
             Q.Dispose();
+            WfpEngine.Dispose();
 
 #if !DEBUG
             // Basic software health checks

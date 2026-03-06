@@ -132,7 +132,7 @@ namespace pylorak.Windows
 
             protected virtual void Dispose(bool disposing)
             {
-                if (FileInfoPtr == IntPtr.Zero)
+                if (FileInfoPtr != IntPtr.Zero)
                 {
                     if (disposing)
                     {

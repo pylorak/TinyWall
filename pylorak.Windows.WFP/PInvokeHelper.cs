@@ -97,9 +97,8 @@ namespace pylorak.Windows.WFP
             if (!ConvertSidToStringSid(pSid, out AllocHLocalSafeHandle ptrStrSid))
                 return null;
 
-            string strSid = Marshal.PtrToStringUni(ptrStrSid.DangerousGetHandle());
-            ptrStrSid.Dispose();
-            return strSid;
+            using (ptrStrSid)
+                return Marshal.PtrToStringUni(ptrStrSid.DangerousGetHandle());
         }
     }
 }

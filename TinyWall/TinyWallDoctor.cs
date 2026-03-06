@@ -172,18 +172,27 @@ namespace pylorak.TinyWall
 
             // Terminate remaining TinyWall processes (e.g. controller)
             {
-                int ownPid = Process.GetCurrentProcess().Id;
+                using var ownProc = Process.GetCurrentProcess();
+                int ownPid = ownProc.Id;
                 Process[] procs = Process.GetProcesses();
-                foreach (Process p in procs)
+                try
                 {
-                    try
+                    foreach (Process p in procs)
                     {
-                        if (p.ProcessName.Contains("TinyWall") && (p.Id != ownPid))
+                        try
                         {
-                            ProcessManager.TerminateProcess(p, 2000);
+                            if (p.ProcessName.Contains("TinyWall") && (p.Id != ownPid))
+                            {
+                                ProcessManager.TerminateProcess(p, 2000);
+                            }
                         }
+                        catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_INSTALLER); }
                     }
-                    catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_INSTALLER); }
+                }
+                finally
+                {
+                    foreach (var p in procs)
+                        p.Dispose();
                 }
             }
 

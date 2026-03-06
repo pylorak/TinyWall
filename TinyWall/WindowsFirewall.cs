@@ -80,6 +80,10 @@ namespace pylorak.TinyWall
                 }
             }
             catch { }
+            finally
+            {
+                e.EventRecord?.Dispose();
+            }
 
             DisableMpsSvc();
         }
