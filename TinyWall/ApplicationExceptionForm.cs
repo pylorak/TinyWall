@@ -385,9 +385,21 @@ namespace pylorak.TinyWall
 
         private void ReinitFormFromSubject(ExceptionSubject subject)
         {
-            List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out _);
-            if (exceptions.Count == 0)
-                return;
+            List<FirewallExceptionV3> exceptions;
+            if (
+                (TmpExceptionSettings.Count >= 0)
+                && (TmpExceptionSettings[0].Subject.SubjectType != SubjectType.Invalid)
+                )
+            {
+                exceptions = TmpExceptionSettings;
+                exceptions[0].Subject = subject;
+            }
+            else
+            {
+                exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out _);
+                if (exceptions.Count == 0)
+                    return;
+            }
 
             TmpExceptionSettings = exceptions;
 
