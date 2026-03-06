@@ -1951,12 +1951,14 @@ namespace pylorak.TinyWall
                 wh.WaitOne();
             }
 
+            if (CommitLearnedRules())
+                ActiveConfig.Service.Save(ConfigSavePath);
+
             RuleReloadEventMerger.Dispose();
             LocalSubnetFilterConditions.Dispose();
             GatewayFilterConditions.Dispose();
             DnsFilterConditions.Dispose();
             LogWatcher.Dispose();
-            CommitLearnedRules();
             HostsFileManager.Dispose();
             FileLocker.UnlockAll();
 
