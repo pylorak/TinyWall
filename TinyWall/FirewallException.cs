@@ -21,7 +21,7 @@ namespace pylorak.TinyWall
     [DataContract(Namespace = "TinyWall")]
     public class FirewallExceptionV3 : ISerializable<FirewallExceptionV3>
     {
-        public static FirewallExceptionV3 Default { get; } = new FirewallExceptionV3(GlobalSubject.Instance, new TcpUdpPolicy(true));
+        public static FirewallExceptionV3 Default { get; } = new FirewallExceptionV3(InvalidSubject.Instance, new TcpUdpPolicy(true));
 
         [DataMember(EmitDefaultValue = false)]
         public Guid Id { get; set; }

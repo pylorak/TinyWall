@@ -106,6 +106,40 @@ namespace pylorak.TinyWall
     // -----------------------------------------------------------------------
 
     [DataContract(Namespace = "TinyWall")]
+    public class InvalidSubject : ExceptionSubject
+    {
+        public static InvalidSubject Instance { get; } = new InvalidSubject();
+
+        public override SubjectType SubjectType
+        {
+            get
+            {
+                return SubjectType.Invalid;
+            }
+        }
+
+        public override bool Equals(ExceptionSubject other)
+        {
+            if (other is null)
+                return false;
+
+            return (other is InvalidSubject);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.GetType().GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return "Invalid";
+        }
+    }
+
+    // -----------------------------------------------------------------------
+
+    [DataContract(Namespace = "TinyWall")]
     public class GlobalSubject : ExceptionSubject
     {
         public static GlobalSubject Instance { get; } = new GlobalSubject();

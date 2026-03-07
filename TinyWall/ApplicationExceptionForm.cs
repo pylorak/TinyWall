@@ -163,6 +163,10 @@ namespace pylorak.TinyWall
             // Update subject fields
             switch (TmpExceptionSettings[0].Subject.SubjectType)
             {
+                case SubjectType.Invalid:
+                    txtAppPath.Text = string.Empty;
+                    txtSrvName.Text = string.Empty;
+                    break;
                 case SubjectType.Global:
                     txtAppPath.Text = Resources.Messages.AllApplications;
                     txtSrvName.Text = Resources.Messages.SubjectTypeGlobal;
@@ -241,6 +245,8 @@ namespace pylorak.TinyWall
                 default:
                     throw new NotImplementedException();
             }
+
+            btnOK.Enabled = TmpExceptionSettings[0].Subject.SubjectType != SubjectType.Invalid;
         }
 
         private static string CleanupPortsList(string str)

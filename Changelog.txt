@@ -1,6 +1,17 @@
 TinyWall Changelog
 ---------------------
 
+3.x.x - Maintenance release (xx.03.2026.)
+- Don't create "All applications" rule if user does not select an application
+- Preserve other rule settings when editing application in an existing rule (pepak)
+- Fix use-after-free when enumerating WFP filters (kimstik)
+- Fix multiple memory leaks (kimstik)
+- Fix learned rules not saved when auto-learn is active during shutdown (giejck18470)
+- Remove language-specific layout customizations
+- Update Korean localization (Jaehyung L.)
+
+---------------------
+
 3.4.1 - Maintenance release (06.04.2025.)
 - Only enumerate UWP packages on system if actually needed
 - Add Last Modified column to application exceptions list
