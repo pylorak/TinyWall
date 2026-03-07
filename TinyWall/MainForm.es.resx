@@ -156,20 +156,11 @@
   <data name="mnuEnableHostsBlocklist.Text" xml:space="preserve">
     <value>Habilitar lista de bloqueos malware</value>
   </data>
-  <data name="mnuWhitelistByExecutable.ShortcutKeyDisplayString" xml:space="preserve">
-    <value>Ctrl+Mayús+E</value>
-  </data>
   <data name="mnuWhitelistByExecutable.Text" xml:space="preserve">
     <value>Permitir programa por ejecutable</value>
   </data>
-  <data name="mnuWhitelistByProcess.ShortcutKeyDisplayString" xml:space="preserve">
-    <value>Ctrl+Mayús+P</value>
-  </data>
   <data name="mnuWhitelistByProcess.Text" xml:space="preserve">
     <value>Permitir programa por proceso</value>
-  </data>
-  <data name="mnuWhitelistByWindow.ShortcutKeyDisplayString" xml:space="preserve">
-    <value>Ctrl+Mayús+W</value>
   </data>
   <data name="mnuWhitelistByWindow.Text" xml:space="preserve">
     <value>Permitir programa por ventana</value>

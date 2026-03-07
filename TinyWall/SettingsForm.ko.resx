@@ -130,13 +130,13 @@
     <value>모두 제거</value>
   </data>
   <data name="btnAppAutoDetect.Text" xml:space="preserve">
-    <value>검색</value>
+    <value>감지</value>
   </data>
   <data name="btnSubmitAssoc.Text" xml:space="preserve">
     <value>전송</value>
   </data>
   <data name="label3.Text" xml:space="preserve">
-    <value>네트워크 액세스 권한을 부여하려는 응용 프로그램의 목록을 편집합니다. 이 목록의 응용 프로그램만 통신할 수 있습니다. 검색 버튼을 사용하여 TinyWall이 일부 소프트웨어를 자동으로 검색하거나 응용 프로그램을 수동으로 추가할 수 있습니다.</value>
+    <value>이 목록에 추가된 응용 프로그램만 인터넷 통신이 가능합니다. 여기에서 네트워크 액세스 권한을 부여하려는 프로그램을 추가/제거하여 관리합니다. 검색 버튼을 사용하여 TinyWall이 일부 소프트웨어를 자동으로 감지하거나 응용 프로그램들을 수동으로 추가할 수 있습니다. ('유지 관리' 탭에서 설정 백업 가능)</value>
   </data>
   <data name="btnAppRemove.Text" xml:space="preserve">
     <value>제거</value>
@@ -145,22 +145,13 @@
     <value>수정</value>
   </data>
   <data name="btnAppAdd.Text" xml:space="preserve">
-    <value>응용 프로그램 추가</value>
-  </data>
-  <data name="columnApp.Text" xml:space="preserve">
-    <value>응용 프로그램</value>
-  </data>
-  <data name="columnType.Text" xml:space="preserve">
-    <value>유형</value>
-  </data>
-  <data name="columnDetails.Text" xml:space="preserve">
-    <value>세부 정보</value>
+    <value>프로그램 추가</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
     <value>필터:</value>
   </data>
   <data name="tabPage3.Text" xml:space="preserve">
-    <value>응용 프로그램 예외</value>
+    <value>예외 관리</value>
   </data>
   <data name="label5.Text" xml:space="preserve">
     <value>이 컴퓨터에서 활성화할 특별한 작업이나 응용 프로그램을 선택합니다. 권장 예외를 비활성화하면 시스템의 사용성과 보안이 심각하게 제한될 수 있습니다.</value>
@@ -178,31 +169,28 @@
     <value>언어:</value>
   </data>
   <data name="chkHostsBlocklist.Text" xml:space="preserve">
-    <value>도메인 기반 맬웨어 및 차단 목록</value>
+    <value>도메인 기반 악성코드 및 광고 차단 목록</value>
   </data>
   <data name="chkEnableBlocklists.Text" xml:space="preserve">
-    <value>차단 목록 사용</value>
+    <value>차단 목록(HostsBlocklist) 활성화</value>
   </data>
   <data name="chkBlockMalwarePorts.Text" xml:space="preserve">
-    <value>포트 기반 맬웨어 차단 목록</value>
-  </data>
-  <data name="chkDisplayOffBlock.Text" xml:space="preserve">
-    <value>디스플레이 절전 중 인터넷 차단</value>
+    <value>포트 기반 악성코드 차단 목록</value>
   </data>
   <data name="chkLockHostsFile.Text" xml:space="preserve">
     <value>호스트(hosts) 파일 수정 차단</value>
   </data>
   <data name="chkEnableHotkeys.Text" xml:space="preserve">
-    <value>글로벌 단축키 사용</value>
+    <value>전역 단축키 사용</value>
   </data>
   <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
     <value>업데이트 자동 확인</value>
   </data>
   <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
-    <value>예외 세부 정보 확인</value>
+    <value>예외 세부 정보에 대해 알림</value>
   </data>
   <data name="label9.Text" xml:space="preserve">
-    <value>사용 중인 암호 보호를 제거하려면, "암호 변경"에 체크하고 텍스트 입력란을 비워두세요.</value>
+    <value>사용 중인 암호 보호를 제거하려면, "암호 변경"에 체크하고 입력란을 비워둡니다.</value>
   </data>
   <data name="label8.Text" xml:space="preserve">
     <value>재입력:</value>
@@ -211,7 +199,7 @@
     <value>암호:</value>
   </data>
   <data name="chkChangePassword.Text" xml:space="preserve">
-    <value>암호 확인</value>
+    <value>암호 변경</value>
   </data>
   <data name="groupBox1.Text" xml:space="preserve">
     <value>암호 보호</value>
@@ -220,16 +208,10 @@
     <value>일반</value>
   </data>
   <data name="btnImport.Text" xml:space="preserve">
-    <value>가져오기 설정</value>
+    <value>설정 가져오기</value>
   </data>
   <data name="btnExport.Text" xml:space="preserve">
-    <value>내보내기 설정</value>
-  </data>
-  <data name="lblLinkAttributions.Text" xml:space="preserve">
-    <value>속성</value>
-  </data>
-  <data name="btnDonate.AccessibleDescription" xml:space="preserve">
-    <value>후원</value>
+    <value>설정 내보내기</value>
   </data>
   <data name="btnDonate.AccessibleName" xml:space="preserve">
     <value>기부하기</value>
@@ -238,13 +220,16 @@
     <value>라이센스</value>
   </data>
   <data name="label10.Text" xml:space="preserve">
-    <value>이 무료 프로그램이 맘에 드신다면 호스팅, 하드웨어 및 소프트웨어 비용을 충당하기 위해 소정의 기부를 고려해 주시면 고맙겠습니다.</value>
+    <value>이 무료 프로그램이 맘에 드신다면 호스팅 및 운영 비용을 위해 소정의 후원을 고려해주시면 고맙겠습니다.</value>
+  </data>
+  <data name="lblAboutHomepageLink.Text" xml:space="preserve">
+    <value>http://tinywall.pados.hu</value>
   </data>
   <data name="label6.Text" xml:space="preserve">
     <value>모든 권리 소유.</value>
   </data>
   <data name="label12.Text" xml:space="preserve">
-    <value>저작권 © 2011 Károly Pados</value>
+    <value>저작권 © 2011-2025 Károly Pados</value>
   </data>
   <data name="groupBox2.Text" xml:space="preserve">
     <value>제품 정보</value>

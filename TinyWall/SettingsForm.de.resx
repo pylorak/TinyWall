@@ -159,36 +159,20 @@
   <data name="label5.Text" xml:space="preserve">
     <value>Wählen Sie spezielle Aufgaben oder Anwendungen, die Sie auf dieser Maschine erlauben wollen. Merke: Deaktivieren von empfohlenen Ausnahmen kann die Benutzbarkeit und Sicherheit des Systems beeinträchtigen.</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>57, 13</value>
-  </data>
   <data name="label1.Text" xml:space="preserve">
     <value>Empfohlen</value>
   </data>
   <data name="tabPage2.Text" xml:space="preserve">
     <value>Spezielle Ausnahmen</value>
   </data>
-  <data name="label11.Size" type="System.Drawing.Size, System.Drawing">
-    <value>50, 13</value>
-  </data>
   <data name="label11.Text" xml:space="preserve">
     <value>Sprache:</value>
-  </data>
-  <data name="chkHostsBlocklist.Size" type="System.Drawing.Size, System.Drawing">
-    <value>235, 17</value>
   </data>
   <data name="chkHostsBlocklist.Text" xml:space="preserve">
     <value>Domänenbasierte Malware und Ad-Sperrliste</value>
   </data>
-  <data name="chkEnableBlocklists.Size" type="System.Drawing.Size, System.Drawing">
-    <value>130, 17</value>
-  </data>
   <data name="chkEnableBlocklists.Text" xml:space="preserve">
     <value>Aktiviere die Sperrliste</value>
-  </data>
-  <data name="chkBlockMalwarePorts.Size" type="System.Drawing.Size, System.Drawing">
-    <value>186, 17</value>
   </data>
   <data name="chkBlockMalwarePorts.Text" xml:space="preserve">
     <value>Portbasierte Sperrliste für Malware</value>
@@ -196,23 +180,14 @@
   <data name="chkDisplayOffBlock.Text" xml:space="preserve">
     <value>Sperre Internet während Monitor im Power-Save</value>
   </data>
-  <data name="chkLockHostsFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>224, 17</value>
-  </data>
   <data name="chkLockHostsFile.Text" xml:space="preserve">
     <value>Verhindere Änderungen an der Host-Datei</value>
   </data>
   <data name="chkEnableHotkeys.Text" xml:space="preserve">
     <value>Schnelltasten aktivieren</value>
   </data>
-  <data name="chkAutoUpdateCheck.Size" type="System.Drawing.Size, System.Drawing">
-    <value>172, 17</value>
-  </data>
   <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
     <value>Prüfe automatisch auf Updates</value>
-  </data>
-  <data name="chkAskForExceptionDetails.Size" type="System.Drawing.Size, System.Drawing">
-    <value>163, 17</value>
   </data>
   <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
     <value>Frage nach Ausnahmedetails</value>
@@ -220,23 +195,11 @@
   <data name="label9.Text" xml:space="preserve">
     <value>Um den Passwortschutz zu deaktivieren wählen Sie Passwortschutz und lassen Sie das Feld frei.</value>
   </data>
-  <data name="label8.Location" type="System.Drawing.Point, System.Drawing">
-    <value>19, 83</value>
-  </data>
-  <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
-    <value>70, 13</value>
-  </data>
   <data name="label8.Text" xml:space="preserve">
     <value>Wiederholen:</value>
   </data>
-  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
-    <value>53, 13</value>
-  </data>
   <data name="label7.Text" xml:space="preserve">
     <value>Passwort:</value>
-  </data>
-  <data name="chkChangePassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>105, 17</value>
   </data>
   <data name="chkChangePassword.Text" xml:space="preserve">
     <value>Passwort ändern</value>
@@ -253,35 +216,17 @@
   <data name="btnExport.Text" xml:space="preserve">
     <value>Exportieren</value>
   </data>
-  <data name="btnDonate.AccessibleDescription" xml:space="preserve">
-    <value>Spenden</value>
-  </data>
   <data name="btnDonate.AccessibleName" xml:space="preserve">
     <value>Spende</value>
-  </data>
-  <data name="btnDonate.Location" type="System.Drawing.Point, System.Drawing">
-    <value>375, 93</value>
-  </data>
-  <data name="lblLinkLicense.Size" type="System.Drawing.Size, System.Drawing">
-    <value>37, 13</value>
   </data>
   <data name="lblLinkLicense.Text" xml:space="preserve">
     <value>Lizenz</value>
   </data>
-  <data name="label10.Size" type="System.Drawing.Size, System.Drawing">
-    <value>279, 58</value>
-  </data>
   <data name="label10.Text" xml:space="preserve">
     <value>Wenn Sie dieses Programm mögen und benutzen sollten Sie über eine Spende nachdenken. Die Spenden kommen den Hosting-, Hardware- und Softwarekosten zu Gute.</value>
   </data>
-  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>124, 13</value>
-  </data>
   <data name="label6.Text" xml:space="preserve">
     <value>Alle Rechte vorbehalten.</value>
-  </data>
-  <data name="lblVersion.Size" type="System.Drawing.Size, System.Drawing">
-    <value>48, 13</value>
   </data>
   <data name="groupBox2.Text" xml:space="preserve">
     <value>Über</value>

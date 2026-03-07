@@ -135,10 +135,6 @@
   <data name="btnSubmitAssoc.Text" xml:space="preserve">
     <value>Enviar</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>23, 24</value>
-  </data>
   <data name="label3.Text" xml:space="preserve">
     <value>Crie ou edite abaixo a lista de aplicativos cujo acesso à rede gostaria de controlar. Só os aplicativos desta lista poderão acessar a rede ou não, conforme especificado por você. Clique em DETECTAR se quiser que o TinyWall identifique e configure alguns programas. Se preferir, adicione programas você mesmo.</value>
   </data>
@@ -205,12 +201,6 @@
   <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
     <value>Informar sobre detalhes de exceções</value>
   </data>
-  <data name="label9.Location" type="System.Drawing.Point, System.Drawing">
-    <value>249, 58</value>
-  </data>
-  <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
-    <value>253, 42</value>
-  </data>
   <data name="label9.Text" xml:space="preserve">
     <value>Para remover a proteção com senha, marque acima a opção "Proteger a configuração com senha" e deixe os campos de senha vazios.</value>
   </data>
@@ -238,17 +228,11 @@
   <data name="lblLinkAttributions.Text" xml:space="preserve">
     <value>Créditos</value>
   </data>
-  <data name="btnDonate.AccessibleDescription" xml:space="preserve">
-    <value>Fazer donativo</value>
-  </data>
   <data name="btnDonate.AccessibleName" xml:space="preserve">
     <value>Doação</value>
   </data>
   <data name="lblLinkLicense.Text" xml:space="preserve">
     <value>Licença</value>
-  </data>
-  <data name="label10.Size" type="System.Drawing.Size, System.Drawing">
-    <value>279, 39</value>
   </data>
   <data name="label10.Text" xml:space="preserve">
     <value>Se gostar do TinyWall e usá-lo, favor considerar a possibilidade de fazer donativos para cobrir custos com hospedagem e seu desenvolvimento.</value>

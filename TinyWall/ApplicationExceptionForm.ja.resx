@@ -129,21 +129,11 @@
   <data name="$this.Text" xml:space="preserve">
     <value>除外項目の追加/変更 - TinyWall</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="radOnlySpecifiedPorts.Size" type="System.Drawing.Size, System.Drawing">
-    <value>150, 17</value>
-  </data>
   <data name="radTcpUdpUnrestricted.Text" xml:space="preserve">
     <value>UDP と TCP トラフィックの制限なし</value>
   </data>
-  <data name="radTcpUdpUnrestricted.Size" type="System.Drawing.Size, System.Drawing">
-    <value>185, 17</value>
-  </data>
   <data name="btnCancel.Text" xml:space="preserve">
     <value>キャンセル</value>
-  </data>
-  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>60, 13</value>
   </data>
   <data name="radUnrestricted.Text" xml:space="preserve">
     <value>無制限</value>
@@ -160,17 +150,11 @@
   <data name="lblApplication.Text" xml:space="preserve">
     <value>アプリケーション:</value>
   </data>
-  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>79, 13</value>
-  </data>
   <data name="chkInheritToChildren.Text" xml:space="preserve">
     <value>子プロセスに同じ規則を適用</value>
   </data>
   <data name="txtOutboundPortUDP.AccessibleName" xml:space="preserve">
     <value>送信する UDP</value>
-  </data>
-  <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
-    <value>60, 13</value>
   </data>
   <data name="ofd.Title" xml:space="preserve">
     <value>プログラムを選択</value>
@@ -187,23 +171,14 @@
   <data name="lblApplicationType.Text" xml:space="preserve">
     <value>種類:</value>
   </data>
-  <data name="radUnrestricted.Size" type="System.Drawing.Size, System.Drawing">
-    <value>61, 17</value>
-  </data>
   <data name="btnChooseService.Text" xml:space="preserve">
     <value>サービスを選択...</value>
   </data>
   <data name="label5.Text" xml:space="preserve">
     <value>上記の制限に加えて以下のポートを開く (カンマ区切り)</value>
   </data>
-  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
-    <value>58, 13</value>
-  </data>
   <data name="radBlock.Text" xml:space="preserve">
     <value>すべてのトラフィックを常時遮断</value>
-  </data>
-  <data name="radBlock.Size" type="System.Drawing.Size, System.Drawing">
-    <value>167, 17</value>
   </data>
   <data name="label6.Text" xml:space="preserve">
     <value>恒久的に除外:</value>
@@ -214,22 +189,13 @@
   <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
     <value>指定されたポートのみ許可</value>
   </data>
-  <data name="radTcpUdpOut.Size" type="System.Drawing.Size, System.Drawing">
-    <value>199, 17</value>
-  </data>
   <data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
     <value>送信する TCP</value>
-  </data>
-  <data name="chkRestrictToLocalNetwork.Size" type="System.Drawing.Size, System.Drawing">
-    <value>149, 17</value>
   </data>
   <data name="transparentLabel1.Text" xml:space="preserve">
     <value>認識されたプレースフォルダ</value>
   </data>
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>ファイルを参照...</value>
-  </data>
-  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>58, 13</value>
   </data>
 </root>

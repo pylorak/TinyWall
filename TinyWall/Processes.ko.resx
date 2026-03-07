@@ -120,9 +120,6 @@
   <data name="columnHeader1.Text" xml:space="preserve">
     <value>이름</value>
   </data>
-  <data name="columnHeader3.Text" xml:space="preserve">
-    <value>서비스</value>
-  </data>
   <data name="columnHeader2.Text" xml:space="preserve">
     <value>경로</value>
   </data>

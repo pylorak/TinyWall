@@ -228,9 +228,6 @@
   <data name="lblLinkAttributions.Text" xml:space="preserve">
     <value>属性</value>
   </data>
-  <data name="btnDonate.AccessibleDescription" xml:space="preserve">
-    <value>捐助</value>
-  </data>
   <data name="btnDonate.AccessibleName" xml:space="preserve">
     <value>捐助</value>
   </data>

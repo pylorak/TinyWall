@@ -135,10 +135,6 @@
   <data name="btnSubmitAssoc.Text" xml:space="preserve">
     <value>Отправить</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>14, 30</value>
-  </data>
   <data name="label3.Text" xml:space="preserve">
     <value>Редактируйте список пиложений, которым вы хотите дать доступ к сети. Связь доступна только приложениям в этом списке. Используйте кнопку Обнаружить, чтобы TinyWall обнаружил некоторые программы или добавьте их самостоятельно.</value>
   </data>
@@ -160,18 +156,6 @@
   <data name="columnDetails.Text" xml:space="preserve">
     <value>Детали</value>
   </data>
-  <data name="listApplications.Location" type="System.Drawing.Point, System.Drawing">
-    <value>14, 97</value>
-  </data>
-  <data name="listApplications.Size" type="System.Drawing.Size, System.Drawing">
-    <value>527, 229</value>
-  </data>
-  <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 78</value>
-  </data>
-  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>50, 13</value>
-  </data>
   <data name="label4.Text" xml:space="preserve">
     <value>Фильтр:</value>
   </data>
@@ -181,14 +165,8 @@
   <data name="label5.Text" xml:space="preserve">
     <value>Выберите специальные задачи или приложения, чтобы включить их на этом компьютере. Запомните, отключение рекомендованных исключений может значительно ограничить возможности и защиту системы.</value>
   </data>
-  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>95, 13</value>
-  </data>
   <data name="label2.Text" xml:space="preserve">
     <value>Дополнительные</value>
-  </data>
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>99, 13</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
     <value>Рекоммендуемые</value>
@@ -196,74 +174,26 @@
   <data name="tabPage2.Text" xml:space="preserve">
     <value>Специальные исключения</value>
   </data>
-  <data name="label11.Location" type="System.Drawing.Point, System.Drawing">
-    <value>24, 49</value>
-  </data>
-  <data name="label11.Size" type="System.Drawing.Size, System.Drawing">
-    <value>35, 13</value>
-  </data>
   <data name="label11.Text" xml:space="preserve">
     <value>Язык</value>
-  </data>
-  <data name="chkHostsBlocklist.Location" type="System.Drawing.Point, System.Drawing">
-    <value>328, 117</value>
-  </data>
-  <data name="chkHostsBlocklist.Size" type="System.Drawing.Size, System.Drawing">
-    <value>402, 17</value>
   </data>
   <data name="chkHostsBlocklist.Text" xml:space="preserve">
     <value>Список заблокированных Domain-based вредоносных програм и рекламы</value>
   </data>
-  <data name="chkEnableBlocklists.Location" type="System.Drawing.Point, System.Drawing">
-    <value>308, 71</value>
-  </data>
-  <data name="chkEnableBlocklists.Size" type="System.Drawing.Size, System.Drawing">
-    <value>164, 17</value>
-  </data>
   <data name="chkEnableBlocklists.Text" xml:space="preserve">
     <value>Включить лист блокировки</value>
-  </data>
-  <data name="chkBlockMalwarePorts.Location" type="System.Drawing.Point, System.Drawing">
-    <value>328, 94</value>
-  </data>
-  <data name="chkBlockMalwarePorts.Size" type="System.Drawing.Size, System.Drawing">
-    <value>327, 17</value>
   </data>
   <data name="chkBlockMalwarePorts.Text" xml:space="preserve">
     <value>Список заблокированных Port-based вредоносных програм</value>
   </data>
-  <data name="chkLockHostsFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>308, 48</value>
-  </data>
-  <data name="chkLockHostsFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>245, 17</value>
-  </data>
   <data name="chkLockHostsFile.Text" xml:space="preserve">
     <value>Предотвращение изменение файлов хоста</value>
-  </data>
-  <data name="comboLanguages.Location" type="System.Drawing.Point, System.Drawing">
-    <value>80, 46</value>
-  </data>
-  <data name="chkEnableHotkeys.Location" type="System.Drawing.Point, System.Drawing">
-    <value>24, 117</value>
   </data>
   <data name="chkEnableHotkeys.Text" xml:space="preserve">
     <value>Включить глобальные горячие клавиши</value>
   </data>
-  <data name="chkAutoUpdateCheck.Location" type="System.Drawing.Point, System.Drawing">
-    <value>24, 71</value>
-  </data>
-  <data name="chkAutoUpdateCheck.Size" type="System.Drawing.Size, System.Drawing">
-    <value>223, 17</value>
-  </data>
   <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
     <value>Автоматически проверять обновления</value>
-  </data>
-  <data name="chkAskForExceptionDetails.Location" type="System.Drawing.Point, System.Drawing">
-    <value>24, 94</value>
-  </data>
-  <data name="chkAskForExceptionDetails.Size" type="System.Drawing.Size, System.Drawing">
-    <value>233, 17</value>
   </data>
   <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
     <value>Подробная информация об исключениях</value>
@@ -271,32 +201,14 @@
   <data name="label9.Text" xml:space="preserve">
     <value>Для удаления парольной защиты выберите "Изменить пароль" и оставьте текстовое поле пустым</value>
   </data>
-  <data name="label8.Location" type="System.Drawing.Point, System.Drawing">
-    <value>33, 83</value>
-  </data>
-  <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 13</value>
-  </data>
   <data name="label8.Text" xml:space="preserve">
     <value>Повторите:</value>
-  </data>
-  <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
-    <value>33, 60</value>
-  </data>
-  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
-    <value>48, 13</value>
   </data>
   <data name="label7.Text" xml:space="preserve">
     <value>Пароль:</value>
   </data>
-  <data name="chkChangePassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>116, 17</value>
-  </data>
   <data name="chkChangePassword.Text" xml:space="preserve">
     <value>Изменить пароль</value>
-  </data>
-  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>24, 154</value>
   </data>
   <data name="groupBox1.Text" xml:space="preserve">
     <value>Защита паролем</value>
@@ -310,35 +222,17 @@
   <data name="btnExport.Text" xml:space="preserve">
     <value>Экспорт</value>
   </data>
-  <data name="btnDonate.AccessibleDescription" xml:space="preserve">
-    <value>Помочь проекту</value>
-  </data>
   <data name="btnDonate.AccessibleName" xml:space="preserve">
     <value>Помощь проекту</value>
-  </data>
-  <data name="lblLinkLicense.Size" type="System.Drawing.Size, System.Drawing">
-    <value>57, 13</value>
   </data>
   <data name="lblLinkLicense.Text" xml:space="preserve">
     <value>Лицензия</value>
   </data>
-  <data name="label10.Location" type="System.Drawing.Point, System.Drawing">
-    <value>222, 16</value>
-  </data>
-  <data name="label10.Size" type="System.Drawing.Size, System.Drawing">
-    <value>279, 60</value>
-  </data>
   <data name="label10.Text" xml:space="preserve">
     <value>Если вам нравится эта бесплатная программа, то пожалуйста, поддержите нас материально, чтобы мы могли покрыть расходы на хостинг, программное и аппаратное обеспечение.</value>
   </data>
-  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>121, 13</value>
-  </data>
   <data name="label6.Text" xml:space="preserve">
     <value>Все права защищены.</value>
-  </data>
-  <data name="label12.Size" type="System.Drawing.Size, System.Drawing">
-    <value>198, 13</value>
   </data>
   <data name="label12.Text" xml:space="preserve">
     <value>Авторские права © 2011 Károly Pados</value>

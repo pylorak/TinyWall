@@ -124,7 +124,7 @@
     <value>필터링된 ICMP 트래픽</value>
   </data>
   <data name="Pingable_local_machine" xml:space="preserve">
-    <value>핑 가능한 로컬 컴퓨터</value>
+    <value>핑 가능한 로컬 머신</value>
   </data>
   <data name="Windows_DHCP_Client" xml:space="preserve">
     <value>Windows DHCP 클라이언트</value>
@@ -140,9 +140,6 @@
   </data>
   <data name="Windows_Remote_Desktop" xml:space="preserve">
     <value>Windows 원격 데스크톱</value>
-  </data>
-  <data name="Windows_Store_Update" xml:space="preserve">
-    <value>Windows Store 업데이트</value>
   </data>
   <data name="Windows_Time_Sync" xml:space="preserve">
     <value>Windows 시간 동기화</value>

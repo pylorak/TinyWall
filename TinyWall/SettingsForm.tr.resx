@@ -216,9 +216,6 @@
   <data name="lblLinkAttributions.Text" xml:space="preserve">
     <value>Özellikler</value>
   </data>
-  <data name="btnDonate.AccessibleDescription" xml:space="preserve">
-    <value>Bağış yap</value>
-  </data>
   <data name="btnDonate.AccessibleName" xml:space="preserve">
     <value>Bağış</value>
   </data>

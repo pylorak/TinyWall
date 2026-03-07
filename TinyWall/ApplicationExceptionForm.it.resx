@@ -129,24 +129,11 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Aggiungi/Modifica eccezione - TinyWall</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="radOnlySpecifiedPorts.Size" type="System.Drawing.Size, System.Drawing">
-    <value>166, 17</value>
-  </data>
   <data name="radTcpUdpUnrestricted.Text" xml:space="preserve">
     <value>Traffico UDP e TCP senza restrizioni</value>
   </data>
-  <data name="radTcpUdpUnrestricted.Size" type="System.Drawing.Size, System.Drawing">
-    <value>197, 17</value>
-  </data>
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Annulla</value>
-  </data>
-  <data name="txtListenPortTCP.Location" type="System.Drawing.Point, System.Drawing">
-    <value>88, 101</value>
-  </data>
-  <data name="chkInheritToChildren.Size" type="System.Drawing.Size, System.Drawing">
-    <value>208, 17</value>
   </data>
   <data name="radUnrestricted.Text" xml:space="preserve">
     <value>Nessuna restrizione</value>
@@ -163,9 +150,6 @@
   <data name="lblApplication.Text" xml:space="preserve">
     <value>Applicazione:</value>
   </data>
-  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>112, 13</value>
-  </data>
   <data name="chkInheritToChildren.Text" xml:space="preserve">
     <value>Applica le stesse regole ai processi figli</value>
   </data>
@@ -181,17 +165,11 @@
   <data name="txtListenPortTCP.AccessibleName" xml:space="preserve">
     <value>TCP in ingresso</value>
   </data>
-  <data name="txtOutboundPortTCP.Location" type="System.Drawing.Point, System.Drawing">
-    <value>88, 61</value>
-  </data>
   <data name="label8.Text" xml:space="preserve">
     <value>Uscita UDP:</value>
   </data>
   <data name="lblApplicationType.Text" xml:space="preserve">
     <value>Tipo:</value>
-  </data>
-  <data name="radUnrestricted.Size" type="System.Drawing.Size, System.Drawing">
-    <value>117, 17</value>
   </data>
   <data name="btnChooseService.Text" xml:space="preserve">
     <value>Scegli un servizio...</value>
@@ -200,17 +178,8 @@
     <value>Aprire le seguenti porte, inoltre le restrizioni di cui sopra. (Elenco separato da virgole)
 </value>
   </data>
-  <data name="lblApplicationType.Size" type="System.Drawing.Size, System.Drawing">
-    <value>31, 13</value>
-  </data>
   <data name="radBlock.Text" xml:space="preserve">
     <value>Blocca sempre tutto il traffico</value>
-  </data>
-  <data name="radBlock.Size" type="System.Drawing.Size, System.Drawing">
-    <value>161, 17</value>
-  </data>
-  <data name="lblApplication.Size" type="System.Drawing.Size, System.Drawing">
-    <value>70, 13</value>
   </data>
   <data name="label6.Text" xml:space="preserve">
     <value>Durata dell'eccezione:</value>
@@ -221,17 +190,8 @@
   <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
     <value>Permetti solo porte specificate</value>
   </data>
-  <data name="radTcpUdpOut.Size" type="System.Drawing.Size, System.Drawing">
-    <value>223, 17</value>
-  </data>
   <data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
     <value>TCP in uscita</value>
-  </data>
-  <data name="transparentLabel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>184, 24</value>
-  </data>
-  <data name="chkRestrictToLocalNetwork.Size" type="System.Drawing.Size, System.Drawing">
-    <value>150, 17</value>
   </data>
   <data name="transparentLabel1.Text" xml:space="preserve">
     <value>Segnalibri conosciuti</value>

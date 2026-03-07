@@ -150,15 +150,8 @@
   <data name="label5.Text" xml:space="preserve">
     <value>Kies speciale taken of toepassingen die je wenst toe te staan op deze machine. Let er wel op dat het uitzetten van de aanbevolen uitzonderingen de bruikbaarheid en de veiligheid van uw systeem ernstig kunnen belemmeren.</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>52, 13</value>
-  </data>
   <data name="label2.Text" xml:space="preserve">
     <value>Optioneel</value>
-  </data>
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 13</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
     <value>Aanbevolen</value>
@@ -166,95 +159,38 @@
   <data name="tabPage2.Text" xml:space="preserve">
     <value>Speciale uitzonderingen</value>
   </data>
-  <data name="label11.Size" type="System.Drawing.Size, System.Drawing">
-    <value>31, 13</value>
-  </data>
   <data name="label11.Text" xml:space="preserve">
     <value>Taal:</value>
-  </data>
-  <data name="&gt;&gt;label11.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="chkHostsBlocklist.Size" type="System.Drawing.Size, System.Drawing">
-    <value>232, 17</value>
   </data>
   <data name="chkHostsBlocklist.Text" xml:space="preserve">
     <value>Domain-based malware en reclame blocklist</value>
   </data>
-  <data name="&gt;&gt;chkHostsBlocklist.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="chkEnableBlocklists.Size" type="System.Drawing.Size, System.Drawing">
-    <value>109, 17</value>
-  </data>
   <data name="chkEnableBlocklists.Text" xml:space="preserve">
     <value>Gebruik blocklists</value>
-  </data>
-  <data name="&gt;&gt;chkBlockMalwarePorts.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="chkLockHostsFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>230, 17</value>
   </data>
   <data name="chkLockHostsFile.Text" xml:space="preserve">
     <value>Voorkom wijzigingen aan het hosts bestand</value>
   </data>
-  <data name="&gt;&gt;chkLockHostsFile.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;comboLanguages.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="chkAutoUpdateCheck.Size" type="System.Drawing.Size, System.Drawing">
-    <value>174, 17</value>
-  </data>
   <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
     <value>Automatisch nazien op updates</value>
-  </data>
-  <data name="&gt;&gt;chkAutoUpdateCheck.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="chkAskForExceptionDetails.Size" type="System.Drawing.Size, System.Drawing">
-    <value>216, 17</value>
   </data>
   <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
     <value>Waarschuwing voor uitzonderingsdetails</value>
   </data>
-  <data name="&gt;&gt;chkAskForExceptionDetails.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="label9.Location" type="System.Drawing.Point, System.Drawing">
-    <value>249, 57</value>
-  </data>
-  <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
-    <value>253, 43</value>
-  </data>
   <data name="label9.Text" xml:space="preserve">
     <value>Om paswoordbeveiliging te verwijderen en aan te zetten, vink "Wijzig paswoord" aan en laat het tekstveld leeg.</value>
-  </data>
-  <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
-    <value>41, 13</value>
   </data>
   <data name="label8.Text" xml:space="preserve">
     <value>Hertyp:</value>
   </data>
-  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
-    <value>57, 13</value>
-  </data>
   <data name="label7.Text" xml:space="preserve">
     <value>Paswoord:</value>
-  </data>
-  <data name="chkChangePassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>103, 17</value>
   </data>
   <data name="chkChangePassword.Text" xml:space="preserve">
     <value>Wijzig paswoord</value>
   </data>
   <data name="groupBox1.Text" xml:space="preserve">
     <value>Paswoord bescherming</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
-    <value>7</value>
   </data>
   <data name="tabPage1.Text" xml:space="preserve">
     <value>Algemeen</value>
@@ -270,9 +206,6 @@
   </data>
   <data name="label10.Text" xml:space="preserve">
     <value>Indien u tevreden bent over dit gratis programma, overweeg een gift om tegemoet te komen aan hosting, hardware en software kosten.</value>
-  </data>
-  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>138, 13</value>
   </data>
   <data name="label6.Text" xml:space="preserve">
     <value>Alle rechten voorbehouden.</value>

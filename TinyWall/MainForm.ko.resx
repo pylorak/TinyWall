@@ -139,10 +139,10 @@
     <value>모드 변경</value>
   </data>
   <data name="mnuManage.Text" xml:space="preserve">
-    <value>관리</value>
+    <value>설정 관리</value>
   </data>
   <data name="mnuConnections.Text" xml:space="preserve">
-    <value>연결 표시</value>
+    <value>인터넷 연결 앱 보기</value>
   </data>
   <data name="mnuLock.Text" xml:space="preserve">
     <value>차단</value>
@@ -154,16 +154,16 @@
     <value>LAN 트래픽 차단 해제</value>
   </data>
   <data name="mnuEnableHostsBlocklist.Text" xml:space="preserve">
-    <value>차단 목록 사용</value>
+    <value>차단 목록(HostsBlocklist) 활성화</value>
   </data>
   <data name="mnuWhitelistByExecutable.Text" xml:space="preserve">
-    <value>실행 파일별 허용 목록</value>
+    <value>허용 목록에 실행 파일 추가</value>
   </data>
   <data name="mnuWhitelistByProcess.Text" xml:space="preserve">
-    <value>프로세스별 허용 목록</value>
+    <value>허용 목록에 프로세스 추가</value>
   </data>
   <data name="mnuWhitelistByWindow.Text" xml:space="preserve">
-    <value>창별 허용 목록</value>
+    <value>허용 목록에 (열린)창 추가</value>
   </data>
   <data name="mnuQuit.Text" xml:space="preserve">
     <value>종료</value>

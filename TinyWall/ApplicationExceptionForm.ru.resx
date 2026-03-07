@@ -129,42 +129,20 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Добавить/Изменить исключения фаервола TinyWall</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="label8.Location" type="System.Drawing.Point, System.Drawing">
-    <value>227, 64</value>
-  </data>
-  <data name="radOnlySpecifiedPorts.Size" type="System.Drawing.Size, System.Drawing">
-    <value>211, 17</value>
-  </data>
   <data name="radTcpUdpUnrestricted.Text" xml:space="preserve">
     <value>Неограниченный UDP и TCP трафик</value>
-  </data>
-  <data name="radTcpUdpUnrestricted.Size" type="System.Drawing.Size, System.Drawing">
-    <value>210, 17</value>
   </data>
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Отмена</value>
   </data>
-  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>55, 13</value>
-  </data>
   <data name="radUnrestricted.Text" xml:space="preserve">
     <value>Без ограничений</value>
-  </data>
-  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 33</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
     <value>Вход UDP</value>
   </data>
-  <data name="txtSrvName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>178, 20</value>
-  </data>
   <data name="btnSelectUwpApp.Text" xml:space="preserve">
     <value>Выбрать пакет приложения...</value>
-  </data>
-  <data name="txtAppPath.Size" type="System.Drawing.Size, System.Drawing">
-    <value>178, 20</value>
   </data>
   <data name="txtListenPortUDP.AccessibleName" xml:space="preserve">
     <value>Входящий UDP</value>
@@ -172,20 +150,11 @@
   <data name="lblApplication.Text" xml:space="preserve">
     <value>Приложение:</value>
   </data>
-  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>154, 13</value>
-  </data>
   <data name="chkInheritToChildren.Text" xml:space="preserve">
     <value>Применить те же правила к дочерним процессам</value>
   </data>
-  <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
-    <value>2, 37</value>
-  </data>
   <data name="txtOutboundPortUDP.AccessibleName" xml:space="preserve">
     <value>Исходящий UDP</value>
-  </data>
-  <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 13</value>
   </data>
   <data name="ofd.Title" xml:space="preserve">
     <value>Выбор исполняемого файла приложения</value>
@@ -202,29 +171,14 @@
   <data name="lblApplicationType.Text" xml:space="preserve">
     <value>Тип:</value>
   </data>
-  <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>532, 24</value>
-  </data>
-  <data name="cmbTimer.Location" type="System.Drawing.Point, System.Drawing">
-    <value>162, 30</value>
-  </data>
-  <data name="radUnrestricted.Size" type="System.Drawing.Size, System.Drawing">
-    <value>111, 17</value>
-  </data>
   <data name="btnChooseService.Text" xml:space="preserve">
     <value>Выбрать службу...</value>
   </data>
   <data name="label5.Text" xml:space="preserve">
     <value>Открыть следующие порты, в добавок к вышеуказанным исключениям (список портов через запятую)</value>
   </data>
-  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
-    <value>62, 13</value>
-  </data>
   <data name="radBlock.Text" xml:space="preserve">
     <value>Блокировать весь трафик</value>
-  </data>
-  <data name="radBlock.Size" type="System.Drawing.Size, System.Drawing">
-    <value>158, 17</value>
   </data>
   <data name="label6.Text" xml:space="preserve">
     <value>Время действия исключения</value>
@@ -232,37 +186,16 @@
   <data name="btnOK.Text" xml:space="preserve">
     <value>ОК</value>
   </data>
-  <data name="txtSrvName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>162, 84</value>
-  </data>
   <data name="label3.Text" xml:space="preserve">
     <value>Вход TCP</value>
   </data>
   <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
     <value>Разрешить только указанные порты</value>
   </data>
-  <data name="radTcpUdpOut.Size" type="System.Drawing.Size, System.Drawing">
-    <value>239, 17</value>
-  </data>
   <data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
     <value>Исходящий TCP</value>
   </data>
-  <data name="chkRestrictToLocalNetwork.Size" type="System.Drawing.Size, System.Drawing">
-    <value>169, 17</value>
-  </data>
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Выбрать файл...</value>
-  </data>
-  <data name="cmbTimer.Size" type="System.Drawing.Size, System.Drawing">
-    <value>176, 21</value>
-  </data>
-  <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 64</value>
-  </data>
-  <data name="txtAppPath.Location" type="System.Drawing.Point, System.Drawing">
-    <value>162, 57</value>
-  </data>
-  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>55, 13</value>
   </data>
 </root>

@@ -225,9 +225,6 @@
   <data name="btnExport.Text" xml:space="preserve">
     <value>ייצוא הגדרות</value>
   </data>
-  <data name="btnDonate.AccessibleDescription" xml:space="preserve">
-    <value>טיפ</value>
-  </data>
   <data name="btnDonate.AccessibleName" xml:space="preserve">
     <value>טיפ</value>
   </data>

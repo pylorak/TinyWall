@@ -121,22 +121,22 @@
     <value>닫기</value>
   </data>
   <data name="columnHeader1.Text" xml:space="preserve">
-    <value>프로세스 (ID)</value>
+    <value>프로세스 (id)</value>
   </data>
   <data name="columnHeader2.Text" xml:space="preserve">
     <value>프로토콜</value>
   </data>
   <data name="columnHeader3.Text" xml:space="preserve">
-    <value>로컬 포트</value>
+    <value>소스 포트</value>
   </data>
   <data name="columnHeader4.Text" xml:space="preserve">
-    <value>로컬 주소</value>
+    <value>로컬/소스 주소</value>
   </data>
   <data name="columnHeader5.Text" xml:space="preserve">
-    <value>원격 포트</value>
+    <value>대상 포트</value>
   </data>
   <data name="columnHeader6.Text" xml:space="preserve">
-    <value>원격 주소</value>
+    <value>원격/대상 주소</value>
   </data>
   <data name="columnHeader7.Text" xml:space="preserve">
     <value>상태</value>
@@ -160,7 +160,7 @@
     <value>바이러스토탈</value>
   </data>
   <data name="mnuProcessLibrary.Text" xml:space="preserve">
-    <value>프로세스라이브러리</value>
+    <value>프로세스 라이브러리</value>
   </data>
   <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
     <value>웹상의 파일 이름</value>
@@ -181,9 +181,9 @@
     <value>활성 연결 표시</value>
   </data>
   <data name="chkShowBlocked.Text" xml:space="preserve">
-    <value>차단된 앱 표시 (마지막 5분)</value>
+    <value>차단된 앱 표시 (지난 2분 동안)</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>연결 - TinyWall</value>
+    <value>인터넷 연결된 앱 - TinyWall</value>
   </data>
 </root>

@@ -225,9 +225,6 @@
   <data name="lblLinkAttributions.Text" xml:space="preserve">
     <value>Attribuzioni</value>
   </data>
-  <data name="btnDonate.AccessibleDescription" xml:space="preserve">
-    <value>Dona</value>
-  </data>
   <data name="btnDonate.AccessibleName" xml:space="preserve">
     <value>Donazione</value>
   </data>

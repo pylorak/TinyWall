@@ -120,48 +120,26 @@
   <data name="label1.Text" xml:space="preserve">
     <value>TinyWall은 컴퓨터의 일부 소프트웨어를 자동으로 감지하여 차단을 해제할 수 있습니다. 이렇게 하면 응용 프로그램을 하나씩 차단 해제할 필요가 없으며 변경 사항을 적용하기 전에 결과를 검토할 수 있습니다.</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="btnStartDetection.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
   <data name="btnStartDetection.Text" xml:space="preserve">
     <value>시작</value>
   </data>
   <data name="columnHeader1.Text" xml:space="preserve">
     <value>이름</value>
   </data>
-  <data name="list.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
   <data name="lblStatus.Text" xml:space="preserve">
     <value>검색 중:</value>
-  </data>
-  <data name="btnCancel.TabIndex" type="System.Int32, mscorlib">
-    <value>7</value>
   </data>
   <data name="btnCancel.Text" xml:space="preserve">
     <value>취소</value>
   </data>
-  <data name="btnOK.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
-  </data>
   <data name="btnOK.Text" xml:space="preserve">
     <value>적용</value>
-  </data>
-  <data name="btnSelectImportant.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
   </data>
   <data name="btnSelectImportant.Text" xml:space="preserve">
     <value>주요 선택</value>
   </data>
-  <data name="btnSelectAll.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
   <data name="btnSelectAll.Text" xml:space="preserve">
     <value>모두 선택</value>
-  </data>
-  <data name="btnDeselectAll.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
   </data>
   <data name="btnDeselectAll.Text" xml:space="preserve">
     <value>모두 해제</value>

@@ -216,9 +216,6 @@
   <data name="lblLinkAttributions.Text" xml:space="preserve">
     <value>Uznanie</value>
   </data>
-  <data name="btnDonate.AccessibleDescription" xml:space="preserve">
-    <value>Wpłać darowiznę</value>
-  </data>
   <data name="btnDonate.AccessibleName" xml:space="preserve">
     <value>Darowizna</value>
   </data>

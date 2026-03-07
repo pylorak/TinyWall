@@ -156,13 +156,6 @@
   <data name="columnDetails.Text" xml:space="preserve">
     <value>詳細</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>16, 78</value>
-  </data>
-  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>43, 13</value>
-  </data>
   <data name="label4.Text" xml:space="preserve">
     <value>フィルタ:</value>
   </data>
@@ -172,14 +165,8 @@
   <data name="label5.Text" xml:space="preserve">
     <value>このマシンで例外とする特殊なタスク、およびアプリケーションを選択してください。注: 推奨の例外を無効にするとあなたのシステムのユーザビリティとセキュリティが大幅に制限されてしまうという点にご注意ください。</value>
   </data>
-  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>31, 13</value>
-  </data>
   <data name="label2.Text" xml:space="preserve">
     <value>任意</value>
-  </data>
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>31, 13</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
     <value>推奨</value>
@@ -187,26 +174,14 @@
   <data name="tabPage2.Text" xml:space="preserve">
     <value>特殊例外</value>
   </data>
-  <data name="label11.Size" type="System.Drawing.Size, System.Drawing">
-    <value>34, 13</value>
-  </data>
   <data name="label11.Text" xml:space="preserve">
     <value>言語:</value>
-  </data>
-  <data name="chkHostsBlocklist.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 17</value>
   </data>
   <data name="chkHostsBlocklist.Text" xml:space="preserve">
     <value>ドメイン基準のマルウェア、広告ブロックリスト</value>
   </data>
-  <data name="chkEnableBlocklists.Size" type="System.Drawing.Size, System.Drawing">
-    <value>128, 17</value>
-  </data>
   <data name="chkEnableBlocklists.Text" xml:space="preserve">
     <value>ブロックリストを有効化</value>
-  </data>
-  <data name="chkBlockMalwarePorts.Size" type="System.Drawing.Size, System.Drawing">
-    <value>189, 17</value>
   </data>
   <data name="chkBlockMalwarePorts.Text" xml:space="preserve">
     <value>ポート基準のマルウェアブロックリスト</value>
@@ -214,47 +189,26 @@
   <data name="chkDisplayOffBlock.Text" xml:space="preserve">
     <value>ディスプレイのパワーセーブ中は、インターネットを遮断</value>
   </data>
-  <data name="chkLockHostsFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>176, 17</value>
-  </data>
   <data name="chkLockHostsFile.Text" xml:space="preserve">
     <value>Hosts ファイルの変更を防止する</value>
   </data>
   <data name="chkEnableHotkeys.Text" xml:space="preserve">
     <value>グローバル ホットキーを有効化</value>
   </data>
-  <data name="chkAutoUpdateCheck.Size" type="System.Drawing.Size, System.Drawing">
-    <value>191, 17</value>
-  </data>
   <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
     <value>アップデートの有無を自動的に確認</value>
-  </data>
-  <data name="chkAskForExceptionDetails.Size" type="System.Drawing.Size, System.Drawing">
-    <value>147, 17</value>
   </data>
   <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
     <value>例外時に詳細を表示する</value>
   </data>
-  <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
-    <value>253, 46</value>
-  </data>
   <data name="label9.Text" xml:space="preserve">
     <value>有効になっているパスワードを変更したい時は、"パスワードを変更" にチェックを入れ、テキストフィールドを空にしておいてください。</value>
-  </data>
-  <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
-    <value>46, 13</value>
   </data>
   <data name="label8.Text" xml:space="preserve">
     <value>再入力:</value>
   </data>
-  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
-    <value>57, 13</value>
-  </data>
   <data name="label7.Text" xml:space="preserve">
     <value>パスワード:</value>
-  </data>
-  <data name="chkChangePassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>106, 17</value>
   </data>
   <data name="chkChangePassword.Text" xml:space="preserve">
     <value>パスワードを変更</value>
@@ -273,9 +227,6 @@
   </data>
   <data name="lblLinkAttributions.Text" xml:space="preserve">
     <value>属性</value>
-  </data>
-  <data name="btnDonate.AccessibleDescription" xml:space="preserve">
-    <value>寄付する</value>
   </data>
   <data name="btnDonate.AccessibleName" xml:space="preserve">
     <value>寄付</value>
