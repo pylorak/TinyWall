@@ -216,9 +216,6 @@
   <data name="Success" xml:space="preserve">
     <value>Erfolgreich.</value>
   </data>
-  <data name="OtherSettingsPreventEffect" xml:space="preserve">
-    <value>Die Operation wurde erfolgreich ausgeführt, aber andere Einstellungen verhindern die vollständige Funktion.</value>
-  </data>
   <data name="OperationFailed" xml:space="preserve">
     <value>Operation fehlgeschlagen.</value>
   </data>
@@ -327,20 +324,6 @@ Die ausgewählte Datei kann zu {0} gehören. Um sicherzustellen, dass die Anwend
   <data name="CompromisedApplication" xml:space="preserve">
     <value>{0}, mögl. kompromittiert</value>
     <comment>Exception details window banner text. Param0 is name of application.</comment>
-  </data>
-  <data name="ToastInputNeeded" xml:space="preserve">
-    <value>Ihre Eingabe ist gefragt
-um das App in der Firewall zu erlauben.</value>
-    <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
-  </data>
-  <data name="ToastAppWhitelisted" xml:space="preserve">
-    <value>Zu den Firewallausnahmen hinzugefügt</value>
-    <comment>Keep line short because words do not wrap.</comment>
-  </data>
-  <data name="ToastWhitelistFailed" xml:space="preserve">
-    <value>Whitelist fehlgeschlagen.
-Versuchen Sie es nocheinmal.</value>
-    <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
   </data>
   <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>Wegen eines internen Fehlers konnten die Einstellungen nicht übernommen werden.</value>

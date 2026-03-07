@@ -207,9 +207,6 @@ Kies verhoogde rechten vanuit het tray menu en probeer opnieuw.</value>
   <data name="Success" xml:space="preserve">
     <value>Succes.</value>
   </data>
-  <data name="OtherSettingsPreventEffect" xml:space="preserve">
-    <value>De opdracht was succesvol, maar omwille van andere instellingen werd deze niet volledig uitgevoerd.</value>
-  </data>
   <data name="OperationFailed" xml:space="preserve">
     <value>Uitvoering mislukt.</value>
   </data>

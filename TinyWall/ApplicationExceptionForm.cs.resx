@@ -117,58 +117,58 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="btnCancel.Text" xml:space="preserve">
-    <value>Zrušit</value>
-  </data>
-  <data name="btnBrowse.Text" xml:space="preserve">
-    <value>Najít soubor...</value>
-  </data>
   <data name="btnProcess.Text" xml:space="preserve">
     <value>Vybrat proces...</value>
-  </data>
-  <data name="btnChooseService.Text" xml:space="preserve">
-    <value>Zvolit službu...</value>
-  </data>
-  <data name="ofd.Title" xml:space="preserve">
-    <value>Zvolit spustitelný soubor aplikace</value>
-  </data>
-  <data name="label6.Text" xml:space="preserve">
-    <value>Platnost vyjímky:</value>
   </data>
   <data name="chkRestrictToLocalNetwork.Text" xml:space="preserve">
     <value>Omezit na lokální síť</value>
   </data>
-  <data name="radBlock.Text" xml:space="preserve">
-    <value>Blokovat veškerou komunikaci</value>
-  </data>
-  <data name="radTcpUdpOut.Text" xml:space="preserve">
-    <value>Povolit odchozí UDP a TCP komunikaci</value>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Přidat/Upravit vyjímku firewallu - TinyWall</value>
   </data>
   <data name="radTcpUdpUnrestricted.Text" xml:space="preserve">
     <value>Neomezená UDP a TCP komunikace</value>
   </data>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Zrušit</value>
+  </data>
   <data name="radUnrestricted.Text" xml:space="preserve">
     <value>Bez omezení</value>
-  </data>
-  <data name="label5.Text" xml:space="preserve">
-    <value>Otevřít následující porty pro doplnění nastavení výše. (list oddělen čárkami)</value>
   </data>
   <data name="txtListenPortUDP.AccessibleName" xml:space="preserve">
     <value>Příchozí UDP</value>
   </data>
-  <data name="txtListenPortTCP.AccessibleName" xml:space="preserve">
-    <value>Příchozí TCP</value>
-  </data>
   <data name="txtOutboundPortUDP.AccessibleName" xml:space="preserve">
     <value>Odchozí UDP</value>
   </data>
-  <data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
-    <value>Odchozí TCP</value>
+  <data name="ofd.Title" xml:space="preserve">
+    <value>Zvolit spustitelný soubor aplikace</value>
+  </data>
+  <data name="radTcpUdpOut.Text" xml:space="preserve">
+    <value>Povolit odchozí UDP a TCP komunikaci</value>
+  </data>
+  <data name="txtListenPortTCP.AccessibleName" xml:space="preserve">
+    <value>Příchozí TCP</value>
+  </data>
+  <data name="btnChooseService.Text" xml:space="preserve">
+    <value>Zvolit službu...</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Otevřít následující porty pro doplnění nastavení výše. (list oddělen čárkami)</value>
+  </data>
+  <data name="radBlock.Text" xml:space="preserve">
+    <value>Blokovat veškerou komunikaci</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>Platnost vyjímky:</value>
   </data>
   <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
     <value>Povolit pouze určité porty</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Přidat/Upravit vyjímku firewallu - TinyWall</value>
+  <data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
+    <value>Odchozí TCP</value>
+  </data>
+  <data name="btnBrowse.Text" xml:space="preserve">
+    <value>Najít soubor...</value>
   </data>
 </root>

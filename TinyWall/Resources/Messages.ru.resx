@@ -213,9 +213,6 @@
   <data name="Success" xml:space="preserve">
     <value>Успех.</value>
   </data>
-  <data name="OtherSettingsPreventEffect" xml:space="preserve">
-    <value>Операция выполнена успешно, но другие настройки повлияли на её выполнение.</value>
-  </data>
   <data name="OperationFailed" xml:space="preserve">
     <value>Операция не выполнена.</value>
   </data>

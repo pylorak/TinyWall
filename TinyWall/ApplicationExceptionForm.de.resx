@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
+  <!-- 
+    Microsoft ResX Schema 
+    
     Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
-
+    
     Example:
-
+    
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-
-    There are any number of "resheader" rows that contain simple
+                
+    There are any number of "resheader" rows that contain simple 
     name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
     mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
     extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
-
+    
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-
+    
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
+    value   : The object must be serialized into a byte array 
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -117,85 +117,85 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="btnCancel.Text" xml:space="preserve">
-    <value>Abbrechen</value>
-  </data>
-  <data name="lblApplication.Text" xml:space="preserve">
-    <value>Anwendung:</value>
-  </data>
-  <data name="lblApplicationType.Text" xml:space="preserve">
-    <value>Anwendungstyp:</value>
-  </data>
-  <data name="btnBrowse.Text" xml:space="preserve">
-    <value>Eine Datei auswählen...</value>
+  <data name="label7.Text" xml:space="preserve">
+    <value>TCP ausg.:</value>
   </data>
   <data name="btnProcess.Text" xml:space="preserve">
     <value>Ein Prozess auswählen...</value>
   </data>
-  <data name="btnChooseService.Text" xml:space="preserve">
-    <value>Einen Dienst auswählen...</value>
-  </data>
-  <data name="ofd.Title" xml:space="preserve">
-    <value>Eine Anwendung auswählen</value>
-  </data>
-  <data name="label6.Text" xml:space="preserve">
-    <value>Ausnahmedauer:</value>
-  </data>
-  <data name="transparentLabel1.Text" xml:space="preserve">
-    <value>Anerkannter Platzhalter</value>
-  </data>
-  <data name="btnSelectUwpApp.Text" xml:space="preserve">
-    <value>Eine UWP App wählen...</value>
-  </data>
   <data name="chkRestrictToLocalNetwork.Text" xml:space="preserve">
     <value>Beschränke auf lokales Netzwerk</value>
   </data>
-  <data name="radBlock.Text" xml:space="preserve">
-    <value>Sperre den gesamten Datenverkehr</value>
-  </data>
-  <data name="radTcpUdpOut.Text" xml:space="preserve">
-    <value>Erlaube ausgehenden UDP und TCP Datenverkehr</value>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Hinzufügen/Ändern einer Firewallausnahme - TinyWall</value>
   </data>
   <data name="radTcpUdpUnrestricted.Text" xml:space="preserve">
     <value>Unbeschränkter UDP und TCP Datenverkehr</value>
   </data>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
   <data name="radUnrestricted.Text" xml:space="preserve">
     <value>Keine Beschränkungen</value>
-  </data>
-  <data name="label5.Text" xml:space="preserve">
-    <value>Öffne die folgenden Ports zusätzlich zu den oben angegebenen Beschränkungen. (Komma-getrennte Liste)</value>
-  </data>
-  <data name="txtListenPortUDP.AccessibleName" xml:space="preserve">
-    <value>Eingehender UDP</value>
-  </data>
-  <data name="txtListenPortTCP.AccessibleName" xml:space="preserve">
-    <value>Eingehender TCP</value>
-  </data>
-  <data name="label3.Text" xml:space="preserve">
-    <value>TCP eing.:</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
     <value>UDP eing.:</value>
   </data>
-  <data name="txtOutboundPortUDP.AccessibleName" xml:space="preserve">
-    <value>Ausgehender UDP</value>
+  <data name="btnSelectUwpApp.Text" xml:space="preserve">
+    <value>Eine UWP App wählen...</value>
   </data>
-  <data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
-    <value>Ausgehender TCP</value>
+  <data name="txtListenPortUDP.AccessibleName" xml:space="preserve">
+    <value>Eingehender UDP</value>
   </data>
-  <data name="label7.Text" xml:space="preserve">
-    <value>TCP ausg.:</value>
-  </data>
-  <data name="label8.Text" xml:space="preserve">
-    <value>UDP ausg.:</value>
-  </data>
-  <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
-    <value>Erlaube nur die angegebenen Ports</value>
+  <data name="lblApplication.Text" xml:space="preserve">
+    <value>Anwendung:</value>
   </data>
   <data name="chkInheritToChildren.Text" xml:space="preserve">
     <value>Regeln auf untergeordnete Prozesse anwenden</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Hinzufügen/Ändern einer Firewallausnahme - TinyWall</value>
+  <data name="txtOutboundPortUDP.AccessibleName" xml:space="preserve">
+    <value>Ausgehender UDP</value>
+  </data>
+  <data name="ofd.Title" xml:space="preserve">
+    <value>Eine Anwendung auswählen</value>
+  </data>
+  <data name="radTcpUdpOut.Text" xml:space="preserve">
+    <value>Erlaube ausgehenden UDP und TCP Datenverkehr</value>
+  </data>
+  <data name="txtListenPortTCP.AccessibleName" xml:space="preserve">
+    <value>Eingehender TCP</value>
+  </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value>UDP ausg.:</value>
+  </data>
+  <data name="lblApplicationType.Text" xml:space="preserve">
+    <value>Anwendungstyp:</value>
+  </data>
+  <data name="btnChooseService.Text" xml:space="preserve">
+    <value>Einen Dienst auswählen...</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Öffne die folgenden Ports zusätzlich zu den oben angegebenen Beschränkungen. (Komma-getrennte Liste)</value>
+  </data>
+  <data name="radBlock.Text" xml:space="preserve">
+    <value>Sperre den gesamten Datenverkehr</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>Ausnahmedauer:</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>TCP eing.:</value>
+  </data>
+  <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
+    <value>Erlaube nur die angegebenen Ports</value>
+  </data>
+  <data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
+    <value>Ausgehender TCP</value>
+  </data>
+  <data name="transparentLabel1.Text" xml:space="preserve">
+    <value>Anerkannter Platzhalter</value>
+  </data>
+  <data name="btnBrowse.Text" xml:space="preserve">
+    <value>Eine Datei auswählen...</value>
   </data>
 </root>

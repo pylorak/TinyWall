@@ -135,7 +135,7 @@
   <data name="btnSubmitAssoc.Text" xml:space="preserve">
     <value>Отправить</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
     <value>14, 30</value>
   </data>
@@ -205,8 +205,14 @@
   <data name="label11.Text" xml:space="preserve">
     <value>Язык</value>
   </data>
-  <data name="comboLanguages.Location" type="System.Drawing.Point, System.Drawing">
-    <value>80, 46</value>
+  <data name="chkHostsBlocklist.Location" type="System.Drawing.Point, System.Drawing">
+    <value>328, 117</value>
+  </data>
+  <data name="chkHostsBlocklist.Size" type="System.Drawing.Size, System.Drawing">
+    <value>402, 17</value>
+  </data>
+  <data name="chkHostsBlocklist.Text" xml:space="preserve">
+    <value>Список заблокированных Domain-based вредоносных програм и рекламы</value>
   </data>
   <data name="chkEnableBlocklists.Location" type="System.Drawing.Point, System.Drawing">
     <value>308, 71</value>
@@ -217,6 +223,15 @@
   <data name="chkEnableBlocklists.Text" xml:space="preserve">
     <value>Включить лист блокировки</value>
   </data>
+  <data name="chkBlockMalwarePorts.Location" type="System.Drawing.Point, System.Drawing">
+    <value>328, 94</value>
+  </data>
+  <data name="chkBlockMalwarePorts.Size" type="System.Drawing.Size, System.Drawing">
+    <value>327, 17</value>
+  </data>
+  <data name="chkBlockMalwarePorts.Text" xml:space="preserve">
+    <value>Список заблокированных Port-based вредоносных програм</value>
+  </data>
   <data name="chkLockHostsFile.Location" type="System.Drawing.Point, System.Drawing">
     <value>308, 48</value>
   </data>
@@ -226,14 +241,14 @@
   <data name="chkLockHostsFile.Text" xml:space="preserve">
     <value>Предотвращение изменение файлов хоста</value>
   </data>
-  <data name="chkHostsBlocklist.Location" type="System.Drawing.Point, System.Drawing">
-    <value>328, 117</value>
+  <data name="comboLanguages.Location" type="System.Drawing.Point, System.Drawing">
+    <value>80, 46</value>
   </data>
-  <data name="chkHostsBlocklist.Size" type="System.Drawing.Size, System.Drawing">
-    <value>402, 17</value>
+  <data name="chkEnableHotkeys.Location" type="System.Drawing.Point, System.Drawing">
+    <value>24, 117</value>
   </data>
-  <data name="chkHostsBlocklist.Text" xml:space="preserve">
-    <value>Список заблокированных Domain-based вредоносных програм и рекламы</value>
+  <data name="chkEnableHotkeys.Text" xml:space="preserve">
+    <value>Включить глобальные горячие клавиши</value>
   </data>
   <data name="chkAutoUpdateCheck.Location" type="System.Drawing.Point, System.Drawing">
     <value>24, 71</value>
@@ -244,14 +259,14 @@
   <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
     <value>Автоматически проверять обновления</value>
   </data>
-  <data name="chkBlockMalwarePorts.Location" type="System.Drawing.Point, System.Drawing">
-    <value>328, 94</value>
+  <data name="chkAskForExceptionDetails.Location" type="System.Drawing.Point, System.Drawing">
+    <value>24, 94</value>
   </data>
-  <data name="chkBlockMalwarePorts.Size" type="System.Drawing.Size, System.Drawing">
-    <value>327, 17</value>
+  <data name="chkAskForExceptionDetails.Size" type="System.Drawing.Size, System.Drawing">
+    <value>233, 17</value>
   </data>
-  <data name="chkBlockMalwarePorts.Text" xml:space="preserve">
-    <value>Список заблокированных Port-based вредоносных програм</value>
+  <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
+    <value>Подробная информация об исключениях</value>
   </data>
   <data name="label9.Text" xml:space="preserve">
     <value>Для удаления парольной защиты выберите "Изменить пароль" и оставьте текстовое поле пустым</value>
@@ -285,21 +300,6 @@
   </data>
   <data name="groupBox1.Text" xml:space="preserve">
     <value>Защита паролем</value>
-  </data>
-  <data name="chkAskForExceptionDetails.Location" type="System.Drawing.Point, System.Drawing">
-    <value>24, 94</value>
-  </data>
-  <data name="chkAskForExceptionDetails.Size" type="System.Drawing.Size, System.Drawing">
-    <value>233, 17</value>
-  </data>
-  <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
-    <value>Подробная информация об исключениях</value>
-  </data>
-  <data name="chkEnableHotkeys.Location" type="System.Drawing.Point, System.Drawing">
-    <value>24, 117</value>
-  </data>
-  <data name="chkEnableHotkeys.Text" xml:space="preserve">
-    <value>Включить глобальные горячие клавиши</value>
   </data>
   <data name="tabPage1.Text" xml:space="preserve">
     <value>Важные</value>

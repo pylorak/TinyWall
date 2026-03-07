@@ -219,9 +219,6 @@
   <data name="Success" xml:space="preserve">
     <value>成功。</value>
   </data>
-  <data name="OtherSettingsPreventEffect" xml:space="preserve">
-    <value>操作成功，但其他设置阻止了该操作的全面生效。</value>
-  </data>
   <data name="OperationFailed" xml:space="preserve">
     <value>操作失败。</value>
   </data>
@@ -344,15 +341,6 @@
   </data>
   <data name="CompromisedApplication" xml:space="preserve">
     <value>{0}，可能受到感染</value>
-  </data>
-  <data name="ToastInputNeeded" xml:space="preserve">
-    <value>您需要进行输入以便继续对防火墙白名单进行设置。</value>
-  </data>
-  <data name="ToastAppWhitelisted" xml:space="preserve">
-    <value>已添加至防火墙白名单</value>
-  </data>
-  <data name="ToastWhitelistFailed" xml:space="preserve">
-    <value>防火墙白名单设置失败。如果您再次尝试，仍然有可能成功完成设置。</value>
   </data>
   <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>由于内部错误而无法应用防火墙设置。</value>

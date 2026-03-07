@@ -165,26 +165,29 @@
   <data name="tabPage2.Text" xml:space="preserve">
     <value>Speciální vyjímky</value>
   </data>
-  <data name="chkEnableHotkeys.Text" xml:space="preserve">
-    <value>Povolit klávesové zkratky</value>
-  </data>
   <data name="label11.Text" xml:space="preserve">
     <value>Jazyk:</value>
-  </data>
-  <data name="chkEnableBlocklists.Text" xml:space="preserve">
-    <value>Povolit bloklisty</value>
-  </data>
-  <data name="chkLockHostsFile.Text" xml:space="preserve">
-    <value>Zamezit změnám v host souboru</value>
   </data>
   <data name="chkHostsBlocklist.Text" xml:space="preserve">
     <value>Bloklist reklam a malware na základě domén</value>
   </data>
-  <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
-    <value>Automaticky kontrolovat aktualizace</value>
+  <data name="chkEnableBlocklists.Text" xml:space="preserve">
+    <value>Povolit bloklisty</value>
   </data>
   <data name="chkBlockMalwarePorts.Text" xml:space="preserve">
     <value>Bloklist malware na základě portů</value>
+  </data>
+  <data name="chkLockHostsFile.Text" xml:space="preserve">
+    <value>Zamezit změnám v host souboru</value>
+  </data>
+  <data name="chkEnableHotkeys.Text" xml:space="preserve">
+    <value>Povolit klávesové zkratky</value>
+  </data>
+  <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
+    <value>Automaticky kontrolovat aktualizace</value>
+  </data>
+  <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
+    <value>Zažádat o detaily vyjímky</value>
   </data>
   <data name="label9.Text" xml:space="preserve">
     <value>Pro odebrání hesla zaškrtněte možnost "Změnit heslo" a pole zanechte prázdné.</value>
@@ -200,9 +203,6 @@
   </data>
   <data name="groupBox1.Text" xml:space="preserve">
     <value>Ochrana heslem</value>
-  </data>
-  <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
-    <value>Zažádat o detaily vyjímky</value>
   </data>
   <data name="tabPage1.Text" xml:space="preserve">
     <value>Obecné</value>

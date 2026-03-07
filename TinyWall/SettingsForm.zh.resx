@@ -135,18 +135,6 @@
   <data name="btnSubmitAssoc.Text" xml:space="preserve">
     <value>提交</value>
   </data>
-  <data name="chkDisplayOffBlock.Text" xml:space="preserve">
-    <value>在显示器省电关屏期间阻止外网流量</value>
-  </data>
-  <data name="columnApp.Text" xml:space="preserve">
-    <value>程序</value>
-  </data>
-  <data name="columnType.Text" xml:space="preserve">
-    <value>类型</value>
-  </data>
-  <data name="columnDetails.Text" xml:space="preserve">
-    <value>路径</value>
-  </data>
   <data name="label3.Text" xml:space="preserve">
     <value>编辑您希望对其授予网络使用权限的应用程序列表。只有该列表中的应用程序能够进行网络通信。使用检测按钮让TinyWall进行软件检测或手动添加应用程序。</value>
   </data>
@@ -158,6 +146,15 @@
   </data>
   <data name="btnAppAdd.Text" xml:space="preserve">
     <value>添加应用程序</value>
+  </data>
+  <data name="columnApp.Text" xml:space="preserve">
+    <value>程序</value>
+  </data>
+  <data name="columnType.Text" xml:space="preserve">
+    <value>类型</value>
+  </data>
+  <data name="columnDetails.Text" xml:space="preserve">
+    <value>路径</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
     <value>过滤：</value>
@@ -177,26 +174,32 @@
   <data name="tabPage2.Text" xml:space="preserve">
     <value>特殊例外</value>
   </data>
-  <data name="chkEnableHotkeys.Text" xml:space="preserve">
-    <value>启用全局热键</value>
-  </data>
   <data name="label11.Text" xml:space="preserve">
     <value>语言：</value>
-  </data>
-  <data name="chkEnableBlocklists.Text" xml:space="preserve">
-    <value>启用黑名单</value>
-  </data>
-  <data name="chkLockHostsFile.Text" xml:space="preserve">
-    <value>阻止对host文件的更改</value>
   </data>
   <data name="chkHostsBlocklist.Text" xml:space="preserve">
     <value>基于域的恶意软件和广告黑名单</value>
   </data>
-  <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
-    <value>自动检测更新</value>
+  <data name="chkEnableBlocklists.Text" xml:space="preserve">
+    <value>启用黑名单</value>
   </data>
   <data name="chkBlockMalwarePorts.Text" xml:space="preserve">
     <value>基于端口的恶意软件黑名单</value>
+  </data>
+  <data name="chkDisplayOffBlock.Text" xml:space="preserve">
+    <value>在显示器省电关屏期间阻止外网流量</value>
+  </data>
+  <data name="chkLockHostsFile.Text" xml:space="preserve">
+    <value>阻止对host文件的更改</value>
+  </data>
+  <data name="chkEnableHotkeys.Text" xml:space="preserve">
+    <value>启用全局热键</value>
+  </data>
+  <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
+    <value>自动检测更新</value>
+  </data>
+  <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
+    <value>例外详情提示</value>
   </data>
   <data name="label9.Text" xml:space="preserve">
     <value>要删除已启用的密码保护，请检查“更改密码”并留空文本域。</value>
@@ -212,9 +215,6 @@
   </data>
   <data name="groupBox1.Text" xml:space="preserve">
     <value>密码保护</value>
-  </data>
-  <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
-    <value>例外详情提示</value>
   </data>
   <data name="tabPage1.Text" xml:space="preserve">
     <value>通用</value>

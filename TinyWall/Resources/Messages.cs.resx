@@ -221,9 +221,6 @@ Zvolte Navýšit v tray menu a akci zkuste znovu.</value>
   <data name="Success" xml:space="preserve">
     <value>Úspěch.</value>
   </data>
-  <data name="OtherSettingsPreventEffect" xml:space="preserve">
-    <value>Operace byla úspěsná, ale jiná nastavení brání v nabytí její plné platnosti.</value>
-  </data>
   <data name="OperationFailed" xml:space="preserve">
     <value>Operace selhala.</value>
   </data>
@@ -341,17 +338,6 @@ Zvolený spustitelný soubor by mohl být součástí {0}. Pro zajištění bezc
   </data>
   <data name="CompromisedApplication" xml:space="preserve">
     <value>{0}, potenciálně ohrožena</value>
-  </data>
-  <data name="ToastInputNeeded" xml:space="preserve">
-    <value>Vaše interakce je nutná
-pro pokračování firewall whitelistingu.</value>
-  </data>
-  <data name="ToastAppWhitelisted" xml:space="preserve">
-    <value>Přidáno do whitelistu</value>
-  </data>
-  <data name="ToastWhitelistFailed" xml:space="preserve">
-    <value>Přidání do whitelistu selhalo.
-Zkuste akci prosím znovu.</value>
   </data>
   <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>Nebylo možné uplatnit nastavení firewallu kvůli vnitřní chybě.</value>

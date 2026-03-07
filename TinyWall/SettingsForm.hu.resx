@@ -154,8 +154,8 @@
     <value>Típus</value>
   </data>
   <data name="columnDetails.Text" xml:space="preserve">
-		<value>Részletek</value>
-	</data>
+    <value>Részletek</value>
+  </data>
   <data name="columnLastModified.Text" xml:space="preserve">
     <value>Módosítva</value>
   </data>
@@ -177,32 +177,11 @@
   <data name="tabPage2.Text" xml:space="preserve">
     <value>Speciális kivételek</value>
   </data>
-  <data name="chkDisplayOffBlock.Text" xml:space="preserve">
-    <value>Internet tiltása a monitor alvó állapotában</value>
-  </data>
-  <data name="chkEnableHotkeys.Text" xml:space="preserve">
-    <value>Gyorsbillentyűk használata</value>
-  </data>
-  <data name="&gt;&gt;comboLanguages.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <data name="label11.Text" xml:space="preserve">
     <value>Nyelv:</value>
   </data>
   <data name="&gt;&gt;label11.ZOrder" xml:space="preserve">
     <value>1</value>
-  </data>
-  <data name="chkEnableBlocklists.Text" xml:space="preserve">
-    <value>Blokkoló-lista engedélyezése</value>
-  </data>
-  <data name="&gt;&gt;chkEnableBlocklists.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="chkLockHostsFile.Text" xml:space="preserve">
-    <value>Host-fájl módosításának tiltása</value>
-  </data>
-  <data name="&gt;&gt;chkLockHostsFile.ZOrder" xml:space="preserve">
-    <value>3</value>
   </data>
   <data name="chkHostsBlocklist.Text" xml:space="preserve">
     <value>Domain-alapú malware és reklámblokkoló lista</value>
@@ -210,17 +189,41 @@
   <data name="&gt;&gt;chkHostsBlocklist.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
-    <value>Frissítések automatikus keresése</value>
-  </data>
-  <data name="&gt;&gt;chkAutoUpdateCheck.ZOrder" xml:space="preserve">
-    <value>5</value>
+  <data name="chkEnableBlocklists.Text" xml:space="preserve">
+    <value>Blokkoló-lista engedélyezése</value>
   </data>
   <data name="chkBlockMalwarePorts.Text" xml:space="preserve">
     <value>Port-alapú malware blokkoló-lista</value>
   </data>
   <data name="&gt;&gt;chkBlockMalwarePorts.ZOrder" xml:space="preserve">
     <value>6</value>
+  </data>
+  <data name="chkDisplayOffBlock.Text" xml:space="preserve">
+    <value>Internet tiltása a monitor alvó állapotában</value>
+  </data>
+  <data name="chkLockHostsFile.Text" xml:space="preserve">
+    <value>Host-fájl módosításának tiltása</value>
+  </data>
+  <data name="&gt;&gt;chkLockHostsFile.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;comboLanguages.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="chkEnableHotkeys.Text" xml:space="preserve">
+    <value>Gyorsbillentyűk használata</value>
+  </data>
+  <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
+    <value>Frissítések automatikus keresése</value>
+  </data>
+  <data name="&gt;&gt;chkAutoUpdateCheck.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
+    <value>Kérje be a kivétel részleteit</value>
+  </data>
+  <data name="&gt;&gt;chkAskForExceptionDetails.ZOrder" xml:space="preserve">
+    <value>8</value>
   </data>
   <data name="label9.Text" xml:space="preserve">
     <value>Egy beállított jelszó eltávolításához, kattints a Módosítás-ra, majd hagyd üresen mindkét szövegmezőt.</value>
@@ -239,12 +242,6 @@
   </data>
   <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
     <value>7</value>
-  </data>
-  <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
-    <value>Kérje be a kivétel részleteit</value>
-  </data>
-  <data name="&gt;&gt;chkAskForExceptionDetails.ZOrder" xml:space="preserve">
-    <value>8</value>
   </data>
   <data name="tabPage1.Text" xml:space="preserve">
     <value>Általános</value>

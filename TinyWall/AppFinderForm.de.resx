@@ -120,7 +120,7 @@
   <data name="label1.Text" xml:space="preserve">
     <value>TinyWall kann versuchen bekannte Anwendungen zu erkennen und automatisch freizugeben. Dann ist keine händische Freigabe nötig. Sie haben die Möglichkeit die Ergebnisse zu überprüfen, bevor die Änderungen übernommen werden.</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="lblStatus.Size" type="System.Drawing.Size, System.Drawing">
     <value>47, 13</value>
   </data>

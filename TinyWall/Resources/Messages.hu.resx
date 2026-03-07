@@ -226,9 +226,6 @@
   <data name="Success" xml:space="preserve">
     <value>Sikeresen végrehajtva.</value>
   </data>
-  <data name="OtherSettingsPreventEffect" xml:space="preserve">
-    <value>A művelet sikerült, de más beállítások akadályozzák a teljes hatást.</value>
-  </data>
   <data name="OperationFailed" xml:space="preserve">
     <value>Végrehajtás sikertelen..</value>
   </data>
@@ -362,20 +359,6 @@ A kiválasztott fájl a következő része lehet: {0}. Ahhoz hogy az alkalmazás
   <data name="CompromisedApplication" xml:space="preserve">
     <value>{0}, talán kompromittált</value>
     <comment>Exception details window banner text. Param0 is name of application.</comment>
-  </data>
-  <data name="ToastInputNeeded" xml:space="preserve">
-    <value>További bevitel szükséges
-az új tűzfalkivétel hozzáadásához.</value>
-    <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
-  </data>
-  <data name="ToastAppWhitelisted" xml:space="preserve">
-    <value>Új tűzfalkivételek hozzáadva.</value>
-    <comment>Keep line short because words do not wrap.</comment>
-  </data>
-  <data name="ToastWhitelistFailed" xml:space="preserve">
-    <value>A tűzfalkivétel hozzáadása nem sikerült.
-Egy újbóli probálkozás sikerhez vezethet.</value>
-    <comment>First line is bolder. Keep lines short because words do not wrap.</comment>
   </data>
   <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>A tűzfalbeállítások módosítása egy belső hiba miatt nem sikerült.</value>

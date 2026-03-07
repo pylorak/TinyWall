@@ -117,112 +117,112 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="btnCancel.Text" xml:space="preserve">
-    <value>Annuler</value>
-  </data>
-  <data name="btnOK.Text" xml:space="preserve">
-    <value>Valider</value>
-  </data>
-  <data name="btnBrowse.Text" xml:space="preserve">
-    <value>Choisir fichier...</value>
+  <data name="label7.Text" xml:space="preserve">
+    <value>TCP sortie</value>
   </data>
   <data name="btnProcess.Text" xml:space="preserve">
     <value>Choisir processus...</value>
   </data>
-  <data name="btnChooseService.Text" xml:space="preserve">
-    <value>Choisir service...</value>
-  </data>
-  <data name="ofd.Title" xml:space="preserve">
-    <value>Sélectionner exécutable</value>
-  </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>85, 13</value>
-  </data>
-  <data name="label6.Text" xml:space="preserve">
-    <value>Durée exception
-</value>
-  </data>
-  <data name="transparentLabel1.Text" xml:space="preserve">
-    <value>Espace réservé reconnu</value>
-  </data>
-  <data name="chkRestrictToLocalNetwork.Size" type="System.Drawing.Size, System.Drawing">
-    <value>155, 17</value>
-  </data>
   <data name="chkRestrictToLocalNetwork.Text" xml:space="preserve">
     <value>Restreindre au réseau local</value>
   </data>
-  <data name="radBlock.Size" type="System.Drawing.Size, System.Drawing">
-    <value>162, 17</value>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Ajouter/Modifier exception - TinyWall</value>
   </data>
-  <data name="radBlock.Text" xml:space="preserve">
-    <value>Toujours bloquer tout le trafic</value>
-  </data>
-  <data name="radTcpUdpOut.Size" type="System.Drawing.Size, System.Drawing">
-    <value>200, 17</value>
-  </data>
-  <data name="radTcpUdpOut.Text" xml:space="preserve">
-    <value>Autoriser le trafic UDP et TCP sortant</value>
-  </data>
-  <data name="radTcpUdpUnrestricted.Size" type="System.Drawing.Size, System.Drawing">
-    <value>186, 17</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="radOnlySpecifiedPorts.Size" type="System.Drawing.Size, System.Drawing">
+    <value>183, 17</value>
   </data>
   <data name="radTcpUdpUnrestricted.Text" xml:space="preserve">
     <value>Autoriser tout le trafic UDP et TCP</value>
   </data>
-  <data name="radUnrestricted.Size" type="System.Drawing.Size, System.Drawing">
-    <value>110, 17</value>
+  <data name="radTcpUdpUnrestricted.Size" type="System.Drawing.Size, System.Drawing">
+    <value>186, 17</value>
   </data>
-  <data name="radUnrestricted.Text" xml:space="preserve">
-    <value>Aucune restriction</value>
-  </data>
-  <data name="label5.Text" xml:space="preserve">
-    <value>Ouvrir les ports suivants, en plus des restrictionsci-dessus. (séparer la liste des ports avec des virgules)</value>
-  </data>
-  <data name="txtListenPortUDP.AccessibleName" xml:space="preserve">
-    <value>UDP entrant</value>
-  </data>
-  <data name="txtListenPortTCP.AccessibleName" xml:space="preserve">
-    <value>TCP entrant</value>
-  </data>
-  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>61, 13</value>
-  </data>
-  <data name="label3.Text" xml:space="preserve">
-    <value>TCP entrée</value>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Annuler</value>
   </data>
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
     <value>63, 13</value>
+  </data>
+  <data name="radUnrestricted.Text" xml:space="preserve">
+    <value>Aucune restriction</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
     <value>UDP entrée
 </value>
   </data>
+  <data name="txtListenPortUDP.AccessibleName" xml:space="preserve">
+    <value>UDP entrant</value>
+  </data>
+  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>85, 13</value>
+  </data>
   <data name="txtOutboundPortUDP.AccessibleName" xml:space="preserve">
     <value>UDP sortant</value>
-  </data>
-  <data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
-    <value>TCP sortant</value>
-  </data>
-  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
-    <value>56, 13</value>
-  </data>
-  <data name="label7.Text" xml:space="preserve">
-    <value>TCP sortie</value>
   </data>
   <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
     <value>58, 13</value>
   </data>
+  <data name="ofd.Title" xml:space="preserve">
+    <value>Sélectionner exécutable</value>
+  </data>
+  <data name="radTcpUdpOut.Text" xml:space="preserve">
+    <value>Autoriser le trafic UDP et TCP sortant</value>
+  </data>
+  <data name="txtListenPortTCP.AccessibleName" xml:space="preserve">
+    <value>TCP entrant</value>
+  </data>
   <data name="label8.Text" xml:space="preserve">
     <value>UDP sortie</value>
   </data>
-  <data name="radOnlySpecifiedPorts.Size" type="System.Drawing.Size, System.Drawing">
-    <value>183, 17</value>
+  <data name="radUnrestricted.Size" type="System.Drawing.Size, System.Drawing">
+    <value>110, 17</value>
+  </data>
+  <data name="btnChooseService.Text" xml:space="preserve">
+    <value>Choisir service...</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Ouvrir les ports suivants, en plus des restrictionsci-dessus. (séparer la liste des ports avec des virgules)</value>
+  </data>
+  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
+    <value>56, 13</value>
+  </data>
+  <data name="radBlock.Text" xml:space="preserve">
+    <value>Toujours bloquer tout le trafic</value>
+  </data>
+  <data name="radBlock.Size" type="System.Drawing.Size, System.Drawing">
+    <value>162, 17</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>Durée exception
+</value>
+  </data>
+  <data name="btnOK.Text" xml:space="preserve">
+    <value>Valider</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>TCP entrée</value>
   </data>
   <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
     <value>Autoriser seulement certains ports</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Ajouter/Modifier exception - TinyWall</value>
+  <data name="radTcpUdpOut.Size" type="System.Drawing.Size, System.Drawing">
+    <value>200, 17</value>
+  </data>
+  <data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
+    <value>TCP sortant</value>
+  </data>
+  <data name="chkRestrictToLocalNetwork.Size" type="System.Drawing.Size, System.Drawing">
+    <value>155, 17</value>
+  </data>
+  <data name="transparentLabel1.Text" xml:space="preserve">
+    <value>Espace réservé reconnu</value>
+  </data>
+  <data name="btnBrowse.Text" xml:space="preserve">
+    <value>Choisir fichier...</value>
+  </data>
+  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>61, 13</value>
   </data>
 </root>

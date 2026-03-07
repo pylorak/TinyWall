@@ -165,26 +165,29 @@
   <data name="tabPage2.Text" xml:space="preserve">
     <value>Özel istinalar</value>
   </data>
-  <data name="chkEnableHotkeys.Text" xml:space="preserve">
-    <value>Evrensel kısayolları aktif et</value>
-  </data>
   <data name="label11.Text" xml:space="preserve">
     <value>Lisan:</value>
-  </data>
-  <data name="chkEnableBlocklists.Text" xml:space="preserve">
-    <value>Engelleme listesini aktif et</value>
-  </data>
-  <data name="chkLockHostsFile.Text" xml:space="preserve">
-    <value>Barındırılan dosya değişikliklerini engelle.</value>
   </data>
   <data name="chkHostsBlocklist.Text" xml:space="preserve">
     <value>Domain tabanlı kötü amaçlı yazılım ve reklam yazılımı engelleme listesi</value>
   </data>
-  <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
-    <value>Güncellemeleri otomatik olarak kontrol et</value>
+  <data name="chkEnableBlocklists.Text" xml:space="preserve">
+    <value>Engelleme listesini aktif et</value>
   </data>
   <data name="chkBlockMalwarePorts.Text" xml:space="preserve">
     <value>Port tabanlı kötü amaçlı yazılım engelleme listesi</value>
+  </data>
+  <data name="chkLockHostsFile.Text" xml:space="preserve">
+    <value>Barındırılan dosya değişikliklerini engelle.</value>
+  </data>
+  <data name="chkEnableHotkeys.Text" xml:space="preserve">
+    <value>Evrensel kısayolları aktif et</value>
+  </data>
+  <data name="chkAutoUpdateCheck.Text" xml:space="preserve">
+    <value>Güncellemeleri otomatik olarak kontrol et</value>
+  </data>
+  <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
+    <value>İstisna detayları iletisi</value>
   </data>
   <data name="label9.Text" xml:space="preserve">
     <value>Uygulanmış bir parola korumasını kaldırmak için "Parola değiştir"e girin ve yazı alanını boş bırakın.</value>
@@ -200,9 +203,6 @@
   </data>
   <data name="groupBox1.Text" xml:space="preserve">
     <value>Parola koruması</value>
-  </data>
-  <data name="chkAskForExceptionDetails.Text" xml:space="preserve">
-    <value>İstisna detayları iletisi</value>
   </data>
   <data name="tabPage1.Text" xml:space="preserve">
     <value>Genel</value>

@@ -117,82 +117,82 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="btnCancel.Text" xml:space="preserve">
-    <value>Mégse</value>
-  </data>
-  <data name="lblApplication.Text" xml:space="preserve">
-    <value>Alkalmazás:</value>
-  </data>
-  <data name="lblApplicationType.Text" xml:space="preserve">
-    <value>Alkalmazás típusa:</value>
-  </data>
-  <data name="btnBrowse.Text" xml:space="preserve">
-    <value>Fájl tallózása...</value>
+  <data name="label7.Text" xml:space="preserve">
+    <value>TCP ki:</value>
   </data>
   <data name="btnProcess.Text" xml:space="preserve">
     <value>Folyamat kiválasztása...</value>
   </data>
-  <data name="btnChooseService.Text" xml:space="preserve">
-    <value>Válassz egy szolgáltatást...</value>
-  </data>
-  <data name="ofd.Title" xml:space="preserve">
-    <value>Válassz egy alkalmazás indítófájlt</value>
-  </data>
-  <data name="label6.Text" xml:space="preserve">
-    <value>Kivétel időtartama:</value>
-  </data>
-  <data name="btnSelectUwpApp.Text" xml:space="preserve">
-    <value>Válassz egy UWP appot...</value>
-  </data>
   <data name="chkRestrictToLocalNetwork.Text" xml:space="preserve">
     <value>Korlátozás a helyi hálózatra</value>
   </data>
-  <data name="radBlock.Text" xml:space="preserve">
-    <value>Mindig blokkol minden forgalmat</value>
-  </data>
-  <data name="radTcpUdpOut.Text" xml:space="preserve">
-    <value>Kimenő UDP és TCP forgalom engedélyezése</value>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Tűzfal kivételek megadása/módosítása - TinyWall</value>
   </data>
   <data name="radTcpUdpUnrestricted.Text" xml:space="preserve">
     <value>Korlátlan UDP és TCP forgalom</value>
   </data>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Mégse</value>
+  </data>
   <data name="radUnrestricted.Text" xml:space="preserve">
     <value>Nincs korlátozás</value>
-  </data>
-  <data name="label5.Text" xml:space="preserve">
-    <value>Nyisd a következő portokat, a fenti tiltások mellett. (Vesszővel elválasztott lista.)</value>
-  </data>
-  <data name="txtListenPortUDP.AccessibleName" xml:space="preserve">
-    <value>Bejövő UDP</value>
-  </data>
-  <data name="txtListenPortTCP.AccessibleName" xml:space="preserve">
-    <value>Bejövő TCP</value>
-  </data>
-  <data name="label3.Text" xml:space="preserve">
-    <value>TCP be:</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
     <value>UDP be:</value>
   </data>
-  <data name="txtOutboundPortUDP.AccessibleName" xml:space="preserve">
-    <value>Kimenő UDP</value>
+  <data name="btnSelectUwpApp.Text" xml:space="preserve">
+    <value>Válassz egy UWP appot...</value>
   </data>
-  <data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
-    <value>Kimenő TCP</value>
+  <data name="txtListenPortUDP.AccessibleName" xml:space="preserve">
+    <value>Bejövő UDP</value>
   </data>
-  <data name="label7.Text" xml:space="preserve">
-    <value>TCP ki:</value>
-  </data>
-  <data name="label8.Text" xml:space="preserve">
-    <value>UDP ki:</value>
-  </data>
-  <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
-    <value>Csak a megadott portok engedélyezése</value>
+  <data name="lblApplication.Text" xml:space="preserve">
+    <value>Alkalmazás:</value>
   </data>
   <data name="chkInheritToChildren.Text" xml:space="preserve">
     <value>Szabály alkalmazása alprogramokra</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Tűzfal kivételek megadása/módosítása - TinyWall</value>
+  <data name="txtOutboundPortUDP.AccessibleName" xml:space="preserve">
+    <value>Kimenő UDP</value>
+  </data>
+  <data name="ofd.Title" xml:space="preserve">
+    <value>Válassz egy alkalmazás indítófájlt</value>
+  </data>
+  <data name="radTcpUdpOut.Text" xml:space="preserve">
+    <value>Kimenő UDP és TCP forgalom engedélyezése</value>
+  </data>
+  <data name="txtListenPortTCP.AccessibleName" xml:space="preserve">
+    <value>Bejövő TCP</value>
+  </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value>UDP ki:</value>
+  </data>
+  <data name="lblApplicationType.Text" xml:space="preserve">
+    <value>Alkalmazás típusa:</value>
+  </data>
+  <data name="btnChooseService.Text" xml:space="preserve">
+    <value>Válassz egy szolgáltatást...</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Nyisd a következő portokat, a fenti tiltások mellett. (Vesszővel elválasztott lista.)</value>
+  </data>
+  <data name="radBlock.Text" xml:space="preserve">
+    <value>Mindig blokkol minden forgalmat</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>Kivétel időtartama:</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>TCP be:</value>
+  </data>
+  <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
+    <value>Csak a megadott portok engedélyezése</value>
+  </data>
+  <data name="txtOutboundPortTCP.AccessibleName" xml:space="preserve">
+    <value>Kimenő TCP</value>
+  </data>
+  <data name="btnBrowse.Text" xml:space="preserve">
+    <value>Fájl tallózása...</value>
   </data>
 </root>

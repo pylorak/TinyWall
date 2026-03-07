@@ -221,9 +221,6 @@ Sistem menüsünden Yönetici olarak çalıştır'ı seçin ve tekrar deneyin.</
   <data name="Success" xml:space="preserve">
     <value>Başarılı</value>
   </data>
-  <data name="OtherSettingsPreventEffect" xml:space="preserve">
-    <value>İşlem başarılı, ama diğer ayarlar işlemin tam olarak uygulanmasına mani oluyor.</value>
-  </data>
   <data name="OperationFailed" xml:space="preserve">
     <value>İşlem başarısız</value>
   </data>
@@ -344,16 +341,6 @@ Seçili uygulama dosyası {0} nın parçası olabilir. İşi sağlama almak içi
   </data>
   <data name="CompromisedApplication" xml:space="preserve">
     <value>{0}, tehlikeli olabilir</value>
-  </data>
-  <data name="ToastInputNeeded" xml:space="preserve">
-    <value>Girdi yapmanız gereklidir
-firewall beyazlistelemeye devam etmek için.</value>
-  </data>
-  <data name="ToastAppWhitelisted" xml:space="preserve">
-    <value>Firewall beyaz listeye eklendi</value>
-  </data>
-  <data name="ToastWhitelistFailed" xml:space="preserve">
-    <value>Firewall beyazlisteleme başarısız. Tekrar deneyebilirsiniz.</value>
   </data>
   <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>Firewall ayarları dahili bir hatadan dolayı uygulanamadı.</value>
