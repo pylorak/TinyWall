@@ -387,7 +387,7 @@ namespace pylorak.TinyWall
             FirewallExceptionV3 oldEx = (FirewallExceptionV3)li.Tag;
             FirewallExceptionV3 newEx = Utils.DeepClone(oldEx);
             newEx.RegenerateId();
-            using (var f = new ApplicationExceptionForm(newEx))
+            using (var f = new ApplicationExceptionForm(newEx, true))
             {
                 if (f.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 {

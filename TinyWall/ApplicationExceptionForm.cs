@@ -12,13 +12,14 @@ namespace pylorak.TinyWall
         private static readonly char[] PORT_LIST_SEPARATORS = new char[] { ',' };
 
         private List<FirewallExceptionV3> TmpExceptionSettings = new();
+        private readonly bool PreserveSettingsOnSubjectChange = false;
 
         internal List<FirewallExceptionV3> ExceptionSettings
         {
             get { return TmpExceptionSettings; }
         }
 
-        internal ApplicationExceptionForm(FirewallExceptionV3 fwex)
+        internal ApplicationExceptionForm(FirewallExceptionV3 fwex, bool preserveSettingsOnSubjectChange = false)
         {
             InitializeComponent();
             Utils.SetRightToLeft(this);
@@ -43,7 +44,7 @@ namespace pylorak.TinyWall
             this.Icon = Resources.Icons.firewall;
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
-
+            this.PreserveSettingsOnSubjectChange = preserveSettingsOnSubjectChange;
             this.TmpExceptionSettings.Add(fwex);
 
             panel1.Location = new System.Drawing.Point(0, 0);
@@ -385,23 +386,20 @@ namespace pylorak.TinyWall
 
         private void ReinitFormFromSubject(ExceptionSubject subject)
         {
-            List<FirewallExceptionV3> exceptions;
-            if (
-                (TmpExceptionSettings.Count >= 0)
-                && (TmpExceptionSettings[0].Subject.SubjectType != SubjectType.Invalid)
-                )
+            if (PreserveSettingsOnSubjectChange && (TmpExceptionSettings.Count == 1))
             {
-                exceptions = TmpExceptionSettings;
-                exceptions[0].Subject = subject;
+                TmpExceptionSettings[0] = Utils.DeepClone(TmpExceptionSettings[0]);
+                TmpExceptionSettings[0].RegenerateId();
+                TmpExceptionSettings[0].Subject = subject;
             }
             else
             {
-                exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out _);
+                List<FirewallExceptionV3> exceptions = GlobalInstances.AppDatabase.GetExceptionsForApp(subject, true, out _);
                 if (exceptions.Count == 0)
                     return;
-            }
 
-            TmpExceptionSettings = exceptions;
+                TmpExceptionSettings = exceptions;
+            }
 
             UpdateUI();
 
