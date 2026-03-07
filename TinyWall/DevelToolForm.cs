@@ -359,12 +359,22 @@ namespace pylorak.TinyWall
 
                         ResXDataNode satelliteItem = satellite[primaryItem.Name];
 
-                        // Only save localized resource if it is different from the default 
-                        if (!satelliteItem.GetValue(trs).Equals(primaryItem.GetValue(trs)))
-                            newSatellite.Add(satelliteItem.Name, satelliteItem);
-                        else
+                        // We only allow specific properties to be localized
+                        if (satelliteItem.Name.Contains("."))   // this is to prevent removing items from Messages.resx or Exceptions.resx
                         {
+                            if (!satelliteItem.Name.EndsWith(".Text") &&
+                                !satelliteItem.Name.EndsWith(".Title") &&
+                                !satelliteItem.Name.EndsWith(".Filter") &&
+                                !satelliteItem.Name.EndsWith(".AccessibleName"))
+                                continue;
                         }
+
+                        // We don't save values that are the same as default
+                        if (satelliteItem.GetValue(trs).Equals(primaryItem.GetValue(trs)))
+                            continue;
+
+                        // Save resource item
+                        newSatellite.Add(satelliteItem.Name, satelliteItem);
                     }
 
                     // Write output ResX file
