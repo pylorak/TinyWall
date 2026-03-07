@@ -334,12 +334,14 @@ namespace pylorak.TinyWall
                 for (int s = 0; s < pair.Value.Length; ++s)  // for each localization
                 {
                     { // Replace Windows Forms control versions to 4.0.0.0.
-                        using var sr = new StreamReader(pair.Value[s], Encoding.UTF8);
-                        var a = sr.ReadToEnd();
-                        a = a.Replace(", Version=2.0.0.0,", ", Version=4.0.0.0,");
+                        string primaryText;
+                        using (var sr = new StreamReader(pair.Value[s], Encoding.UTF8))
+                            primaryText = sr.ReadToEnd();
+
+                        primaryText = primaryText.Replace(", Version=2.0.0.0,", ", Version=4.0.0.0,");
 
                         using var sw = new StreamWriter(pair.Value[s], false, Encoding.UTF8);
-                        sw.Write(a);
+                        sw.Write(primaryText);
                     }
 
                     var satellite = ReadResXFile(pair.Value[s]);
