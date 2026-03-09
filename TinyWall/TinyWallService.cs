@@ -1695,7 +1695,11 @@ namespace pylorak.TinyWall
             using var MountPointsWatcher = new RegistryWatcher(@"HKEY_LOCAL_MACHINE\SYSTEM\MountedDevices", true);
 
             WfpEngine.CollectNetEvents = true;
-            WfpEngine.EventMatchAnyKeywords = InboundEventMatchKeyword.FWPM_NET_EVENT_KEYWORD_INBOUND_BCAST | InboundEventMatchKeyword.FWPM_NET_EVENT_KEYWORD_INBOUND_MCAST;
+            // Clear BCAST/MCAST keywords that may persist from a previous version.
+            // The callback (WfpNetEventCallback) only processes CLASSIFY_DROP and
+            // CLASSIFY_ALLOW; broadcast/multicast events were pure overhead and a
+            // suspected source of RPC buffer accumulation (see microsoft/Windows-classic-samples #202, #322).
+            WfpEngine.EventMatchAnyKeywords = InboundEventMatchKeyword.None;
 
             ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
             NetworkInterfaceWatcher.InterfaceChanged += (object sender, EventArgs args) =>
@@ -1964,6 +1968,7 @@ namespace pylorak.TinyWall
 
             FirewallThreadThrottler?.Dispose();
             Q.Dispose();
+            try { WfpEngine.CollectNetEvents = false; } catch { }  // Persistent across reboots - must reset
             WfpEngine.Dispose();
 
 #if !DEBUG
