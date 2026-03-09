@@ -1946,6 +1946,8 @@ namespace pylorak.TinyWall
         {
             using var timer = new HierarchicalStopwatch("TinyWallService.Dispose()");
             ServerPipe?.Dispose();
+            ProcessStartWatcher.EventArrived -= ProcessStartWatcher_EventArrived;
+            try { ProcessStartWatcher.Stop(); } catch { }
             ProcessStartWatcher.Dispose();
 
             if (MinuteTimer != null)
