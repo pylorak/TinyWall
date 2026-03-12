@@ -1942,6 +1942,8 @@ namespace pylorak.TinyWall
         {
             using var timer = new HierarchicalStopwatch("TinyWallService.Dispose()");
             ServerPipe?.Dispose();
+            ProcessStartWatcher.EventArrived -= ProcessStartWatcher_EventArrived;
+            try { ProcessStartWatcher.Stop(); } catch { }
             ProcessStartWatcher.Dispose();
 
             if (MinuteTimer != null)
@@ -1964,6 +1966,7 @@ namespace pylorak.TinyWall
 
             FirewallThreadThrottler?.Dispose();
             Q.Dispose();
+            try { WfpEngine.CollectNetEvents = false; } catch { }  // Persistent across reboots - must reset
             WfpEngine.Dispose();
 
 #if !DEBUG

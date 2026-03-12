@@ -46,9 +46,17 @@ namespace pylorak.TinyWall
                         {
                             listView.BeginInvoke((MethodInvoker)delegate
                             {
+                                if (listView.IsDisposed)
+                                {
+                                    icon?.Dispose();
+                                    return;
+                                }
+
                                 if (is_icon_new)
                                 {
                                     imageList.Images.Add(icon_path, icon);
+                                    _ = imageList.Handle;  // Ensure native HIMAGELIST has independent copy
+                                    icon?.Dispose();  // Safe: managed HBITMAP freed, native copy unaffected
                                     icon_idx = imageList.Images.IndexOfKey(icon_path);
                                     LoadedIcons.TryAdd(icon_path, icon_idx);
                                 }
@@ -64,7 +72,7 @@ namespace pylorak.TinyWall
                         }
                     }
                 }
-                listView.BeginInvoke((MethodInvoker)delegate { listView.Refresh(); });
+                listView.BeginInvoke((MethodInvoker)delegate { if (!listView.IsDisposed) listView.Refresh(); });
             });
         }
 
