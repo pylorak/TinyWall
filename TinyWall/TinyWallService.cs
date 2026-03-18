@@ -1571,35 +1571,32 @@ namespace pylorak.TinyWall
             var newLocalSubnetAddreses = new HashSet<IpAddrMask>();
             var newGatewayAddresses = new HashSet<IpAddrMask>();
             var newDnsAddresses = new HashSet<IpAddrMask>();
-            var coll = NetworkInterface.GetAllNetworkInterfaces();
-
-            foreach (var iface in coll)
+            // Use direct P/Invoke to GetAdaptersAddresses instead of
+            // NetworkInterface.GetAllNetworkInterfaces() to avoid native memory leak
+            // in iphlpapi!GetPerAdapterInfo -> DNSAPI!Dns_AllocZero (~15KB per call).
+            if (!NetworkAdapterEnumerator.EnumerateActiveAdapters(
+                out var unicastList, out var gatewayList, out var dnsList))
             {
-                if (iface.OperationalStatus != OperationalStatus.Up)
+                return false;
+            }
+
+            foreach (var entry in unicastList)
+            {
+                var am = new IpAddrMask(entry.Address, entry.PrefixLength);
+                if (am.IsLoopback || am.IsLinkLocal)
                     continue;
 
-                var props = iface.GetIPProperties();
+                newLocalSubnetAddreses.Add(am.Subnet);
+            }
 
-                foreach (var uni in props.UnicastAddresses)
-                {
-                    var am = new IpAddrMask(uni);
-                    if (am.IsLoopback || am.IsLinkLocal)
-                        continue;
+            foreach (var addr in gatewayList)
+            {
+                newGatewayAddresses.Add(new IpAddrMask(addr));
+            }
 
-                    newLocalSubnetAddreses.Add(am.Subnet);
-                }
-
-                foreach (var uni in props.GatewayAddresses)
-                {
-                    var am = new IpAddrMask(uni);
-                    newGatewayAddresses.Add(am);
-                }
-
-                foreach (var uni in props.DnsAddresses)
-                {
-                    var am = new IpAddrMask(uni);
-                    newDnsAddresses.Add(am);
-                }
+            foreach (var addr in dnsList)
+            {
+                newDnsAddresses.Add(new IpAddrMask(addr));
             }
 
             newLocalSubnetAddreses.Add(new IpAddrMask(IPAddress.Parse("255.255.255.255")));
