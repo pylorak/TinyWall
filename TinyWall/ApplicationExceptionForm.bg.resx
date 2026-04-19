@@ -201,4 +201,7 @@
 	<data name="$this.Text" xml:space="preserve">
 		<value>Добави/Модифицирай изключения - TinyWall</value>
 	</data>
+  <data name="btnPathFilter.Text" xml:space="preserve">
+	<value>Филтър на пътя...</value>
+  </data>
 </root>

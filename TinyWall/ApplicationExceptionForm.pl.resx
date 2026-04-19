@@ -204,4 +204,7 @@
 	<data name="transparentLabel1.Text" xml:space="preserve">
 		<value>Rozpoznany element zastępczy</value>
 	</data>
+  <data name="btnPathFilter.Text" xml:space="preserve">
+	<value>Filtr ścieżki...</value>
+  </data>
 </root>

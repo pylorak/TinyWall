@@ -232,4 +232,7 @@
 	<data name="chkInheritToChildren.Text" xml:space="preserve">
 		<value>子プロセスに同じ規則を適用</value>
 	</data>
+  <data name="btnPathFilter.Text" xml:space="preserve">
+	<value>パスフィルター...</value>
+  </data>
 </root>

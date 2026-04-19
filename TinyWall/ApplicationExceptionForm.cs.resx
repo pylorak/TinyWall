@@ -168,6 +168,9 @@
   <data name="radOnlySpecifiedPorts.Text" xml:space="preserve">
     <value>Povolit pouze určité porty</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve">
+    <value>Filtr cesty...</value>
+  </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Přidat/Upravit vyjímku firewallu - TinyWall</value>
   </data>

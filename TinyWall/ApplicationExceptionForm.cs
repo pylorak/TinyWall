@@ -166,18 +166,22 @@ namespace pylorak.TinyWall
                 case SubjectType.Global:
                     txtAppPath.Text = Resources.Messages.AllApplications;
                     txtSrvName.Text = Resources.Messages.SubjectTypeGlobal;
+                    btnPathFilter.Enabled = false;
                     break;
                 case SubjectType.Executable:
                     txtAppPath.Text = exeSubj!.ExecutablePath;
                     txtSrvName.Text = Resources.Messages.SubjectTypeExecutable;
+                    btnPathFilter.Enabled = true;
                     break;
                 case SubjectType.Service:
                     txtAppPath.Text = srvSubj!.ServiceName + " (" + srvSubj.ExecutablePath + ")";
                     txtSrvName.Text = Resources.Messages.SubjectTypeService;
+                    btnPathFilter.Enabled = false;
                     break;
                 case SubjectType.AppContainer:
                     txtAppPath.Text = uwpSubj!.DisplayName;
                     txtSrvName.Text = Resources.Messages.SubjectTypeUwpApp;
+                    btnPathFilter.Enabled = false;
                     break;
                 default:
                     throw new NotImplementedException();
@@ -414,6 +418,19 @@ namespace pylorak.TinyWall
 
         private void txtSrvName_TextChanged(object sender, EventArgs e)
         {
+        }
+
+        private void btnPathFilter_Click(object sender, EventArgs e)
+        {
+            var exeSubj = TmpExceptionSettings[0].Subject as ExecutableSubject;
+            if (exeSubj == null)
+                return;
+
+            using var dlg = new PathFilterForm(exeSubj.ExecutablePath, exeSubj.PathFilter);
+            if (dlg.ShowDialog(this) == DialogResult.OK)
+            {
+                exeSubj.PathFilter = dlg.ResultFilter;
+            }
         }
 
         private void cmbTimer_SelectedIndexChanged(object sender, EventArgs e)

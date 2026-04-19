@@ -265,4 +265,7 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Добавить/Изменить исключения фаервола TinyWall</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve">
+    <value>Фильтр пути...</value>
+  </data>
 </root>

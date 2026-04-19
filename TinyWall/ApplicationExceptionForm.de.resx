@@ -198,4 +198,7 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Hinzufügen/Ändern einer Firewallausnahme - TinyWall</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve">
+    <value>Pfadfilter...</value>
+  </data>
 </root>

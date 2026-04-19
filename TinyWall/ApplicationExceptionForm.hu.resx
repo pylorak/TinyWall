@@ -195,4 +195,7 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Tűzfal kivételek megadása/módosítása - TinyWall</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve">
+    <value>Útvonalszűrő...</value>
+  </data>
 </root>

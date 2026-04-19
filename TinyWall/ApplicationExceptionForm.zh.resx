@@ -201,4 +201,7 @@
   <data name="$this.Text" xml:space="preserve">
     <value>添加/更改防火墙例外 - TinyWall</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve">
+    <value>路径筛选器...</value>
+  </data>
 </root>

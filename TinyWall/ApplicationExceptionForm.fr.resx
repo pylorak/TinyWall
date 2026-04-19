@@ -225,4 +225,7 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Ajouter/Modifier exception - TinyWall</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve">
+    <value>Filtre de chemin...</value>
+  </data>
 </root>

@@ -45,6 +45,7 @@
             this.transparentLabel1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.btnSelectUwpApp = new System.Windows.Forms.Button();
+            this.btnPathFilter = new System.Windows.Forms.Button();
             this.chkRestrictToLocalNetwork = new System.Windows.Forms.CheckBox();
             this.radBlock = new System.Windows.Forms.RadioButton();
             this.radTcpUdpOut = new System.Windows.Forms.RadioButton();
@@ -185,6 +186,7 @@
             this.panel2.Controls.Add(this.btnBrowse);
             this.panel2.Controls.Add(this.btnProcess);
             this.panel2.Controls.Add(this.btnChooseService);
+            this.panel2.Controls.Add(this.btnPathFilter);
             this.panel2.Name = "panel2";
             // 
             // btnSelectUwpApp
@@ -194,6 +196,14 @@
             this.btnSelectUwpApp.Name = "btnSelectUwpApp";
             this.btnSelectUwpApp.UseVisualStyleBackColor = false;
             this.btnSelectUwpApp.Click += new System.EventHandler(this.btnSelectUwpApp_Click);
+            // 
+            // btnPathFilter
+            // 
+            resources.ApplyResources(this.btnPathFilter, "btnPathFilter");
+            this.btnPathFilter.BackColor = System.Drawing.Color.AliceBlue;
+            this.btnPathFilter.Name = "btnPathFilter";
+            this.btnPathFilter.UseVisualStyleBackColor = false;
+            this.btnPathFilter.Click += new System.EventHandler(this.btnPathFilter_Click);
             // 
             // chkRestrictToLocalNetwork
             // 
@@ -394,5 +404,6 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.CheckBox chkInheritToChildren;
         private System.Windows.Forms.Button btnSelectUwpApp;
+        private System.Windows.Forms.Button btnPathFilter;
     }
 }

@@ -80,6 +80,10 @@
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </COMReference>
 
+    <EmbeddedResource Update="PathFilterForm.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+
     <EmbeddedResource Update="Resources\Exceptions.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Exceptions.Designer.cs</LastGenOutput>

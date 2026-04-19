@@ -204,4 +204,7 @@
 	<data name="chkInheritToChildren.Text" xml:space="preserve">
 		<value>Aplicar as mesmas regras a executáveis a ele subordinados</value>
 	</data>
+  <data name="btnPathFilter.Text" xml:space="preserve">
+	<value>Filtro de caminho...</value>
+  </data>
 </root>
