@@ -351,4 +351,7 @@
 	<data name="lblApplicationType.Text" xml:space="preserve">
 		<value>유형:</value>
 	</data>
+  <data name="btnPathFilter.Text" xml:space="preserve">
+	<value>경로 필터...</value>
+  </data>
 </root>

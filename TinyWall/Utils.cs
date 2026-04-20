@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Microsoft.Samples;
 using pylorak.Windows;
@@ -703,6 +704,15 @@ namespace pylorak.TinyWall
                 return dir;
 #endif
             }
+        }
+        internal static string WildcardToRegex(string pattern)
+        {
+            // Escape regex metacharacters then replace wildcard tokens
+            string esc = Regex.Escape(pattern);
+            esc = esc.Replace("\\*", ".*");
+            esc = esc.Replace("\\?", ".");
+            // Anchor match to full string
+            return "^" + esc + "$";
         }
 
         public static bool EqualsCaseInsensitive(string a, string b)

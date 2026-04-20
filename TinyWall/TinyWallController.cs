@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Microsoft.Samples;
 using pylorak.Utilities;
@@ -287,6 +288,7 @@ namespace pylorak.TinyWall
 
         // Traffic rate monitoring
         private readonly System.Threading.Timer TrafficTimer;
+        private readonly System.Threading.Timer PathRefreshTimer;
         private readonly TrafficRateMonitor TrafficMonitor = new();
         private bool TrafficRateVisible_ = true;
         private bool TrayMenuShowing_;
@@ -347,12 +349,140 @@ namespace pylorak.TinyWall
             Utils.SetRightToLeft(TrayMenu);
             MouseInterceptor.MouseLButtonDown += new MouseInterceptor.MouseHookLButtonDown(MouseInterceptor_MouseLButtonDown);
             TrafficTimer = new System.Threading.Timer(TrafficTimerTick, null, Timeout.Infinite, Timeout.Infinite);
+            PathRefreshTimer = new System.Threading.Timer(PathRefreshTick, null, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
             UpdateTimer = new System.Threading.Timer(UpdateTimerTick, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(240));
             ServiceTimer = new System.Windows.Forms.Timer(components);
 
             System.Windows.Forms.Application.Idle += Application_Idle;
             using var p = Process.GetCurrentProcess();
             ProcessManager.WakeMessageQueues(p);
+        }
+
+        private static ExceptionPolicy ClonePolicy(ExceptionPolicy policy)
+        {
+            switch (policy)
+            {
+                case HardBlockPolicy hb:
+                    return HardBlockPolicy.Instance;
+                case UnrestrictedPolicy up:
+                    return new UnrestrictedPolicy() { LocalNetworkOnly = up.LocalNetworkOnly };
+                case TcpUdpPolicy tp:
+                    return new TcpUdpPolicy()
+                    {
+                        LocalNetworkOnly = tp.LocalNetworkOnly,
+                        AllowedRemoteTcpConnectPorts = tp.AllowedRemoteTcpConnectPorts,
+                        AllowedRemoteUdpConnectPorts = tp.AllowedRemoteUdpConnectPorts,
+                        AllowedLocalTcpListenerPorts = tp.AllowedLocalTcpListenerPorts,
+                        AllowedLocalUdpListenerPorts = tp.AllowedLocalUdpListenerPorts
+                    };
+                case RuleListPolicy rl:
+                    var clone = new RuleListPolicy();
+                    clone.Rules.AddRange(rl.Rules);
+                    return clone;
+                default:
+                    return policy;
+            }
+        }
+
+        private void PathRefreshTick(object? state)
+        {
+            if (!Monitor.TryEnter(PathRefreshTimer))
+                return;
+
+            try
+            {
+                // Collect exceptions that have a custom path filter
+                var toCheck = new List<FirewallExceptionV3>();
+                foreach (var ex in ActiveConfig.Service.ActiveProfile.AppExceptions)
+                {
+                    if (ex.Subject is ExecutableSubject exe && !string.IsNullOrEmpty(exe.PathFilter))
+                        toCheck.Add(ex);
+                }
+
+                if (toCheck.Count == 0)
+                    return;
+
+                // Request firewall log from service
+                var req = GlobalInstances.Controller.BeginReadFwLog();
+                var resp = req.Response;
+                var entries = Controller.EndReadFwLog(resp);
+
+                bool updated = false;
+                TimeSpan refSpan = TimeSpan.FromMinutes(6);
+                DateTime now = DateTime.Now;
+                foreach (var entry in entries)
+                {
+                    // Ignore log entries older than refSpan
+                    TimeSpan span = now - entry.Timestamp;
+                    if (span > refSpan)
+                        continue;
+ 
+                    if (string.IsNullOrEmpty(entry.AppPath))
+                        continue;
+
+                    // Consider only blocked events
+                    if (!entry.Event.ToString().StartsWith("BLOCKED", StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    foreach (var ex in toCheck)
+                    {
+                        if (ex.Subject is ExecutableSubject exe)
+                        {
+                            try
+                            {
+                                string pattern = Utils.WildcardToRegex(exe.PathFilter!);
+                                if (Regex.IsMatch(entry.AppPath, pattern, RegexOptions.IgnoreCase))
+                                {
+                                    if (!string.Equals(exe.ExecutablePath, entry.AppPath, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        // Create a new firewall exception entry for the new executable path,
+                                        // keeping the same policy and settings as the original.
+                                        var newSubj = new ExecutableSubject(Utils.GetExactPath(entry.AppPath)!);
+                                        // Preserve the custom filter on the new subject so it can continue to match future moves
+                                        newSubj.PathFilter = exe.PathFilter;
+
+                                        // Avoid duplicate entries
+                                        bool exists = false;
+                                        foreach (var existing in ActiveConfig.Service.ActiveProfile.AppExceptions)
+                                        {
+                                            if (existing.Subject.Equals(newSubj))
+                                            {
+                                                exists = true;
+                                                break;
+                                            }
+                                        }
+
+                                        if (!exists)
+                                        {
+                                            // Clone the policy to avoid sharing mutable objects
+                                            var clonedPolicy = ClonePolicy(ex.Policy);
+                                            var newEx = new FirewallExceptionV3(newSubj, clonedPolicy);
+                                            newEx.ChildProcessesInherit = ex.ChildProcessesInherit;
+                                            newEx.Timer = ex.Timer;
+
+                                            ActiveConfig.Service.ActiveProfile.AppExceptions.Add(newEx);
+                                            updated = true;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+                }
+
+                if (updated)
+                {
+                    // Push updated settings to service
+                    ApplyFirewallSettings(ActiveConfig.Service, false);
+                }
+            }
+            catch { }
+            finally
+            {
+                Monitor.Exit(PathRefreshTimer);
+            }
         }
 
         private void Application_Idle(object sender, EventArgs e)
@@ -391,6 +521,12 @@ namespace pylorak.TinyWall
                     TrafficTimer.Dispose(wh);
                     wh.WaitOne();
                 }
+                using (WaitHandle wh = new AutoResetEvent(false))
+                {
+                    PathRefreshTimer.Dispose(wh);
+                    wh.WaitOne();
+                }
+
                 TrafficMonitor?.Dispose();
 
                 components.Dispose();

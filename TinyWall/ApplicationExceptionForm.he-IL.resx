@@ -201,4 +201,7 @@
 	<data name="$this.Text" xml:space="preserve">
 		<value>הוספה/שינוי של חריגי חומת-אש - TinyWall</value>
 	</data>
+  <data name="btnPathFilter.Text" xml:space="preserve">
+	<value>סינון נתיב...</value>
+  </data>
 </root>

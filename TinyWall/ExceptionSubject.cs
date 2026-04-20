@@ -153,6 +153,10 @@ namespace pylorak.TinyWall
         [DataMember(EmitDefaultValue = false)]
         public string ExecutablePath { get; private set; }
 
+        // User-defined custom path filter (supports simple wildcards like * and ?)
+        [DataMember(EmitDefaultValue = false)]
+        public string? PathFilter { get; set; }
+
         [JsonIgnore]
         public string ExecutableName
         {

@@ -201,4 +201,7 @@
 	<data name="lblApplicationType.Text" xml:space="preserve">
 		<value>Tipo:</value>
 	</data>
+  <data name="btnPathFilter.Text" xml:space="preserve">
+	<value>Filtro de ruta...</value>
+  </data>
 </root>
