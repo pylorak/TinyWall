@@ -1,3 +1,4 @@
+using pylorak.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -87,14 +88,6 @@ namespace pylorak.Windows
             public byte OnLinkPrefixLength;
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        private struct IP_ADAPTER_LINKED_ADDRESS
-        {
-            public ulong Alignment;
-            public IntPtr Next;
-            public SOCKET_ADDRESS Address;
-        }
-
         #endregion
 
         public struct UnicastEntry
@@ -104,13 +97,13 @@ namespace pylorak.Windows
         }
 
         public static bool EnumerateActiveAdapters(
-            out HashSet<UnicastEntry> unicastAddresses,
-            out HashSet<IPAddress> gatewayAddresses,
-            out HashSet<IPAddress> dnsAddresses)
+            out HashSet<IpAddrMask> unicastAddresses,
+            out HashSet<IpAddrMask> gatewayAddresses,
+            out HashSet<IpAddrMask> dnsAddresses)
         {
-            unicastAddresses = new HashSet<UnicastEntry>();
-            gatewayAddresses = new HashSet<IPAddress>();
-            dnsAddresses = new HashSet<IPAddress>();
+            unicastAddresses = new HashSet<IpAddrMask>();
+            gatewayAddresses = new HashSet<IpAddrMask>();
+            dnsAddresses = new HashSet<IpAddrMask>();
 
             uint size = 15*1024;    // starting size of 15 KiB recommended by Microsoft to reduce chances of retries
             const int MAX_ALLOCATION_RETRIES = 3;
@@ -129,9 +122,9 @@ namespace pylorak.Windows
 
                                 if (adapter.OperStatus == IF_OPER_STATUS_UP)
                                 {
-                                    ReadUnicastAddresses(adapter.FirstUnicastAddress, unicastAddresses);
-                                    ReadLinkedAddresses(adapter.FirstGatewayAddress, gatewayAddresses);
-                                    ReadLinkedAddresses(adapter.FirstDnsServerAddress, dnsAddresses);
+                                    ReadAddresses(adapter.FirstUnicastAddress, unicastAddresses, false);
+                                    ReadAddresses(adapter.FirstGatewayAddress, gatewayAddresses, true);
+                                    ReadAddresses(adapter.FirstDnsServerAddress, dnsAddresses, true);
                                 }
 
                                 adapterPtr = adapter.Next;
@@ -157,37 +150,19 @@ namespace pylorak.Windows
             return false;
         }
 
-        private static void ReadUnicastAddresses(IntPtr ptr, HashSet<UnicastEntry> result)
+        private static void ReadAddresses(IntPtr ptr, HashSet<IpAddrMask> result, bool forceAsHost)
         {
             while (ptr != IntPtr.Zero)
             {
                 var uni = Marshal.PtrToStructure<IP_ADAPTER_UNICAST_ADDRESS>(ptr);
                 var ip = ReadIPAddress(uni.Address.lpSockaddr);
                 if (ip != null)
-                {
-                    result.Add(new UnicastEntry
-                    {
-                        Address = ip,
-                        PrefixLength = uni.OnLinkPrefixLength
-                    });
-                }
+                    result.Add(forceAsHost ? new IpAddrMask(ip) : new IpAddrMask(ip, uni.OnLinkPrefixLength));
                 ptr = uni.Next;
             }
         }
 
-        private static void ReadLinkedAddresses(IntPtr ptr, HashSet<IPAddress> result)
-        {
-            while (ptr != IntPtr.Zero)
-            {
-                var entry = Marshal.PtrToStructure<IP_ADAPTER_LINKED_ADDRESS>(ptr);
-                var ip = ReadIPAddress(entry.Address.lpSockaddr);
-                if (ip != null)
-                    result.Add(ip);
-                ptr = entry.Next;
-            }
-        }
-
-        private static IPAddress ReadIPAddress(IntPtr sockAddrPtr)
+        private static IPAddress? ReadIPAddress(IntPtr sockAddrPtr)
         {
             if (sockAddrPtr == IntPtr.Zero)
                 return null;

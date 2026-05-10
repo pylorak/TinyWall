@@ -1569,34 +1569,21 @@ namespace pylorak.TinyWall
         {
             using var timer = new HierarchicalStopwatch("NIC enumeration");
             var newLocalSubnetAddreses = new HashSet<IpAddrMask>();
-            var newGatewayAddresses = new HashSet<IpAddrMask>();
-            var newDnsAddresses = new HashSet<IpAddrMask>();
             // Use direct P/Invoke to GetAdaptersAddresses instead of
             // NetworkInterface.GetAllNetworkInterfaces() to avoid native memory leak
             // in iphlpapi!GetPerAdapterInfo -> DNSAPI!Dns_AllocZero (~15KB per call).
             if (!NetworkAdapterEnumerator.EnumerateActiveAdapters(
-                out var unicastList, out var gatewayList, out var dnsList))
+                out var unicastList, out var newGatewayAddresses, out var newDnsAddresses))
             {
                 return false;
             }
 
             foreach (var entry in unicastList)
             {
-                var am = new IpAddrMask(entry.Address, entry.PrefixLength);
-                if (am.IsLoopback || am.IsLinkLocal)
+                if (entry.IsLoopback || entry.IsLinkLocal)
                     continue;
 
-                newLocalSubnetAddreses.Add(am.Subnet);
-            }
-
-            foreach (var addr in gatewayList)
-            {
-                newGatewayAddresses.Add(new IpAddrMask(addr));
-            }
-
-            foreach (var addr in dnsList)
-            {
-                newDnsAddresses.Add(new IpAddrMask(addr));
+                newLocalSubnetAddreses.Add(entry.Subnet);
             }
 
             newLocalSubnetAddreses.Add(new IpAddrMask(IPAddress.Parse("255.255.255.255")));
