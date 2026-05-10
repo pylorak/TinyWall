@@ -104,13 +104,13 @@ namespace pylorak.Windows
         }
 
         public static bool EnumerateActiveAdapters(
-            out List<UnicastEntry> unicastAddresses,
-            out List<IPAddress> gatewayAddresses,
-            out List<IPAddress> dnsAddresses)
+            out HashSet<UnicastEntry> unicastAddresses,
+            out HashSet<IPAddress> gatewayAddresses,
+            out HashSet<IPAddress> dnsAddresses)
         {
-            unicastAddresses = new List<UnicastEntry>();
-            gatewayAddresses = new List<IPAddress>();
-            dnsAddresses = new List<IPAddress>();
+            unicastAddresses = new HashSet<UnicastEntry>();
+            gatewayAddresses = new HashSet<IPAddress>();
+            dnsAddresses = new HashSet<IPAddress>();
 
             uint size = 15*1024;    // starting size of 15 KiB recommended by Microsoft to reduce chances of retries
             const int MAX_ALLOCATION_RETRIES = 3;
@@ -157,7 +157,7 @@ namespace pylorak.Windows
             return false;
         }
 
-        private static void ReadUnicastAddresses(IntPtr ptr, List<UnicastEntry> result)
+        private static void ReadUnicastAddresses(IntPtr ptr, HashSet<UnicastEntry> result)
         {
             while (ptr != IntPtr.Zero)
             {
@@ -175,7 +175,7 @@ namespace pylorak.Windows
             }
         }
 
-        private static void ReadLinkedAddresses(IntPtr ptr, List<IPAddress> result)
+        private static void ReadLinkedAddresses(IntPtr ptr, HashSet<IPAddress> result)
         {
             while (ptr != IntPtr.Zero)
             {
