@@ -1,0 +1,97 @@
+name: Build
+
+on:
+  # push:
+  #   branches: [master]
+  # pull_request:
+  #   branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-2022
+          - windows-2025-vs2026
+        configuration:
+          - Debug
+          - Release
+        include:
+          - os: windows-2022
+            name: VS2022
+          - os: windows-2025-vs2026
+            name: VS2026
+
+    name: ${{ matrix.name }} ${{ matrix.configuration }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2
+
+    - name: Restore
+      run: dotnet restore TinyWall/TinyWall.csproj
+
+    - name: Build
+      run: msbuild TinyWall/TinyWall.csproj /p:Configuration=${{ matrix.configuration }} /p:RestorePackages=false
+
+    - name: Upload build output
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+      with:
+        name: TinyWall-${{ matrix.name }}-${{ matrix.configuration }}
+        path: TinyWall/bin/${{ matrix.configuration }}/
+
+    # --- MSI packaging (Release only) ---
+
+    - name: Get version info
+      if: matrix.configuration == 'Release'
+      id: version
+      shell: pwsh
+      run: |
+        $ver = (Get-Item TinyWall/bin/Release/TinyWall.exe).VersionInfo.ProductVersion
+        $date = Get-Date -Format 'yyyyMMdd'
+        $sha = "${{ github.sha }}".Substring(0, 7)
+        echo "product_version=$ver" >> $env:GITHUB_OUTPUT
+        echo "date=$date" >> $env:GITHUB_OUTPUT
+        echo "sha=$sha" >> $env:GITHUB_OUTPUT
+        echo "msi_name=TinyWall-$ver-${{ matrix.name }}-$date-$sha.msi" >> $env:GITHUB_OUTPUT
+
+    - name: Install WiX 3
+      if: matrix.configuration == 'Release'
+      run: choco install wixtoolset -y --no-progress
+
+    - name: Stage files for MSI
+      if: matrix.configuration == 'Release'
+      shell: pwsh
+      run: |
+        $src = 'TinyWall/bin/Release'
+        $dst = 'MsiSetup/Sources/ProgramFiles/TinyWall'
+        Copy-Item "$src/TinyWall.exe" "$dst/" -Force
+        Copy-Item "$src/TinyWall.exe.config" "$dst/" -Force
+        Get-ChildItem "$src/*.dll" | Copy-Item -Destination "$dst/" -Force
+        Get-ChildItem "$src" -Directory | ForEach-Object {
+          $lang = $_.Name
+          $satellite = "$src/$lang/TinyWall.resources.dll"
+          if (Test-Path $satellite) {
+            New-Item -ItemType Directory -Path "$dst/$lang" -Force | Out-Null
+            Copy-Item $satellite "$dst/$lang/" -Force
+          }
+        }
+
+    - name: Build MSI
+      if: matrix.configuration == 'Release'
+      run: msbuild MsiSetup/MsiSetup.wixproj /p:Configuration=Release /p:Platform=x86
+
+    - name: Upload MSI
+      if: matrix.configuration == 'Release'
+      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+      with:
+        name: ${{ steps.version.outputs.msi_name }}
+        path: MsiSetup/bin/Release/TinyWallInstaller.msi
