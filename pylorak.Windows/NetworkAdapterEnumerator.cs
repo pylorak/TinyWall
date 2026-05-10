@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace pylorak.Windows
 {
@@ -13,15 +14,20 @@ namespace pylorak.Windows
     /// </summary>
     public static class NetworkAdapterEnumerator
     {
-        [DllImport("iphlpapi.dll")]
-        private static extern uint GetAdaptersAddresses(
+        [SuppressUnmanagedCodeSecurity]
+        private static class SafeNativeMethods
+        {
+            [DllImport("iphlpapi.dll")]
+            internal static extern uint GetAdaptersAddresses(
             uint Family, uint Flags, IntPtr Reserved,
             IntPtr AdapterAddresses, ref uint SizePointer);
+        }
 
         private const uint AF_UNSPEC = 0;
         private const uint GAA_FLAG_INCLUDE_GATEWAYS = 0x0080;
         private const uint ERROR_BUFFER_OVERFLOW = 111;
         private const uint ERROR_NO_DATA = 232;
+        private const uint ERROR_ADDRESS_NOT_ASSOCIATED = 1228;
         private const uint ERROR_SUCCESS = 0;
         private const int IF_OPER_STATUS_UP = 1;
         private const short FAMILY_INET = 2;
@@ -106,57 +112,56 @@ namespace pylorak.Windows
             gatewayAddresses = new List<IPAddress>();
             dnsAddresses = new List<IPAddress>();
 
-            uint size = 0;
-            uint result = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_GATEWAYS, IntPtr.Zero, IntPtr.Zero, ref size);
-            if (result == ERROR_NO_DATA)
-                return true;
-            if (result != ERROR_BUFFER_OVERFLOW)
-                return false;
-
-            IntPtr buffer = IntPtr.Zero;
-            try
+            uint size = 15*1024;    // starting size of 15 KiB recommended by Microsoft to reduce chances of retries
+            const int MAX_ALLOCATION_RETRIES = 3;
+            using var buffer = SafeHGlobalHandle.Alloc(size);
+            for (int i = 0; i < MAX_ALLOCATION_RETRIES; ++i)
             {
-                buffer = Marshal.AllocHGlobal((int)size);
-                result = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_GATEWAYS, IntPtr.Zero, buffer, ref size);
-                if (result == ERROR_BUFFER_OVERFLOW)
+                uint result = SafeNativeMethods.GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_GATEWAYS, IntPtr.Zero, buffer.DangerousGetHandle(), ref size);
+                switch (result)
                 {
-                    Marshal.FreeHGlobal(buffer);
-                    buffer = IntPtr.Zero;
-                    buffer = Marshal.AllocHGlobal((int)size);
-                    result = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_GATEWAYS, IntPtr.Zero, buffer, ref size);
+                    case ERROR_SUCCESS:
+                        {
+                            IntPtr adapterPtr = buffer.DangerousGetHandle();
+                            while (adapterPtr != IntPtr.Zero)
+                            {
+                                var adapter = Marshal.PtrToStructure<IP_ADAPTER_ADDRESSES>(adapterPtr);
+
+                                if (adapter.OperStatus == IF_OPER_STATUS_UP)
+                                {
+                                    ReadUnicastAddresses(adapter.FirstUnicastAddress, unicastAddresses);
+                                    ReadLinkedAddresses(adapter.FirstGatewayAddress, gatewayAddresses);
+                                    ReadLinkedAddresses(adapter.FirstDnsServerAddress, dnsAddresses);
+                                }
+
+                                adapterPtr = adapter.Next;
+                            }
+
+                            return true;
+                        }
+                    case ERROR_BUFFER_OVERFLOW:
+                        // Need larger buffer
+                        buffer.ForgetAndResize(size);
+                        break;
+                    case ERROR_NO_DATA:
+                    case ERROR_ADDRESS_NOT_ASSOCIATED:
+                        // No IP addresses associated
+                        return true;
+                    default:
+                        // Error condition
+                        return false;
                 }
-                if (result != ERROR_SUCCESS)
-                    return false;
-
-                IntPtr adapterPtr = buffer;
-                while (adapterPtr != IntPtr.Zero)
-                {
-                    var adapter = (IP_ADAPTER_ADDRESSES)Marshal.PtrToStructure(adapterPtr, typeof(IP_ADAPTER_ADDRESSES));
-
-                    if (adapter.OperStatus == IF_OPER_STATUS_UP)
-                    {
-                        ReadUnicastAddresses(adapter.FirstUnicastAddress, unicastAddresses);
-                        ReadLinkedAddresses(adapter.FirstGatewayAddress, gatewayAddresses);
-                        ReadLinkedAddresses(adapter.FirstDnsServerAddress, dnsAddresses);
-                    }
-
-                    adapterPtr = adapter.Next;
-                }
-
-                return true;
             }
-            finally
-            {
-                if (buffer != IntPtr.Zero)
-                    Marshal.FreeHGlobal(buffer);
-            }
+
+            // Ran out of MAX_ALLOCATION_RETRIES
+            return false;
         }
 
         private static void ReadUnicastAddresses(IntPtr ptr, List<UnicastEntry> result)
         {
             while (ptr != IntPtr.Zero)
             {
-                var uni = (IP_ADAPTER_UNICAST_ADDRESS)Marshal.PtrToStructure(ptr, typeof(IP_ADAPTER_UNICAST_ADDRESS));
+                var uni = Marshal.PtrToStructure<IP_ADAPTER_UNICAST_ADDRESS>(ptr);
                 var ip = ReadIPAddress(uni.Address.lpSockaddr);
                 if (ip != null)
                 {
@@ -174,7 +179,7 @@ namespace pylorak.Windows
         {
             while (ptr != IntPtr.Zero)
             {
-                var entry = (IP_ADAPTER_LINKED_ADDRESS)Marshal.PtrToStructure(ptr, typeof(IP_ADAPTER_LINKED_ADDRESS));
+                var entry = Marshal.PtrToStructure<IP_ADAPTER_LINKED_ADDRESS>(ptr);
                 var ip = ReadIPAddress(entry.Address.lpSockaddr);
                 if (ip != null)
                     result.Add(ip);
