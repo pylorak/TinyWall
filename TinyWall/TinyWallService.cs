@@ -1673,13 +1673,13 @@ namespace pylorak.TinyWall
             using var timer = new HierarchicalStopwatch("Service Run()");
             using var WinDefFirewall = new WindowsFirewall();
             using var NetworkInterfaceWatcher = new IpInterfaceWatcher();
-            using var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback);
             using var DisplayOffSubscription = SafeHandlePowerSettingNotification.Create(service.ServiceHandle, PowerSetting.GUID_CONSOLE_DISPLAY_STATE, DeviceNotifFlags.DEVICE_NOTIFY_SERVICE_HANDLE);
             using var DeviceNotification = SafeHandleDeviceNotification.Create(service.ServiceHandle, DeviceInterfaceClass.GUID_DEVINTERFACE_VOLUME, DeviceNotifFlags.DEVICE_NOTIFY_SERVICE_HANDLE);
             using var MountPointsWatcher = new RegistryWatcher(@"HKEY_LOCAL_MACHINE\SYSTEM\MountedDevices", true);
 
             WfpEngine.CollectNetEvents = true;
             WfpEngine.EventMatchAnyKeywords = InboundEventMatchKeyword.FWPM_NET_EVENT_KEYWORD_INBOUND_BCAST | InboundEventMatchKeyword.FWPM_NET_EVENT_KEYWORD_INBOUND_MCAST;
+            using var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback);
 
             ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
             NetworkInterfaceWatcher.InterfaceChanged += (object sender, EventArgs args) =>
