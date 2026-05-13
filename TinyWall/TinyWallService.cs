@@ -1503,6 +1503,11 @@ namespace pylorak.TinyWall
                         bool save_needed = false;
                         bool rule_reload_needed = false;
 
+                        // Event collection might have been disabled by external process or user after we started up,
+                        // so re-enable it if that is the case.
+                        if (!WfpEngine.CollectNetEvents)
+                            WfpEngine.CollectNetEvents = true;
+
                         // Check for inactivity and lock if necessary
                         if (DateTime.Now - LastControllerCommandTime > TimeSpan.FromMinutes(10))
                         {
