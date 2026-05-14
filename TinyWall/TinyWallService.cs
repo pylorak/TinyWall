@@ -1683,6 +1683,7 @@ namespace pylorak.TinyWall
             using var MountPointsWatcher = new RegistryWatcher(@"HKEY_LOCAL_MACHINE\SYSTEM\MountedDevices", true);
 
             WfpEngine.CollectNetEvents = true;
+            using var NetEventCollection = new CallbackOnDispose(() => { try { WfpEngine.CollectNetEvents = false; } catch { } });
             WfpEngine.EventMatchAnyKeywords = InboundEventMatchKeyword.FWPM_NET_EVENT_KEYWORD_INBOUND_BCAST | InboundEventMatchKeyword.FWPM_NET_EVENT_KEYWORD_INBOUND_MCAST;
             using var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback);
 
@@ -1955,7 +1956,6 @@ namespace pylorak.TinyWall
 
             FirewallThreadThrottler?.Dispose();
             Q.Dispose();
-            try { WfpEngine.CollectNetEvents = false; } catch { }  // Persistent across reboots - must reset
             WfpEngine.Dispose();
 
 #if !DEBUG
