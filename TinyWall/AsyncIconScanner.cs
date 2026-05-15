@@ -52,15 +52,20 @@ namespace pylorak.TinyWall
                                     return;
                                 }
 
-                                if (is_icon_new)
+                                try
                                 {
-                                    imageList.Images.Add(icon_path, icon);
-                                    _ = imageList.Handle;  // Ensure native HIMAGELIST has independent copy
-                                    icon?.Dispose();  // Safe: managed HBITMAP freed, native copy unaffected
-                                    icon_idx = imageList.Images.IndexOfKey(icon_path);
-                                    LoadedIcons.TryAdd(icon_path, icon_idx);
+                                    if (is_icon_new)
+                                    {
+                                        imageList.Images.Add(icon_path, icon);
+                                        _ = imageList.Handle;  // Ensure native HIMAGELIST has independent copy
+                                        icon?.Dispose();  // Safe: managed HBITMAP freed, native copy unaffected
+                                        icon_idx = imageList.Images.IndexOfKey(icon_path);
+                                        LoadedIcons.TryAdd(icon_path, icon_idx);
+                                    }
+                                    li.ImageIndex = icon_idx;
                                 }
-                                li.ImageIndex = icon_idx;
+                                // Ignore any errors during icon loading, it is purely aesthetical
+                                catch { }
 
                                 // Live-update listview, but throttle to conserve CPU since this is pretty expensive
                                 if (st.ElapsedMilliseconds >= 200)

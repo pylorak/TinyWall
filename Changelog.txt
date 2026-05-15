@@ -10,6 +10,7 @@ TinyWall Changelog
 - Fix startup crash if netevent collection is disabled on the system
 - Fix blocked apps not showing if netevent collection is disabled on the system
 - Fix possible crash during process snapshots if an executable has long file name component
+- Fix possible crash during icon loading of external files
 - Remove language-specific layout customizations
 - Update Korean localization (Jaehyung L.)
 
