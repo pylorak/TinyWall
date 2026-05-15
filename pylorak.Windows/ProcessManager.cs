@@ -46,9 +46,9 @@ namespace pylorak.Windows
 
             [DllImport("kernel32", SetLastError = true)]
             internal static extern SafeObjectHandle CreateToolhelp32Snapshot(SnapshotFlags flags, int id);
-            [DllImport("kernel32", SetLastError = true)]
+            [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
             internal static extern bool Process32First(SafeObjectHandle hSnapshot, [In, Out] ref PROCESSENTRY32 lppe);
-            [DllImport("kernel32", SetLastError = true)]
+            [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
             internal static extern bool Process32Next(SafeObjectHandle hSnapshot, [In, Out] ref PROCESSENTRY32 lppe);
 
             [DllImport("user32", SetLastError = true)]
@@ -178,7 +178,7 @@ namespace pylorak.Windows
             public IntPtr InheritedFromUniqueProcessId;
         }
 
-        [StructLayout(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         internal unsafe struct PROCESSENTRY32
         {
             public uint dwSize;
