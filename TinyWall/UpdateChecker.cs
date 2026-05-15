@@ -31,17 +31,19 @@ namespace pylorak.TinyWall
             var descriptor = new UpdateDescriptor();
             updater.State = UpdaterState.GettingDescriptor;
 
-            var TDialog = new TaskDialog();
-            TDialog.CustomMainIcon = Resources.Icons.firewall;
-            TDialog.WindowTitle = Resources.Messages.TinyWall;
-            TDialog.MainInstruction = Resources.Messages.TinyWallUpdater;
-            TDialog.Content = Resources.Messages.PleaseWaitWhileTinyWallChecksForUpdates;
-            TDialog.AllowDialogCancellation = false;
-            TDialog.CommonButtons = TaskDialogCommonButtons.Cancel;
-            TDialog.ShowMarqueeProgressBar = true;
-            TDialog.Callback = updater.DownloadTickCallback;
-            TDialog.CallbackData = updater;
-            TDialog.CallbackTimer = true;
+            var TDialog = new TaskDialog
+            {
+                CustomMainIcon = Resources.Icons.firewall,
+                WindowTitle = Resources.Messages.TinyWall,
+                MainInstruction = Resources.Messages.TinyWallUpdater,
+                Content = Resources.Messages.PleaseWaitWhileTinyWallChecksForUpdates,
+                AllowDialogCancellation = false,
+                CommonButtons = TaskDialogCommonButtons.Cancel,
+                ShowMarqueeProgressBar = true,
+                Callback = updater.DownloadTickCallback,
+                CallbackData = updater,
+                CallbackTimer = true
+            };
 
             var UpdateThread = new Thread( () =>
             {
@@ -99,18 +101,20 @@ namespace pylorak.TinyWall
         private void DownloadUpdate(UpdateModule mainModule)
         {
             ErrorMsg = string.Empty;
-            var TDialog = new TaskDialog();
-            TDialog.CustomMainIcon = Resources.Icons.firewall;
-            TDialog.WindowTitle = Resources.Messages.TinyWall;
-            TDialog.MainInstruction = Resources.Messages.TinyWallUpdater;
-            TDialog.Content = Resources.Messages.DownloadingUpdate;
-            TDialog.AllowDialogCancellation = false;
-            TDialog.CommonButtons = TaskDialogCommonButtons.Cancel;
-            TDialog.ShowProgressBar = true;
-            TDialog.Callback = DownloadTickCallback;
-            TDialog.CallbackData = this;
-            TDialog.CallbackTimer = true;
-            TDialog.EnableHyperlinks = true;
+            var TDialog = new TaskDialog
+            {
+                CustomMainIcon = Resources.Icons.firewall,
+                WindowTitle = Resources.Messages.TinyWall,
+                MainInstruction = Resources.Messages.TinyWallUpdater,
+                Content = Resources.Messages.DownloadingUpdate,
+                AllowDialogCancellation = false,
+                CommonButtons = TaskDialogCommonButtons.Cancel,
+                ShowProgressBar = true,
+                Callback = DownloadTickCallback,
+                CallbackData = this,
+                CallbackTimer = true,
+                EnableHyperlinks = true
+            };
 
             State = UpdaterState.DownloadingUpdate;
 

@@ -43,8 +43,7 @@ namespace pylorak.TinyWall
         {
             // Create event notifier
             EventLogQuery evquery = new("Security", PathType.LogName, "*[System[(EventID=5154 or EventID=5155 or EventID=5157 or EventID=5159 or EventID=5156 or EventID=5158)]]");
-            LogWatcher = new EventLogWatcher(evquery);
-            LogWatcher.Enabled = false;
+            LogWatcher = new EventLogWatcher(evquery) { Enabled = false };
             LogWatcher.EventRecordWritten += new EventHandler<EventRecordWrittenEventArgs>(LogWatcher_EventRecordWritten);
         }
 
@@ -71,9 +70,11 @@ namespace pylorak.TinyWall
 
         private static FirewallLogEntry ParseLogEntry(EventRecordWrittenEventArgs e)
         {
-            var entry = new FirewallLogEntry();
-            entry.Timestamp = DateTime.Now;
-            entry.Event = (EventLogEvent)e.EventRecord.Id;
+            var entry = new FirewallLogEntry
+            {
+                Timestamp = DateTime.Now,
+                Event = (EventLogEvent)e.EventRecord.Id
+            };
 
             switch (e.EventRecord.Id)
             {
@@ -175,9 +176,11 @@ namespace pylorak.TinyWall
 
         private static void AuditSetSystemPolicy(Guid guid, bool success, bool failure)
         {
-            var pol = new NativeMethods.AUDIT_POLICY_INFORMATION();
-            pol.AuditCategoryGuid = guid;
-            pol.AuditSubCategoryGuid = guid;
+            var pol = new NativeMethods.AUDIT_POLICY_INFORMATION
+            {
+                AuditCategoryGuid = guid,
+                AuditSubCategoryGuid = guid
+            };
             if (success || failure)
             {
                 if (success)

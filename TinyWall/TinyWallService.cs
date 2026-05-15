@@ -77,8 +77,10 @@ namespace pylorak.TinyWall
             // Do we want to let local traffic through?
             if (ActiveConfig.Service.ActiveProfile.AllowLocalSubnet)
             {
-                var def = new RuleDef(ModeId, "Allow local subnet", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultPermit);
-                def.RemoteAddresses = RuleDef.LOCALSUBNET_ID;
+                var def = new RuleDef(ModeId, "Allow local subnet", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultPermit)
+                {
+                    RemoteAddresses = RuleDef.LOCALSUBNET_ID
+                };
                 rules.Add(def);
             }
 
@@ -1025,9 +1027,7 @@ namespace pylorak.TinyWall
             catch { }
 
             // Load from file failed, prepare default config instead
-
-            var ret = new ServerConfiguration();
-            ret.ActiveProfileName = Resources.Messages.Default;
+            var ret = new ServerConfiguration { ActiveProfileName = Resources.Messages.Default };
 
             // Allow recommended exceptions
             DatabaseClasses.AppDatabase db = GlobalInstances.AppDatabase;
@@ -1661,7 +1661,7 @@ namespace pylorak.TinyWall
             if (PasswordLock.HasPassword)
                 PasswordLock.Locked = true;
 
-            LogWatcher.NewLogEntry += (FirewallLogWatcher sender, FirewallLogEntry entry) => { AutoLearnLogEntry(entry); };
+            LogWatcher.NewLogEntry += (sender, entry) => AutoLearnLogEntry(entry);
             MinuteTimer = new Timer(new TimerCallback(TimerCallback), null, Timeout.Infinite, Timeout.Infinite);
 
             // Discover network configuration
@@ -1688,15 +1688,15 @@ namespace pylorak.TinyWall
             using var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback);
 
             ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
-            NetworkInterfaceWatcher.InterfaceChanged += (object sender, EventArgs args) =>
+            NetworkInterfaceWatcher.InterfaceChanged += (sender, args) =>
             {
                 Q.Add(new TwRequest(TwMessageSimple.CreateRequest(MessageType.REENUMERATE_ADDRESSES)));
             };
-            RuleReloadEventMerger.Event += (object sender, EventArgs args) =>
+            RuleReloadEventMerger.Event += (sender, args) =>
             {
                 Q.Add(new TwRequest(TwMessageSimple.CreateRequest(MessageType.RELOAD_WFP_FILTERS)));
             };
-            MountPointsWatcher.RegistryChanged += (object sender, EventArgs args) =>
+            MountPointsWatcher.RegistryChanged += (sender, args) =>
             {
                 RuleReloadEventMerger.Pulse();
             };
@@ -1816,17 +1816,19 @@ namespace pylorak.TinyWall
             else
                 return;
 
-            var entry = new FirewallLogEntry();
-            entry.Timestamp = data.timeStamp;
-            entry.Event = eventType;
+            var entry = new FirewallLogEntry
+            {
+                Timestamp = data.timeStamp,
+                Event = eventType,
+                PackageId = data.packageId,
+                RemoteIp = data.remoteAddr?.ToString(),
+                LocalIp = data.localAddr?.ToString()
+            };
 
             if (!Utils.IsNullOrEmpty(data.appId))
                 entry.AppPath = PathMapper.Instance.ConvertPathIgnoreErrors(data.appId, PathFormat.Win32);
             else
                 entry.AppPath = "System";
-            entry.PackageId = data.packageId;
-            entry.RemoteIp = data.remoteAddr?.ToString();
-            entry.LocalIp = data.localAddr?.ToString();
             if (data.remotePort.HasValue)
                 entry.RemotePort = data.remotePort.Value;
             if (data.direction.HasValue)
@@ -2032,8 +2034,7 @@ namespace pylorak.TinyWall
         protected override void OnStart(string[] args)
         {
             // Initialization on a new thread prevents stalling the SCM
-            FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod));
-            FirewallWorkerThread.Name = "ServiceMain";
+            FirewallWorkerThread = new Thread(new ThreadStart(FirewallWorkerMethod)) { Name = "ServiceMain" };
             FirewallWorkerThread.Start();
         }
 

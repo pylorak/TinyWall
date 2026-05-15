@@ -14,29 +14,25 @@ namespace pylorak.TinyWall.Parser
             {
                 if (ParserRegistryVariable.IsStartTag(input, i))
                 {
-                    var var = new ParserRegistryVariable();
-                    var.Start = i;  // TODO: Make Start a ctor argument in all derived classes of ParserVariable
+                    var var = new ParserRegistryVariable(i);
                     stack.Push(var);
                     i += var.GetOpeningTagLength() - 1;
                 }
                 else if (ParserNoTrailingSlashVariable.IsStartTag(input, i))
                 {
-                    var var = new ParserNoTrailingSlashVariable();
-                    var.Start = i;
+                    var var = new ParserNoTrailingSlashVariable(i);
                     stack.Push(var);
                     i += var.GetOpeningTagLength() - 1;
                 }
                 else if (ParserFolderVariable.IsStartTag(input, i))
                 {
-                    var var = new ParserFolderVariable();
-                    var.Start = i;
+                    var var = new ParserFolderVariable(i);
                     stack.Push(var);
                     i += var.GetOpeningTagLength() - 1;
                 }
                 else if (ParserParentVariable.IsStartTag(input, i))
                 {
-                    var var = new ParserParentVariable();
-                    var.Start = i;
+                    var var = new ParserParentVariable(i);
                     stack.Push(var);
                     i += var.GetOpeningTagLength() - 1;
                 }

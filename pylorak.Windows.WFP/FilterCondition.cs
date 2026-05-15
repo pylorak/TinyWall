@@ -201,9 +201,7 @@ namespace pylorak.Windows.WFP
                         }
                         Array.Reverse(addressBytes);
 
-                        var addrAndMask4 = new Interop.FWP_V4_ADDR_AND_MASK();
-                        addrAndMask4.addr = BitConverter.ToUInt32(addressBytes, 0);
-                        addrAndMask4.mask = maskBits;
+                        var addrAndMask4 = new Interop.FWP_V4_ADDR_AND_MASK { addr = BitConverter.ToUInt32(addressBytes, 0), mask = maskBits };
                         nativeMem = SafeHGlobalHandle.FromStruct(addrAndMask4);
 
                         _nativeStruct.conditionValue.type = Interop.FWP_DATA_TYPE.FWP_V4_ADDR_MASK;

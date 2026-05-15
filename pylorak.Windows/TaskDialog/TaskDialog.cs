@@ -957,7 +957,7 @@ namespace Microsoft.Samples
 
             try
             {
-                config.cbSize = (uint)Marshal.SizeOf(typeof(UnsafeNativeMethods.TASKDIALOGCONFIG));
+                config.cbSize = (uint)Marshal.SizeOf<UnsafeNativeMethods.TASKDIALOGCONFIG>();
                 config.hwndParent = hwndOwner;
                 config.dwFlags = this.flags;
                 config.dwCommonButtons = this.commonButtons;
@@ -988,7 +988,7 @@ namespace Microsoft.Samples
                 if (customButtons.Length > 0)
                 {
                     // Hand marshal the buttons array.
-                    int elementSize = Marshal.SizeOf(typeof(TaskDialogButton));
+                    int elementSize = Marshal.SizeOf<TaskDialogButton>();
                     config.pButtons = Marshal.AllocHGlobal(elementSize * (int)customButtons.Length);
                     for (int i = 0; i < customButtons.Length; i++)
                     {
@@ -1006,7 +1006,7 @@ namespace Microsoft.Samples
                 if (customRadioButtons.Length > 0)
                 {
                     // Hand marshal the buttons array.
-                    int elementSize = Marshal.SizeOf(typeof(TaskDialogButton));
+                    int elementSize = Marshal.SizeOf<TaskDialogButton>();
                     config.pRadioButtons = Marshal.AllocHGlobal(elementSize * (int)customRadioButtons.Length);
                     for (int i = 0; i < customRadioButtons.Length; i++)
                     {
@@ -1076,7 +1076,7 @@ namespace Microsoft.Samples
                 // that are not required for the users of this class.
                 if (config.pButtons != IntPtr.Zero)
                 {
-                    int elementSize = Marshal.SizeOf(typeof(TaskDialogButton));
+                    int elementSize = Marshal.SizeOf<TaskDialogButton>();
                     for (int i = 0; i < config.cButtons; i++)
                     {
                         unsafe
@@ -1091,7 +1091,7 @@ namespace Microsoft.Samples
 
                 if (config.pRadioButtons != IntPtr.Zero)
                 {
-                    int elementSize = Marshal.SizeOf(typeof(TaskDialogButton));
+                    int elementSize = Marshal.SizeOf<TaskDialogButton>();
                     for (int i = 0; i < config.cRadioButtons; i++)
                     {
                         unsafe
@@ -1126,8 +1126,7 @@ namespace Microsoft.Samples
 
                 // Future: Consider reusing a single ActiveTaskDialog object and mark it as destroyed on the destry notification.
                 var activeDialog = new ActiveTaskDialog(hwnd);
-                var args = new TaskDialogNotificationArgs();
-                args.Notification = (TaskDialogNotification)msg;
+                var args = new TaskDialogNotificationArgs { Notification = (TaskDialogNotification)msg };
                 switch (args.Notification)
                 {
                     case TaskDialogNotification.ButtonClicked:

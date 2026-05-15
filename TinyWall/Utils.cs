@@ -415,8 +415,7 @@ namespace pylorak.TinyWall
 
         internal static Process StartProcess(string path, string args, bool asAdmin, bool hideWindow = false)
         {
-            var psi = new ProcessStartInfo(path, args);
-            psi.WorkingDirectory = Path.GetDirectoryName(path);
+            var psi = new ProcessStartInfo(path, args) { WorkingDirectory = Path.GetDirectoryName(path) };
             if (asAdmin)
             {
                 psi.Verb = "runas";
@@ -584,12 +583,14 @@ namespace pylorak.TinyWall
         {
             Utils.SplitFirstLine(msg, out string firstLine, out string contentLines);
 
-            var taskDialog = new TaskDialog();
-            taskDialog.WindowTitle = title;
-            taskDialog.MainInstruction = firstLine;
-            taskDialog.CommonButtons = buttons;
-            taskDialog.MainIcon = icon;
-            taskDialog.Content = contentLines;
+            var taskDialog = new TaskDialog
+            {
+                WindowTitle = title,
+                MainInstruction = firstLine,
+                CommonButtons = buttons,
+                MainIcon = icon,
+                Content = contentLines
+            };
             if (parent is null)
                 return (DialogResult)taskDialog.Show();
             else

@@ -687,8 +687,7 @@ namespace pylorak.TinyWall
             else
             {
                 ActiveConfig.Controller = new ControllerSettings();
-                ActiveConfig.Service = new ServerConfiguration();
-                ActiveConfig.Service.ActiveProfileName = Resources.Messages.Default;
+                ActiveConfig.Service = new ServerConfiguration { ActiveProfileName = Resources.Messages.Default };
             }
 
             // See if there is a new notification for the client
@@ -1289,13 +1288,15 @@ namespace pylorak.TinyWall
 
             Utils.SplitFirstLine(Resources.Messages.YouAreAboutToEnterLearningMode, out string firstLine, out string contentLines);
 
-            var dialog = new TaskDialog();
-            dialog.CustomMainIcon = Resources.Icons.firewall;
-            dialog.WindowTitle = Resources.Messages.TinyWall;
-            dialog.MainInstruction = firstLine;
-            dialog.Content = contentLines;
-            dialog.AllowDialogCancellation = false;
-            dialog.CommonButtons = TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No;
+            var dialog = new TaskDialog
+            {
+                CustomMainIcon = Resources.Icons.firewall,
+                WindowTitle = Resources.Messages.TinyWall,
+                MainInstruction = firstLine,
+                Content = contentLines,
+                AllowDialogCancellation = false,
+                CommonButtons = TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No
+            };
 
             if (dialog.Show() != (int)DialogResult.Yes)
                 return;

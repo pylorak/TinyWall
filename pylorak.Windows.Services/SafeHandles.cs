@@ -88,12 +88,14 @@ namespace pylorak.Windows.Services
 
         public static SafeHandleDeviceNotification Create(IntPtr recipient, Guid devIfaceClsGuid, DeviceNotifFlags flags)
         {
-            var filter = new DEV_BROADCAST_DEVICEINTERFACE_Filter();
-            filter.Size = Marshal.SizeOf<DEV_BROADCAST_DEVICEINTERFACE_Filter>();
-            filter.DeviceType = DeviceBroadcastHdrDevType.DBT_DEVTYP_DEVICEINTERFACE;
-            filter.ClassGuid = devIfaceClsGuid;
-            filter.Name = 0;
-            filter.Reserved = 0;
+            var filter = new DEV_BROADCAST_DEVICEINTERFACE_Filter
+            {
+                Size = Marshal.SizeOf<DEV_BROADCAST_DEVICEINTERFACE_Filter>(),
+                DeviceType = DeviceBroadcastHdrDevType.DBT_DEVTYP_DEVICEINTERFACE,
+                ClassGuid = devIfaceClsGuid,
+                Name = 0,
+                Reserved = 0
+            };
             using var filter_hndl = SafeHGlobalHandle.FromStruct(filter);
 
             return NativeMethods.RegisterDeviceNotification(recipient, filter_hndl.DangerousGetHandle(), flags);

@@ -32,7 +32,7 @@ namespace pylorak.TinyWall
             this.IconList.Images.Add("store", Resources.Icons.store);
             this.IconList.Images.Add("system", Resources.Icons.windows_small);
             this.IconList.Images.Add("network-drive", Resources.Icons.network_drive_small);
-            this.IconScanner = new AsyncIconScanner((ListViewItem li) => { return (li.Tag as ProcessInfo)!.Path; }, IconList.Images.IndexOfKey(TEMP_ICON_KEY));
+            this.IconScanner = new AsyncIconScanner(lvi => { return (lvi.Tag as ProcessInfo)!.Path; }, IconList.Images.IndexOfKey(TEMP_ICON_KEY));
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -225,9 +225,7 @@ namespace pylorak.TinyWall
                 // Construct list item
                 string name = e.Package.HasValue ? e.Package.Value.Name : System.IO.Path.GetFileName(e.Path);
                 string title = (e.Pid != 0) ? $"{name} ({e.Pid})" : $"{name}";
-                ListViewItem li = new(title);
-                li.Tag = e;
-                li.ToolTipText = e.Path;
+                ListViewItem li = new(title) { Tag = e, ToolTipText = e.Path };
 
                 // Add icon
                 if (e.Package.HasValue)

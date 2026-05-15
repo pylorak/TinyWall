@@ -29,7 +29,9 @@ namespace pylorak.Windows.WFP
 
         public object SyncRoot => _list;
 
+#pragma warning disable CA1822
         public bool IsSynchronized => false;
+#pragma warning restore CA1822
 
         public bool IsDisposed => _disposed;
 

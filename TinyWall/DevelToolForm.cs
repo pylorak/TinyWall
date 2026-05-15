@@ -45,8 +45,7 @@ namespace pylorak.TinyWall
             if (File.Exists(txtAssocExePath.Text))
             {
                 var exe = new ExecutableSubject(txtAssocExePath.Text);
-                var id = new DatabaseClasses.SubjectIdentity(exe);
-                id.AllowedSha1 = new List<string> { exe.HashSha1 };
+                var id = new DatabaseClasses.SubjectIdentity(exe) { AllowedSha1 = new List<string> { exe.HashSha1 } };
                 if (exe.IsSigned && exe.CertValid)
                 {
                     id.CertificateSubjects = new List<string>();
@@ -216,26 +215,32 @@ namespace pylorak.TinyWall
 
             FileVersionInfo installerInfo = FileVersionInfo.GetVersionInfo(twAssemblyPath);
 
-            var update = new UpdateDescriptor();
-            update.Modules = new UpdateModule[3];
-
-            update.Modules[0] = new UpdateModule();
-            update.Modules[0].Component = "TinyWall";
-            update.Modules[0].ComponentVersion = installerInfo.ProductVersion.ToString().Trim();
-            update.Modules[0].DownloadHash = Hasher.HashFile(msiPath);
-            update.Modules[0].UpdateURL = txtUpdateURL.Text + MSI_FILENAME;
-
-            update.Modules[1] = new UpdateModule();
-            update.Modules[1].Component = "Database";
-            update.Modules[1].ComponentVersion = PLACEHOLDER;
-            update.Modules[1].DownloadHash = Hasher.HashFile(profilesPath);
-            update.Modules[1].UpdateURL = txtUpdateURL.Text + DB_OUT_NAME;
-
-            update.Modules[2] = new UpdateModule();
-            update.Modules[2].Component = "HostsFile";
-            update.Modules[2].ComponentVersion = PLACEHOLDER;
-            update.Modules[2].DownloadHash = Hasher.HashFile(hostsPath);
-            update.Modules[2].UpdateURL = txtUpdateURL.Text + HOSTS_OUT_NAME;
+            var update = new UpdateDescriptor
+            {
+                Modules = new UpdateModule[3]
+                {
+                    new() {
+                        Component = "TinyWall",
+                        ComponentVersion = installerInfo.ProductVersion.ToString().Trim(),
+                        DownloadHash = Hasher.HashFile(msiPath),
+                        UpdateURL = txtUpdateURL.Text + MSI_FILENAME
+                    },
+                    new()
+                    {
+                        Component = "Database",
+                        ComponentVersion = PLACEHOLDER,
+                        DownloadHash = Hasher.HashFile(profilesPath),
+                        UpdateURL = txtUpdateURL.Text + DB_OUT_NAME
+                    },
+                    new()
+                    {
+                        Component = "HostsFile",
+                        ComponentVersion = PLACEHOLDER,
+                        DownloadHash = Hasher.HashFile(hostsPath),
+                        UpdateURL = txtUpdateURL.Text + HOSTS_OUT_NAME
+                    }
+                }
+            };
 
             File.Copy(msiPath, Path.Combine(txtUpdateOutput.Text, MSI_FILENAME), true);
 

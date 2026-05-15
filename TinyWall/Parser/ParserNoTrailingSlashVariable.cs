@@ -7,6 +7,8 @@ namespace pylorak.TinyWall.Parser
     {
         internal const string OPENING_TAG = "{NoTrailingSlash:";
 
+        public ParserNoTrailingSlashVariable(int start) : base(start) { }
+
         internal override string Resolve(string str)
         {
             if (string.IsNullOrEmpty(str))

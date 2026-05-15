@@ -74,12 +74,7 @@ namespace pylorak.Windows.Services
         {
             get
             {
-                if (_EventLog == null)
-                {
-                    _EventLog = new EventLog();
-                    _EventLog.Source = ServiceName;
-                    _EventLog.Log = "Application";
-                }
+                _EventLog ??= new EventLog { Source = ServiceName, Log = "Application" };
                 return _EventLog;
             }
         }
@@ -319,9 +314,7 @@ namespace pylorak.Windows.Services
             if (!Enum.IsDefined(typeof(PowerEventType), eventType))
                 return;
 
-            var ped = new PowerEventData();
-            ped.Event = (PowerEventType)eventType;
-
+            var ped = new PowerEventData { Event = (PowerEventType)eventType };
             if (ped.Event == PowerEventType.PowerSettingChange)
             {
                 var data0 = Marshal.PtrToStructure<POWERBROADCAST_SETTING_NODATA>(eventData);
@@ -341,9 +334,7 @@ namespace pylorak.Windows.Services
             if (!Enum.IsDefined(typeof(DeviceEventType), eventType))
                 return;
 
-            var ded = new DeviceEventData();
-            ded.Event = (DeviceEventType)eventType;
-
+            var ded = new DeviceEventData { Event = (DeviceEventType)eventType };
             var hdr = Marshal.PtrToStructure<DEV_BROADCAST_HDR>(eventData);
             ded.DeviceType = hdr.DeviceType;
             switch (ded.DeviceType)

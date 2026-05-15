@@ -330,8 +330,7 @@ namespace pylorak.TinyWall
             }
             else if (radUnrestricted.Checked)
             {
-                var pol = new UnrestrictedPolicy();
-                pol.LocalNetworkOnly = chkRestrictToLocalNetwork.Checked;
+                var pol = new UnrestrictedPolicy() { LocalNetworkOnly = chkRestrictToLocalNetwork.Checked };
                 TmpExceptionSettings[0].Policy = pol;
             }
 

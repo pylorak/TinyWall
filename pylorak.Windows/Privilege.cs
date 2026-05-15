@@ -596,8 +596,7 @@ namespace Microsoft.Samples
                         ( this.tlsContents!.ReferenceCountValue > 1 ||
                         !this.tlsContents.IsImpersonating ))
                     {
-                        var newState = new NativeMethods.TOKEN_PRIVILEGE();
-                        newState.PrivilegeCount = 1;
+                        var newState = new NativeMethods.TOKEN_PRIVILEGE { PrivilegeCount = 1 };
                         newState.Privilege.Luid = this.luid;
                         newState.Privilege.Attributes = ( this.initialState ? NativeMethods.SE_PRIVILEGE_ENABLED : NativeMethods.SE_PRIVILEGE_DISABLED );
 
@@ -740,8 +739,7 @@ namespace Microsoft.Samples
                         this.tlsContents.IncrementReferenceCount();
                     }
 
-                    var newState = new NativeMethods.TOKEN_PRIVILEGE();
-                    newState.PrivilegeCount = 1;
+                    var newState = new NativeMethods.TOKEN_PRIVILEGE { PrivilegeCount = 1 };
                     newState.Privilege.Luid = this.luid;
                     newState.Privilege.Attributes = enable ? NativeMethods.SE_PRIVILEGE_ENABLED : NativeMethods.SE_PRIVILEGE_DISABLED;
                     

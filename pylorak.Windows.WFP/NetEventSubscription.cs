@@ -275,9 +275,11 @@ namespace pylorak.Windows.WFP
         {
             _nativeCallbackDelegate0 = new NativeMethods.FWPM_NET_EVENT_CALLBACK0(NativeCallbackHandler0);
 
-            var subs0 = new Interop.FWPM_NET_EVENT_SUBSCRIPTION0();
-            subs0.sessionKey = engine.SessionKey;
-            subs0.enumTemplate = IntPtr.Zero;
+            var subs0 = new Interop.FWPM_NET_EVENT_SUBSCRIPTION0
+            {
+                sessionKey = engine.SessionKey,
+                enumTemplate = IntPtr.Zero
+            };
 
             var err = NativeMethods.FwpmNetEventSubscribe0(engine.NativePtr, ref subs0, _nativeCallbackDelegate0, IntPtr.Zero, out IntPtr outHndl);
             if (0 == err)
@@ -331,9 +333,11 @@ namespace pylorak.Windows.WFP
         {
             _nativeCallbackDelegate1 = new NativeMethods.FWPM_NET_EVENT_CALLBACK1(NativeCallbackHandler1);
 
-            var subs0 = new Interop.FWPM_NET_EVENT_SUBSCRIPTION0();
-            subs0.sessionKey = engine.SessionKey;
-            subs0.enumTemplate = IntPtr.Zero;
+            var subs0 = new Interop.FWPM_NET_EVENT_SUBSCRIPTION0
+            {
+                sessionKey = engine.SessionKey,
+                enumTemplate = IntPtr.Zero
+            };
 
             var err = NativeMethods.FwpmNetEventSubscribe1(engine.NativePtr, ref subs0, _nativeCallbackDelegate1, IntPtr.Zero, out IntPtr outHndl);
             if (0 == err)

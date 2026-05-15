@@ -46,21 +46,23 @@ namespace pylorak.TinyWall
 
         public RuleDef ShallowCopy()
         {
-            var copy = new RuleDef();
-            copy.Name = this.Name;
-            copy.ExceptionId = this.ExceptionId;
-            copy.Action = this.Action;
-            copy.Application = this.Application;
-            copy.ServiceName = this.ServiceName;
-            copy.AppContainerSid = this.AppContainerSid;
-            copy.LocalPorts = this.LocalPorts;
-            copy.RemotePorts = this.RemotePorts;
-            copy.LocalAddresses = this.LocalAddresses;
-            copy.RemoteAddresses = this.RemoteAddresses;
-            copy.IcmpTypesAndCodes = this.IcmpTypesAndCodes;
-            copy.Protocol = this.Protocol;
-            copy.Direction = this.Direction;
-            copy.Weight = this.Weight;
+            var copy = new RuleDef
+            {
+                Name = this.Name,
+                ExceptionId = this.ExceptionId,
+                Action = this.Action,
+                Application = this.Application,
+                ServiceName = this.ServiceName,
+                AppContainerSid = this.AppContainerSid,
+                LocalPorts = this.LocalPorts,
+                RemotePorts = this.RemotePorts,
+                LocalAddresses = this.LocalAddresses,
+                RemoteAddresses = this.RemoteAddresses,
+                IcmpTypesAndCodes = this.IcmpTypesAndCodes,
+                Protocol = this.Protocol,
+                Direction = this.Direction,
+                Weight = this.Weight
+            };
             return copy;
         }
 

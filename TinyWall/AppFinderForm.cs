@@ -39,9 +39,11 @@ namespace pylorak.TinyWall
                 list.Items.Clear();
 
                 RunSearch = true;
-                SearcherThread = new Thread(SearcherWorkerMethod);
-                SearcherThread.Name = "AppFinder";
-                SearcherThread.IsBackground = true;
+                SearcherThread = new Thread(SearcherWorkerMethod)
+                {
+                    Name = "AppFinder",
+                    IsBackground = true
+                };
                 SearcherThread.Start();
             }
             else
@@ -256,10 +258,12 @@ namespace pylorak.TinyWall
                     IconList.Images.Add(app.Name, Utils.GetIconContained(iconPath, IconSize.Width, IconSize.Height));
             }
 
-            var li = new ListViewItem(app.Name);
-            li.ImageKey = app.Name;
-            li.Tag = app;
-            li.Checked = app.HasFlag("TWUI:Recommended");
+            var li = new ListViewItem(app.Name)
+            {
+                ImageKey = app.Name,
+                Tag = app,
+                Checked = app.HasFlag("TWUI:Recommended")
+            };
 
             list.Items.Add(li);
         }

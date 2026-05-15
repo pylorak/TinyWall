@@ -125,8 +125,7 @@ namespace pylorak.Windows.WFP
 
         private void EngineOptionSetValue(Interop.FWPM_ENGINE_OPTION opt, uint val)
         {
-            var vs = new Interop.FWP_VALUE0();
-            vs.type = Interop.FWP_DATA_TYPE.FWP_UINT32;
+            var vs = new Interop.FWP_VALUE0 { type = Interop.FWP_DATA_TYPE.FWP_UINT32 };
             vs.value.uint32 = val;
 
             uint err = NativeMethods.FwpmEngineSetOption0(_nativeEngineHandle, opt, ref vs);

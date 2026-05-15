@@ -80,9 +80,11 @@ namespace pylorak.Windows
             }
             EventHandles[i] = StopEvent;
 
-            WatcherThread = new Thread(WatcherProc);
-            WatcherThread.Name = "RegistryWatcher";
-            WatcherThread.IsBackground = true;
+            WatcherThread = new Thread(WatcherProc)
+            {
+                Name = "RegistryWatcher",
+                IsBackground = true
+            };
             WatcherThread.Start();
         }
 

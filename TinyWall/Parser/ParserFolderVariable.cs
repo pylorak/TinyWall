@@ -8,6 +8,8 @@ namespace pylorak.TinyWall.Parser
     {
         internal const string OPENING_TAG = "{folder:";
 
+        public ParserFolderVariable(int start) : base(start) { }
+
         internal override string Resolve(string str)
         {
             try

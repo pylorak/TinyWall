@@ -104,7 +104,7 @@ namespace pylorak.Windows.WFP.Interop
         public FWP_BYTE_BLOB providerData;
         [MarshalAs(UnmanagedType.LPWStr)] public string serviceName;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return displayData.description;
         }
