@@ -70,10 +70,7 @@ namespace pylorak.TinyWall
 
         private void btnCollectionsCreate_Click(object sender, EventArgs e)
         {
-            // Common init
-            var db = new DatabaseClasses.AppDatabase();
-
-            string outputPath = txtAssocOutputPath.Text;
+            string outputPath = Path.Combine(txtAssocOutputPath.Text, "profiles.json");
             string inputPath = txtDBFolderPath.Text;
             if (!Directory.Exists(inputPath))
             {
@@ -81,29 +78,33 @@ namespace pylorak.TinyWall
                 return;
             }
 
-            /*
-            // Merge profiles
-            foreach (string fpath in files)
-            {
-                Obsolete.Profile p = Deprecated.SerializationHelper.LoadFromXMLFile<Obsolete.Profile>(fpath);
-                Manager.AvailableProfiles.Add(p);
-            }*/
-
             var defAppInst = new DatabaseClasses.Application();
             var files = Directory.GetFiles(inputPath, "*.json", SearchOption.AllDirectories);
+            var db = new DatabaseClasses.AppDatabase();
             foreach (string fpath in files)
             {
+                // Don't try to load output file
+                if (fpath.Equals(outputPath, StringComparison.CurrentCultureIgnoreCase))
+                    continue;
+
                 try
                 {
                     var loadedAppInst = SerializationHelper.DeserializeFromFile(fpath, defAppInst);
-                    if (loadedAppInst.Components.Count > 0)
-                        db.KnownApplications.Add(loadedAppInst);
+                    if (string.IsNullOrEmpty(loadedAppInst.Name))
+                    {
+                        MessageBox.Show($"No app name provided in profile:\n{fpath}.\n\nProfile creation aborted.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    db.KnownApplications.Add(loadedAppInst);
                 }
-                catch { }
+                catch
+                {
+                    MessageBox.Show($"Unloadable profile:\n{fpath}.\n\nProfile creation aborted.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
             }
 
-            db.Save(Path.Combine(outputPath, "profiles.json"));
-            //Manager.ToNewFormat().Save(Path.Combine(outputPath, Path.GetFileName(DatabaseClasses.AppDatabase.DBPath)));
+            db.Save(outputPath);
             MessageBox.Show(this, "Creation of collections finished.", "Success.", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

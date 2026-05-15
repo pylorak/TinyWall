@@ -110,7 +110,7 @@
             this.txtAssocOutputPath.Name = "txtAssocOutputPath";
             this.txtAssocOutputPath.Size = new System.Drawing.Size(423, 20);
             this.txtAssocOutputPath.TabIndex = 8;
-            this.txtAssocOutputPath.Text = "C:\\Users\\Karoly\\Nextcloud\\TinyWall\\TinyWall3\\TinyWall\\Database";
+            this.txtAssocOutputPath.Text = "C:\\data\\Nextcloud\\TinyWall\\TinyWall3\\TinyWall\\Database";
             // 
             // btnAssocOutputBrowse
             // 
@@ -137,7 +137,7 @@
             this.txtDBFolderPath.Name = "txtDBFolderPath";
             this.txtDBFolderPath.Size = new System.Drawing.Size(423, 20);
             this.txtDBFolderPath.TabIndex = 3;
-            this.txtDBFolderPath.Text = "C:\\Users\\Karoly\\Nextcloud\\TinyWall\\TinyWall3\\TinyWall\\Database";
+            this.txtDBFolderPath.Text = "C:\\data\\Nextcloud\\TinyWall\\TinyWall3\\TinyWall\\Database";
             // 
             // btnCollectionsCreate
             // 
