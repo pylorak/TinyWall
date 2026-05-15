@@ -27,6 +27,8 @@ namespace pylorak.Windows
 
     public static class ProcessManager
     {
+        private const int ERROR_INSUFFICIENT_BUFFER = 122;
+
         [SuppressUnmanagedCodeSecurity]
         protected static class NativeMethods
         {
@@ -188,7 +190,7 @@ namespace pylorak.Windows
             public uint th32ParentProcessID;
             public int pcPriClassBase;
             public uint dwFlags;
-            public fixed char szExeFile[260];
+            public fixed char szExeFile[PathMapper.SHORT_MAX_PATH_CHARS];
         };
 
         [Flags]
@@ -228,8 +230,6 @@ namespace pylorak.Windows
             NativeFormat = 1
         }
 
-        private const int MAX_PATH_BUFF_CHARS = 1040;
-
         public static string ExecutablePath { get; } = GetCurrentExecutablePath();
         private static string GetCurrentExecutablePath()
         {
@@ -257,45 +257,31 @@ namespace pylorak.Windows
             if (hProcess.IsInvalid)
                 return string.Empty;
 
-            // First, try a smaller buffer on the stack.
-            // This is more eficient both memory and performance-wise, and covers most cases.
-            const int STACK_BUFF_BYTES = 1024;
-            const int STACK_BUFF_CHARS = STACK_BUFF_BYTES / 2;
-            int numChars = STACK_BUFF_CHARS;
-            unsafe
+            int num_chars = PathMapper.SHORT_MAX_PATH_CHARS;
+            if (buffer is null)
             {
-                var stack_buffer = stackalloc char[STACK_BUFF_CHARS];
-                if (NativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.NativeFormat, stack_buffer, ref numChars))
+                // First, try a smaller buffer on the stack.
+                // This is more eficient both memory and performance-wise, and covers most cases.
+                unsafe
                 {
-                    if (numChars == 0)
-                        return string.Empty;
-
-                    return PathMapper.Instance.ConvertPathIgnoreErrors(new ReadOnlySpan<char>(stack_buffer, numChars), PathFormat.Win32);
+                    var stack_buffer = stackalloc char[PathMapper.SHORT_MAX_PATH_CHARS];
+                    if (NativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.NativeFormat, stack_buffer, ref num_chars))
+                        return num_chars == 0
+                            ? string.Empty
+                            : PathMapper.Instance.ConvertPathIgnoreErrors(new ReadOnlySpan<char>(stack_buffer, num_chars), PathFormat.Win32);
                 }
+                if (ERROR_INSUFFICIENT_BUFFER != Marshal.GetLastWin32Error())
+                    return string.Empty;
             }
 
-            // If the stack buffer wasn't big enough, allocate a larger buffer on the heap and try again
-            const int ERROR_INSUFFICIENT_BUFFER = 122;
-            if (ERROR_INSUFFICIENT_BUFFER == Marshal.GetLastWin32Error())
-            {
-                if (buffer is null)
-                {
-                    buffer = new StringBuilder(MAX_PATH_BUFF_CHARS);
-                }
-                else
-                {
-                    buffer.Clear();
-                    buffer.EnsureCapacity(MAX_PATH_BUFF_CHARS);
-                }
-                numChars = buffer.Capacity;
-                if (NativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.NativeFormat, buffer, ref numChars))
-                {
-                    if (numChars == 0)
-                        return string.Empty;
-
-                    return PathMapper.Instance.ConvertPathIgnoreErrors(buffer.ToString(), PathFormat.Win32);
-                }
-            }
+            buffer ??= new StringBuilder(PathMapper.LONG_MAX_PATH_CHARS);
+            buffer.Clear();
+            buffer.EnsureCapacity(PathMapper.LONG_MAX_PATH_CHARS);
+            num_chars = buffer.Capacity;
+            if (NativeMethods.QueryFullProcessImageName(hProcess, QueryFullProcessImageNameFlags.NativeFormat, buffer, ref num_chars))
+                return num_chars == 0
+                    ? string.Empty
+                    : PathMapper.Instance.ConvertPathIgnoreErrors(buffer.ToString(), PathFormat.Win32);
 
             return string.Empty;
         }
