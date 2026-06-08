@@ -756,7 +756,9 @@ namespace DarkModeForms
 
                         var contentBounds = e.Bounds;
                         contentBounds.X += 4;
+                        contentBounds.Y += 2;
                         contentBounds.Width -= 8;
+                        contentBounds.Height -= 4;
 
                         // Draw cell background
                         var backColor =
@@ -798,7 +800,14 @@ namespace DarkModeForms
                                     img = e.Item.ImageList.Images[e.Item.ImageKey];
 
                                 if (img is not null)
-                                    e.Graphics.DrawImage(img, contentBounds.Location);
+                                {
+                                    e.Graphics.DrawImage(
+                                        img,
+                                        contentBounds.X,
+                                        contentBounds.Y,
+                                        img.Width * contentBounds.Height / img.Height,
+                                        contentBounds.Height);
+                                }
 
                                 contentBounds.X += e.Item.ImageList.ImageSize.Width;
                                 contentBounds.Width -= e.Item.ImageList.ImageSize.Width;
@@ -817,13 +826,14 @@ namespace DarkModeForms
                         // Draw focus highlight
                         if (e.ItemState.HasFlag(ListViewItemStates.Focused))
                         {
+                            var borderRect = new Rectangle(e.Bounds.X + 1, e.Bounds.Y + 1, e.Bounds.Width - 2, e.Bounds.Height - 2);
                             using var focusPen = new Pen(Brushes.LightGray, 1) { DashStyle = DashStyle.Dot };
-                            e.Graphics.DrawLine(focusPen, e.Bounds.Left + 1, e.Bounds.Top + 1, e.Bounds.Right - 1, e.Bounds.Top + 1);
-                            e.Graphics.DrawLine(focusPen, e.Bounds.Left + 1, e.Bounds.Bottom - 1, e.Bounds.Right - 1, e.Bounds.Bottom - 1);
+                            e.Graphics.DrawLine(focusPen, borderRect.Left, borderRect.Top, borderRect.Right, borderRect.Top);
+                            e.Graphics.DrawLine(focusPen, borderRect.Left, borderRect.Bottom, borderRect.Right, borderRect.Bottom);
                             if (isFirstSubItem)
-                                e.Graphics.DrawLine(focusPen, e.Bounds.Left + 1, e.Bounds.Top + 1, e.Bounds.Left + 1, e.Bounds.Bottom - 1);
+                                e.Graphics.DrawLine(focusPen, borderRect.Left, borderRect.Top, borderRect.Left, borderRect.Bottom);
                             if (isLastSubItem)
-                                e.Graphics.DrawLine(focusPen, e.Bounds.Right - 1, e.Bounds.Top + 1, e.Bounds.Right - 1, e.Bounds.Bottom - 1);
+                                e.Graphics.DrawLine(focusPen, borderRect.Right, borderRect.Top, borderRect.Right, borderRect.Bottom);
                         }
                     };
                     lView.DrawSubItem -= listViewDrawSubItemEventHandler;
