@@ -590,7 +590,7 @@ namespace DarkModeForms
                         e.Graphics.FillRectangle(backColor, tab.ClientRectangle);
                     }
 
-                    using (Brush tabBack = new SolidBrush(OScolors.Surface))
+                    using (Brush tabBack = new SolidBrush(OScolors.SurfaceDark))
                     {
                         for (int i = 0; i < tab.TabPages.Count; i++)
                         {
