@@ -207,6 +207,8 @@ namespace pylorak.TinyWall
             }
         }
 
+        // These keys are okay to be public. Only meant for obfuscation to prevent manual editing of config file by users.
+        // Actual protection against unauthorized modification is provided by filesystem permissions.
         private const string ENC_SALT = @";n~3+i=wV;eg6Q@f";
         private const string ENC_IV = @"0!.&3x=GGu%>$G&5";   // must be 16/24/32 bytes
 
