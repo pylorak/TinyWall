@@ -756,9 +756,9 @@ namespace DarkModeForms
 
                         var contentBounds = e.Bounds;
                         contentBounds.X += 4;
-                        contentBounds.Y += 2;
+                        contentBounds.Y += 1;
                         contentBounds.Width -= 8;
-                        contentBounds.Height -= 4;
+                        contentBounds.Height -= 2;
 
                         // Draw cell background
                         var backColor =
