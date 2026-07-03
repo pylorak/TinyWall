@@ -1442,7 +1442,7 @@ namespace pylorak.TinyWall
                 case MessageType.UNLOCK:
                     {
                         var args = (TwMessageUnlock)req;
-                        bool success = PasswordLock.Unlock(args.Password);
+                        bool success = PasswordLock.Unlock(args.Password, FileLocker);
                         if (success)
                             return args.CreateResponse();
                         else

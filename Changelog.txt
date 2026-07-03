@@ -2,6 +2,7 @@ TinyWall Changelog
 ---------------------
 
 3.x.x - Maintenance release (xx.xx.xx.)
+- Increase password hashing complexity
 - Better sizing of foreign app icons in dark mode
 
 3.5.1 - Important update (07.06.2026.)
