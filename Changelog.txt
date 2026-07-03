@@ -3,6 +3,7 @@ TinyWall Changelog
 
 3.x.x - Maintenance release (xx.xx.xx.)
 - Increase password hashing complexity
+- Fix misaligned drawing of focus highlight in dark mode lists
 - Correct border transparency of external app icons in dark mode
 - Better sizing of external app icons in dark mode
 

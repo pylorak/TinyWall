@@ -826,7 +826,7 @@ namespace DarkModeForms
                         // Draw focus highlight
                         if (e.ItemState.HasFlag(ListViewItemStates.Focused))
                         {
-                            var borderRect = new Rectangle(e.Bounds.X + 1, e.Bounds.Y + 1, e.Bounds.Width - 2, e.Bounds.Height - 2);
+                            var borderRect = new Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width - 1, e.Bounds.Height - 1);
                             using var focusPen = new Pen(Brushes.LightGray, 1) { DashStyle = DashStyle.Dot };
                             e.Graphics.DrawLine(focusPen, borderRect.Left, borderRect.Top, borderRect.Right, borderRect.Top);
                             e.Graphics.DrawLine(focusPen, borderRect.Left, borderRect.Bottom, borderRect.Right, borderRect.Bottom);
