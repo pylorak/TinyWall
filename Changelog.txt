@@ -3,7 +3,8 @@ TinyWall Changelog
 
 3.x.x - Maintenance release (xx.xx.xx.)
 - Increase password hashing complexity
-- Better sizing of foreign app icons in dark mode
+- Correct border transparency of external app icons in dark mode
+- Better sizing of external app icons in dark mode
 
 3.5.1 - Important update (07.06.2026.)
 - Add dark mode support for GUI
