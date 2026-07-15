@@ -1,11 +1,14 @@
 TinyWall Changelog
 ---------------------
 
-3.x.x - Maintenance release (xx.xx.xx.)
+3.5.2 - Maintenance release (xx.xx.xx.)
 - Increase password hashing complexity
 - Fix misaligned drawing of focus highlight in dark mode lists
 - Correct border transparency of external app icons in dark mode
 - Better sizing of external app icons in dark mode
+- If Windows Defender rule is enabled in UI, allow its protection updates even if Windows Update is blocked (KloweSa)
+
+---------------------
 
 3.5.1 - Important update (07.06.2026.)
 - Add dark mode support for GUI
