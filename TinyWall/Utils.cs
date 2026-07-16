@@ -30,8 +30,20 @@ namespace pylorak.TinyWall
     internal static class Utils
     {
         [SuppressUnmanagedCodeSecurity]
+        internal static class UnsafeNativeMethods
+        {
+            internal enum ChangeWindowMessageFilterFlags : uint { Add = 1, Remove = 2 };
+
+            [DllImport("user32.dll")]
+            internal static extern bool ChangeWindowMessageFilter(uint msg, ChangeWindowMessageFilterFlags flags);
+        }
+
+        [SuppressUnmanagedCodeSecurity]
         internal static class SafeNativeMethods
         {
+            [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+            internal static extern uint RegisterWindowMessage([MarshalAs(UnmanagedType.LPWStr)] string lpString);
+
             [DllImport("user32.dll")]
             internal static extern IntPtr WindowFromPoint(Point pt);
 
@@ -146,6 +158,15 @@ namespace pylorak.TinyWall
             return (str is null) || (str == string.Empty);
         }
 #endif
+
+        public static bool DisableMessageUIPI(string msg)
+        {
+            var msgId = SafeNativeMethods.RegisterWindowMessage(msg);
+            if (0 == msgId)
+                return false;
+
+            return UnsafeNativeMethods.ChangeWindowMessageFilter(msgId, UnsafeNativeMethods.ChangeWindowMessageFilterFlags.Add);
+        }
 
         public static T OnlyFirst<T>(IEnumerable<T> items)
         {

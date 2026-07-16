@@ -3,6 +3,7 @@ TinyWall Changelog
 
 3.5.2 - Maintenance release (xx.xx.xx.)
 - Increase password hashing complexity
+- New mitigation for tray icon sometimes not showing up on boot
 - Fix misaligned drawing of focus highlight in dark mode lists
 - Correct border transparency of external app icons in dark mode
 - Better sizing of external app icons in dark mode

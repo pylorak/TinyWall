@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading;
-using System.Windows.Forms;
-using Microsoft.Samples.TaskDialog;
+﻿using Microsoft.Samples.TaskDialog;
 using pylorak.Utilities;
 using pylorak.Windows;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace pylorak.TinyWall
 {
@@ -1296,6 +1296,9 @@ namespace pylorak.TinyWall
         private void InitController()
         {
             mnuTrafficRate.Text = string.Format(CultureInfo.CurrentCulture, "{0}: {1}   {2}: {3}", Resources.Messages.TrafficIn, "...", Resources.Messages.TrafficOut, "...");
+
+            // Disable UIPI filter for the TaskbarCreated broadcast so we can received it even when running with admin privileges 
+            Utils.DisableMessageUIPI("TaskbarCreated");
 
             // We will load our database parallel to other things to improve startup performance
             using (var barrier = new ThreadBarrier(2))
