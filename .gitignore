@@ -16,6 +16,7 @@
 
 /TinyWall/obj/
 /TinyWall/bin/
+/TinyWall/Database/profiles.json
 
 /Microsoft.Samples/obj/
 /Microsoft.Samples/bin/
