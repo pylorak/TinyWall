@@ -91,7 +91,7 @@ namespace pylorak.Windows.WFP
         [DllImport("advapi32", CharSet = CharSet.Unicode, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool ConvertSidToStringSid(IntPtr Sid, out AllocHLocalSafeHandle StringSid);
-        
+
         internal static string? ConvertSidToStringSid(IntPtr pSid)
         {
             if (!ConvertSidToStringSid(pSid, out AllocHLocalSafeHandle ptrStrSid))

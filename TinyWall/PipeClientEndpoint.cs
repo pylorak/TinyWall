@@ -43,7 +43,7 @@ namespace pylorak.TinyWall
         {
             try
             {
-                using var pipeClient = new NamedPipeClientStream (".", m_PipeName, PipeDirection.InOut, PipeOptions.WriteThrough);
+                using var pipeClient = new NamedPipeClientStream(".", m_PipeName, PipeDirection.InOut, PipeOptions.WriteThrough);
                 pipeClient.Connect(1000);
                 pipeClient.ReadMode = PipeTransmissionMode.Message;
 

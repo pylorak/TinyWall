@@ -129,7 +129,7 @@ namespace pylorak.Windows.WFP
                 ipProtocol = (IpProtocol)nativeEvent.header.ipProtocol;
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_LOCAL_ADDR_SET) != 0)
-            { 
+            {
                 localAddr = ToIpAddress(nativeEvent.header.localAddr, nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6, sb);
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_LOCAL_PORT_SET) != 0)
@@ -224,7 +224,7 @@ namespace pylorak.Windows.WFP
     {
         protected readonly NetEventCallback _callback;
         protected readonly StringBuilder SBuilder = new(40);
-        
+
         public bool IsDisposed { get; private set; }
 
         protected NetEventSubscription(NetEventCallback callback)

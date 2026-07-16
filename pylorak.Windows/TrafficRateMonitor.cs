@@ -68,7 +68,7 @@ namespace pylorak.Windows
 
             return ret;
         }
-        
+
         protected override void Dispose(bool disposing)
         {
             if (IsDisposed)

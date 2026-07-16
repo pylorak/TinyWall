@@ -44,7 +44,7 @@ namespace pylorak.Windows
                 else
                 {
                     _ = NativeMethods.RegNotifyChangeKeyValue(WatchedKeys[evIdx].DangerousGetHandle(), WatchSubTree, NotifyFilter, EventHandles[evIdx].SafeWaitHandle.DangerousGetHandle(), true);
-                    if (Enabled) 
+                    if (Enabled)
                         RegistryChanged?.Invoke(this, EventArgs.Empty);
                 }
             }

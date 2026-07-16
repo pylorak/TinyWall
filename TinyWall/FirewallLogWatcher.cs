@@ -19,8 +19,8 @@ namespace pylorak.TinyWall
         protected override void Dispose(bool disposing)
         {
             if (IsDisposed)
-                return; 
-            
+                return;
+
             if (disposing)
             {
                 // Release managed resources
@@ -49,7 +49,7 @@ namespace pylorak.TinyWall
 
         internal bool Enabled
         {
-            get 
+            get
             {
                 return LogWatcher.Enabled;
             }

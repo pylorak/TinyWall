@@ -78,9 +78,9 @@ namespace pylorak.TinyWall
         {
             other = other.PolicyType switch
             {
-                PolicyType.RuleList or 
+                PolicyType.RuleList or
                     PolicyType.HardBlock or
-                    PolicyType.TcpUdpOnly or 
+                    PolicyType.TcpUdpOnly or
                     PolicyType.Unrestricted => HardBlockPolicy.Instance,
                 PolicyType.Invalid => throw new InvalidOperationException(),
                 _ => throw new NotImplementedException(),
@@ -104,11 +104,11 @@ namespace pylorak.TinyWall
             switch (target.PolicyType)
             {
                 case PolicyType.Unrestricted:
-                {
-                    var other = (UnrestrictedPolicy)target;
-                    other.LocalNetworkOnly &= this.LocalNetworkOnly;
-                    break;
-                }
+                    {
+                        var other = (UnrestrictedPolicy)target;
+                        other.LocalNetworkOnly &= this.LocalNetworkOnly;
+                        break;
+                    }
                 case PolicyType.HardBlock:
                     // No change to target
                     break;
@@ -117,12 +117,12 @@ namespace pylorak.TinyWall
                     target = this;
                     break;
                 case PolicyType.TcpUdpOnly:
-                {
-                    var other = (TcpUdpPolicy)target;
-                    this.LocalNetworkOnly &= other.LocalNetworkOnly;
-                    target = this;
-                    break;
-                }
+                    {
+                        var other = (TcpUdpPolicy)target;
+                        this.LocalNetworkOnly &= other.LocalNetworkOnly;
+                        target = this;
+                        break;
+                    }
                 default:
                     throw new NotImplementedException();
             }
@@ -204,7 +204,7 @@ namespace pylorak.TinyWall
             return true;
         }
 
-        private static readonly char[] LIST_SEPARATORS = new[]{ ',' };
+        private static readonly char[] LIST_SEPARATORS = new[] { ',' };
         private static string? MergeStringList(string? str1, string? str2)
         {
             if (str1 == null)
@@ -255,22 +255,22 @@ namespace pylorak.TinyWall
             switch (target.PolicyType)
             {
                 case PolicyType.RuleList:
-                {
-                    var other = (RuleListPolicy)target;
-                    other.Rules.AddRange(this.Rules);
-                    break;
-                }
+                    {
+                        var other = (RuleListPolicy)target;
+                        other.Rules.AddRange(this.Rules);
+                        break;
+                    }
                 case PolicyType.TcpUdpOnly:
                     return false;
                 case PolicyType.HardBlock:
                     // No change to target
                     break;
                 case PolicyType.Unrestricted:
-                {
-                    var other = (UnrestrictedPolicy)target;
-                    other.LocalNetworkOnly = false;
-                    break;
-                }
+                    {
+                        var other = (UnrestrictedPolicy)target;
+                        other.LocalNetworkOnly = false;
+                        break;
+                    }
                 default:
                     throw new NotImplementedException();
             }

@@ -202,7 +202,7 @@ namespace pylorak.Windows.Services
                     }
                     break;
                 case ServiceState.StopPending:
-                    if ( (CurrentState == ServiceState.Running) || (CurrentState == ServiceState.Paused) )
+                    if ((CurrentState == ServiceState.Running) || (CurrentState == ServiceState.Paused))
                     {
                         PreviousState = CurrentState;
                         SetServiceStatePending(newState);
@@ -572,7 +572,7 @@ namespace pylorak.Windows.Services
                 if (AutoLog)
                     EventLog.WriteEntry(message, errorType);
             }
-#region Stuff not to catch
+            #region Stuff not to catch
             catch (StackOverflowException)
             {
                 throw;
@@ -585,7 +585,7 @@ namespace pylorak.Windows.Services
             {
                 throw;
             }
-#endregion
+            #endregion
             catch { }
         }
 
@@ -608,7 +608,7 @@ namespace pylorak.Windows.Services
                 StoppedEventHandle.Close();
                 StartedEventHandle.Close();
             }
-            
+
             disposed = true;
         }
 

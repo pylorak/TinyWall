@@ -43,7 +43,7 @@ namespace pylorak.Utilities
             PrefixLen = IsIPv4 ? 32 : 128;
         }
 
-        public IpAddrMask(GatewayIPAddressInformation addrInfo) : this (addrInfo.Address)
+        public IpAddrMask(GatewayIPAddressInformation addrInfo) : this(addrInfo.Address)
         {
         }
 
@@ -75,7 +75,7 @@ namespace pylorak.Utilities
             {
                 return
                         (IsIPv4 && Address.Equals(IPAddress.Loopback))
-                    ||  (IsIPv6 && Address.Equals(IPAddress.IPv6Loopback))
+                    || (IsIPv6 && Address.Equals(IPAddress.IPv6Loopback))
                     ;
             }
         }

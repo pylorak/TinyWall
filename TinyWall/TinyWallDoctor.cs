@@ -62,7 +62,7 @@ namespace pylorak.TinyWall
                 {
                     ManagedInstallerClass.InstallHelper(new string[] { "/i", Utils.ExecutablePath });
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Utils.LogException(e, logContext);
                 }
@@ -118,7 +118,7 @@ namespace pylorak.TinyWall
                 frm.Location = new System.Drawing.Point(rect.Bottom + 10, rect.Right + 10);
                 frm.Show();
                 frm.Focus();
-                frm.BringToFront(); 
+                frm.BringToFront();
                 frm.TopMost = true;
 
                 if (System.Windows.Forms.MessageBox.Show(frm,

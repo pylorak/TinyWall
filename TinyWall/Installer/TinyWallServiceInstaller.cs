@@ -31,7 +31,7 @@ namespace pylorak.TinyWall.Installer
                 this.Installers.Add(serviceProcessInstaller);
                 this.Installers.Add(serviceInstaller);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Utils.LogException(e, Utils.LOG_ID_INSTALLER);
             }

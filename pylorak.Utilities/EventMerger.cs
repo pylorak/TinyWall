@@ -35,12 +35,12 @@ namespace pylorak.Utilities
 
         private void DelayExpired(object args)
         {
-            lock(Locker)
+            lock (Locker)
             {
                 TimerActive = false;
             }
 
-            ThreadPool.QueueUserWorkItem(o => Event?.Invoke(this, EventArgs.Empty));        
+            ThreadPool.QueueUserWorkItem(o => Event?.Invoke(this, EventArgs.Empty));
         }
 
         protected override void Dispose(bool disposing)

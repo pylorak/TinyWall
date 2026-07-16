@@ -178,7 +178,7 @@ namespace pylorak.Utilities
 
                 return new Pbkdf2(algo, iterations, salt, hashBytes);
             }
-            catch(Exception inner)
+            catch (Exception inner)
             {
                 throw new FormatException("Invalid password hash.", inner);
             }

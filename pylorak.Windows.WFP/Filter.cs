@@ -246,13 +246,13 @@ namespace pylorak.Windows.WFP
         }
         public FilterConditionList Conditions
         {
-            get 
+            get
             {
                 // Invalidate cache
                 _conditionsHandle?.Dispose();
                 _conditionsHandle = null;
 
-                return _conditions; 
+                return _conditions;
             }
         }
         public FilterActions Action

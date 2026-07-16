@@ -10,8 +10,8 @@ namespace pylorak.TinyWall
 {
     public partial class UwpPackagesForm : Form
     {
-        private readonly List<UwpPackageList.Package> SelectedPackages = new ();
-        private readonly Size IconSize = new ((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
+        private readonly List<UwpPackageList.Package> SelectedPackages = new();
+        private readonly Size IconSize = new((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
         private readonly DarkModeCS? DarkMode;
         private readonly WmPaintFilter? ListRepaintFilter;
 

@@ -138,7 +138,7 @@ namespace pylorak.TinyWall
             #endregion
         }
 
-        private static readonly Random _rng = new ();
+        private static readonly Random _rng = new();
 
         public static string ExecutablePath { get; } = System.Reflection.Assembly.GetEntryAssembly().Location;
 
@@ -649,8 +649,8 @@ namespace pylorak.TinyWall
         internal static Version TinyWallVersion { get; } = typeof(Utils).Assembly.GetName().Version;
 
         private readonly static object logLocker = new();
-        internal static readonly string LOG_ID_SERVICE   = "service";
-        internal static readonly string LOG_ID_GUI       = "gui";
+        internal static readonly string LOG_ID_SERVICE = "service";
+        internal static readonly string LOG_ID_GUI = "gui";
         internal static readonly string LOG_ID_INSTALLER = "installer";
         internal static void LogException(Exception e, string logname)
         {

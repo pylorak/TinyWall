@@ -237,7 +237,7 @@ namespace pylorak.TinyWall
     }
 
     [DataContract(Namespace = "http://schemas.datacontract.org/2004/07/PKSoft")]
-     public sealed class ConfigContainer : ISerializable<ConfigContainer>
+    public sealed class ConfigContainer : ISerializable<ConfigContainer>
     {
         [DataMember(EmitDefaultValue = false)]
         public ServerConfiguration Service;

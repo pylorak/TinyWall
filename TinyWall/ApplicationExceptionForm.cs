@@ -340,7 +340,7 @@ namespace pylorak.TinyWall
             }
 
             this.TmpExceptionSettings[0].CreationDate = DateTime.Now;
-            
+
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
@@ -354,8 +354,8 @@ namespace pylorak.TinyWall
             var procList = new List<ProcessInfo>();
             using (var pf = new ProcessesForm(false))
             {
-                    if (pf.ShowDialog(this) == DialogResult.Cancel)
-                        return;
+                if (pf.ShowDialog(this) == DialogResult.Cancel)
+                    return;
 
                 procList.AddRange(pf.Selection);
             }

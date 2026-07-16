@@ -67,7 +67,7 @@ namespace pylorak.TinyWall
             {
                 return obj is Package other && Equals(other);
             }
-            
+
             public bool Equals(Package other)
             {
                 return

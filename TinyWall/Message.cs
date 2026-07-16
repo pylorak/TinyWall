@@ -66,7 +66,8 @@ namespace pylorak.TinyWall
                     JsonSerializer.Serialize<TwMessageAddTempException>(writer, typedVal, SourceGenerationContext.Default.TwMessageAddTempException); break;
                 default:
                     throw new JsonException($"Tried to serialize unsupported type {value.GetType()}.");
-            };
+            }
+            ;
         }
     }
 

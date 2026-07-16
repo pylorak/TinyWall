@@ -214,7 +214,7 @@ namespace pylorak.Windows.Services
         DBT_DEVTYP_HANDLE = 6,
         DBT_DEVTYP_OEM = 0,
         DBT_DEVTYP_PORT = 3,
-        DBT_DEVTYP_VOLUME =2
+        DBT_DEVTYP_VOLUME = 2
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -260,7 +260,7 @@ namespace pylorak.Windows.Services
         public DeviceBroadcastHdrDevType DeviceType;
         public int Reserved;
         public uint UnitMask;
-        public DevBroadcastVolumeFlags Flags; 
+        public DevBroadcastVolumeFlags Flags;
     }
 
     public enum DeviceEventType

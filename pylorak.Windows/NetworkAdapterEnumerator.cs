@@ -1,4 +1,4 @@
-using pylorak.Utilities;
+﻿using pylorak.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -105,7 +105,7 @@ namespace pylorak.Windows
             gatewayAddresses = new HashSet<IpAddrMask>();
             dnsAddresses = new HashSet<IpAddrMask>();
 
-            uint size = 15*1024;    // starting size of 15 KiB recommended by Microsoft to reduce chances of retries
+            uint size = 15 * 1024;    // starting size of 15 KiB recommended by Microsoft to reduce chances of retries
             const int MAX_ALLOCATION_RETRIES = 3;
             using var buffer = SafeHGlobalHandle.Alloc(size);
             for (int i = 0; i < MAX_ALLOCATION_RETRIES; ++i)

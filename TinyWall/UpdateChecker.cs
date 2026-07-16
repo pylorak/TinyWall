@@ -45,7 +45,7 @@ namespace pylorak.TinyWall
                 CallbackTimer = true
             };
 
-            var UpdateThread = new Thread( () =>
+            var UpdateThread = new Thread(() =>
             {
                 try
                 {
@@ -178,7 +178,7 @@ namespace pylorak.TinyWall
                             taskDialog.ClickButton((int)DialogResult.OK);
                             break;
                         case UpdaterState.DownloadingUpdate:
-                        taskDialog.SetProgressBarPosition(DownloadProgress);
+                            taskDialog.SetProgressBarPosition(DownloadProgress);
                             break;
                     }
                     break;

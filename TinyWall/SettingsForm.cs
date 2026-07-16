@@ -402,7 +402,7 @@ namespace pylorak.TinyWall
             TmpConfig.Service.ActiveProfile.AppExceptions.Clear();
             RebuildExceptionsList();
         }
-        
+
         private void btnAppModify_Click(object sender, EventArgs e)
         {
             ListViewItem li = FilteredExceptionItems[listApplications.SelectedIndices[0]];
@@ -598,14 +598,14 @@ namespace pylorak.TinyWall
             InitSettingsUI();
 
 #if DEBUG
-//          DataCollection.StopProfile(ProfileLevel.Global, DataCollection.CurrentId);
+            //          DataCollection.StopProfile(ProfileLevel.Global, DataCollection.CurrentId);
 #endif
 
 #if !DEBUG
             // TODO: Make submissions work
             btnSubmitAssoc.Visible = false;
 #endif
-//            loadingDone.Value = true;
+            //            loadingDone.Value = true;
         }
 
         private void txtExceptionListFilter_TextChanged(object sender, EventArgs e)

@@ -17,7 +17,7 @@ namespace pylorak.Windows.NetStat
             return this.udpRows.GetEnumerator();
         }
 
-         IEnumerator IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return this.udpRows.GetEnumerator();
         }

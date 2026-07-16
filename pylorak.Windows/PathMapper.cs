@@ -253,11 +253,11 @@ namespace pylorak.Windows
                 {
                     try
                     {
-                    // We have two different methods to discover drives and volumes.
-                    // We chain them and execute both because each one has limitations:
-                    // RebuildCacheImpl_1 - Cannot discover some types of drives, such as those created by ImDisk
-                    // RebuildCacheImpl_2 - Cannot discover devices mounted to mount points
-                    var tmpCache = RebuildCacheImpl_1();
+                        // We have two different methods to discover drives and volumes.
+                        // We chain them and execute both because each one has limitations:
+                        // RebuildCacheImpl_1 - Cannot discover some types of drives, such as those created by ImDisk
+                        // RebuildCacheImpl_2 - Cannot discover devices mounted to mount points
+                        var tmpCache = RebuildCacheImpl_1();
                         try { tmpCache = RebuildCacheImpl_2(tmpCache); } catch { }
                         Cache = tmpCache.ToArray();
                     }

@@ -254,7 +254,7 @@ namespace pylorak.Windows.WFP
             base.Dispose(disposing);
         }
     }
-    
+
     public sealed class PortFilterCondition : FilterCondition
     {
         private SafeHGlobalHandle? rangeNativeMem;
@@ -374,7 +374,7 @@ namespace pylorak.Windows.WFP
             [DllImport("FWPUClnt.dll", EntryPoint = "FwpmGetAppIdFromFileName0")]
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
             internal static extern uint FwpmGetAppIdFromFileName0(
-                [MarshalAs(UnmanagedType.LPWStr), In]  string fileName,
+                [MarshalAs(UnmanagedType.LPWStr), In] string fileName,
                 [Out] out FwpmMemorySafeHandle appId);
         }
 

@@ -245,7 +245,7 @@ namespace pylorak.TinyWall
                                 continue;
 
                             if (ChildInheritedSubjectExes.TryGetValue(procPath, out var childVal))
-                            { 
+                            {
                                 if (childVal.Contains(parentEntry.ImagePath))
                                     // We have already processed this parent-child combination
                                     break;
@@ -581,7 +581,8 @@ namespace pylorak.TinyWall
                             validAddressFound |= addIpFilterCondition(IpAddrMask.Parse(ipStr), RemoteOrLocal.Remote, conditions);
                         }
                     }
-                    catch {
+                    catch
+                    {
                         // Ignore failed IP condition and process next one
                     }
                 }
@@ -1356,7 +1357,7 @@ namespace pylorak.TinyWall
                         VisibleState.Mode = newMode;
                         if ((ActiveConfig.Service.StartupMode != VisibleState.Mode) &&
                             (VisibleState.Mode != FirewallMode.Disabled) &&
-                            (VisibleState.Mode != FirewallMode.Learning) )
+                            (VisibleState.Mode != FirewallMode.Learning))
                         {
                             ActiveConfig.Service.StartupMode = VisibleState.Mode;
                             save_needed = true;
@@ -1954,12 +1955,12 @@ namespace pylorak.TinyWall
             // Basic software health checks
             TinyWallDoctor.EnsureHealth(Utils.LOG_ID_SERVICE);
 #else
-                using (var wfp = new Engine("TinyWall Cleanup Session", "", FWPM_SESSION_FLAGS.None, 5000))
-                using (var trx = wfp.BeginTransaction())
-                {
-                    DeleteWfpObjects(wfp, true);
-                    trx.Commit();
-                }
+            using (var wfp = new Engine("TinyWall Cleanup Session", "", FWPM_SESSION_FLAGS.None, 5000))
+            using (var trx = wfp.BeginTransaction())
+            {
+                DeleteWfpObjects(wfp, true);
+                trx.Commit();
+            }
 #endif
             PathMapper.Instance.Dispose();
         }

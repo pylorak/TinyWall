@@ -18,7 +18,7 @@ namespace pylorak.TinyWall
             System.Windows.Forms.Application.Run(new DevelToolForm());
             return 0;
         }
-        
+
         private static int StartService(TinyWallService tw)
         {
 #if DEBUG

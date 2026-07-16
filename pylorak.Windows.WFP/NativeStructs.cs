@@ -191,8 +191,8 @@ namespace pylorak.Windows.WFP.Interop
     [StructLayout(LayoutKind.Sequential)]
     public struct FWP_RANGE0
     {
-      public FWP_VALUE0 valueLow;
-      public FWP_VALUE0 valueHigh;
+        public FWP_VALUE0 valueLow;
+        public FWP_VALUE0 valueHigh;
     }
 
     public enum FWP_DATA_TYPE : uint
@@ -287,9 +287,9 @@ namespace pylorak.Windows.WFP.Interop
     [Flags]
     public enum FWP_ACTION_FLAG : uint
     {
-        FWP_ACTION_FLAG_TERMINATING     = 0x00001000,
+        FWP_ACTION_FLAG_TERMINATING = 0x00001000,
         FWP_ACTION_FLAG_NON_TERMINATING = 0x00002000,
-        FWP_ACTION_FLAG_CALLOUT         = 0x00004000
+        FWP_ACTION_FLAG_CALLOUT = 0x00004000
     }
 
     public enum FWP_ACTION_TYPE : uint
@@ -372,9 +372,9 @@ namespace pylorak.Windows.WFP.Interop
     public enum FilterEnumTemplateFlags : uint
     {
         FWP_FILTER_ENUM_FLAG_BEST_TERMINATING_MATCH = 0x00000001,
-        FWP_FILTER_ENUM_FLAG_SORTED  = 0x00000002,
-        FWP_FILTER_ENUM_FLAG_BOOTTIME_ONLY  = 0x00000004,
-        FWP_FILTER_ENUM_FLAG_INCLUDE_BOOTTIME  = 0x00000008,
+        FWP_FILTER_ENUM_FLAG_SORTED = 0x00000002,
+        FWP_FILTER_ENUM_FLAG_BOOTTIME_ONLY = 0x00000004,
+        FWP_FILTER_ENUM_FLAG_INCLUDE_BOOTTIME = 0x00000008,
         FWP_FILTER_ENUM_FLAG_INCLUDE_DISABLED = 0x00000010
     }
 

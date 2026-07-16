@@ -865,7 +865,7 @@ namespace pylorak.TinyWall
 
         public bool FlashIfOpen(Type formType)
         {
-            foreach(var openForm in ActiveForms)
+            foreach (var openForm in ActiveForms)
             {
                 if (openForm.GetType() == formType)
                 {
@@ -978,9 +978,9 @@ namespace pylorak.TinyWall
             // another thread that will invoke the body on our own thread again makes sure that the hook
             // has terminated by the time we unhook it, resolving all our problems.
 
-            ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
+            ThreadPool.QueueUserWorkItem((WaitCallback)delegate (object state)
             {
-                Utils.Invoke(SyncCtx, (SendOrPostCallback)delegate(object o)
+                Utils.Invoke(SyncCtx, (SendOrPostCallback)delegate (object o)
                 {
                     MouseInterceptor.Stop();
 
@@ -1049,7 +1049,7 @@ namespace pylorak.TinyWall
                 ApplyFirewallSettings(confCopy, true);
                 return;
             }
-            
+
             var resp = ApplyFirewallSettings(confCopy, false);
             switch (resp.Type)
             {
@@ -1116,7 +1116,7 @@ namespace pylorak.TinyWall
         private void mnuLock_Click(object sender, EventArgs e)
         {
             MessageType lockResp = GlobalInstances.Controller.LockServer();
-            if ((lockResp == MessageType.LOCK) || (lockResp== MessageType.RESPONSE_LOCKED))
+            if ((lockResp == MessageType.LOCK) || (lockResp == MessageType.RESPONSE_LOCKED))
             {
                 this.Locked = true;
             }
@@ -1228,7 +1228,7 @@ namespace pylorak.TinyWall
             {
                 Utils.SafeNativeMethods.DoMouseRightClick();
             }
-            
+
             if (e.Button == System.Windows.Forms.MouseButtons.Middle)
             {
                 mnuConnections_Click(sender, e);
@@ -1249,9 +1249,9 @@ namespace pylorak.TinyWall
             catch
             {
                 GlobalInstances.AppDatabase = new DatabaseClasses.AppDatabase();
-                ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
+                ThreadPool.QueueUserWorkItem((WaitCallback)delegate (object state)
                 {
-                    Utils.Invoke(SyncCtx, (SendOrPostCallback)delegate(object o)
+                    Utils.Invoke(SyncCtx, (SendOrPostCallback)delegate (object o)
                     {
                         ShowBalloonTip(Resources.Messages.DatabaseIsMissingOrCorrupt, ToolTipIcon.Warning);
                     });
@@ -1303,7 +1303,7 @@ namespace pylorak.TinyWall
             // We will load our database parallel to other things to improve startup performance
             using (var barrier = new ThreadBarrier(2))
             {
-                ThreadPool.QueueUserWorkItem((WaitCallback)delegate(object state)
+                ThreadPool.QueueUserWorkItem((WaitCallback)delegate (object state)
                 {
                     try
                     {
@@ -1348,7 +1348,7 @@ namespace pylorak.TinyWall
             }
 #endif
 
-           if ((FirewallState.Mode != FirewallMode.Unknown) || (!StartupOpts.startup))
+            if ((FirewallState.Mode != FirewallMode.Unknown) || (!StartupOpts.startup))
             {
                 Tray.Visible = true;
 
