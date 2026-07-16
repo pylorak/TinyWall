@@ -4,6 +4,14 @@ namespace pylorak.Utilities
 {
     public static class ReadOnlySpanCharExtensions
     {
+        public static int CountCharOccurrence(this ReadOnlySpan<char> haystack, char needle)
+        {
+            int count = 0;
+            foreach (char c in haystack)
+                if (c == needle) count++;
+            return count;
+        }
+
         public static bool Equals(this ReadOnlySpan<char> span, string other, StringComparison opts)
         {
             return span.Equals(other.AsSpan(), opts);
@@ -107,7 +115,7 @@ namespace pylorak.Utilities
             return result;
         }
 
-        public static unsafe string CombinePath(ReadOnlySpan<char> str0, ReadOnlySpan<char> str1)
+        public static string CombinePath(ReadOnlySpan<char> str0, ReadOnlySpan<char> str1)
         {
             if ((str0[str0.Length - 1] == '\\') || (str0[str0.Length - 1] == '/'))
                 return Concat(str0, str1);

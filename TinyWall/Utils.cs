@@ -152,7 +152,8 @@ namespace pylorak.TinyWall
         }
 
 #if NET48
-        // Use string.IsNullOrEmpty() on .Net 5 and newer
+        // Use string.IsNullOrEmpty() on .Net 5 and newer.
+        // On .Net 4.8, use this instead of string.IsNullOrEmpty() due to nullability annotation.
         public static bool IsNullOrEmpty([NotNullWhen(false)] string? str)
         {
             return (str is null) || (str == string.Empty);
@@ -446,17 +447,6 @@ namespace pylorak.TinyWall
             return SerializationHelper.Deserialize(SerializationHelper.Serialize(obj), obj);
         }
 
-        internal static bool StringArrayContains(string[] arr, string val, StringComparison opts = StringComparison.Ordinal)
-        {
-            for (int i = 0; i < arr.Length; ++i)
-            {
-                if (string.Equals(arr[i], val, opts))
-                    return true;
-            }
-
-            return false;
-        }
-
         internal static Process StartProcess(string path, string args, bool asAdmin, bool hideWindow = false)
         {
             var psi = new ProcessStartInfo(path, args) { WorkingDirectory = Path.GetDirectoryName(path) };
@@ -651,6 +641,7 @@ namespace pylorak.TinyWall
         private readonly static object logLocker = new();
         internal static readonly string LOG_ID_SERVICE = "service";
         internal static readonly string LOG_ID_GUI = "gui";
+        internal static readonly string LOG_ID_CLI = "cli";
         internal static readonly string LOG_ID_INSTALLER = "installer";
         internal static void LogException(Exception e, string logname)
         {
