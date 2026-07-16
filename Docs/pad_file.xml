@@ -92,8 +92,8 @@ Other key features include:
 		<Application_URLs>
 			<Application_Info_URL>https://tinywall.pados.hu/</Application_Info_URL>
 			<Application_Order_URL>https://tinywall.pados.hu/</Application_Order_URL>
-			<Application_Screenshot_URL>https://tinywall.pados.hu/PAD/tinywall_menu.jpg</Application_Screenshot_URL>
-			<Application_Icon_URL>https://tinywall.pados.hu/PAD/tinywall_icon.gif</Application_Icon_URL>
+			<Application_Screenshot_URL>https://tinywall.pados.hu/PAD/tinywall_menu.png</Application_Screenshot_URL>
+			<Application_Icon_URL>https://tinywall.pados.hu/PAD/tinywall_icon.png</Application_Icon_URL>
 			<Application_XML_File_URL>https://tinywall.pados.hu/PAD/pad_file.xml</Application_XML_File_URL>
 		</Application_URLs>
 		<Download_URLs>
@@ -107,17 +107,17 @@ Other key features include:
 		<Distribution_Permissions>Distributors must too also abide by the EULA. See EULA for terms on distribution.</Distribution_Permissions>
 		<EULA>TinyWall - A free, non-intrusive, secure-by-default firewall for Windows
 			Copyright (C) 2011  Károly Pados
-		
+
 			This program is free software: you can redistribute it and/or modify
 			it under the terms of the GNU General Public License as published by
 			the Free Software Foundation, either version 3 of the License, or
 			(at your option) any later version.
-		
+
 			This program is distributed in the hope that it will be useful,
 			but WITHOUT ANY WARRANTY; without even the implied warranty of
 			MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 			GNU General Public License for more details.
-		
+
 			You should have received a copy of the GNU General Public License
 			along with this program.  If not, see <https://www.gnu.org/licenses/>.</EULA>
 	</Permissions>
