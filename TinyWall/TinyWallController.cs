@@ -1348,16 +1348,16 @@ namespace pylorak.TinyWall
             }
 #endif
 
-            if ((FirewallState.Mode != FirewallMode.Unknown) || (!StartupOpts.startup))
+            if ((FirewallState.Mode != FirewallMode.Unknown) || (!StartupOpts.Controller.Startup.Value))
             {
                 Tray.Visible = true;
 
-                if (StartupOpts.autowhitelist)
+                if (StartupOpts.Controller.AutoWhitelist.Value)
                 {
                     AutoWhitelist();
                 }
 
-                if (StartupOpts.updatenow)
+                if (StartupOpts.Controller.Update.Value)
                 {
                     StartUpdate(this, AnyEventArgs.Empty);
                 }
