@@ -1,9 +1,9 @@
 ﻿using pylorak.Utilities;
+using pylorak.Windows;
 using System;
 using System.IO;
 using System.Net;
 using System.Threading;
-using static DarkModeForms.DarkModeCS;
 
 namespace pylorak.TinyWall
 {
@@ -283,6 +283,8 @@ namespace pylorak.TinyWall
         [STAThread]
         static int Main(string[] args)
         {
+            using var parentConsole = new AttachedParentConsole();
+
             HierarchicalStopwatch.Enable = File.Exists(Path.Combine(Utils.AppDataPath, "enable-timings"));
             HierarchicalStopwatch.LogFileBase = Path.Combine(Utils.AppDataPath, @"logs\timings");
 
