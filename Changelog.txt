@@ -7,6 +7,7 @@ TinyWall Changelog
 - Fix misaligned drawing of focus highlight in dark mode lists
 - Correct border transparency of external app icons in dark mode
 - Better sizing of external app icons in dark mode
+- Develtool UI replaced by CLI for automated builds
 - If Windows Defender rule is enabled in UI, allow its protection updates even if Windows Update is blocked (KloweSa)
 
 ---------------------

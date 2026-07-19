@@ -122,9 +122,6 @@
     <Compile Update="ConnectionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="DevelToolForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="PasswordForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -150,9 +147,6 @@
     <Compile Update="ConnectionsForm.Designer.cs">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Update="DevelToolForm.Designer.cs">
-      <DependentUpon>DevelToolForm.cs</DependentUpon>
-    </Compile>
     <Compile Update="PasswordForm.Designer.cs">
       <DependentUpon>PasswordForm.cs</DependentUpon>
     </Compile>
@@ -171,10 +165,6 @@
 
     <EmbeddedResource Update="AppFinderForm.resx">
       <DependentUpon>AppFinderForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Update="DevelToolForm.resx">
-      <DependentUpon>DevelToolForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="ApplicationExceptionForm.resx">

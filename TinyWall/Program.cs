@@ -31,8 +31,6 @@ namespace pylorak.TinyWall
                     return TinyWallDoctor.Uninstall() ? ExitCode.Success : ExitCode.GenericError;
                 case StartupCommand.Controller:
                     return StartController(cliArgs);
-                case StartupCommand.DevelTool:
-                    return StartDevelTool();
                 case StartupCommand.SelfHosted:
                     using (var srv = new TinyWallService())
                     {
@@ -140,14 +138,6 @@ namespace pylorak.TinyWall
             return ExitCode.Success;
         }
 
-        private static ExitCode StartDevelTool()
-        {
-            System.Windows.Forms.Application.EnableVisualStyles();
-            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-            System.Windows.Forms.Application.Run(new DevelToolForm());
-            return ExitCode.Success;
-        }
-
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
         /// </summary>
@@ -222,7 +212,6 @@ namespace pylorak.TinyWall
                     AppDomain.CurrentDomain.UnhandledException += UnhandledException_Installer;
                     break;
                 case StartupCommand.Controller:
-                case StartupCommand.DevelTool:
                     AppDomain.CurrentDomain.UnhandledException += UnhandledException_Gui;
                     break;
                 case StartupCommand.SelfHosted:
