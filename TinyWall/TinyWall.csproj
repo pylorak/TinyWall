@@ -27,7 +27,7 @@
     <Version>3.5.1</Version>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resources\img\firewall.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\img\TinyWall.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
