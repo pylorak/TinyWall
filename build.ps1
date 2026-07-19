@@ -8,7 +8,7 @@
     --skip-sign   : Skip all code-signing steps. Requires --skip-update.
 #>
 
-Set-StrictMode -Version Latest
+Set-StrictMode -Version 3.0
 $ErrorActionPreference = 'Stop'
 
 # Directory this script lives in; used to anchor all relative paths.
@@ -20,13 +20,13 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $SkipUpdate = $false
 $SkipSign   = $false
 foreach ($a in $args) {
-    if ($a -ieq '--skip-update') {
-        $SkipUpdate = $true
-    } elseif ($a -ieq '--skip-sign') {
-        $SkipSign = $true
-    } else {
-        [Console]::Error.WriteLine("Unrecognized argument: $a")
-        exit 1
+    switch ($a) {
+        '--skip-update' { $SkipUpdate = $true; break }
+        '--skip-sign'   { $SkipSign   = $true; break }
+        default {
+            [Console]::Error.WriteLine("Unrecognized argument: $a")
+            exit 1
+        }
     }
 }
 
@@ -44,16 +44,13 @@ if (-not (Test-Path -LiteralPath $ConfigPath)) {
     exit 1
 }
 
-$ConfigText = [System.IO.File]::ReadAllText($ConfigPath, [System.Text.Encoding]::UTF8)
-# Strip a leading BOM if present.
-if ($ConfigText.Length -gt 0 -and $ConfigText[0] -eq [char]0xFEFF) {
-    $ConfigText = $ConfigText.Substring(1)
-}
+# ReadAllLines handles both CRLF and LF line endings, and strips BOM automatically.
+$ConfigLines = [System.IO.File]::ReadAllLines($ConfigPath, [System.Text.Encoding]::UTF8)
 
 # Manual parse: comments start with '#' or ';', values are unquoted,
 # keys are case-insensitive, surrounding whitespace is trimmed.
 $Config = @{}
-foreach ($line in $ConfigText -split "`r`n") {
+foreach ($line in $ConfigLines) {
     $t = $line.Trim()
     if ($t.Length -eq 0) { continue }
     $first = $t[0]
@@ -65,17 +62,9 @@ foreach ($line in $ConfigText -split "`r`n") {
     if ($k.Length -gt 0) { $Config[$k] = $v }
 }
 
-function Get-ConfigString {
-    param([Parameter(Mandatory)][string]$Key)
-    foreach ($k in $Config.Keys) {
-        if ($k -ieq $Key) { return $Config[$k] }
-    }
-    return $null
-}
-
 function Require-ConfigString {
     param([Parameter(Mandatory)][string]$Key)
-    $v = Get-ConfigString -Key $Key
+    $v = $Config[$Key]
     if ($null -eq $v -or $v.Length -eq 0) {
         [Console]::Error.WriteLine("Missing or empty required value '$Key' in build-config.ini.")
         exit 1
@@ -95,6 +84,16 @@ function To-Absolute {
 }
 
 # ---------------------------------------------------------------------------
+# Ensure a set of directories exist, creating them if necessary.
+# ---------------------------------------------------------------------------
+function Ensure-Directories {
+    param([Parameter(Mandatory)][string[]]$Paths)
+    foreach ($p in $Paths) {
+        New-Item -ItemType Directory -Path $p -Force | Out-Null
+    }
+}
+
+# ---------------------------------------------------------------------------
 # Run an external command after echoing the call. Only show its stderr.
 # ---------------------------------------------------------------------------
 function Invoke-Tool {
@@ -104,16 +103,21 @@ function Invoke-Tool {
     $psi = [System.Diagnostics.ProcessStartInfo]::new()
     $psi.FileName = 'cmd.exe'
     $psi.Arguments = '/c "' + $Command + '"'
+    $psi.WorkingDirectory = $ScriptDir
     $psi.UseShellExecute = $false
     $psi.RedirectStandardOutput = $true
     $psi.RedirectStandardError = $false
 
     $proc = [System.Diagnostics.Process]::Start($psi)
-    # Drain stdout (and discard) so the pipe buffer cannot fill and deadlock.
-    $null = $proc.StandardOutput.ReadToEnd()
-    $proc.WaitForExit()
+    try {
+        # Drain stdout (and discard) so the pipe buffer cannot fill and deadlock.
+        $null = $proc.StandardOutput.ReadToEnd()
+        $proc.WaitForExit()
+        $code = $proc.ExitCode
+    } finally {
+        $proc.Dispose()
+    }
 
-    $code = $proc.ExitCode
     if ($code -ne 0) {
         [Console]::Error.WriteLine("Command failed with exit code $code. Aborting.")
         exit $code
@@ -148,8 +152,12 @@ function Find-MSBuild {
 # Build procedure
 # ===========================================================================
 
-# staging-folder is used throughout the script; resolve it up front.
 $StagingFolder = To-Absolute (Require-ConfigString 'staging-folder')
+if (-not $SkipSign) {
+    $CertName     = Require-ConfigString 'certificate'
+    $SignToolPath = To-Absolute (Require-ConfigString 'signtool-path')
+    $TimestampUrl = Require-ConfigString 'timestamp-url'
+}
 
 # ---------------------------------------------------------------------------
 # Step 1: Compile the application (AnyCPU, Release).
@@ -180,11 +188,7 @@ if (-not (Test-Path -LiteralPath $TinyWallExe)) {
 $StagingProgramFiles  = Join-Path $StagingFolder 'ProgramFiles\TinyWall'
 $StagingCommonAppData = Join-Path $StagingFolder 'CommonAppData\TinyWall'
 $StagingTmp           = Join-Path $StagingFolder 'tmp'
-foreach ($d in @($StagingFolder, $StagingProgramFiles, $StagingCommonAppData, $StagingTmp)) {
-    if (-not (Test-Path -LiteralPath $d)) {
-        New-Item -ItemType Directory -Path $d -Force | Out-Null
-    }
-}
+Ensure-Directories @($StagingFolder, $StagingProgramFiles, $StagingCommonAppData, $StagingTmp)
 
 # ---------------------------------------------------------------------------
 # Step 2: Verify language resources are already optimized.
@@ -195,11 +199,7 @@ Write-Host '== Step 2: Verifying optimized language resources ==' -ForegroundCol
 
 $ResxWinformsOut  = Join-Path $StagingTmp 'resx-winforms'
 $ResxResourcesOut = Join-Path $StagingTmp 'resx-resources'
-foreach ($d in @($ResxWinformsOut, $ResxResourcesOut)) {
-    if (-not (Test-Path -LiteralPath $d)) {
-        New-Item -ItemType Directory -Path $d -Force | Out-Null
-    }
-}
+Ensure-Directories @($ResxWinformsOut, $ResxResourcesOut)
 
 $ResxWinformsSrc  = To-Absolute 'TinyWall'
 $ResxResourcesSrc = To-Absolute 'TinyWall\Resources'
@@ -254,9 +254,6 @@ Invoke-Tool ('xcopy /Y /I /E "{0}\*" "{1}\"' -f $BinRelease, $StagingProgramFile
 # ---------------------------------------------------------------------------
 if (-not $SkipSign) {
     Write-Host '== Step 5: Signing staged files ==' -ForegroundColor Cyan
-    $CertName     = Require-ConfigString 'certificate'
-    $SignToolPath = To-Absolute (Require-ConfigString 'signtool-path')
-    $TimestampUrl = Require-ConfigString 'timestamp-url'
     Invoke-Tool ('"{0}" batch-signer /certificate-name "{1}" /sign-dir "{2}" /signtool-path "{3}" /timestamp-url "{4}"' -f $TinyWallExe, $CertName, $StagingFolder, $SignToolPath, $TimestampUrl)
 }
 
@@ -274,9 +271,6 @@ Invoke-Tool ('"{0}" "{1}" /p:Configuration=Release /p:Platform=arm64 /t:Build' -
 # ---------------------------------------------------------------------------
 if (-not $SkipSign) {
     Write-Host '== Step 7: Signing MSI files ==' -ForegroundColor Cyan
-    $CertName     = Require-ConfigString 'certificate'
-    $SignToolPath = To-Absolute (Require-ConfigString 'signtool-path')
-    $TimestampUrl = Require-ConfigString 'timestamp-url'
     $MsiBin = To-Absolute 'MsiSetup\bin\Release'
     Invoke-Tool ('"{0}" batch-signer /certificate-name "{1}" /sign-dir "{2}" /signtool-path "{3}" /timestamp-url "{4}"' -f $TinyWallExe, $CertName, $MsiBin, $SignToolPath, $TimestampUrl)
 }
@@ -289,9 +283,7 @@ if (-not $SkipUpdate) {
     $UpdateUrl     = Require-ConfigString 'update-url'
     $UpdateOutput  = To-Absolute (Require-ConfigString 'update-output')
     $MsiProjectDir = To-Absolute 'MsiSetup'
-    if (-not (Test-Path -LiteralPath $UpdateOutput)) {
-        New-Item -ItemType Directory -Path $UpdateOutput -Force | Out-Null
-    }
+    Ensure-Directories @($UpdateOutput)
     Invoke-Tool ('"{0}" update-creator /base-url "{1}" /project-dir "{2}" /output-folder "{3}"' -f $TinyWallExe, $UpdateUrl, $MsiProjectDir, $UpdateOutput)
 }
 

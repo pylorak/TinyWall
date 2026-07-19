@@ -50,6 +50,8 @@ To use the automated build-script:
 
 The build script is commented, and following through its numbered steps makes it easy to work out what it is doing. Only if you're interested though, because you don't need to know any of that. Generally speaking, you can just call build.ps1 and enjoy its fully built outputs.
 
+If you get the an error about one or more resx files being different, compare the differing resx files in the `staging\tmp` folder with their originals. If the change is expected, overwrite the originals, then execute the build script again.
+
 ## Contributing
 
 Feel free to open issues, feature- or pull-requests. I kindly ask for patience though, as TinyWall is in maintenance mode and my responses are often delayed. Nevertheless all issues and requests are looked at.
