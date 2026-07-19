@@ -165,12 +165,14 @@ namespace pylorak.TinyWall
             return resources;
         }
 
-        public static void OptimizeResX(List<KeyValuePair<string, string[]>> resources, string outputFolder)
+        // If compare argument is true, method returns true if all of the optimized satellite files are the same as the input satellites.
+        // If compare is false, always returns true.
+        public static bool OptimizeResX(List<KeyValuePair<string, string[]>> resources, string outputFolder, bool compare)
         {
             if (!Directory.Exists(outputFolder))
                 throw new DirectoryNotFoundException($"Output folder not found: {outputFolder}");
 
-            ITypeResolutionService? trs = null;
+            var inputsAndOutputsIdentical = true;
 
             for (int i = 0; i < resources.Count; ++i)
             {
@@ -202,6 +204,7 @@ namespace pylorak.TinyWall
                         }
 
                         // We don't save values that are the same as default
+                        ITypeResolutionService? trs = null;
                         if (satelliteItem.GetValue(trs).Equals(primaryItem.GetValue(trs)))
                             continue;
 
@@ -214,8 +217,22 @@ namespace pylorak.TinyWall
                     while (outputEnum.MoveNext())
                         resxWriter.AddResource(outputEnum.Current.Value);
                     resxWriter.Generate();
+
+                    // Compare input to output if asked
+                    if (compare)
+                    {
+                        var original = pair.Key;
+                        var optimized = outPath;
+                        if (!StructuralComparisons.StructuralEqualityComparer.Equals(File.ReadAllBytes(original), File.ReadAllBytes(optimized)))
+                        {
+                            Console.WriteLine($"Optimized {Path.GetFileName(optimized)} differs from original!");
+                            inputsAndOutputsIdentical = false;
+                        }
+                    }
                 }
             }
+
+            return inputsAndOutputsIdentical;
         }
 
         // --- Batch Signer ---

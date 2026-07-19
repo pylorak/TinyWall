@@ -105,7 +105,7 @@ namespace pylorak.TinyWall
             return true;
         }
 
-        internal static int Uninstall()
+        internal static bool Uninstall()
         {
             using (var frm = new System.Windows.Forms.Form())
             {
@@ -127,7 +127,7 @@ namespace pylorak.TinyWall
                     System.Windows.Forms.MessageBoxButtons.YesNo,
                     System.Windows.Forms.MessageBoxIcon.Exclamation) != System.Windows.Forms.DialogResult.Yes)
                 {
-                    return -1;
+                    return false;
                 }
             }
 
@@ -149,7 +149,7 @@ namespace pylorak.TinyWall
                             twController.TryUnlockServer(pf.PassHash);
                         }
                         else
-                            return -1;
+                            return false;
                     }
 
                     // Stop server
@@ -160,14 +160,14 @@ namespace pylorak.TinyWall
                     if (!IsServiceStopped())
                     {
                         Utils.Log("Failed to stop service during uninstall.", Utils.LOG_ID_INSTALLER);
-                        return -1;
+                        return false;
                     }
                 }
             }
             catch (Exception e)
             {
                 Utils.LogException(e, Utils.LOG_ID_INSTALLER);
-                return -1;
+                return false;
             }
 
             // Terminate remaining TinyWall processes (e.g. controller)
@@ -207,7 +207,7 @@ namespace pylorak.TinyWall
             catch (Exception e)
             {
                 Utils.LogException(e, Utils.LOG_ID_INSTALLER);
-                return -1;
+                return false;
             }
 
 
@@ -234,7 +234,7 @@ namespace pylorak.TinyWall
             }
             catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_INSTALLER); }
 
-            return 0;
+            return true;
         }
 
         internal static void EnsureHealth(string logContext)

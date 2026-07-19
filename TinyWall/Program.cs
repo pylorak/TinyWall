@@ -9,17 +9,26 @@ namespace pylorak.TinyWall
 {
     static class Program
     {
+        public enum ExitCode
+        {
+            Success = 0,
+            GenericError,
+            AlreadyRunning,
+            BadArgs,
+            ResxDiffers
+        }
+
         internal static bool RestartOnQuit { get; set; }
         internal static System.Globalization.CultureInfo? DefaultOsCulture { get; set; }
 
-        private static int RunStartupCommand(CmdLineArgs cliArgs)
+        private static ExitCode RunStartupCommand(CmdLineArgs cliArgs)
         {
             switch (cliArgs.Command)
             {
                 case StartupCommand.Install:
-                    return TinyWallDoctor.EnsureServiceInstalledAndRunning(Utils.LOG_ID_INSTALLER, true) ? 0 : -1;
+                    return TinyWallDoctor.EnsureServiceInstalledAndRunning(Utils.LOG_ID_INSTALLER, true) ? ExitCode.Success : ExitCode.GenericError;
                 case StartupCommand.Uninstall:
-                    return TinyWallDoctor.Uninstall();
+                    return TinyWallDoctor.Uninstall() ? ExitCode.Success : ExitCode.GenericError;
                 case StartupCommand.Controller:
                     return StartController(cliArgs);
                 case StartupCommand.DevelTool:
@@ -28,7 +37,7 @@ namespace pylorak.TinyWall
                     using (var srv = new TinyWallService())
                     {
                         StartService(srv);
-                        int ret = StartController(cliArgs);
+                        var ret = StartController(cliArgs);
                         srv.Stop();
                         srv.StoppedEvent.WaitOne();
                         return ret;
@@ -44,31 +53,32 @@ namespace pylorak.TinyWall
                         Console.WriteLine("Kill process to terminate...");
                         srv.StoppedEvent.WaitOne();
 #endif
-                        return 0;
+                        return ExitCode.Success;
                     }
                 case StartupCommand.ProfileCreator:
                     {
                         var cmdArgs = cliArgs.ProfileCreator;
                         File.WriteAllText(cmdArgs.OutputFile.Value, DevelToolCli.CreateProfile(cmdArgs.ExecutablePath.Value!));
-                        return 0;
+                        return ExitCode.Success;
                     }
                 case StartupCommand.DatabaseCreator:
                     {
                         var cmdArgs = cliArgs.DatabaseCreator;
                         DevelToolCli.CreateDatabase(cmdArgs.SourceFolder.Value!, cmdArgs.OutputFolder.Value!);
-                        return 0;
+                        return ExitCode.Success;
                     }
                 case StartupCommand.UpdateCreator:
                     {
                         var cmdArgs = cliArgs.UpdateCreator;
                         DevelToolCli.CreateUpdate(cmdArgs.BaseUrl.Value!, cmdArgs.ProjectDir.Value!, cmdArgs.OutputFolder.Value!);
-                        return 0;
+                        return ExitCode.Success;
                     }
                 case StartupCommand.ResXOptimizer:
                     {
                         var cmdArgs = cliArgs.ResXOptimizer;
-                        DevelToolCli.OptimizeResX(DevelToolCli.CollectResxLocalizations(cmdArgs.ResourceDir.Value!), cmdArgs.OutputFolder.Value!);
-                        return 0;
+                        return DevelToolCli.OptimizeResX(DevelToolCli.CollectResxLocalizations(cmdArgs.ResourceDir.Value!), cmdArgs.OutputFolder.Value!, cmdArgs.Compare.Value)
+                            ? ExitCode.Success
+                            : ExitCode.ResxDiffers;
                     }
                 case StartupCommand.BatchSigner:
                     {
@@ -76,12 +86,12 @@ namespace pylorak.TinyWall
                         if (Utils.IsNullOrEmpty(cmdArgs.CertificateName.Value) == Utils.IsNullOrEmpty(cmdArgs.PfxPath.Value))
                         {
                             Console.Error.WriteLine($"Either {cmdArgs.CertificateName.Name} or {cmdArgs.PfxPath.Name} is required.");
-                            return 1;
+                            return ExitCode.BadArgs;
                         }
                         if (Utils.IsNullOrEmpty(cmdArgs.PfxPath.Value) != Utils.IsNullOrEmpty(cmdArgs.PfxPassword.Value))
                         {
                             Console.Error.WriteLine($"If either one of {cmdArgs.PfxPath.Name} or {cmdArgs.PfxPassword.Name} is provided, the other is also required.");
-                            return 1;
+                            return ExitCode.BadArgs;
                         }
                         string signtoolPath = cmdArgs.SigntoolPath.Value ?? @"C:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\signtool.exe";
                         string timestampUrl = cmdArgs.TimestampUrl.Value ?? "http://time.certum.pl/";
@@ -95,9 +105,9 @@ namespace pylorak.TinyWall
                         if (!signSuccess)
                         {
                             Console.Error.WriteLine("Some files couldn't be signed.");
-                            return 1;
+                            return ExitCode.GenericError;
                         }
-                        return 0;
+                        return ExitCode.Success;
                     }
                 default:
                     throw new InvalidOperationException();
@@ -106,20 +116,20 @@ namespace pylorak.TinyWall
             throw new InvalidOperationException();
         }
 
-        private static int StartService(TinyWallService tw)
+        private static ExitCode StartService(TinyWallService tw)
         {
 #if DEBUG
             if (!Utils.RunningAsAdmin())
             {
                 Console.WriteLine("Error: Not started as an admin process.");
-                return -1;
+                return ExitCode.GenericError;
             }
 #endif
 
             using var SingleInstanceMutex = new Mutex(true, @"Global\TinyWallService", out bool mutexok);
             if (!mutexok)
             {
-                return -1;
+                return ExitCode.AlreadyRunning;
             }
 
 #if DEBUG
@@ -128,10 +138,10 @@ namespace pylorak.TinyWall
 #else
             pylorak.Windows.Services.ServiceBase.Run(tw);
 #endif
-            return 0;
+            return ExitCode.Success;
         }
 
-        private static int StartController(CmdLineArgs opts)
+        private static ExitCode StartController(CmdLineArgs opts)
         {
             // Start controller application
             System.Windows.Forms.Application.EnableVisualStyles();
@@ -141,15 +151,15 @@ namespace pylorak.TinyWall
                 RestartOnQuit = false;
                 System.Windows.Forms.Application.Run(new TinyWallController(opts));
             } while (RestartOnQuit);
-            return 0;
+            return ExitCode.Success;
         }
 
-        private static int StartDevelTool()
+        private static ExitCode StartDevelTool()
         {
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
             System.Windows.Forms.Application.Run(new DevelToolForm());
-            return 0;
+            return ExitCode.Success;
         }
 
         /// <summary>
@@ -187,7 +197,7 @@ namespace pylorak.TinyWall
             catch (Exception e)
             {
                 Console.Error.WriteLine(e.Message);
-                return -1;
+                return (int)ExitCode.BadArgs;
             }
 
             // After this point the command mode is always valid,
@@ -195,8 +205,8 @@ namespace pylorak.TinyWall
             if (opts.Command == StartupCommand.Invalid)
             {
                 // Logic error. We should never get here.
-                Console.Error.WriteLine("Invalid command argument.");
-                return -1;
+                Console.Error.WriteLine("Unexpected error.");
+                return (int)ExitCode.GenericError;
             }
 
 #if !DEBUG
@@ -248,7 +258,7 @@ namespace pylorak.TinyWall
             }
 #endif
 
-            return RunStartupCommand(opts);
+            return (int)RunStartupCommand(opts);
         } // Main
 
     } // class

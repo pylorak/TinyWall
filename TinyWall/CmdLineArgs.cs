@@ -199,6 +199,7 @@ namespace pylorak.TinyWall
     {
         public CliArg<string> ResourceDir { get; init; } = new() { Name = "/resource-dir", IsRequired = true };
         public CliArg<string> OutputFolder { get; init; } = new() { Name = "/output-folder", IsRequired = true };
+        public CliArg<bool> Compare { get; init; } = new() { Name = "/compare" };
 
         protected override void OnParse(string[] args, bool[] keep)
         {
@@ -210,12 +211,15 @@ namespace pylorak.TinyWall
                     ResourceDir.Value = (++i < args.Length) ? args[i] : throw new MissingCommandlineValueException(arg);
                 else if (OutputFolder.Name == arg)
                     OutputFolder.Value = (++i < args.Length) ? args[i] : throw new MissingCommandlineValueException(arg);
+                else if (Compare.Name == arg)
+                    Compare.Value = true;
                 else
                     keep[i] = true;
             }
 
             ResourceDir.ThrowIfRequiredAndUnassigned();
             OutputFolder.ThrowIfRequiredAndUnassigned();
+            Compare.ThrowIfRequiredAndUnassigned();
         }
     }
 

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.IO;
-using System.Resources;
-using System.Text;
 using System.Windows.Forms;
 using pylorak.Utilities;
 
@@ -167,7 +164,7 @@ namespace pylorak.TinyWall
 
         private void btnOptimize_Click(object sender, EventArgs e)
         {
-            DevelToolCli.OptimizeResX(ResXInputs, txtOutputPath.Text);
+            DevelToolCli.OptimizeResX(ResXInputs, txtOutputPath.Text, false);
             MessageBox.Show(this, "Success.", "ResX Optimizer", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
