@@ -225,12 +225,10 @@ namespace pylorak.TinyWall
 
     public class BatchSignerCliArgs : CliArgsBase
     {
-        public CliArg<string> CertificateName { get; init; } = new() { Name = "/certificate-name" };
-        public CliArg<string> PfxPath { get; init; } = new() { Name = "/pfx-path" };
-        public CliArg<string> PfxPassword { get; init; } = new() { Name = "/pfx-password" };
+        public CliArg<string> CertificateName { get; init; } = new() { Name = "/certificate-name", IsRequired = true };
         public CliArg<string> SignDir { get; init; } = new() { Name = "/sign-dir", IsRequired = true };
-        public CliArg<string> SigntoolPath { get; init; } = new() { Name = "/signtool-path" };
-        public CliArg<string> TimestampUrl { get; init; } = new() { Name = "/timestamp-url" };
+        public CliArg<string> SigntoolPath { get; init; } = new() { Name = "/signtool-path", IsRequired = true };
+        public CliArg<string> TimestampUrl { get; init; } = new() { Name = "/timestamp-url", IsRequired = true };
 
         protected override void OnParse(string[] args, bool[] keep)
         {
@@ -240,10 +238,6 @@ namespace pylorak.TinyWall
 
                 if (CertificateName.Name == arg)
                     CertificateName.Value = (++i < args.Length) ? args[i] : throw new MissingCommandlineValueException(arg);
-                else if (PfxPath.Name == arg)
-                    PfxPath.Value = (++i < args.Length) ? args[i] : throw new MissingCommandlineValueException(arg);
-                else if (PfxPassword.Name == arg)
-                    PfxPassword.Value = (++i < args.Length) ? args[i] : throw new MissingCommandlineValueException(arg);
                 else if (SignDir.Name == arg)
                     SignDir.Value = (++i < args.Length) ? args[i] : throw new MissingCommandlineValueException(arg);
                 else if (SigntoolPath.Name == arg)
@@ -255,8 +249,6 @@ namespace pylorak.TinyWall
             }
 
             CertificateName.ThrowIfRequiredAndUnassigned();
-            PfxPath.ThrowIfRequiredAndUnassigned();
-            PfxPassword.ThrowIfRequiredAndUnassigned();
             SignDir.ThrowIfRequiredAndUnassigned();
             SigntoolPath.ThrowIfRequiredAndUnassigned();
             TimestampUrl.ThrowIfRequiredAndUnassigned();

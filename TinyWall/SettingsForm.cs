@@ -634,7 +634,7 @@ namespace pylorak.TinyWall
         {
             try
             {
-                var psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "Attributions.txt")) { UseShellExecute = true };
+                var psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "doc", "Attributions.txt")) { UseShellExecute = true };
                 Process.Start(psi)?.Dispose();
             }
             catch { }

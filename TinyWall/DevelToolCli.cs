@@ -83,6 +83,7 @@ namespace pylorak.TinyWall
             string hostsPath = Path.Combine(projectDir, @"Sources\CommonAppData\TinyWall\hosts.bck");
             string profilesPath = Path.Combine(projectDir, @"Sources\CommonAppData\TinyWall\profiles.json");
             string twAssemblyPath = Path.Combine(projectDir, @"Sources\ProgramFiles\TinyWall\TinyWall.exe");
+            if (!baseUrl.EndsWith("/")) baseUrl += "/";
 
             UpdateModule PrepareModule(string component_id, string src_filepath, string dst_filename, string version, bool compress)
             {
@@ -212,20 +213,22 @@ namespace pylorak.TinyWall
                     }
 
                     string outPath = Path.Combine(outputFolder, Path.GetFileName(pair.Value[s]));
-                    using var resxWriter = new ResXResourceWriter(outPath);
-                    Dictionary<string, ResXDataNode>.Enumerator outputEnum = newSatellite.GetEnumerator();
-                    while (outputEnum.MoveNext())
-                        resxWriter.AddResource(outputEnum.Current.Value);
-                    resxWriter.Generate();
+                    using (var resxWriter = new ResXResourceWriter(outPath))
+                    {
+                        Dictionary<string, ResXDataNode>.Enumerator outputEnum = newSatellite.GetEnumerator();
+                        while (outputEnum.MoveNext())
+                            resxWriter.AddResource(outputEnum.Current.Value);
+                        resxWriter.Generate();
+                    }
 
                     // Compare input to output if asked
                     if (compare)
                     {
-                        var original = pair.Key;
+                        var original = pair.Value[s];
                         var optimized = outPath;
                         if (!StructuralComparisons.StructuralEqualityComparer.Equals(File.ReadAllBytes(original), File.ReadAllBytes(optimized)))
                         {
-                            Console.WriteLine($"Optimized {Path.GetFileName(optimized)} differs from original!");
+                            Console.Error.WriteLine($"Optimized {Path.GetFileName(optimized)} differs from original!");
                             inputsAndOutputsIdentical = false;
                         }
                     }
@@ -237,8 +240,7 @@ namespace pylorak.TinyWall
 
         // --- Batch Signer ---
 
-        public static bool BatchSign(string certName, string signDir, string signtoolPath,
-            string timestampUrl, string? pfxPath = null, string? pfxPassword = null)
+        public static bool BatchSign(string certName, string signDir, string signtoolPath, string timestampUrl)
         {
             if (!Directory.Exists(signDir))
                 throw new DirectoryNotFoundException($"Signing directory not found: {signDir}");
@@ -271,24 +273,7 @@ namespace pylorak.TinyWall
                 return true;
             }
 
-            // Assemble signtool command — either smart card or PFX
-            string certArg;
-            if (!Utils.IsNullOrEmpty(pfxPath))
-            {
-                // TODO: Password is put on the command-line which might reveal it. Use a signtool response file instead maybe?
-                certArg = $"/f \"{pfxPath}\" /p \"{pfxPassword ?? ""}\"";
-            }
-            else
-            {
-                certArg = $"/n \"{certName}\"";
-            }
-
-            string signParams = string.Format(
-                "sign /d TinyWall /du \"https://tinywall.pados.hu\" {0} /tr \"{1}\" /td sha256 /fd sha256 /v {2}",
-                certArg,
-                timestampUrl,
-                string.Join(" ", filesToSign));
-
+            var signParams = $"sign /n \"{certName}\" /d TinyWall /du \"https://tinywall.pados.hu\" /tr \"{timestampUrl}\" /td sha256 /fd sha256 /v {string.Join(" ", filesToSign)}";
             using var p = Utils.StartProcess(signtoolPath, signParams, false);
             p.WaitForExit();
             return p.ExitCode == 0;

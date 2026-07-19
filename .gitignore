@@ -1,8 +1,10 @@
-*.exe
+﻿*.exe
 *.dll
 *.msi
 *.zip
 *.suo
+
+/build-config.ini
 
 /.vs/
 /.tx/
@@ -35,4 +37,4 @@
 
 /MsiSetup/obj/
 /MsiSetup/bin/
-/MsiSetup/Sources/ProgramFiles/
+/MsiSetup/Sources/

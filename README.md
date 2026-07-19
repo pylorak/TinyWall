@@ -28,24 +28,31 @@ This repository houses the source code of TinyWall as found at its [official web
 1. Open the solution file in Visual Studio and compile the `TinyWall` project. The other projects referenced inside the solution need not be built separately as they will be statically compiled into the application.
 1. Done.
 
-### To update/build build the database of known applications
+### To build the database of known applications for debug and development
 
-1. Adjust the individual JSON files in the `TinyWall\Database` folder.
-1. Start the application with the `/develtool` flag.
-1. Use the `Database creator` tab to create one combined database file in JSON format. The output file will be called `profiles.json`.
-1. To use the new database in debug builds, copy the output file to the `TinyWall\bin\Debug` folder.
+1. Adjust the individual JSON files in the `TinyWall\Database` folder. These are the source files for TinyWall's database of known applications, as well as for its built-in "Special Exceptions".
+1. Use the embedded commandline utility in TinyWall to create a single-file database. A file called `profiles.json` will be created. Call it like:<br/>
+`TinyWall.exe database-creator /source-folder <path to TinyWall\Database> /output-folder <any-folder>`
+1. Copy the output file to `TinyWall\bin\Debug` to make use of it in Debug builds. For releases, see further below.
 1. Done.
 
-### To build the installer
+### To build the installer / releases
 
-1. Copy the compiled application files and all dependencies into the `MsiSetup\Sources\ProgramFiles\TinyWall` folder.
-1. Update the files as necessary inside the `MsiSetup\Sources\CommonAppData\TinyWall` folder. See instructions above about creating the database.
-1. Open the solution file in Visual Studio and compile the `MsiSetup` project.
-1. Done.
+The setup is built by the WiX-based setup project. The setup project though needs its source files staged in a specific directory structure under `MsiSetup\Sources`, so all the binaries and assets like the database, the hosts file, docs, license etc. need to be copied there.
+
+All these and further actions are taken care of by a fully automated build script. Besides correctly staging the files for you, it will make sure the resx language resources are in their correct form, it will take care of signing (can be skipped using --skip-sign) and will create a complete update package for server distribution for the built-in updater.
+
+To use the automated build-script:
+1. Copy `build-config.ini.template` to `build-config.ini`.
+1. Edit `build-config.ini` to your liking.
+1. Call `build.ps1` from a PowerShell.
+1. Done. You'll find the built setup files in MsiSetup\bin.
+
+The build script is commented, and following through its numbered steps makes it easy to work out what it is doing. Only if you're interested though, because you don't need to know any of that. Generally speaking, you can just call build.ps1 and enjoy its fully built outputs.
 
 ## Contributing
 
-Feel free to open issues, feature- or pull-requests. I kindly ask for patience though, as TinyWall is in maintenance mode and my responses are often delayed. Nevertheless all issues and requests are looked at. 
+Feel free to open issues, feature- or pull-requests. I kindly ask for patience though, as TinyWall is in maintenance mode and my responses are often delayed. Nevertheless all issues and requests are looked at.
 
 New features are more likely to get implemented if you provide the necessary code changes yourself. The process for that is the same as for most other projects here on GitHub, in short:
 1. Fork the Project

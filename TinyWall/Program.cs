@@ -83,25 +83,11 @@ namespace pylorak.TinyWall
                 case StartupCommand.BatchSigner:
                     {
                         var cmdArgs = cliArgs.BatchSigner;
-                        if (Utils.IsNullOrEmpty(cmdArgs.CertificateName.Value) == Utils.IsNullOrEmpty(cmdArgs.PfxPath.Value))
-                        {
-                            Console.Error.WriteLine($"Either {cmdArgs.CertificateName.Name} or {cmdArgs.PfxPath.Name} is required.");
-                            return ExitCode.BadArgs;
-                        }
-                        if (Utils.IsNullOrEmpty(cmdArgs.PfxPath.Value) != Utils.IsNullOrEmpty(cmdArgs.PfxPassword.Value))
-                        {
-                            Console.Error.WriteLine($"If either one of {cmdArgs.PfxPath.Name} or {cmdArgs.PfxPassword.Name} is provided, the other is also required.");
-                            return ExitCode.BadArgs;
-                        }
-                        string signtoolPath = cmdArgs.SigntoolPath.Value ?? @"C:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\signtool.exe";
-                        string timestampUrl = cmdArgs.TimestampUrl.Value ?? "http://time.certum.pl/";
                         bool signSuccess = DevelToolCli.BatchSign(
                             cmdArgs.CertificateName.Value ?? string.Empty,
                             cmdArgs.SignDir.Value!,
-                            signtoolPath,
-                            timestampUrl,
-                            cmdArgs.PfxPath.Value,
-                            cmdArgs.PfxPassword.Value);
+                            cmdArgs.SigntoolPath.Value!,
+                            cmdArgs.TimestampUrl.Value!);
                         if (!signSuccess)
                         {
                             Console.Error.WriteLine("Some files couldn't be signed.");

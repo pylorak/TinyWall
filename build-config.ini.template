@@ -1,0 +1,22 @@
+﻿# Absolute path of the staging directory.
+# Files will be gathered here in the layout expected by the WiX project,
+# which currently references "MsiSetup/Sources/...", so point this at that
+# folder unless you have changed the paths in the WiX sources.
+# The folder will be created if it does not exist.
+staging-folder = C:\data\Nextcloud\TinyWall\TinyWall3\MsiSetup\Sources
+
+# Base URL where the generated update files will be hosted.
+update-url = [fill-in-the-url]
+
+# Absolute path of the folder where update files will be output.
+# The folder is created if it does not exist.
+update-output = C:\data\Nextcloud\TinyWall\TinyWall3\MsiSetup\Sources\update
+
+# Subject name of the code-signing certificate, as installed in the certificate store.
+certificate = [fill-in-based-on-certificate]
+
+# Absolute path to signtool.exe from the Windows SDK.
+signtool-path = C:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\signtool.exe
+
+# RFC 3161 timestamp server URL used during signing.
+timestamp-url = http://time.certum.pl/
