@@ -1194,7 +1194,7 @@ namespace pylorak.TinyWall
         {
             try
             {
-                Utils.StartProcess(Utils.ExecutablePath, string.Empty, true);
+                Utils.StartProcessAndForget(Utils.ExecutablePath, string.Empty, true);
                 System.Windows.Forms.Application.Exit();
             }
             catch

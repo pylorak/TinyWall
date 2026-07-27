@@ -457,7 +457,7 @@ namespace pylorak.TinyWall
                 const string urlTemplate = @"https://www.virustotal.com/latest-scan/{0}";
                 string hash = Hasher.HashFile(((ProcessInfo)li.Tag).Path);
                 string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, hash);
-                Utils.StartProcess(url, string.Empty, false);
+                Utils.StartProcessAndForget(url, string.Empty, false);
             }
             catch
             {
@@ -475,7 +475,7 @@ namespace pylorak.TinyWall
                 const string urlTemplate = @"http://www.processlibrary.com/search/?q={0}";
                 string filename = System.IO.Path.GetFileName(((ProcessInfo)li.Tag).Path);
                 string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, filename);
-                Utils.StartProcess(url, string.Empty, false);
+                Utils.StartProcessAndForget(url, string.Empty, false);
             }
             catch
             {
@@ -491,7 +491,7 @@ namespace pylorak.TinyWall
                 const string urlTemplate = @"www.google.com/search?q={0}";
                 string filename = System.IO.Path.GetFileName(((ProcessInfo)li.Tag).Path);
                 string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, filename);
-                Utils.StartProcess(url, string.Empty, false);
+                Utils.StartProcessAndForget(url, string.Empty, false);
             }
             catch
             {
@@ -508,7 +508,7 @@ namespace pylorak.TinyWall
                 const string urlTemplate = @"www.google.com/search?q={0}";
                 string address = li.SubItems[6].Text;
                 string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, address);
-                Utils.StartProcess(url, string.Empty, false);
+                Utils.StartProcessAndForget(url, string.Empty, false);
             }
             catch
             {

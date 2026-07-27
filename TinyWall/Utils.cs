@@ -461,6 +461,11 @@ namespace pylorak.TinyWall
             return Process.Start(psi);
         }
 
+        internal static void StartProcessAndForget(string path, string args, bool asAdmin, bool hideWindow = false)
+        {
+            using var _ = StartProcess(path, args, asAdmin, hideWindow);
+        }
+
         internal static bool RunningAsAdmin()
         {
             using var wi = WindowsIdentity.GetCurrent();
