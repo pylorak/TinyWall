@@ -4,6 +4,7 @@ using pylorak.Windows;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -466,7 +467,21 @@ namespace pylorak.TinyWall
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            Updater.StartUpdate();
+            try
+            {
+                Updater.StartUpdate();
+            }
+            catch (InsufficientPrivilegesException)
+            {
+                try
+                {
+                    Utils.StartProcessAndForget(Utils.ExecutablePath, "update", true);
+                }
+                catch (Win32Exception)
+                {
+                    // We expect to fail if the user cancels the UAC dialog. This is alright, swallow exception.
+                }
+            }
         }
 
         private void btnAppAutoDetect_Click(object sender, EventArgs e)

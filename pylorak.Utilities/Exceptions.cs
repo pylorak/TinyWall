@@ -16,4 +16,15 @@ namespace pylorak.Utilities
             : base($"The method {methodName}() returned a null reference.")
         { }
     }
+
+    public class InsufficientPrivilegesException : Exception
+    {
+        public InsufficientPrivilegesException(string message)
+            : base(message)
+        { }
+
+        public InsufficientPrivilegesException()
+            : base("Insufficient privileges.")
+        { }
+    }
 }

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Samples.TaskDialog;
 using pylorak.Windows;
+using pylorak.Utilities;
 
 namespace pylorak.TinyWall
 {
@@ -27,6 +28,9 @@ namespace pylorak.TinyWall
 
         internal static void StartUpdate()
         {
+            if (!Utils.RunningAsAdmin())
+                throw new InsufficientPrivilegesException("Administrative privileges required.");
+
             var updater = new Updater();
             var descriptor = new UpdateDescriptor();
             updater.State = UpdaterState.GettingDescriptor;

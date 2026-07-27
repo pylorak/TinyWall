@@ -1356,11 +1356,6 @@ namespace pylorak.TinyWall
                 {
                     AutoWhitelist();
                 }
-
-                if (StartupOpts.Controller.Update.Value)
-                {
-                    StartUpdate(this, AnyEventArgs.Empty);
-                }
             }
             else
             {

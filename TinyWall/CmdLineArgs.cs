@@ -94,7 +94,6 @@ namespace pylorak.TinyWall
     public class ControllerCliArgs : CliArgsBase
     {
         public CliArg<bool> AutoWhitelist { get; init; } = new() { Name = "/autowhitelist" };
-        public CliArg<bool> Update { get; init; } = new() { Name = "/update" };   // TODO: is this used? Do we still need this option?
         public CliArg<bool> Startup { get; init; } = new() { Name = "/startup" };
 
         protected override void OnParse(string[] args, bool[] keep)
@@ -105,8 +104,6 @@ namespace pylorak.TinyWall
 
                 if (AutoWhitelist.Name == arg)
                     AutoWhitelist.Value = true;
-                else if (Update.Name == arg)
-                    Update.Value = true;
                 else if (Startup.Name == arg)
                     Startup.Value = true;
                 else
@@ -114,7 +111,6 @@ namespace pylorak.TinyWall
             }
 
             AutoWhitelist.ThrowIfRequiredAndUnassigned();
-            Update.ThrowIfRequiredAndUnassigned();
             Startup.ThrowIfRequiredAndUnassigned();
         }
     }
@@ -273,7 +269,7 @@ namespace pylorak.TinyWall
         BatchSigner,
 
         // Only the following are meant for end-users:
-        // None yet.
+        Update
     }
 
     public class CmdLineArgs
@@ -301,6 +297,7 @@ namespace pylorak.TinyWall
                 if (commandStr.StartsWith("/")) commandStr = commandStr.Substring(1);
                 Command = commandStr switch
                 {
+                    "update" => StartupCommand.Update,
                     "service" => StartupCommand.Service,
                     "controller" => StartupCommand.Controller,
                     "selfhosted" => StartupCommand.SelfHosted,

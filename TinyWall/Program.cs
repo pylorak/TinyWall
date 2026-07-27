@@ -15,7 +15,8 @@ namespace pylorak.TinyWall
             GenericError,
             AlreadyRunning,
             BadArgs,
-            ResxDiffers
+            ResxDiffers,
+            InsufficientPrivileges
         }
 
         internal static bool RestartOnQuit { get; set; }
@@ -25,6 +26,17 @@ namespace pylorak.TinyWall
         {
             switch (cliArgs.Command)
             {
+                case StartupCommand.Update:
+                    try
+                    {
+                        Updater.StartUpdate();
+                        return ExitCode.Success;
+                    }
+                    catch (InsufficientPrivilegesException e)
+                    {
+                        Console.Error.WriteLine($"Error: {e.Message}");
+                        return ExitCode.InsufficientPrivileges;
+                    }
                 case StartupCommand.Install:
                     return TinyWallDoctor.EnsureServiceInstalledAndRunning(Utils.LOG_ID_INSTALLER, true) ? ExitCode.Success : ExitCode.GenericError;
                 case StartupCommand.Uninstall:
@@ -46,12 +58,13 @@ namespace pylorak.TinyWall
 #if !DEBUG
                         pylorak.Windows.PathMapper.Instance.AutoUpdate = false;
 #endif
-                        StartService(srv);
+                        var exitCode = StartService(srv);
+
 #if DEBUG
                         Console.WriteLine("Kill process to terminate...");
                         srv.StoppedEvent.WaitOne();
 #endif
-                        return ExitCode.Success;
+                        return exitCode;
                     }
                 case StartupCommand.ProfileCreator:
                     {
@@ -102,14 +115,6 @@ namespace pylorak.TinyWall
 
         private static ExitCode StartService(TinyWallService tw)
         {
-#if DEBUG
-            if (!Utils.RunningAsAdmin())
-            {
-                Console.WriteLine("Error: Not started as an admin process.");
-                return ExitCode.GenericError;
-            }
-#endif
-
             using var SingleInstanceMutex = new Mutex(true, @"Global\TinyWallService", out bool mutexok);
             if (!mutexok)
             {
@@ -117,6 +122,12 @@ namespace pylorak.TinyWall
             }
 
 #if DEBUG
+            if (!Utils.RunningAsAdmin())
+            {
+                Console.Error.WriteLine($"Error: {new InsufficientPrivilegesException().Message}");
+                return ExitCode.InsufficientPrivileges;
+            }
+
             tw.Start(Array.Empty<string>());
             tw.StartedEvent.WaitOne();
 #else
