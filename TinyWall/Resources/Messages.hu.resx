@@ -389,4 +389,7 @@ A kiválasztott fájl a következő része lehet: {0}. Ahhoz hogy az alkalmazás
   <data name="UiThemeAuto" xml:space="preserve">
     <value>Rendszerbeállítás</value>
   </data>
+  <data name="UpdateInstallError" xml:space="preserve">
+    <value>A frissítés telepítése egy probléma miatt meghiúsult. Próbálkozzon újra később.</value>
+  </data>
 </root>

@@ -354,4 +354,7 @@ Die ausgewählte Datei kann zu {0} gehören. Um sicherzustellen, dass die Anwend
   <data name="UiThemeAuto" xml:space="preserve">
     <value>Systemeinstellung</value>
   </data>
+  <data name="UpdateInstallError" xml:space="preserve">
+    <value>Bei der Installation des Updates ist ein Problem aufgetreten. Versuchen Sie es später erneut.</value>
+  </data>
 </root>

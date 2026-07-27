@@ -131,8 +131,18 @@ namespace pylorak.TinyWall
                     HTTPClient.CancelAsync();
                     break;
                 case (int)DialogResult.OK:
-                    InstallUpdate(tmpFile);
-                    break;
+                    {
+                        // Checking against expected hash in update descriptor is useless for security.
+                        // If an attacker can control the executable download, then he can also control
+                        // the descriptor download, hence the hash in the descriptor is not trustworthy.
+                        // We increase security instead by verifying the authenticode signature.
+                        var signatureCheck = WinTrust.VerifyFileAuthenticode(tmpFile);
+                        if (signatureCheck == WinTrust.VerifyResult.SIGNATURE_VALID)
+                            InstallUpdate(tmpFile);
+                        else
+                            Utils.ShowMessageBox(Resources.Messages.UpdateInstallError, Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
+                        break;
+                    }
                 case (int)DialogResult.Abort:
                     Utils.ShowMessageBox(ErrorMsg, Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
                     break;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -399,5 +399,8 @@ The selected executable could be part of {0}. To ensure that this application ca
   </data>
   <data name="UiThemeAuto" xml:space="preserve">
     <value>Automatic</value>
+  </data>
+  <data name="UpdateInstallError" xml:space="preserve">
+    <value>There was a problem that prevented the update from installing. Try again later.</value>
   </data>
 </root>
