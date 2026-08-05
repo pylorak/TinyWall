@@ -285,17 +285,15 @@ namespace pylorak.TinyWall
             }
         }
 
-        internal static void DecompressDeflate(string inputFile, string outputFile)
+        internal static void DecompressDeflate(Stream inStream, Stream outStream)
         {
-            using var outFile = new FileStream(outputFile, FileMode.Create, FileAccess.Write);
-            using var inFile = new FileStream(inputFile, FileMode.Open, FileAccess.Read);
-            using var decompressedInFile = new DeflateStream(inFile, CompressionMode.Decompress, true);
+            using var decompressor = new DeflateStream(inStream, CompressionMode.Decompress, true);
 
             byte[] buffer = new byte[4096];
             int numRead;
-            while ((numRead = decompressedInFile.Read(buffer, 0, buffer.Length)) != 0)
+            while ((numRead = decompressor.Read(buffer, 0, buffer.Length)) != 0)
             {
-                outFile.Write(buffer, 0, numRead);
+                outStream.Write(buffer, 0, numRead);
             }
         }
 

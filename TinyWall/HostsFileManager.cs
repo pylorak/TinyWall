@@ -59,14 +59,17 @@ namespace pylorak.TinyWall
             FileLocker.Lock(HOSTS_ORIGINAL, FileAccess.Read, FileShare.Read);
         }
 
-        public void UpdateHostsFile(string path)
+        public void UpdateHostsFile(Stream newHostsStream)
         {
             // We keep a copy of the hosts file for ourself, so that
             // we can re-install it any time without a net connection.
             FileLocker.Unlock(HOSTS_BACKUP);
             using (var afu = new AtomicFileUpdater(HOSTS_BACKUP))
             {
-                File.Copy(path, afu.TemporaryFilePath, true);
+                using (var tempFileStream = new FileStream(afu.TemporaryFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    newHostsStream.CopyTo(tempFileStream);
+                }
                 afu.Commit();
             }
             FileLocker.Lock(HOSTS_BACKUP, FileAccess.Read, FileShare.Read);
