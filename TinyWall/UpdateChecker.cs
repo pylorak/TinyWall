@@ -124,15 +124,15 @@ namespace pylorak.TinyWall
 
             var tmpFile = Path.GetTempFileName() + ".msi";
             var UpdateURL = new Uri(mainModule.UpdateURL);
-            using var HTTPClient = new WebClient();
-            HTTPClient.DownloadFileCompleted += new AsyncCompletedEventHandler(Updater_DownloadFinished);
-            HTTPClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(Updater_DownloadProgressChanged);
-            HTTPClient.DownloadFileAsync(UpdateURL, tmpFile, tmpFile);
+            using var downloader = new WebClient();
+            downloader.DownloadFileCompleted += new AsyncCompletedEventHandler(Updater_DownloadFinished);
+            downloader.DownloadProgressChanged += new DownloadProgressChangedEventHandler(Updater_DownloadProgressChanged);
+            downloader.DownloadFileAsync(UpdateURL, tmpFile, tmpFile);
 
             switch (TDialog.Show())
             {
                 case (int)DialogResult.Cancel:
-                    HTTPClient.CancelAsync();
+                    downloader.CancelAsync();
                     break;
                 case (int)DialogResult.OK:
                     {
@@ -213,10 +213,10 @@ namespace pylorak.TinyWall
 
             try
             {
-                using (var HTTPClient = new WebClient())
+                using (var downloader = new WebClient())
                 {
-                    HTTPClient.Headers.Add("TW-Version", Application.ProductVersion);
-                    HTTPClient.DownloadFile(url, tmpFile);
+                    downloader.Headers.Add("TW-Version", Application.ProductVersion);
+                    downloader.DownloadFile(url, tmpFile);
                 }
 
                 var descriptor = SerializationHelper.DeserializeFromFile(tmpFile, new UpdateDescriptor());
