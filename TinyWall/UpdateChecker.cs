@@ -203,32 +203,22 @@ namespace pylorak.TinyWall
 
     internal static class UpdateChecker
     {
-        private const int UPDATER_VERSION = 7;
-        private const string URL_UPDATE_DESCRIPTOR = @"https://tinywall.pados.hu/updates/UpdVer{0}/update.json";
+        private const string UPDATER_VERSION = "7";
+        private const string URL_UPDATE_DESCRIPTOR = $"https://tinywall.pados.hu/updates/UpdVer{UPDATER_VERSION}/update.json";
 
         internal static UpdateDescriptor GetDescriptor()
         {
-            var url = string.Format(CultureInfo.InvariantCulture, URL_UPDATE_DESCRIPTOR, UPDATER_VERSION);
-            var tmpFile = Path.GetTempFileName();
+            // Download descriptor
+            using var downloader = new WebClient();
+            downloader.Headers.Add("TW-Version", Application.ProductVersion);
+            var descriptorBytes = downloader.DownloadData(URL_UPDATE_DESCRIPTOR);
 
-            try
-            {
-                using (var downloader = new WebClient())
-                {
-                    downloader.Headers.Add("TW-Version", Application.ProductVersion);
-                    downloader.DownloadFile(url, tmpFile);
-                }
+            // Deserialize descriptor
+            var descriptor = SerializationHelper.Deserialize(descriptorBytes, new UpdateDescriptor());
+            if (descriptor.MagicWord != "TinyWall Update Descriptor")
+                throw new ApplicationException("Bad update descriptor file.");
 
-                var descriptor = SerializationHelper.DeserializeFromFile(tmpFile, new UpdateDescriptor());
-                if (descriptor.MagicWord != "TinyWall Update Descriptor")
-                    throw new ApplicationException("Bad update descriptor file.");
-
-                return descriptor;
-            }
-            finally
-            {
-                File.Delete(tmpFile);
-            }
+            return descriptor;
         }
     }
 }
