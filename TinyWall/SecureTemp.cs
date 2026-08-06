@@ -92,16 +92,13 @@ namespace pylorak.TinyWall
                     throw new ArgumentException("Unknown FileSystemInfo subclass.", nameof(fsi));
             }
 
-            // If this is a directory we disable inheritance first
-            if (fsi is DirectoryInfo di)
-            {
-                var acl2 = di.GetAccessControl();
-                acl2.SetAccessRuleProtection(true, true);
-                di.SetAccessControl(acl2);
-            }
+            // Disable inheritance first
+            var acl = GetAccessControl(fsi);
+            acl.SetAccessRuleProtection(true, true);
+            SetAccessControl(fsi, acl);
 
             // Remove old rules
-            var acl = GetAccessControl(fsi);
+            acl = GetAccessControl(fsi);
             var ruleCollection = acl.GetAccessRules(true, true, typeof(NTAccount));
             foreach (var rule in ruleCollection)
             {
@@ -155,8 +152,19 @@ namespace pylorak.TinyWall
         // Creates and opens a file atomically with access rights only given to admins.
         public static FileStream CreateSecureFileStream(string filePath, FileMode mode, FileSystemRights rights, FileShare share)
         {
-            EnsureExistence(Path.GetDirectoryName(filePath));
             return new FileStream(filePath, mode, rights, share, 4096, FileOptions.None, ToFileSecurity(AdminOnlyAcl, AdminIdentity));
+        }
+
+        public static void ProtectFile(string filePath)
+        {
+            try
+            {
+                using var _ = CreateSecureFileStream(filePath, FileMode.CreateNew, FileSystemRights.CreateFiles, FileShare.None);
+            }
+            catch(IOException)
+            {
+                ReplaceFilesystemAccessRules(new FileInfo(filePath), AdminOnlyAcl, AdminIdentity);
+            }
         }
     }
 }

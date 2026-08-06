@@ -163,6 +163,7 @@ namespace pylorak.TinyWall
                         }
 
                         var tmpFilePath = Path.Combine(SecureTemp.FolderPath, Utils.RandomString(12) + ".msi");
+                        SecureTemp.EnsureExistence(Path.GetDirectoryName(tmpFilePath));
                         using (var tmpFileStream = SecureTemp.CreateSecureFileStream(tmpFilePath, FileMode.CreateNew, FileSystemRights.Write, FileShare.None))
                         {
                             tmpFileStream.Write(downloadData, 0, downloadData.Length);
