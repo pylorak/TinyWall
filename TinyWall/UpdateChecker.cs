@@ -84,14 +84,19 @@ namespace pylorak.TinyWall
         private void CheckAppVersion(UpdateDescriptor descriptor)
         {
             var UpdateModule = descriptor.GetModule(UpdateDescriptor.MODULE_NAME_MAINBIN);
-            var oldVersion = new Version(Application.ProductVersion);
-            var newVersion = new Version(UpdateModule?.ComponentVersion ?? Application.ProductVersion);
+            if (UpdateModule is not null)
+            {
+                var oldVersion = new Version(Application.ProductVersion);
+                var newVersion = new Version(UpdateModule.ComponentVersion ?? Application.ProductVersion);
 
-            bool win10v1903 = VersionInfo.Win10OrNewer && (Environment.OSVersion.Version.Build >= 18362);
-            bool WindowsNew_AnyTwUpdate = win10v1903 && (newVersion > oldVersion);
-            bool WindowsOld_TwMinorFixOnly = (newVersion > oldVersion) && (newVersion.Major == oldVersion.Major) && (newVersion.Minor == oldVersion.Minor);
+                bool WindowsNew_AnyTwUpdate = VersionInfo.Win10v1903_OrNewer && (newVersion > oldVersion);
+                bool WindowsOld_TwMinorFixOnly = (newVersion > oldVersion) && (newVersion.Major == oldVersion.Major) && (newVersion.Minor == oldVersion.Minor);
 
-            if (WindowsNew_AnyTwUpdate || WindowsOld_TwMinorFixOnly)
+                if (!WindowsNew_AnyTwUpdate && !WindowsOld_TwMinorFixOnly)
+                    UpdateModule = null;
+            }
+
+            if (UpdateModule is not null)
             {
                 string prompt = string.Format(CultureInfo.CurrentCulture, Resources.Messages.UpdateAvailable, UpdateModule.ComponentVersion);
                 if (Utils.ShowMessageBox(prompt, Resources.Messages.TinyWallUpdater, TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No, TaskDialogIcon.Warning) == DialogResult.Yes)
@@ -102,99 +107,6 @@ namespace pylorak.TinyWall
                 string prompt = Resources.Messages.NoUpdateAvailable;
                 Utils.ShowMessageBox(prompt, Resources.Messages.TinyWallUpdater, TaskDialogCommonButtons.Ok, TaskDialogIcon.Information);
             }
-        }
-
-        private static DirectorySecurity ToDirectorySecurity(List<FileSystemAccessRule> acl, SecurityIdentifier owner)
-        {
-            var security = new DirectorySecurity();
-            security.SetAccessRuleProtection(true, true);
-            security.SetOwner(owner);
-            foreach (var rule in acl)
-                security.AddAccessRule(rule);
-            return security;
-        }
-
-        private static FileSecurity ToFileSecurity(List<FileSystemAccessRule> acl, SecurityIdentifier owner)
-        {
-            var security = new FileSecurity();
-            security.SetAccessRuleProtection(true, true);
-            security.SetOwner(owner);
-            foreach (var rule in acl)
-                security.AddAccessRule(rule);
-            return security;
-        }
-
-        private static void ReplaceFilesystemAccessRules(FileSystemInfo fsi, List<FileSystemAccessRule> newAcl, SecurityIdentifier newOwner)
-        {
-            static FileSystemSecurity GetAccessControl(FileSystemInfo fsi)
-            {
-                if (fsi is DirectoryInfo di)
-                    return di.GetAccessControl();
-                else if (fsi is FileInfo fi)
-                    return fi.GetAccessControl();
-                else
-                    throw new ArgumentException("Unknown FileSystemInfo subclass.", nameof(fsi));
-            }
-
-            static void SetAccessControl(FileSystemInfo fsi, FileSystemSecurity fss)
-            {
-                if (fsi is DirectoryInfo di)
-                    di.SetAccessControl(fss as DirectorySecurity);
-                else if (fsi is FileInfo fi)
-                    fi.SetAccessControl(fss as FileSecurity);
-                else
-                    throw new ArgumentException("Unknown FileSystemInfo subclass.", nameof(fsi));
-            }
-
-            // If this is a directory we disable inheritance first
-            if (fsi is DirectoryInfo di)
-            {
-                var acl2 = di.GetAccessControl();
-                acl2.SetAccessRuleProtection(true, true);
-                di.SetAccessControl(acl2);
-            }
-
-            // Remove old rules
-            var acl = GetAccessControl(fsi);
-            var ruleCollection = acl.GetAccessRules(true, true, typeof(NTAccount));
-            foreach (var rule in ruleCollection)
-            {
-                if (rule is FileSystemAccessRule fsaRule)
-                    acl.RemoveAccessRuleAll(fsaRule);
-            }
-
-            // Set new rules
-            acl.SetOwner(newOwner);
-            foreach (var rule in newAcl)
-                acl.AddAccessRule(rule);
-
-            // Apply
-            SetAccessControl(fsi, acl);
-        }
-
-        // Creates and opens a file atomically with access rights only given to admins.
-        // The immediate parent directory of the file will also be modified to be only accessible for admins.
-        private static FileStream CreateSecureFileStream(string filePath, FileMode mode, FileSystemRights rights, FileShare share)
-        {
-            // Define ACL that we want to assign to directory and file
-            var acl = new List<FileSystemAccessRule>();
-            var systemIdentity = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
-            var adminIdentity = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
-            acl.Add(new FileSystemAccessRule(systemIdentity, FileSystemRights.FullControl, AccessControlType.Allow));
-            acl.Add(new FileSystemAccessRule(adminIdentity, FileSystemRights.FullControl, AccessControlType.Allow));
-
-            // Create (if necessary) parent directory, and adjust its ACLs
-            var parentDirPath = Path.GetDirectoryName(filePath);
-            var parentDir = new DirectoryInfo(parentDirPath);
-            parentDir.Create(ToDirectorySecurity(acl, adminIdentity));
-
-            // DirectoryInfo.Create(security) does nothing if the directory already exists.
-            // So to make sure the directory gets the required ACLs, we set permissions again
-            // just in case Create() did nothing.
-            ReplaceFilesystemAccessRules(parentDir, acl, adminIdentity);
-
-            // Create and open file with defined permissions
-            return new FileStream(filePath, mode, rights, share, 4096, FileOptions.None, ToFileSecurity(acl, adminIdentity));
         }
 
         private void DownloadUpdate(UpdateModule mainModule)
@@ -250,8 +162,8 @@ namespace pylorak.TinyWall
                             return;
                         }
 
-                        var tmpFilePath = Path.Combine(Utils.SecureTempPath, Utils.RandomString(12) + ".msi");
-                        using (var tmpFileStream = CreateSecureFileStream(tmpFilePath, FileMode.CreateNew, FileSystemRights.Write, FileShare.None))
+                        var tmpFilePath = Path.Combine(SecureTemp.FolderPath, Utils.RandomString(12) + ".msi");
+                        using (var tmpFileStream = SecureTemp.CreateSecureFileStream(tmpFilePath, FileMode.CreateNew, FileSystemRights.Write, FileShare.None))
                         {
                             tmpFileStream.Write(downloadData, 0, downloadData.Length);
                         }

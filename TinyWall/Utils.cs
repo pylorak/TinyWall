@@ -744,16 +744,6 @@ namespace pylorak.TinyWall
             }
         }
 
-        // Returns a path to a folder for temporary files that is supposed to be only accessible for admins.
-        // The folder is neither created nor ensured it has the necessary ACLs, that is the responsibility of callers.
-        internal static string SecureTempPath
-        {
-            get
-            {
-                return Path.Combine(Utils.AppDataPath, "temp_secure");
-            }
-        }
-
         public static bool EqualsCaseInsensitive(string a, string b)
         {
             if (a == b)

@@ -19,10 +19,7 @@ namespace pylorak.Windows
 
         public WmPaintFilter(Control target)
         {
-            if (target == null)
-                throw new ArgumentNullException(nameof(target));
-
-            _target = target;
+            _target = target ?? throw new ArgumentNullException(nameof(target));
 
             if (target.IsHandleCreated)
                 AssignHandle(target.Handle);

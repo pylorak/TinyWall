@@ -106,19 +106,6 @@ namespace pylorak.TinyWall
             return true;
         }
 
-        internal static void CleanupTemp()
-        {
-            try
-            {
-                Directory.Delete(Utils.SecureTempPath, true);
-            }
-            catch (Exception e)
-            {
-                // We might be executing in an (un)installer, so never fail, only log.
-                Utils.LogException(e, Utils.LOG_ID_INSTALLER);
-            }
-        }
-
         internal static bool Uninstall()
         {
             using (var frm = new System.Windows.Forms.Form())
@@ -242,7 +229,7 @@ namespace pylorak.TinyWall
             }
             catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_INSTALLER); }
 
-            CleanupTemp();
+            SecureTemp.Remove(true);
 
             try
             {

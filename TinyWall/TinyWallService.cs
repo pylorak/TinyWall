@@ -1161,7 +1161,11 @@ namespace pylorak.TinyWall
                     if (!string.Equals(hostsUpdate.DownloadHash, HostsFileManager.GetHostsHash(), StringComparison.OrdinalIgnoreCase))
                         GetCompressedUpdate(hostsUpdate, HostsUpdateInstall);
                 }
+            }
+            catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_SERVICE); }
 
+            try
+            {
                 var databaseUpdate = update.GetModule(UpdateDescriptor.MODULE_NAME_DATABASE);
                 if (databaseUpdate is not null)
                 {
@@ -1169,10 +1173,7 @@ namespace pylorak.TinyWall
                         GetCompressedUpdate(databaseUpdate, DatabaseUpdateInstall);
                 }
             }
-            catch (Exception e)
-            {
-                Utils.LogException(e, Utils.LOG_ID_SERVICE);
-            }
+            catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_SERVICE); }
         }
 
         private static void GetCompressedUpdate(UpdateModule module, Action<Stream> installMethod)
@@ -1649,7 +1650,7 @@ namespace pylorak.TinyWall
         // Only one thread (this one) is allowed to issue them.
         public void Run(ServiceBase service)
         {
-            TinyWallDoctor.CleanupTemp();
+            SecureTemp.Remove(false);
 
             using var timer = new HierarchicalStopwatch("Service Run()");
             using var WinDefFirewall = new WindowsFirewall();

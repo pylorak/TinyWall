@@ -125,6 +125,7 @@ namespace pylorak.Windows
         public static bool Win8OrNewer { get; } = WinVerEqOrGr(6, 2, 0);
         public static bool Win81OrNewer { get; } = WinVerEqOrGr(6, 3, 0);
         public static bool Win10OrNewer { get; } = WinVerEqOrGr(10, 0, 0);
+        public static bool Win10v1903_OrNewer { get; } = Win10OrNewer && (Environment.OSVersion.Version.Build >= 18362);
         public static bool Win11OrNewer { get; } = WinVerEqOrGr(10, 0, 2200);
 
         public static bool IsWow64Process { get; } = SafeNativeMethods.InternalCheckIsWow64();

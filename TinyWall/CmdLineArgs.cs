@@ -285,9 +285,6 @@ namespace pylorak.TinyWall
 
         public void ParseArgs(string[] args)
         {
-            // Index of argument we are currently procesing
-            var i = 0;
-
             // Determine the main command first. This is done separately from the rest of the args
             // because their validation could depend on the selected command.
             if (args.Length != 0)
