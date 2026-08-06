@@ -1,13 +1,15 @@
-﻿using System;
-using System.ComponentModel;
+﻿using Microsoft.Samples.TaskDialog;
+using pylorak.Utilities;
+using pylorak.Windows;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
-using Microsoft.Samples.TaskDialog;
-using pylorak.Windows;
-using pylorak.Utilities;
 
 namespace pylorak.TinyWall
 {
@@ -102,6 +104,99 @@ namespace pylorak.TinyWall
             }
         }
 
+        private static DirectorySecurity ToDirectorySecurity(List<FileSystemAccessRule> acl, SecurityIdentifier owner)
+        {
+            var security = new DirectorySecurity();
+            security.SetAccessRuleProtection(true, true);
+            security.SetOwner(owner);
+            foreach (var rule in acl)
+                security.AddAccessRule(rule);
+            return security;
+        }
+
+        private static FileSecurity ToFileSecurity(List<FileSystemAccessRule> acl, SecurityIdentifier owner)
+        {
+            var security = new FileSecurity();
+            security.SetAccessRuleProtection(true, true);
+            security.SetOwner(owner);
+            foreach (var rule in acl)
+                security.AddAccessRule(rule);
+            return security;
+        }
+
+        private static void ReplaceFilesystemAccessRules(FileSystemInfo fsi, List<FileSystemAccessRule> newAcl, SecurityIdentifier newOwner)
+        {
+            static FileSystemSecurity GetAccessControl(FileSystemInfo fsi)
+            {
+                if (fsi is DirectoryInfo di)
+                    return di.GetAccessControl();
+                else if (fsi is FileInfo fi)
+                    return fi.GetAccessControl();
+                else
+                    throw new ArgumentException("Unknown FileSystemInfo subclass.", nameof(fsi));
+            }
+
+            static void SetAccessControl(FileSystemInfo fsi, FileSystemSecurity fss)
+            {
+                if (fsi is DirectoryInfo di)
+                    di.SetAccessControl(fss as DirectorySecurity);
+                else if (fsi is FileInfo fi)
+                    fi.SetAccessControl(fss as FileSecurity);
+                else
+                    throw new ArgumentException("Unknown FileSystemInfo subclass.", nameof(fsi));
+            }
+
+            // If this is a directory we disable inheritance first
+            if (fsi is DirectoryInfo di)
+            {
+                var acl2 = di.GetAccessControl();
+                acl2.SetAccessRuleProtection(true, true);
+                di.SetAccessControl(acl2);
+            }
+
+            // Remove old rules
+            var acl = GetAccessControl(fsi);
+            var ruleCollection = acl.GetAccessRules(true, true, typeof(NTAccount));
+            foreach (var rule in ruleCollection)
+            {
+                if (rule is FileSystemAccessRule fsaRule)
+                    acl.RemoveAccessRuleAll(fsaRule);
+            }
+
+            // Set new rules
+            acl.SetOwner(newOwner);
+            foreach (var rule in newAcl)
+                acl.AddAccessRule(rule);
+
+            // Apply
+            SetAccessControl(fsi, acl);
+        }
+
+        // Creates and opens a file atomically with access rights only given to admins.
+        // The immediate parent directory of the file will also be modified to be only accessible for admins.
+        private static FileStream CreateSecureFileStream(string filePath, FileMode mode, FileSystemRights rights, FileShare share)
+        {
+            // Define ACL that we want to assign to directory and file
+            var acl = new List<FileSystemAccessRule>();
+            var systemIdentity = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
+            var adminIdentity = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+            acl.Add(new FileSystemAccessRule(systemIdentity, FileSystemRights.FullControl, AccessControlType.Allow));
+            acl.Add(new FileSystemAccessRule(adminIdentity, FileSystemRights.FullControl, AccessControlType.Allow));
+
+            // Create (if necessary) parent directory, and adjust its ACLs
+            var parentDirPath = Path.GetDirectoryName(filePath);
+            var parentDir = new DirectoryInfo(parentDirPath);
+            parentDir.Create(ToDirectorySecurity(acl, adminIdentity));
+
+            // DirectoryInfo.Create(security) does nothing if the directory already exists.
+            // So to make sure the directory gets the required ACLs, we set permissions again
+            // just in case Create() did nothing.
+            ReplaceFilesystemAccessRules(parentDir, acl, adminIdentity);
+
+            // Create and open file with defined permissions
+            return new FileStream(filePath, mode, rights, share, 4096, FileOptions.None, ToFileSecurity(acl, adminIdentity));
+        }
+
         private void DownloadUpdate(UpdateModule mainModule)
         {
             ErrorMsg = string.Empty;
@@ -121,13 +216,26 @@ namespace pylorak.TinyWall
             };
 
             State = UpdaterState.DownloadingUpdate;
+            byte[]? downloadData = null;
 
-            var tmpFile = Path.GetTempFileName() + ".msi";
             var UpdateURL = new Uri(mainModule.UpdateURL);
             using var downloader = new WebClient();
-            downloader.DownloadFileCompleted += new AsyncCompletedEventHandler(Updater_DownloadFinished);
-            downloader.DownloadProgressChanged += new DownloadProgressChangedEventHandler(Updater_DownloadProgressChanged);
-            downloader.DownloadFileAsync(UpdateURL, tmpFile, tmpFile);
+            downloader.DownloadDataCompleted += (sender, e) =>
+            {
+                if (e.Cancelled || (e.Error != null))
+                {
+                    ErrorMsg = Resources.Messages.DownloadInterrupted;
+                    return;
+                }
+
+                downloadData = e.Result;
+                State = UpdaterState.UpdateDownloadReady;
+            };
+            downloader.DownloadProgressChanged += (sender, e) =>
+            {
+                DownloadProgress = e.ProgressPercentage;
+            };
+            downloader.DownloadDataAsync(UpdateURL);
 
             switch (TDialog.Show())
             {
@@ -136,13 +244,28 @@ namespace pylorak.TinyWall
                     break;
                 case (int)DialogResult.OK:
                     {
+                        if ((downloadData is null) || (downloadData.Length == 0))
+                        {
+                            Utils.ShowMessageBox(Resources.Messages.UpdateInstallError, Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
+                            return;
+                        }
+
+                        var tmpFilePath = Path.Combine(Utils.SecureTempPath, Utils.RandomString(12) + ".msi");
+                        using (var tmpFileStream = CreateSecureFileStream(tmpFilePath, FileMode.CreateNew, FileSystemRights.Write, FileShare.None))
+                        {
+                            tmpFileStream.Write(downloadData, 0, downloadData.Length);
+                        }
+
+                        // The handle to the MSI file is now closed, but there is no TOCTOU-vulnerability between
+                        // writing/checking the file and its execution, because it is only accessible to admins.
+
                         // Checking against expected hash in update descriptor is useless for security.
                         // If an attacker can control the executable download, then he can also control
                         // the descriptor download, hence the hash in the descriptor is not trustworthy.
-                        // We increase security instead by verifying the authenticode signature.
-                        var signatureCheck = WinTrust.VerifyFileAuthenticode(tmpFile);
+                        // We increase security instead by performing an authenticode check.
+                        var signatureCheck = WinTrust.VerifyFileAuthenticode(tmpFilePath);
                         if (signatureCheck == WinTrust.VerifyResult.SIGNATURE_VALID)
-                            InstallUpdate(tmpFile);
+                            Utils.StartProcessAndForget(tmpFilePath, string.Empty, false, false);
                         else
                             Utils.ShowMessageBox(Resources.Messages.UpdateInstallError, Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
                         break;
@@ -151,27 +274,6 @@ namespace pylorak.TinyWall
                     Utils.ShowMessageBox(ErrorMsg, Resources.Messages.TinyWall, TaskDialogCommonButtons.Ok, TaskDialogIcon.Error);
                     break;
             }
-        }
-
-        private static void InstallUpdate(string localFilePath)
-        {
-            Utils.StartProcess(localFilePath, string.Empty, false, false);
-        }
-
-        private void Updater_DownloadFinished(object sender, AsyncCompletedEventArgs e)
-        {
-            if (e.Cancelled || (e.Error != null))
-            {
-                ErrorMsg = Resources.Messages.DownloadInterrupted;
-                return;
-            }
-
-            State = UpdaterState.UpdateDownloadReady;
-        }
-
-        private void Updater_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-        {
-            DownloadProgress = e.ProgressPercentage;
         }
 
         private bool DownloadTickCallback(ActiveTaskDialog taskDialog, TaskDialogNotificationArgs args, object? callbackData)
