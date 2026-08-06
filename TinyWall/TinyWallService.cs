@@ -1649,6 +1649,8 @@ namespace pylorak.TinyWall
         // Only one thread (this one) is allowed to issue them.
         public void Run(ServiceBase service)
         {
+            TinyWallDoctor.CleanupTemp();
+
             using var timer = new HierarchicalStopwatch("Service Run()");
             using var WinDefFirewall = new WindowsFirewall();
             using var NetworkInterfaceWatcher = new IpInterfaceWatcher();

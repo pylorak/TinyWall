@@ -8,6 +8,7 @@ using pylorak.Windows;
 using pylorak.Windows.Services;
 using pylorak.Windows.WFP;
 using pylorak.Windows.WFP.Interop;
+using System.IO;
 
 namespace pylorak.TinyWall
 {
@@ -103,6 +104,19 @@ namespace pylorak.TinyWall
             }
 
             return true;
+        }
+
+        internal static void CleanupTemp()
+        {
+            try
+            {
+                Directory.Delete(Utils.SecureTempPath, true);
+            }
+            catch (Exception e)
+            {
+                // We might be executing in an (un)installer, so never fail, only log.
+                Utils.LogException(e, Utils.LOG_ID_INSTALLER);
+            }
         }
 
         internal static bool Uninstall()
@@ -227,6 +241,8 @@ namespace pylorak.TinyWall
                 hosts.DisableHostsFile();
             }
             catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_INSTALLER); }
+
+            CleanupTemp();
 
             try
             {
