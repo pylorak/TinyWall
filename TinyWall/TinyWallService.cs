@@ -1630,7 +1630,7 @@ namespace pylorak.TinyWall
 
             // Fire up file protections as soon as possible
             FileLocker.Lock(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
-            FileLocker.Lock(PasswordLock.PasswordFilePath, FileAccess.Read, FileShare.Read);
+            FileLocker.Lock(PasswordLock.PasswordFilePath, SecureTemp.CreateSecureFileStream(PasswordLock.PasswordFilePath, FileMode.OpenOrCreate, System.Security.AccessControl.FileSystemRights.ReadData, FileShare.Read));
 
             // Lock configuration if we have a password
             if (PasswordLock.HasPassword)

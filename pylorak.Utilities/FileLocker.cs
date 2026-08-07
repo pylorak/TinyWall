@@ -23,6 +23,15 @@ namespace pylorak.Utilities
             }
         }
 
+        public bool Lock(string filePath, FileStream stream)
+        {
+            if (IsLocked(filePath))
+                return false;
+
+            LockedFiles.Add(filePath, stream);
+            return true;
+        }
+
         public FileStream GetStream(string filePath)
         {
             return LockedFiles[filePath];

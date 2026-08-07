@@ -157,21 +157,25 @@ namespace pylorak.TinyWall
 
         internal static void SetPass(string password)
         {
-            // Construct file path
-            string SettingsFile = PasswordFilePath;
-
             if (password == string.Empty)
+            {
                 // If we have no password, delete password explicitly
-                File.Delete(SettingsFile);
+                File.Delete(PasswordFilePath);
+            }
             else
             {
                 using var rng = RandomNumberGenerator.Create();
                 byte[] salt = new byte[PBKDF2_SALT_LEN];
                 rng.GetBytes(salt);
 
-                using var fileUpdater = new AtomicFileUpdater(PasswordFilePath);
                 var hasher = new Pbkdf2(PBKDF2_ALGO, PBKDF2_ITERATIONS, salt, password);
-                File.WriteAllText(fileUpdater.TemporaryFilePath, hasher.ToString(Pbkdf2.StorageFormat.Tw352), Encoding.UTF8);
+                SecureTemp.ProtectFile(PasswordFilePath);
+                using var fileUpdater = new AtomicFileUpdater(PasswordFilePath);
+                using (var pwdStream = SecureTemp.CreateSecureFileStream(fileUpdater.TemporaryFilePath, FileMode.Create, System.Security.AccessControl.FileSystemRights.WriteData, FileShare.None))
+                {
+                    using var pwdTextStream = new StreamWriter(pwdStream, Encoding.UTF8);
+                    pwdTextStream.Write(hasher.ToString(Pbkdf2.StorageFormat.Tw352));
+                }
                 fileUpdater.Commit();
             }
         }
