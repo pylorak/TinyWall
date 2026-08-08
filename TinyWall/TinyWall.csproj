@@ -159,6 +159,9 @@
     <Compile Update="SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
+    <Compile Update="TinyWallController.Designer.cs">
+      <DependentUpon>TinyWallController.cs</DependentUpon>
+    </Compile>
     <Compile Update="UwpPackagesForm.Designer.cs">
       <DependentUpon>UwpPackagesForm.cs</DependentUpon>
     </Compile>
