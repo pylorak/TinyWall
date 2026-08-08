@@ -1610,6 +1610,12 @@ namespace pylorak.TinyWall
         internal static void DeleteWfpObjects(Engine wfp, bool removeLayersAndProvider)
         {
             // WARNING! This method is super-slow if not executed inside a WFP transaction!
+
+            // We swallow exceptions from unregistering sublayers and provider, because they cause no harm
+            // if left over and it is better for the applicaiton to be able to continue.
+            // We do throw however if unregistering a filter fails, because leftover filters might
+            // influence machine operation, so their removal must not fail silently.
+
             using var timer = new HierarchicalStopwatch("DeleteWfpObjects()");
             var layerKeys = (LayerKeyEnum[])Enum.GetValues(typeof(LayerKeyEnum));
             foreach (var layer in layerKeys)
@@ -1951,12 +1957,16 @@ namespace pylorak.TinyWall
             // Basic software health checks
             TinyWallDoctor.EnsureHealth(Utils.LOG_ID_SERVICE);
 #else
-            using (var wfp = new Engine("TinyWall Cleanup Session", "", FWPM_SESSION_FLAGS.None, 5000))
-            using (var trx = wfp.BeginTransaction())
+            try
             {
-                DeleteWfpObjects(wfp, true);
-                trx.Commit();
+                using (var wfp = new Engine("TinyWall Cleanup Session", "", FWPM_SESSION_FLAGS.None, 5000))
+                using (var trx = wfp.BeginTransaction())
+                {
+                    DeleteWfpObjects(wfp, true);
+                    trx.Commit();
+                }
             }
+            catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_SERVICE); }
 #endif
             PathMapper.Instance.Dispose();
         }
