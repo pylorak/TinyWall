@@ -26,28 +26,51 @@ namespace pylorak.Windows.WFP
         }
 
         private const int NUM_ENTRY_REQUEST_SIZE = 16;
+        private readonly int FWPM_FILTER0_SIZE;
         private readonly Engine _engine;
         private readonly FwpmFilterEnumSafeHandle _enumSafeHandle;
-        private readonly int FWPM_FILTER0_SIZE;
-        private readonly IDisposable? _ownedResource;
+        private readonly SafeHGlobalHandle? _providerGuidHandle;
 
         private FwpmMemorySafeHandle? _entries;
         private IntPtr _entryListItemPtr;
         private int _entriesRemain;
         private bool _disposed;
 
-        protected FilterEnumeratorBase(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0? template, IDisposable? ownedResource = null)
+        protected FilterEnumeratorBase(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0? template, Guid? providerKey)
         {
+            if ((providerKey.HasValue) && (template is null))
+                throw new ArgumentNullException(nameof(template), "Template cannot be null if a providerKey is provided.");
+
             _engine = engine;
-            _ownedResource = ownedResource;
 
-            var err = NativeMethods.FwpmFilterCreateEnumHandle0(engine.NativePtr, template, out IntPtr outHndl);
-            if (0 == err)
-                _enumSafeHandle = new FwpmFilterEnumSafeHandle(outHndl, engine.NativePtr);
-            else
-                throw new WfpException(err, "FwpmFilterCreateEnumHandle0");
+            try
+            {
 
-            FWPM_FILTER0_SIZE = Marshal.SizeOf<Interop.FWPM_FILTER0_NoStrings>();
+                if (template is not null)
+                {
+                    // Fill in template.providerKey
+                    if (providerKey.HasValue)
+                    {
+                        _providerGuidHandle = SafeHGlobalHandle.FromStruct(providerKey.Value);
+                        template.providerKey = _providerGuidHandle.DangerousGetHandle();
+                    }
+                    else
+                        template.providerKey = IntPtr.Zero;
+                }
+
+                var err = NativeMethods.FwpmFilterCreateEnumHandle0(engine.NativePtr, template, out IntPtr outHndl);
+                if (0 == err)
+                    _enumSafeHandle = new FwpmFilterEnumSafeHandle(outHndl, engine.NativePtr);
+                else
+                    throw new WfpException(err, "FwpmFilterCreateEnumHandle0");
+
+                FWPM_FILTER0_SIZE = Marshal.SizeOf<Interop.FWPM_FILTER0_NoStrings>();
+            }
+            catch
+            {
+                _providerGuidHandle?.Dispose();
+                throw;
+            }
         }
 
         public bool MoveNext()
@@ -93,7 +116,7 @@ namespace pylorak.Windows.WFP
                 {
                     _enumSafeHandle.Dispose();
                     _entries?.Dispose();
-                    _ownedResource?.Dispose();
+                    _providerGuidHandle?.Dispose();
                 }
 
                 _disposed = true;
@@ -117,8 +140,8 @@ namespace pylorak.Windows.WFP
         [DisallowNull]
         public Filter? Current { get; private set; }
 
-        public FilterEnumerator(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0? template, bool getFilterConditions, IDisposable? ownedResource = null)
-            : base(engine, template, ownedResource)
+        public FilterEnumerator(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0? template, bool getFilterConditions, Guid? providerKey = null)
+            : base(engine, template, providerKey)
         {
             _getFilterConditions = getFilterConditions;
         }
@@ -135,8 +158,8 @@ namespace pylorak.Windows.WFP
 
         public Guid Current { get; private set; }
 
-        public FilterKeyEnumerator(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0? template, IDisposable? ownedResource = null)
-            : base(engine, template, ownedResource)
+        public FilterKeyEnumerator(Engine engine, Interop.FWPM_FILTER_ENUM_TEMPLATE0? template, Guid? providerKey = null)
+            : base(engine, template, providerKey)
         { }
 
         protected override unsafe void SetCurrentItem(Interop.FWPM_FILTER0_NoStrings* native)
