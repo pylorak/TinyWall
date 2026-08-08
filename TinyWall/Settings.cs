@@ -164,7 +164,7 @@ namespace pylorak.TinyWall
             }
         }
 
-        internal static bool Unlock(string password, FileLocker fileLocker)
+        internal static bool Unlock(string password)
         {
             if (!HasPassword)
                 return true;
@@ -194,15 +194,7 @@ namespace pylorak.TinyWall
 
                     if (hashNeedsUpgrade)
                     {
-                        fileLocker.Unlock(PasswordFilePath);
-                        try
-                        {
-                            SetPass(password);
-                        }
-                        finally
-                        {
-                            fileLocker.Lock(PasswordFilePath, FileAccess.Read, FileShare.Read);
-                        }
+                        SetPass(password);
                     }
                 }
             }

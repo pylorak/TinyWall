@@ -1207,7 +1207,7 @@ namespace pylorak.TinyWall
         }
         private void DatabaseUpdateInstall(Stream newDbStream)
         {
-            FileLocker.Unlock(DatabaseClasses.AppDatabase.DBPath);
+            using var unlock = FileLocker.UnlockTemporarily(DatabaseClasses.AppDatabase.DBPath);
             using (var afu = new AtomicFileUpdater(DatabaseClasses.AppDatabase.DBPath))
             {
                 using (var tempFileStream = new FileStream(afu.TemporaryFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
@@ -1216,7 +1216,6 @@ namespace pylorak.TinyWall
                 }
                 afu.Commit();
             }
-            FileLocker.Lock(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
             NotifyController(MessageType.DATABASE_UPDATED);
             Q.Add(new TwRequest(TwMessageSimple.CreateRequest(MessageType.REINIT)));
         }
@@ -1427,19 +1426,12 @@ namespace pylorak.TinyWall
                 case MessageType.UNLOCK:
                     {
                         var args = (TwMessageUnlock)req;
-                        FileLocker.Unlock(PasswordLock.PasswordFilePath);
-                        try
-                        {
-                            bool success = PasswordLock.Unlock(args.Password, FileLocker);
-                            if (success)
-                                return args.CreateResponse();
-                            else
-                                return TwMessageError.Instance;
-                        }
-                        finally
-                        {
-                            FileLocker.Lock(PasswordLock.PasswordFilePath, FileAccess.Read, FileShare.None);
-                        }
+                        using var unlock = FileLocker.UnlockTemporarily(PasswordLock.PasswordFilePath);
+                        bool success = PasswordLock.Unlock(args.Password);
+                        if (success)
+                            return args.CreateResponse();
+                        else
+                            return TwMessageError.Instance;
                     }
                 case MessageType.LOCK:
                     {
@@ -1459,7 +1451,7 @@ namespace pylorak.TinyWall
                 case MessageType.SET_PASSPHRASE:
                     {
                         var args = (TwMessageSetPassword)req;
-                        FileLocker.Unlock(PasswordLock.PasswordFilePath);
+                        using var unlock = FileLocker.UnlockTemporarily(PasswordLock.PasswordFilePath);
                         try
                         {
                             PasswordLock.SetPass(args.Password);
@@ -1469,10 +1461,6 @@ namespace pylorak.TinyWall
                         catch
                         {
                             return TwMessageError.Instance;
-                        }
-                        finally
-                        {
-                            FileLocker.Lock(PasswordLock.PasswordFilePath, FileAccess.Read, FileShare.None);
                         }
                     }
                 case MessageType.STOP_SERVICE:

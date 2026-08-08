@@ -54,25 +54,21 @@ namespace pylorak.TinyWall
 
         private void CreateOriginalBackup()
         {
-            FileLocker.Unlock(HOSTS_ORIGINAL);
+            using var unlock = FileLocker.UnlockTemporarily(HOSTS_ORIGINAL);
             File.Copy(HOSTS_PATH, HOSTS_ORIGINAL, true);
-            FileLocker.Lock(HOSTS_ORIGINAL, FileAccess.Read, FileShare.Read);
         }
 
         public void UpdateHostsFile(Stream newHostsStream)
         {
             // We keep a copy of the hosts file for ourself, so that
             // we can re-install it any time without a net connection.
-            FileLocker.Unlock(HOSTS_BACKUP);
-            using (var afu = new AtomicFileUpdater(HOSTS_BACKUP))
+            using var unlock = FileLocker.UnlockTemporarily(HOSTS_BACKUP);
+            using var afu = new AtomicFileUpdater(HOSTS_BACKUP);
+            using (var tempFileStream = new FileStream(afu.TemporaryFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                using (var tempFileStream = new FileStream(afu.TemporaryFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    newHostsStream.CopyTo(tempFileStream);
-                }
-                afu.Commit();
+                newHostsStream.CopyTo(tempFileStream);
             }
-            FileLocker.Lock(HOSTS_BACKUP, FileAccess.Read, FileShare.Read);
+            afu.Commit();
         }
 
         public static string GetHostsHash()
