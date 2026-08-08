@@ -5,6 +5,7 @@ TinyWall Changelog
 - Security hardening of the built-in updater
 - Increase password hashing complexity
 - New mitigation for tray icon sometimes not showing up on boot
+- Fix instead of showing password entry, uninstall fails if TinyWall is locked
 - Fix misaligned drawing of focus highlight in dark mode lists
 - Correct border transparency of external app icons in dark mode
 - Better sizing of external app icons in dark mode
