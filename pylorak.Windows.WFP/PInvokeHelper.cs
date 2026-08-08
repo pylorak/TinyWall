@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Runtime.ConstrainedExecution;
-using System.Security.Principal;
+using System.ComponentModel;
 
 namespace pylorak.Windows.WFP
 {
@@ -76,7 +75,7 @@ namespace pylorak.Windows.WFP
         [DllImport("advapi32", CharSet = CharSet.Auto)]
         static extern uint GetLengthSid(IntPtr pSid);
 
-        [DllImport("advapi32", CharSet = CharSet.Auto)]
+        [DllImport("advapi32", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool CopySid(uint nDestinationSidLength, IntPtr pDestinationSid, IntPtr pSourceSid);
 
@@ -84,7 +83,12 @@ namespace pylorak.Windows.WFP
         {
             var sidLength = GetLengthSid(sid);
             var ret = new AllocHLocalSafeHandle((int)sidLength);
-            CopySid(sidLength, ret.DangerousGetHandle(), sid);
+            if (!CopySid(sidLength, ret.DangerousGetHandle(), sid))
+            {
+                var win32err = Marshal.GetLastWin32Error();
+                ret.Dispose();
+                throw new Win32Exception(win32err);
+            }
             return ret;
         }
 

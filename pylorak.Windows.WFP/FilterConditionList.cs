@@ -19,7 +19,16 @@ namespace pylorak.Windows.WFP
             _list = new List<FilterCondition>(capacity);
         }
 
-        public FilterCondition this[int index] { get => _list[index]; set => _list[index] = value; }
+        public FilterCondition this[int index]
+        {
+            get => _list[index];
+            set
+            {
+                value.AddRef();
+                _list[index].RemoveRef();
+                _list[index] = value;
+            }
+        }
 
         public int Count => _list.Count;
 
