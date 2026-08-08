@@ -63,9 +63,17 @@ namespace pylorak.TinyWall
                 {
                     ManagedInstallerClass.InstallHelper(new string[] { "/i", AppPaths.ExecutablePath });
                 }
-                catch (Exception e)
+                catch
                 {
-                    Utils.LogException(e, logContext);
+                    // One common cause why service installation fails is the service already being present
+                    // (for reasons such as manual deletion or crappy 3rd party uninstallers).
+                    // As a workaround we try uninstalling and reinstalling the service once.
+
+                    try { ManagedInstallerClass.InstallHelper(new string[] { "/u", AppPaths.ExecutablePath }); }
+                    catch { }   // errors ignored on purpose
+
+                    try { ManagedInstallerClass.InstallHelper(new string[] { "/i", AppPaths.ExecutablePath }); }
+                    catch (Exception e) { Utils.LogException(e, logContext); }
                 }
 
                 // Ensure dependencies
