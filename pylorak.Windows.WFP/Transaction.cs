@@ -11,6 +11,8 @@ namespace pylorak.Windows.WFP
         [SuppressUnmanagedCodeSecurity]
         internal static class NativeMethods
         {
+            internal const uint FWP_E_NO_TXN_IN_PROGRESS = 0x8032000D;
+
             [Flags]
             internal enum TransactionFlags : uint
             {
@@ -93,6 +95,7 @@ namespace pylorak.Windows.WFP
                 throw new InvalidOperationException("Transaction is already closed.");
 
             uint err;
+            bool transactionClosed;
 
             // Atomically close transaction and decrease reference count
             RuntimeHelpers.PrepareConstrainedRegions();
@@ -100,12 +103,13 @@ namespace pylorak.Windows.WFP
             finally
             {
                 err = NativeMethods.FwpmTransactionAbort0(_safeEngineHandle);
-                if (0 == err)
+                transactionClosed = (0 == err) || (NativeMethods.FWP_E_NO_TXN_IN_PROGRESS == err);
+                if (transactionClosed)
                     _safeEngineHandle.DangerousRelease();
             }
 
             // Do error handling after the CER
-            if (0 != err)
+            if (!transactionClosed)
                 throw new WfpException(err, "FwpmTransactionAbort0");
 
             _transactionClosed = true;
