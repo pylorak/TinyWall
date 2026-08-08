@@ -157,8 +157,8 @@ namespace pylorak.TinyWall
         {
             using var parentConsole = new AttachedParentConsole();
 
-            HierarchicalStopwatch.Enable = File.Exists(Path.Combine(Utils.AppDataPath, "enable-timings"));
-            HierarchicalStopwatch.LogFileBase = Path.Combine(Utils.AppDataPath, @"logs\timings");
+            HierarchicalStopwatch.Enable = File.Exists(Path.Combine(AppPaths.AppDataPath, "enable-timings"));
+            HierarchicalStopwatch.LogFileBase = Path.Combine(AppPaths.AppDataPath, @"logs\timings");
 
             DefaultOsCulture ??= Thread.CurrentThread.CurrentUICulture;
 
@@ -167,7 +167,7 @@ namespace pylorak.TinyWall
             try
             {
                 // Prevent Windows Error Reporting running for us
-                Utils.SafeNativeMethods.WerAddExcludedApplication(Utils.ExecutablePath, true);
+                Utils.SafeNativeMethods.WerAddExcludedApplication(AppPaths.ExecutablePath, true);
             }
             catch { }
 

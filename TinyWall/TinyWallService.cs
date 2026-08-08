@@ -1021,7 +1021,7 @@ namespace pylorak.TinyWall
         {
             get
             {
-                return Path.Combine(Utils.AppDataPath, "config");
+                return Path.Combine(AppPaths.AppDataPath, "config");
             }
         }
 
@@ -1102,7 +1102,7 @@ namespace pylorak.TinyWall
                 {
                     try
                     {
-                        string filePath = Path.Combine(Utils.AppDataPath, LastUpdateCheck_FILENAME);
+                        string filePath = Path.Combine(AppPaths.AppDataPath, LastUpdateCheck_FILENAME);
                         if (File.Exists(filePath))
                         {
                             using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -1127,7 +1127,7 @@ namespace pylorak.TinyWall
 
                 try
                 {
-                    string filePath = Path.Combine(Utils.AppDataPath, LastUpdateCheck_FILENAME);
+                    string filePath = Path.Combine(AppPaths.AppDataPath, LastUpdateCheck_FILENAME);
                     using var afu = new AtomicFileUpdater(filePath);
                     using (var fs = new FileStream(afu.TemporaryFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
                     {
@@ -1427,11 +1427,19 @@ namespace pylorak.TinyWall
                 case MessageType.UNLOCK:
                     {
                         var args = (TwMessageUnlock)req;
-                        bool success = PasswordLock.Unlock(args.Password, FileLocker);
-                        if (success)
-                            return args.CreateResponse();
-                        else
-                            return TwMessageError.Instance;
+                        FileLocker.Unlock(PasswordLock.PasswordFilePath);
+                        try
+                        {
+                            bool success = PasswordLock.Unlock(args.Password, FileLocker);
+                            if (success)
+                                return args.CreateResponse();
+                            else
+                                return TwMessageError.Instance;
+                        }
+                        finally
+                        {
+                            FileLocker.Lock(PasswordLock.PasswordFilePath, FileAccess.Read, FileShare.None);
+                        }
                     }
                 case MessageType.LOCK:
                     {
@@ -1464,7 +1472,7 @@ namespace pylorak.TinyWall
                         }
                         finally
                         {
-                            FileLocker.Lock(PasswordLock.PasswordFilePath, FileAccess.Read, FileShare.Read);
+                            FileLocker.Lock(PasswordLock.PasswordFilePath, FileAccess.Read, FileShare.None);
                         }
                     }
                 case MessageType.STOP_SERVICE:
@@ -1629,8 +1637,10 @@ namespace pylorak.TinyWall
             Q.Add(new TwRequest(TwMessageSimple.CreateRequest(MessageType.REINIT)));
 
             // Fire up file protections as soon as possible
+            FilesystemProtection.EnsureFile(DatabaseClasses.AppDatabase.DBPath, UserAccess.ReadOnly);
+            FilesystemProtection.EnsureFile(PasswordLock.PasswordFilePath, UserAccess.None);
             FileLocker.Lock(DatabaseClasses.AppDatabase.DBPath, FileAccess.Read, FileShare.Read);
-            FileLocker.Lock(PasswordLock.PasswordFilePath, SecureTemp.CreateSecureFileStream(PasswordLock.PasswordFilePath, FileMode.OpenOrCreate, System.Security.AccessControl.FileSystemRights.ReadData, FileShare.Read));
+            FileLocker.Lock(PasswordLock.PasswordFilePath, FileAccess.Read, FileShare.None);
 
             // Lock configuration if we have a password
             if (PasswordLock.HasPassword)
@@ -1650,7 +1660,7 @@ namespace pylorak.TinyWall
         // Only one thread (this one) is allowed to issue them.
         public void Run(ServiceBase service)
         {
-            SecureTemp.Remove(false);
+            AppPaths.EmptyFolder(AppPaths.PrivateTemp, false);
 
             using var timer = new HierarchicalStopwatch("Service Run()");
             using var WinDefFirewall = new WindowsFirewall();

@@ -162,9 +162,9 @@ namespace pylorak.TinyWall
                             return;
                         }
 
-                        var tmpFilePath = Path.Combine(SecureTemp.FolderPath, Utils.RandomString(12) + ".msi");
-                        SecureTemp.EnsureExistence(Path.GetDirectoryName(tmpFilePath));
-                        using (var tmpFileStream = SecureTemp.CreateSecureFileStream(tmpFilePath, FileMode.CreateNew, FileSystemRights.Write, FileShare.None))
+                        var tmpFilePath = Path.Combine(AppPaths.PrivateTemp, Utils.RandomString(12) + ".msi");
+                        FilesystemProtection.EnsureFolder(Path.GetDirectoryName(tmpFilePath), UserAccess.None);
+                        using (var tmpFileStream = FilesystemProtection.CreateProtectedFile(tmpFilePath, FileShare.None, UserAccess.None, FileSystemRights.Write))
                         {
                             tmpFileStream.Write(downloadData, 0, downloadData.Length);
                         }

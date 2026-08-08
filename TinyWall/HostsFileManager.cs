@@ -9,9 +9,9 @@ namespace pylorak.TinyWall
         // Active system hosts file
         private readonly static string HOSTS_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"drivers\etc\hosts");
         // Local copy of active hosts file
-        private readonly static string HOSTS_BACKUP = Path.Combine(Utils.AppDataPath, "hosts.bck");
+        private readonly static string HOSTS_BACKUP = Path.Combine(AppPaths.AppDataPath, "hosts.bck");
         // User's original hosts file
-        private readonly static string HOSTS_ORIGINAL = Path.Combine(Utils.AppDataPath, "hosts.orig");
+        private readonly static string HOSTS_ORIGINAL = Path.Combine(AppPaths.AppDataPath, "hosts.orig");
 
         public readonly FileLocker FileLocker = new();
 

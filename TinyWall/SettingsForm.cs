@@ -475,7 +475,7 @@ namespace pylorak.TinyWall
             {
                 try
                 {
-                    Utils.StartProcessAndForget(Utils.ExecutablePath, "update", true);
+                    Utils.StartProcessAndForget(AppPaths.ExecutablePath, "update", true);
                 }
                 catch (Win32Exception)
                 {
@@ -503,7 +503,7 @@ namespace pylorak.TinyWall
         {
             try
             {
-                var psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "License.rtf")) { UseShellExecute = true };
+                var psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(AppPaths.ExecutablePath), "License.rtf")) { UseShellExecute = true };
                 Process.Start(psi)?.Dispose();
             }
             catch { }
@@ -649,7 +649,7 @@ namespace pylorak.TinyWall
         {
             try
             {
-                var psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "doc", "Attributions.txt")) { UseShellExecute = true };
+                var psi = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(AppPaths.ExecutablePath), "doc", "Attributions.txt")) { UseShellExecute = true };
                 Process.Start(psi)?.Dispose();
             }
             catch { }

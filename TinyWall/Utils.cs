@@ -140,8 +140,6 @@ namespace pylorak.TinyWall
 
         private static readonly Random _rng = new();
 
-        public static string ExecutablePath { get; } = System.Reflection.Assembly.GetEntryAssembly().Location;
-
         public static string HexEncode(byte[] binstr)
         {
             var sb = new StringBuilder();
@@ -667,9 +665,9 @@ namespace pylorak.TinyWall
                     // First, remove deprecated log files if any is found
                     // TODO: This can probably be removed in the future
                     string[] old_logs = new string[] {
-                        Path.Combine(Utils.AppDataPath, "errorlog"),
-                        Path.Combine(Utils.AppDataPath, "service.log"),
-                        Path.Combine(Utils.AppDataPath, "client.log"),
+                        Path.Combine(AppPaths.AppDataPath, "errorlog"),
+                        Path.Combine(AppPaths.AppDataPath, "service.log"),
+                        Path.Combine(AppPaths.AppDataPath, "client.log"),
                     };
 
                     foreach (string file in old_logs)
@@ -683,7 +681,7 @@ namespace pylorak.TinyWall
                     }
 
                     // Name of the current log file
-                    string logdir = Path.Combine(Utils.AppDataPath, "logs");
+                    string logdir = Path.Combine(AppPaths.AppDataPath, "logs");
                     string logfile = Path.Combine(logdir, $"{logname}.log");
 
                     if (!Directory.Exists(logdir))
@@ -727,21 +725,6 @@ namespace pylorak.TinyWall
         internal static void FlushDnsCache()
         {
             _ = SafeNativeMethods.DnsFlushResolverCache();
-        }
-
-        internal static string AppDataPath
-        {
-            get
-            {
-#if DEBUG
-                return Path.GetDirectoryName(Utils.ExecutablePath);
-#else
-                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "TinyWall");
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-                return dir;
-#endif
-            }
         }
 
         public static bool EqualsCaseInsensitive(string a, string b)

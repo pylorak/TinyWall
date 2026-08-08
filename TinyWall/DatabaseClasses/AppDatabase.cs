@@ -16,7 +16,7 @@ namespace pylorak.TinyWall.DatabaseClasses
 
         public static string DBPath
         {
-            get { return System.IO.Path.Combine(Utils.AppDataPath, "profiles.json"); }
+            get { return System.IO.Path.Combine(AppPaths.AppDataPath, "profiles.json"); }
         }
 
         public static AppDatabase Load()

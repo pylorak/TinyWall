@@ -91,23 +91,7 @@ namespace pylorak.TinyWall
             SettingsFormAppListColumnWidths ??= new Dictionary<string, int>();
         }
 
-        internal static string UserDataPath
-        {
-            get
-            {
-#if DEBUG
-                return Path.GetDirectoryName(Utils.ExecutablePath);
-#else
-                string dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                dir = System.IO.Path.Combine(dir, "TinyWall");
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-                return dir;
-#endif
-            }
-        }
-
-        internal static string FilePath => Path.Combine(UserDataPath, "ControllerConfig");
+        internal static string FilePath => Path.Combine(AppPaths.UserDataPath, "ControllerConfig");
 
         internal void Save()
         {
@@ -141,7 +125,7 @@ namespace pylorak.TinyWall
         private const int PBKDF2_SALT_LEN = 16;
         private const int PBKDF2_ITERATIONS = 200_000;
 
-        internal static string PasswordFilePath { get; } = Path.Combine(Utils.AppDataPath, "pwd");
+        internal static string PasswordFilePath { get; } = Path.Combine(AppPaths.AppDataPath, "pwd");
 
         private static bool _Locked;
 
@@ -169,9 +153,9 @@ namespace pylorak.TinyWall
                 rng.GetBytes(salt);
 
                 var hasher = new Pbkdf2(PBKDF2_ALGO, PBKDF2_ITERATIONS, salt, password);
-                SecureTemp.ProtectFile(PasswordFilePath);
+                FilesystemProtection.EnsureFile(PasswordFilePath, UserAccess.None);
                 using var fileUpdater = new AtomicFileUpdater(PasswordFilePath);
-                using (var pwdStream = SecureTemp.CreateSecureFileStream(fileUpdater.TemporaryFilePath, FileMode.Create, System.Security.AccessControl.FileSystemRights.WriteData, FileShare.None))
+                using (var pwdStream = FilesystemProtection.CreateProtectedFile(fileUpdater.TemporaryFilePath, FileShare.None, UserAccess.None, System.Security.AccessControl.FileSystemRights.WriteData))
                 {
                     using var pwdTextStream = new StreamWriter(pwdStream, Encoding.UTF8);
                     pwdTextStream.Write(hasher.ToString(Pbkdf2.StorageFormat.Tw352));

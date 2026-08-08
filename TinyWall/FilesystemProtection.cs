@@ -1,5 +1,4 @@
-﻿using pylorak.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.AccessControl;
@@ -7,49 +6,14 @@ using System.Security.Principal;
 
 namespace pylorak.TinyWall
 {
-    public static class SecureTemp
+    public enum UserAccess
     {
+        None,
+        ReadOnly
+    };
 
-        // Returns a path to a folder for temporary files that is supposed to be only accessible for admins.
-        // The folder returned here already exists and has the necessary ACLs.
-        public static string FolderPath { get; } = Path.Combine(Utils.AppDataPath, "temp_secure");
-
-        public static void Remove(bool removeTempRoot)
-        {
-            try
-            {
-                if (removeTempRoot)
-                {
-                    Directory.Delete(FolderPath, true);
-                }
-                else
-                {
-                    var files = Directory.GetFiles(FolderPath);
-                    foreach (var f in files)
-                    {
-                        try { File.Delete(f); }
-                        catch { }
-                    }
-
-                    var dirs = Directory.GetDirectories(FolderPath);
-                    foreach (var d in dirs)
-                    {
-                        try { Directory.Delete(d, true); }
-                        catch { }
-                    }
-                }
-            }
-            catch (DirectoryNotFoundException)
-            {
-                // Not an error, ignore
-            }
-            catch (Exception e)
-            {
-                // We might be executing in an (un)installer, so never fail, only log.
-                Utils.LogException(e, Utils.LOG_ID_INSTALLER);
-            }
-        }
-
+    public static class FilesystemProtection
+    {
         private static DirectorySecurity ToDirectorySecurity(List<FileSystemAccessRule> acl, SecurityIdentifier owner)
         {
             var security = new DirectorySecurity();
@@ -118,52 +82,65 @@ namespace pylorak.TinyWall
         private static SecurityIdentifier AdminIdentity { get; } = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
 
         private static List<FileSystemAccessRule>? _AdminOnlyAcl;
-        private static List<FileSystemAccessRule> AdminOnlyAcl
+        private static List<FileSystemAccessRule>? _AdminRwUserRAcl;
+
+        private static List<FileSystemAccessRule> GetAcl(UserAccess userAccess)
         {
-            get
+            switch (userAccess)
             {
-                if (_AdminOnlyAcl is null)
-                {
-                    var acl = new List<FileSystemAccessRule>();
-                    var systemIdentity = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
-                    acl.Add(new FileSystemAccessRule(systemIdentity, FileSystemRights.FullControl, AccessControlType.Allow));
-                    acl.Add(new FileSystemAccessRule(AdminIdentity, FileSystemRights.FullControl, AccessControlType.Allow));
-                    _AdminOnlyAcl = acl;
-                }
-                return _AdminOnlyAcl;
+                case UserAccess.None:
+                    if (_AdminOnlyAcl is null)
+                    {
+                        var acl = new List<FileSystemAccessRule>();
+                        var systemIdentity = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
+                        acl.Add(new FileSystemAccessRule(systemIdentity, FileSystemRights.FullControl, AccessControlType.Allow));
+                        acl.Add(new FileSystemAccessRule(AdminIdentity, FileSystemRights.FullControl, AccessControlType.Allow));
+                        _AdminOnlyAcl = acl;
+                    }
+                    return _AdminOnlyAcl;
+                case UserAccess.ReadOnly:
+                    if (_AdminRwUserRAcl is null)
+                    {
+                        var acl = new List<FileSystemAccessRule>();
+                        var systemIdentity = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
+                        var userIdentity = new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null);
+                        acl.Add(new FileSystemAccessRule(systemIdentity, FileSystemRights.FullControl, AccessControlType.Allow));
+                        acl.Add(new FileSystemAccessRule(AdminIdentity, FileSystemRights.FullControl, AccessControlType.Allow));
+                        acl.Add(new FileSystemAccessRule(userIdentity, FileSystemRights.Read, AccessControlType.Allow));
+                        _AdminRwUserRAcl = acl;
+                    }
+                    return _AdminRwUserRAcl;
             }
+
+            throw new InvalidOperationException();
         }
 
-        public static void EnsureExistence(string folderPath)
+        public static FileStream CreateProtectedFile(string filePath, FileShare share, UserAccess userAccess, FileSystemRights rights = FileSystemRights.FullControl)
         {
-            if (!Utils.RunningAsAdmin())
-                throw new InsufficientPrivilegesException("Administrative privileges required.");
+            return new FileStream(filePath, FileMode.CreateNew, rights, share, 4096, FileOptions.None, ToFileSecurity(GetAcl(userAccess), AdminIdentity));
+        }
 
+        public static void EnsureFolder(string folderPath, UserAccess userAccess)
+        {
             // Create (if necessary) folder with correct ACLs
             var dir = new DirectoryInfo(folderPath);
-            dir.Create(ToDirectorySecurity(AdminOnlyAcl, AdminIdentity));
+            dir.Create(ToDirectorySecurity(GetAcl(userAccess), AdminIdentity));
 
             // DirectoryInfo.Create(security) does nothing if the directory already exists.
             // So to make sure the directory gets the required ACLs, we set permissions again
             // just in case Create() did nothing.
-            ReplaceFilesystemAccessRules(dir, AdminOnlyAcl, AdminIdentity);
+            ReplaceFilesystemAccessRules(dir, GetAcl(userAccess), AdminIdentity);
         }
 
-        // Creates and opens a file atomically with access rights only given to admins.
-        public static FileStream CreateSecureFileStream(string filePath, FileMode mode, FileSystemRights rights, FileShare share)
-        {
-            return new FileStream(filePath, mode, rights, share, 4096, FileOptions.None, ToFileSecurity(AdminOnlyAcl, AdminIdentity));
-        }
-
-        public static void ProtectFile(string filePath)
+        public static void EnsureFile(string filePath, UserAccess userAccess)
         {
             try
             {
-                using var _ = CreateSecureFileStream(filePath, FileMode.CreateNew, FileSystemRights.CreateFiles, FileShare.None);
+                using var _ = CreateProtectedFile(filePath, FileShare.None, userAccess, FileSystemRights.CreateFiles);
             }
             catch(IOException)
             {
-                ReplaceFilesystemAccessRules(new FileInfo(filePath), AdminOnlyAcl, AdminIdentity);
+                ReplaceFilesystemAccessRules(new FileInfo(filePath), GetAcl(userAccess), AdminIdentity);
             }
         }
     }

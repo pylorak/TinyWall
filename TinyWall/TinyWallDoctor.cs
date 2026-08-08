@@ -61,7 +61,7 @@ namespace pylorak.TinyWall
                 // Run installers
                 try
                 {
-                    ManagedInstallerClass.InstallHelper(new string[] { "/i", Utils.ExecutablePath });
+                    ManagedInstallerClass.InstallHelper(new string[] { "/i", AppPaths.ExecutablePath });
                 }
                 catch (Exception e)
                 {
@@ -92,7 +92,7 @@ namespace pylorak.TinyWall
                 // We are not running as admin.
                 try
                 {
-                    using Process p = Utils.StartProcess(Utils.ExecutablePath, "/install", true);
+                    using Process p = Utils.StartProcess(AppPaths.ExecutablePath, "/install", true);
                     p.WaitForExit();
                     return (p.ExitCode == 0);
                 }
@@ -229,11 +229,11 @@ namespace pylorak.TinyWall
             }
             catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_INSTALLER); }
 
-            SecureTemp.Remove(true);
+            AppPaths.EmptyFolder(AppPaths.PrivateTemp, true);
 
             try
             {
-                ManagedInstallerClass.InstallHelper(new string[] { "/u", Utils.ExecutablePath });
+                ManagedInstallerClass.InstallHelper(new string[] { "/u", AppPaths.ExecutablePath });
             }
             catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_INSTALLER); }
 
@@ -298,7 +298,7 @@ namespace pylorak.TinyWall
                 td.Settings.MultipleInstances = _TASK_INSTANCES_POLICY.TASK_INSTANCES_PARALLEL;
                 td.Triggers.Create(_TASK_TRIGGER_TYPE2.TASK_TRIGGER_LOGON);
                 var act = (IExecAction)td.Actions.Create(_TASK_ACTION_TYPE.TASK_ACTION_EXEC);
-                act.Path = Utils.ExecutablePath;
+                act.Path = AppPaths.ExecutablePath;
                 taskService.GetFolder(@"\").RegisterTaskDefinition(CONTROLLER_START_TASKSCH_NAME, td, TASK_CREATE_OR_UPDATE, null, null, _TASK_LOGON_TYPE.TASK_LOGON_INTERACTIVE_TOKEN);
             }
             catch (System.Runtime.InteropServices.COMException e)

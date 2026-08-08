@@ -14,9 +14,9 @@ namespace pylorak.TinyWall
         private static readonly string[] WhitelistedApps = new string[]
         {
 #if DEBUG
-            Path.Combine(Path.GetDirectoryName(Utils.ExecutablePath), "TinyWall.vshost.exe"),
+            Path.Combine(Path.GetDirectoryName(AppPaths.ExecutablePath), "TinyWall.vshost.exe"),
 #endif
-            Utils.ExecutablePath,
+            AppPaths.ExecutablePath,
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "dllhost.exe")
         };
 
