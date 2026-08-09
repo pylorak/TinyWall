@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -270,12 +270,6 @@
   <data name="mnuVirusTotal.Text" xml:space="preserve">
     <value>On VirusTotal</value>
   </data>
-  <data name="mnuProcessLibrary.Size" type="System.Drawing.Size, System.Drawing">
-    <value>220, 22</value>
-  </data>
-  <data name="mnuProcessLibrary.Text" xml:space="preserve">
-    <value>On ProcessLibrary</value>
-  </data>
   <data name="mnuFileNameOnTheWeb.Size" type="System.Drawing.Size, System.Drawing">
     <value>220, 22</value>
   </data>
@@ -541,12 +535,6 @@
     <value>mnuVirusTotal</value>
   </data>
   <data name="&gt;&gt;mnuVirusTotal.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;mnuProcessLibrary.Name" xml:space="preserve">
-    <value>mnuProcessLibrary</value>
-  </data>
-  <data name="&gt;&gt;mnuProcessLibrary.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;mnuFileNameOnTheWeb.Name" xml:space="preserve">

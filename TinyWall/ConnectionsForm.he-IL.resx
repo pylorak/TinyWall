@@ -159,9 +159,6 @@
   <data name="mnuVirusTotal.Text" xml:space="preserve">
     <value>בדיקה ב-VirusTotal</value>
   </data>
-  <data name="mnuProcessLibrary.Text" xml:space="preserve">
-    <value>בדיקה ב-ProcessLibrary</value>
-  </data>
   <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
     <value>בדיקת שם-הקובץ ברשת-האינטרנט</value>
   </data>

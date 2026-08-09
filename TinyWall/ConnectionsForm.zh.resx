@@ -159,9 +159,6 @@
   <data name="mnuVirusTotal.Text" xml:space="preserve">
     <value>关于VirusTotal</value>
   </data>
-  <data name="mnuProcessLibrary.Text" xml:space="preserve">
-    <value>关于ProcessLibrary</value>
-  </data>
   <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
     <value>网页文件名</value>
   </data>

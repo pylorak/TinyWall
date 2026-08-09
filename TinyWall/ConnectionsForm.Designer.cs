@@ -47,7 +47,6 @@
             this.mnuCloseProcess = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSearch = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuVirusTotal = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuProcessLibrary = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuFileNameOnTheWeb = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuRemoteAddressOnTheWeb = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCopyRemoteAddress = new System.Windows.Forms.ToolStripMenuItem();
@@ -173,7 +172,6 @@
             // 
             this.mnuSearch.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuVirusTotal,
-            this.mnuProcessLibrary,
             this.mnuFileNameOnTheWeb,
             this.mnuRemoteAddressOnTheWeb});
             this.mnuSearch.Image = global::pylorak.TinyWall.Resources.Icons.search;
@@ -185,12 +183,6 @@
             this.mnuVirusTotal.Name = "mnuVirusTotal";
             resources.ApplyResources(this.mnuVirusTotal, "mnuVirusTotal");
             this.mnuVirusTotal.Click += new System.EventHandler(this.mnuVirusTotal_Click);
-            // 
-            // mnuProcessLibrary
-            // 
-            this.mnuProcessLibrary.Name = "mnuProcessLibrary";
-            resources.ApplyResources(this.mnuProcessLibrary, "mnuProcessLibrary");
-            this.mnuProcessLibrary.Click += new System.EventHandler(this.mnuProcessLibrary_Click);
             // 
             // mnuFileNameOnTheWeb
             // 
@@ -297,7 +289,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuCopyRemoteAddress;
         private System.Windows.Forms.ToolStripMenuItem mnuSearch;
         private System.Windows.Forms.ToolStripMenuItem mnuVirusTotal;
-        private System.Windows.Forms.ToolStripMenuItem mnuProcessLibrary;
         private System.Windows.Forms.ToolStripMenuItem mnuFileNameOnTheWeb;
         private System.Windows.Forms.ToolStripMenuItem mnuRemoteAddressOnTheWeb;
         private System.Windows.Forms.ColumnHeader columnHeader8;

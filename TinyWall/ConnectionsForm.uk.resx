@@ -162,9 +162,6 @@
   <data name="mnuVirusTotal.Text" xml:space="preserve">
     <value>На VirusTotal</value>
   </data>
-  <data name="mnuProcessLibrary.Text" xml:space="preserve">
-    <value>На ProcessLibrary</value>
-  </data>
   <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
     <value>Ім’я файлу в інтернеті</value>
   </data>

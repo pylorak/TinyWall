@@ -466,22 +466,6 @@ namespace pylorak.TinyWall
             }
         }
 
-        private void mnuProcessLibrary_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                ListViewItem li = list.SelectedItems[0];
-
-                const string urlTemplate = @"http://www.processlibrary.com/search/?q={0}";
-                string filename = System.IO.Path.GetFileName(((ProcessInfo)li.Tag).Path);
-                string url = string.Format(CultureInfo.InvariantCulture, urlTemplate, filename);
-                Utils.StartProcessAndForget(url, string.Empty, false);
-            }
-            catch
-            {
-                MessageBox.Show(this, Resources.Messages.CannotGetPathOfProcess, Resources.Messages.TinyWall, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-        }
         private void mnuFileNameOnTheWeb_Click(object sender, EventArgs e)
         {
             try

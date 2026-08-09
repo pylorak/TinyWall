@@ -159,9 +159,6 @@
   <data name="mnuVirusTotal.Text" xml:space="preserve">
     <value>En VirusTotal</value>
   </data>
-  <data name="mnuProcessLibrary.Text" xml:space="preserve">
-    <value>En ProcessLibrary</value>
-  </data>
   <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
     <value>Nombre en la web</value>
   </data>

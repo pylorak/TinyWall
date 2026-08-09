@@ -162,9 +162,6 @@
   <data name="mnuVirusTotal.Text" xml:space="preserve">
     <value>VirusTotal で検索</value>
   </data>
-  <data name="mnuProcessLibrary.Text" xml:space="preserve">
-    <value>ProcessLibrary で検索</value>
-  </data>
   <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
     <value>ファイル名をインターネットで検索</value>
   </data>

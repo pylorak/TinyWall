@@ -159,9 +159,6 @@
   <data name="mnuVirusTotal.Text" xml:space="preserve">
     <value>VirusTotal'de</value>
   </data>
-  <data name="mnuProcessLibrary.Text" xml:space="preserve">
-    <value>ProcessLibrary'de</value>
-  </data>
   <data name="mnuFileNameOnTheWeb.Text" xml:space="preserve">
     <value>İnternette dosya adını</value>
   </data>
