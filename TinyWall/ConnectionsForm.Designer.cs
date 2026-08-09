@@ -39,8 +39,8 @@
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuUnblock = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,8 +80,8 @@
             this.columnHeader4,
             this.columnHeader5,
             this.columnHeader6,
-            this.columnHeader7,
             this.columnHeader8,
+            this.columnHeader7,
             this.columnHeader9});
             this.list.ContextMenuStrip = this.contextMenuStrip1;
             this.list.FullRowSelect = true;
@@ -130,15 +130,15 @@
             this.columnHeader6.Tag = "colRemoteAddress";
             resources.ApplyResources(this.columnHeader6, "columnHeader6");
             // 
-            // columnHeader7
-            // 
-            this.columnHeader7.Tag = "colState";
-            resources.ApplyResources(this.columnHeader7, "columnHeader7");
-            // 
             // columnHeader8
             // 
             this.columnHeader8.Tag = "colDirection";
             resources.ApplyResources(this.columnHeader8, "columnHeader8");
+            // 
+            // columnHeader7
+            // 
+            this.columnHeader7.Tag = "colState";
+            resources.ApplyResources(this.columnHeader7, "columnHeader7");
             // 
             // columnHeader9
             // 

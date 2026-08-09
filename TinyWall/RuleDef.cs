@@ -4,6 +4,18 @@ using System.Text.Json.Serialization;
 
 namespace pylorak.TinyWall
 {
+    public enum FilterGroup
+    {
+        Invalid,
+        DefaultAction,
+        PortScan,
+        RawSocket,
+        Blocklist,
+        User,
+        ExternalApp,
+        NumCategories
+    }
+
     [DataContract(Namespace = "TinyWall")]
     public class RuleDef
     {
@@ -40,6 +52,8 @@ namespace pylorak.TinyWall
         public RuleDirection Direction;
         [JsonIgnore]
         public ulong Weight;
+        [JsonIgnore]
+        public FilterGroup Category;
 
         public RuleDef()
         { }
@@ -61,7 +75,8 @@ namespace pylorak.TinyWall
                 IcmpTypesAndCodes = this.IcmpTypesAndCodes,
                 Protocol = this.Protocol,
                 Direction = this.Direction,
-                Weight = this.Weight
+                Weight = this.Weight,
+                Category = this.Category
             };
             return copy;
         }
@@ -98,9 +113,10 @@ namespace pylorak.TinyWall
             }
         }
 
-        public RuleDef(Guid exceptionId, string name, ExceptionSubject subject, RuleAction action, RuleDirection direction, Protocol protocol, ulong weight)
+        public RuleDef(Guid exceptionId, FilterGroup category, string name, ExceptionSubject subject, RuleAction action, RuleDirection direction, Protocol protocol, ulong weight)
         {
             SetSubject(subject);
+            this.Category = category;
             this.Name = name;
             this.ExceptionId = exceptionId;
             this.Action = action;

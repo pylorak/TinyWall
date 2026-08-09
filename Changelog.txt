@@ -2,6 +2,7 @@ TinyWall Changelog
 ---------------------
 
 3.5.2 - Maintenance release (xx.xx.xx.)
+- Show block reason in Connections window
 - Security hardening of the built-in updater
 - Increase password hashing complexity
 - New mitigation for tray icon sometimes not showing up on boot

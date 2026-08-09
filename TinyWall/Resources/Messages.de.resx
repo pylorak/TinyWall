@@ -357,4 +357,25 @@ Die ausgewählte Datei kann zu {0} gehören. Um sicherzustellen, dass die Anwend
   <data name="UpdateInstallError" xml:space="preserve">
     <value>Bei der Installation des Updates ist ein Problem aufgetreten. Versuchen Sie es später erneut.</value>
   </data>
+  <data name="ConnectionsBlockedEntryTemplate" xml:space="preserve">
+    <value>Blockiert ({0})</value>
+  </data>
+  <data name="FilterGroupDefaultAction" xml:space="preserve">
+    <value>Standardregel</value>
+  </data>
+  <data name="FilterGroupPortScan" xml:space="preserve">
+    <value>Portscan</value>
+  </data>
+  <data name="FilterGroupRawSocket" xml:space="preserve">
+    <value>Raw Socket</value>
+  </data>
+  <data name="FilterGroupBlocklist" xml:space="preserve">
+    <value>Blockliste</value>
+  </data>
+  <data name="FilterGroupUser" xml:space="preserve">
+    <value>Benutzerdefinierte Regel</value>
+  </data>
+  <data name="FilterGroupExternalApp" xml:space="preserve">
+    <value>durch externe Anwendung</value>
+  </data>
 </root>

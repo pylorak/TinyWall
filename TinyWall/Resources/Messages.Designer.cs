@@ -160,6 +160,15 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Blocked ({0}).
+        /// </summary>
+        internal static string ConnectionsBlockedEntryTemplate {
+            get {
+                return ResourceManager.GetString("ConnectionsBlockedEntryTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not apply firewall settings due to an internal error..
         /// </summary>
         internal static string CouldNotApplySettingsInternalError {
@@ -256,6 +265,60 @@ namespace pylorak.TinyWall.Resources {
         internal static string ErrorCheckingForUpdates {
             get {
                 return ResourceManager.GetString("ErrorCheckingForUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blocklist.
+        /// </summary>
+        internal static string FilterGroupBlocklist {
+            get {
+                return ResourceManager.GetString("FilterGroupBlocklist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default action.
+        /// </summary>
+        internal static string FilterGroupDefaultAction {
+            get {
+                return ResourceManager.GetString("FilterGroupDefaultAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to by 3rd party app.
+        /// </summary>
+        internal static string FilterGroupExternalApp {
+            get {
+                return ResourceManager.GetString("FilterGroupExternalApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port scan.
+        /// </summary>
+        internal static string FilterGroupPortScan {
+            get {
+                return ResourceManager.GetString("FilterGroupPortScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Raw socket.
+        /// </summary>
+        internal static string FilterGroupRawSocket {
+            get {
+                return ResourceManager.GetString("FilterGroupRawSocket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User rule.
+        /// </summary>
+        internal static string FilterGroupUser {
+            get {
+                return ResourceManager.GetString("FilterGroupUser", resourceCulture);
             }
         }
         

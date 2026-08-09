@@ -126,6 +126,10 @@ namespace pylorak.TinyWall
             // Show log entries if requested by user
             if (chkShowBlocked.Checked)
             {
+                // Preconstruct a constant value we might use many times. We force an IPv6-address simply because
+                // we like its string representation (::) more than the IPv4 equivalent (0.0.0.0).
+                var unspecifiedEndpoint = new IPEndPoint(new IPAddress(new byte[16]), 0);
+
                 // Try to resolve PIDs heuristically
                 var ProcessPathInfoMap = new Dictionary<string, List<ProcessSnapshotEntry>>();
                 foreach (var p in ProcessManager.CreateToolhelp32SnapshotExtended())
@@ -163,40 +167,25 @@ namespace pylorak.TinyWall
                     if (span > refSpan)
                         continue;
 
-                    switch (newEntry.Event)
+                    // This is a list of blocked applications, so only list each application once
+                    // with its most recent block for the same filter group.
+                    // Input list is presumed to be sorted in ascending order by timestamp.
+                    if (newEntry.Event == FirewallLogEvent.ClassifyDrop)
                     {
-                        case EventLogEvent.ALLOWED_LISTEN:
-                        case EventLogEvent.ALLOWED_CONNECTION:
-                        case EventLogEvent.ALLOWED_LOCAL_BIND:
-                        case EventLogEvent.ALLOWED:
+                        bool matchFound = false;
+                        for (int j = 0; j < filteredLog.Count; ++j)
+                        {
+                            FirewallLogEntry oldEntry = filteredLog[j];
+                            if (oldEntry.Equals(newEntry, false))
                             {
-                                newEntry.Event = EventLogEvent.ALLOWED;
+                                matchFound = true;
+                                oldEntry.Timestamp = newEntry.Timestamp;
                                 break;
                             }
-                        case EventLogEvent.BLOCKED_LISTEN:
-                        case EventLogEvent.BLOCKED_CONNECTION:
-                        case EventLogEvent.BLOCKED_LOCAL_BIND:
-                        case EventLogEvent.BLOCKED_PACKET:
-                        case EventLogEvent.BLOCKED:
-                            {
-                                bool matchFound = false;
-                                newEntry.Event = EventLogEvent.BLOCKED;
+                        }
 
-                                for (int j = 0; j < filteredLog.Count; ++j)
-                                {
-                                    FirewallLogEntry oldEntry = filteredLog[j];
-                                    if (oldEntry.Equals(newEntry, false))
-                                    {
-                                        matchFound = true;
-                                        oldEntry.Timestamp = newEntry.Timestamp;
-                                        break;
-                                    }
-                                }
-
-                                if (!matchFound)
-                                    filteredLog.Add(newEntry);
-                                break;
-                            }
+                        if (!matchFound)
+                            filteredLog.Add(newEntry);
                     }
                 }
 
@@ -212,7 +201,21 @@ namespace pylorak.TinyWall
                     entry.AppPath = Utils.GetExactPath(entry.AppPath);
 
                     var pi = ProcessInfo.Create(entry.ProcessId, entry.AppPath ?? string.Empty, entry.PackageId, packageList, servicePids);
-                    ConstructListItem(itemColl, pi, entry.Protocol.ToString(), new IPEndPoint(new IPAddress(entry.LocalIp), entry.LocalPort), new IPEndPoint(new IPAddress(entry.RemoteIp), entry.RemotePort), "Blocked", entry.Timestamp, entry.Direction);
+
+                    var blockedReasonText = entry.FilterGroup switch
+                    {
+                        FilterGroup.DefaultAction => Resources.Messages.FilterGroupDefaultAction,
+                        FilterGroup.PortScan => Resources.Messages.FilterGroupPortScan,
+                        FilterGroup.RawSocket => Resources.Messages.FilterGroupRawSocket,
+                        FilterGroup.Blocklist => Resources.Messages.FilterGroupBlocklist,
+                        FilterGroup.User => Resources.Messages.FilterGroupUser,
+                        FilterGroup.ExternalApp => Resources.Messages.FilterGroupExternalApp,
+                        _ => "???"
+                    };
+                    var blockedStateText = string.Format(Resources.Messages.ConnectionsBlockedEntryTemplate, blockedReasonText);
+                    var localEndPoint = entry.LocalIp is null ? unspecifiedEndpoint : new IPEndPoint(new IPAddress(entry.LocalIp), entry.LocalPort);
+                    var remoteEndPoint = entry.RemoteIp is null ? unspecifiedEndpoint : new IPEndPoint(new IPAddress(entry.RemoteIp), entry.RemotePort);
+                    ConstructListItem(itemColl, pi, entry.Protocol.ToString(), localEndPoint, remoteEndPoint, blockedStateText, entry.Timestamp, entry.Direction);
                 }
             }
 
@@ -262,7 +265,6 @@ namespace pylorak.TinyWall
                 li.SubItems.Add(localEP.Address.ToString());
                 li.SubItems.Add(remoteEP.Port.ToString(CultureInfo.InvariantCulture).PadLeft(5));
                 li.SubItems.Add(remoteEP.Address.ToString());
-                li.SubItems.Add(state);
                 switch (dir)
                 {
                     case RuleDirection.In:
@@ -275,6 +277,7 @@ namespace pylorak.TinyWall
                         li.SubItems.Add(string.Empty);
                         break;
                 }
+                li.SubItems.Add(state);
                 li.SubItems.Add(ts.ToString("yyyy/MM/dd HH:mm:ss"));
                 itemColl.Add(li);
             }

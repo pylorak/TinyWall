@@ -10,6 +10,17 @@ namespace pylorak.TinyWall
 {
     internal class FirewallLogWatcher : Disposable
     {
+        public enum EventLogEvent
+        {
+            ALLOWED_LISTEN = 5154,
+            ALLOWED_CONNECTION = 5156,
+            ALLOWED_LOCAL_BIND = 5158,
+            BLOCKED_LISTEN = 5155,
+            BLOCKED_CONNECTION = 5157,
+            BLOCKED_PACKET = 5152,
+            BLOCKED_LOCAL_BIND = 5159
+        }
+
         internal class LogEntry
         {
             public DateTime Timestamp;

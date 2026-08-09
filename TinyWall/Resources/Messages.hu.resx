@@ -392,4 +392,25 @@ A kiválasztott fájl a következő része lehet: {0}. Ahhoz hogy az alkalmazás
   <data name="UpdateInstallError" xml:space="preserve">
     <value>A frissítés telepítése egy probléma miatt meghiúsult. Próbálkozzon újra később.</value>
   </data>
+  <data name="ConnectionsBlockedEntryTemplate" xml:space="preserve">
+    <value>Blokkolva ({0})</value>
+  </data>
+  <data name="FilterGroupDefaultAction" xml:space="preserve">
+    <value>Alapszabály</value>
+  </data>
+  <data name="FilterGroupPortScan" xml:space="preserve">
+    <value>Portszkennelés</value>
+  </data>
+  <data name="FilterGroupRawSocket" xml:space="preserve">
+    <value>Nyers socket</value>
+  </data>
+  <data name="FilterGroupBlocklist" xml:space="preserve">
+    <value>Blokkoló-lista</value>
+  </data>
+  <data name="FilterGroupUser" xml:space="preserve">
+    <value>Felhasználói szabály</value>
+  </data>
+  <data name="FilterGroupExternalApp" xml:space="preserve">
+    <value>külső program által</value>
+  </data>
 </root>
