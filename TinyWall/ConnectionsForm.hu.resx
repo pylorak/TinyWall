@@ -183,4 +183,10 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Kapcsolatok - TinyWall</value>
   </data>
+  <data name="mnuCopyPath.Text" xml:space="preserve">
+    <value>Fájlútvonal másolása</value>
+  </data>
+  <data name="mnuOpenFolder.Text" xml:space="preserve">
+    <value>Mappa megnyitása</value>
+  </data>
 </root>

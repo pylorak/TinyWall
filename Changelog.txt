@@ -10,6 +10,7 @@ TinyWall Changelog
 - Fix misaligned drawing of focus highlight in dark mode lists
 - Remove "Search on ProcessLibrary", site is practically dead
 - Add copy icon to connections list context menu
+- Add "Copy path" and "Open folder" to connections list context menu
 - Correct border transparency of external app icons in dark mode
 - Better sizing of external app icons in dark mode
 - Develtool UI replaced by CLI for automated builds

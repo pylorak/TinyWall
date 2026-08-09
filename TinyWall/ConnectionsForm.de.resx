@@ -163,7 +163,7 @@
     <value>Entfernte Adresse im Internet</value>
   </data>
   <data name="mnuCopyRemoteAddress.Text" xml:space="preserve">
-    <value>Kopiere die entfernte Adresse.</value>
+    <value>Remote-Adresse kopieren</value>
   </data>
   <data name="btnRefresh.Text" xml:space="preserve">
     <value>Aktualisieren</value>
@@ -179,5 +179,11 @@
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Verbindungen - TinyWall</value>
+  </data>
+  <data name="mnuCopyPath.Text" xml:space="preserve">
+    <value>Dateipfad kopieren</value>
+  </data>
+  <data name="mnuOpenFolder.Text" xml:space="preserve">
+    <value>Verzeichnis öffnen</value>
   </data>
 </root>

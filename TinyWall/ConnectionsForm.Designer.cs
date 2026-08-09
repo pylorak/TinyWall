@@ -50,6 +50,8 @@
             this.mnuFileNameOnTheWeb = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuRemoteAddressOnTheWeb = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCopyRemoteAddress = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuCopyPath = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuOpenFolder = new System.Windows.Forms.ToolStripMenuItem();
             this.IconList = new System.Windows.Forms.ImageList(this.components);
             this.btnRefresh = new System.Windows.Forms.Button();
             this.chkShowListen = new System.Windows.Forms.CheckBox();
@@ -149,7 +151,9 @@
             this.mnuUnblock,
             this.mnuCloseProcess,
             this.mnuSearch,
-            this.mnuCopyRemoteAddress});
+            this.mnuCopyRemoteAddress,
+            this.mnuCopyPath,
+            this.mnuOpenFolder});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
@@ -202,6 +206,20 @@
             this.mnuCopyRemoteAddress.Name = "mnuCopyRemoteAddress";
             resources.ApplyResources(this.mnuCopyRemoteAddress, "mnuCopyRemoteAddress");
             this.mnuCopyRemoteAddress.Click += new System.EventHandler(this.mnuCopyRemoteAddress_Click);
+            // 
+            // mnuCopyPath
+            // 
+            this.mnuCopyPath.Image = global::pylorak.TinyWall.Resources.Icons.copy;
+            this.mnuCopyPath.Name = "mnuCopyPath";
+            resources.ApplyResources(this.mnuCopyPath, "mnuCopyPath");
+            this.mnuCopyPath.Click += new System.EventHandler(this.mnuCopyPath_Click);
+            // 
+            // mnuOpenFolder
+            // 
+            this.mnuOpenFolder.Image = global::pylorak.TinyWall.Resources.Icons.open_folder;
+            this.mnuOpenFolder.Name = "mnuOpenFolder";
+            resources.ApplyResources(this.mnuOpenFolder, "mnuOpenFolder");
+            this.mnuOpenFolder.Click += new System.EventHandler(this.mnuOpenFolder_Click);
             // 
             // IconList
             // 
@@ -296,5 +314,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader9;
         private System.Windows.Forms.ColumnHeader columnHeader10;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.ToolStripMenuItem mnuCopyPath;
+        private System.Windows.Forms.ToolStripMenuItem mnuOpenFolder;
     }
 }

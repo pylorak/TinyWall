@@ -508,5 +508,29 @@ namespace pylorak.TinyWall
                 e.Handled = true;
             }
         }
+
+        private void mnuCopyPath_Click(object sender, EventArgs e)
+        {
+            var li = list.SelectedItems[0];
+            var clipboardData = (li.Tag as ProcessInfo)!.Path;
+
+            var dataObject = new DataObject();
+            dataObject.SetData(DataFormats.UnicodeText, false, clipboardData);
+            try
+            {
+                Clipboard.SetDataObject(dataObject, true, 20, 100);
+            }
+            catch
+            {
+                // Fail silently :(
+            }
+        }
+
+        private void mnuOpenFolder_Click(object sender, EventArgs e)
+        {
+            var li = list.SelectedItems[0];
+            var folderPath = System.IO.Path.GetDirectoryName((li.Tag as ProcessInfo)!.Path);
+            Utils.StartProcessAndForget(folderPath, string.Empty, false);
+        }
     }
 }

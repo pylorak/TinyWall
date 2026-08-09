@@ -21,6 +21,8 @@ Ukrainian - prodbysanya
 Icon resources:
 -----------------------------------------------
 copy - icon8 (https://icons8.com)
+open_folder  (as above)
+search  (as above)
 executable - deviantdark (http://deviantdark.deviantart.com/)
 add - http://www.icons-land.com/
 accept  (as above)
