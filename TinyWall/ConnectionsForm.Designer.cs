@@ -198,6 +198,7 @@
             // 
             // mnuCopyRemoteAddress
             // 
+            this.mnuCopyRemoteAddress.Image = global::pylorak.TinyWall.Resources.Icons.copy;
             this.mnuCopyRemoteAddress.Name = "mnuCopyRemoteAddress";
             resources.ApplyResources(this.mnuCopyRemoteAddress, "mnuCopyRemoteAddress");
             this.mnuCopyRemoteAddress.Click += new System.EventHandler(this.mnuCopyRemoteAddress_Click);
