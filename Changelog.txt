@@ -10,6 +10,7 @@ TinyWall Changelog
 - Fix misaligned drawing of focus highlight in dark mode lists
 - Fix discolored context menu icons in dark mode
 - Remove "Search on ProcessLibrary", site is practically dead
+- Make ESC key cancel Application Finder dialog too
 - Add copy icon to connections list context menu
 - Add "Copy path" and "Open folder" to connections list context menu
 - Correct border transparency of external app icons in dark mode
