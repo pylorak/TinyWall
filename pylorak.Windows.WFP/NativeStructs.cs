@@ -478,24 +478,27 @@ namespace pylorak.Windows.WFP.Interop
         [FieldOffset(0)]
         public fixed byte AddrV6[16];
 
-        public readonly System.Net.IPAddress ToIpV4()
+        public readonly byte[] ToByteArray(bool isIpV6)
         {
-            byte[] b = BitConverter.GetBytes(AddrV4);
-            Array.Reverse(b);
-            return new System.Net.IPAddress(b);
-        }
-        public System.Net.IPAddress ToIpV6()
-        {
-            byte[] b = new byte[16];
-            unsafe
+            if (isIpV6)
             {
-                fixed (byte* srcPtr = AddrV6)
+                byte[] b = new byte[16];
+                unsafe
                 {
-                    Marshal.Copy((IntPtr)srcPtr, b, 0, 16);
+                    fixed (byte* srcPtr = AddrV6)
+                    {
+                        Marshal.Copy((IntPtr)srcPtr, b, 0, 16);
+                    }
                 }
+                Array.Reverse(b);
+                return b;
             }
-            Array.Reverse(b);
-            return new System.Net.IPAddress(b);
+            else
+            {
+                byte[] b = BitConverter.GetBytes(AddrV4);
+                Array.Reverse(b);
+                return b;
+            }
         }
     }
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Principal;
@@ -20,101 +19,10 @@ namespace pylorak.Windows.WFP
         public SecurityIdentifier? userId;
         public Interop.FwpmDirection? direction;
         public string? packageId;
+        public byte[]? localAddr;
+        public byte[]? remoteAddr;
 
-#if true    // would be easier to go over IPAdress, but this way a lot of object allocations are avoided
-        public string? localAddr;
-        public string? remoteAddr;
-        private static string ToIpAddress(Interop.InternetworkAddr addr, bool isIpV6, StringBuilder sb)
-        {
-            sb.Length = 0;
-            if (isIpV6)
-            {
-                const int IPV6_BYTELEN = 16;
-                unsafe
-                {
-                    for (int i = 0; i < IPV6_BYTELEN; i += 2)
-                    {
-                        byte b1 = addr.AddrV6[i];
-                        byte b0 = addr.AddrV6[i + 1];
-                        if (
-                            (b1 == 0)
-                            && (b0 == 0)
-                            )
-                        {
-                            sb.Append('0');
-                        }
-                        else
-                        {
-                            ToHex(b1, sb);
-                            ToHex(b0, sb);
-                        }
-                        if (i != IPV6_BYTELEN - 2)
-                            sb.Append(':');
-                    }
-                }
-            }
-            else
-            {
-                unsafe
-                {
-                    byte* b = (byte*)&addr.AddrV4;
-
-                    ToStringBuilder(b[3], sb);
-                    sb.Append('.');
-                    ToStringBuilder(b[2], sb);
-                    sb.Append('.');
-                    ToStringBuilder(b[1], sb);
-                    sb.Append('.');
-                    ToStringBuilder(b[0], sb);
-                }
-            }
-
-            return sb.ToString();
-        }
-
-        private static void ToHex(byte b, StringBuilder sb)
-        {
-            var n = (byte)(b >> 4);
-            sb.Append((char)(n > 9 ? n - 10 + 'a' : n + '0'));
-            n = (byte)(b & 0x0F);
-            sb.Append((char)(n > 9 ? n - 10 + 'a' : n + '0'));
-        }
-
-        private const string IntChars = "0123456789";
-        private static void ToStringBuilder(uint a, StringBuilder sb)
-        {
-            if (a == 0)
-            {
-                sb.Append('0');
-            }
-            else
-            {
-                unsafe
-                {
-                    char* rev = stackalloc char[16];
-                    int i = 15;
-                    while (a > 0)
-                    {
-                        rev[i] = IntChars[(int)(a % 10)];
-                        --i;
-                        a /= 10;
-                    }
-                    ++i;
-                    for (; i < 16; ++i)
-                        sb.Append(rev[i]);
-                }
-            }
-        }
-#else
-        public IPAddress localAddr;
-        public IPAddress remoteAddr;
-        private static IPAddress ToIpAddress(Interop.InternetworkAddr addr, bool isIpV6)
-        {
-            return isIpV6 ? addr.ToIpV6() : addr.ToIpV4();
-        }
-#endif
-
-        public NetEventData(Interop.FWPM_NET_EVENT1 nativeEvent, StringBuilder sb) : this()
+        public NetEventData(Interop.FWPM_NET_EVENT1 nativeEvent) : this()
         {
             this.EventType = nativeEvent.type;
             this.timeStamp = nativeEvent.header.timeStamp.Local;
@@ -130,7 +38,7 @@ namespace pylorak.Windows.WFP
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_LOCAL_ADDR_SET) != 0)
             {
-                localAddr = ToIpAddress(nativeEvent.header.localAddr, nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6, sb);
+                localAddr = nativeEvent.header.localAddr.ToByteArray(nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6);
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_LOCAL_PORT_SET) != 0)
             {
@@ -138,7 +46,7 @@ namespace pylorak.Windows.WFP
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_REMOTE_ADDR_SET) != 0)
             {
-                remoteAddr = ToIpAddress(nativeEvent.header.remoteAddr, nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6, sb);
+                remoteAddr = nativeEvent.header.remoteAddr.ToByteArray(nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6);
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_REMOTE_PORT_SET) != 0)
             {
@@ -159,7 +67,7 @@ namespace pylorak.Windows.WFP
             }
         }
 
-        public NetEventData(Interop.FWPM_NET_EVENT2 nativeEvent, StringBuilder sb) : this()
+        public NetEventData(Interop.FWPM_NET_EVENT2 nativeEvent) : this()
         {
             this.EventType = nativeEvent.type;
             this.timeStamp = nativeEvent.header.timeStamp.Local;
@@ -175,7 +83,7 @@ namespace pylorak.Windows.WFP
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_LOCAL_ADDR_SET) != 0)
             {
-                localAddr = ToIpAddress(nativeEvent.header.localAddr, nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6, sb);
+                localAddr = nativeEvent.header.localAddr.ToByteArray(nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6);
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_LOCAL_PORT_SET) != 0)
             {
@@ -183,7 +91,7 @@ namespace pylorak.Windows.WFP
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_REMOTE_ADDR_SET) != 0)
             {
-                remoteAddr = ToIpAddress(nativeEvent.header.remoteAddr, nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6, sb);
+                remoteAddr = nativeEvent.header.remoteAddr.ToByteArray(nativeEvent.header.ipVersion == Interop.FWP_IP_VERSION.FWP_IP_VERSION_V6);
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_REMOTE_PORT_SET) != 0)
             {
@@ -223,7 +131,6 @@ namespace pylorak.Windows.WFP
     public abstract class NetEventSubscription : IDisposable
     {
         protected readonly NetEventCallback _callback;
-        protected readonly StringBuilder SBuilder = new(40);
 
         public bool IsDisposed { get; private set; }
 
@@ -291,7 +198,7 @@ namespace pylorak.Windows.WFP
         private void NativeCallbackHandler0(IntPtr context, IntPtr netEvent1)
         {
             Interop.FWPM_NET_EVENT1 ev = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT1>(netEvent1);
-            _callback(new NetEventData(ev, SBuilder));
+            _callback(new NetEventData(ev));
         }
 
         protected override void Dispose(bool disposing)
@@ -349,7 +256,7 @@ namespace pylorak.Windows.WFP
         private void NativeCallbackHandler1(IntPtr context, IntPtr netEvent1)
         {
             var ev = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT2>(netEvent1);
-            _callback(new NetEventData(ev, SBuilder));
+            _callback(new NetEventData(ev));
         }
 
         protected override void Dispose(bool disposing)

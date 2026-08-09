@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using pylorak.Windows;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -245,6 +246,11 @@ namespace pylorak.TinyWall
                 return Environment.GetEnvironmentVariable("ProgramFiles(x86)");
             else
                 return Environment.GetEnvironmentVariable("ProgramFiles");
+        }
+
+        internal static int GetArrayHashCode<TElem>(TElem[] arr)
+        {
+            return ((IStructuralEquatable)arr).GetHashCode(EqualityComparer<TElem>.Default);
         }
 
         internal static bool AppsUseLightTheme()

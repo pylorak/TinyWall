@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Management;
-using System.Threading;
+﻿using pylorak.Utilities;
 using pylorak.Windows;
 using pylorak.Windows.Services;
 using pylorak.Windows.WFP;
 using pylorak.Windows.WFP.Interop;
-using pylorak.Utilities;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Management;
+using System.Net;
+using System.Text;
+using System.Threading;
+using static pylorak.TinyWall.FirewallLogWatcher;
 
 namespace pylorak.TinyWall
 {
@@ -1802,8 +1802,8 @@ namespace pylorak.TinyWall
                 Timestamp = data.timeStamp,
                 Event = eventType,
                 PackageId = data.packageId,
-                RemoteIp = data.remoteAddr?.ToString(),
-                LocalIp = data.localAddr?.ToString()
+                RemoteIp = data.remoteAddr,
+                LocalIp = data.localAddr
             };
 
             if (!Utils.IsNullOrEmpty(data.appId))
@@ -1819,19 +1819,13 @@ namespace pylorak.TinyWall
             if (data.localPort.HasValue)
                 entry.LocalPort = data.localPort.Value;
 
-            // Replace invalid IP strings with the "unspecified address" IPv6 specifier
-            if (string.IsNullOrEmpty(entry.RemoteIp))
-                entry.RemoteIp = "::";
-            if (string.IsNullOrEmpty(entry.LocalIp))
-                entry.LocalIp = "::";
-
             lock (FirewallLogEntries)
             {
                 FirewallLogEntries.Enqueue(entry);
             }
         }
 
-        private void AutoLearnLogEntry(FirewallLogEntry entry)
+        private void AutoLearnLogEntry(LogEntry entry)
         {
             if (  // IPv4
                 ((string.Equals(entry.RemoteIp, "127.0.0.1", StringComparison.Ordinal)

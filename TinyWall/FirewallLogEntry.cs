@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 namespace pylorak.TinyWall
 {
@@ -31,8 +32,8 @@ namespace pylorak.TinyWall
         public uint ProcessId;
         public Protocol Protocol;
         public RuleDirection Direction;
-        public string? LocalIp;
-        public string? RemoteIp;
+        public byte[]? LocalIp;
+        public byte[]? RemoteIp;
         public int LocalPort;
         public int RemotePort;
         public string? AppPath;
@@ -53,9 +54,9 @@ namespace pylorak.TinyWall
                 hash = (hash ^ Protocol.GetHashCode()) * FNV_PRIME;
                 hash = (hash ^ Direction.GetHashCode()) * FNV_PRIME;
                 if (LocalIp is not null)
-                    hash = (hash ^ LocalIp.GetHashCode()) * FNV_PRIME;
+                    hash = (hash ^ Utils.GetArrayHashCode(LocalIp)) * FNV_PRIME;
                 if (RemoteIp is not null)
-                    hash = (hash ^ RemoteIp.GetHashCode()) * FNV_PRIME;
+                    hash = (hash ^ Utils.GetArrayHashCode(RemoteIp)) * FNV_PRIME;
                 hash = (hash ^ LocalPort.GetHashCode()) * FNV_PRIME;
                 hash = (hash ^ RemotePort.GetHashCode()) * FNV_PRIME;
                 if (AppPath is not null)
@@ -83,8 +84,8 @@ namespace pylorak.TinyWall
                 (ProcessId == obj.ProcessId) &&
                 (Protocol == obj.Protocol) &&
                 (Direction == obj.Direction) &&
-                string.Equals(LocalIp, obj.LocalIp) &&
-                string.Equals(RemoteIp, obj.RemoteIp) &&
+                StructuralComparisons.StructuralEqualityComparer.Equals(LocalIp, obj.LocalIp) &&
+                StructuralComparisons.StructuralEqualityComparer.Equals(RemoteIp, obj.RemoteIp) &&
                 (LocalPort == obj.LocalPort) &&
                 (RemotePort == obj.RemotePort) &&
                 string.Equals(AppPath, obj.AppPath) &&

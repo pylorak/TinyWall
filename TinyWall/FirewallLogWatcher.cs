@@ -10,10 +10,23 @@ namespace pylorak.TinyWall
 {
     internal class FirewallLogWatcher : Disposable
     {
-        //private readonly string FIREWALLLOG_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"LogFiles\Firewall\pfirewall.log");
+        internal class LogEntry
+        {
+            public DateTime Timestamp;
+            public EventLogEvent Event;
+            public uint ProcessId;
+            public Protocol Protocol;
+            public RuleDirection Direction;
+            public string? LocalIp;
+            public string? RemoteIp;
+            public int LocalPort;
+            public int RemotePort;
+            public string? AppPath;
+        }
+
         private readonly EventLogWatcher LogWatcher;
 
-        public delegate void NewLogEntryDelegate(FirewallLogWatcher sender, FirewallLogEntry entry);
+        public delegate void NewLogEntryDelegate(FirewallLogWatcher sender, LogEntry entry);
         public event NewLogEntryDelegate? NewLogEntry;
 
         protected override void Dispose(bool disposing)
@@ -68,9 +81,9 @@ namespace pylorak.TinyWall
             }
         }
 
-        private static FirewallLogEntry ParseLogEntry(EventRecordWrittenEventArgs e)
+        private static LogEntry ParseLogEntry(EventRecordWrittenEventArgs e)
         {
-            var entry = new FirewallLogEntry
+            var entry = new LogEntry
             {
                 Timestamp = DateTime.Now,
                 Event = (EventLogEvent)e.EventRecord.Id

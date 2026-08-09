@@ -212,7 +212,7 @@ namespace pylorak.TinyWall
                     entry.AppPath = Utils.GetExactPath(entry.AppPath);
 
                     var pi = ProcessInfo.Create(entry.ProcessId, entry.AppPath ?? string.Empty, entry.PackageId, packageList, servicePids);
-                    ConstructListItem(itemColl, pi, entry.Protocol.ToString(), new IPEndPoint(IPAddress.Parse(entry.LocalIp), entry.LocalPort), new IPEndPoint(IPAddress.Parse(entry.RemoteIp), entry.RemotePort), "Blocked", entry.Timestamp, entry.Direction);
+                    ConstructListItem(itemColl, pi, entry.Protocol.ToString(), new IPEndPoint(new IPAddress(entry.LocalIp), entry.LocalPort), new IPEndPoint(new IPAddress(entry.RemoteIp), entry.RemotePort), "Blocked", entry.Timestamp, entry.Direction);
                 }
             }
 
