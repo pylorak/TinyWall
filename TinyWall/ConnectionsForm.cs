@@ -28,7 +28,7 @@ namespace pylorak.TinyWall
             Utils.SetRightToLeft(this);
             if (Utils.IsDarkModeActive(ActiveConfig.Controller))
             {
-                this.DarkMode = new(this) { ColorMode = DarkModeCS.DisplayMode.DarkMode };
+                this.DarkMode = new(this, false) { ColorMode = DarkModeCS.DisplayMode.DarkMode };
                 this.ListRepaintFilter = new WmPaintFilter(list);
             }
             this.IconList.ImageSize = IconSize;

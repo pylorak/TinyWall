@@ -16,7 +16,7 @@ namespace pylorak.TinyWall
             try
             {
                 if (Utils.IsDarkModeActive(ActiveConfig.Controller))
-                    this.DarkMode = new(this) { ColorMode = DarkModeCS.DisplayMode.DarkMode };
+                    this.DarkMode = new(this, false) { ColorMode = DarkModeCS.DisplayMode.DarkMode };
             }
             catch {
                 // PasswordForm can be shown during uninstall (if TinyWall is locked), and ActiveConfig.Controller will be null
