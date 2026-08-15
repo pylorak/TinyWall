@@ -61,6 +61,16 @@ namespace pylorak.TinyWall
         private readonly ManagementEventWatcher ProcessStartWatcher = new(new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace"));
         private readonly EventMerger RuleReloadEventMerger = new(1000);
 
+        // WFP net-event subscription resilience. The subscription is a single
+        // point of failure for the blocked-connections log: when it dies
+        // silently (exception in callback, BFE dropping delivery), the log
+        // stops filling and stays empty until the service restarts.
+        private const int NET_EVENT_RECREATE_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes without events
+        private NetEventSubscription? NetEventSub;
+        private int LastNetEventTick = Environment.TickCount;
+        private bool NetEventBroken = false;
+        private int LastNetEventErrorLogTick = -60 * 1000;
+
         private HashSet<IpAddrMask> LocalSubnetAddreses = new();
         private HashSet<IpAddrMask> GatewayAddresses = new();
         private HashSet<IpAddrMask> DnsAddresses = new();
@@ -1499,6 +1509,13 @@ namespace pylorak.TinyWall
                         if (!WfpEngine.CollectNetEvents)
                             WfpEngine.CollectNetEvents = true;
 
+                        // Recover a dead net-event subscription. It can die
+                        // silently when an exception escapes the callback or
+                        // when BFE stops delivering events for this session.
+                        if (NetEventBroken || (Environment.TickCount - LastNetEventTick) > NET_EVENT_RECREATE_TIMEOUT_MS)
+                        {
+                            RecreateNetEventSubscription();
+                        }
                         // Check for inactivity and lock if necessary
                         if (DateTime.Now - LastControllerCommandTime > TimeSpan.FromMinutes(10))
                         {
@@ -1675,7 +1692,7 @@ namespace pylorak.TinyWall
             WfpEngine.CollectNetEvents = true;
             using var NetEventCollection = new CallbackOnDispose(() => { try { WfpEngine.CollectNetEvents = false; } catch { } });
             WfpEngine.EventMatchAnyKeywords = InboundEventMatchKeyword.FWPM_NET_EVENT_KEYWORD_INBOUND_BCAST | InboundEventMatchKeyword.FWPM_NET_EVENT_KEYWORD_INBOUND_MCAST;
-            using var WfpEvent = WfpEngine.SubscribeNetEvent(WfpNetEventCallback);
+            RecreateNetEventSubscription();
 
             ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
             NetworkInterfaceWatcher.InterfaceChanged += (sender, args) =>
@@ -1715,6 +1732,9 @@ namespace pylorak.TinyWall
                     req.Response = TwMessageError.Instance;
                 }
             }
+
+            NetEventSub?.Dispose();
+            NetEventSub = null;
         }
 
         private void ProcessStartWatcher_EventArrived(object sender, EventArrivedEventArgs e)
@@ -1798,46 +1818,106 @@ namespace pylorak.TinyWall
 
         private void WfpNetEventCallback(NetEventData data)
         {
-            EventLogEvent eventType;
-            if (data.EventType == FWPM_NET_EVENT_TYPE.FWPM_NET_EVENT_TYPE_CLASSIFY_DROP)
-                eventType = EventLogEvent.BLOCKED;
-            else if (data.EventType == FWPM_NET_EVENT_TYPE.FWPM_NET_EVENT_TYPE_CLASSIFY_ALLOW)
-                eventType = EventLogEvent.ALLOWED;
-            else
-                return;
-
-            var entry = new FirewallLogEntry
+            try
             {
-                Timestamp = data.timeStamp,
-                Event = eventType,
-                PackageId = data.packageId,
-                RemoteIp = data.remoteAddr?.ToString(),
-                LocalIp = data.localAddr?.ToString()
-            };
+                EventLogEvent eventType;
+                if (data.EventType == FWPM_NET_EVENT_TYPE.FWPM_NET_EVENT_TYPE_CLASSIFY_DROP)
+                    eventType = EventLogEvent.BLOCKED;
+                else if (data.EventType == FWPM_NET_EVENT_TYPE.FWPM_NET_EVENT_TYPE_CLASSIFY_ALLOW)
+                    eventType = EventLogEvent.ALLOWED;
+                else
+                    return;
 
-            if (!Utils.IsNullOrEmpty(data.appId))
-                entry.AppPath = PathMapper.Instance.ConvertPathIgnoreErrors(data.appId, PathFormat.Win32);
-            else
-                entry.AppPath = "System";
-            if (data.remotePort.HasValue)
-                entry.RemotePort = data.remotePort.Value;
-            if (data.direction.HasValue)
-                entry.Direction = data.direction == FwpmDirection.FWP_DIRECTION_OUT ? RuleDirection.Out : RuleDirection.In;
-            if (data.ipProtocol.HasValue)
-                entry.Protocol = (Protocol)data.ipProtocol;
-            if (data.localPort.HasValue)
-                entry.LocalPort = data.localPort.Value;
+                var entry = new FirewallLogEntry
+                {
+                    Timestamp = data.timeStamp,
+                    Event = eventType,
+                    PackageId = data.packageId,
+                    RemoteIp = data.remoteAddr?.ToString(),
+                    LocalIp = data.localAddr?.ToString()
+                };
 
-            // Replace invalid IP strings with the "unspecified address" IPv6 specifier
-            if (string.IsNullOrEmpty(entry.RemoteIp))
-                entry.RemoteIp = "::";
-            if (string.IsNullOrEmpty(entry.LocalIp))
-                entry.LocalIp = "::";
+                if (!Utils.IsNullOrEmpty(data.appId))
+                    entry.AppPath = PathMapper.Instance.ConvertPathIgnoreErrors(data.appId, PathFormat.Win32);
+                else
+                    entry.AppPath = "System";
+                if (data.remotePort.HasValue)
+                    entry.RemotePort = data.remotePort.Value;
+                if (data.direction.HasValue)
+                    entry.Direction = data.direction == FwpmDirection.FWP_DIRECTION_OUT ? RuleDirection.Out : RuleDirection.In;
+                if (data.ipProtocol.HasValue)
+                    entry.Protocol = (Protocol)data.ipProtocol;
+                if (data.localPort.HasValue)
+                    entry.LocalPort = data.localPort.Value;
 
-            lock (FirewallLogEntries)
-            {
-                FirewallLogEntries.Enqueue(entry);
+                // Replace invalid IP strings with the "unspecified address" IPv6 specifier
+                if (string.IsNullOrEmpty(entry.RemoteIp))
+                    entry.RemoteIp = "::";
+                if (string.IsNullOrEmpty(entry.LocalIp))
+                    entry.LocalIp = "::";
+
+                lock (FirewallLogEntries)
+                {
+                    FirewallLogEntries.Enqueue(entry);
+                }
+
+                LastNetEventTick = Environment.TickCount;
             }
+            catch (Exception e)
+            {
+                // This callback is invoked from native code on a WFP worker
+                // thread. A failure here (e.g. OutOfMemoryException under
+                // memory pressure) must not take the subscription down with it.
+                // Force a resubscribe on the next minute tick.
+                NetEventBroken = true;
+                LogNetEventError(e);
+            }
+        }
+
+        private void NetEventSubscription_CallbackError(Exception e)
+        {
+            // An exception was contained inside the native callback handler in
+            // the WFP wrapper, before it ever reached WfpNetEventCallback().
+            NetEventBroken = true;
+            LogNetEventError(e);
+        }
+
+        private void LogNetEventError(Exception e)
+        {
+            // The callback can fire at a very high rate when things go wrong,
+            // so log at most once per minute.
+            int now = Environment.TickCount;
+            if (now - LastNetEventErrorLogTick > 60 * 1000)
+            {
+                LastNetEventErrorLogTick = now;
+                Utils.LogException(e, Utils.LOG_ID_SERVICE);
+            }
+        }
+
+        // Must be called on the firewall thread only.
+        private void RecreateNetEventSubscription()
+        {
+            if (NetEventSub != null)
+            {
+                try
+                {
+                    NetEventSub.CallbackError -= NetEventSubscription_CallbackError;
+                    NetEventSub.Dispose();
+                }
+                catch (Exception e)
+                {
+                    LogNetEventError(e);
+                }
+                finally
+                {
+                    NetEventSub = null;
+                }
+            }
+
+            NetEventSub = WfpEngine.SubscribeNetEvent(WfpNetEventCallback);
+            NetEventSub.CallbackError += NetEventSubscription_CallbackError;
+            NetEventBroken = false;
+            LastNetEventTick = Environment.TickCount;
         }
 
         private void AutoLearnLogEntry(FirewallLogEntry entry)

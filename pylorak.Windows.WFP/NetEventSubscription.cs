@@ -72,6 +72,22 @@ namespace pylorak.Windows.WFP
             return sb.ToString();
         }
 
+        private static string? ReadAppId(Interop.FWP_BYTE_BLOB blob)
+        {
+            if (blob.size == 0 || blob.data == IntPtr.Zero)
+                return null;
+
+            // The blob size is in bytes and the payload is a null-terminated
+            // Unicode string. Bound the read by the declared size so a missing
+            // terminator cannot make us scan past the end of the buffer.
+            string str = Marshal.PtrToStringUni(blob.data, (int)(blob.size / 2));
+            int terminator = str.IndexOf('\0');
+            if (terminator >= 0)
+                str = str.Substring(0, terminator);
+
+            return str;
+        }
+
         private static void ToHex(byte b, StringBuilder sb)
         {
             var n = (byte)(b >> 4);
@@ -122,7 +138,7 @@ namespace pylorak.Windows.WFP
 
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_APP_ID_SET) != 0)
             {
-                appId = Marshal.PtrToStringAuto(nativeEvent.header.appId.data);
+                appId = ReadAppId(nativeEvent.header.appId);
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_IP_PROTOCOL_SET) != 0)
             {
@@ -167,7 +183,7 @@ namespace pylorak.Windows.WFP
 
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_APP_ID_SET) != 0)
             {
-                appId = Marshal.PtrToStringAuto(nativeEvent.header.appId.data);
+                appId = ReadAppId(nativeEvent.header.appId);
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_IP_PROTOCOL_SET) != 0)
             {
@@ -223,8 +239,30 @@ namespace pylorak.Windows.WFP
     public abstract class NetEventSubscription : IDisposable
     {
         protected readonly NetEventCallback _callback;
-        protected readonly StringBuilder SBuilder = new(40);
-        
+
+        // Raised when an exception was contained inside a native callback handler.
+        // Runs on the WFP callback thread, so handlers must not block or throw.
+        public event Action<Exception>? CallbackError;
+
+        // WFP does not document that callbacks are serialized, so the scratch
+        // builder must be per-thread.
+        [ThreadStatic]
+        private static StringBuilder? SBuilder;
+
+        protected static StringBuilder GetScratchBuilder()
+        {
+            if (SBuilder is null)
+                SBuilder = new StringBuilder(40);
+            return SBuilder;
+        }
+
+        // C# restricts invoking an event to the declaring type, so derived
+        // subscription classes report through this hook instead.
+        protected void OnCallbackError(Exception e)
+        {
+            try { CallbackError?.Invoke(e); } catch { }
+        }
+
         public bool IsDisposed { get; private set; }
 
         protected NetEventSubscription(NetEventCallback callback)
@@ -287,12 +325,22 @@ namespace pylorak.Windows.WFP
             else
                 throw new WfpException(err, "FwpmNetEventSubscribe0");
         }
-
         private void NativeCallbackHandler0(IntPtr context, IntPtr netEvent1)
         {
-            Interop.FWPM_NET_EVENT1 ev = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT1>(netEvent1);
-            _callback(new NetEventData(ev, SBuilder));
+            try
+            {
+                Interop.FWPM_NET_EVENT1 ev = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT1>(netEvent1);
+                _callback(new NetEventData(ev, GetScratchBuilder()));
+            }
+            catch (Exception e)
+            {
+                // Never let an exception cross the reverse P/Invoke boundary
+                // into FWPUClnt.dll: on .NET Framework this terminates the
+                // process, and event delivery is lost either way.
+                OnCallbackError(e);
+            }
         }
+
 
         protected override void Dispose(bool disposing)
         {
@@ -345,11 +393,18 @@ namespace pylorak.Windows.WFP
             else
                 throw new WfpException(err, "FwpmNetEventSubscribe1");
         }
-
         private void NativeCallbackHandler1(IntPtr context, IntPtr netEvent1)
         {
-            var ev = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT2>(netEvent1);
-            _callback(new NetEventData(ev, SBuilder));
+            try
+            {
+                var ev = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT2>(netEvent1);
+                _callback(new NetEventData(ev, GetScratchBuilder()));
+            }
+            catch (Exception e)
+            {
+                // See NativeCallbackHandler0 for the rationale.
+                OnCallbackError(e);
+            }
         }
 
         protected override void Dispose(bool disposing)
