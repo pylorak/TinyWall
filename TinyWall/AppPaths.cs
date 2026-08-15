@@ -42,6 +42,9 @@ namespace pylorak.TinyWall
 
         public static void EmptyFolder(string folderPath, bool removeBase)
         {
+            if (!Directory.Exists(folderPath))
+                return;
+
             try
             {
                 if (removeBase)
@@ -67,7 +70,8 @@ namespace pylorak.TinyWall
             }
             catch (DirectoryNotFoundException)
             {
-                // Not an error, ignore
+                // It is possible to get here despite Exists()-check above due to TOCTOU.
+                // Not an error, ignore.
             }
             catch (Exception e)
             {
