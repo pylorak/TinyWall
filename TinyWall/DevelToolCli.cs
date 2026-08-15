@@ -80,7 +80,7 @@ namespace pylorak.TinyWall
 
             string msiX86Path = Path.Combine(projectDir, @"bin\Release", MSI_FILENAME_X86);
             string msiArm64Path = Path.Combine(projectDir, @"bin\Release", MSI_FILENAME_ARM64);
-            string hostsPath = Path.Combine(projectDir, @"Sources\CommonAppData\TinyWall\hosts.bck");
+            string hostsPath = Path.Combine(projectDir, @"Sources\CommonAppData\TinyWall\hosts.custom");
             string profilesPath = Path.Combine(projectDir, @"Sources\CommonAppData\TinyWall\profiles.json");
             string twAssemblyPath = Path.Combine(projectDir, @"Sources\ProgramFiles\TinyWall\TinyWall.exe");
             if (!baseUrl.EndsWith("/")) baseUrl += "/";

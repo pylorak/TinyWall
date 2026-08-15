@@ -231,8 +231,8 @@ $SrcDocDir     = To-Absolute 'TinyWall\doc'
 $SrcLicenseRtf = To-Absolute 'MsiSetup\License.rtf'
 $SrcIco        = To-Absolute 'TinyWall\Resources\img\TinyWall.ico'
 
-# 4.1  hosts -> hosts.bck
-Invoke-Tool ('echo F | xcopy /Y "{0}" "{1}"' -f $SrcHosts, (Join-Path $StagingCommonAppData 'hosts.bck'))
+# 4.1  hosts -> hosts.custom
+Invoke-Tool ('echo F | xcopy /Y "{0}" "{1}"' -f $SrcHosts, (Join-Path $StagingCommonAppData 'hosts.custom'))
 
 # 4.2  profiles.json -> CommonAppData\TinyWall\
 Invoke-Tool ('xcopy /Y /I "{0}" "{1}\"' -f $ProfilesJson, $StagingCommonAppData)

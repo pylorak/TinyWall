@@ -1088,12 +1088,12 @@ namespace pylorak.TinyWall
         private void ReapplySettings()
         {
             using var timer = new HierarchicalStopwatch("ReapplySettings()");
-            HostsFileManager.EnableProtection = ActiveConfig.Service.LockHostsFile;
+            HostsFileManager.LockSystemHostsFile = ActiveConfig.Service.LockHostsFile;
             if (ActiveConfig.Service.Blocklists.EnableBlocklists
                 && ActiveConfig.Service.Blocklists.EnableHostsBlocklist)
-                HostsFileManager.EnableHostsFile();
+                HostsFileManager.EnableCustomHostsFile();
             else
-                HostsFileManager.DisableHostsFile();
+                HostsFileManager.DisableCustomHostsFile();
         }
 
         private static void LoadDatabase()
@@ -1176,7 +1176,7 @@ namespace pylorak.TinyWall
                 var hostsUpdate = update.GetModule(UpdateDescriptor.MODULE_NAME_HOSTS);
                 if (hostsUpdate is not null)
                 {
-                    if (!string.Equals(hostsUpdate.DownloadHash, HostsFileManager.GetHostsHash(), StringComparison.OrdinalIgnoreCase))
+                    if (!string.Equals(hostsUpdate.DownloadHash, HostsFileManager.GetCustomHostsHash(), StringComparison.OrdinalIgnoreCase))
                         GetCompressedUpdate(hostsUpdate, HostsUpdateInstall);
                 }
             }
@@ -1215,13 +1215,7 @@ namespace pylorak.TinyWall
 
         private void HostsUpdateInstall(Stream sourceStream)
         {
-            HostsFileManager.UpdateHostsFile(sourceStream);
-
-            if (ActiveConfig.Service.Blocklists.EnableBlocklists
-                && ActiveConfig.Service.Blocklists.EnableHostsBlocklist)
-            {
-                HostsFileManager.EnableHostsFile();
-            }
+            HostsFileManager.UpdateCustomHostsSelfCopy(sourceStream);
         }
         private void DatabaseUpdateInstall(Stream newDbStream)
         {

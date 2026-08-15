@@ -58,9 +58,6 @@ namespace pylorak.TinyWall
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool IsImmersiveProcess(IntPtr hProcess);
 
-            [DllImport("dnsapi.dll", EntryPoint = "DnsFlushResolverCache")]
-            internal static extern uint DnsFlushResolverCache();
-
             [DllImport("User32.dll", SetLastError = true)]
             internal static extern int GetSystemMetrics(int nIndex);
 
@@ -726,11 +723,6 @@ namespace pylorak.TinyWall
                 doubleBufferPropertyInfo.SetValue(control, enable, null);
             }
             catch { }
-        }
-
-        internal static void FlushDnsCache()
-        {
-            _ = SafeNativeMethods.DnsFlushResolverCache();
         }
 
         public static bool EqualsCaseInsensitive(string a, string b)

@@ -292,8 +292,8 @@
           <Component Id="Database" Guid="{669B4911-0B8E-4AC6-8319-41511DF94626}" Win64="$(var.Win64)">
             <File Id="DatabaseJson" Source="Sources\CommonAppData\TinyWall\profiles.json" Vital="yes" KeyPath="yes" />
           </Component>
-          <Component Id="hosts" Guid="{3AF39B32-B459-4A47-860F-B4E679712BD8}" Win64="$(var.Win64)">
-            <File Id="HostsBCK" Source="Sources\CommonAppData\TinyWall\hosts.bck" Vital="yes" KeyPath="yes" />
+          <Component Id="hosts" Guid="{6ED66053-6BAD-49EB-A99E-07674199289F}" Win64="$(var.Win64)">
+            <File Id="HostsCustom" Source="Sources\CommonAppData\TinyWall\hosts.custom" Vital="yes" KeyPath="yes" />
           </Component>
           <Component Id="RemoveAppDataDir" Guid="{EE339191-7EC0-4F07-AF89-6527658FC9D7}" Win64="$(var.Win64)" Transitive="yes">
             <RemoveFile Id="AppDataDirFiles" On='install' Name='*' />

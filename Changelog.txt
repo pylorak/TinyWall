@@ -5,6 +5,7 @@ TinyWall Changelog
 - Show block reason in Connections window
 - Security hardening of the built-in updater
 - Increase password hashing complexity
+- Rewrite of hosts-file related functions for more robustness
 - New mitigation for tray icon sometimes not showing up on boot
 - Try removing leftover service if one is found before installation (possible workaround for Revo users)
 - Fix uninstall fails if TinyWall is locked instead of showing password entry

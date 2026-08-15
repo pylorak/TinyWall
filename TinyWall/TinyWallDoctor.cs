@@ -233,7 +233,7 @@ namespace pylorak.TinyWall
             {
                 // Put back the user's original hosts file
                 using HostsFileManager hosts = new();
-                hosts.DisableHostsFile();
+                hosts.DisableCustomHostsFile();
             }
             catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_INSTALLER); }
 
