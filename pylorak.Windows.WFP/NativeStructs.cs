@@ -93,6 +93,34 @@ namespace pylorak.Windows.WFP.Interop
     {
         public uint size;
         public IntPtr data;
+
+        private unsafe static int CountUtf16CodeUnitsNullTerm(IntPtr buf, uint bufSizeInBytes)
+        {
+            if (IntPtr.Zero == buf)
+                return 0;
+
+            int numChars = 0;
+            var bufPtr = (char*)buf.ToPointer();
+            var bufEndPtr = (char*)buf.ToPointer() + bufSizeInBytes / 2; // also handles uneven buffer size
+
+            while (bufPtr < bufEndPtr)
+            {
+                // Stop at the end of a null-terminated string
+                if (0 == *bufPtr)
+                    break;
+
+                ++bufPtr;
+                ++numChars;
+            }
+
+            return numChars;
+        }
+
+        public unsafe string MarshalAsNullTerminatedUniString()
+        {
+            var numCodeUnits = CountUtf16CodeUnitsNullTerm(data, size);
+            return new string((char*)data.ToPointer(), 0, numCodeUnits);
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]

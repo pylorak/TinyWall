@@ -30,7 +30,7 @@ namespace pylorak.Windows.WFP
 
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_APP_ID_SET) != 0)
             {
-                appId = Marshal.PtrToStringAuto(nativeEvent.header.appId.data);
+                appId = nativeEvent.header.appId.MarshalAsNullTerminatedUniString();
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_IP_PROTOCOL_SET) != 0)
             {
@@ -75,7 +75,7 @@ namespace pylorak.Windows.WFP
 
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_APP_ID_SET) != 0)
             {
-                appId = Marshal.PtrToStringAuto(nativeEvent.header.appId.data);
+                appId = nativeEvent.header.appId.MarshalAsNullTerminatedUniString();
             }
             if ((flags & Interop.NetEventHeaderValidField.FWPM_NET_EVENT_FLAG_IP_PROTOCOL_SET) != 0)
             {
