@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 
 namespace pylorak.Utilities
@@ -25,13 +26,15 @@ namespace pylorak.Utilities
             private readonly string FilePath;
             private readonly FileAccess Access;
             private readonly FileShare Share;
+            private readonly bool RemainUnlockedOnDispose;
 
-            public TemporaryUnlock(FileLocker parent, string filePath, FileAccess access, FileShare share)
+            public TemporaryUnlock(FileLocker parent, string filePath, FileAccess access, FileShare share, bool remainUnlockedOnDispose = false)
             {
                 Parent = parent;
                 FilePath = filePath;
                 Access = access;
                 Share = share;
+                RemainUnlockedOnDispose = remainUnlockedOnDispose;
             }
 
             protected override void Dispose(bool disposing)
@@ -41,14 +44,15 @@ namespace pylorak.Utilities
 
                 if (disposing)
                 {
-                    Parent.Lock(FilePath, Access, Share);
+                    if (!RemainUnlockedOnDispose)
+                        Parent.Lock(FilePath, Access, Share);
                 }
 
                 base.Dispose(disposing);
             }
         }
 
-        private readonly Dictionary<string, FileLock> LockedFiles = new();
+        private readonly ConcurrentDictionary<string, FileLock> LockedFiles = new();
 
         public bool Lock(string filePath, FileAccess localAccess, FileShare shareMode)
         {
@@ -57,7 +61,12 @@ namespace pylorak.Utilities
 
             try
             {
-                LockedFiles.Add(filePath, new FileLock(filePath, localAccess, shareMode));
+                var flock = new FileLock(filePath, localAccess, shareMode);
+                if (!LockedFiles.TryAdd(filePath, flock))
+                {
+                    flock.Stream.Close();
+                    return false;
+                }
                 return true;
             }
             catch
@@ -78,20 +87,25 @@ namespace pylorak.Utilities
 
         public TemporaryUnlock UnlockTemporarily(string filePath)
         {
-            var lockDetails = LockedFiles[filePath];
-            Unlock(filePath);
-            return new TemporaryUnlock(this, filePath, lockDetails.Access, lockDetails.Share);
+            if (LockedFiles.TryGetValue(filePath, out var lockDetails))
+            {
+                Unlock(filePath);
+                return new TemporaryUnlock(this, filePath, lockDetails.Access, lockDetails.Share);
+            }
+            else
+            {
+                // We return a "dummy" object that won't relock the file when disposed.
+                // This way users can call UnlockTemporarily() without having to worry if the file is locked or not.
+                return new TemporaryUnlock(this, filePath, FileAccess.Read, FileShare.Read, true);
+            }
         }
 
         public bool Unlock(string filePath)
         {
-            if (!IsLocked(filePath))
-                return false;
-
             try
             {
-                LockedFiles[filePath].Stream.Close();
-                LockedFiles.Remove(filePath);
+                if (LockedFiles.TryRemove(filePath, out var flock))
+                    flock.Stream.Close();
                 return true;
             }
             catch
@@ -102,12 +116,9 @@ namespace pylorak.Utilities
 
         public void UnlockAll()
         {
-            foreach (var flock in LockedFiles.Values)
-            {
-                try { flock.Stream.Close(); } catch { }
-            }
-
-            LockedFiles.Clear();
+            var keys = new List<string>(LockedFiles.Keys);
+            foreach (var k in keys)
+                Unlock(k);
         }
 
         protected override void Dispose(bool disposing)
