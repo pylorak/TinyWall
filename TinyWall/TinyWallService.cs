@@ -8,7 +8,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Management;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -50,6 +49,8 @@ namespace pylorak.TinyWall
         private readonly HashSet<string> UserSubjectExes = new(StringComparer.OrdinalIgnoreCase);        // All executables with pre-configured rules.
         private readonly Dictionary<string, List<FirewallExceptionV3>> ChildInheritance = new(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, HashSet<string>> ChildInheritedSubjectExes = new(StringComparer.OrdinalIgnoreCase);   // Executables that have been already auto-whitelisted due to inheritance
+        private readonly List<FirewallExceptionV3> WildcardExceptions = new();
+        private readonly HashSet<string> WildcardMatchedSubjects = new(StringComparer.OrdinalIgnoreCase);
         private readonly ThreadThrottler FirewallThreadThrottler = new(Thread.CurrentThread, ThreadPriority.Highest, false);
         private StringBuilder? ProcessStartWatcher_Sbuilder;
 
@@ -57,7 +58,7 @@ namespace pylorak.TinyWall
         private bool DisplayCurrentlyOn = true;
         private readonly ServerState VisibleState = new();
 
-        private readonly ManagementEventWatcher ProcessStartWatcher = new(new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace"));
+        private readonly ProcessStartWatcher ProcessStartWatcher = new();
         private readonly EventMerger RuleReloadEventMerger = new(1000);
         private readonly Engine WfpEngine = new("TinyWall Session", "", FWPM_SESSION_FLAGS.None, 5000);
         private NetEventSubscription? WfpNetEventSubscription = null;
@@ -73,6 +74,7 @@ namespace pylorak.TinyWall
         {
             using var timer = new HierarchicalStopwatch("AssembleActiveRules()");
             var rules = new List<RuleDef>();
+            var discoveredWildcardExceptions = new List<FirewallExceptionV3>();
             var ModeId = Guid.NewGuid();
 
             // Do we want to let local traffic through?
@@ -177,6 +179,8 @@ namespace pylorak.TinyWall
                     {
                         string exePath = exe.ExecutablePath;
                         UserSubjectExes.Add(exePath);
+                        if (WildcardPathMatcher.IsValidFilter(exe.PathFilter, exePath))
+                            WildcardExceptions.Add(ex);
                         if (ex.ChildProcessesInherit)
                         {
                             // We might have multiple rules with the same exePath, so we maintain a list of exceptions
@@ -189,7 +193,7 @@ namespace pylorak.TinyWall
                     GetRulesForException(FilterGroup.User, ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
                 }
 
-                if (ChildInheritance.Count != 0)
+                if (ChildInheritance.Count != 0 || WildcardExceptions.Count != 0)
                 {
                     timer.NewSubTask("Rule inheritance processing");
 
@@ -215,6 +219,22 @@ namespace pylorak.TinyWall
                         // Skip if we have a user-defined rule for this path
                         if (UserSubjectExes.Contains(procPath))
                             continue;
+
+                        List<FirewallExceptionV3>? wildcardMatches = CreateWildcardExceptions(procPath);
+                        if (wildcardMatches != null)
+                        {
+                            discoveredWildcardExceptions.AddRange(wildcardMatches);
+                            foreach (FirewallExceptionV3 wildcardException in wildcardMatches)
+                            {
+                                GetRulesForException(
+                                    FilterGroup.User,
+                                    wildcardException,
+                                    rules,
+                                    rawSocketExceptions,
+                                    (ulong)FilterWeights.UserPermit,
+                                    (ulong)FilterWeights.UserBlock);
+                            }
+                        }
 
                         // Start walking up the process tree
                         for (var parentEntry = procTree[pair.Key]; ;)
@@ -266,6 +286,9 @@ namespace pylorak.TinyWall
                         }
                     }
                 }   // if (ChildInheritance ...
+
+                if (discoveredWildcardExceptions.Count != 0)
+                    PersistWildcardExceptions(discoveredWildcardExceptions);
             }
 
             // Convert all paths to kernel-format
@@ -332,25 +355,28 @@ namespace pylorak.TinyWall
             fltCatTrx.Dictionary.Clear();
             var rules = new List<RuleDef>();
             var rawSocketExceptions = new List<RuleDef>();
+            bool processMonitoringRequired;
             lock (InheritanceGuard)
             {
                 UserSubjectExes.Clear();
                 ChildInheritance.Clear();
                 ChildInheritedSubjectExes.Clear();
+                WildcardExceptions.Clear();
+                WildcardMatchedSubjects.Clear();
                 rules.AddRange(AssembleActiveRules(rawSocketExceptions));
+                processMonitoringRequired = ChildInheritance.Count > 0 || WildcardExceptions.Count > 0;
+            }
 
-                try
-                {
-                    if (ChildInheritance.Count > 0)
-                        ProcessStartWatcher.Start();
-                    else
-                        ProcessStartWatcher.Stop();
-                }
-                catch
-                {
-                    // TODO: Add nonce-flag and log only if it has not been logged already
-                    // Utils.Log("WMI error. Subprocess monitoring will be disabled.", Utils.LOG_ID_SERVICE);
-                }
+            try
+            {
+                if (processMonitoringRequired)
+                    ProcessStartWatcher.Start();
+                else
+                    ProcessStartWatcher.Stop();
+            }
+            catch (Exception exception)
+            {
+                Utils.LogException(exception, Utils.LOG_ID_SERVICE);
             }
 
             timer.NewSubTask("WFP transaction acquire");
@@ -1384,23 +1410,30 @@ namespace pylorak.TinyWall
                     }
                 case MessageType.ADD_TEMPORARY_EXCEPTION:
                     {
-                        var rules = new List<RuleDef>();
-                        var rawSocketExceptions = new List<RuleDef>();
-                        var args = (TwMessageAddTempException)req;
-
-                        foreach (var ex in args.Exceptions)
+                        try
                         {
-                            GetRulesForException(FilterGroup.User, ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
+                            var args = (TwMessageAddTempException)req;
+                            InstallTemporaryExceptions(args.Exceptions);
+                            return args.CreateResponse();
                         }
-
-                        using (var fltCatTrx = FilterGrouping.CreateTransaction(false))
+                        finally
                         {
-                            InstallRules(rules, rawSocketExceptions, true, fltCatTrx.Dictionary);
-                            fltCatTrx.Commit();
+                            lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Release(); }
                         }
-                        lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Release(); }
-
-                        return args.CreateResponse();
+                    }
+                case MessageType.ADD_PERSISTENT_EXCEPTION:
+                    {
+                        try
+                        {
+                            var args = (TwMessageAddPersistentException)req;
+                            PersistWildcardExceptions(new List<FirewallExceptionV3>(args.Exceptions));
+                            InstallTemporaryExceptions(args.Exceptions);
+                            return args.CreateResponse();
+                        }
+                        finally
+                        {
+                            lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Release(); }
+                        }
                     }
                 case MessageType.GET_SETTINGS:
                     {
@@ -1678,7 +1711,7 @@ namespace pylorak.TinyWall
             using var NetEventCollection = new CallbackOnDispose(() => { try { WfpEngine.CollectNetEvents = false; } catch { } });
             WfpEngine.EventMatchAnyKeywords = InboundEventMatchKeyword.FWPM_NET_EVENT_KEYWORD_INBOUND_BCAST | InboundEventMatchKeyword.FWPM_NET_EVENT_KEYWORD_INBOUND_MCAST;
 
-            ProcessStartWatcher.EventArrived += ProcessStartWatcher_EventArrived;
+            ProcessStartWatcher.ProcessStarted += ProcessStartWatcher_ProcessStarted;
             NetworkInterfaceWatcher.InterfaceChanged += (sender, args) =>
             {
                 Q.Add(new TwRequest(TwMessageSimple.CreateRequest(MessageType.REENUMERATE_ADDRESSES)));
@@ -1721,51 +1754,45 @@ namespace pylorak.TinyWall
             WfpNetEventSubscription = null;
         }
 
-        private void ProcessStartWatcher_EventArrived(object sender, EventArrivedEventArgs e)
+        private void ProcessStartWatcher_ProcessStarted(object sender, ProcessStartEventArgs e)
         {
-            try
-            {
-                using var throttler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest, true);
-                uint pid = (uint)(e.NewEvent["ProcessID"]);
-                string path = ProcessManager.GetProcessPath(pid, ref ProcessStartWatcher_Sbuilder);
+            using var throttler = new ThreadThrottler(Thread.CurrentThread, ThreadPriority.Highest, true);
+            uint pid = e.ProcessId;
+            string path = PathMapper.Instance.ConvertPathIgnoreErrors(e.ImagePath, PathFormat.Win32);
+            if (string.IsNullOrEmpty(path))
+                path = ProcessManager.GetProcessPath(pid, ref ProcessStartWatcher_Sbuilder);
 
-                // Skip if we have no path
-                if (string.IsNullOrEmpty(path))
+            // Skip if we have no path
+            if (string.IsNullOrEmpty(path))
+                return;
+
+            List<FirewallExceptionV3>? wildcardExceptions = null;
+            List<FirewallExceptionV3>? inheritedExceptions = null;
+
+            lock (InheritanceGuard)
+            {
+                // Skip if we have a user-defined rule for this path
+                if (UserSubjectExes.Contains(path))
                     return;
 
-                List<FirewallExceptionV3>? newExceptions = null;
+                wildcardExceptions = CreateWildcardExceptions(path);
 
-                lock (InheritanceGuard)
+                // This list will hold parents that we already checked for a process.
+                // Used to avoid infinite loop when parent-PID info is unreliable.
+                var pidsChecked = new HashSet<uint>();
+
+                // Start walking up the process tree using the parent captured at creation time.
+                for (uint parentPid = e.ParentProcessId; parentPid != 0;)
                 {
-                    // Skip if we have a user-defined rule for this path
-                    if (UserSubjectExes.Contains(path))
-                        return;
+                    if (pidsChecked.Contains(parentPid))
+                        // We've been here before, damn it. Avoid looping eternally...
+                        break;
 
-                    // This list will hold parents that we already checked for a process.
-                    // Used to avoid infinite loop when parent-PID info is unreliable.
-                    var pidsChecked = new HashSet<uint>();
+                    pidsChecked.Add(parentPid);
 
-                    // Start walking up the process tree
-                    for (var parentPid = pid; ;)
+                    string parentPath = ProcessManager.GetProcessPath(parentPid, ref ProcessStartWatcher_Sbuilder);
+                    if (!string.IsNullOrEmpty(parentPath))
                     {
-                        if (!ProcessManager.GetParentProcess(parentPid, ref parentPid))
-                            // We reached the top of the process tree (with non-existent parent)
-                            break;
-
-                        if (parentPid == 0)
-                            // We reached top of process tree (with idle process)
-                            break;
-
-                        if (pidsChecked.Contains(parentPid))
-                            // We've been here before, damn it. Avoid looping eternally...
-                            break;
-
-                        pidsChecked.Add(parentPid);
-
-                        string parentPath = ProcessManager.GetProcessPath(parentPid, ref ProcessStartWatcher_Sbuilder);
-                        if (string.IsNullOrEmpty(parentPath))
-                            continue;
-
                         // Skip if we have already processed this parent-child combination
                         if (ChildInheritedSubjectExes.TryGetValue(path, out var childVar))
                         {
@@ -1775,10 +1802,10 @@ namespace pylorak.TinyWall
 
                         if (ChildInheritance.TryGetValue(parentPath, out List<FirewallExceptionV3> exList))
                         {
-                            newExceptions ??= new List<FirewallExceptionV3>();
+                            inheritedExceptions ??= new List<FirewallExceptionV3>();
 
                             foreach (var userEx in exList)
-                                newExceptions.Add(new FirewallExceptionV3(new ExecutableSubject(path), userEx.Policy));
+                                inheritedExceptions.Add(new FirewallExceptionV3(new ExecutableSubject(path), userEx.Policy));
 
                             if (!ChildInheritedSubjectExes.ContainsKey(path))
                                 ChildInheritedSubjectExes.Add(path, new HashSet<string>());
@@ -1786,18 +1813,96 @@ namespace pylorak.TinyWall
                             break;
                         }
                     }
+
+                    uint nextParentPid = parentPid;
+                    if (!ProcessManager.GetParentProcess(parentPid, ref nextParentPid))
+                        break;
+                    parentPid = nextParentPid;
+                }
+            }
+
+            if (wildcardExceptions != null)
+            {
+                lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Request(); }
+                Q.Add(new TwRequest(TwMessageAddPersistentException.CreateRequest(wildcardExceptions.ToArray())));
+            }
+
+            if (inheritedExceptions != null)
+            {
+                lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Request(); }
+                Q.Add(new TwRequest(TwMessageAddTempException.CreateRequest(inheritedExceptions.ToArray())));
+            }
+        }
+
+        private List<FirewallExceptionV3>? CreateWildcardExceptions(string executablePath)
+        {
+            List<FirewallExceptionV3>? matches = null;
+
+            foreach (FirewallExceptionV3 template in WildcardExceptions)
+            {
+                if (!(template.Subject is ExecutableSubject executable)
+                    || !WildcardPathMatcher.Matches(executable.PathFilter, executablePath))
+                {
+                    continue;
                 }
 
-                if (newExceptions != null)
+                string matchKey = $"{template.Id:N}|{executablePath}";
+                if (!WildcardMatchedSubjects.Add(matchKey))
                 {
-                    lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Request(); }
-                    Q.Add(new TwRequest(TwMessageAddTempException.CreateRequest(newExceptions.ToArray())));
+                    continue;
+                }
+
+                FirewallExceptionV3 concreteException = Utils.DeepClone(template);
+                concreteException.Subject = new ExecutableSubject(executablePath)
+                {
+                    PathFilter = executable.PathFilter
+                };
+                concreteException.Timer = AppExceptionTimer.Permanent;
+                concreteException.CreationDate = DateTime.Now;
+                concreteException.RegenerateId();
+
+                matches ??= new List<FirewallExceptionV3>();
+                matches.Add(concreteException);
+
+                if (template.ChildProcessesInherit)
+                {
+                    if (!ChildInheritance.TryGetValue(executablePath, out List<FirewallExceptionV3>? inheritedRules))
+                    {
+                        inheritedRules = new List<FirewallExceptionV3>();
+                        ChildInheritance.Add(executablePath, inheritedRules);
+                    }
+
+                    inheritedRules.Add(template);
                 }
             }
-            finally
+
+            return matches;
+        }
+
+        private static void PersistWildcardExceptions(List<FirewallExceptionV3> exceptions)
+        {
+            ActiveConfig.Service.ActiveProfile.AddExceptions(exceptions);
+            ActiveConfig.Service.Save(ConfigSavePath);
+            GlobalInstances.ServerChangeset = Guid.NewGuid();
+        }
+
+        private void InstallTemporaryExceptions(FirewallExceptionV3[] exceptions)
+        {
+            var rules = new List<RuleDef>();
+            var rawSocketExceptions = new List<RuleDef>();
+
+            foreach (var exception in exceptions)
+                GetRulesForException(FilterGroup.User, exception, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
+
+            foreach (var rule in rules)
             {
-                e.NewEvent.Dispose();
+                if (rule.Application is not null)
+                    rule.Application = PathMapper.Instance.ConvertPathIgnoreErrors(rule.Application, PathFormat.NativeNt);
             }
+
+            using var fltCatTrx = FilterGrouping.CreateTransaction(false);
+            InstallRules(rules, rawSocketExceptions, true, fltCatTrx.Dictionary);
+            fltCatTrx.Commit();
         }
 
         private void WfpNetEventCallback(NetEventData data)
@@ -1932,8 +2037,8 @@ namespace pylorak.TinyWall
         {
             using var timer = new HierarchicalStopwatch("TinyWallService.Dispose()");
             ServerPipe?.Dispose();
-            ProcessStartWatcher.EventArrived -= ProcessStartWatcher_EventArrived;
-            try { ProcessStartWatcher.Stop(); } catch { }
+            ProcessStartWatcher.ProcessStarted -= ProcessStartWatcher_ProcessStarted;
+            ProcessStartWatcher.Stop();
             ProcessStartWatcher.Dispose();
 
             if (MinuteTimer != null)

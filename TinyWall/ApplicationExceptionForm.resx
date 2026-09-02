@@ -129,7 +129,7 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="label7.Text" xml:space="preserve">
     <value>Out TCP:</value>
@@ -139,13 +139,13 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="btnChooseService.Location" type="System.Drawing.Point, System.Drawing">
-    <value>364, 82</value>
+    <value>364, 55</value>
   </data>
   <data name="label4.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="&gt;&gt;txtSrvName.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="label4.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -244,7 +244,7 @@
     <value>Restrict to local network</value>
   </data>
   <data name="btnSelectUwpApp.Location" type="System.Drawing.Point, System.Drawing">
-    <value>364, 109</value>
+    <value>364, 82</value>
   </data>
   <data name="&gt;&gt;btnProcess.Name" xml:space="preserve">
     <value>btnProcess</value>
@@ -343,7 +343,7 @@
     <value>8</value>
   </data>
   <data name="&gt;&gt;txtAppPath.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="label9.TabIndex" type="System.Int32, mscorlib">
     <value>41</value>
@@ -374,6 +374,36 @@
   </data>
   <data name="&gt;&gt;btnSelectUwpApp.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <data name="btnPathFilter.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="btnPathFilter.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Popup</value>
+  </data>
+  <data name="btnPathFilter.Location" type="System.Drawing.Point, System.Drawing">
+    <value>364, 109</value>
+  </data>
+  <data name="btnPathFilter.Size" type="System.Drawing.Size, System.Drawing">
+    <value>142, 23</value>
+  </data>
+  <data name="btnPathFilter.TabIndex" type="System.Int32, mscorlib">
+    <value>32</value>
+  </data>
+  <data name="btnPathFilter.Text" xml:space="preserve">
+    <value>Path filter...</value>
+  </data>
+  <data name="&gt;&gt;btnPathFilter.Name" xml:space="preserve">
+    <value>btnPathFilter</value>
+  </data>
+  <data name="&gt;&gt;btnPathFilter.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnPathFilter.Parent" xml:space="preserve">
+    <value>panel2</value>
+  </data>
+  <data name="&gt;&gt;btnPathFilter.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;lblApplication.Name" xml:space="preserve">
     <value>lblApplication</value>
@@ -487,7 +517,7 @@
     <value>Flat</value>
   </data>
   <data name="&gt;&gt;lblApplication.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="label9.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 15</value>
@@ -520,13 +550,13 @@
     <value>Incoming UDP</value>
   </data>
   <data name="&gt;&gt;btnBrowse.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="&gt;&gt;label3.Parent" xml:space="preserve">
     <value>panel3</value>
   </data>
   <data name="&gt;&gt;btnProcess.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>9</value>
   </data>
   <data name="label7.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -601,7 +631,7 @@
     <value>btnChooseService</value>
   </data>
   <data name="&gt;&gt;lblApplicationType.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="&gt;&gt;chkInheritToChildren.Parent" xml:space="preserve">
     <value>$this</value>
@@ -616,7 +646,7 @@
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnChooseService.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>10</value>
   </data>
   <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
     <value>19, 35</value>
@@ -646,7 +676,7 @@
     <value>True</value>
   </data>
   <data name="&gt;&gt;cmbTimer.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="&gt;&gt;txtOutboundPortUDP.Name" xml:space="preserve">
     <value>txtOutboundPortUDP</value>
@@ -796,7 +826,7 @@
     <value>40</value>
   </data>
   <data name="btnBrowse.Location" type="System.Drawing.Point, System.Drawing">
-    <value>364, 55</value>
+    <value>364, 28</value>
   </data>
   <data name="&gt;&gt;radUnrestricted.Type" xml:space="preserve">
     <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1075,7 +1105,7 @@
     <value>19, 64</value>
   </data>
   <data name="btnProcess.Location" type="System.Drawing.Point, System.Drawing">
-    <value>364, 28</value>
+    <value>364, 1</value>
   </data>
   <data name="&gt;&gt;radTcpUdpOut.Parent" xml:space="preserve">
     <value>$this</value>

@@ -359,4 +359,7 @@ El ejecutable seleccionado podría ser parte de {0}. Para asegurarse que esta ap
   <data name="SubjectTypeUwpApp" xml:space="preserve">
     <value>Aplicación UWP</value>
   </data>
+  <data name="PathFilterValidationTitle" xml:space="preserve"><value>Filtro de ruta no válido</value></data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>El filtro debe contener al menos un comodín (* o ?).</value></data>
+  <data name="PathFilterInvalid" xml:space="preserve"><value>El patrón con comodines debe coincidir con la ruta original.</value></data>
 </root>

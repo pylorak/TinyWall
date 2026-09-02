@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="$this.Text" xml:space="preserve"><value>Útvonalszűrő</value></data>
+  <data name="labelOriginalPath.Text" xml:space="preserve"><value>Eredeti elérési út:</value></data>
+  <data name="labelPattern.Text" xml:space="preserve"><value>Helyettesítő mintázat:</value></data>
+  <data name="txtPattern.ToolTip" xml:space="preserve"><value>A változó útvonalszakaszokhoz használja a * és ? jeleket. A jobb biztonság érdekében a többi rész legyen konkrét.</value></data>
+  <data name="labelSecurityBoundary.Text" xml:space="preserve"><value>Helyettesítő karakterek csak UAC-védett Windows- és Program Files-útvonalakon engedélyezettek. Máshol pontos útvonalat használjon.</value></data>
+  <data name="btnClearFilter.Text" xml:space="preserve"><value>Szűrő törlése</value></data>
+  <data name="btnClearFilter.ToolTip" xml:space="preserve"><value>Eltávolítja a helyettesítő karakteres szűrőt, és az eredeti végrehajtható fájl elérési útját használja.</value></data>
+  <data name="btnApply.Text" xml:space="preserve"><value>Szűrő alkalmazása</value></data>
+  <data name="btnCancel.Text" xml:space="preserve"><value>Mégse</value></data>
+</root>

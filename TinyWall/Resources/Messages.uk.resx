@@ -385,4 +385,7 @@
   <data name="SubjectTypeUwpApp" xml:space="preserve">
     <value>UWP Пакет</value>
   </data>
+  <data name="PathFilterValidationTitle" xml:space="preserve"><value>Недійсний фільтр шляху</value></data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>Фільтр має містити принаймні один символ підстановки (* або ?).</value></data>
+  <data name="PathFilterInvalid" xml:space="preserve"><value>Шаблон має відповідати початковому шляху.</value></data>
 </root>

@@ -177,4 +177,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Open een bestand...</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve"><value>Padfilter...</value></data>
 </root>

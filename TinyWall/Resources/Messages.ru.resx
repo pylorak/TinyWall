@@ -343,4 +343,7 @@
   <data name="SubjectTypeUwpApp" xml:space="preserve">
     <value>Пакет</value>
   </data>
+  <data name="PathFilterValidationTitle" xml:space="preserve"><value>Недопустимый фильтр пути</value></data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>Фильтр должен содержать хотя бы один подстановочный знак (* или ?).</value></data>
+  <data name="PathFilterInvalid" xml:space="preserve"><value>Шаблон должен соответствовать исходному пути.</value></data>
 </root>

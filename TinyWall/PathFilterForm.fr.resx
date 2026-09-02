@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="$this.Text" xml:space="preserve"><value>Filtre de chemin</value></data>
+  <data name="labelOriginalPath.Text" xml:space="preserve"><value>Chemin d’origine :</value></data>
+  <data name="labelPattern.Text" xml:space="preserve"><value>Motif avec jokers :</value></data>
+  <data name="txtPattern.ToolTip" xml:space="preserve"><value>Utilisez * et ? pour les segments variables du chemin. Gardez le reste précis pour une meilleure sécurité.</value></data>
+  <data name="labelSecurityBoundary.Text" xml:space="preserve"><value>Les caractères génériques sont limités aux chemins Windows et Program Files protégés par l’UAC. Utilisez un chemin exact ailleurs.</value></data>
+  <data name="btnClearFilter.Text" xml:space="preserve"><value>Effacer le filtre</value></data>
+  <data name="btnClearFilter.ToolTip" xml:space="preserve"><value>Supprime le filtre générique et utilise le chemin d’origine de l’exécutable.</value></data>
+  <data name="btnApply.Text" xml:space="preserve"><value>Appliquer le filtre</value></data>
+  <data name="btnCancel.Text" xml:space="preserve"><value>Annuler</value></data>
+</root>

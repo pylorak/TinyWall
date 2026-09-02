@@ -34,7 +34,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Configuration.Install" />
-    <Reference Include="System.Management" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Windows.Forms" />
@@ -119,6 +118,9 @@
     <Compile Update="ApplicationExceptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="PathFilterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="ConnectionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -143,6 +145,9 @@
     </Compile>
     <Compile Update="ApplicationExceptionForm.Designer.cs">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="PathFilterForm.Designer.cs">
+      <DependentUpon>PathFilterForm.cs</DependentUpon>
     </Compile>
     <Compile Update="ConnectionsForm.Designer.cs">
       <DependentUpon>ConnectionsForm.cs</DependentUpon>
@@ -172,6 +177,10 @@
     </EmbeddedResource>
     <EmbeddedResource Update="ApplicationExceptionForm.resx">
       <DependentUpon>ApplicationExceptionForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PathFilterForm*.resx">
+      <DependentUpon>PathFilterForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="ConnectionsForm.resx">

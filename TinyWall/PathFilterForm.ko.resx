@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="$this.Text" xml:space="preserve"><value>경로 필터</value></data>
+  <data name="labelOriginalPath.Text" xml:space="preserve"><value>원래 경로:</value></data>
+  <data name="labelPattern.Text" xml:space="preserve"><value>와일드카드 패턴:</value></data>
+  <data name="txtPattern.ToolTip" xml:space="preserve"><value>변경되는 경로 부분에는 *와 ?를 사용하십시오. 보안을 위해 나머지 경로는 구체적으로 유지하십시오.</value></data>
+  <data name="labelSecurityBoundary.Text" xml:space="preserve"><value>와일드카드는 UAC로 보호되는 Windows 및 Program Files 경로에서만 허용됩니다. 다른 위치에서는 정확한 경로를 사용하십시오.</value></data>
+  <data name="btnClearFilter.Text" xml:space="preserve"><value>필터 지우기</value></data>
+  <data name="btnClearFilter.ToolTip" xml:space="preserve"><value>와일드카드 필터를 제거하고 실행 파일의 원래 경로를 사용합니다.</value></data>
+  <data name="btnApply.Text" xml:space="preserve"><value>필터 적용</value></data>
+  <data name="btnCancel.Text" xml:space="preserve"><value>취소</value></data>
+</root>

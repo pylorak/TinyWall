@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="$this.Text" xml:space="preserve"><value>Yol filtresi</value></data>
+  <data name="labelOriginalPath.Text" xml:space="preserve"><value>Özgün yol:</value></data>
+  <data name="labelPattern.Text" xml:space="preserve"><value>Joker karakter deseni:</value></data>
+  <data name="txtPattern.ToolTip" xml:space="preserve"><value>Değişen yol bölümleri için * ve ? kullanın. Daha iyi güvenlik için yolun kalanını belirli tutun.</value></data>
+  <data name="labelSecurityBoundary.Text" xml:space="preserve"><value>Joker karakterlere yalnızca UAC korumalı Windows ve Program Files yollarında izin verilir. Diğer konumlarda tam yolu kullanın.</value></data>
+  <data name="btnClearFilter.Text" xml:space="preserve"><value>Filtreyi temizle</value></data>
+  <data name="btnClearFilter.ToolTip" xml:space="preserve"><value>Joker karakter filtresini kaldırır ve yürütülebilir dosyanın özgün yolunu kullanır.</value></data>
+  <data name="btnApply.Text" xml:space="preserve"><value>Filtreyi uygula</value></data>
+  <data name="btnCancel.Text" xml:space="preserve"><value>İptal</value></data>
+</root>

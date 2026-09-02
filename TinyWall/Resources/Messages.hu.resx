@@ -413,4 +413,7 @@ A kiválasztott fájl a következő része lehet: {0}. Ahhoz hogy az alkalmazás
   <data name="FilterGroupExternalApp" xml:space="preserve">
     <value>külső program által</value>
   </data>
+  <data name="PathFilterValidationTitle" xml:space="preserve"><value>Érvénytelen útvonalszűrő</value></data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>A szűrőnek legalább egy helyettesítő karaktert (* vagy ?) tartalmaznia kell.</value></data>
+  <data name="PathFilterInvalid" xml:space="preserve"><value>A helyettesítő mintázatnak egyeznie kell az eredeti elérési úttal.</value></data>
 </root>

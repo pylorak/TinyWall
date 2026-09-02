@@ -195,4 +195,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Fájl tallózása...</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve"><value>Útvonalszűrő...</value></data>
 </root>

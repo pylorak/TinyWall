@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="$this.Text" xml:space="preserve"><value>Pfadfilter</value></data>
+  <data name="labelOriginalPath.Text" xml:space="preserve"><value>Ursprünglicher Pfad:</value></data>
+  <data name="labelPattern.Text" xml:space="preserve"><value>Platzhaltermuster:</value></data>
+  <data name="txtPattern.ToolTip" xml:space="preserve"><value>Verwenden Sie * und ? für veränderliche Pfadsegmente. Halten Sie den restlichen Pfad für bessere Sicherheit möglichst konkret.</value></data>
+  <data name="labelSecurityBoundary.Text" xml:space="preserve"><value>Platzhalter sind nur in UAC-geschützten Windows- und Programme-Pfaden zulässig. Verwenden Sie andernorts einen exakten Pfad.</value></data>
+  <data name="btnClearFilter.Text" xml:space="preserve"><value>Filter löschen</value></data>
+  <data name="btnClearFilter.ToolTip" xml:space="preserve"><value>Platzhalterfilter entfernen und den ursprünglichen Programmpfad verwenden.</value></data>
+  <data name="btnApply.Text" xml:space="preserve"><value>Filter anwenden</value></data>
+  <data name="btnCancel.Text" xml:space="preserve"><value>Abbrechen</value></data>
+</root>

@@ -345,4 +345,7 @@ Seçili uygulama dosyası {0} nın parçası olabilir. İşi sağlama almak içi
   <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>Firewall ayarları dahili bir hatadan dolayı uygulanamadı.</value>
   </data>
+  <data name="PathFilterValidationTitle" xml:space="preserve"><value>Geçersiz yol filtresi</value></data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>Filtre en az bir joker karakter (* veya ?) içermelidir.</value></data>
+  <data name="PathFilterInvalid" xml:space="preserve"><value>Joker karakter deseni özgün yolla eşleşmelidir.</value></data>
 </root>

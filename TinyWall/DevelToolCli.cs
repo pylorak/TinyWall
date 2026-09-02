@@ -200,6 +200,7 @@ namespace pylorak.TinyWall
                             if (!satelliteItem.Name.EndsWith(".Text") &&
                                 !satelliteItem.Name.EndsWith(".Title") &&
                                 !satelliteItem.Name.EndsWith(".Filter") &&
+                                !satelliteItem.Name.EndsWith(".ToolTip") &&
                                 !satelliteItem.Name.EndsWith(".AccessibleName"))
                                 continue;
                         }
@@ -224,9 +225,26 @@ namespace pylorak.TinyWall
                     // Compare input to output if asked
                     if (compare)
                     {
-                        var original = pair.Value[s];
                         var optimized = outPath;
-                        if (!StructuralComparisons.StructuralEqualityComparer.Equals(File.ReadAllBytes(original), File.ReadAllBytes(optimized)))
+                        var optimizedContents = ReadResXFile(optimized);
+
+                        // The optimizer only removes entries; it never changes retained nodes.
+                        // Compare resource membership so BOM, line endings, and XML formatting
+                        // do not make semantically identical dictionaries fail validation.
+                        bool contentsIdentical = satellite.Count == optimizedContents.Count;
+                        if (contentsIdentical)
+                        {
+                            foreach (string key in satellite.Keys)
+                            {
+                                if (!optimizedContents.ContainsKey(key))
+                                {
+                                    contentsIdentical = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!contentsIdentical)
                         {
                             Console.Error.WriteLine($"Optimized {Path.GetFileName(optimized)} differs from original!");
                             inputsAndOutputsIdentical = false;

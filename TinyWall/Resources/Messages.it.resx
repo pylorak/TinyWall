@@ -369,4 +369,7 @@ L'eseguibile selezionato potrebbe essere parte di {0}. Per garantire che questa 
   <data name="SubjectTypeUwpApp" xml:space="preserve">
     <value>Pacchetto UWP</value>
   </data>
+  <data name="PathFilterValidationTitle" xml:space="preserve"><value>Filtro percorso non valido</value></data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>Il filtro deve contenere almeno un carattere jolly (* o ?).</value></data>
+  <data name="PathFilterInvalid" xml:space="preserve"><value>Il modello con caratteri jolly deve corrispondere al percorso originale.</value></data>
 </root>

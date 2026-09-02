@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="$this.Text" xml:space="preserve"><value>路径筛选器</value></data>
+  <data name="labelOriginalPath.Text" xml:space="preserve"><value>原始路径：</value></data>
+  <data name="labelPattern.Text" xml:space="preserve"><value>通配符模式：</value></data>
+  <data name="txtPattern.ToolTip" xml:space="preserve"><value>对变化的路径片段使用 * 和 ?。为提高安全性，请保持其余路径明确具体。</value></data>
+  <data name="labelSecurityBoundary.Text" xml:space="preserve"><value>通配符仅允许用于受 UAC 保护的 Windows 和 Program Files 路径。其他位置请使用确切路径。</value></data>
+  <data name="btnClearFilter.Text" xml:space="preserve"><value>清除筛选器</value></data>
+  <data name="btnClearFilter.ToolTip" xml:space="preserve"><value>清除通配符筛选器并使用可执行文件的原始路径。</value></data>
+  <data name="btnApply.Text" xml:space="preserve"><value>应用筛选器</value></data>
+  <data name="btnCancel.Text" xml:space="preserve"><value>取消</value></data>
+</root>

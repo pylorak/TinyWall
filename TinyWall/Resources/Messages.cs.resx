@@ -342,4 +342,7 @@ Zvolený spustitelný soubor by mohl být součástí {0}. Pro zajištění bezc
   <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>Nebylo možné uplatnit nastavení firewallu kvůli vnitřní chybě.</value>
   </data>
+  <data name="PathFilterValidationTitle" xml:space="preserve"><value>Neplatný filtr cesty</value></data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>Filtr musí obsahovat alespoň jeden zástupný znak (* nebo ?).</value></data>
+  <data name="PathFilterInvalid" xml:space="preserve"><value>Vzor musí odpovídat původní cestě.</value></data>
 </root>

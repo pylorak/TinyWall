@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="$this.Text" xml:space="preserve"><value>Филтър на пътя</value></data>
+  <data name="labelOriginalPath.Text" xml:space="preserve"><value>Оригинален път:</value></data>
+  <data name="labelPattern.Text" xml:space="preserve"><value>Шаблон със заместващи знаци:</value></data>
+  <data name="txtPattern.ToolTip" xml:space="preserve"><value>Използвайте * и ? за променящите се части на пътя. Оставете останалата част конкретна за по-добра сигурност.</value></data>
+  <data name="labelSecurityBoundary.Text" xml:space="preserve"><value>Заместващите знаци са разрешени само в защитени от UAC пътища на Windows и Program Files. На други места използвайте точен път.</value></data>
+  <data name="btnClearFilter.Text" xml:space="preserve"><value>Изчисти филтъра</value></data>
+  <data name="btnClearFilter.ToolTip" xml:space="preserve"><value>Премахва филтъра със заместващи символи и използва първоначалния път на изпълнимия файл.</value></data>
+  <data name="btnApply.Text" xml:space="preserve"><value>Приложи филтъра</value></data>
+  <data name="btnCancel.Text" xml:space="preserve"><value>Отказ</value></data>
+</root>

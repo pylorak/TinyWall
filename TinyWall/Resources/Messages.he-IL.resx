@@ -380,4 +380,7 @@
   <data name="SubjectTypeUwpApp" xml:space="preserve">
     <value>יישום אוניברסלי UWP</value>
   </data>
+  <data name="PathFilterValidationTitle" xml:space="preserve"><value>מסנן נתיב לא חוקי</value></data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>המסנן חייב להכיל לפחות תו כללי אחד (* או ?).</value></data>
+  <data name="PathFilterInvalid" xml:space="preserve"><value>תבנית התווים הכלליים חייבת להתאים לנתיב המקורי.</value></data>
 </root>

@@ -370,4 +370,7 @@ L'exécutable trouvé est une partie de {0}. Afin d'être sûr que cette applica
   <data name="UiThemeAuto" xml:space="preserve">
     <value>Système</value>
   </data>
+  <data name="PathFilterValidationTitle" xml:space="preserve"><value>Filtre de chemin non valide</value></data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>Le filtre doit contenir au moins un caractère joker (* ou ?).</value></data>
+  <data name="PathFilterInvalid" xml:space="preserve"><value>Le motif avec jokers doit correspondre au chemin d’origine.</value></data>
 </root>

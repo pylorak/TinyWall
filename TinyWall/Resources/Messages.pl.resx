@@ -348,4 +348,7 @@ Wybrany plik wykonywalny może być częścią {0}. Aby upewnić się, że ten p
   <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>Nie można zastosować ustawień zapory z powodu błędu wewnętrznego.</value>
   </data>
+  <data name="PathFilterValidationTitle" xml:space="preserve"><value>Nieprawidłowy filtr ścieżki</value></data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>Filtr musi zawierać co najmniej jeden symbol wieloznaczny (* lub ?).</value></data>
+  <data name="PathFilterInvalid" xml:space="preserve"><value>Wzorzec wieloznaczny musi pasować do oryginalnej ścieżki.</value></data>
 </root>

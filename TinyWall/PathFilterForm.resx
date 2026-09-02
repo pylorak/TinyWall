@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="$this.Localizable" type="System.Boolean, mscorlib"><value>True</value></data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing"><value>700, 210</value></data>
+  <data name="$this.Text" xml:space="preserve"><value>Path filter</value></data>
+  <data name="labelOriginalPath.Text" xml:space="preserve"><value>Original path:</value></data>
+  <data name="labelPattern.Text" xml:space="preserve"><value>Wildcard pattern:</value></data>
+  <data name="txtPattern.ToolTip" xml:space="preserve"><value>Use * and ? for changing path segments. Keep the rest of the path specific for better security.</value></data>
+  <data name="labelSecurityBoundary.Text" xml:space="preserve"><value>Wildcards are restricted to UAC-protected Windows and Program Files paths. Use an exact path elsewhere.</value></data>
+  <data name="btnClearFilter.Text" xml:space="preserve"><value>Clear Filter</value></data>
+  <data name="btnClearFilter.ToolTip" xml:space="preserve"><value>Remove the wildcard filter and use the original executable path.</value></data>
+  <data name="btnApply.Text" xml:space="preserve"><value>Apply filter</value></data>
+  <data name="btnCancel.Text" xml:space="preserve"><value>Cancel</value></data>
+</root>

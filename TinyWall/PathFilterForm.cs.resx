@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="$this.Text" xml:space="preserve"><value>Filtr cesty</value></data>
+  <data name="labelOriginalPath.Text" xml:space="preserve"><value>Původní cesta:</value></data>
+  <data name="labelPattern.Text" xml:space="preserve"><value>Vzor se zástupnými znaky:</value></data>
+  <data name="txtPattern.ToolTip" xml:space="preserve"><value>Použijte * a ? pro proměnlivé části cesty. Zbytek cesty ponechte konkrétní pro lepší zabezpečení.</value></data>
+  <data name="labelSecurityBoundary.Text" xml:space="preserve"><value>Zástupné znaky jsou povoleny pouze v cestách Windows a Program Files chráněných nástrojem UAC. Jinde použijte přesnou cestu.</value></data>
+  <data name="btnClearFilter.Text" xml:space="preserve"><value>Vymazat filtr</value></data>
+  <data name="btnClearFilter.ToolTip" xml:space="preserve"><value>Odebere filtr se zástupnými znaky a použije původní cestu ke spustitelnému souboru.</value></data>
+  <data name="btnApply.Text" xml:space="preserve"><value>Použít filtr</value></data>
+  <data name="btnCancel.Text" xml:space="preserve"><value>Zrušit</value></data>
+</root>

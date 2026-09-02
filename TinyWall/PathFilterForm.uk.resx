@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>2.0</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="$this.Text" xml:space="preserve"><value>Фільтр шляху</value></data>
+  <data name="labelOriginalPath.Text" xml:space="preserve"><value>Початковий шлях:</value></data>
+  <data name="labelPattern.Text" xml:space="preserve"><value>Шаблон із символами підстановки:</value></data>
+  <data name="txtPattern.ToolTip" xml:space="preserve"><value>Використовуйте * і ? для змінних частин шляху. Для кращої безпеки вкажіть решту шляху точно.</value></data>
+  <data name="labelSecurityBoundary.Text" xml:space="preserve"><value>Символи підстановки дозволено лише в захищених UAC шляхах Windows і Program Files. В інших розташуваннях використовуйте точний шлях.</value></data>
+  <data name="btnClearFilter.Text" xml:space="preserve"><value>Очистити фільтр</value></data>
+  <data name="btnClearFilter.ToolTip" xml:space="preserve"><value>Видаляє фільтр із символами узагальнення та використовує початковий шлях до виконуваного файлу.</value></data>
+  <data name="btnApply.Text" xml:space="preserve"><value>Застосувати фільтр</value></data>
+  <data name="btnCancel.Text" xml:space="preserve"><value>Скасувати</value></data>
+</root>

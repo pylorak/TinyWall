@@ -425,4 +425,7 @@ The selected executable could be part of {0}. To ensure that this application ca
   <data name="FilterGroupExternalApp" xml:space="preserve">
     <value>by 3rd party app</value>
   </data>
+  <data name="PathFilterValidationTitle" xml:space="preserve"><value>Invalid path filter</value></data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>The filter must contain at least one wildcard symbol (* or ?).</value></data>
+  <data name="PathFilterInvalid" xml:space="preserve"><value>The wildcard pattern must match the original path.</value></data>
 </root>

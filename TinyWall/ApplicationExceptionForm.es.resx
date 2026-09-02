@@ -201,4 +201,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Buscar archivo...</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve"><value>Filtro de ruta...</value></data>
 </root>

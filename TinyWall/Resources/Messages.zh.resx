@@ -345,4 +345,7 @@
   <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>由于内部错误而无法应用防火墙设置。</value>
   </data>
+  <data name="PathFilterValidationTitle" xml:space="preserve"><value>无效的路径筛选器</value></data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>筛选器必须至少包含一个通配符（* 或 ?）。</value></data>
+  <data name="PathFilterInvalid" xml:space="preserve"><value>通配符模式必须与原始路径匹配。</value></data>
 </root>

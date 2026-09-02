@@ -376,4 +376,7 @@ O executável selecionado é parte de {0}. Para que este aplicativo possa ser us
   <data name="SubjectTypeUwpApp" xml:space="preserve">
     <value>Aplicativo da PUW</value>
   </data>
+  <data name="PathFilterValidationTitle" xml:space="preserve"><value>Filtro de caminho inválido</value></data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>O filtro deve conter pelo menos um curinga (* ou ?).</value></data>
+  <data name="PathFilterInvalid" xml:space="preserve"><value>O padrão curinga deve corresponder ao caminho original.</value></data>
 </root>

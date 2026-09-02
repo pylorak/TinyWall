@@ -324,4 +324,7 @@ Het gekozen programma is deel van {0}. Om zeker te zijn dat dit programma zonder
   <data name="UnblockAppUnblockOnlySelected" xml:space="preserve">
     <value>Deblokker enkel de geselecteerde bestanden</value>
   </data>
+  <data name="PathFilterValidationTitle" xml:space="preserve"><value>Ongeldig padfilter</value></data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>Het filter moet minstens één jokerteken (* of ?) bevatten.</value></data>
+  <data name="PathFilterInvalid" xml:space="preserve"><value>Het jokerpatroon moet overeenkomen met het oorspronkelijke pad.</value></data>
 </root>

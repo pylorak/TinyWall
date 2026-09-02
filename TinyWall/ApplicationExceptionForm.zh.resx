@@ -201,4 +201,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>浏览文件...</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve"><value>路径筛选器...</value></data>
 </root>

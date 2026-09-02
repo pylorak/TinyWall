@@ -355,4 +355,7 @@
   <data name="SubjectTypeUwpApp" xml:space="preserve">
     <value>UWP Пакет</value>
   </data>
+  <data name="PathFilterValidationTitle" xml:space="preserve"><value>Невалиден филтър на пътя</value></data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>Филтърът трябва да съдържа поне един заместващ знак (* или ?).</value></data>
+  <data name="PathFilterInvalid" xml:space="preserve"><value>Шаблонът трябва да съответства на оригиналния път.</value></data>
 </root>
