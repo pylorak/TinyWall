@@ -1,10 +1,10 @@
 name: Build
 
 on:
-  # push:
-  #   branches: [master]
-  # pull_request:
-  #   branches: [master]
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
   workflow_dispatch:
 
 permissions:
@@ -41,6 +41,10 @@ jobs:
 
     - name: Build
       run: msbuild TinyWall/TinyWall.csproj /p:Configuration=${{ matrix.configuration }} /p:RestorePackages=false
+
+    - name: Run relocation tests
+      shell: pwsh
+      run: .github/scripts/test-relocation.ps1 -Exe "TinyWall/bin/${{ matrix.configuration }}/TinyWall.exe"
 
     - name: Upload build output
       uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
