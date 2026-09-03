@@ -251,6 +251,30 @@ namespace pylorak.TinyWall
         }
     }
 
+    public class RelocationTestCliArgs : CliArgsBase
+    {
+        public CliArg<string> ExecutablePath { get; init; } = new() { Name = "/executable-path", IsRequired = true };
+        public CliArg<string> OutputFile { get; init; } = new() { Name = "/output-file" };
+
+        protected override void OnParse(string[] args, bool[] keep)
+        {
+            for (int i = 0; i < args.Length; ++i)
+            {
+                string arg = args[i].ToLowerInvariant();
+
+                if (ExecutablePath.Name == arg)
+                    ExecutablePath.Value = (++i < args.Length) ? args[i] : throw new MissingCommandlineValueException(arg);
+                else if (OutputFile.Name == arg)
+                    OutputFile.Value = (++i < args.Length) ? args[i] : throw new MissingCommandlineValueException(arg);
+                else
+                    keep[i] = true;
+            }
+
+            ExecutablePath.ThrowIfRequiredAndUnassigned();
+            OutputFile.ThrowIfRequiredAndUnassigned();
+        }
+    }
+
     public enum StartupCommand
     {
         // Default to check for uninitilaized values
@@ -267,6 +291,7 @@ namespace pylorak.TinyWall
         UpdateCreator,
         ResXOptimizer,
         BatchSigner,
+        RelocationTest,
 
         // Only the following are meant for end-users:
         Update
@@ -282,6 +307,7 @@ namespace pylorak.TinyWall
         public UpdateCreatorCliArgs UpdateCreator { get; } = new();
         public ResXOptimizerCliArgs ResXOptimizer { get; } = new();
         public BatchSignerCliArgs BatchSigner { get; } = new();
+        public RelocationTestCliArgs RelocationTest { get; } = new();
 
         public void ParseArgs(string[] args)
         {
@@ -305,6 +331,7 @@ namespace pylorak.TinyWall
                     "update-creator" => StartupCommand.UpdateCreator,
                     "resx-optimizer" => StartupCommand.ResXOptimizer,
                     "batch-signer" => StartupCommand.BatchSigner,
+                    "relocation-test" => StartupCommand.RelocationTest,
                     _ when args[0].StartsWith("/") => StartupCommand.Invalid,
                     _ => throw new InvalidCommandlineOptionException(args[0])
                 };
@@ -346,6 +373,9 @@ namespace pylorak.TinyWall
                     break;
                 case StartupCommand.BatchSigner:
                     BatchSigner.Parse(ref optsOnly);
+                    break;
+                case StartupCommand.RelocationTest:
+                    RelocationTest.Parse(ref optsOnly);
                     break;
             }
 

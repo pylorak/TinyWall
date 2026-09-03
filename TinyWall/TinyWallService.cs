@@ -1076,7 +1076,11 @@ namespace pylorak.TinyWall
             VisibleState.Mode = ActiveConfig.Service.StartupMode;
             GlobalInstances.ServerChangeset = Guid.NewGuid();
 
-            if (CommitLearnedRules() || PruneExpiredRules())
+            // Note: these must not short-circuit, each pass needs to run.
+            bool configChanged = CommitLearnedRules();
+            configChanged |= PruneExpiredRules();
+            configChanged |= RelocateUpdatedExecutables();
+            if (configChanged)
                 ActiveConfig.Service.Save(ConfigSavePath);
 
             ReapplySettings();
@@ -1308,6 +1312,47 @@ namespace pylorak.TinyWall
             return config_changed;
         }
 
+        // Applications that install every release into its own versioned directory
+        // (Squirrel/Electron installers, among others) leave the user's exception pointing at a
+        // path that no longer exists, silently losing network access on each update. Where the
+        // executable reappears in a sibling version directory under an otherwise identical path,
+        // follow it instead of making the user re-whitelist the application by hand.
+        private static bool RelocateUpdatedExecutables()
+        {
+            bool config_changed = false;
+
+            List<FirewallExceptionV3> exs = ActiveConfig.Service.ActiveProfile.AppExceptions;
+            for (int i = 0; i < exs.Count; ++i)
+            {
+                if (exs[i].Subject is not ExecutableSubject exe)
+                    continue;
+
+                ExecutableSubject resolved = exe.ToResolved();
+                if (File.Exists(resolved.ExecutablePath))
+                    continue;
+
+                if (!ExecutableRelocator.TryFindRelocatedPath(resolved.ExecutablePath, out string newPath))
+                    continue;
+
+                exs[i].Subject = resolved switch
+                {
+                    ServiceSubject srv => new ServiceSubject(newPath, srv.ServiceName),
+                    _ => new ExecutableSubject(newPath)
+                };
+
+                Utils.Log($"Application exception followed to updated location. Old path: '{resolved.ExecutablePath}'. New path: '{newPath}'.", Utils.LOG_ID_SERVICE);
+                config_changed = true;
+            }
+
+            if (config_changed)
+            {
+                GlobalInstances.ServerChangeset = Guid.NewGuid();
+                ActiveConfig.Service.ActiveProfile.AppExceptions = exs;
+            }
+
+            return config_changed;
+        }
+
         private TwMessage ProcessCmd(TwMessage req)
         {
             switch (req.Type)
@@ -1498,6 +1543,14 @@ namespace pylorak.TinyWall
                         }
 
                         if (PruneExpiredRules())
+                        {
+                            save_needed = true;
+                            rule_reload_needed = true;
+                        }
+
+                        // Applications that install each release into a new versioned folder
+                        // invalidate their own exception every time they update. Follow them.
+                        if (RelocateUpdatedExecutables())
                         {
                             save_needed = true;
                             rule_reload_needed = true;
