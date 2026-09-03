@@ -110,4 +110,5 @@ jobs:
       uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
       with:
         name: ${{ steps.version.outputs.msi_name }}
-        path: MsiSetup/bin/Release/TinyWallInstaller.msi
+        path: MsiSetup/bin/Release/TinyWall_x86.msi
+        if-no-files-found: error
