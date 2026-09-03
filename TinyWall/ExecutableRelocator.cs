@@ -17,7 +17,13 @@ namespace pylorak.TinyWall
     /// the user notices and re-whitelists it by hand. Such applications update frequently, which
     /// makes this a recurring annoyance rather than a one-off.
     ///
-    /// This helper detects that specific situation and nothing else. The replacement must live in a
+    /// MSIX / Microsoft Store packages behave the same way, but put the version in the middle of
+    /// the folder name instead of at its end:
+    ///     C:\Program Files\WindowsApps\Claude_1.44121.2.0_x64__pzs8sxrjxfjjc\app\claude.exe
+    /// There the package name, architecture and publisher id must all be preserved and only the
+    /// version may change, which is a stricter test than the generic one below.
+    ///
+    /// This helper detects those specific situations and nothing else. The replacement must live in a
     /// *sibling* directory of the original one whose name differs from it only in a version token,
     /// and the path below that directory - including the file name - must be identical. The trust
     /// boundary is therefore unchanged: anyone able to plant a file that this code would relocate to
@@ -32,6 +38,16 @@ namespace pylorak.TinyWall
         //   "2.14.0"       -> stem "",         version "2.14.0"
         private static readonly Regex VersionedFolderRegex = new(
             @"^(?<stem>.*?)[-_. ]?v?(?<version>\d+(?:\.\d+)*)(?<suffix>[-+][0-9A-Za-z.]+)?$",
+            RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+        // Matches MSIX / Microsoft Store package folders, which carry the version in the middle
+        // of the name rather than at its end and so are never matched by the rule above:
+        //   "Claude_1.44121.2.0_x64__pzs8sxrjxfjjc"
+        //       -> name "Claude", version "1.44121.2.0", arch "x64", publisher "pzs8sxrjxfjjc"
+        // The layout is Name_Version_Arch__PublisherId. Name and architecture cannot contain an
+        // underscore, which is what keeps the fields unambiguous.
+        private static readonly Regex MsixPackageFolderRegex = new(
+            @"^(?<name>[^_]+)_(?<version>\d+(?:\.\d+){0,3})_(?<arch>[^_]+)__(?<pub>[A-Za-z0-9]+)$",
             RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         // How many directory levels above the executable may be the versioned one.
@@ -78,13 +94,18 @@ namespace pylorak.TinyWall
 
                     if (!Utils.IsNullOrEmpty(name) && (parent is not null))
                     {
-                        var match = VersionedFolderRegex.Match(name);
+                        // A packaged folder is handled by the MSIX rule and never by the generic
+                        // one: the two are tried in order and the first match decides which
+                        // identity has to be preserved among the siblings.
+                        var msixMatch = MsixPackageFolderRegex.Match(name);
+                        bool isMsix = msixMatch.Success;
+                        var match = isMsix ? msixMatch : VersionedFolderRegex.Match(name);
 
                         // The parent must still exist. If it does not, we are not looking at an
                         // updated application but at a detached drive or a deleted install root.
                         if (match.Success && Directory.Exists(parent))
                         {
-                            if (TryRelocateWithin(parent!, name, match, tail, out newPath))
+                            if (TryRelocateWithin(parent!, name, match, isMsix, tail, out newPath))
                                 return true;
                         }
                     }
@@ -103,33 +124,55 @@ namespace pylorak.TinyWall
             return false;
         }
 
-        private static bool TryRelocateWithin(string parent, string originalName, Match originalMatch, string tail, out string newPath)
+        private static bool TryRelocateWithin(string parent, string originalName, Match originalMatch, bool isMsix, string tail, out string newPath)
         {
             newPath = string.Empty;
 
-            string stem = originalMatch.Groups["stem"].Value;
-            string searchPattern = (stem.Length > 0) ? stem + "*" : "*";
+            // Narrow the enumeration to the family the original folder belongs to. For a package
+            // that is the invariant part before the version; for the generic layout, the stem.
+            string stem = isMsix ? string.Empty : originalMatch.Groups["stem"].Value;
+            string searchPattern = isMsix
+                ? originalMatch.Groups["name"].Value + "_*"
+                : ((stem.Length > 0) ? stem + "*" : "*");
 
             IReadOnlyList<int>? bestVersion = null;
             DateTime bestWriteTime = DateTime.MinValue;
-            int scanned = 0;
 
-            foreach (string sibling in Directory.EnumerateDirectories(parent, searchPattern))
+            foreach (string sibling in EnumerateDirectoriesOrNone(parent, searchPattern))
             {
-                if (++scanned > MaxSiblingsScanned)
-                    break;
-
                 string siblingName = Path.GetFileName(sibling);
                 if (string.Equals(siblingName, originalName, StringComparison.OrdinalIgnoreCase))
                     continue;
 
-                var match = VersionedFolderRegex.Match(siblingName);
-                if (!match.Success)
-                    continue;
+                Match match;
+                if (isMsix)
+                {
+                    match = MsixPackageFolderRegex.Match(siblingName);
+                    if (!match.Success)
+                        continue;
 
-                // Only the version token may differ from the original directory name.
-                if (!string.Equals(match.Groups["stem"].Value, stem, StringComparison.OrdinalIgnoreCase))
-                    continue;
+                    // Same package, same architecture, same publisher - only the version may
+                    // differ. A package identity that differs in any other field is a different
+                    // application as far as Windows is concerned, so it is never followed.
+                    if (!IsSameMsixIdentity(originalMatch, match))
+                        continue;
+                }
+                else
+                {
+                    // Keep the two rules disjoint: a packaged folder is the MSIX rule's business
+                    // even when its publisher id happens to be all digits, which would otherwise
+                    // let the generic pattern match it as well.
+                    if (MsixPackageFolderRegex.IsMatch(siblingName))
+                        continue;
+
+                    match = VersionedFolderRegex.Match(siblingName);
+                    if (!match.Success)
+                        continue;
+
+                    // Only the version token may differ from the original directory name.
+                    if (!string.Equals(match.Groups["stem"].Value, stem, StringComparison.OrdinalIgnoreCase))
+                        continue;
+                }
 
                 // The path below the versioned directory must be reproduced exactly.
                 string candidate = Path.Combine(sibling, tail);
@@ -161,6 +204,47 @@ namespace pylorak.TinyWall
             }
 
             return newPath.Length > 0;
+        }
+
+        private static bool IsSameMsixIdentity(Match left, Match right)
+        {
+            return string.Equals(left.Groups["name"].Value, right.Groups["name"].Value, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(left.Groups["arch"].Value, right.Groups["arch"].Value, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(left.Groups["pub"].Value, right.Groups["pub"].Value, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Lists sibling directories, treating an unreadable parent as simply having none.
+        ///
+        /// Directory.EnumerateDirectories is lazy, so a directory that denies listing - as
+        /// C:\Program Files\WindowsApps does, being ACL'd to TrustedInstaller - throws while the
+        /// caller iterates rather than when the enumerator is created. Left unhandled that would
+        /// escape TryRelocateWithin and abort the whole upward walk, losing the levels above.
+        /// Materialising the names here confines the failure to the level that caused it.
+        /// </summary>
+        private static IReadOnlyList<string> EnumerateDirectoriesOrNone(string parent, string searchPattern)
+        {
+            var ret = new List<string>();
+            try
+            {
+                foreach (string dir in Directory.EnumerateDirectories(parent, searchPattern))
+                {
+                    if (ret.Count >= MaxSiblingsScanned)
+                        break;
+                    ret.Add(dir);
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Deliberately discards whatever was collected before the failure, so that the
+                // outcome does not depend on how far the enumeration happened to get.
+                return Array.Empty<string>();
+            }
+            catch (IOException)
+            {
+                return Array.Empty<string>();
+            }
+            return ret;
         }
 
         private static IReadOnlyList<int> ParseVersion(string version)

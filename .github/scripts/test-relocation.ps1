@@ -136,6 +136,43 @@ try {
     Assert-Relocation 'the deepest versioned folder is tried first' `
         'AppFifteen\rel-2.0\app-1.0\app.exe' 'AppFifteen\rel-2.0\app-1.1\app.exe'
 
+    # --- MSIX / Microsoft Store layout: Name_Version_Arch__PublisherId ---
+    # A synthesized tree only; the real WindowsApps folder is never touched.
+    New-Exe 'WindowsApps\Claude_1.44122.0.0_x64__pzs8sxrjxfjjc\app\claude.exe' | Out-Null
+    Assert-Relocation 'msix package update is followed' `
+        'WindowsApps\Claude_1.44121.2.0_x64__pzs8sxrjxfjjc\app\claude.exe' `
+        'WindowsApps\Claude_1.44122.0.0_x64__pzs8sxrjxfjjc\app\claude.exe'
+
+    New-Exe 'MsixTwo\Contoso_2.1.0.0_x64__abcdefgh12345\app.exe'  | Out-Null
+    New-Exe 'MsixTwo\Contoso_2.10.0.0_x64__abcdefgh12345\app.exe' | Out-Null
+    New-Exe 'MsixTwo\Contoso_2.2.0.0_x64__abcdefgh12345\app.exe'  | Out-Null
+    Assert-Relocation 'msix highest version wins, compared numerically' `
+        'MsixTwo\Contoso_2.0.0.0_x64__abcdefgh12345\app.exe' `
+        'MsixTwo\Contoso_2.10.0.0_x64__abcdefgh12345\app.exe'
+
+    New-Exe 'MsixThree\Contoso_2.0.0.0_x64__zzzzzzzzzzzzz\app.exe' | Out-Null
+    Assert-Relocation 'a different publisher id is not followed' `
+        'MsixThree\Contoso_1.0.0.0_x64__abcdefgh12345\app.exe' ''
+
+    New-Exe 'MsixFour\Contoso_2.0.0.0_arm64__abcdefgh12345\app.exe' | Out-Null
+    Assert-Relocation 'a different architecture is not followed' `
+        'MsixFour\Contoso_1.0.0.0_x64__abcdefgh12345\app.exe' ''
+
+    New-Exe 'MsixFive\Fabrikam_2.0.0.0_x64__abcdefgh12345\app.exe' | Out-Null
+    Assert-Relocation 'a different package name is not followed' `
+        'MsixFive\Contoso_1.0.0.0_x64__abcdefgh12345\app.exe' ''
+
+    # The two rules must stay disjoint in both directions: an MSIX-shaped folder is never
+    # relocated onto a Squirrel-style sibling, and vice versa, even though both carry a
+    # version and sit side by side under the same parent.
+    New-Exe 'MsixSix\Contoso-2.0.0\app.exe' | Out-Null
+    Assert-Relocation 'an msix name is not matched by the generic rule' `
+        'MsixSix\Contoso_1.0.0.0_x64__abcdefgh12345\app.exe' ''
+
+    New-Exe 'MsixSeven\app_2.0.0.0_x64__abcdefgh12345\app.exe' | Out-Null
+    Assert-Relocation 'a squirrel-style name is not matched by the msix rule' `
+        'MsixSeven\app-1.2.3\app.exe' ''
+
     Write-Host ''
     Write-Host "$($script:Total - $script:Failures)/$($script:Total) passed"
 }
