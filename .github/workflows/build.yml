@@ -73,6 +73,8 @@ jobs:
       run: |
         $src = 'TinyWall/bin/Release'
         $dst = 'MsiSetup/Sources/ProgramFiles/TinyWall'
+        # MsiSetup/Sources is gitignored, so it does not exist in a fresh clone.
+        New-Item -ItemType Directory -Path $dst -Force | Out-Null
         Copy-Item "$src/TinyWall.exe" "$dst/" -Force
         Copy-Item "$src/TinyWall.exe.config" "$dst/" -Force
         Get-ChildItem "$src/*.dll" | Copy-Item -Destination "$dst/" -Force
