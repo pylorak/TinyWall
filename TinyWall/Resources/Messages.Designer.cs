@@ -440,6 +440,15 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} runs with full trust and is not a sandboxed app..
+        /// </summary>
+        internal static string FullTrustPackageWarning {
+            get {
+                return ResourceManager.GetString("FullTrustPackageWarning", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Permanent.
         /// </summary>
         internal static string Permanent {

@@ -1,9 +1,11 @@
 ﻿using DarkModeForms;
+using Microsoft.Samples.TaskDialog;
 using pylorak.Windows;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace pylorak.TinyWall
@@ -43,10 +45,35 @@ namespace pylorak.TinyWall
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            var selection = new List<UwpPackageList.Package>();
             for (int i = 0; i < listView.SelectedItems.Count; ++i)
             {
-                this.SelectedPackages.Add((UwpPackageList.Package)listView.SelectedItems[i].Tag);
+                selection.Add((UwpPackageList.Package)listView.SelectedItems[i].Tag);
             }
+
+            // A rule for a package matches on the AppContainer token of its processes. Packaged
+            // desktop applications run with full trust and have no such token, so an exception
+            // for one would be accepted here and then silently never match anything. Say so
+            // instead, and point at the exception type that does work for them.
+            var fullTrust = new List<string>();
+            foreach (var package in selection)
+            {
+                if (UwpPackageList.GetFullTrustState(package.FamilyName) == UwpPackageList.FullTrustState.Yes)
+                    fullTrust.Add(package.Name);
+            }
+
+            if (fullTrust.Count > 0)
+            {
+                string prompt = string.Format(
+                    CultureInfo.CurrentCulture,
+                    Resources.Messages.FullTrustPackageWarning,
+                    string.Join(", ", fullTrust.ToArray()));
+
+                if (Utils.ShowMessageBox(prompt, Resources.Messages.TinyWall, TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No, TaskDialogIcon.Warning, this) != System.Windows.Forms.DialogResult.Yes)
+                    return;
+            }
+
+            this.SelectedPackages.AddRange(selection);
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 

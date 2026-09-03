@@ -289,6 +289,12 @@ Select Elevate from the tray menu and try again.</value>
     <value>Unknown application</value>
     <comment>Exception details window banner text</comment>
   </data>
+  <data name="FullTrustPackageWarning" xml:space="preserve">
+    <value>{0} runs with full trust and is not a sandboxed app.
+An exception for a Store app is matched against an identity that only sandboxed apps have, so it will not apply to this application's network traffic. To control it, add its executable as an application exception instead.
+
+Do you still want to add the Store app exception?</value>
+  </data>
   <data name="Permanent" xml:space="preserve">
     <value>Permanent</value>
   </data>

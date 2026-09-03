@@ -42,6 +42,7 @@
     <!-- Used for WinRT access in .Net 4.8, not needed with .NET 5+ -->
     <Reference Include="Windows.Management" />
     <Reference Include="Windows.ApplicationModel" />
+    <Reference Include="Windows.Storage" />
     <Reference Include="System.Runtime" />
 
   </ItemGroup>
