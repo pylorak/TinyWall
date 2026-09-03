@@ -30,6 +30,7 @@ namespace pylorak.TinyWall
             public readonly string Name;
             public readonly string Publisher;
             public readonly string PublisherId;
+            public readonly string FamilyName;
             public readonly string Sid;
             public readonly TamperedState Tampered;
 
@@ -38,6 +39,7 @@ namespace pylorak.TinyWall
                 Name = p.Id.Name;
                 Publisher = p.Id.Publisher;
                 PublisherId = p.Id.PublisherId;
+                FamilyName = p.Id.FamilyName;
                 Tampered = p.Status.Tampered ? TamperedState.Yes : TamperedState.No;
 
                 SafeSidHandle? pSid = null;
@@ -130,6 +132,58 @@ namespace pylorak.TinyWall
             }
 
             return resultList;
+        }
+
+        public enum FullTrustState
+        {
+            Unknown,
+            No,
+            Yes
+        }
+
+        /// <summary>
+        /// Tells whether a package runs with full trust, i.e. is a packaged desktop application
+        /// rather than a sandboxed UWP app.
+        ///
+        /// This matters because an exception for a package is enforced through
+        /// FWPM_CONDITION_ALE_PACKAGE_ID, which is only present on the token of a process running
+        /// inside an AppContainer. A full trust package - Spotify, Arc, and by now a good number
+        /// of Microsoft's own apps - runs as an ordinary Win32 process with no such token, so a
+        /// package-based rule can never match its traffic. Note that the package SID itself gives
+        /// nothing away: DeriveAppContainerSidFromAppContainerName is a pure derivation from the
+        /// family name and succeeds whether or not the app is ever sandboxed.
+        ///
+        /// Returns Unknown when the manifest cannot be read, so that callers can stay silent
+        /// rather than warn on a guess.
+        /// </summary>
+        public static FullTrustState GetFullTrustState(string familyName)
+        {
+            try
+            {
+                var pm = new PackageManager();
+                foreach (var p in pm.FindPackagesForUser(string.Empty, familyName))
+                {
+                    string manifestPath = System.IO.Path.Combine(p.InstalledLocation.Path, "AppxManifest.xml");
+                    string manifest = System.IO.File.ReadAllText(manifestPath);
+
+                    // A packaged desktop application declares the runFullTrust restricted
+                    // capability, and its entry point is Windows.FullTrustApplication. Both
+                    // strings are specific enough to test for without parsing the manifest,
+                    // which would otherwise mean dealing with its several namespaces.
+                    bool fullTrust =
+                        (manifest.IndexOf("Windows.FullTrustApplication", StringComparison.OrdinalIgnoreCase) >= 0)
+                        || (manifest.IndexOf("Name=\"runFullTrust\"", StringComparison.OrdinalIgnoreCase) >= 0);
+
+                    return fullTrust ? FullTrustState.Yes : FullTrustState.No;
+                }
+            }
+            catch
+            {
+                // Deliberately swallowed: the manifest lives under %ProgramFiles%\WindowsApps,
+                // and not being able to read it is not a reason to fail the caller.
+            }
+
+            return FullTrustState.Unknown;
         }
 
         public Package? FindPackage(string? sid)
