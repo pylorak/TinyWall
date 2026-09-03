@@ -1,10 +1,10 @@
 name: Build
 
 on:
-  # push:
-  #   branches: [master]
-  # pull_request:
-  #   branches: [master]
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
   workflow_dispatch:
 
 permissions:
@@ -42,6 +42,10 @@ jobs:
     - name: Build
       run: msbuild TinyWall/TinyWall.csproj /p:Configuration=${{ matrix.configuration }} /p:RestorePackages=false
 
+    - name: Run relocation tests
+      shell: pwsh
+      run: .github/scripts/test-relocation.ps1 -Exe "TinyWall/bin/${{ matrix.configuration }}/TinyWall.exe"
+
     - name: Upload build output
       uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
       with:
@@ -73,6 +77,8 @@ jobs:
       run: |
         $src = 'TinyWall/bin/Release'
         $dst = 'MsiSetup/Sources/ProgramFiles/TinyWall'
+        # MsiSetup/Sources is gitignored, so it does not exist in a fresh clone.
+        New-Item -ItemType Directory -Path $dst -Force | Out-Null
         Copy-Item "$src/TinyWall.exe" "$dst/" -Force
         Copy-Item "$src/TinyWall.exe.config" "$dst/" -Force
         Get-ChildItem "$src/*.dll" | Copy-Item -Destination "$dst/" -Force
@@ -84,6 +90,20 @@ jobs:
             Copy-Item $satellite "$dst/$lang/" -Force
           }
         }
+        # Product.wxs also links in the docs, licence, icon and the CommonAppData
+        # payload, so staging the binaries alone is not enough to build the MSI.
+        # Mirrors steps 3 and 4 of build.ps1.
+        $appdata = 'MsiSetup/Sources/CommonAppData/TinyWall'
+        New-Item -ItemType Directory -Path $appdata -Force | Out-Null
+        Copy-Item 'MsiSetup/License.rtf' "$dst/" -Force
+        Copy-Item 'TinyWall/Resources/img/TinyWall.ico' "$dst/" -Force
+        Copy-Item 'TinyWall/doc' "$dst/doc" -Recurse -Force
+        Copy-Item 'TinyWall/Resources/hosts' "$appdata/hosts.custom" -Force
+        # TinyWall.exe is a GUI-subsystem binary, so wait for it explicitly.
+        $proc = Start-Process -FilePath "$src/TinyWall.exe" -NoNewWindow -Wait -PassThru -ArgumentList @(
+          'database-creator', '/source-folder', 'TinyWall/Database', '/output-folder', $appdata
+        )
+        if ($proc.ExitCode -ne 0) { throw "database-creator failed with exit code $($proc.ExitCode)" }
 
     - name: Build MSI
       if: matrix.configuration == 'Release'
@@ -94,4 +114,5 @@ jobs:
       uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
       with:
         name: ${{ steps.version.outputs.msi_name }}
-        path: MsiSetup/bin/Release/TinyWallInstaller.msi
+        path: MsiSetup/bin/Release/TinyWall_x86.msi
+        if-no-files-found: error
