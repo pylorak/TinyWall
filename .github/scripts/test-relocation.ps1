@@ -173,6 +173,38 @@ try {
     Assert-Relocation 'a squirrel-style name is not matched by the msix rule' `
         'MsixSeven\app-1.2.3\app.exe' ''
 
+    # --- Platform-tagged layout: version followed by an architecture tag ---
+    New-Exe 'VsCode\anthropic.claude-code-2.1.174-win32-x64\resources\native-binary\claude.exe' | Out-Null
+    Assert-Relocation 'platform-tagged folder is followed, executable nested below it' `
+        'VsCode\anthropic.claude-code-2.1.173-win32-x64\resources\native-binary\claude.exe' `
+        'VsCode\anthropic.claude-code-2.1.174-win32-x64\resources\native-binary\claude.exe'
+
+    New-Exe 'PlatTwo\ext-1.2.0-win32-x64\app.exe'  | Out-Null
+    New-Exe 'PlatTwo\ext-1.10.0-win32-x64\app.exe' | Out-Null
+    New-Exe 'PlatTwo\ext-1.3.0-win32-x64\app.exe'  | Out-Null
+    Assert-Relocation 'platform-tagged highest version wins, compared numerically' `
+        'PlatTwo\ext-1.0.0-win32-x64\app.exe' 'PlatTwo\ext-1.10.0-win32-x64\app.exe'
+
+    New-Exe 'PlatThree\ext-2.0.0-linux-arm64\app.exe' | Out-Null
+    Assert-Relocation 'a different platform tag is not followed' `
+        'PlatThree\ext-1.0.0-win32-x64\app.exe' ''
+
+    New-Exe 'PlatFour\other-2.0.0-win32-x64\app.exe' | Out-Null
+    Assert-Relocation 'a different stem is not followed across a platform tag' `
+        'PlatFour\ext-1.0.0-win32-x64\app.exe' ''
+
+    # The dot requirement is what stops a bare number inside a word being read as the version.
+    # Without it "v2-tools-1.5.0" and "v3-other-9.9.9" both reduce to an empty stem and would
+    # relocate onto each other.
+    New-Exe 'PlatFive\v3-other-9.9.9\app.exe' | Out-Null
+    Assert-Relocation 'a number inside a word is not mistaken for the version' `
+        'PlatFive\v2-tools-1.5.0\app.exe' ''
+
+    # A single-segment suffix stays with the generic rule, which tolerates it changing.
+    New-Exe 'PlatSix\app-1.2.4\app.exe' | Out-Null
+    Assert-Relocation 'a prerelease suffix is still handled by the generic rule' `
+        'PlatSix\app-1.2.3-beta.1\app.exe' 'PlatSix\app-1.2.4\app.exe'
+
     Write-Host ''
     Write-Host "$($script:Total - $script:Failures)/$($script:Total) passed"
 }

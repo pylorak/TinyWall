@@ -23,6 +23,10 @@ namespace pylorak.TinyWall
     /// There the package name, architecture and publisher id must all be preserved and only the
     /// version may change, which is a stricter test than the generic one below.
     ///
+    /// A third layout puts a platform tag after the version, as VS Code extensions do:
+    ///     %USERPROFILE%\.vscode\extensions\anthropic.claude-code-2.1.173-win32-x64\...\claude.exe
+    /// There the platform tag must be carried over unchanged and only the version may differ.
+    ///
     /// This helper detects those specific situations and nothing else. The replacement must live in a
     /// *sibling* directory of the original one whose name differs from it only in a version token,
     /// and the path below that directory - including the file name - must be identical. The trust
@@ -49,6 +53,33 @@ namespace pylorak.TinyWall
         private static readonly Regex MsixPackageFolderRegex = new(
             @"^(?<name>[^_]+)_(?<version>\d+(?:\.\d+){0,3})_(?<arch>[^_]+)__(?<pub>[A-Za-z0-9]+)$",
             RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+        // Matches names that carry a platform tag after the version, as VS Code extensions do:
+        //   "anthropic.claude-code-2.1.173-win32-x64"
+        //       -> stem "anthropic.claude-code", version "2.1.173", suffix "-win32-x64"
+        // The rule above cannot express this: with the version no longer at the end it latches
+        // onto the "32" of "win32" and leaves the real version buried in the stem, so two
+        // releases of the same extension end up with different stems and never match.
+        //
+        // Two restrictions keep this from swallowing names the first rule handles correctly.
+        // The version must contain a dot, so a bare number inside a word - the "32" again -
+        // cannot be mistaken for one; and the suffix must have at least two dash-separated
+        // segments, which distinguishes a platform tag from the single-segment prerelease
+        // suffix of "app-1.2.3-beta.1". Widening the first rule's suffix instead would have
+        // been unsound: "v2-tools-1.5.0" and "v3-other-9.9.9" both reduce to an empty stem,
+        // and would then relocate onto each other.
+        private static readonly Regex PlatformSuffixedFolderRegex = new(
+            @"^(?<stem>.*?)[-_. ]?v?(?<version>\d+(?:\.\d+)+)(?<suffix>(?:-[0-9A-Za-z][0-9A-Za-z.]*){2,})$",
+            RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+        // Which rule claimed a directory name, and therefore what has to stay equal between the
+        // original directory and the sibling that replaces it.
+        private enum FolderKind
+        {
+            Msix,
+            PlatformSuffixed,
+            Generic
+        }
 
         // How many directory levels above the executable may be the versioned one.
         // Covers layouts like "app-1.2.3\resources\bin\helper.exe".
@@ -94,18 +125,28 @@ namespace pylorak.TinyWall
 
                     if (!Utils.IsNullOrEmpty(name) && (parent is not null))
                     {
-                        // A packaged folder is handled by the MSIX rule and never by the generic
-                        // one: the two are tried in order and the first match decides which
-                        // identity has to be preserved among the siblings.
-                        var msixMatch = MsixPackageFolderRegex.Match(name);
-                        bool isMsix = msixMatch.Success;
-                        var match = isMsix ? msixMatch : VersionedFolderRegex.Match(name);
+                        // The rules are tried from most specific to least, and the first match
+                        // decides which identity has to be preserved among the siblings. A folder
+                        // name is therefore handled by exactly one of them, never by two.
+                        var match = MsixPackageFolderRegex.Match(name);
+                        var kind = FolderKind.Msix;
+
+                        if (!match.Success)
+                        {
+                            match = PlatformSuffixedFolderRegex.Match(name);
+                            kind = FolderKind.PlatformSuffixed;
+                        }
+                        if (!match.Success)
+                        {
+                            match = VersionedFolderRegex.Match(name);
+                            kind = FolderKind.Generic;
+                        }
 
                         // The parent must still exist. If it does not, we are not looking at an
                         // updated application but at a detached drive or a deleted install root.
                         if (match.Success && Directory.Exists(parent))
                         {
-                            if (TryRelocateWithin(parent!, name, match, isMsix, tail, out newPath))
+                            if (TryRelocateWithin(parent!, name, match, kind, tail, out newPath))
                                 return true;
                         }
                     }
@@ -124,14 +165,14 @@ namespace pylorak.TinyWall
             return false;
         }
 
-        private static bool TryRelocateWithin(string parent, string originalName, Match originalMatch, bool isMsix, string tail, out string newPath)
+        private static bool TryRelocateWithin(string parent, string originalName, Match originalMatch, FolderKind kind, string tail, out string newPath)
         {
             newPath = string.Empty;
 
             // Narrow the enumeration to the family the original folder belongs to. For a package
-            // that is the invariant part before the version; for the generic layout, the stem.
-            string stem = isMsix ? string.Empty : originalMatch.Groups["stem"].Value;
-            string searchPattern = isMsix
+            // that is the invariant part before the version; otherwise the stem.
+            string stem = (kind == FolderKind.Msix) ? string.Empty : originalMatch.Groups["stem"].Value;
+            string searchPattern = (kind == FolderKind.Msix)
                 ? originalMatch.Groups["name"].Value + "_*"
                 : ((stem.Length > 0) ? stem + "*" : "*");
 
@@ -145,7 +186,7 @@ namespace pylorak.TinyWall
                     continue;
 
                 Match match;
-                if (isMsix)
+                if (kind == FolderKind.Msix)
                 {
                     match = MsixPackageFolderRegex.Match(siblingName);
                     if (!match.Success)
@@ -157,12 +198,29 @@ namespace pylorak.TinyWall
                     if (!IsSameMsixIdentity(originalMatch, match))
                         continue;
                 }
+                else if (kind == FolderKind.PlatformSuffixed)
+                {
+                    match = PlatformSuffixedFolderRegex.Match(siblingName);
+                    if (!match.Success)
+                        continue;
+
+                    // The platform tag has to be carried over as-is. Following a build for one
+                    // architecture to a build for another would hand network access to a
+                    // different binary than the one that was whitelisted.
+                    if (!string.Equals(match.Groups["stem"].Value, stem, StringComparison.OrdinalIgnoreCase))
+                        continue;
+                    if (!string.Equals(match.Groups["suffix"].Value, originalMatch.Groups["suffix"].Value, StringComparison.OrdinalIgnoreCase))
+                        continue;
+                }
                 else
                 {
-                    // Keep the two rules disjoint: a packaged folder is the MSIX rule's business
-                    // even when its publisher id happens to be all digits, which would otherwise
-                    // let the generic pattern match it as well.
+                    // Keep the rules disjoint: a packaged folder is the MSIX rule's business even
+                    // when its publisher id happens to be all digits, and a platform-tagged one
+                    // belongs to its own rule, since the generic pattern would otherwise match
+                    // both - and mis-parse the latter.
                     if (MsixPackageFolderRegex.IsMatch(siblingName))
+                        continue;
+                    if (PlatformSuffixedFolderRegex.IsMatch(siblingName))
                         continue;
 
                     match = VersionedFolderRegex.Match(siblingName);
