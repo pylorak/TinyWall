@@ -34,6 +34,32 @@ namespace pylorak.TinyWall
             return Encoding.UTF8.GetString(utf8bytes);
         }
 
+        // --- Relocation Test ---
+
+        // Dry-run for ExecutableRelocator: reports what the service would do with a stored
+        // exception path, without touching the firewall configuration. Handy for checking the
+        // behaviour against a real installation, e.g.
+        //   TinyWall.exe relocation-test /executable-path "%LOCALAPPDATA%\AnthropicClaude\app-0.9.3\claude.exe"
+        //
+        // TinyWall is a WinExe, so its console output cannot be captured reliably by a calling
+        // script. Pass /output-file to have the result written somewhere a script can read it.
+        public static bool TestRelocation(string exePath, string? outputFile)
+        {
+            exePath = ExecutableSubject.ResolvePath(exePath);
+            bool found = ExecutableRelocator.TryFindRelocatedPath(exePath, out string newPath);
+
+            Console.WriteLine($"Stored path  : {exePath}");
+            Console.WriteLine($"Still exists : {File.Exists(exePath)}");
+            Console.WriteLine(found
+                ? $"Would follow : {newPath}"
+                : "Would follow : (nothing found, exception would be left unchanged)");
+
+            if (!Utils.IsNullOrEmpty(outputFile))
+                File.WriteAllText(outputFile, found ? newPath : string.Empty);
+
+            return found;
+        }
+
         // --- Database Creator ---
 
         public static void CreateDatabase(string sourceFolder, string outputFolder)
