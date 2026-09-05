@@ -171,4 +171,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Najít soubor...</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve"><value>Filtr cesty...</value></data>
 </root>

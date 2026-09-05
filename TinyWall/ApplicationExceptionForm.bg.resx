@@ -201,4 +201,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Отваряне на файл...</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve"><value>Филтър на пътя...</value></data>
 </root>

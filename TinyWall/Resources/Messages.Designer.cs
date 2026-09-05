@@ -449,6 +449,42 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The wildcard pattern must match the original path..
+        /// </summary>
+        internal static string PathFilterInvalid {
+            get {
+                return ResourceManager.GetString("PathFilterInvalid", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The filter must contain at least one wildcard symbol (* or ?)..
+        /// </summary>
+        internal static string PathFilterMissingWildcard {
+            get {
+                return ResourceManager.GetString("PathFilterMissingWildcard", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Wildcard filters in user-profile folders require an executable with a valid, trusted digital signature..
+        /// </summary>
+        internal static string PathFilterTrustedSignatureRequired {
+            get {
+                return ResourceManager.GetString("PathFilterTrustedSignatureRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid path filter.
+        /// </summary>
+        internal static string PathFilterValidationTitle {
+            get {
+                return ResourceManager.GetString("PathFilterValidationTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Please wait while TinyWall checks for available updates..
         /// </summary>
         internal static string PleaseWaitWhileTinyWallChecksForUpdates {

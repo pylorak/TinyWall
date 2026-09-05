@@ -171,22 +171,27 @@ namespace pylorak.TinyWall
                 case SubjectType.Invalid:
                     txtAppPath.Text = string.Empty;
                     txtSrvName.Text = string.Empty;
+                    btnPathFilter.Enabled = false;
                     break;
                 case SubjectType.Global:
                     txtAppPath.Text = Resources.Messages.AllApplications;
                     txtSrvName.Text = Resources.Messages.SubjectTypeGlobal;
+                    btnPathFilter.Enabled = false;
                     break;
                 case SubjectType.Executable:
                     txtAppPath.Text = exeSubj!.ExecutablePath;
                     txtSrvName.Text = Resources.Messages.SubjectTypeExecutable;
+                    btnPathFilter.Enabled = true;
                     break;
                 case SubjectType.Service:
                     txtAppPath.Text = srvSubj!.ServiceName + " (" + srvSubj.ExecutablePath + ")";
                     txtSrvName.Text = Resources.Messages.SubjectTypeService;
+                    btnPathFilter.Enabled = false;
                     break;
                 case SubjectType.AppContainer:
                     txtAppPath.Text = uwpSubj!.DisplayName;
                     txtSrvName.Text = Resources.Messages.SubjectTypeUwpApp;
+                    btnPathFilter.Enabled = false;
                     break;
                 default:
                     throw new NotImplementedException();
@@ -424,6 +429,19 @@ namespace pylorak.TinyWall
 
         private void txtSrvName_TextChanged(object sender, EventArgs e)
         {
+        }
+
+        private void btnPathFilter_Click(object sender, EventArgs e)
+        {
+            if (!(TmpExceptionSettings[0].Subject is ExecutableSubject executable))
+                return;
+
+            using var dialog = new PathFilterForm(executable.ExecutablePath, executable.PathFilter);
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+            {
+                executable.PathFilter = dialog.ResultFilter;
+                TmpExceptionSettings[0].RegenerateId();
+            }
         }
 
         private void cmbTimer_SelectedIndexChanged(object sender, EventArgs e)

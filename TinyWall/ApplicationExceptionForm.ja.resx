@@ -198,4 +198,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>ファイルを参照...</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve"><value>パスフィルター...</value></data>
 </root>

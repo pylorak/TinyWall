@@ -68,6 +68,11 @@ namespace pylorak.TinyWall
 
         public void AddExceptions(List<FirewallExceptionV3> newList)
         {
+            if (newList is null)
+                throw new ArgumentNullException(nameof(newList));
+            if (!HaveValidWildcardPathFilters(newList))
+                throw new ArgumentException(null, nameof(newList));
+
             var oldList = new List<FirewallExceptionV3>(AppExceptions);
 
             foreach (var oldEx in oldList)
@@ -99,6 +104,21 @@ namespace pylorak.TinyWall
 
             AppExceptions.AddRange(newList);
         } // method
+
+        internal static bool HaveValidWildcardPathFilters(IEnumerable<FirewallExceptionV3> exceptions)
+        {
+            foreach (FirewallExceptionV3 exception in exceptions)
+            {
+                if (exception.Subject is ExecutableSubject executable
+                    && executable.PathFilter is not null
+                    && !WildcardPathMatcher.IsValidFilter(executable.PathFilter, executable.ExecutablePath))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         public void Normalize()
         {
@@ -214,6 +234,12 @@ namespace pylorak.TinyWall
 
         public void Save(string filePath)
         {
+            foreach (ServerProfileConfiguration profile in Profiles)
+            {
+                if (!ServerProfileConfiguration.HaveValidWildcardPathFilters(profile.AppExceptions))
+                    throw new InvalidDataException();
+            }
+
             string key = Hasher.HashString(ENC_SALT).Substring(0, 16);
             SerializationHelper.SerializeToEncryptedFile(this, filePath, key, ENC_IV);
         }
