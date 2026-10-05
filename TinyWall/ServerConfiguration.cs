@@ -127,6 +127,7 @@ namespace pylorak.TinyWall
                 for (int j = AppExceptions.Count - 1; j > i; --j)
                 {
                     FirewallExceptionV3 app2 = AppExceptions[j];
+                    var older = app1.CreationDate > app2.CreationDate ? app2 : app1;
 
                     if (app1.Id.Equals(app2.Id))
                     {
@@ -135,7 +136,6 @@ namespace pylorak.TinyWall
                         // an exception, in which case the newer (edited) version
                         // is added using the same ID as the unedited one.
 
-                        var older = app1.CreationDate > app2.CreationDate ? app2 : app1;
                         AppExceptions.Remove(older);
                     }
                     else if (app1.Subject.Equals(app2.Subject)
@@ -143,13 +143,15 @@ namespace pylorak.TinyWall
                         && (app2.Timer == AppExceptionTimer.Permanent)
                     )
                     {
+                        var newer = app1 == older ? app2 : app1;
+
                         // Merge rules
-                        ExceptionPolicy targetPolicy = app1.Policy;
-                        if (app2.Policy.MergeRulesTo(ref targetPolicy))
+                        ExceptionPolicy targetPolicy = newer.Policy;
+                        if (older.Policy.MergeRulesTo(ref targetPolicy))
                         {
-                            AppExceptions.Remove(app2);
-                            app1.Policy = targetPolicy;
-                            app1.RegenerateId();
+                            AppExceptions.Remove(older);
+                            newer.Policy = targetPolicy;
+                            newer.RegenerateId();
                         }
                     }
                 }

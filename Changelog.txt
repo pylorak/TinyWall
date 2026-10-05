@@ -1,7 +1,8 @@
 TinyWall Changelog
 ---------------------
 
-3.5.2 - Maintenance release (xx.xx.xx.)
+3.x.x - not yet released
+- Rule merging now always uses inheritance setting of newer rule
 - Show block reason in Connections window
 - Security hardening of the built-in updater
 - Increase password hashing complexity

@@ -391,7 +391,6 @@ namespace pylorak.TinyWall
     // A dropped-traffic notification carrying the Win32 file system path for wildcard evaluation.
     public record TwMessageAddPersistentException : TwMessage
     {
-        // Property might be null when the message is just a reponse to the original request
         public string AppPath { get; }
 
         [JsonConstructor]
