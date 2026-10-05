@@ -1822,18 +1822,16 @@ namespace pylorak.TinyWall
         private List<FirewallExceptionV3>? CreateWildcardExceptions(string executablePath)
         {
             List<FirewallExceptionV3>? matches = null;
-            bool? hasTrustedSignature = null;
+
+            if (WildcardPathMatcher.RequiresTrustedSignature(executablePath) && !WildcardPathMatcher.HasTrustedSignature(executablePath))
+            {
+                return matches;
+            }
 
             foreach (FirewallExceptionV3 template in WildcardExceptions)
             {
                 if ((template.Subject is not ExecutableSubject executable)
                     || !WildcardPathMatcher.Matches(template.Wildcard, executablePath))
-                {
-                    continue;
-                }
-
-                if (WildcardPathMatcher.RequiresTrustedSignature(template.Wildcard)
-                    && !(hasTrustedSignature ??= WildcardPathMatcher.HasTrustedSignature(executablePath)))
                 {
                     continue;
                 }
