@@ -1407,9 +1407,6 @@ namespace pylorak.TinyWall
                 case MessageType.ADD_PERSISTENT_EXCEPTION:
                     {
                         var args = (TwMessageAddPersistentException)req;
-                        if (Utils.IsNullOrEmpty(args.AppPath))
-                            return args.CreateResponse();
-
                         string appPath = args.AppPath;
                         List<FirewallExceptionV3>? wildcardExceptions = null;
                         lock (InheritanceGuard)
@@ -1953,7 +1950,8 @@ namespace pylorak.TinyWall
             {
                 try
                 {
-                    Q.TryAdd(new TwRequest(TwMessageAddPersistentException.CreateRequest(appPath)), 0);
+                    if (!Utils.IsNullOrEmpty(appPath))
+                        Q.TryAdd(new TwRequest(TwMessageAddPersistentException.CreateRequest(appPath)), 0);
                 }
                 catch
                 {

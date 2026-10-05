@@ -391,16 +391,17 @@ namespace pylorak.TinyWall
     // A dropped-traffic notification carrying the Win32 file system path for wildcard evaluation.
     public record TwMessageAddPersistentException : TwMessage
     {
-        public string? AppPath { get; }
+        // Property might be null when the message is just a reponse to the original request
+        public string AppPath { get; }
 
         [JsonConstructor]
-        public TwMessageAddPersistentException(string? appPath) :
+        public TwMessageAddPersistentException(string appPath) :
             base(MessageType.ADD_PERSISTENT_EXCEPTION)
         {
             AppPath = appPath;
         }
 
-        public static TwMessageAddPersistentException CreateRequest(string? appPath)
+        public static TwMessageAddPersistentException CreateRequest(string appPath)
         {
             return new TwMessageAddPersistentException(appPath);
         }
@@ -410,7 +411,7 @@ namespace pylorak.TinyWall
 #pragma warning restore IDE0079 // Remove unnecessary suppression
         public TwMessageAddPersistentException CreateResponse()
         {
-            return new TwMessageAddPersistentException(appPath: null);
+            return new TwMessageAddPersistentException(AppPath);
         }
     }
 
