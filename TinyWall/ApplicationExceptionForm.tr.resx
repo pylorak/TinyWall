@@ -189,4 +189,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Dosyaya gözat...</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve"><value>Yol filtresi...</value></data>
 </root>

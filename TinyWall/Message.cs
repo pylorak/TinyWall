@@ -29,6 +29,7 @@ namespace pylorak.TinyWall
                 MessageType.STOP_SERVICE => (TwMessage?)JsonSerializer.Deserialize<TwMessageSimple>(ref reader, SourceGenerationContext.Default.TwMessageSimple),
                 MessageType.MINUTE_TIMER => (TwMessage?)JsonSerializer.Deserialize<TwMessageSimple>(ref reader, SourceGenerationContext.Default.TwMessageSimple),
                 MessageType.ADD_TEMPORARY_EXCEPTION => (TwMessage?)JsonSerializer.Deserialize<TwMessageAddTempException>(ref reader, SourceGenerationContext.Default.TwMessageAddTempException),
+                MessageType.ADD_PERSISTENT_EXCEPTION => (TwMessage?)JsonSerializer.Deserialize<TwMessageAddPersistentException>(ref reader, SourceGenerationContext.Default.TwMessageAddPersistentException),
                 _ => throw new JsonException($"Tried to deserialize unsupported type with discriminator {(MessageType)discriminator}."),
             };
             return ret;
@@ -64,6 +65,8 @@ namespace pylorak.TinyWall
                     JsonSerializer.Serialize<TwMessageSimple>(writer, typedVal, SourceGenerationContext.Default.TwMessageSimple); break;
                 case TwMessageAddTempException typedVal:
                     JsonSerializer.Serialize<TwMessageAddTempException>(writer, typedVal, SourceGenerationContext.Default.TwMessageAddTempException); break;
+                case TwMessageAddPersistentException typedVal:
+                    JsonSerializer.Serialize<TwMessageAddPersistentException>(writer, typedVal, SourceGenerationContext.Default.TwMessageAddPersistentException); break;
                 default:
                     throw new JsonException($"Tried to serialize unsupported type {value.GetType()}.");
             }
@@ -382,6 +385,32 @@ namespace pylorak.TinyWall
         public TwMessageAddTempException CreateResponse()
         {
             return new TwMessageAddTempException(Array.Empty<FirewallExceptionV3>());
+        }
+    }
+
+    // A dropped-traffic notification carrying the Win32 file system path for wildcard evaluation.
+    public record TwMessageAddPersistentException : TwMessage
+    {
+        public string? AppPath { get; }
+
+        [JsonConstructor]
+        public TwMessageAddPersistentException(string? appPath) :
+            base(MessageType.ADD_PERSISTENT_EXCEPTION)
+        {
+            AppPath = appPath;
+        }
+
+        public static TwMessageAddPersistentException CreateRequest(string? appPath)
+        {
+            return new TwMessageAddPersistentException(appPath);
+        }
+
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static")]
+#pragma warning restore IDE0079 // Remove unnecessary suppression
+        public TwMessageAddPersistentException CreateResponse()
+        {
+            return new TwMessageAddPersistentException(appPath: null);
         }
     }
 

@@ -189,4 +189,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Огляд файлів...</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve"><value>Фільтр шляху...</value></data>
 </root>

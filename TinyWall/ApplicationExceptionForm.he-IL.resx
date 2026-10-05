@@ -201,4 +201,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>עיון עבור קובץ...</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve"><value>מסנן נתיב...</value></data>
 </root>

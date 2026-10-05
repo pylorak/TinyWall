@@ -189,4 +189,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>파일 찾아보기...</value>
   </data>
+  <data name="btnPathFilter.Text" xml:space="preserve"><value>경로 필터...</value></data>
 </root>

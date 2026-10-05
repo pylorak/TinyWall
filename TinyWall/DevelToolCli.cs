@@ -144,6 +144,36 @@ namespace pylorak.TinyWall
             return resxContents;
         }
 
+        private static bool ResXContentsEqual(
+            Dictionary<string, ResXDataNode> expected,
+            Dictionary<string, ResXDataNode> actual)
+        {
+            if (expected.Count != actual.Count)
+                return false;
+
+            ITypeResolutionService? typeResolver = null;
+            foreach (KeyValuePair<string, ResXDataNode> item in expected)
+            {
+                if (!actual.TryGetValue(item.Key, out ResXDataNode? actualNode))
+                    return false;
+
+                ResXDataNode expectedNode = item.Value;
+                if (!string.Equals(expectedNode.Comment, actualNode.Comment, StringComparison.Ordinal)
+                    || !string.Equals(
+                        expectedNode.GetValueTypeName(typeResolver),
+                        actualNode.GetValueTypeName(typeResolver),
+                        StringComparison.Ordinal)
+                    || !StructuralComparisons.StructuralEqualityComparer.Equals(
+                        expectedNode.GetValue(typeResolver),
+                        actualNode.GetValue(typeResolver)))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public static List<KeyValuePair<string, string[]>> CollectResxLocalizations(string resourceDir)
         {
             if (!Directory.Exists(resourceDir))
@@ -200,6 +230,7 @@ namespace pylorak.TinyWall
                             if (!satelliteItem.Name.EndsWith(".Text") &&
                                 !satelliteItem.Name.EndsWith(".Title") &&
                                 !satelliteItem.Name.EndsWith(".Filter") &&
+                                !satelliteItem.Name.EndsWith(".ToolTip") &&
                                 !satelliteItem.Name.EndsWith(".AccessibleName"))
                                 continue;
                         }
@@ -224,9 +255,9 @@ namespace pylorak.TinyWall
                     // Compare input to output if asked
                     if (compare)
                     {
-                        var original = pair.Value[s];
                         var optimized = outPath;
-                        if (!StructuralComparisons.StructuralEqualityComparer.Equals(File.ReadAllBytes(original), File.ReadAllBytes(optimized)))
+                        var optimizedContents = ReadResXFile(optimized);
+                        if (!ResXContentsEqual(satellite, optimizedContents))
                         {
                             Console.Error.WriteLine($"Optimized {Path.GetFileName(optimized)} differs from original!");
                             inputsAndOutputsIdentical = false;

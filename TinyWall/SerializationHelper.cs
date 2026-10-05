@@ -41,6 +41,7 @@ namespace pylorak.TinyWall
     [JsonSerializable(typeof(TwMessageSetPassword))]
     [JsonSerializable(typeof(TwMessageSimple))]
     [JsonSerializable(typeof(TwMessageAddTempException))]
+    [JsonSerializable(typeof(TwMessageAddPersistentException))]
     [JsonSerializable(typeof(GlobalSubject))]
     [JsonSerializable(typeof(AppContainerSubject))]
     [JsonSerializable(typeof(ExecutableSubject))]
