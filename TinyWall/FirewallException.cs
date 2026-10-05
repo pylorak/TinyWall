@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 
 namespace pylorak.TinyWall
@@ -40,6 +41,9 @@ namespace pylorak.TinyWall
 
         [DataMember(EmitDefaultValue = false)]
         public bool ChildProcessesInherit { get; set; }
+
+        [DataMember(EmitDefaultValue = false)]
+        public string? Wildcard { get; set; }
 
         public FirewallExceptionV3(ExceptionSubject subject, ExceptionPolicy policy)
         {

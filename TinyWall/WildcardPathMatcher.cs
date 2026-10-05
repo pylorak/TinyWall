@@ -15,12 +15,12 @@ namespace pylorak.TinyWall
         private static readonly Lazy<IReadOnlyCollection<string>> UserProfilePathRoots =
             new(BuildUserProfilePathRoots);
 
-        public static bool IsValidFilter(string? pattern, string? originalPath)
+        public static bool IsValidFilter(string? pattern, string originalPath)
         {
-            if (string.IsNullOrWhiteSpace(pattern) || string.IsNullOrWhiteSpace(originalPath))
+            if (Utils.IsNullOrEmpty(pattern) || Utils.IsNullOrEmpty(originalPath))
                 return false;
 
-            if (originalPath!.IndexOfAny(WildcardCharacters) >= 0
+            if (originalPath.IndexOfAny(WildcardCharacters) >= 0
                 || !TryGetLiteralPrefix(pattern, out string normalizedPrefix, out bool wildcardStartsBelowPrefix)
                 || !Matches(pattern, originalPath))
             {

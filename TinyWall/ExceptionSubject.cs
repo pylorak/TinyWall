@@ -187,10 +187,6 @@ namespace pylorak.TinyWall
         [DataMember(EmitDefaultValue = false)]
         public string ExecutablePath { get; private set; }
 
-        [DataMember(EmitDefaultValue = false)]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string? PathFilter { get; set; }
-
         [JsonIgnore]
         public string ExecutableName
         {
@@ -281,11 +277,7 @@ namespace pylorak.TinyWall
 
         public virtual ExecutableSubject ToResolved()
         {
-            string? pathFilter = PathFilter;
-            return new ExecutableSubject(ResolvePath(ExecutablePath))
-            {
-                PathFilter = string.IsNullOrWhiteSpace(pathFilter) ? null : ResolvePath(pathFilter!)
-            };
+            return new ExecutableSubject(ResolvePath(ExecutablePath));
         }
 
         public override bool Equals(ExceptionSubject other)
@@ -294,8 +286,7 @@ namespace pylorak.TinyWall
                 return false;
 
             if (other is ExecutableSubject o)
-                return string.Equals(ExecutablePath, o.ExecutablePath, StringComparison.OrdinalIgnoreCase)
-                    && string.Equals(PathFilter, o.PathFilter, StringComparison.OrdinalIgnoreCase);
+                return string.Equals(ExecutablePath, o.ExecutablePath, StringComparison.OrdinalIgnoreCase);
             else
                 return false;
         }
@@ -310,8 +301,6 @@ namespace pylorak.TinyWall
                 int hash = OFFSET_BASIS;
                 if (null != ExecutablePath)
                     hash = (hash ^ StringComparer.OrdinalIgnoreCase.GetHashCode(ExecutablePath)) * FNV_PRIME;
-                if (null != PathFilter)
-                    hash = (hash ^ StringComparer.OrdinalIgnoreCase.GetHashCode(PathFilter)) * FNV_PRIME;
 
                 return hash;
             }

@@ -436,10 +436,10 @@ namespace pylorak.TinyWall
             if (!(TmpExceptionSettings[0].Subject is ExecutableSubject executable))
                 return;
 
-            using var dialog = new PathFilterForm(executable.ExecutablePath, executable.PathFilter);
+            using var dialog = new PathFilterForm(executable.ExecutablePath, TmpExceptionSettings[0].Wildcard);
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                executable.PathFilter = dialog.ResultFilter;
+                TmpExceptionSettings[0].Wildcard = dialog.ResultFilter;
                 TmpExceptionSettings[0].RegenerateId();
             }
         }

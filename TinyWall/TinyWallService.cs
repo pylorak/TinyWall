@@ -180,7 +180,7 @@ namespace pylorak.TinyWall
                     {
                         string exePath = exe.ExecutablePath;
                         UserSubjectExes.Add(exePath);
-                        if (WildcardPathMatcher.IsValidFilter(exe.PathFilter, exePath))
+                        if (WildcardPathMatcher.IsValidFilter(ex.Wildcard, exePath))
                             WildcardExceptions.Add(ex);
                         if (ex.ChildProcessesInherit)
                         {
@@ -1827,13 +1827,13 @@ namespace pylorak.TinyWall
 
             foreach (FirewallExceptionV3 template in WildcardExceptions)
             {
-                if (!(template.Subject is ExecutableSubject executable)
-                    || !WildcardPathMatcher.Matches(executable.PathFilter, executablePath))
+                if ((template.Subject is not ExecutableSubject executable)
+                    || !WildcardPathMatcher.Matches(template.Wildcard, executablePath))
                 {
                     continue;
                 }
 
-                if (WildcardPathMatcher.RequiresTrustedSignature(executable.PathFilter)
+                if (WildcardPathMatcher.RequiresTrustedSignature(template.Wildcard)
                     && !(hasTrustedSignature ??= WildcardPathMatcher.HasTrustedSignature(executablePath)))
                 {
                     continue;
@@ -1846,10 +1846,8 @@ namespace pylorak.TinyWall
                 }
 
                 FirewallExceptionV3 concreteException = Utils.DeepClone(template);
-                concreteException.Subject = new ExecutableSubject(executablePath)
-                {
-                    PathFilter = executable.PathFilter
-                };
+                concreteException.Subject = new ExecutableSubject(executablePath);
+                concreteException.Wildcard = template.Wildcard;
                 concreteException.Timer = AppExceptionTimer.Permanent;
                 concreteException.CreationDate = DateTime.Now;
                 concreteException.RegenerateId();
