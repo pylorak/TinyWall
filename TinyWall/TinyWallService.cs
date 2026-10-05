@@ -1408,17 +1408,16 @@ namespace pylorak.TinyWall
                     {
                         var args = (TwMessageAddPersistentException)req;
                         string appPath = args.AppPath;
-                        List<FirewallExceptionV3>? wildcardExceptions = null;
-                        lock (InheritanceGuard)
-                        {
-                            if (!UserSubjectExes.Contains(appPath))
-                                wildcardExceptions = CreateWildcardExceptions(appPath);
-                        }
 
+                        // Skip if we have a user-defined rule for this path
+                        if (UserSubjectExes.Contains(appPath))
+                            return args.CreateResponse();
+
+                        var wildcardExceptions = CreateWildcardExceptions(appPath);
                         if (wildcardExceptions != null)
                         {
                             PersistWildcardExceptions(wildcardExceptions);
-                            InstallTemporaryExceptions(wildcardExceptions.ToArray());
+                            InstallTemporaryExceptions(wildcardExceptions);
                         }
                         return args.CreateResponse();
                     }
@@ -1857,13 +1856,16 @@ namespace pylorak.TinyWall
 
                 if (template.ChildProcessesInherit)
                 {
-                    if (!ChildInheritance.TryGetValue(executablePath, out List<FirewallExceptionV3>? inheritedRules))
+                    lock (InheritanceGuard)
                     {
-                        inheritedRules = new List<FirewallExceptionV3>();
-                        ChildInheritance.Add(executablePath, inheritedRules);
-                    }
+                        if (!ChildInheritance.TryGetValue(executablePath, out List<FirewallExceptionV3>? inheritedRules))
+                        {
+                            inheritedRules = new List<FirewallExceptionV3>();
+                            ChildInheritance.Add(executablePath, inheritedRules);
+                        }
 
-                    inheritedRules.Add(template);
+                        inheritedRules.Add(template);
+                    }
                 }
             }
 
@@ -1877,7 +1879,7 @@ namespace pylorak.TinyWall
             GlobalInstances.ServerChangeset = Guid.NewGuid();
         }
 
-        private void InstallTemporaryExceptions(FirewallExceptionV3[] exceptions)
+        private void InstallTemporaryExceptions(IEnumerable<FirewallExceptionV3> exceptions)
         {
             var rules = new List<RuleDef>();
             var rawSocketExceptions = new List<RuleDef>();
