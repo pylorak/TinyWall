@@ -10,10 +10,8 @@ namespace pylorak.TinyWall
     public static class WildcardPathMatcher
     {
         private static readonly char[] WildcardCharacters = { '*', '?' };
-        private static readonly Lazy<IReadOnlyCollection<string>> ProtectedPathRoots =
-            new(BuildProtectedPathRoots);
-        private static readonly Lazy<IReadOnlyCollection<string>> UserProfilePathRoots =
-            new(BuildUserProfilePathRoots);
+        private static readonly IReadOnlyCollection<string> ProtectedPathRoots = BuildProtectedPathRoots();
+        private static readonly IReadOnlyCollection<string> UserProfilePathRoots = BuildUserProfilePathRoots();
 
         public static bool IsValidFilter(string? pattern, string originalPath)
         {
@@ -21,39 +19,39 @@ namespace pylorak.TinyWall
                 return false;
 
             if (originalPath.IndexOfAny(WildcardCharacters) >= 0
-                || !TryGetLiteralPrefix(pattern, out string normalizedPrefix, out bool wildcardStartsBelowPrefix)
+                || !TryGetLiteralPrefix(pattern, out string normalizedPrefix)
                 || !Matches(pattern, originalPath))
             {
                 return false;
             }
 
-            if (HasLiteralPrefixInRoots(normalizedPrefix, wildcardStartsBelowPrefix, ProtectedPathRoots.Value))
+            if (HasLiteralPrefixInRoots(normalizedPrefix, ProtectedPathRoots))
             {
                 return true;
             }
 
-            return HasLiteralPrefixInRoots(normalizedPrefix, wildcardStartsBelowPrefix, UserProfilePathRoots.Value)
+            return HasLiteralPrefixInRoots(normalizedPrefix, UserProfilePathRoots)
                 && IsUserProfilePath(originalPath)
                 && HasTrustedSignature(originalPath);
         }
 
         public static bool HasProtectedLiteralPrefix(string? pattern)
         {
-            return TryGetLiteralPrefix(pattern, out string normalizedPrefix, out bool wildcardStartsBelowPrefix)
-                && HasLiteralPrefixInRoots(normalizedPrefix, wildcardStartsBelowPrefix, ProtectedPathRoots.Value);
+            return TryGetLiteralPrefix(pattern, out string normalizedPrefix)
+                && HasLiteralPrefixInRoots(normalizedPrefix, ProtectedPathRoots);
         }
 
         public static bool HasUserProfileLiteralPrefix(string? pattern)
         {
-            return TryGetLiteralPrefix(pattern, out string normalizedPrefix, out bool wildcardStartsBelowPrefix)
-                && HasLiteralPrefixInRoots(normalizedPrefix, wildcardStartsBelowPrefix, UserProfilePathRoots.Value);
+            return TryGetLiteralPrefix(pattern, out string normalizedPrefix)
+                && HasLiteralPrefixInRoots(normalizedPrefix, UserProfilePathRoots);
         }
 
         public static bool RequiresTrustedSignature(string? pattern)
         {
-            return TryGetLiteralPrefix(pattern, out string normalizedPrefix, out bool wildcardStartsBelowPrefix)
-                && !HasLiteralPrefixInRoots(normalizedPrefix, wildcardStartsBelowPrefix, ProtectedPathRoots.Value)
-                && HasLiteralPrefixInRoots(normalizedPrefix, wildcardStartsBelowPrefix, UserProfilePathRoots.Value);
+            return TryGetLiteralPrefix(pattern, out string normalizedPrefix)
+                && !HasLiteralPrefixInRoots(normalizedPrefix, ProtectedPathRoots)
+                && HasLiteralPrefixInRoots(normalizedPrefix, UserProfilePathRoots);
         }
 
         public static bool IsUserProfilePath(string? path)
@@ -74,7 +72,7 @@ namespace pylorak.TinyWall
                 }
 
                 string normalizedPath = NormalizePath(expandedPath);
-                foreach (string profileRoot in UserProfilePathRoots.Value)
+                foreach (string profileRoot in UserProfilePathRoots)
                 {
                     if (IsPathBelowRoot(normalizedPath, profileRoot))
                     {
@@ -118,11 +116,9 @@ namespace pylorak.TinyWall
 
         private static bool TryGetLiteralPrefix(
             string? pattern,
-            out string normalizedPrefix,
-            out bool wildcardStartsBelowPrefix)
+            out string normalizedPrefix)
         {
             normalizedPrefix = string.Empty;
-            wildcardStartsBelowPrefix = false;
 
             if (string.IsNullOrWhiteSpace(pattern)
                 || char.IsWhiteSpace(pattern![0])
@@ -154,7 +150,14 @@ namespace pylorak.TinyWall
                 }
 
                 normalizedPrefix = NormalizePath(literalPrefix);
-                wildcardStartsBelowPrefix = IsDirectorySeparator(literalPrefix[literalPrefix.Length - 1]);
+                bool wildcardStartsBelowPrefix = IsDirectorySeparator(literalPrefix[literalPrefix.Length - 1]);
+                if (wildcardStartsBelowPrefix)
+                {
+                    // Adding a separator char at the end importantly allows us in later steps
+                    // to differentiate between a child directory entry and a sibling entry with the same prefix,
+                    // e.g. C:\Windows\ vs C:\WindowsXYZ
+                    normalizedPrefix += Path.DirectorySeparatorChar;
+                }
                 return true;
             }
             catch (Exception exception) when (exception is ArgumentException
@@ -347,14 +350,11 @@ namespace pylorak.TinyWall
 
         private static bool HasLiteralPrefixInRoots(
             string normalizedPrefix,
-            bool wildcardStartsBelowPrefix,
             IEnumerable<string> allowedRoots)
         {
             foreach (string root in allowedRoots)
             {
-                if ((wildcardStartsBelowPrefix
-                        && string.Equals(normalizedPrefix, root, StringComparison.OrdinalIgnoreCase))
-                    || IsPathBelowRoot(normalizedPrefix, root))
+                if (IsPathBelowRoot(normalizedPrefix, root))
                 {
                     return true;
                 }
