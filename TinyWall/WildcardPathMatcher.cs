@@ -139,7 +139,7 @@ namespace pylorak.TinyWall
             while (pathIndex < candidatePath.Length)
             {
                 if (patternIndex < wildcardPattern.Length
-                    && (wildcardPattern[patternIndex] == '?'
+                    && ((wildcardPattern[patternIndex] == '?' && !IsDirectorySeparator(candidatePath[pathIndex]))
                         || PathCharactersEqual(wildcardPattern[patternIndex], candidatePath[pathIndex])))
                 {
                     patternIndex++;
@@ -150,7 +150,7 @@ namespace pylorak.TinyWall
                     lastStarIndex = patternIndex++;
                     starMatchIndex = pathIndex;
                 }
-                else if (lastStarIndex >= 0)
+                else if (lastStarIndex >= 0 && !IsDirectorySeparator(candidatePath[starMatchIndex]))
                 {
                     patternIndex = lastStarIndex + 1;
                     pathIndex = ++starMatchIndex;
@@ -171,6 +171,9 @@ namespace pylorak.TinyWall
 
         private static bool PathCharactersEqual(char left, char right)
         {
+            // TODO: This method can be removed if directory separators get normalized elsewhere earlier (e.g. on input and load),
+            // leaving only the case-insensitive character comparison.
+
             if (left == right || (IsDirectorySeparator(left) && IsDirectorySeparator(right)))
             {
                 return true;
