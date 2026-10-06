@@ -189,10 +189,11 @@ namespace pylorak.TinyWall
                             ChildInheritance[exePath].Add(ex);
                         }
 
-                        // TODO: Don't check filter validity here, instead check once on user input and once on load from file
-                        bool? sigVerifyCache = true;    // skip signature checks, these are already created rules
-                        if (WildcardPathMatcher.IsValidFilter(ex.Wildcard, exePath, ref sigVerifyCache))
+                        if ((ex.Wildcard is not null)
+                            && (WildcardValidation.Success == WildcardPathMatcher.IsFilterSyntaxValid(ex.Wildcard)))
+                        {
                             WildcardExceptions.Add(ex);
+                        }
                     }
 
                     GetRulesForException(FilterGroup.User, ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
@@ -1835,7 +1836,7 @@ namespace pylorak.TinyWall
                     continue;
                 }
 
-                if (!WildcardPathMatcher.IsValidFilter(template.Wildcard, executablePath, ref sigVerifyCache))
+                if (WildcardValidation.Success != WildcardPathMatcher.IsValidFilter(template.Wildcard, executablePath, ref sigVerifyCache))
                 {
                     continue;
                 }

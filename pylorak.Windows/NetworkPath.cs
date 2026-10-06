@@ -36,7 +36,7 @@ namespace pylorak.Windows
 
         public static bool IsUncPath(ReadOnlySpan<char> path)
         {
-            return (path.Length > 2) && (path[0] == '\\') && (path[1] == '\\');
+            return (path.Length > 2) && (path[0] == '\\') && (path[1] == '\\') && (path[2] != '.') && (path[2] != '?');
         }
 
         public static string GetUncPath(string localPath)

@@ -1,5 +1,6 @@
 ﻿using DarkModeForms;
 using System;
+using System.IO;
 using System.Windows.Forms;
 
 namespace pylorak.TinyWall
@@ -22,34 +23,24 @@ namespace pylorak.TinyWall
             txtPattern.SelectAll();
         }
 
-        private void btnApply_Click(object sender, EventArgs e)
+        private void DisplayValidationMsgBox(WildcardValidation result)
         {
-            string pattern = txtPattern.Text.Trim();
-            bool? sigVerifyCache = null;
-            if (WildcardPathMatcher.IsValidFilter(pattern, txtOriginalPath.Text, ref sigVerifyCache))
+            // TODO: Make the messages below localizable.
+#pragma warning disable CS8524 // The switch expression does not handle unnamed enum values.
+            string message = result switch
             {
-                ResultFilter = pattern;
-                DialogResult = DialogResult.OK;
-                return;
-            }
-
-            // WildcardPathMatcher.IsValidFilter() expands env.vars internally, so when we call
-            // Matches() ourself, we must expand manually to keep match results are identical.
-            pattern = Environment.ExpandEnvironmentVariables(pattern);
-
-            string message;
-            if (pattern.IndexOfAny(new[] { '*', '?' }) < 0)
-            {
-                message = Resources.Messages.PathFilterMissingWildcard;
-            }
-            else if (!WildcardPathMatcher.Matches(pattern, txtOriginalPath.Text))
-            {
-                message = Resources.Messages.PathFilterInvalid;
-            }
-            else
-            {
-                message = labelSecurityBoundary.Text;
-            }
+                WildcardValidation.ErrorDisallowedFolder => "Wildcard filter crosses or points to disallowed folder.",
+                WildcardValidation.ErrorEmptyParameter
+                or WildcardValidation.ErrorMissingWildcards => Resources.Messages.PathFilterMissingWildcard,
+                WildcardValidation.ErrorFileSignatureFail => "File signature required but missing.",
+                WildcardValidation.ErrorGeneric => "Invalid wildcard filter specified.",
+                WildcardValidation.ErrorPathNotMatched => Resources.Messages.PathFilterMustMatchOriginalPath,
+                WildcardValidation.ErrorHasRelativeComponents
+                or WildcardValidation.ErrorInvalidChars
+                or WildcardValidation.ErrorNotFullyQualified => "Wildcard must specify a valid absolute file path.",
+                WildcardValidation.Success => "This is not a message you should see XD",
+            };
+#pragma warning restore CS8524 // The switch expression does not handle unnamed enum values.
 
             MessageBox.Show(
                 this,
@@ -59,6 +50,29 @@ namespace pylorak.TinyWall
                 MessageBoxIcon.Warning);
             txtPattern.Focus();
             txtPattern.SelectAll();
+        }
+
+        private void btnApply_Click(object sender, EventArgs e)
+        {
+            bool? sigVerifyCache = null;
+            var pattern = txtPattern.Text.Trim().Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+            var validationResult = WildcardPathMatcher.IsFilterSyntaxValid(pattern);
+            if (WildcardValidation.Success != validationResult)
+            {
+                DisplayValidationMsgBox(validationResult);
+                return;
+            }
+
+            validationResult = WildcardPathMatcher.IsValidFilter(pattern, txtOriginalPath.Text, ref sigVerifyCache);
+            if (WildcardValidation.Success != validationResult)
+            {
+                DisplayValidationMsgBox(validationResult);
+                return;
+            }
+
+            ResultFilter = pattern;
+            DialogResult = DialogResult.OK;
         }
 
         private void btnClearFilter_Click(object sender, EventArgs e)

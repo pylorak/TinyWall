@@ -384,7 +384,7 @@ Die ausgewählte Datei kann zu {0} gehören. Um sicherzustellen, dass die Anwend
   <data name="PathFilterMissingWildcard" xml:space="preserve">
     <value>Der Filter muss mindestens einen Platzhalter (* oder ?) enthalten.</value>
   </data>
-  <data name="PathFilterInvalid" xml:space="preserve">
+  <data name="PathFilterMustMatchOriginalPath" xml:space="preserve">
     <value>Das Platzhaltermuster muss mit dem ursprünglichen Pfad übereinstimmen.</value>
   </data>
 </root>

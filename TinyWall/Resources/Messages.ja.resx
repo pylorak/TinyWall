@@ -387,7 +387,7 @@ TinyWall の自動学習モードでは、すべての許可されたトラフ�
   <data name="PathFilterMissingWildcard" xml:space="preserve">
     <value>フィルターには少なくとも 1 つのワイルドカード (* または ?) が必要です。</value>
   </data>
-  <data name="PathFilterInvalid" xml:space="preserve">
+  <data name="PathFilterMustMatchOriginalPath" xml:space="preserve">
     <value>ワイルドカード パターンは元のパスと一致する必要があります。</value>
   </data>
 </root>

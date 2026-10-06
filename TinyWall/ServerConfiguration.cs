@@ -68,10 +68,6 @@ namespace pylorak.TinyWall
 
         public void AddExceptions(List<FirewallExceptionV3> newList)
         {
-            // TODO: Don't check filter validity here, instead check once on user input and once on load from file
-            if (!AreAllWildcardFiltersValid(newList))
-                throw new ArgumentException("Not all wildcard filters valid.", nameof(newList));
-
             var oldList = new List<FirewallExceptionV3>(AppExceptions);
 
             foreach (var oldEx in oldList)
@@ -103,22 +99,6 @@ namespace pylorak.TinyWall
 
             AppExceptions.AddRange(newList);
         } // method
-
-        private static bool AreAllWildcardFiltersValid(IEnumerable<FirewallExceptionV3> exceptions)
-        {
-            foreach (FirewallExceptionV3 exception in exceptions)
-            {
-                bool? sigVerifyCache = null;
-                if (exception.Subject is ExecutableSubject executable
-                    && !Utils.IsNullOrEmpty(exception.Wildcard)
-                    && !WildcardPathMatcher.IsValidFilter(exception.Wildcard, executable.ExecutablePath, ref sigVerifyCache))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
 
         public void Normalize()
         {

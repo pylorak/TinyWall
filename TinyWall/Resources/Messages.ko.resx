@@ -373,7 +373,7 @@
   <data name="PathFilterMissingWildcard" xml:space="preserve">
     <value>필터에는 하나 이상의 와일드카드(* 또는 ?)가 있어야 합니다.</value>
   </data>
-  <data name="PathFilterInvalid" xml:space="preserve">
+  <data name="PathFilterMustMatchOriginalPath" xml:space="preserve">
     <value>와일드카드 패턴은 원래 경로와 일치해야 합니다.</value>
   </data>
 </root>

@@ -349,7 +349,7 @@
   <data name="PathFilterMissingWildcard" xml:space="preserve">
     <value>Фильтр должен содержать хотя бы один подстановочный знак (* или ?).</value>
   </data>
-  <data name="PathFilterInvalid" xml:space="preserve">
+  <data name="PathFilterMustMatchOriginalPath" xml:space="preserve">
     <value>Шаблон должен соответствовать исходному пути.</value>
   </data>
 </root>

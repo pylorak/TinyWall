@@ -440,20 +440,20 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The wildcard pattern must match the original path..
-        /// </summary>
-        internal static string PathFilterInvalid {
-            get {
-                return ResourceManager.GetString("PathFilterInvalid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The filter must contain at least one wildcard symbol (* or ?)..
         /// </summary>
         internal static string PathFilterMissingWildcard {
             get {
                 return ResourceManager.GetString("PathFilterMissingWildcard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The wildcard pattern must match the original path..
+        /// </summary>
+        internal static string PathFilterMustMatchOriginalPath {
+            get {
+                return ResourceManager.GetString("PathFilterMustMatchOriginalPath", resourceCulture);
             }
         }
         

@@ -391,7 +391,7 @@
   <data name="PathFilterMissingWildcard" xml:space="preserve">
     <value>Фільтр має містити принаймні один символ підстановки (* або ?).</value>
   </data>
-  <data name="PathFilterInvalid" xml:space="preserve">
+  <data name="PathFilterMustMatchOriginalPath" xml:space="preserve">
     <value>Шаблон має відповідати початковому шляху.</value>
   </data>
 </root>

@@ -348,7 +348,7 @@ Zvolený spustitelný soubor by mohl být součástí {0}. Pro zajištění bezc
   <data name="PathFilterMissingWildcard" xml:space="preserve">
     <value>Filtr musí obsahovat alespoň jeden zástupný znak (* nebo ?).</value>
   </data>
-  <data name="PathFilterInvalid" xml:space="preserve">
+  <data name="PathFilterMustMatchOriginalPath" xml:space="preserve">
     <value>Vzor musí odpovídat původní cestě.</value>
   </data>
 </root>

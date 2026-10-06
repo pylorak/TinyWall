@@ -354,7 +354,7 @@ Wybrany plik wykonywalny może być częścią {0}. Aby upewnić się, że ten p
   <data name="PathFilterMissingWildcard" xml:space="preserve">
     <value>Filtr musi zawierać co najmniej jeden symbol wieloznaczny (* lub ?).</value>
   </data>
-  <data name="PathFilterInvalid" xml:space="preserve">
+  <data name="PathFilterMustMatchOriginalPath" xml:space="preserve">
     <value>Wzorzec wieloznaczny musi pasować do oryginalnej ścieżki.</value>
   </data>
 </root>
