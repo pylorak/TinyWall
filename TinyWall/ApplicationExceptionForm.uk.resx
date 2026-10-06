@@ -189,5 +189,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Огляд файлів...</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Фільтр шляху...</value></data>
+  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Шаблон із символами підстановки...</value></data>
 </root>

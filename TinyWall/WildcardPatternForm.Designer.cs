@@ -19,14 +19,14 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WildcardPatternForm));
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.labelOriginalPath = new System.Windows.Forms.Label();
+            this.lblOriginalPath = new System.Windows.Forms.Label();
             this.txtOriginalPath = new System.Windows.Forms.TextBox();
-            this.labelPattern = new System.Windows.Forms.Label();
+            this.lblPattern = new System.Windows.Forms.Label();
             this.txtPattern = new System.Windows.Forms.TextBox();
-            this.labelSecurityBoundary = new System.Windows.Forms.Label();
+            this.lblSecurityBoundary = new System.Windows.Forms.Label();
             this.buttonPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.btnClearFilter = new System.Windows.Forms.Button();
+            this.btnClearPattern = new System.Windows.Forms.Button();
             this.btnApply = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel.SuspendLayout();
@@ -36,18 +36,18 @@
             // tableLayoutPanel
             // 
             resources.ApplyResources(this.tableLayoutPanel, "tableLayoutPanel");
-            this.tableLayoutPanel.Controls.Add(this.labelOriginalPath, 0, 0);
+            this.tableLayoutPanel.Controls.Add(this.lblOriginalPath, 0, 0);
             this.tableLayoutPanel.Controls.Add(this.txtOriginalPath, 1, 0);
-            this.tableLayoutPanel.Controls.Add(this.labelPattern, 0, 1);
+            this.tableLayoutPanel.Controls.Add(this.lblPattern, 0, 1);
             this.tableLayoutPanel.Controls.Add(this.txtPattern, 1, 1);
-            this.tableLayoutPanel.Controls.Add(this.labelSecurityBoundary, 0, 2);
+            this.tableLayoutPanel.Controls.Add(this.lblSecurityBoundary, 0, 2);
             this.tableLayoutPanel.Controls.Add(this.buttonPanel, 0, 3);
             this.tableLayoutPanel.Name = "tableLayoutPanel";
             // 
-            // labelOriginalPath
+            // lblOriginalPath
             // 
-            resources.ApplyResources(this.labelOriginalPath, "labelOriginalPath");
-            this.labelOriginalPath.Name = "labelOriginalPath";
+            resources.ApplyResources(this.lblOriginalPath, "lblOriginalPath");
+            this.lblOriginalPath.Name = "lblOriginalPath";
             // 
             // txtOriginalPath
             // 
@@ -57,10 +57,10 @@
             this.txtOriginalPath.Name = "txtOriginalPath";
             this.txtOriginalPath.ReadOnly = true;
             // 
-            // labelPattern
+            // lblPattern
             // 
-            resources.ApplyResources(this.labelPattern, "labelPattern");
-            this.labelPattern.Name = "labelPattern";
+            resources.ApplyResources(this.lblPattern, "lblPattern");
+            this.lblPattern.Name = "lblPattern";
             // 
             // txtPattern
             // 
@@ -70,18 +70,18 @@
             this.txtPattern.Name = "txtPattern";
             this.toolTip.SetToolTip(this.txtPattern, resources.GetString("txtPattern.ToolTip"));
             // 
-            // labelSecurityBoundary
+            // lblSecurityBoundary
             // 
-            resources.ApplyResources(this.labelSecurityBoundary, "labelSecurityBoundary");
-            this.tableLayoutPanel.SetColumnSpan(this.labelSecurityBoundary, 2);
-            this.labelSecurityBoundary.ForeColor = System.Drawing.Color.DarkOrange;
-            this.labelSecurityBoundary.Name = "labelSecurityBoundary";
+            resources.ApplyResources(this.lblSecurityBoundary, "lblSecurityBoundary");
+            this.tableLayoutPanel.SetColumnSpan(this.lblSecurityBoundary, 2);
+            this.lblSecurityBoundary.ForeColor = System.Drawing.Color.DarkOrange;
+            this.lblSecurityBoundary.Name = "lblSecurityBoundary";
             // 
             // buttonPanel
             // 
             this.tableLayoutPanel.SetColumnSpan(this.buttonPanel, 2);
             this.buttonPanel.Controls.Add(this.btnCancel);
-            this.buttonPanel.Controls.Add(this.btnClearFilter);
+            this.buttonPanel.Controls.Add(this.btnClearPattern);
             this.buttonPanel.Controls.Add(this.btnApply);
             resources.ApplyResources(this.buttonPanel, "buttonPanel");
             this.buttonPanel.Name = "buttonPanel";
@@ -93,13 +93,13 @@
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
-            // btnClearFilter
+            // btnClearPattern
             // 
-            resources.ApplyResources(this.btnClearFilter, "btnClearFilter");
-            this.btnClearFilter.Name = "btnClearFilter";
-            this.toolTip.SetToolTip(this.btnClearFilter, resources.GetString("btnClearFilter.ToolTip"));
-            this.btnClearFilter.UseVisualStyleBackColor = true;
-            this.btnClearFilter.Click += new System.EventHandler(this.btnClearPattern_Click);
+            resources.ApplyResources(this.btnClearPattern, "btnClearPattern");
+            this.btnClearPattern.Name = "btnClearPattern";
+            this.toolTip.SetToolTip(this.btnClearPattern, resources.GetString("btnClearPattern.ToolTip"));
+            this.btnClearPattern.UseVisualStyleBackColor = true;
+            this.btnClearPattern.Click += new System.EventHandler(this.btnClearPattern_Click);
             // 
             // btnApply
             // 
@@ -139,14 +139,14 @@
         }
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
-        private System.Windows.Forms.Label labelOriginalPath;
+        private System.Windows.Forms.Label lblOriginalPath;
         private System.Windows.Forms.TextBox txtOriginalPath;
-        private System.Windows.Forms.Label labelPattern;
+        private System.Windows.Forms.Label lblPattern;
         private System.Windows.Forms.TextBox txtPattern;
-        private System.Windows.Forms.Label labelSecurityBoundary;
+        private System.Windows.Forms.Label lblSecurityBoundary;
         private System.Windows.Forms.FlowLayoutPanel buttonPanel;
         private System.Windows.Forms.Button btnApply;
-        private System.Windows.Forms.Button btnClearFilter;
+        private System.Windows.Forms.Button btnClearPattern;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.ToolTip toolTip;
     }

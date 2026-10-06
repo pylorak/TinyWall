@@ -346,10 +346,10 @@
     <value>由于内部错误而无法应用防火墙设置。</value>
   </data>
   <data name="WildcardPatternValidationTitle" xml:space="preserve">
-    <value>无效的路径筛选器</value>
+    <value>无效的通配符模式</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>筛选器必须至少包含一个通配符（* 或 ?）。</value>
+    <value>模式必须至少包含一个通配符（* 或 ?）。</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>通配符模式必须与原始路径匹配。</value>

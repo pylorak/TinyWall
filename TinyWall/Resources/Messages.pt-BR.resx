@@ -377,10 +377,10 @@ O executável selecionado é parte de {0}. Para que este aplicativo possa ser us
     <value>Aplicativo da PUW</value>
   </data>
   <data name="WildcardPatternValidationTitle" xml:space="preserve">
-    <value>Filtro de caminho inválido</value>
+    <value>Padrão curinga inválido</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>O filtro deve conter pelo menos um curinga (* ou ?).</value>
+    <value>O padrão deve conter pelo menos um curinga (* ou ?).</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>O padrão curinga deve corresponder ao caminho original.</value>

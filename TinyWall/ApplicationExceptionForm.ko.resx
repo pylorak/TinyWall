@@ -189,5 +189,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>파일 찾아보기...</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>경로 필터...</value></data>
+  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>와일드카드 패턴...</value></data>
 </root>

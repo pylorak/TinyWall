@@ -386,10 +386,10 @@
     <value>UWP Пакет</value>
   </data>
   <data name="WildcardPatternValidationTitle" xml:space="preserve">
-    <value>Недійсний фільтр шляху</value>
+    <value>Недійсний шаблон із символами підстановки</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>Фільтр має містити принаймні один символ підстановки (* або ?).</value>
+    <value>Шаблон має містити принаймні один символ підстановки (* або ?).</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>Шаблон має відповідати початковому шляху.</value>

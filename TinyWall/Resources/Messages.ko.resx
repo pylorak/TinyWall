@@ -368,10 +368,10 @@
     <value>내부 오류로 인해 방화벽 설정을 적용할 수 없습니다.</value>
   </data>
   <data name="WildcardPatternValidationTitle" xml:space="preserve">
-    <value>잘못된 경로 필터</value>
+    <value>잘못된 와일드카드 패턴</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>필터에는 하나 이상의 와일드카드(* 또는 ?)가 있어야 합니다.</value>
+    <value>패턴에는 하나 이상의 와일드카드(* 또는 ?)가 있어야 합니다.</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>와일드카드 패턴은 원래 경로와 일치해야 합니다.</value>

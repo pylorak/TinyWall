@@ -414,10 +414,10 @@ A kiválasztott fájl a következő része lehet: {0}. Ahhoz hogy az alkalmazás
     <value>külső program által</value>
   </data>
   <data name="WildcardPatternValidationTitle" xml:space="preserve">
-    <value>Érvénytelen útvonalszűrő</value>
+    <value>Érvénytelen helyettesítő mintázat</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>A szűrőnek legalább egy helyettesítő karaktert (* vagy ?) tartalmaznia kell.</value>
+    <value>A mintázatnak legalább egy helyettesítő karaktert (* vagy ?) tartalmaznia kell.</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>A helyettesítő mintázatnak egyeznie kell az eredeti elérési úttal.</value>

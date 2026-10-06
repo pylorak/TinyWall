@@ -171,5 +171,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Najít soubor...</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Filtr cesty...</value></data>
+  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Vzor se zástupnými znaky...</value></data>
 </root>

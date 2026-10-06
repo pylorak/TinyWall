@@ -201,5 +201,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>עיון עבור קובץ...</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>מסנן נתיב...</value></data>
+  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>תבנית תווים כלליים...</value></data>
 </root>

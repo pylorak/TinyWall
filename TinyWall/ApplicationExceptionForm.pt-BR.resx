@@ -198,5 +198,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Procurar arquivo...</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Filtro de caminho...</value></data>
+  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Padrão curinga...</value></data>
 </root>
