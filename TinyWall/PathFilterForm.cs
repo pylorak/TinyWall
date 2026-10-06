@@ -1,4 +1,4 @@
-using DarkModeForms;
+﻿using DarkModeForms;
 using System;
 using System.Windows.Forms;
 
@@ -25,12 +25,17 @@ namespace pylorak.TinyWall
         private void btnApply_Click(object sender, EventArgs e)
         {
             string pattern = txtPattern.Text.Trim();
-            if (WildcardPathMatcher.IsValidFilter(pattern, txtOriginalPath.Text))
+            bool? sigVerifyCache = null;
+            if (WildcardPathMatcher.IsValidFilter(pattern, txtOriginalPath.Text, ref sigVerifyCache))
             {
                 ResultFilter = pattern;
                 DialogResult = DialogResult.OK;
                 return;
             }
+
+            // WildcardPathMatcher.IsValidFilter() expands env.vars internally, so when we call
+            // Matches() ourself, we must expand manually to keep match results are identical.
+            pattern = Environment.ExpandEnvironmentVariables(pattern);
 
             string message;
             if (pattern.IndexOfAny(new[] { '*', '?' }) < 0)
@@ -41,20 +46,9 @@ namespace pylorak.TinyWall
             {
                 message = Resources.Messages.PathFilterInvalid;
             }
-            else if (!WildcardPathMatcher.HasProtectedLiteralPrefix(pattern)
-                && !(WildcardPathMatcher.HasUserProfileLiteralPrefix(pattern)
-                    && WildcardPathMatcher.IsUserProfilePath(txtOriginalPath.Text)))
-            {
-                message = labelSecurityBoundary.Text;
-            }
-            else if (WildcardPathMatcher.RequiresTrustedSignature(pattern)
-                && !WildcardPathMatcher.HasTrustedSignature(txtOriginalPath.Text))
-            {
-                message = Resources.Messages.PathFilterTrustedSignatureRequired;
-            }
             else
             {
-                message = Resources.Messages.PathFilterInvalid;
+                message = labelSecurityBoundary.Text;
             }
 
             MessageBox.Show(

@@ -385,8 +385,13 @@
   <data name="SubjectTypeUwpApp" xml:space="preserve">
     <value>UWP Пакет</value>
   </data>
-  <data name="PathFilterValidationTitle" xml:space="preserve"><value>Недійсний фільтр шляху</value></data>
-  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>Фільтр має містити принаймні один символ підстановки (* або ?).</value></data>
-  <data name="PathFilterInvalid" xml:space="preserve"><value>Шаблон має відповідати початковому шляху.</value></data>
-  <data name="PathFilterTrustedSignatureRequired" xml:space="preserve"><value>Для фільтрів із символами підстановки в папках профілю користувача потрібен виконуваний файл із дійсним довіреним цифровим підписом.</value></data>
+  <data name="PathFilterValidationTitle" xml:space="preserve">
+    <value>Недійсний фільтр шляху</value>
+  </data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve">
+    <value>Фільтр має містити принаймні один символ підстановки (* або ?).</value>
+  </data>
+  <data name="PathFilterInvalid" xml:space="preserve">
+    <value>Шаблон має відповідати початковому шляху.</value>
+  </data>
 </root>

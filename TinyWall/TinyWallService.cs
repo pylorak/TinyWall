@@ -180,8 +180,7 @@ namespace pylorak.TinyWall
                     {
                         string exePath = exe.ExecutablePath;
                         UserSubjectExes.Add(exePath);
-                        if (WildcardPathMatcher.IsValidFilter(ex.Wildcard, exePath))
-                            WildcardExceptions.Add(ex);
+
                         if (ex.ChildProcessesInherit)
                         {
                             // We might have multiple rules with the same exePath, so we maintain a list of exceptions
@@ -189,6 +188,11 @@ namespace pylorak.TinyWall
                                 ChildInheritance.Add(exePath, new List<FirewallExceptionV3>());
                             ChildInheritance[exePath].Add(ex);
                         }
+
+                        // TODO: Don't check filter validity here, instead check once on user input and once on load from file
+                        bool? sigVerifyCache = true;    // skip signature checks, these are already created rules
+                        if (WildcardPathMatcher.IsValidFilter(ex.Wildcard, exePath, ref sigVerifyCache))
+                            WildcardExceptions.Add(ex);
                     }
 
                     GetRulesForException(FilterGroup.User, ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
@@ -1822,16 +1826,16 @@ namespace pylorak.TinyWall
         private List<FirewallExceptionV3>? CreateWildcardExceptions(string executablePath)
         {
             List<FirewallExceptionV3>? matches = null;
-
-            if (WildcardPathMatcher.RequiresTrustedSignature(executablePath) && !WildcardPathMatcher.HasTrustedSignature(executablePath))
-            {
-                return matches;
-            }
+            bool? sigVerifyCache = null;
 
             foreach (FirewallExceptionV3 template in WildcardExceptions)
             {
-                if ((template.Subject is not ExecutableSubject executable)
-                    || !WildcardPathMatcher.Matches(template.Wildcard, executablePath))
+                if (template.Subject is not ExecutableSubject executable)
+                {
+                    continue;
+                }
+
+                if (!WildcardPathMatcher.IsValidFilter(template.Wildcard, executablePath, ref sigVerifyCache))
                 {
                     continue;
                 }

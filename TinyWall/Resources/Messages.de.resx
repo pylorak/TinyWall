@@ -378,8 +378,13 @@ Die ausgewählte Datei kann zu {0} gehören. Um sicherzustellen, dass die Anwend
   <data name="FilterGroupExternalApp" xml:space="preserve">
     <value>durch externe Anwendung</value>
   </data>
-  <data name="PathFilterValidationTitle" xml:space="preserve"><value>Ungültiger Pfadfilter</value></data>
-  <data name="PathFilterMissingWildcard" xml:space="preserve"><value>Der Filter muss mindestens einen Platzhalter (* oder ?) enthalten.</value></data>
-  <data name="PathFilterInvalid" xml:space="preserve"><value>Das Platzhaltermuster muss mit dem ursprünglichen Pfad übereinstimmen.</value></data>
-  <data name="PathFilterTrustedSignatureRequired" xml:space="preserve"><value>Platzhalterfilter in Benutzerprofilordnern erfordern eine ausführbare Datei mit einer gültigen, vertrauenswürdigen digitalen Signatur.</value></data>
+  <data name="PathFilterValidationTitle" xml:space="preserve">
+    <value>Ungültiger Pfadfilter</value>
+  </data>
+  <data name="PathFilterMissingWildcard" xml:space="preserve">
+    <value>Der Filter muss mindestens einen Platzhalter (* oder ?) enthalten.</value>
+  </data>
+  <data name="PathFilterInvalid" xml:space="preserve">
+    <value>Das Platzhaltermuster muss mit dem ursprünglichen Pfad übereinstimmen.</value>
+  </data>
 </root>

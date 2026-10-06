@@ -13,105 +13,58 @@ namespace pylorak.TinyWall
         private static readonly IReadOnlyCollection<string> ProtectedPathRoots = BuildProtectedPathRoots();
         private static readonly IReadOnlyCollection<string> UserProfilePathRoots = BuildUserProfilePathRoots();
 
-        public static bool IsValidFilter(string? pattern, string originalPath)
+        public static bool IsValidFilter(string? pattern, string originalPath, ref bool? sigVerifyPass)
         {
-            if (Utils.IsNullOrEmpty(pattern) || Utils.IsNullOrEmpty(originalPath))
-                return false;
-
-            if (originalPath.IndexOfAny(WildcardCharacters) >= 0
-                || !TryGetLiteralPrefix(pattern, out string normalizedPrefix)
-                || !Matches(pattern, originalPath))
-            {
-                return false;
-            }
-
-            if (HasLiteralPrefixInRoots(normalizedPrefix, ProtectedPathRoots))
-            {
-                return true;
-            }
-
-            return HasLiteralPrefixInRoots(normalizedPrefix, UserProfilePathRoots)
-                && IsUserProfilePath(originalPath)
-                && HasTrustedSignature(originalPath);
-        }
-
-        public static bool HasProtectedLiteralPrefix(string? pattern)
-        {
-            return TryGetLiteralPrefix(pattern, out string normalizedPrefix)
-                && HasLiteralPrefixInRoots(normalizedPrefix, ProtectedPathRoots);
-        }
-
-        public static bool HasUserProfileLiteralPrefix(string? pattern)
-        {
-            return TryGetLiteralPrefix(pattern, out string normalizedPrefix)
-                && HasLiteralPrefixInRoots(normalizedPrefix, UserProfilePathRoots);
-        }
-
-        public static bool RequiresTrustedSignature(string? pattern)
-        {
-            return TryGetLiteralPrefix(pattern, out string normalizedPrefix)
-                && !HasLiteralPrefixInRoots(normalizedPrefix, ProtectedPathRoots)
-                && HasLiteralPrefixInRoots(normalizedPrefix, UserProfilePathRoots);
-        }
-
-        public static bool IsUserProfilePath(string? path)
-        {
-            if (string.IsNullOrWhiteSpace(path)
-                || path!.IndexOfAny(WildcardCharacters) >= 0
-                || ContainsControlCharacter(path))
-            {
-                return false;
-            }
-
             try
             {
-                string expandedPath = Environment.ExpandEnvironmentVariables(path);
-                if (!IsFullyQualifiedLocalPath(expandedPath))
+                if (Utils.IsNullOrEmpty(pattern) || Utils.IsNullOrEmpty(originalPath))
+                    return false;
+
+                string expandedPath = NormalizePath(Environment.ExpandEnvironmentVariables(originalPath));
+                string expandedPattern = Environment.ExpandEnvironmentVariables(pattern);
+
+                if (expandedPath.IndexOfAny(WildcardCharacters) >= 0
+                    || !TryGetLiteralPrefix(expandedPattern, out string normalizedPrefix)
+                    || !Matches(expandedPattern, expandedPath))
                 {
                     return false;
                 }
 
-                string normalizedPath = NormalizePath(expandedPath);
-                foreach (string profileRoot in UserProfilePathRoots)
+                bool patternInProtectedPaths = HasLiteralPrefixInRoots(normalizedPrefix, ProtectedPathRoots);
+                bool patternInUserProfilePaths = HasLiteralPrefixInRoots(normalizedPrefix, UserProfilePathRoots);
+                if (!patternInProtectedPaths && !patternInUserProfilePaths)
                 {
-                    if (IsPathBelowRoot(normalizedPath, profileRoot))
-                    {
-                        return true;
-                    }
+                    return false;
                 }
-            }
-            catch (Exception exception) when (exception is ArgumentException
-                || exception is NotSupportedException
-                || exception is PathTooLongException)
-            {
-                return false;
-            }
 
-            return false;
-        }
-
-        public static bool HasTrustedSignature(string? filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                return false;
-            }
-
-            try
-            {
-                string expandedPath = Environment.ExpandEnvironmentVariables(filePath);
-                return File.Exists(expandedPath)
-                    && WinTrust.VerifyFileAuthenticode(expandedPath)
-                    == WinTrust.VerifyResult.SIGNATURE_VALID;
+                return IsFileValidWildcardTarget(expandedPath, ref sigVerifyPass);
             }
             catch (Exception)
             {
-                // Wildcard filters in user-profile folders are permitted only
-                // for executables with valid, trusted signatures. Treat any
-                // verification failure as a rejection to preserve that
-                // security boundary.
+                // Any error during wildcard verification results in rejection.
                 return false;
             }
+        }
+
+        private static bool IsFileValidWildcardTarget(string filePath, ref bool? sigVerifyPass)
+        {
+            bool inUacProtectedPaths = HasLiteralPrefixInRoots(filePath, ProtectedPathRoots);
+            bool inUserProfilePaths = HasLiteralPrefixInRoots(filePath, UserProfilePathRoots);
+
+            bool isPathAllowed = inUacProtectedPaths || inUserProfilePaths;
+            if (!isPathAllowed)
+                return false;
+
+            if (inUacProtectedPaths)
+                // No signature verification required
+                return true;
+
+            if (!sigVerifyPass.HasValue)
+            {
+                sigVerifyPass = File.Exists(filePath)
+                                && WinTrust.VerifyFileAuthenticode(filePath) == WinTrust.VerifyResult.SIGNATURE_VALID;
+            }
+            return sigVerifyPass.Value;
         }
 
         private static bool TryGetLiteralPrefix(
@@ -136,7 +89,7 @@ namespace pylorak.TinyWall
 
             try
             {
-                string literalPrefix = Environment.ExpandEnvironmentVariables(pattern.Substring(0, wildcardIndex));
+                string literalPrefix = pattern.Substring(0, wildcardIndex);
                 if (!IsFullyQualifiedLocalPath(literalPrefix))
                 {
                     return false;
