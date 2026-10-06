@@ -27,7 +27,7 @@ namespace pylorak.TinyWall
         private static readonly IReadOnlyCollection<string> ProtectedPathRoots = BuildProtectedPathRoots();
         private static readonly IReadOnlyCollection<string> UserProfilePathRoots = BuildUserProfilePathRoots();
 
-        public static WildcardValidation IsFilterSyntaxValid(string pattern)
+        public static WildcardValidation IsPatternSyntaxValid(string pattern)
         {
             pattern = pattern.Trim().Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 
@@ -59,16 +59,16 @@ namespace pylorak.TinyWall
             return WildcardValidation.Success;
         }
 
-        public static WildcardValidation IsValidFilter(string? pattern, string originalPath, ref bool? sigVerifyPass)
+        public static WildcardValidation MatchPatternToPath(string? pattern, string filePath, ref bool? sigVerifyPass)
         {
             try
             {
-                if (Utils.IsNullOrEmpty(pattern) || Utils.IsNullOrEmpty(originalPath))
+                if (Utils.IsNullOrEmpty(pattern) || Utils.IsNullOrEmpty(filePath))
                     return WildcardValidation.ErrorEmptyParameter;
 
-                if (originalPath.IndexOfAny(WildcardCharacters) >= 0
+                if (filePath.IndexOfAny(WildcardCharacters) >= 0
                     || !TryGetLiteralPrefix(pattern, out string normalizedPrefix)
-                    || !Matches(pattern, originalPath))
+                    || !Matches(pattern, filePath))
                 {
                     return WildcardValidation.ErrorPathNotMatched;
                 }
@@ -81,7 +81,7 @@ namespace pylorak.TinyWall
                 if (!isPatternPathAllowed)
                     return WildcardValidation.ErrorDisallowedFolder;
 
-                return IsFileValidWildcardTarget(originalPath, ref sigVerifyPass);
+                return IsFileValidWildcardTarget(filePath, ref sigVerifyPass);
             }
             catch (Exception)
             {
@@ -253,7 +253,7 @@ namespace pylorak.TinyWall
 
             // The installed service runs as LocalSystem, whose special folders
             // differ from the controller user's. Use registered profile paths
-            // so both processes recognize filters beneath user profiles.
+            // so both processes recognize patterns beneath user profiles.
             // Do not allow the entire Users directory: each profile must have
             // a literal prefix, and matching executables still require trust.
             using RegistryKey? profileList = Registry.LocalMachine.OpenSubKey(

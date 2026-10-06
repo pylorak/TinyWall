@@ -1,6 +1,6 @@
-namespace pylorak.TinyWall
+﻿namespace pylorak.TinyWall
 {
-    partial class PathFilterForm
+    partial class WildcardPatternForm
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -17,7 +17,7 @@ namespace pylorak.TinyWall
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PathFilterForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WildcardPatternForm));
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.labelOriginalPath = new System.Windows.Forms.Label();
             this.txtOriginalPath = new System.Windows.Forms.TextBox();
@@ -32,12 +32,10 @@ namespace pylorak.TinyWall
             this.tableLayoutPanel.SuspendLayout();
             this.buttonPanel.SuspendLayout();
             this.SuspendLayout();
-            //
+            // 
             // tableLayoutPanel
-            //
+            // 
             resources.ApplyResources(this.tableLayoutPanel, "tableLayoutPanel");
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel.Controls.Add(this.labelOriginalPath, 0, 0);
             this.tableLayoutPanel.Controls.Add(this.txtOriginalPath, 1, 0);
             this.tableLayoutPanel.Controls.Add(this.labelPattern, 0, 1);
@@ -45,86 +43,82 @@ namespace pylorak.TinyWall
             this.tableLayoutPanel.Controls.Add(this.labelSecurityBoundary, 0, 2);
             this.tableLayoutPanel.Controls.Add(this.buttonPanel, 0, 3);
             this.tableLayoutPanel.Name = "tableLayoutPanel";
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            //
+            // 
             // labelOriginalPath
-            //
+            // 
             resources.ApplyResources(this.labelOriginalPath, "labelOriginalPath");
             this.labelOriginalPath.Name = "labelOriginalPath";
-            //
+            // 
             // txtOriginalPath
-            //
-            resources.ApplyResources(this.txtOriginalPath, "txtOriginalPath");
+            // 
             this.txtOriginalPath.BackColor = System.Drawing.SystemColors.Window;
             this.txtOriginalPath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            resources.ApplyResources(this.txtOriginalPath, "txtOriginalPath");
             this.txtOriginalPath.Name = "txtOriginalPath";
             this.txtOriginalPath.ReadOnly = true;
-            //
+            // 
             // labelPattern
-            //
+            // 
             resources.ApplyResources(this.labelPattern, "labelPattern");
             this.labelPattern.Name = "labelPattern";
-            //
+            // 
             // txtPattern
-            //
-            resources.ApplyResources(this.txtPattern, "txtPattern");
+            // 
             this.txtPattern.BackColor = System.Drawing.SystemColors.Window;
             this.txtPattern.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            resources.ApplyResources(this.txtPattern, "txtPattern");
             this.txtPattern.Name = "txtPattern";
             this.toolTip.SetToolTip(this.txtPattern, resources.GetString("txtPattern.ToolTip"));
-            //
+            // 
             // labelSecurityBoundary
-            //
+            // 
             resources.ApplyResources(this.labelSecurityBoundary, "labelSecurityBoundary");
             this.tableLayoutPanel.SetColumnSpan(this.labelSecurityBoundary, 2);
             this.labelSecurityBoundary.ForeColor = System.Drawing.Color.DarkOrange;
             this.labelSecurityBoundary.Name = "labelSecurityBoundary";
-            //
+            // 
             // buttonPanel
-            //
-            resources.ApplyResources(this.buttonPanel, "buttonPanel");
+            // 
             this.tableLayoutPanel.SetColumnSpan(this.buttonPanel, 2);
             this.buttonPanel.Controls.Add(this.btnCancel);
             this.buttonPanel.Controls.Add(this.btnClearFilter);
             this.buttonPanel.Controls.Add(this.btnApply);
+            resources.ApplyResources(this.buttonPanel, "buttonPanel");
             this.buttonPanel.Name = "buttonPanel";
-            //
+            // 
             // btnCancel
-            //
+            // 
             resources.ApplyResources(this.btnCancel, "btnCancel");
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            //
+            // 
             // btnClearFilter
-            //
+            // 
             resources.ApplyResources(this.btnClearFilter, "btnClearFilter");
             this.btnClearFilter.Name = "btnClearFilter";
-            this.btnClearFilter.UseVisualStyleBackColor = true;
-            this.btnClearFilter.Click += new System.EventHandler(this.btnClearFilter_Click);
             this.toolTip.SetToolTip(this.btnClearFilter, resources.GetString("btnClearFilter.ToolTip"));
-            //
+            this.btnClearFilter.UseVisualStyleBackColor = true;
+            this.btnClearFilter.Click += new System.EventHandler(this.btnClearPattern_Click);
+            // 
             // btnApply
-            //
+            // 
             resources.ApplyResources(this.btnApply, "btnApply");
             this.btnApply.Name = "btnApply";
             this.btnApply.UseVisualStyleBackColor = true;
             this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
-            //
+            // 
             // toolTip
-            //
+            // 
             this.toolTip.AutoPopDelay = 10000;
             this.toolTip.InitialDelay = 300;
             this.toolTip.ReshowDelay = 100;
             this.toolTip.ShowAlways = true;
-            //
-            // PathFilterForm
-            //
-            resources.ApplyResources(this, "$this");
+            // 
+            // WildcardPatternForm
+            // 
             this.AcceptButton = this.btnApply;
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.CancelButton = this.btnCancel;
@@ -132,7 +126,7 @@ namespace pylorak.TinyWall
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "PathFilterForm";
+            this.Name = "WildcardPatternForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.TopMost = true;
@@ -141,6 +135,7 @@ namespace pylorak.TinyWall
             this.buttonPanel.ResumeLayout(false);
             this.buttonPanel.PerformLayout();
             this.ResumeLayout(false);
+
         }
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;

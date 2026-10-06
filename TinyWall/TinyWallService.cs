@@ -189,8 +189,8 @@ namespace pylorak.TinyWall
                             ChildInheritance[exePath].Add(ex);
                         }
 
-                        if ((ex.Wildcard is not null)
-                            && (WildcardValidation.Success == WildcardPathMatcher.IsFilterSyntaxValid(ex.Wildcard)))
+                        if ((ex.WildcardPattern is not null)
+                            && (WildcardValidation.Success == WildcardPathMatcher.IsPatternSyntaxValid(ex.WildcardPattern)))
                         {
                             WildcardExceptions.Add(ex);
                         }
@@ -1836,7 +1836,7 @@ namespace pylorak.TinyWall
                     continue;
                 }
 
-                if (WildcardValidation.Success != WildcardPathMatcher.IsValidFilter(template.Wildcard, executablePath, ref sigVerifyCache))
+                if (WildcardValidation.Success != WildcardPathMatcher.MatchPatternToPath(template.WildcardPattern, executablePath, ref sigVerifyCache))
                 {
                     continue;
                 }
@@ -1849,7 +1849,7 @@ namespace pylorak.TinyWall
 
                 FirewallExceptionV3 concreteException = Utils.DeepClone(template);
                 concreteException.Subject = new ExecutableSubject(executablePath);
-                concreteException.Wildcard = template.Wildcard;
+                concreteException.WildcardPattern = template.WildcardPattern;
                 concreteException.Timer = AppExceptionTimer.Permanent;
                 concreteException.CreationDate = DateTime.Now;
                 concreteException.RegenerateId();

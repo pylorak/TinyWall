@@ -198,5 +198,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Выбрать файл...</value>
   </data>
-  <data name="btnPathFilter.Text" xml:space="preserve"><value>Фильтр пути...</value></data>
+  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Фильтр пути...</value></data>
 </root>

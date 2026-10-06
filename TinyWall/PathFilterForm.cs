@@ -5,13 +5,13 @@ using System.Windows.Forms;
 
 namespace pylorak.TinyWall
 {
-    internal partial class PathFilterForm : Form
+    internal partial class WildcardPatternForm : Form
     {
         private readonly DarkModeCS? DarkMode;
 
-        internal string? ResultFilter { get; private set; }
+        internal string? ResultPattern { get; private set; }
 
-        internal PathFilterForm(string executablePath, string? currentFilter)
+        internal WildcardPatternForm(string executablePath, string? currentPattern)
         {
             InitializeComponent();
             Utils.SetRightToLeft(this);
@@ -19,7 +19,7 @@ namespace pylorak.TinyWall
                 this.DarkMode = new(this, false) { ColorMode = DarkModeCS.DisplayMode.DarkMode };
 
             txtOriginalPath.Text = executablePath;
-            txtPattern.Text = string.IsNullOrWhiteSpace(currentFilter) ? executablePath : currentFilter;
+            txtPattern.Text = string.IsNullOrWhiteSpace(currentPattern) ? executablePath : currentPattern;
             txtPattern.SelectAll();
         }
 
@@ -29,15 +29,15 @@ namespace pylorak.TinyWall
 #pragma warning disable CS8524 // The switch expression does not handle unnamed enum values.
             string message = result switch
             {
-                WildcardValidation.ErrorDisallowedFolder => "Wildcard filter crosses or points to disallowed folder.",
+                WildcardValidation.ErrorDisallowedFolder => "Wildcard pattern crosses or points to disallowed folder.",
                 WildcardValidation.ErrorEmptyParameter
-                or WildcardValidation.ErrorMissingWildcards => Resources.Messages.PathFilterMissingWildcard,
+                or WildcardValidation.ErrorMissingWildcards => Resources.Messages.WildcardPatternMissingWildcard,
                 WildcardValidation.ErrorFileSignatureFail => "File signature required but missing.",
-                WildcardValidation.ErrorGeneric => "Invalid wildcard filter specified.",
-                WildcardValidation.ErrorPathNotMatched => Resources.Messages.PathFilterMustMatchOriginalPath,
+                WildcardValidation.ErrorGeneric => "Invalid wildcard pattern specified.",
+                WildcardValidation.ErrorPathNotMatched => Resources.Messages.WildcardPatternMustMatchOriginalPath,
                 WildcardValidation.ErrorHasRelativeComponents
                 or WildcardValidation.ErrorInvalidChars
-                or WildcardValidation.ErrorNotFullyQualified => "Wildcard must specify a valid absolute file path.",
+                or WildcardValidation.ErrorNotFullyQualified => "Wildcard pattern must specify a valid absolute file path.",
                 WildcardValidation.Success => "This is not a message you should see XD",
             };
 #pragma warning restore CS8524 // The switch expression does not handle unnamed enum values.
@@ -45,7 +45,7 @@ namespace pylorak.TinyWall
             MessageBox.Show(
                 this,
                 message,
-                Resources.Messages.PathFilterValidationTitle,
+                Resources.Messages.WildcardPatternValidationTitle,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
             txtPattern.Focus();
@@ -57,27 +57,27 @@ namespace pylorak.TinyWall
             bool? sigVerifyCache = null;
             var pattern = txtPattern.Text.Trim().Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 
-            var validationResult = WildcardPathMatcher.IsFilterSyntaxValid(pattern);
+            var validationResult = WildcardPathMatcher.IsPatternSyntaxValid(pattern);
             if (WildcardValidation.Success != validationResult)
             {
                 DisplayValidationMsgBox(validationResult);
                 return;
             }
 
-            validationResult = WildcardPathMatcher.IsValidFilter(pattern, txtOriginalPath.Text, ref sigVerifyCache);
+            validationResult = WildcardPathMatcher.MatchPatternToPath(pattern, txtOriginalPath.Text, ref sigVerifyCache);
             if (WildcardValidation.Success != validationResult)
             {
                 DisplayValidationMsgBox(validationResult);
                 return;
             }
 
-            ResultFilter = pattern;
+            ResultPattern = pattern;
             DialogResult = DialogResult.OK;
         }
 
-        private void btnClearFilter_Click(object sender, EventArgs e)
+        private void btnClearPattern_Click(object sender, EventArgs e)
         {
-            ResultFilter = null;
+            ResultPattern = null;
             DialogResult = DialogResult.OK;
         }
 

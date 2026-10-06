@@ -355,13 +355,13 @@
   <data name="SubjectTypeUwpApp" xml:space="preserve">
     <value>UWP Пакет</value>
   </data>
-  <data name="PathFilterValidationTitle" xml:space="preserve">
+  <data name="WildcardPatternValidationTitle" xml:space="preserve">
     <value>Невалиден филтър на пътя</value>
   </data>
-  <data name="PathFilterMissingWildcard" xml:space="preserve">
+  <data name="WildcardPatternMissingWildcard" xml:space="preserve">
     <value>Филтърът трябва да съдържа поне един заместващ знак (* или ?).</value>
   </data>
-  <data name="PathFilterMustMatchOriginalPath" xml:space="preserve">
+  <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>Шаблонът трябва да съответства на оригиналния път.</value>
   </data>
 </root>

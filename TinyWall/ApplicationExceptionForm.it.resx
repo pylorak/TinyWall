@@ -199,5 +199,5 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Cerca un file...</value>
   </data>
-  <data name="btnPathFilter.Text" xml:space="preserve"><value>Filtro percorso...</value></data>
+  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Filtro percorso...</value></data>
 </root>

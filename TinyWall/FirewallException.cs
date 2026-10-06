@@ -43,7 +43,7 @@ namespace pylorak.TinyWall
         public bool ChildProcessesInherit { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        public string? Wildcard { get; set; }
+        public string? WildcardPattern { get; set; }
 
         public FirewallExceptionV3(ExceptionSubject subject, ExceptionPolicy policy)
         {

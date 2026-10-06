@@ -440,33 +440,6 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The filter must contain at least one wildcard symbol (* or ?)..
-        /// </summary>
-        internal static string PathFilterMissingWildcard {
-            get {
-                return ResourceManager.GetString("PathFilterMissingWildcard", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The wildcard pattern must match the original path..
-        /// </summary>
-        internal static string PathFilterMustMatchOriginalPath {
-            get {
-                return ResourceManager.GetString("PathFilterMustMatchOriginalPath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid path filter.
-        /// </summary>
-        internal static string PathFilterValidationTitle {
-            get {
-                return ResourceManager.GetString("PathFilterValidationTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Permanent.
         /// </summary>
         internal static string Permanent {
@@ -870,6 +843,33 @@ namespace pylorak.TinyWall.Resources {
         internal static string WhitelistingCancelled {
             get {
                 return ResourceManager.GetString("WhitelistingCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The wildcard pattern must contain at least one wildcard symbol (* or ?)..
+        /// </summary>
+        internal static string WildcardPatternMissingWildcard {
+            get {
+                return ResourceManager.GetString("WildcardPatternMissingWildcard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The wildcard pattern must match the original path..
+        /// </summary>
+        internal static string WildcardPatternMustMatchOriginalPath {
+            get {
+                return ResourceManager.GetString("WildcardPatternMustMatchOriginalPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wildcard pattern validation error.
+        /// </summary>
+        internal static string WildcardPatternValidationTitle {
+            get {
+                return ResourceManager.GetString("WildcardPatternValidationTitle", resourceCulture);
             }
         }
         
