@@ -66,7 +66,7 @@ namespace pylorak.TinyWall
             return false;
         }
 
-        public void AddExceptions(List<FirewallExceptionV3> newList)
+        public void AddExceptions(IEnumerable<FirewallExceptionV3> newList)
         {
             var oldList = new List<FirewallExceptionV3>(AppExceptions);
 

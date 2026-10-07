@@ -54,6 +54,8 @@ namespace pylorak.TinyWall
         public ulong Weight;
         [JsonIgnore]
         public FilterGroup Category;
+        [JsonIgnore]
+        public bool RawSocketPermit;
 
         public RuleDef()
         { }
@@ -76,7 +78,8 @@ namespace pylorak.TinyWall
                 Protocol = this.Protocol,
                 Direction = this.Direction,
                 Weight = this.Weight,
-                Category = this.Category
+                Category = this.Category,
+                RawSocketPermit = this.RawSocketPermit,
             };
             return copy;
         }

@@ -72,36 +72,15 @@ namespace pylorak.TinyWall
         private readonly FilterConditionList GatewayFilterConditions = new();
         private readonly FilterConditionList DnsFilterConditions = new();
 
-        private List<RuleDef> AssembleActiveRules(List<RuleDef> rawSocketExceptions)
+        private bool FirewallModeBlockAllOrDisabled => (VisibleState.Mode == FirewallMode.BlockAll) || (VisibleState.Mode == FirewallMode.Disabled);
+
+        private void CreateDefaultRules(List<RuleDef> rules)
         {
-            using var timer = new HierarchicalStopwatch("AssembleActiveRules()");
-            var rules = new List<RuleDef>();
+            using var timer = new HierarchicalStopwatch("Creating default rules");
+
             var ModeId = Guid.NewGuid();
 
-            // Do we want to let local traffic through?
-            if (ActiveConfig.Service.ActiveProfile.AllowLocalSubnet)
-            {
-                var def = new RuleDef(ModeId, FilterGroup.DefaultAction, "Allow local subnet", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultPermit)
-                {
-                    RemoteAddresses = RuleDef.LOCALSUBNET_ID
-                };
-                rules.Add(def);
-            }
-
-            // Do we want to block known malware ports?
-            if (ActiveConfig.Service.Blocklists.EnableBlocklists && ActiveConfig.Service.Blocklists.EnablePortBlocklist)
-            {
-                var exceptions = new List<FirewallExceptionV3>();
-                exceptions.AddRange(CollectExceptionsForAppByName("Malware Ports"));
-                foreach (var ex in exceptions)
-                {
-                    ex.RegenerateId();
-                    GetRulesForException(FilterGroup.Blocklist, ex, rules, rawSocketExceptions, (ulong)FilterWeights.DefaultPermit, (ulong)FilterWeights.Blocklist);
-                }
-            }
-
             // Rules specific to the selected firewall mode
-            bool needUserRules = true;
             switch (VisibleState.Mode)
             {
                 case FirewallMode.AllowOutgoing:
@@ -117,9 +96,6 @@ namespace pylorak.TinyWall
                     }
                 case FirewallMode.BlockAll:
                     {
-                        // We won't need application exceptions
-                        needUserRules = false;
-
                         // Block all
                         var def = new RuleDef(ModeId, FilterGroup.DefaultAction, "Block everything", GlobalSubject.Instance, RuleAction.Block, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultBlock);
                         rules.Add(def);
@@ -134,9 +110,6 @@ namespace pylorak.TinyWall
                     }
                 case FirewallMode.Disabled:
                     {
-                        // We won't need application exceptions
-                        needUserRules = false;
-
                         // Add rule to explicitly allow everything
                         var def = new RuleDef(ModeId, FilterGroup.DefaultAction, "Allow everything", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultPermit);
                         rules.Add(def);
@@ -151,150 +124,151 @@ namespace pylorak.TinyWall
                     }
             }
 
-            if (needUserRules)
+            // Do we want to let local traffic through?
+            // If enabled, local subnet will be allowed even in BlockAll mode. This is intended.
+            if (ActiveConfig.Service.ActiveProfile.AllowLocalSubnet)
             {
-                // Initialize the collection with our own binary
-                var UserExceptions = new List<FirewallExceptionV3>
+                var def = new RuleDef(ModeId, FilterGroup.DefaultAction, "Allow local subnet", GlobalSubject.Instance, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, (ulong)FilterWeights.DefaultPermit)
                 {
-                    new(
-                        new ExecutableSubject(ProcessManager.ExecutablePath),
-                        new TcpUdpPolicy()
-                        {
-                            AllowedRemoteTcpConnectPorts = "443"
-                        }
-                    )
+                    RemoteAddresses = RuleDef.LOCALSUBNET_ID
                 };
+                rules.Add(def);
+            }
 
-                // Collect all applications exceptions
-                UserExceptions.AddRange(ActiveConfig.Service.ActiveProfile.AppExceptions);
+            if (!FirewallModeBlockAllOrDisabled)
+            {
+                timer.NewSubTask("Creating user rules");
+
+                // Do we want to block known malware ports?
+                if (ActiveConfig.Service.Blocklists.EnableBlocklists && ActiveConfig.Service.Blocklists.EnablePortBlocklist)
+                {
+                    var exceptions = new List<FirewallExceptionV3>();
+                    exceptions.AddRange(CollectExceptionsForAppByName("Malware Ports"));
+                    foreach (var ex in exceptions)
+                    {
+                        ex.RegenerateId();
+                        GetRulesForException(FilterGroup.Blocklist, ex, rules, (ulong)FilterWeights.DefaultPermit, (ulong)FilterWeights.Blocklist);
+                    }
+                }
+
+                // Initialize the collection with our own binary
+                var userExceptions = new List<FirewallExceptionV3>
+                    {
+                        new(
+                            new ExecutableSubject(ProcessManager.ExecutablePath),
+                            new TcpUdpPolicy()
+                            {
+                                AllowedRemoteTcpConnectPorts = "443"
+                            }
+                        )
+                    };
 
                 // Collect all special exceptions
                 ActiveConfig.Service.ActiveProfile.SpecialExceptions.Remove("TinyWall");    // TODO: Deprecated: Needed due to old configs. Remove in future version.
                 foreach (string appName in ActiveConfig.Service.ActiveProfile.SpecialExceptions)
-                    UserExceptions.AddRange(CollectExceptionsForAppByName(appName));
+                    userExceptions.AddRange(CollectExceptionsForAppByName(appName));
 
-                // Convert exceptions to rules
-                foreach (FirewallExceptionV3 ex in UserExceptions)
-                {
-                    if (ex.Subject is ExecutableSubject exe)
-                    {
-                        string exePath = exe.ExecutablePath;
-                        UserSubjectExes.Add(exePath);
+                // Collect all application exceptions
+                userExceptions.AddRange(ActiveConfig.Service.ActiveProfile.AppExceptions);
 
-                        if (ex.ChildProcessesInherit)
-                        {
-                            // We might have multiple rules with the same exePath, so we maintain a list of exceptions
-                            if (!ChildInheritance.ContainsKey(exePath))
-                                ChildInheritance.Add(exePath, new List<FirewallExceptionV3>());
-                            ChildInheritance[exePath].Add(ex);
-                        }
-
-                        if ((ex.WildcardPattern is not null)
-                            && (WildcardValidation.Success == WildcardPathMatcher.IsPatternSyntaxValid(ex.WildcardPattern)))
-                        {
-                            WildcardExceptions.Add(ex);
-                        }
-                    }
-
-                    GetRulesForException(FilterGroup.User, ex, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
-                }
-
-                if (ChildInheritance.Count != 0)
-                {
-                    timer.NewSubTask("Rule inheritance processing");
-
-                    var sbuilder = new StringBuilder(1024);
-                    var procTree = new Dictionary<uint, ProcessSnapshotEntry>();
-                    foreach (var p in ProcessManager.CreateToolhelp32SnapshotExtended())
-                        procTree.Add(p.ProcessId, p);
-
-                    // This list will hold parents that we already checked for a process.
-                    // Used to avoid inf. loop when parent-PID info is unreliable.
-                    var pidsChecked = new HashSet<uint>();
-
-                    foreach (var pair in procTree)
-                    {
-                        pidsChecked.Clear();
-
-                        string procPath = pair.Value.ImagePath;
-
-                        // Skip if we have no path
-                        if (string.IsNullOrEmpty(procPath))
-                            continue;
-
-                        // Skip if we have a user-defined rule for this path
-                        if (UserSubjectExes.Contains(procPath))
-                            continue;
-
-                        // Start walking up the process tree
-                        for (var parentEntry = procTree[pair.Key]; ;)
-                        {
-                            long childCreationTime = parentEntry.CreationTime;
-                            if (procTree.TryGetValue(parentEntry.ParentProcessId, out var val))
-                                parentEntry = val;
-                            else
-                                // We reached top of process tree (with non-existing parent)
-                                break;
-
-                            // Check if what we have is really the parent, or just a reused PID
-                            if (parentEntry.CreationTime > childCreationTime)
-                                // We reached the top of the process tree (with non-existing parent)
-                                break;
-
-                            if (parentEntry.ProcessId == 0)
-                                // We reached top of process tree (with idle process)
-                                break;
-
-                            if (pidsChecked.Contains(parentEntry.ProcessId))
-                                // We've been here before, damn it. Avoid looping eternally...
-                                break;
-
-                            pidsChecked.Add(parentEntry.ProcessId);
-
-                            if (string.IsNullOrEmpty(parentEntry.ImagePath))
-                                // We cannot get the path, so let's skip this parent
-                                continue;
-
-                            if (ChildInheritedSubjectExes.TryGetValue(procPath, out var childVal))
-                            {
-                                if (childVal.Contains(parentEntry.ImagePath))
-                                    // We have already processed this parent-child combination
-                                    break;
-                            }
-
-                            if (ChildInheritance.TryGetValue(parentEntry.ImagePath, out List<FirewallExceptionV3> exList))
-                            {
-                                var subj = new ExecutableSubject(procPath);
-                                foreach (var userEx in exList)
-                                    GetRulesForException(FilterGroup.User, new FirewallExceptionV3(subj, userEx.Policy), rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
-
-                                if (!ChildInheritedSubjectExes.ContainsKey(procPath))
-                                    ChildInheritedSubjectExes.Add(procPath, new HashSet<string>());
-                                ChildInheritedSubjectExes[procPath].Add(parentEntry.ImagePath);
-                                break;
-                            }
-                        }
-                    }
-                }   // if (ChildInheritance ...
-
+                TranslateExceptionsToRules(userExceptions, rules, false);
+                CreateInheritedRulesForRunningProcesses(rules);
             }
-
-            // Convert all paths to kernel-format
-            foreach (var r in rules)
-            {
-                if (r.Application is not null)
-                    r.Application = PathMapper.Instance.ConvertPathIgnoreErrors(r.Application, PathFormat.NativeNt);
-            }
-
-            return rules;
         }
 
-        private void InstallRules(List<RuleDef> rules, List<RuleDef> rawSocketExceptions, bool useTransaction, Dictionary<ulong, FilterGroup> fltCatTrx)
+        private void CreateInheritedRulesForRunningProcesses(List<RuleDef> rules)
         {
+            using var timer = new HierarchicalStopwatch("Create inherited rules for running processes");
+
+            if (ChildInheritance.Count != 0)
+            {
+                var procTree = new Dictionary<uint, ProcessSnapshotEntry>();
+                foreach (var p in ProcessManager.CreateToolhelp32SnapshotExtended())
+                    procTree.Add(p.ProcessId, p);
+
+                // This list will hold parents that we already checked for a process.
+                // Used to avoid inf. loop when parent-PID info is unreliable.
+                var pidsChecked = new HashSet<uint>();
+
+                foreach (var pair in procTree)
+                {
+                    pidsChecked.Clear();
+
+                    string procPath = pair.Value.ImagePath;
+
+                    // Skip if we have no path
+                    if (string.IsNullOrEmpty(procPath))
+                        continue;
+
+                    // Skip if we have a user-defined rule for this path
+                    if (UserSubjectExes.Contains(procPath))
+                        continue;
+
+                    // Start walking up the process tree
+                    for (var parentEntry = procTree[pair.Key]; ;)
+                    {
+                        long childCreationTime = parentEntry.CreationTime;
+                        if (procTree.TryGetValue(parentEntry.ParentProcessId, out var val))
+                            parentEntry = val;
+                        else
+                            // We reached top of process tree (with non-existing parent)
+                            break;
+
+                        // Check if what we have is really the parent, or just a reused PID
+                        if (parentEntry.CreationTime > childCreationTime)
+                            // We reached the top of the process tree (with non-existing parent)
+                            break;
+
+                        if (parentEntry.ProcessId == 0)
+                            // We reached top of process tree (with idle process)
+                            break;
+
+                        if (pidsChecked.Contains(parentEntry.ProcessId))
+                            // We've been here before, damn it. Avoid looping eternally...
+                            break;
+
+                        pidsChecked.Add(parentEntry.ProcessId);
+
+                        if (string.IsNullOrEmpty(parentEntry.ImagePath))
+                            // We cannot get the path, so let's skip this parent
+                            continue;
+
+                        if (ChildInheritedSubjectExes.TryGetValue(procPath, out var childVal))
+                        {
+                            if (childVal.Contains(parentEntry.ImagePath))
+                                // We have already processed this parent-child combination
+                                break;
+                        }
+
+                        if (ChildInheritance.TryGetValue(parentEntry.ImagePath, out List<FirewallExceptionV3> exList))
+                        {
+                            var subj = new ExecutableSubject(procPath);
+                            foreach (var userEx in exList)
+                                GetRulesForException(FilterGroup.User, new FirewallExceptionV3(subj, userEx.Policy), rules, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
+
+                            if (childVal == null)
+                            {
+                                childVal = new HashSet<string>();
+                                ChildInheritedSubjectExes.Add(procPath, childVal);
+                            }
+                            childVal.Add(parentEntry.ImagePath);
+                            break;
+                        }
+                    }
+                }
+            }   // if (ChildInheritance ...
+        }
+
+        private void InstallRules(List<RuleDef> rules, bool startNewWfpTransaction, Dictionary<ulong, FilterGroup> fltCatTrx)
+        {
+            using var timer = new HierarchicalStopwatch("Installing rules");
+
             #region Block internet during display power-save
             bool displayBlockActive = ActiveConfig.Service.ActiveProfile.DisplayOffBlock && !DisplayCurrentlyOn;
             if (displayBlockActive)
             {
+                timer.NewSubTask("Adjusting rules due to display power-save");
+
                 // Modify all allow-rules to only allow local subnet
                 foreach (var r in rules)
                 {
@@ -306,59 +280,104 @@ namespace pylorak.TinyWall
             }
             #endregion
 
-            Transaction? trx = useTransaction ? WfpEngine.BeginTransaction() : null;
-            try
+            timer.NewSubTask("Mapping paths to NT format");
+            foreach (RuleDef r in rules)
             {
-                // Add new rules
-                foreach (RuleDef r in rules)
-                {
-                    try
-                    {
-                        ConstructFilter(r, fltCatTrx);
-                    }
-                    catch { }
-                }
-
-                // Built-in protections
-                if (VisibleState.Mode != FirewallMode.Disabled)
-                {
-                    InstallRawSocketPermits(rawSocketExceptions, fltCatTrx);
-                }
-
-                trx?.Commit();
-            }
-            finally
-            {
-                trx?.Dispose();
+                if (!Utils.IsNullOrEmpty(r.Application))
+                    r.Application = PathMapper.Instance.ConvertPathIgnoreErrors(r.Application, PathFormat.NativeNt);
             }
 
+            timer.NewSubTask("Creating WFP filters");
+            using var trx = startNewWfpTransaction ? WfpEngine.BeginTransaction() : null;
+            foreach (RuleDef r in rules)
+            {
+                try
+                {
+                    ConstructFilter(r, fltCatTrx);
+                }
+                catch { }
+            }
+            trx?.Commit();
         }
 
         private void InstallFirewallRules()
         {
-            using var timer = new HierarchicalStopwatch("InstallFirewallRules()");
+            using var timer = new HierarchicalStopwatch("Reloading all firewall rules");
             LastRuleReloadTime = DateTime.Now;
             PathMapper.Instance.RebuildCache();
 
-            using var fltCatTrx = FilterGrouping.CreateTransaction(true);
-            fltCatTrx.Dictionary.Clear();
             var rules = new List<RuleDef>();
-            var rawSocketExceptions = new List<RuleDef>();
-            bool processMonitoringRequired;
             lock (InheritanceGuard)
             {
                 UserSubjectExes.Clear();
-                ChildInheritance.Clear();
-                ChildInheritedSubjectExes.Clear();
                 WildcardExceptions.Clear();
                 WildcardMatchedSubjects.Clear();
-                rules.AddRange(AssembleActiveRules(rawSocketExceptions));
-                processMonitoringRequired = ChildInheritance.Count > 0;
+                ChildInheritance.Clear();
+                ChildInheritedSubjectExes.Clear();
+                CreateDefaultRules(rules);
             }
 
+            timer.NewSubTask("WFP transaction acquire");
+            using (var fltCatTrx = FilterGrouping.CreateTransaction(true))
+            using (var wfpTrx = WfpEngine.BeginTransaction())
+            {
+                timer.NewSubTask("WFP cleanup");
+
+                // Remove all existing WFP objects
+                DeleteWfpObjects(WfpEngine, true);
+
+                // Install provider
+                var provider = new FWPM_PROVIDER0();
+                provider.displayData.name = "Karoly Pados";
+                provider.displayData.description = "TinyWall Provider";
+                provider.serviceName = TinyWallService.SERVICE_NAME;
+                provider.flags = FWPM_PROVIDER_FLAGS.FWPM_PROVIDER_FLAG_PERSISTENT;
+                provider.providerKey = TINYWALL_PROVIDER_KEY;
+                var providerKey = WfpEngine.RegisterProvider(ref provider);
+                Debug.Assert(TINYWALL_PROVIDER_KEY == providerKey);
+
+                // Install sublayers
+                var layerKeys = (LayerKeyEnum[])Enum.GetValues(typeof(LayerKeyEnum));
+                foreach (var layer in layerKeys)
+                {
+                    var slKey = GetSublayerKey(layer);
+                    using var wfpSublayer = new Sublayer($"TinyWall Sublayer for {layer}");
+                    wfpSublayer.Weight = ushort.MaxValue >> 4;
+                    wfpSublayer.SublayerKey = slKey;
+                    wfpSublayer.ProviderKey = TINYWALL_PROVIDER_KEY;
+                    wfpSublayer.Flags = FWPM_SUBLAYER_FLAGS.FWPM_SUBLAYER_FLAG_PERSISTENT;
+                    WfpEngine.RegisterSublayer(wfpSublayer);
+                }
+
+                // Add standard protections
+                if (VisibleState.Mode != FirewallMode.Disabled)
+                {
+                    bool enableWsl2 = (VisibleState.Mode != FirewallMode.BlockAll) && ActiveConfig.Service.ActiveProfile.HasSpecialException("WSL_2");
+                    InstallWsl2Filters(enableWsl2, fltCatTrx.Dictionary);
+                    InstallPortScanProtection(fltCatTrx.Dictionary);
+                    InstallRawSocketBlocks(fltCatTrx.Dictionary);
+                }
+
+                InstallRules(rules, false, fltCatTrx.Dictionary);
+
+                timer.NewSubTask("Committing WFP transaction");
+                wfpTrx.Commit();
+                fltCatTrx.Commit();
+            }
+
+            // We only subscribe to events here to make sure events get generated only after
+            // firewall rules have been installed at least once.
+            // This avoids incorrect filter category association in netevents by making sure
+            // FilterCategories is set up correctly according to the firewall settings.
+            try { WfpNetEventSubscription ??= WfpEngine.SubscribeNetEvent(WfpNetEventCallback); }
+            catch(Exception e) { Utils.LogException(e, Utils.LOG_ID_SERVICE); }
+
+            // Start/stop process monitoring
+            bool processMonitoringRequired;
+            lock (InheritanceGuard) { processMonitoringRequired = ChildInheritance.Count > 0; }
             try
             {
-                if (processMonitoringRequired)
+                if (processMonitoringRequired && !FirewallModeBlockAllOrDisabled)
                     ProcessStartWatcher.Start();
                 else
                     ProcessStartWatcher.Stop();
@@ -367,58 +386,6 @@ namespace pylorak.TinyWall
             {
                 Utils.LogException(exception, Utils.LOG_ID_SERVICE);
             }
-
-            timer.NewSubTask("WFP transaction acquire");
-            using Transaction wfpTrx = WfpEngine.BeginTransaction();
-            timer.NewSubTask("WFP preparation");
-            // Remove all existing WFP objects
-            DeleteWfpObjects(WfpEngine, true);
-
-            // Install provider
-            var provider = new FWPM_PROVIDER0();
-            provider.displayData.name = "Karoly Pados";
-            provider.displayData.description = "TinyWall Provider";
-            provider.serviceName = TinyWallService.SERVICE_NAME;
-            provider.flags = FWPM_PROVIDER_FLAGS.FWPM_PROVIDER_FLAG_PERSISTENT;
-            provider.providerKey = TINYWALL_PROVIDER_KEY;
-            var providerKey = WfpEngine.RegisterProvider(ref provider);
-            Debug.Assert(TINYWALL_PROVIDER_KEY == providerKey);
-
-            // Install sublayers
-            var layerKeys = (LayerKeyEnum[])Enum.GetValues(typeof(LayerKeyEnum));
-            foreach (var layer in layerKeys)
-            {
-                var slKey = GetSublayerKey(layer);
-                using var wfpSublayer = new Sublayer($"TinyWall Sublayer for {layer}");
-                wfpSublayer.Weight = ushort.MaxValue >> 4;
-                wfpSublayer.SublayerKey = slKey;
-                wfpSublayer.ProviderKey = TINYWALL_PROVIDER_KEY;
-                wfpSublayer.Flags = FWPM_SUBLAYER_FLAGS.FWPM_SUBLAYER_FLAG_PERSISTENT;
-                WfpEngine.RegisterSublayer(wfpSublayer);
-            }
-
-            // Add standard protections
-            if (VisibleState.Mode != FirewallMode.Disabled)
-            {
-                InstallWsl2Filters(ActiveConfig.Service.ActiveProfile.HasSpecialException("WSL_2"), fltCatTrx.Dictionary);
-                InstallPortScanProtection(fltCatTrx.Dictionary);
-                InstallRawSocketBlocks(fltCatTrx.Dictionary);
-            }
-
-            timer.NewSubTask("Installing rules");
-            InstallRules(rules, rawSocketExceptions, false, fltCatTrx.Dictionary);
-
-            timer.NewSubTask("WFP transaction commit");
-
-            wfpTrx.Commit();
-            fltCatTrx.Commit();
-
-            // We only subscribe to events here to make sure events get generated only after
-            // firewall rules have been installed at least once.
-            // This avoids incorrect filter category association in netevents by making sure
-            // FilterCategories is set up correctly according to the firewall settings.
-            try { WfpNetEventSubscription ??= WfpEngine.SubscribeNetEvent(WfpNetEventCallback); }
-            catch(Exception e) { Utils.LogException(e, Utils.LOG_ID_SERVICE); }
         }
 
         private enum LayerKeyEnum
@@ -762,7 +729,7 @@ namespace pylorak.TinyWall
             ulong weight = (ulong)(permit ? FilterWeights.UserPermit : FilterWeights.UserBlock);
 
             using var f = new Filter(
-                "Allow WSL2",
+                "Allow/Block WSL2",
                 string.Empty,
                 TINYWALL_PROVIDER_KEY,
                 action,
@@ -775,41 +742,31 @@ namespace pylorak.TinyWall
             InstallWfpFilter(f, FilterGroup.User, fltCatTrx);
         }
 
-        private void InstallRawSocketPermits(List<RuleDef> rawSocketExceptions, Dictionary<ulong, FilterGroup> fltCatTrx)
+        private void InstallRawSocketPermit(RuleDef rule, LayerKeyEnum layer, Dictionary<ulong, FilterGroup> fltCatTrx)
         {
-            InstallRawSocketPermits(rawSocketExceptions, LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4, fltCatTrx);
-            InstallRawSocketPermits(rawSocketExceptions, LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6, fltCatTrx);
-        }
+            Debug.Assert(rule.RawSocketPermit);
 
-        private void InstallRawSocketPermits(List<RuleDef> rawSocketExceptions, LayerKeyEnum layer, Dictionary<ulong, FilterGroup> fltCatTrx)
-        {
-            foreach (var subj in rawSocketExceptions)
-            {
-                try
-                {
-                    using var conditions = new FilterConditionList();
-                    if (!Utils.IsNullOrEmpty(subj.Application))
-                        conditions.Add(new AppIdFilterCondition(subj.Application, false, true));
-                    if (!Utils.IsNullOrEmpty(subj.ServiceName))
-                        conditions.Add(new ServiceNameFilterCondition(subj.ServiceName));
-                    if (conditions.Count == 0)
-                        continue;
+            if (Utils.IsNullOrEmpty(rule.Application) && Utils.IsNullOrEmpty(rule.ServiceName))
+                return;
 
-                    using var f = new Filter(
-                        "Raw socket permit",
-                        string.Empty,
-                        TINYWALL_PROVIDER_KEY,
-                        FilterActions.FWP_ACTION_PERMIT,
-                        (ulong)FilterWeights.RawSocketPermit,
-                        conditions
-                    );
-                    f.LayerKey = GetLayerKey(layer);
-                    f.SublayerKey = GetSublayerKey(layer);
+            using var conditions = new FilterConditionList();
+            if (!Utils.IsNullOrEmpty(rule.Application))
+                conditions.Add(new AppIdFilterCondition(rule.Application, false, true));
+            if (!Utils.IsNullOrEmpty(rule.ServiceName))
+                conditions.Add(new ServiceNameFilterCondition(rule.ServiceName));
 
-                    InstallWfpFilter(f, FilterGroup.User, fltCatTrx);
-                }
-                catch { }
-            }
+            using var f = new Filter(
+                "Raw socket permit",
+                string.Empty,
+                TINYWALL_PROVIDER_KEY,
+                FilterActions.FWP_ACTION_PERMIT,
+                (ulong)FilterWeights.RawSocketPermit,
+                conditions
+            );
+            f.LayerKey = GetLayerKey(layer);
+            f.SublayerKey = GetSublayerKey(layer);
+
+            InstallWfpFilter(f, FilterGroup.User, fltCatTrx);
         }
 
         private void InstallPortScanProtection(Dictionary<ulong, FilterGroup> fltCatTrx)
@@ -895,6 +852,12 @@ namespace pylorak.TinyWall
                 if ((r.Protocol == Protocol.Any) || (r.Protocol == Protocol.ICMPv4))
                     ConstructFilter(r, LayerKeyEnum.FWPM_LAYER_INBOUND_ICMP_ERROR_V4, fltCatTrx);
             }
+
+            if (r.RawSocketPermit)
+            {
+                InstallRawSocketPermit(r, LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V4, fltCatTrx);
+                InstallRawSocketPermit(r, LayerKeyEnum.FWPM_LAYER_ALE_RESOURCE_ASSIGNMENT_V6, fltCatTrx);
+            }
         }
 
         private static List<FirewallExceptionV3> CollectExceptionsForAppByName(string name)
@@ -927,7 +890,7 @@ namespace pylorak.TinyWall
             return exceptions;
         }
 
-        private static void GetRulesForException(FilterGroup category, FirewallExceptionV3 ex, List<RuleDef> results, List<RuleDef> rawSocketExceptions, ulong permitWeight, ulong blockWeight)
+        private static void GetRulesForException(FilterGroup category, FirewallExceptionV3 ex, List<RuleDef> results, ulong permitWeight, ulong blockWeight)
         {
             if (ex.Id == Guid.Empty)
             {
@@ -955,11 +918,8 @@ namespace pylorak.TinyWall
                         var def = new RuleDef(ex.Id, category, "Full access", ex.Subject, RuleAction.Allow, RuleDirection.InOut, Protocol.Any, permitWeight);
                         if (pol.LocalNetworkOnly)
                             def.RemoteAddresses = RuleDef.LOCALSUBNET_ID;
+                        def.RawSocketPermit = true; // Also allows promiscuous socket mode
                         results.Add(def);
-
-                        // Make exception for promiscuous mode
-                        rawSocketExceptions?.Add(def);
-
                         break;
                     }
                 case PolicyType.TcpUdpOnly:
@@ -1400,10 +1360,17 @@ namespace pylorak.TinyWall
                     }
                 case MessageType.ADD_TEMPORARY_EXCEPTION:
                     {
+                        var args = (TwMessageAddTempException)req;
                         try
                         {
-                            var args = (TwMessageAddTempException)req;
-                            InstallTemporaryExceptions(args.Exceptions);
+                            if (FirewallModeBlockAllOrDisabled)
+                                return args.CreateResponse();
+
+                            using var fltCatTrx = FilterGrouping.CreateTransaction(false);
+                            var rules = new List<RuleDef>();
+                            TranslateExceptionsToRules(args.Exceptions, rules, true);
+                            InstallRules(rules, true, fltCatTrx.Dictionary);
+                            fltCatTrx.Commit();
                             return args.CreateResponse();
                         }
                         finally
@@ -1414,18 +1381,31 @@ namespace pylorak.TinyWall
                 case MessageType.ADD_PERSISTENT_EXCEPTION:
                     {
                         var args = (TwMessageAddPersistentException)req;
+
+                        if (FirewallModeBlockAllOrDisabled)
+                            return args.CreateResponse();
+
                         string appPath = args.AppPath;
 
                         // Skip if we have a user-defined rule for this path
                         if (UserSubjectExes.Contains(appPath))
                             return args.CreateResponse();
 
-                        var wildcardExceptions = CreateWildcardExceptions(appPath);
-                        if (wildcardExceptions != null)
+                        var wildcardException = CreateWildcardExceptions(appPath);
+                        if (wildcardException != null)
                         {
-                            PersistWildcardExceptions(wildcardExceptions);
-                            InstallTemporaryExceptions(wildcardExceptions);
+                            var wildcardExceptionColl = new[] { wildcardException };
+                            ActiveConfig.Service.ActiveProfile.AddExceptions(wildcardExceptionColl);
+                            GlobalInstances.ServerChangeset = Guid.NewGuid();
+                            ActiveConfig.Service.Save(ConfigSavePath);
+
+                            using var fltCatTrx = FilterGrouping.CreateTransaction(false);
+                            var rules = new List<RuleDef>();
+                            TranslateExceptionsToRules(wildcardExceptionColl, rules, false);
+                            InstallRules(rules, true, fltCatTrx.Dictionary);
+                            fltCatTrx.Commit();
                         }
+
                         return args.CreateResponse();
                     }
                 case MessageType.GET_SETTINGS:
@@ -1793,9 +1773,9 @@ namespace pylorak.TinyWall
                             continue;
 
                         // Skip if we have already processed this parent-child combination
-                        if (ChildInheritedSubjectExes.TryGetValue(path, out var childVar))
+                        if (ChildInheritedSubjectExes.TryGetValue(path, out var childVal))
                         {
-                            if (childVar.Contains(parentPath))
+                            if (childVal.Contains(parentPath))
                                 break;
                         }
 
@@ -1806,9 +1786,13 @@ namespace pylorak.TinyWall
                             foreach (var userEx in exList)
                                 newExceptions.Add(new FirewallExceptionV3(new ExecutableSubject(path), userEx.Policy));
 
-                            if (!ChildInheritedSubjectExes.ContainsKey(path))
-                                ChildInheritedSubjectExes.Add(path, new HashSet<string>());
-                            ChildInheritedSubjectExes[path].Add(parentPath);
+                            if (childVal == null)
+                            {
+                                childVal = new HashSet<string>();
+                                ChildInheritedSubjectExes.Add(path, childVal);
+                            }
+                            childVal.Add(parentPath);
+
                             break;
                         }
                     }
@@ -1826,81 +1810,90 @@ namespace pylorak.TinyWall
             }
         }
 
-        private List<FirewallExceptionV3>? CreateWildcardExceptions(string executablePath)
+        private FirewallExceptionV3? CreateWildcardExceptions(string executablePath)
         {
-            List<FirewallExceptionV3>? matches = null;
             bool? sigVerifyCache = null;
+            FirewallExceptionV3? bestMatch = null;
 
             foreach (FirewallExceptionV3 template in WildcardExceptions)
             {
-                if (template.Subject is not ExecutableSubject executable)
-                {
+                Debug.Assert(template.WildcardPattern != null);
+
+                if (template.Subject is not ExecutableSubject)
                     continue;
-                }
 
                 if (WildcardValidation.Success != WildcardPathMatcher.MatchPatternToPath(template.WildcardPattern, executablePath, ref sigVerifyCache))
-                {
                     continue;
-                }
 
-                string matchKey = $"{template.Id:N}|{executablePath}";
-                if (!WildcardMatchedSubjects.Add(matchKey))
+                if (bestMatch == null)
                 {
-                    continue;
+                    bestMatch = template;
                 }
-
-                FirewallExceptionV3 concreteException = Utils.DeepClone(template);
-                concreteException.Subject = new ExecutableSubject(executablePath);
-                concreteException.WildcardPattern = template.WildcardPattern;
-                concreteException.Timer = AppExceptionTimer.Permanent;
-                concreteException.CreationDate = DateTime.Now;
-                concreteException.RegenerateId();
-
-                matches ??= new List<FirewallExceptionV3>();
-                matches.Add(concreteException);
-
-                if (template.ChildProcessesInherit)
+                else
                 {
-                    lock (InheritanceGuard)
-                    {
-                        if (!ChildInheritance.TryGetValue(executablePath, out List<FirewallExceptionV3>? inheritedRules))
-                        {
-                            inheritedRules = new List<FirewallExceptionV3>();
-                            ChildInheritance.Add(executablePath, inheritedRules);
-                        }
-
-                        inheritedRules.Add(template);
-                    }
+                    var patternComparison = WildcardPathMatcher.ComparePatterns(bestMatch.WildcardPattern!, template.WildcardPattern!);
+                    if (patternComparison > 0)
+                        bestMatch = template;
+                    else if ((patternComparison == 0) && (template.CreationDate > bestMatch.CreationDate))
+                        bestMatch = template;
                 }
             }
 
-            return matches;
+            if (bestMatch == null)
+                return null;
+
+            string matchKey = $"{bestMatch.Id:N}|{executablePath}";
+            if (!WildcardMatchedSubjects.Add(matchKey))
+                return null;
+
+            FirewallExceptionV3 concreteException = Utils.DeepClone(bestMatch);
+            concreteException.Subject = new ExecutableSubject(executablePath);
+            concreteException.CreationDate = DateTime.Now;
+            concreteException.RegenerateId();
+            return concreteException;
         }
 
-        private static void PersistWildcardExceptions(List<FirewallExceptionV3> exceptions)
+        private void TranslateExceptionsToRules(IEnumerable<FirewallExceptionV3> inExceptions, List<RuleDef> outRules, bool areTemporaryException)
         {
-            ActiveConfig.Service.ActiveProfile.AddExceptions(exceptions);
-            ActiveConfig.Service.Save(ConfigSavePath);
-            GlobalInstances.ServerChangeset = Guid.NewGuid();
-        }
-
-        private void InstallTemporaryExceptions(IEnumerable<FirewallExceptionV3> exceptions)
-        {
-            var rules = new List<RuleDef>();
-            var rawSocketExceptions = new List<RuleDef>();
-
-            foreach (var exception in exceptions)
-                GetRulesForException(FilterGroup.User, exception, rules, rawSocketExceptions, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
-
-            foreach (var rule in rules)
+            // Preprocessing
+            if (!areTemporaryException)
             {
-                if (rule.Application is not null)
-                    rule.Application = PathMapper.Instance.ConvertPathIgnoreErrors(rule.Application, PathFormat.NativeNt);
-            }
+                lock (InheritanceGuard)
+                {
+                    foreach (FirewallExceptionV3 ex in inExceptions)
+                    {
+                        if (ex.Subject is ExecutableSubject exeSubj)
+                        {
+                            string exePath = exeSubj.ExecutablePath;
+                            UserSubjectExes.Add(exePath);
 
-            using var fltCatTrx = FilterGrouping.CreateTransaction(false);
-            InstallRules(rules, rawSocketExceptions, true, fltCatTrx.Dictionary);
-            fltCatTrx.Commit();
+                            if (ex.ChildProcessesInherit)
+                            {
+                                // We might have multiple rules with the same exePath, so we maintain a list of exceptions
+                                if (!ChildInheritance.TryGetValue(exePath, out List<FirewallExceptionV3>? inheritedRules))
+                                {
+                                    inheritedRules = new List<FirewallExceptionV3>();
+                                    ChildInheritance.Add(exePath, inheritedRules);
+                                }
+                                inheritedRules.Add(ex);
+                            }
+
+                            if ((ex.WildcardPattern is not null)
+                                && (WildcardValidation.Success == WildcardPathMatcher.IsPatternSyntaxValid(ex.WildcardPattern)))
+                            {
+                                WildcardExceptions.Add(ex);
+                            }
+                        } // if ExecutableSubject
+                    } // foreach exception
+                } // lock InheritanceGuard
+            } // if not isTemporaryException
+
+            // Convert exceptions to rules,
+            // pulled out from loop above to decrease time spent in lock
+            foreach (var ex in inExceptions)
+            {
+                GetRulesForException(FilterGroup.User, ex, outRules, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
+            }
         }
 
         private void WfpNetEventCallback(NetEventData data)
