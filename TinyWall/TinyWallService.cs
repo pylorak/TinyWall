@@ -321,7 +321,6 @@ namespace pylorak.TinyWall
                 if (VisibleState.Mode != FirewallMode.Disabled)
                 {
                     InstallRawSocketPermits(rawSocketExceptions, fltCatTrx);
-                    InstallWsl2Filters(ActiveConfig.Service.ActiveProfile.HasSpecialException("WSL_2"), fltCatTrx);
                 }
 
                 trx?.Commit();
@@ -399,6 +398,7 @@ namespace pylorak.TinyWall
             // Add standard protections
             if (VisibleState.Mode != FirewallMode.Disabled)
             {
+                InstallWsl2Filters(ActiveConfig.Service.ActiveProfile.HasSpecialException("WSL_2"), fltCatTrx.Dictionary);
                 InstallPortScanProtection(fltCatTrx.Dictionary);
                 InstallRawSocketBlocks(fltCatTrx.Dictionary);
             }
