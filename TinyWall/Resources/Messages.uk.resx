@@ -389,9 +389,21 @@
     <value>Недійсний шаблон із символами підстановки</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>Шаблон має містити принаймні один символ підстановки (* або ?).</value>
+    <value>Шаблон із символами підстановки не може бути порожнім і має містити принаймні один символ підстановки (* або ?).</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>Шаблон має відповідати початковому шляху.</value>
+    <value>Шаблон з підстановковими символами має відповідати початковому шляху виконуваного файла, показаному вище.</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>Це розташування або компонент шляху не допускає символів підстановки.</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>За винятком символів підстановки, шаблон має бути дійсним абсолютним шляхом до файла або мережевим шляхом (UNC).</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>Щоб дозволити виконуваний файл за допомогою шаблону із символами підстановки, він повинен мати дійсний цифровий підпис.</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>Не вдалося перевірити шаблон із символами підстановки. Виправте його та спробуйте ще раз.</value>
   </data>
 </root>

@@ -328,9 +328,21 @@ Het gekozen programma is deel van {0}. Om zeker te zijn dat dit programma zonder
     <value>Ongeldig jokerpatroon</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>Het patroon moet minstens één jokerteken (* of ?) bevatten.</value>
+    <value>Het jokerpatroon mag niet leeg zijn en moet minstens één jokerteken (* of ?) bevatten.</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>Het jokerpatroon moet overeenkomen met het oorspronkelijke pad.</value>
+    <value>Het jokerpatroon moet het hierboven weergegeven oorspronkelijke pad van het uitvoerbare bestand accepteren.</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>Deze locatie of padcomponent staat geen jokertekens toe.</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>Op de jokertekens na moet het patroon een geldig absoluut bestandspad of een netwerkpad (UNC) zijn.</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>Om het via een jokerpatroon toe te staan, is een geldige digitale handtekening op het uitvoerbare bestand vereist.</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>Het jokerpatroon kon niet worden gevalideerd. Controleer het en probeer het opnieuw.</value>
   </data>
 </root>

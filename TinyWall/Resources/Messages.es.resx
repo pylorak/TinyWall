@@ -363,9 +363,21 @@ El ejecutable seleccionado podría ser parte de {0}. Para asegurarse que esta ap
     <value>Patrón con comodines no válido</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>El patrón debe contener al menos un comodín (* o ?).</value>
+    <value>El patrón con comodines no puede estar vacío y debe contener al menos un carácter comodín (* o ?).</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>El patrón con comodines debe coincidir con la ruta original.</value>
+    <value>El patrón con comodines debe aceptar la ruta del ejecutable original mostrada arriba.</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>Esta ubicación o componente de la ruta no admite comodines.</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>Salvo los caracteres comodín, el patrón debe ser una ruta de archivo absoluta válida o una ruta de red (UNC).</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>Se requiere una firma digital válida en el ejecutable para permitirlo mediante un patrón con comodines.</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>No se pudo validar el patrón con comodines. Compruébelo e inténtelo de nuevo.</value>
   </data>
 </root>

@@ -430,9 +430,21 @@ The selected executable could be part of {0}. To ensure that this application ca
     <comment>Title of the message box shown when the user enters an invalid wildcard pattern.</comment>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>The wildcard pattern must contain at least one wildcard symbol (* or ?).</value>
+    <value>The wildcard pattern cannot be empty and must contain at least one wildcard character (* or ?).</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>The wildcard pattern must match the original path.</value>
+    <value>The wildcard pattern must accept the original executable path shown above.</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>This location or path component does not permit wildcards.</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>With the exception of the wildcard characters, the pattern must be a valid absolute file path or a network (UNC) path.</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>A valid digital signature is required on the executable to allow it via a wildcard pattern.</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>The wildcard pattern could not be validated. Please check and try again.</value>
   </data>
 </root>

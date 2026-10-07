@@ -347,9 +347,21 @@
     <value>Недопустимый шаблон с подстановочными знаками</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>Шаблон должен содержать хотя бы один подстановочный знак (* или ?).</value>
+    <value>Шаблон с подстановочными знаками не может быть пустым и должен содержать хотя бы один подстановочный знак (* или ?).</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>Шаблон должен соответствовать исходному пути.</value>
+    <value>Шаблон с подстановочными знаками должен соответствовать исходному пути исполняемого файла, показанному выше.</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>Это расположение или компонент пути не допускает использования подстановочных знаков.</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>За исключением подстановочных знаков, шаблон должен представлять собой допустимый абсолютный путь к файлу или сетевой путь (UNC).</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>Чтобы разрешить исполняемый файл с помощью шаблона с подстановочными знаками, требуется действительная цифровая подпись.</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>Не удалось проверить шаблон с подстановочными знаками. Исправьте его и повторите попытку.</value>
   </data>
 </root>

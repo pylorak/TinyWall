@@ -384,9 +384,21 @@
     <value>תבנית תווים כלליים לא חוקית</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>התבנית חייבת להכיל לפחות תו כללי אחד (* או ?).</value>
+    <value>תבנית התווים הכלליים לא יכולה להיות ריקה וחייבת להכיל לפחות תו כללי אחד (* או ?).</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>תבנית התווים הכלליים חייבת להתאים לנתיב המקורי.</value>
+    <value>תבנית התווים הכלליים חייבת לקבל את נתיב קובץ ההרצה המקורי המוצג למעלה.</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>מיקום זה או רכיב נתיב זה אינו מתיר תווים כלליים.</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>למעט תווים כלליים, התבנית חייבת להיות נתיב קובץ מוחלט חוקי או נתיב רשת (UNC).</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>נדרשת חתימה דיגיטלית תקפה על קובץ ההרצה כדי לאפשר אותו באמצעות תבנית תווים כלליים.</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>לא ניתן לאמת את תבנית התווים הכלליים. נא לבדוק ולנסות שוב.</value>
   </data>
 </root>

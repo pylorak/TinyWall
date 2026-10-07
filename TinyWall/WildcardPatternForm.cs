@@ -25,20 +25,19 @@ namespace pylorak.TinyWall
 
         private void DisplayValidationMsgBox(WildcardValidation result)
         {
-            // TODO: Make the messages below localizable.
 #pragma warning disable CS8524 // The switch expression does not handle unnamed enum values.
             string message = result switch
             {
-                WildcardValidation.ErrorDisallowedFolder => "Wildcard pattern crosses or points to disallowed folder.",
+                WildcardValidation.ErrorDisallowedFolder => Resources.Messages.WildcardPatternDisallowedFolder,
                 WildcardValidation.ErrorEmptyParameter
                 or WildcardValidation.ErrorMissingWildcards => Resources.Messages.WildcardPatternMissingWildcard,
-                WildcardValidation.ErrorFileSignatureFail => "File signature required but missing.",
-                WildcardValidation.ErrorGeneric => "Invalid wildcard pattern specified.",
+                WildcardValidation.ErrorFileSignatureFail => Resources.Messages.WildcardPatternSignatureRequired,
+                WildcardValidation.ErrorGeneric => Resources.Messages.WildcardPatternValidationFailed,
                 WildcardValidation.ErrorPathNotMatched => Resources.Messages.WildcardPatternMustMatchOriginalPath,
                 WildcardValidation.ErrorHasRelativeComponents
                 or WildcardValidation.ErrorInvalidChars
-                or WildcardValidation.ErrorNotFullyQualified => "Wildcard pattern must specify a valid absolute file path.",
-                WildcardValidation.Success => "This is not a message you should see XD",
+                or WildcardValidation.ErrorNotFullyQualified => Resources.Messages.WildcardPatternMustBeAbsolutePath,
+                WildcardValidation.Success => "This exists for exhaustiveness. This is not a message you should see XD",
             };
 #pragma warning restore CS8524 // The switch expression does not handle unnamed enum values.
 

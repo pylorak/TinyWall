@@ -385,9 +385,21 @@ TinyWall の自動学習モードでは、すべての許可されたトラフ�
     <value>無効なワイルドカード パターン</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>パターンには少なくとも 1 つのワイルドカード (* または ?) が必要です。</value>
+    <value>ワイルドカード パターンは空にできず、少なくとも 1 つのワイルドカード文字 (* または ?) を含む必要があります。</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>ワイルドカード パターンは元のパスと一致する必要があります。</value>
+    <value>ワイルドカード パターンは、上に表示されている元の実行可能ファイルのパスを受け入れる必要があります。</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>この場所またはパスの構成要素ではワイルドカードを使用できません。</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>ワイルドカード文字を除き、パターンは有効な絶対ファイル パスまたはネットワーク (UNC) パスである必要があります。</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>ワイルドカード パターンで許可するには、実行可能ファイルに有効なデジタル署名が必要です。</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>ワイルドカード パターンを検証できませんでした。確認してもう一度お試しください。</value>
   </data>
 </root>

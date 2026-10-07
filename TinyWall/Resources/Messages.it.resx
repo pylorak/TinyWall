@@ -373,9 +373,21 @@ L'eseguibile selezionato potrebbe essere parte di {0}. Per garantire che questa 
     <value>Modello con caratteri jolly non valido</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>Il modello deve contenere almeno un carattere jolly (* o ?).</value>
+    <value>Il modello con caratteri jolly non può essere vuoto e deve contenere almeno un carattere jolly (* o ?).</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>Il modello con caratteri jolly deve corrispondere al percorso originale.</value>
+    <value>Il modello con caratteri jolly deve accettare il percorso originale dell'eseguibile mostrato sopra.</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>Questa posizione o componente del percorso non consente caratteri jolly.</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>Fatta eccezione per i caratteri jolly, il modello deve essere un percorso di file assoluto valido o un percorso di rete (UNC).</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>È richiesta una firma digitale valida sull'eseguibile per consentirlo tramite un modello con caratteri jolly.</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>Impossibile convalidare il modello con caratteri jolly. Verificarlo e riprovare.</value>
   </data>
 </root>

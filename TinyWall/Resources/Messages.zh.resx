@@ -349,9 +349,21 @@
     <value>无效的通配符模式</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>模式必须至少包含一个通配符（* 或 ?）。</value>
+    <value>通配符模式不能为空，并且必须至少包含一个通配符（* 或 ?）。</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>通配符模式必须与原始路径匹配。</value>
+    <value>通配符模式必须接受上方显示的原始可执行文件路径。</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>此位置或路径的组成部分不允许使用通配符。</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>除通配符外，模式必须是有效的绝对文件路径或网络 (UNC) 路径。</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>若要通过通配符模式允许该可执行文件，它必须具有有效的数字签名。</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>无法验证通配符模式。请检查后重试。</value>
   </data>
 </root>

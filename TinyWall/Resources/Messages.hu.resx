@@ -417,9 +417,21 @@ A kiválasztott fájl a következő része lehet: {0}. Ahhoz hogy az alkalmazás
     <value>Érvénytelen helyettesítő mintázat</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>A mintázatnak legalább egy helyettesítő karaktert (* vagy ?) tartalmaznia kell.</value>
+    <value>A helyettesítő mintázat nem lehet üres, és legalább egy helyettesítő karaktert (* vagy ?) tartalmaznia kell.</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>A helyettesítő mintázatnak egyeznie kell az eredeti elérési úttal.</value>
+    <value>A helyettesítő mintázatnak meg kell felelnie a fent látható eredeti fájl elérési útjának.</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>Ez a hely vagy az elérési út egyik eleme nem engedélyezi a helyettesítő karaktereket.</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>A helyettesítő karakterektől eltekintve a mintázatnak érvényes abszolút fájl- vagy hálózati (UNC) útnak kell lennie.</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>Érvényes digitális aláírás szükséges a fájlon ahhoz, hogy helyettesítő mintázattal engedélyezni lehessen.</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>A helyettesítő mintázatot nem sikerült érvényesíteni. Kérjük ellenőrizze, majd próbálkozzon újra.</value>
   </data>
 </root>

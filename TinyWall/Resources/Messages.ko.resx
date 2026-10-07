@@ -371,9 +371,21 @@
     <value>잘못된 와일드카드 패턴</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>패턴에는 하나 이상의 와일드카드(* 또는 ?)가 있어야 합니다.</value>
+    <value>와일드카드 패턴은 비워 둘 수 없으며 하나 이상의 와일드카드 문자(* 또는 ?)를 포함해야 합니다.</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>와일드카드 패턴은 원래 경로와 일치해야 합니다.</value>
+    <value>와일드카드 패턴은 위에 표시된 원래 실행 파일 경로를 수용해야 합니다.</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>이 위치 또는 경로 구성 요소에는 와일드카드를 사용할 수 없습니다.</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>와일드카드 문자를 제외한 부분은 유효한 절대 파일 경로 또는 네트워크(UNC) 경로여야 합니다.</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>와일드카드 패턴으로 허용하려면 실행 파일에 유효한 디지털 서명이 있어야 합니다.</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>와일드카드 패턴의 유효성을 검사하지 못했습니다. 확인한 후 다시 시도하십시오.</value>
   </data>
 </root>

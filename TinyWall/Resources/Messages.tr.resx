@@ -349,9 +349,21 @@ Seçili uygulama dosyası {0} nın parçası olabilir. İşi sağlama almak içi
     <value>Geçersiz joker karakter deseni</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>Desen en az bir joker karakter (* veya ?) içermelidir.</value>
+    <value>Joker karakter deseni boş olamaz ve en az bir joker karakter (* veya ?) içermelidir.</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>Joker karakter deseni özgün yolla eşleşmelidir.</value>
+    <value>Joker karakter deseni, yukarıda gösterilen özgün yürütülebilir dosya yolunu kabul etmelidir.</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>Bu konum veya yol bileşeni joker karakterlere izin vermez.</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>Joker karakterler hariç, desen geçerli bir mutlak dosya yolu veya ağ (UNC) yolu olmalıdır.</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>Joker karakter deseniyle izin verilebilmesi için yürütülebilir dosyanın geçerli bir dijital imzaya sahip olması gerekir.</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>Joker karakter deseni doğrulanamadı. Lütfen kontrol edip tekrar deneyin.</value>
   </data>
 </root>

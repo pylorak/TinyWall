@@ -352,9 +352,21 @@ Wybrany plik wykonywalny może być częścią {0}. Aby upewnić się, że ten p
     <value>Nieprawidłowy wzorzec wieloznaczny</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>Wzorzec musi zawierać co najmniej jeden symbol wieloznaczny (* lub ?).</value>
+    <value>Wzorzec wieloznaczny nie może być pusty i musi zawierać co najmniej jeden symbol wieloznaczny (* lub ?).</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>Wzorzec wieloznaczny musi pasować do oryginalnej ścieżki.</value>
+    <value>Wzorzec wieloznaczny musi akceptować oryginalną ścieżkę pliku wykonywalnego pokazaną powyżej.</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>Ta lokalizacja lub składnik ścieżki nie pozwala na użycie symboli wieloznacznych.</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>Z wyjątkiem symboli wieloznacznych wzorzec musi być prawidłową bezwzględną ścieżką pliku lub ścieżką sieciową (UNC).</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>Aby zezwolić na plik wykonywalny za pomocą wzorca wieloznacznego, musi on posiadać prawidłowy podpis cyfrowy.</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>Nie można zweryfikować wzorca wieloznacznego. Sprawdź go i spróbuj ponownie.</value>
   </data>
 </root>

@@ -382,9 +382,21 @@ Die ausgewählte Datei kann zu {0} gehören. Um sicherzustellen, dass die Anwend
     <value>Ungültiges Platzhaltermuster</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>Das Platzhaltermuster muss mindestens ein Platzhalterzeichen (* oder ?) enthalten.</value>
+    <value>Das Platzhaltermuster darf nicht leer sein und muss mindestens ein Platzhalterzeichen (* oder ?) enthalten.</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>Das Platzhaltermuster muss mit dem ursprünglichen Pfad übereinstimmen.</value>
+    <value>Das Platzhaltermuster muss den oben angezeigten ursprünglichen Pfad der ausführbaren Datei akzeptieren.</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>Dieser Speicherort oder Pfadbestandteil lässt keine Platzhalter zu.</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>Abgesehen von den Platzhalterzeichen muss das Muster ein gültiger absoluter Dateipfad oder ein Netzwerkpfad (UNC) sein.</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>Eine gültige digitale Signatur auf der ausführbaren Datei ist erforderlich, um sie über ein Platzhaltermuster zuzulassen.</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>Das Platzhaltermuster konnte nicht validiert werden. Bitte überprüfen Sie es und versuchen Sie es erneut.</value>
   </data>
 </root>

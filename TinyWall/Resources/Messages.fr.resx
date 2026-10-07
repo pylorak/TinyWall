@@ -374,9 +374,21 @@ L'exécutable trouvé est une partie de {0}. Afin d'être sûr que cette applica
     <value>Motif avec jokers non valide</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>Le motif doit contenir au moins un caractère joker (* ou ?).</value>
+    <value>Le motif avec jokers ne peut pas être vide et doit contenir au moins un caractère joker (* ou ?).</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>Le motif avec jokers doit correspondre au chemin d’origine.</value>
+    <value>Le motif avec jokers doit accepter le chemin de l'exécutable d'origine affiché ci-dessus.</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>Cet emplacement ou composant du chemin n'autorise pas les caractères joker.</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>À l'exception des caractères joker, le motif doit être un chemin de fichier absolu valide ou un chemin réseau (UNC).</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>L'exécutable doit être doté d'une signature numérique valide pour pouvoir être autorisé via un motif avec jokers.</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>Le motif avec jokers n'a pas pu être validé. Veuillez le vérifier et réessayer.</value>
   </data>
 </root>

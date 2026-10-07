@@ -847,7 +847,16 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The wildcard pattern must contain at least one wildcard symbol (* or ?)..
+        ///   Looks up a localized string similar to This location or path component does not permit wildcards..
+        /// </summary>
+        internal static string WildcardPatternDisallowedFolder {
+            get {
+                return ResourceManager.GetString("WildcardPatternDisallowedFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The wildcard pattern cannot be empty and must contain at least one wildcard character (* or ?)..
         /// </summary>
         internal static string WildcardPatternMissingWildcard {
             get {
@@ -856,11 +865,38 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The wildcard pattern must match the original path..
+        ///   Looks up a localized string similar to With the exception of the wildcard characters, the pattern must be a valid absolute file path or a network (UNC) path..
+        /// </summary>
+        internal static string WildcardPatternMustBeAbsolutePath {
+            get {
+                return ResourceManager.GetString("WildcardPatternMustBeAbsolutePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The wildcard pattern must be able to match the original executable path shown above..
         /// </summary>
         internal static string WildcardPatternMustMatchOriginalPath {
             get {
                 return ResourceManager.GetString("WildcardPatternMustMatchOriginalPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A valid digital signature is required on the executable to allow it via a wildcard pattern..
+        /// </summary>
+        internal static string WildcardPatternSignatureRequired {
+            get {
+                return ResourceManager.GetString("WildcardPatternSignatureRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The wildcard pattern could not be validated. Please check and try again..
+        /// </summary>
+        internal static string WildcardPatternValidationFailed {
+            get {
+                return ResourceManager.GetString("WildcardPatternValidationFailed", resourceCulture);
             }
         }
         

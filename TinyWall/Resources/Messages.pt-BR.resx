@@ -380,9 +380,21 @@ O executável selecionado é parte de {0}. Para que este aplicativo possa ser us
     <value>Padrão curinga inválido</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>O padrão deve conter pelo menos um curinga (* ou ?).</value>
+    <value>O padrão curinga não pode estar vazio e deve conter pelo menos um caractere curinga (* ou ?).</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>O padrão curinga deve corresponder ao caminho original.</value>
+    <value>O padrão curinga deve aceitar o caminho original do executável exibido acima.</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>Este local ou componente do caminho não permite curingas.</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>Com exceção dos caracteres curinga, o padrão deve ser um caminho de arquivo absoluto válido ou um caminho de rede (UNC).</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>Uma assinatura digital válida é necessária no executável para permiti-lo por meio de um padrão curinga.</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>Não foi possível validar o padrão curinga. Verifique-o e tente novamente.</value>
   </data>
 </root>

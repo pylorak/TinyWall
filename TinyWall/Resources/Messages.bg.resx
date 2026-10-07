@@ -359,9 +359,21 @@
     <value>Невалиден шаблон със заместващи знаци</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>Шаблонът трябва да съдържа поне един заместващ знак (* или ?).</value>
+    <value>Шаблонът със заместващи знаци не може да бъде празен и трябва да съдържа поне един заместващ знак (* или ?).</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>Шаблонът трябва да съответства на оригиналния път.</value>
+    <value>Шаблонът с универсални символи трябва да приема оригиналния път на изпълнимия файл, показан по-горе.</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>Това местоположение или компонент от пътя не позволява заместващи знаци.</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>С изключение на заместващите знаци, шаблонът трябва да е валиден абсолютен път до файл или мрежов път (UNC).</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>За да разрешите изпълнимия файл чрез шаблон със заместващи знаци, той трябва да има валиден цифров подпис.</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>Шаблонът със заместващи знаци не можа да бъде валидиран. Проверете го и опитайте отново.</value>
   </data>
 </root>

@@ -346,9 +346,21 @@ Zvolený spustitelný soubor by mohl být součástí {0}. Pro zajištění bezc
     <value>Neplatný vzor se zástupnými znaky</value>
   </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
-    <value>Vzor musí obsahovat alespoň jeden zástupný znak (* nebo ?).</value>
+    <value>Vzor se zástupnými znaky nesmí být prázdný a musí obsahovat alespoň jeden zástupný znak (* nebo ?).</value>
   </data>
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
-    <value>Vzor musí odpovídat původní cestě.</value>
+    <value>Vzor s univerzálními znaky musí odpovídat původní cestě ke spustitelnému souboru zobrazené výše.</value>
+  </data>
+  <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
+    <value>Toto umístění nebo součást cesty neumožňuje zástupné znaky.</value>
+  </data>
+  <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
+    <value>S výjimkou zástupných znaků musí být vzor platná absolutní cesta k souboru nebo síťová cesta (UNC).</value>
+  </data>
+  <data name="WildcardPatternSignatureRequired" xml:space="preserve">
+    <value>Pro povolení spustitelného souboru pomocí vzoru se zástupnými znaky je vyžadován platný digitální podpis.</value>
+  </data>
+  <data name="WildcardPatternValidationFailed" xml:space="preserve">
+    <value>Vzor se zástupnými znaky se nepodařilo ověřit. Zkontrolujte jej a zkuste to znovu.</value>
   </data>
 </root>
