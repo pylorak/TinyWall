@@ -59,6 +59,102 @@ namespace pylorak.TinyWall
             return WildcardValidation.Success;
         }
 
+        // Sort two wildcard patterns by how deeply each pins down a path.
+        // Returns -1 (left arg deeper) / 0 (equal strings) / 1 (right arg deeper).
+        public static int ComparePatterns(string p1, string p2)
+        {
+            if ((p1 is null) || (p2 is null))
+                throw new ArgumentNullException("Arguments cannot be null.");
+
+            MeasureLiteralDepth(p1, out int p1PrefixDepth, out int p1TotalDepth);
+            MeasureLiteralDepth(p2, out int p2PrefixDepth, out int p2TotalDepth);
+
+            // Primary sort decision:
+            // the number of directory levels from the root that are fully
+            // pinned (literal) before the first wildcard-containing segment is reached.
+            // This is the depth to which the path is determined by the pattern.
+            if (p1PrefixDepth != p2PrefixDepth)
+                return (p1PrefixDepth > p2PrefixDepth) ? -1 : 1;
+
+            // 1. tie-breaker: the total number of levels pinned in the whole string
+            // e.g. c:\a\*\b\* pins one level deeper than c:\a\*
+            if (p1TotalDepth != p2TotalDepth)
+                return (p1TotalDepth > p2TotalDepth) ? -1 : 1;
+
+            // 2. tie-breaker: ordinal case-insensitive comparison
+            // while treating separator variants as equal.
+            return ComparePatternOrdinals(p2, p1);
+        }
+
+        private static void MeasureLiteralDepth(string pattern, out int prefixDepth, out int totalDepth)
+        {
+            prefixDepth = 0;
+            totalDepth = 0;
+
+            bool prefixEnded = false;
+            int i = 0;
+            while (i < pattern.Length)
+            {
+                if (IsDirectorySeparator(pattern[i]))
+                {
+                    i++;
+                    continue;
+                }
+
+                // Consume one path segment, remember whether it contained a wildcard
+                bool hasWildcard = false;
+                while ((i < pattern.Length) && !IsDirectorySeparator(pattern[i]))
+                {
+                    if (IsWildcardCharacter(pattern[i]))
+                        hasWildcard = true;
+                    i++;
+                }
+
+                if (hasWildcard)
+                {
+                    // A wildcard segment does not pin its directory level
+                    prefixEnded = true;
+                }
+                else
+                {
+                    totalDepth++;
+                    if (!prefixEnded)
+                        prefixDepth++;
+                }
+            }
+        }
+
+        private static int ComparePatternOrdinals(string p1, string p2)
+        {
+            static int NormalizeForComparison(char value)
+            {
+                if (IsDirectorySeparator(value))
+                    return Path.DirectorySeparatorChar;
+                return char.ToUpperInvariant(value);
+            }
+
+            int compareLength = Math.Min(p1.Length, p2.Length);
+            for (int i = 0; i < compareLength; i++)
+            {
+                int c1 = NormalizeForComparison(p1[i]);
+                int c2 = NormalizeForComparison(p2[i]);
+                if (c1 != c2)
+                    return (c1 < c2) ? -1 : 1;
+            }
+
+            return p1.Length.CompareTo(p2.Length);
+        }
+
+        private static bool IsWildcardCharacter(char value)
+        {
+            foreach (char wildcard in WildcardCharacters)
+            {
+                if (wildcard == value)
+                    return true;
+            }
+            return false;
+        }
+
         public static WildcardValidation MatchPatternToPath(string? pattern, string filePath, ref bool? sigVerifyPass)
         {
             try
