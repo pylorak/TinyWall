@@ -1,9 +1,7 @@
-﻿using Microsoft.Win32;
-using pylorak.Windows;
+﻿using pylorak.Windows;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Principal;
 
 namespace pylorak.TinyWall
 {
@@ -25,7 +23,6 @@ namespace pylorak.TinyWall
     {
         private static readonly char[] WildcardCharacters = { '*', '?' };
         private static readonly IReadOnlyCollection<string> ProtectedPathRoots = BuildProtectedPathRoots();
-        private static readonly IReadOnlyCollection<string> UserProfilePathRoots = BuildUserProfilePathRoots();
 
         public static WildcardValidation IsPatternSyntaxValid(string pattern)
         {
@@ -169,14 +166,6 @@ namespace pylorak.TinyWall
                     return WildcardValidation.ErrorPathNotMatched;
                 }
 
-                bool patternInUacProtectedPaths = HasLiteralPrefixInRoots(normalizedPrefix, ProtectedPathRoots);
-                bool patternInUserProfilePaths = HasLiteralPrefixInRoots(normalizedPrefix, UserProfilePathRoots);
-                bool isUncPaths = NetworkPath.IsUncPath(normalizedPrefix);
-                bool isPatternPathAllowed = patternInUacProtectedPaths || patternInUserProfilePaths || isUncPaths;
-
-                if (!isPatternPathAllowed)
-                    return WildcardValidation.ErrorDisallowedFolder;
-
                 return IsFileValidWildcardTarget(filePath, ref sigVerifyPass);
             }
             catch (Exception)
@@ -189,13 +178,6 @@ namespace pylorak.TinyWall
         private static WildcardValidation IsFileValidWildcardTarget(string filePath, ref bool? sigVerifyPass)
         {
             bool inUacProtectedPaths = HasLiteralPrefixInRoots(filePath, ProtectedPathRoots);
-            bool inUserProfilePaths = HasLiteralPrefixInRoots(filePath, UserProfilePathRoots);
-            bool isUncPaths = NetworkPath.IsUncPath(filePath);
-            bool isPathAllowed = inUacProtectedPaths || inUserProfilePaths || isUncPaths;
-
-            if (!isPathAllowed)
-                return WildcardValidation.ErrorDisallowedFolder;
-
             if (inUacProtectedPaths)
                 // No signature verification required
                 return WildcardValidation.Success;
@@ -331,69 +313,6 @@ namespace pylorak.TinyWall
             }
 
             return roots;
-        }
-
-        private static IReadOnlyCollection<string> BuildUserProfilePathRoots()
-        {
-            var roots = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
-            {
-                if (IsUserProfileSid(identity.User?.Value))
-                {
-                    AddPathRoot(roots, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
-                    AddPathRoot(roots, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
-                    AddPathRoot(roots, Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
-                }
-            }
-
-            // The installed service runs as LocalSystem, whose special folders
-            // differ from the controller user's. Use registered profile paths
-            // so both processes recognize patterns beneath user profiles.
-            // Do not allow the entire Users directory: each profile must have
-            // a literal prefix, and matching executables still require trust.
-            using RegistryKey? profileList = Registry.LocalMachine.OpenSubKey(
-                @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList");
-            if (profileList is not null)
-            {
-                foreach (string profileName in profileList.GetSubKeyNames())
-                {
-                    if (!IsUserProfileSid(profileName))
-                        continue;
-
-                    using RegistryKey? profile = profileList.OpenSubKey(profileName);
-                    AddPathRoot(roots, profile?.GetValue("ProfileImagePath") as string);
-                }
-            }
-
-            return roots;
-        }
-
-        private static bool IsUserProfileSid(string? sidValue)
-        {
-            if (string.IsNullOrEmpty(sidValue))
-                return false;
-
-            try
-            {
-                var sid = new SecurityIdentifier(sidValue);
-                return !sid.IsWellKnown(WellKnownSidType.LocalSystemSid)
-                    && !sid.IsWellKnown(WellKnownSidType.LocalServiceSid)
-                    && !sid.IsWellKnown(WellKnownSidType.NetworkServiceSid);
-            }
-            catch (ArgumentException)
-            {
-                // Ignore non-SID entries, including profile backup keys (.bak).
-                return false;
-            }
-        }
-
-        private static void AddPathRoot(ISet<string> roots, string path)
-        {
-            if (!string.IsNullOrWhiteSpace(path) && Utils.IsPathFullyQualified(path))
-            {
-                roots.Add(path);
-            }
         }
 
         private static bool HasLiteralPrefixInRoots(
