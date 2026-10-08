@@ -2,6 +2,7 @@ TinyWall Changelog
 ---------------------
 
 3.x.x - not yet released
+- Fix blocks during display power-save not applied to inherited rules
 - Fix WSL rules installed redundantly when adding inherited rules
 - Rule merging now always uses inheritance setting of newer rule
 - Show block reason in Connections window

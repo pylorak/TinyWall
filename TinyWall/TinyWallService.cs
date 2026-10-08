@@ -286,6 +286,12 @@ namespace pylorak.TinyWall
                     r.Application = PathMapper.Instance.ConvertPathIgnoreErrors(r.Application, PathFormat.NativeNt);
             }
 
+            return rules;
+        }
+
+        private void InstallRules(List<RuleDef> rules, List<RuleDef> rawSocketExceptions, bool useTransaction, Dictionary<ulong, FilterGroup> fltCatTrx)
+        {
+            #region Block internet during display power-save
             bool displayBlockActive = ActiveConfig.Service.ActiveProfile.DisplayOffBlock && !DisplayCurrentlyOn;
             if (displayBlockActive)
             {
@@ -298,12 +304,8 @@ namespace pylorak.TinyWall
                     }
                 }
             }
+            #endregion
 
-            return rules;
-        }
-
-        private void InstallRules(List<RuleDef> rules, List<RuleDef> rawSocketExceptions, bool useTransaction, Dictionary<ulong, FilterGroup> fltCatTrx)
-        {
             Transaction? trx = useTransaction ? WfpEngine.BeginTransaction() : null;
             try
             {
