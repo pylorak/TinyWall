@@ -23,7 +23,17 @@ namespace pylorak.TinyWall
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
 
             txtOriginalPath.Text = executablePath;
-            txtPattern.Text = string.IsNullOrWhiteSpace(currentPattern) ? executablePath : currentPattern;
+
+            if (Utils.IsNullOrEmpty(currentPattern))
+            {
+                txtPattern.Text = VersionDetector.TryFindVersionSpan(executablePath, out var start, out var len)
+                    ? executablePath.Remove(start, len).Insert(start, "*")
+                    : executablePath;
+            }
+            else
+            {
+                txtPattern.Text = executablePath;
+            }
         }
 
         private void DisplayValidationMsgBox(WildcardValidation result)

@@ -86,7 +86,7 @@ namespace pylorak.TinyWall
             // Scan the final path segment backwards, up to the last directory separator.
             for (int i = pattern!.Length - 1; i >= 0; i--)
             {
-                if (IsDirectorySeparator(pattern[i]))
+                if (IsPathSeparator(pattern[i]))
                     break;
                 else if (IsWildcardCharacter(pattern[i]))
                     return true;
@@ -131,7 +131,7 @@ namespace pylorak.TinyWall
             int i = 0;
             while (i < pattern.Length)
             {
-                if (IsDirectorySeparator(pattern[i]))
+                if (IsPathSeparator(pattern[i]))
                 {
                     i++;
                     continue;
@@ -139,7 +139,7 @@ namespace pylorak.TinyWall
 
                 // Consume one path segment, remember whether it contained a wildcard
                 bool hasWildcard = false;
-                while ((i < pattern.Length) && !IsDirectorySeparator(pattern[i]))
+                while ((i < pattern.Length) && !IsPathSeparator(pattern[i]))
                 {
                     if (IsWildcardCharacter(pattern[i]))
                         hasWildcard = true;
@@ -164,7 +164,7 @@ namespace pylorak.TinyWall
         {
             static int NormalizeForComparison(char value)
             {
-                if (IsDirectorySeparator(value))
+                if (IsPathSeparator(value))
                     return Path.DirectorySeparatorChar;
                 return char.ToUpperInvariant(value);
             }
@@ -298,7 +298,7 @@ namespace pylorak.TinyWall
             while (pathIndex < candidatePath.Length)
             {
                 if (patternIndex < wildcardPattern.Length
-                    && ((wildcardPattern[patternIndex] == '?' && !IsDirectorySeparator(candidatePath[pathIndex]))
+                    && ((wildcardPattern[patternIndex] == '?' && !IsPathSeparator(candidatePath[pathIndex]))
                         || (char.ToUpperInvariant(wildcardPattern[patternIndex]) == char.ToUpperInvariant(candidatePath[pathIndex]))))
                 {
                     patternIndex++;
@@ -309,7 +309,7 @@ namespace pylorak.TinyWall
                     lastStarIndex = patternIndex++;
                     starMatchIndex = pathIndex;
                 }
-                else if (lastStarIndex >= 0 && !IsDirectorySeparator(candidatePath[starMatchIndex]))
+                else if (lastStarIndex >= 0 && !IsPathSeparator(candidatePath[starMatchIndex]))
                 {
                     patternIndex = lastStarIndex + 1;
                     pathIndex = ++starMatchIndex;
@@ -333,11 +333,11 @@ namespace pylorak.TinyWall
         {
             static bool TryGetNextSegment(string path, ref int index, out string segment)
             {
-                while ((index < path.Length) && IsDirectorySeparator(path[index]))
+                while ((index < path.Length) && IsPathSeparator(path[index]))
                     index++;
 
                 int start = index;
-                while ((index < path.Length) && !IsDirectorySeparator(path[index]))
+                while ((index < path.Length) && !IsPathSeparator(path[index]))
                     index++;
 
                 if (start == index)
@@ -439,10 +439,10 @@ namespace pylorak.TinyWall
         {
             return candidate.Length > root.Length
                 && candidate.StartsWith(root, StringComparison.OrdinalIgnoreCase)
-                && IsDirectorySeparator(candidate[root.Length]);
+                && IsPathSeparator(candidate[root.Length]);
         }
 
-        private static bool IsDirectorySeparator(char value)
+        public static bool IsPathSeparator(char value)
         {
             return value == Path.DirectorySeparatorChar || value == Path.AltDirectorySeparatorChar;
         }
