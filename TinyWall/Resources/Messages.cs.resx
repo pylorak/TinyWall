@@ -351,6 +351,9 @@ Zvolený spustitelný soubor by mohl být součástí {0}. Pro zajištění bezc
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>Vzor s univerzálními znaky musí odpovídat původní cestě ke spustitelnému souboru zobrazené výše.</value>
   </data>
+  <data name="WildcardPatternMustUseExactFilename" xml:space="preserve">
+    <value>Vzor s univerzálními znaky musí používat přesný název původního souboru.</value>
+  </data>
   <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
     <value>Toto umístění nebo součást cesty neumožňuje zástupné znaky.</value>
   </data>

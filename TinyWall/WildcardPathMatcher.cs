@@ -19,6 +19,7 @@ namespace pylorak.TinyWall
         ErrorMissingWildcards,
         ErrorPathNotMatched,
         ErrorDisallowedFolder,
+        ErrorWildcardedFilename,
         ErrorFileSignatureFail,
     }
 
@@ -68,8 +69,30 @@ namespace pylorak.TinyWall
             {
                 return WildcardValidation.ErrorDisallowedFolder;
             }
+            else if (HasWildcardInFilenameComponent(pattern))
+            {
+                return WildcardValidation.ErrorWildcardedFilename;
+            }
 
             return WildcardValidation.Success;
+        }
+
+        // Returns true if the filename component (the last path segment) of a pattern contains a wildcard character.
+        public static bool HasWildcardInFilenameComponent(string? pattern)
+        {
+            if (Utils.IsNullOrEmpty(pattern))
+                return false;
+
+            // Scan the final path segment backwards, up to the last directory separator.
+            for (int i = pattern!.Length - 1; i >= 0; i--)
+            {
+                if (IsDirectorySeparator(pattern[i]))
+                    break;
+                else if (IsWildcardCharacter(pattern[i]))
+                    return true;
+            }
+
+            return false;
         }
 
         // Sort two wildcard patterns by how deeply each pins down a path.

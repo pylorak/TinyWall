@@ -364,6 +364,9 @@
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>Шаблонът с универсални символи трябва да приема оригиналния път на изпълнимия файл, показан по-горе.</value>
   </data>
+  <data name="WildcardPatternMustUseExactFilename" xml:space="preserve">
+    <value>Шаблонът със заместващи знаци трябва да използва точното име на оригиналния файл.</value>
+  </data>
   <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
     <value>Това местоположение или компонент от пътя не позволява заместващи знаци.</value>
   </data>

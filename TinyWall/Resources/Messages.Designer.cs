@@ -883,6 +883,15 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The wildcard pattern must use the exact filename of the original file..
+        /// </summary>
+        internal static string WildcardPatternMustUseExactFilename {
+            get {
+                return ResourceManager.GetString("WildcardPatternMustUseExactFilename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A valid digital signature is required on the executable to allow it via a wildcard pattern..
         /// </summary>
         internal static string WildcardPatternSignatureRequired {

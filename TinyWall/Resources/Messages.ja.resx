@@ -390,6 +390,9 @@ TinyWall の自動学習モードでは、すべての許可されたトラフ�
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>ワイルドカード パターンは、上に表示されている元の実行可能ファイルのパスを受け入れる必要があります。</value>
   </data>
+  <data name="WildcardPatternMustUseExactFilename" xml:space="preserve">
+    <value>ワイルドカード パターンには、元のファイルの正確なファイル名を使用する必要があります。</value>
+  </data>
   <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
     <value>この場所またはパスの構成要素ではワイルドカードを使用できません。</value>
   </data>

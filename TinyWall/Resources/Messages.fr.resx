@@ -379,6 +379,9 @@ L'exécutable trouvé est une partie de {0}. Afin d'être sûr que cette applica
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>Le motif avec jokers doit accepter le chemin de l'exécutable d'origine affiché ci-dessus.</value>
   </data>
+  <data name="WildcardPatternMustUseExactFilename" xml:space="preserve">
+    <value>Le motif avec jokers doit utiliser le nom de fichier exact du fichier d'origine.</value>
+  </data>
   <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
     <value>Cet emplacement ou composant du chemin n'autorise pas les caractères joker.</value>
   </data>

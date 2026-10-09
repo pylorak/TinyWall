@@ -387,6 +387,9 @@ Die ausgewählte Datei kann zu {0} gehören. Um sicherzustellen, dass die Anwend
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>Das Platzhaltermuster muss den oben angezeigten ursprünglichen Pfad der ausführbaren Datei akzeptieren.</value>
   </data>
+  <data name="WildcardPatternMustUseExactFilename" xml:space="preserve">
+    <value>Das Platzhaltermuster muss den exakten Dateinamen der ursprünglichen Datei verwenden.</value>
+  </data>
   <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
     <value>Dieser Speicherort oder Pfadbestandteil lässt keine Platzhalter zu.</value>
   </data>

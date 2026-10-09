@@ -354,6 +354,9 @@ Seçili uygulama dosyası {0} nın parçası olabilir. İşi sağlama almak içi
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>Joker karakter deseni, yukarıda gösterilen özgün yürütülebilir dosya yolunu kabul etmelidir.</value>
   </data>
+  <data name="WildcardPatternMustUseExactFilename" xml:space="preserve">
+    <value>Joker karakter deseni, özgün dosyanın tam dosya adını kullanmalıdır.</value>
+  </data>
   <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
     <value>Bu konum veya yol bileşeni joker karakterlere izin vermez.</value>
   </data>

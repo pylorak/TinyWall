@@ -435,6 +435,9 @@ The selected executable could be part of {0}. To ensure that this application ca
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>The wildcard pattern must accept the original executable path shown above.</value>
   </data>
+  <data name="WildcardPatternMustUseExactFilename" xml:space="preserve">
+    <value>The wildcard pattern must use the exact filename of the original file.</value>
+  </data>
   <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
     <value>This location or path component does not permit wildcards.</value>
   </data>

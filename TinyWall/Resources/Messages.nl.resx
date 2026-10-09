@@ -333,6 +333,9 @@ Het gekozen programma is deel van {0}. Om zeker te zijn dat dit programma zonder
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>Het jokerpatroon moet het hierboven weergegeven oorspronkelijke pad van het uitvoerbare bestand accepteren.</value>
   </data>
+  <data name="WildcardPatternMustUseExactFilename" xml:space="preserve">
+    <value>Het jokerpatroon moet de exacte bestandsnaam van het oorspronkelijke bestand gebruiken.</value>
+  </data>
   <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
     <value>Deze locatie of padcomponent staat geen jokertekens toe.</value>
   </data>

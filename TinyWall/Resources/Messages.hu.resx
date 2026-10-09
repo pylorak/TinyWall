@@ -422,6 +422,9 @@ A kiválasztott fájl a következő része lehet: {0}. Ahhoz hogy az alkalmazás
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>A helyettesítő mintázatnak meg kell felelnie a fent látható eredeti fájl elérési útjának.</value>
   </data>
+  <data name="WildcardPatternMustUseExactFilename" xml:space="preserve">
+    <value>A helyettesítő mintázatnak az eredeti fájl pontos nevét kell használnia.</value>
+  </data>
   <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
     <value>Ez a hely vagy az elérési út egyik eleme nem engedélyezi a helyettesítő karaktereket.</value>
   </data>

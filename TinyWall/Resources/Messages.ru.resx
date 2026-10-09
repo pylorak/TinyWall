@@ -352,6 +352,9 @@
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>Шаблон с подстановочными знаками должен соответствовать исходному пути исполняемого файла, показанному выше.</value>
   </data>
+  <data name="WildcardPatternMustUseExactFilename" xml:space="preserve">
+    <value>Шаблон с подстановочными знаками должен использовать точное имя исходного файла.</value>
+  </data>
   <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
     <value>Это расположение или компонент пути не допускает использования подстановочных знаков.</value>
   </data>

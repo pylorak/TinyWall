@@ -29,6 +29,7 @@ namespace pylorak.TinyWall
             string message = result switch
             {
                 WildcardValidation.ErrorDisallowedFolder => Resources.Messages.WildcardPatternDisallowedFolder,
+                WildcardValidation.ErrorWildcardedFilename => Resources.Messages.WildcardPatternMustUseExactFilename,
                 WildcardValidation.ErrorEmptyParameter
                 or WildcardValidation.ErrorMissingWildcards => Resources.Messages.WildcardPatternMissingWildcard,
                 WildcardValidation.ErrorFileSignatureFail => Resources.Messages.WildcardPatternSignatureRequired,

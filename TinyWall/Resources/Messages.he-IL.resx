@@ -389,6 +389,9 @@
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>תבנית התווים הכלליים חייבת לקבל את נתיב קובץ ההרצה המקורי המוצג למעלה.</value>
   </data>
+  <data name="WildcardPatternMustUseExactFilename" xml:space="preserve">
+    <value>תבנית התווים הכלליים חייבת להשתמש בשם הקובץ המדויק של הקובץ המקורי.</value>
+  </data>
   <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
     <value>מיקום זה או רכיב נתיב זה אינו מתיר תווים כלליים.</value>
   </data>

@@ -354,6 +354,9 @@
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>通配符模式必须接受上方显示的原始可执行文件路径。</value>
   </data>
+  <data name="WildcardPatternMustUseExactFilename" xml:space="preserve">
+    <value>通配符模式必须使用原始文件的确切文件名。</value>
+  </data>
   <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
     <value>此位置或路径的组成部分不允许使用通配符。</value>
   </data>

@@ -394,6 +394,9 @@
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>Шаблон з підстановковими символами має відповідати початковому шляху виконуваного файла, показаному вище.</value>
   </data>
+  <data name="WildcardPatternMustUseExactFilename" xml:space="preserve">
+    <value>Шаблон із символами підстановки має використовувати точну назву початкового файла.</value>
+  </data>
   <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
     <value>Це розташування або компонент шляху не допускає символів підстановки.</value>
   </data>

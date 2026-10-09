@@ -378,6 +378,9 @@ L'eseguibile selezionato potrebbe essere parte di {0}. Per garantire che questa 
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>Il modello con caratteri jolly deve accettare il percorso originale dell'eseguibile mostrato sopra.</value>
   </data>
+  <data name="WildcardPatternMustUseExactFilename" xml:space="preserve">
+    <value>Il modello con caratteri jolly deve usare il nome esatto del file originale.</value>
+  </data>
   <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
     <value>Questa posizione o componente del percorso non consente caratteri jolly.</value>
   </data>

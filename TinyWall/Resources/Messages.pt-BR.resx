@@ -385,6 +385,9 @@ O executável selecionado é parte de {0}. Para que este aplicativo possa ser us
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>O padrão curinga deve aceitar o caminho original do executável exibido acima.</value>
   </data>
+  <data name="WildcardPatternMustUseExactFilename" xml:space="preserve">
+    <value>O padrão curinga deve usar o nome de arquivo exato do arquivo original.</value>
+  </data>
   <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
     <value>Este local ou componente do caminho não permite curingas.</value>
   </data>

@@ -368,6 +368,9 @@ El ejecutable seleccionado podría ser parte de {0}. Para asegurarse que esta ap
   <data name="WildcardPatternMustMatchOriginalPath" xml:space="preserve">
     <value>El patrón con comodines debe aceptar la ruta del ejecutable original mostrada arriba.</value>
   </data>
+  <data name="WildcardPatternMustUseExactFilename" xml:space="preserve">
+    <value>El patrón con comodines debe usar el nombre de archivo exacto del archivo original.</value>
+  </data>
   <data name="WildcardPatternDisallowedFolder" xml:space="preserve">
     <value>Esta ubicación o componente de la ruta no admite comodines.</value>
   </data>
