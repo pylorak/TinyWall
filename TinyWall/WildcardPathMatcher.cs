@@ -380,13 +380,8 @@ namespace pylorak.TinyWall
         {
             Environment.SpecialFolder[] folders =
             {
-                Environment.SpecialFolder.Windows,
-                Environment.SpecialFolder.System,
-                Environment.SpecialFolder.SystemX86,
                 Environment.SpecialFolder.ProgramFiles,
                 Environment.SpecialFolder.ProgramFilesX86,
-                Environment.SpecialFolder.CommonProgramFiles,
-                Environment.SpecialFolder.CommonProgramFilesX86
             };
 
             var roots = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
