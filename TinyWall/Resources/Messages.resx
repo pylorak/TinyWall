@@ -425,10 +425,6 @@ The selected executable could be part of {0}. To ensure that this application ca
   <data name="FilterGroupExternalApp" xml:space="preserve">
     <value>by 3rd party app</value>
   </data>
-  <data name="WildcardPatternValidationTitle" xml:space="preserve">
-    <value>Wildcard pattern validation error</value>
-    <comment>Title of the message box shown when the user enters an invalid wildcard pattern.</comment>
-  </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
     <value>The wildcard pattern cannot be empty and must contain at least one wildcard character (* or ?).</value>
   </data>

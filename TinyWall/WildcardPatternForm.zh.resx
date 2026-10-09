@@ -4,10 +4,11 @@
   <data name="$this.Text" xml:space="preserve"><value>设置通配符模式 - TinyWall</value></data>
   <data name="lblOriginalPath.Text" xml:space="preserve"><value>原始路径：</value></data>
   <data name="lblPattern.Text" xml:space="preserve"><value>通配符模式：</value></data>
-  <data name="txtPattern.ToolTip" xml:space="preserve"><value>对变化的路径片段使用 * 和 ?。为提高安全性，请保持其余路径明确具体。</value></data>
-  <data name="lblSecurityBoundary.Text" xml:space="preserve"><value>通配符可用于受 UAC 保护的 Windows 和 Program Files 路径，或用户配置文件夹中具有可信签名的可执行文件。其他位置请使用确切路径。</value></data>
+  <data name="lblHints.Text" xml:space="preserve"><value>说明：
+- 允许的通配符：?（单个字符）和 *（多个字符）
+- 通配符不能匹配目录分隔符。
+- 位于 Program Files 之外的文件必须经过数字签名，才能与通配符模式匹配。
+- 模式必须是绝对本地文件路径或 UNC 路径。</value></data>
   <data name="btnClearPattern.Text" xml:space="preserve"><value>清除模式</value></data>
-  <data name="btnClearPattern.ToolTip" xml:space="preserve"><value>清除通配符模式并使用可执行文件的原始路径。</value></data>
-  <data name="btnApply.Text" xml:space="preserve"><value>应用模式</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>取消</value></data>
 </root>

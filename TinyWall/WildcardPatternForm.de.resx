@@ -4,10 +4,11 @@
   <data name="$this.Text" xml:space="preserve"><value>Platzhaltermuster festlegen - TinyWall</value></data>
   <data name="lblOriginalPath.Text" xml:space="preserve"><value>Ursprünglicher Pfad:</value></data>
   <data name="lblPattern.Text" xml:space="preserve"><value>Platzhaltermuster:</value></data>
-  <data name="txtPattern.ToolTip" xml:space="preserve"><value>Verwenden Sie * und ? für veränderliche Pfadsegmente. Halten Sie den restlichen Pfad für bessere Sicherheit möglichst konkret.</value></data>
-  <data name="lblSecurityBoundary.Text" xml:space="preserve"><value>Platzhalter sind in UAC-geschützten Windows- und Programme-Pfaden oder für vertrauenswürdig signierte ausführbare Dateien in Benutzerprofilordnern zulässig. Verwenden Sie andernorts einen exakten Pfad.</value></data>
+  <data name="lblHints.Text" xml:space="preserve"><value>Hinweise:
+- Zulässige Platzhalterzeichen sind ? (für ein einzelnes Zeichen) und * (für mehrere Zeichen)
+- Platzhalterzeichen dürfen nicht mit Verzeichnistrennzeichen übereinstimmen.
+- Von Platzhaltermustern erfasste Dateien, die außerhalb der "Programme" Mappe (Program Files) liegen, müssen digital signiert sein.
+- Das Muster muss entweder einen absoluten lokalen Dateipfad oder einen UNC-Pfad darstellen.</value></data>
   <data name="btnClearPattern.Text" xml:space="preserve"><value>Muster löschen</value></data>
-  <data name="btnClearPattern.ToolTip" xml:space="preserve"><value>Platzhaltermuster entfernen und den ursprünglichen Programmpfad verwenden.</value></data>
-  <data name="btnApply.Text" xml:space="preserve"><value>Muster anwenden</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Abbrechen</value></data>
 </root>

@@ -4,10 +4,11 @@
   <data name="$this.Text" xml:space="preserve"><value>Ustaw wzorzec wieloznaczny - TinyWall</value></data>
   <data name="lblOriginalPath.Text" xml:space="preserve"><value>Oryginalna ścieżka:</value></data>
   <data name="lblPattern.Text" xml:space="preserve"><value>Wzorzec wieloznaczny:</value></data>
-  <data name="txtPattern.ToolTip" xml:space="preserve"><value>Użyj * i ? dla zmiennych części ścieżki. Dla lepszego bezpieczeństwa pozostałą część określ dokładnie.</value></data>
-  <data name="lblSecurityBoundary.Text" xml:space="preserve"><value>Symbole wieloznaczne są dozwolone w chronionych przez UAC ścieżkach Windows i Program Files lub dla zaufanych, podpisanych plików wykonywalnych w folderach profilu użytkownika. W innych miejscach użyj dokładnej ścieżki.</value></data>
+  <data name="lblHints.Text" xml:space="preserve"><value>Wskazówki:
+- Dozwolone symbole wieloznaczne: ? (pojedynczy znak) i * (wiele znaków)
+- Symbole wieloznaczne nie mogą pasować do separatorów katalogów.
+- Pliki poza folderem Program Files, które pasują do wzorca z symbolami wieloznacznymi, muszą mieć podpis cyfrowy.
+- Wzorzec musi przedstawiać bezwzględną lokalną ścieżkę pliku albo ścieżkę UNC.</value></data>
   <data name="btnClearPattern.Text" xml:space="preserve"><value>Wyczyść wzorzec</value></data>
-  <data name="btnClearPattern.ToolTip" xml:space="preserve"><value>Usuwa wzorzec z symbolami wieloznacznymi i używa oryginalnej ścieżki pliku wykonywalnego.</value></data>
-  <data name="btnApply.Text" xml:space="preserve"><value>Zastosuj wzorzec</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Anuluj</value></data>
 </root>

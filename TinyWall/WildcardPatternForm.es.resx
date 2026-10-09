@@ -4,10 +4,11 @@
   <data name="$this.Text" xml:space="preserve"><value>Establecer patrón con comodines - TinyWall</value></data>
   <data name="lblOriginalPath.Text" xml:space="preserve"><value>Ruta original:</value></data>
   <data name="lblPattern.Text" xml:space="preserve"><value>Patrón con comodines:</value></data>
-  <data name="txtPattern.ToolTip" xml:space="preserve"><value>Use * y ? para los segmentos variables de la ruta. Mantenga el resto específico para mejorar la seguridad.</value></data>
-  <data name="lblSecurityBoundary.Text" xml:space="preserve"><value>Los comodines se permiten en rutas de Windows y Archivos de programa protegidas por UAC, o para ejecutables con una firma de confianza en carpetas del perfil de usuario. Use una ruta exacta en otras ubicaciones.</value></data>
+  <data name="lblHints.Text" xml:space="preserve"><value>Notas:
+- Caracteres comodín permitidos: ? (un solo carácter) y * (varios caracteres)
+- Los caracteres comodín no pueden coincidir con separadores de directorio.
+- Los archivos fuera de Archivos de programa (Program Files) que coinciden con un patrón de comodines deben estar firmados digitalmente.
+- El patrón debe representar una ruta de archivo local absoluta o una ruta UNC.</value></data>
   <data name="btnClearPattern.Text" xml:space="preserve"><value>Limpiar patrón</value></data>
-  <data name="btnClearPattern.ToolTip" xml:space="preserve"><value>Quita el patrón comodín y usa la ruta original del ejecutable.</value></data>
-  <data name="btnApply.Text" xml:space="preserve"><value>Aplicar patrón</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Cancelar</value></data>
 </root>

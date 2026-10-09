@@ -118,28 +118,34 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="tableLayoutPanel.ColumnCount" type="System.Int32, mscorlib">
-    <value>2</value>
+  <data name="tableForm.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="lblOriginalPath.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Left</value>
+  <data name="tableForm.ColumnCount" type="System.Int32, mscorlib">
+    <value>2</value>
   </data>
   <data name="lblOriginalPath.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="lblOriginalPath.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="lblOriginalPath.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 6</value>
+    <value>3, 0</value>
   </data>
   <data name="lblOriginalPath.Size" type="System.Drawing.Size, System.Drawing">
-    <value>69, 13</value>
+    <value>88, 26</value>
   </data>
   <data name="lblOriginalPath.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
   <data name="lblOriginalPath.Text" xml:space="preserve">
     <value>Original path:</value>
+  </data>
+  <data name="lblOriginalPath.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
   </data>
   <data name="&gt;&gt;lblOriginalPath.Name" xml:space="preserve">
     <value>lblOriginalPath</value>
@@ -148,7 +154,7 @@
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;lblOriginalPath.Parent" xml:space="preserve">
-    <value>tableLayoutPanel</value>
+    <value>tableForm</value>
   </data>
   <data name="&gt;&gt;lblOriginalPath.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -160,10 +166,10 @@
     <value>97, 3</value>
   </data>
   <data name="txtOriginalPath.Size" type="System.Drawing.Size, System.Drawing">
-    <value>480, 20</value>
+    <value>546, 20</value>
   </data>
   <data name="txtOriginalPath.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
+    <value>100</value>
   </data>
   <data name="&gt;&gt;txtOriginalPath.Name" xml:space="preserve">
     <value>txtOriginalPath</value>
@@ -172,28 +178,31 @@
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;txtOriginalPath.Parent" xml:space="preserve">
-    <value>tableLayoutPanel</value>
+    <value>tableForm</value>
   </data>
   <data name="&gt;&gt;txtOriginalPath.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="lblPattern.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Left</value>
-  </data>
   <data name="lblPattern.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <data name="lblPattern.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
   <data name="lblPattern.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 32</value>
+    <value>3, 26</value>
   </data>
   <data name="lblPattern.Size" type="System.Drawing.Size, System.Drawing">
-    <value>88, 13</value>
+    <value>88, 26</value>
   </data>
   <data name="lblPattern.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
   <data name="lblPattern.Text" xml:space="preserve">
     <value>Wildcard pattern:</value>
+  </data>
+  <data name="lblPattern.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
   </data>
   <data name="&gt;&gt;lblPattern.Name" xml:space="preserve">
     <value>lblPattern</value>
@@ -202,7 +211,7 @@
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;lblPattern.Parent" xml:space="preserve">
-    <value>tableLayoutPanel</value>
+    <value>tableForm</value>
   </data>
   <data name="&gt;&gt;lblPattern.ZOrder" xml:space="preserve">
     <value>2</value>
@@ -214,16 +223,10 @@
     <value>97, 29</value>
   </data>
   <data name="txtPattern.Size" type="System.Drawing.Size, System.Drawing">
-    <value>480, 20</value>
+    <value>546, 20</value>
   </data>
   <data name="txtPattern.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <data name="txtPattern.ToolTip" xml:space="preserve">
-    <value>Use * and ? for changing path segments. Keep the rest of the path specific for better security.</value>
+    <value>200</value>
   </data>
   <data name="&gt;&gt;txtPattern.Name" xml:space="preserve">
     <value>txtPattern</value>
@@ -232,58 +235,67 @@
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;txtPattern.Parent" xml:space="preserve">
-    <value>tableLayoutPanel</value>
+    <value>tableForm</value>
   </data>
   <data name="&gt;&gt;txtPattern.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="lblSecurityBoundary.AutoSize" type="System.Boolean, mscorlib">
+  <data name="tableButtons.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="lblSecurityBoundary.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 52</value>
-  </data>
-  <data name="lblSecurityBoundary.MaximumSize" type="System.Drawing.Size, System.Drawing">
-    <value>566, 0</value>
-  </data>
-  <data name="lblSecurityBoundary.Size" type="System.Drawing.Size, System.Drawing">
-    <value>531, 26</value>
-  </data>
-  <data name="lblSecurityBoundary.TabIndex" type="System.Int32, mscorlib">
+  <data name="tableButtons.ColumnCount" type="System.Int32, mscorlib">
     <value>4</value>
   </data>
-  <data name="lblSecurityBoundary.Text" xml:space="preserve">
-    <value>Wildcards are allowed in UAC-protected Windows and Program Files paths, or for trusted signed executables in user-profile folders. Use an exact path elsewhere.</value>
+  <data name="btnOK.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
   </data>
-  <data name="&gt;&gt;lblSecurityBoundary.Name" xml:space="preserve">
-    <value>lblSecurityBoundary</value>
+  <data name="btnOK.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
   </data>
-  <data name="&gt;&gt;lblSecurityBoundary.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="btnOK.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
-  <data name="&gt;&gt;lblSecurityBoundary.Parent" xml:space="preserve">
-    <value>tableLayoutPanel</value>
+  <data name="btnOK.Location" type="System.Drawing.Point, System.Drawing">
+    <value>431, 3</value>
   </data>
-  <data name="&gt;&gt;lblSecurityBoundary.ZOrder" xml:space="preserve">
-    <value>4</value>
+  <data name="btnOK.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 33</value>
   </data>
-  <data name="btnCancel.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="btnOK.TabIndex" type="System.Int32, mscorlib">
+    <value>900</value>
   </data>
-  <data name="btnCancel.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
-    <value>Popup</value>
+  <data name="btnOK.Text" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="&gt;&gt;btnOK.Name" xml:space="preserve">
+    <value>btnOK</value>
+  </data>
+  <data name="&gt;&gt;btnOK.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnOK.Parent" xml:space="preserve">
+    <value>tableButtons</value>
+  </data>
+  <data name="&gt;&gt;btnOK.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="btnCancel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="btnCancel.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
+  </data>
+  <data name="btnCancel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>507, 3</value>
-  </data>
-  <data name="btnCancel.MinimumSize" type="System.Drawing.Size, System.Drawing">
-    <value>64, 25</value>
+    <value>537, 3</value>
   </data>
   <data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 25</value>
+    <value>100, 33</value>
   </data>
   <data name="btnCancel.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+    <value>1000</value>
   </data>
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Cancel</value>
@@ -295,34 +307,28 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnCancel.Parent" xml:space="preserve">
-    <value>buttonPanel</value>
+    <value>tableButtons</value>
   </data>
   <data name="&gt;&gt;btnCancel.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
-  <data name="btnClearPattern.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="btnClearPattern.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
   </data>
-  <data name="btnClearPattern.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
-    <value>Popup</value>
+  <data name="btnClearPattern.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="btnClearPattern.Location" type="System.Drawing.Point, System.Drawing">
-    <value>424, 3</value>
-  </data>
-  <data name="btnClearPattern.MinimumSize" type="System.Drawing.Size, System.Drawing">
-    <value>64, 25</value>
+    <value>3, 3</value>
   </data>
   <data name="btnClearPattern.Size" type="System.Drawing.Size, System.Drawing">
-    <value>77, 25</value>
+    <value>100, 33</value>
   </data>
   <data name="btnClearPattern.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
+    <value>300</value>
   </data>
   <data name="btnClearPattern.Text" xml:space="preserve">
     <value>Clear pattern</value>
-  </data>
-  <data name="btnClearPattern.ToolTip" xml:space="preserve">
-    <value>Remove the wildcard pattern and use the original executable path.</value>
   </data>
   <data name="&gt;&gt;btnClearPattern.Name" xml:space="preserve">
     <value>btnClearPattern</value>
@@ -331,100 +337,101 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnClearPattern.Parent" xml:space="preserve">
-    <value>buttonPanel</value>
+    <value>tableButtons</value>
   </data>
   <data name="&gt;&gt;btnClearPattern.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="btnApply.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="btnApply.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
-    <value>Popup</value>
-  </data>
-  <data name="btnApply.Location" type="System.Drawing.Point, System.Drawing">
-    <value>353, 3</value>
-  </data>
-  <data name="btnApply.MinimumSize" type="System.Drawing.Size, System.Drawing">
-    <value>64, 25</value>
-  </data>
-  <data name="btnApply.Size" type="System.Drawing.Size, System.Drawing">
-    <value>65, 25</value>
-  </data>
-  <data name="btnApply.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="btnApply.Text" xml:space="preserve">
-    <value>Apply pattern</value>
-  </data>
-  <data name="&gt;&gt;btnApply.Name" xml:space="preserve">
-    <value>btnApply</value>
-  </data>
-  <data name="&gt;&gt;btnApply.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btnApply.Parent" xml:space="preserve">
-    <value>buttonPanel</value>
-  </data>
-  <data name="&gt;&gt;btnApply.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="buttonPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Bottom</value>
-  </data>
-  <data name="buttonPanel.FlowDirection" type="System.Windows.Forms.FlowDirection, System.Windows.Forms">
-    <value>RightToLeft</value>
-  </data>
-  <data name="buttonPanel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 124</value>
-  </data>
-  <data name="buttonPanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>574, 35</value>
-  </data>
-  <data name="buttonPanel.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;buttonPanel.Name" xml:space="preserve">
-    <value>buttonPanel</value>
-  </data>
-  <data name="&gt;&gt;buttonPanel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.FlowLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonPanel.Parent" xml:space="preserve">
-    <value>tableLayoutPanel</value>
-  </data>
-  <data name="&gt;&gt;buttonPanel.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="tableLayoutPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+  <data name="tableButtons.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Fill</value>
   </data>
-  <data name="tableLayoutPanel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>10, 10</value>
+  <data name="tableButtons.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 135</value>
   </data>
-  <data name="tableLayoutPanel.RowCount" type="System.Int32, mscorlib">
-    <value>4</value>
+  <data name="tableButtons.RowCount" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
-  <data name="tableLayoutPanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>580, 162</value>
+  <data name="tableButtons.Size" type="System.Drawing.Size, System.Drawing">
+    <value>640, 39</value>
   </data>
-  <data name="tableLayoutPanel.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
+  <data name="tableButtons.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
   </data>
-  <data name="&gt;&gt;tableLayoutPanel.Name" xml:space="preserve">
-    <value>tableLayoutPanel</value>
+  <data name="&gt;&gt;tableButtons.Name" xml:space="preserve">
+    <value>tableButtons</value>
   </data>
-  <data name="&gt;&gt;tableLayoutPanel.Type" xml:space="preserve">
+  <data name="&gt;&gt;tableButtons.Type" xml:space="preserve">
     <value>System.Windows.Forms.TableLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;tableLayoutPanel.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="&gt;&gt;tableButtons.Parent" xml:space="preserve">
+    <value>tableForm</value>
   </data>
-  <data name="&gt;&gt;tableLayoutPanel.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;tableButtons.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="tableButtons.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
+    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="btnOK" Row="0" RowSpan="1" Column="2" ColumnSpan="1" /&gt;&lt;Control Name="btnCancel" Row="0" RowSpan="1" Column="3" ColumnSpan="1" /&gt;&lt;Control Name="btnClearPattern" Row="0" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;/Controls&gt;&lt;Columns Styles="AutoSize,0,Percent,100,AutoSize,0,AutoSize,0" /&gt;&lt;Rows Styles="AutoSize,0,Absolute,39" /&gt;&lt;/TableLayoutSettings&gt;</value>
+  </data>
+  <data name="lblHints.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblHints.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 62</value>
+  </data>
+  <data name="lblHints.Size" type="System.Drawing.Size, System.Drawing">
+    <value>402, 65</value>
+  </data>
+  <data name="lblHints.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="lblHints.Text" xml:space="preserve">
+    <value>Hints:
+- Allowed wildcard symbols: ? (for single character), * (for multiple characters)
+- Wildcard symbols cannot match directory separators.
+- Wildcarded files outside of Program Files need to be digitally signed to be matched.
+- The patterns must represent either an absolute local file path or a UNC path.</value>
+  </data>
+  <data name="&gt;&gt;lblHints.Name" xml:space="preserve">
+    <value>lblHints</value>
+  </data>
+  <data name="&gt;&gt;lblHints.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblHints.Parent" xml:space="preserve">
+    <value>tableForm</value>
+  </data>
+  <data name="&gt;&gt;lblHints.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="tableForm.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="tableForm.Location" type="System.Drawing.Point, System.Drawing">
+    <value>10, 10</value>
+  </data>
+  <data name="tableForm.RowCount" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="tableForm.Size" type="System.Drawing.Size, System.Drawing">
+    <value>646, 177</value>
+  </data>
+  <data name="tableForm.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="tableLayoutPanel.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
-    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="lblOriginalPath" Row="0" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="txtOriginalPath" Row="0" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="lblPattern" Row="1" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="txtPattern" Row="1" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="lblSecurityBoundary" Row="2" RowSpan="1" Column="0" ColumnSpan="2" /&gt;&lt;Control Name="buttonPanel" Row="3" RowSpan="1" Column="0" ColumnSpan="2" /&gt;&lt;/Controls&gt;&lt;Columns Styles="AutoSize,0,Percent,100" /&gt;&lt;Rows Styles="AutoSize,0,AutoSize,0,AutoSize,0,Percent,100" /&gt;&lt;/TableLayoutSettings&gt;</value>
+  <data name="&gt;&gt;tableForm.Name" xml:space="preserve">
+    <value>tableForm</value>
+  </data>
+  <data name="&gt;&gt;tableForm.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TableLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tableForm.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;tableForm.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="tableForm.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
+    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="lblOriginalPath" Row="0" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="txtOriginalPath" Row="0" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="lblPattern" Row="1" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="txtPattern" Row="1" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="tableButtons" Row="6" RowSpan="1" Column="0" ColumnSpan="2" /&gt;&lt;Control Name="lblHints" Row="3" RowSpan="1" Column="0" ColumnSpan="2" /&gt;&lt;/Controls&gt;&lt;Columns Styles="AutoSize,0,Percent,100" /&gt;&lt;Rows Styles="AutoSize,0,AutoSize,0,Absolute,10,AutoSize,0,Absolute,20,Percent,100,AutoSize,0" /&gt;&lt;/TableLayoutSettings&gt;</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -432,8 +439,11 @@
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 13</value>
   </data>
+  <data name="$this.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>600, 182</value>
+    <value>666, 197</value>
   </data>
   <data name="$this.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>10, 10, 10, 10</value>
@@ -443,12 +453,6 @@
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Set Wildcard Pattern - TinyWall</value>
-  </data>
-  <data name="&gt;&gt;toolTip.Name" xml:space="preserve">
-    <value>toolTip</value>
-  </data>
-  <data name="&gt;&gt;toolTip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>WildcardPatternForm</value>

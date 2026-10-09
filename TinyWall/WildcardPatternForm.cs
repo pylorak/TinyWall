@@ -18,9 +18,12 @@ namespace pylorak.TinyWall
             if (Utils.IsDarkModeActive(ActiveConfig.Controller))
                 this.DarkMode = new(this, false) { ColorMode = DarkModeCS.DisplayMode.DarkMode };
 
+            this.Icon = Resources.Icons.firewall;
+            this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
+            this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
+
             txtOriginalPath.Text = executablePath;
             txtPattern.Text = string.IsNullOrWhiteSpace(currentPattern) ? executablePath : currentPattern;
-            txtPattern.SelectAll();
         }
 
         private void DisplayValidationMsgBox(WildcardValidation result)
@@ -38,36 +41,48 @@ namespace pylorak.TinyWall
                 WildcardValidation.ErrorHasRelativeComponents
                 or WildcardValidation.ErrorInvalidChars
                 or WildcardValidation.ErrorNotFullyQualified => Resources.Messages.WildcardPatternMustBeAbsolutePath,
-                WildcardValidation.Success => "This exists for exhaustiveness. This is not a message you should see XD",
+                WildcardValidation.Success => throw new InvalidOperationException("Unreachable condition, listed for exhaustiveness.")
             };
 #pragma warning restore CS8524 // The switch expression does not handle unnamed enum values.
 
             MessageBox.Show(
                 this,
                 message,
-                Resources.Messages.WildcardPatternValidationTitle,
+                Resources.Messages.TinyWall,
                 MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
-            txtPattern.Focus();
-            txtPattern.SelectAll();
+                MessageBoxIcon.Exclamation);
         }
 
-        private void btnApply_Click(object sender, EventArgs e)
+        private bool ValidateInputs(string pattern)
         {
             bool? sigVerifyCache = null;
-            var pattern = txtPattern.Text.Trim().Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 
             var validationResult = WildcardPathMatcher.IsPatternSyntaxValid(pattern);
             if (WildcardValidation.Success != validationResult)
             {
                 DisplayValidationMsgBox(validationResult);
-                return;
+                return false;
             }
 
             validationResult = WildcardPathMatcher.MatchPatternToPath(pattern, txtOriginalPath.Text, ref sigVerifyCache);
             if (WildcardValidation.Success != validationResult)
             {
                 DisplayValidationMsgBox(validationResult);
+                return false;
+            }
+
+            return true;
+        }
+
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            this.Enabled = false;
+
+            var pattern = txtPattern.Text.Trim().Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            if (!ValidateInputs(pattern))
+            {
+                this.Enabled = true;
+                txtPattern.Focus();
                 return;
             }
 
@@ -81,5 +96,10 @@ namespace pylorak.TinyWall
             DialogResult = DialogResult.OK;
         }
 
+        private void WildcardPatternForm_Shown(object sender, EventArgs e)
+        {
+            txtPattern.SelectAll();
+            txtPattern.Focus();
+        }
     }
 }

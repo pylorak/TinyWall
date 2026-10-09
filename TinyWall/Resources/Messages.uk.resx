@@ -385,9 +385,6 @@
   <data name="SubjectTypeUwpApp" xml:space="preserve">
     <value>UWP Пакет</value>
   </data>
-  <data name="WildcardPatternValidationTitle" xml:space="preserve">
-    <value>Недійсний шаблон із символами підстановки</value>
-  </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
     <value>Шаблон із символами підстановки не може бути порожнім і має містити принаймні один символ підстановки (* або ?).</value>
   </data>

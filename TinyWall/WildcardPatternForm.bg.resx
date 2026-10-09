@@ -4,10 +4,11 @@
   <data name="$this.Text" xml:space="preserve"><value>Задаване на шаблон със заместващи знаци - TinyWall</value></data>
   <data name="lblOriginalPath.Text" xml:space="preserve"><value>Оригинален път:</value></data>
   <data name="lblPattern.Text" xml:space="preserve"><value>Шаблон със заместващи знаци:</value></data>
-  <data name="txtPattern.ToolTip" xml:space="preserve"><value>Използвайте * и ? за променящите се части на пътя. Оставете останалата част конкретна за по-добра сигурност.</value></data>
-  <data name="lblSecurityBoundary.Text" xml:space="preserve"><value>Заместващите знаци са разрешени в защитени от UAC пътища на Windows и Program Files или за изпълними файлове с надежден цифров подпис в папките на потребителския профил. На други места използвайте точен път.</value></data>
+  <data name="lblHints.Text" xml:space="preserve"><value>Забележки:
+- Позволени заместващи знаци: ? (един знак) и * (няколко знака)
+- Заместващите знаци не могат да съответстват на разделителите на директории.
+- Файловете извън Program Files, които съответстват на шаблон с заместващи знаци, трябва да бъдат цифрово подписани.
+- Шаблонът трябва да представлява абсолютен локален път до файл или UNC път.</value></data>
   <data name="btnClearPattern.Text" xml:space="preserve"><value>Изчисти шаблона</value></data>
-  <data name="btnClearPattern.ToolTip" xml:space="preserve"><value>Премахва шаблона със заместващи символи и използва първоначалния път на изпълнимия файл.</value></data>
-  <data name="btnApply.Text" xml:space="preserve"><value>Приложи шаблона</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Отказ</value></data>
 </root>

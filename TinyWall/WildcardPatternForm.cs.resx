@@ -4,10 +4,11 @@
   <data name="$this.Text" xml:space="preserve"><value>Nastavení vzoru se zástupnými znaky - TinyWall</value></data>
   <data name="lblOriginalPath.Text" xml:space="preserve"><value>Původní cesta:</value></data>
   <data name="lblPattern.Text" xml:space="preserve"><value>Vzor se zástupnými znaky:</value></data>
-  <data name="txtPattern.ToolTip" xml:space="preserve"><value>Použijte * a ? pro proměnlivé části cesty. Zbytek cesty ponechte konkrétní pro lepší zabezpečení.</value></data>
-  <data name="lblSecurityBoundary.Text" xml:space="preserve"><value>Zástupné znaky jsou povoleny v cestách Windows a Program Files chráněných nástrojem UAC nebo pro důvěryhodně podepsané spustitelné soubory ve složkách uživatelského profilu. Jinde použijte přesnou cestu.</value></data>
+  <data name="lblHints.Text" xml:space="preserve"><value>Poznámky:
+- Povolené zástupné znaky: ? (jeden znak) a * (více znaků)
+- Zástupné znaky nemohou odpovídat oddělovačům adresářů.
+- Soubory mimo složku Program Files, které odpovídají vzoru se zástupnými znaky, musí být digitálně podepsané.
+- Vzor musí představovat buď absolutní místní cestu k souboru, nebo cestu UNC.</value></data>
   <data name="btnClearPattern.Text" xml:space="preserve"><value>Vymazat vzor</value></data>
-  <data name="btnClearPattern.ToolTip" xml:space="preserve"><value>Odebere vzor se zástupnými znaky a použije původní cestu ke spustitelnému souboru.</value></data>
-  <data name="btnApply.Text" xml:space="preserve"><value>Použít vzor</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Zrušit</value></data>
 </root>

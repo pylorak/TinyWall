@@ -378,9 +378,6 @@ Die ausgewählte Datei kann zu {0} gehören. Um sicherzustellen, dass die Anwend
   <data name="FilterGroupExternalApp" xml:space="preserve">
     <value>durch externe Anwendung</value>
   </data>
-  <data name="WildcardPatternValidationTitle" xml:space="preserve">
-    <value>Ungültiges Platzhaltermuster</value>
-  </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
     <value>Das Platzhaltermuster darf nicht leer sein und muss mindestens ein Platzhalterzeichen (* oder ?) enthalten.</value>
   </data>

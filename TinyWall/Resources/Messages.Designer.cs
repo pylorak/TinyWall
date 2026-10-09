@@ -910,15 +910,6 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wildcard pattern validation error.
-        /// </summary>
-        internal static string WildcardPatternValidationTitle {
-            get {
-                return ResourceManager.GetString("WildcardPatternValidationTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} hour.
         /// </summary>
         internal static string XHour {

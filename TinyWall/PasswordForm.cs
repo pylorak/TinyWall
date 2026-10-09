@@ -24,6 +24,7 @@ namespace pylorak.TinyWall
                 // Being unable to activate dark mode isn't critical and really no errors that happen here should prevent the
                 // form from working due to the possible installer context, so this is more robust.
             }
+            this.Icon = Resources.Icons.firewall;
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
         }

@@ -348,9 +348,6 @@ Wybrany plik wykonywalny może być częścią {0}. Aby upewnić się, że ten p
   <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>Nie można zastosować ustawień zapory z powodu błędu wewnętrznego.</value>
   </data>
-  <data name="WildcardPatternValidationTitle" xml:space="preserve">
-    <value>Nieprawidłowy wzorzec wieloznaczny</value>
-  </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
     <value>Wzorzec wieloznaczny nie może być pusty i musi zawierać co najmniej jeden symbol wieloznaczny (* lub ?).</value>
   </data>

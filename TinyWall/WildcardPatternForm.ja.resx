@@ -4,10 +4,11 @@
   <data name="$this.Text" xml:space="preserve"><value>ワイルドカード パターンの設定 - TinyWall</value></data>
   <data name="lblOriginalPath.Text" xml:space="preserve"><value>元のパス:</value></data>
   <data name="lblPattern.Text" xml:space="preserve"><value>ワイルドカード パターン:</value></data>
-  <data name="txtPattern.ToolTip" xml:space="preserve"><value>変化するパス部分には * と ? を使用してください。安全性のため、残りのパスは具体的に指定してください。</value></data>
-  <data name="lblSecurityBoundary.Text" xml:space="preserve"><value>ワイルドカードは、UAC で保護された Windows および Program Files のパス、またはユーザー プロファイル フォルダー内の信頼できる署名付き実行ファイルに使用できます。その他の場所では完全なパスを使用してください。</value></data>
+  <data name="lblHints.Text" xml:space="preserve"><value>ヒント：
+- 使用できるワイルドカード：? (任意の 1 文字)、* (複数の文字)
+- ワイルドカードはディレクトリ区切り文字と一致できません。
+- Program Files の外にあるファイルがワイルドカード パターンに一致するには、デジタル署名が必要です。
+- パターンは、絶対ローカル ファイル パスまたは UNC パスのどちらかを表す必要があります。</value></data>
   <data name="btnClearPattern.Text" xml:space="preserve"><value>パターンをクリア</value></data>
-  <data name="btnClearPattern.ToolTip" xml:space="preserve"><value>ワイルドカード パターンを削除し、実行ファイルの元のパスを使用します。</value></data>
-  <data name="btnApply.Text" xml:space="preserve"><value>パターンを適用</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>キャンセル</value></data>
 </root>

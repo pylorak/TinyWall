@@ -4,10 +4,11 @@
   <data name="$this.Text" xml:space="preserve"><value>Définir le motif avec jokers - TinyWall</value></data>
   <data name="lblOriginalPath.Text" xml:space="preserve"><value>Chemin d’origine :</value></data>
   <data name="lblPattern.Text" xml:space="preserve"><value>Motif avec jokers :</value></data>
-  <data name="txtPattern.ToolTip" xml:space="preserve"><value>Utilisez * et ? pour les segments variables du chemin. Gardez le reste précis pour une meilleure sécurité.</value></data>
-  <data name="lblSecurityBoundary.Text" xml:space="preserve"><value>Les caractères génériques sont autorisés dans les chemins Windows et Program Files protégés par l’UAC, ou pour les exécutables signés de confiance dans les dossiers de profil utilisateur. Utilisez un chemin exact ailleurs.</value></data>
+  <data name="lblHints.Text" xml:space="preserve"><value>Remarques :
+- Caractères génériques autorisés : ? (pour un seul caractère) et * (pour plusieurs caractères)
+- Les caractères génériques ne peuvent pas correspondre aux séparateurs de répertoires.
+- Les fichiers en dehors de Program Files qui correspondent à un modèle avec caractères génériques doivent être signés numériquement.
+- Le modèle doit représenter un chemin de fichier local absolu ou un chemin UNC.</value></data>
   <data name="btnClearPattern.Text" xml:space="preserve"><value>Effacer le motif</value></data>
-  <data name="btnClearPattern.ToolTip" xml:space="preserve"><value>Supprime le motif générique et utilise le chemin d’origine de l’exécutable.</value></data>
-  <data name="btnApply.Text" xml:space="preserve"><value>Appliquer le motif</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Annuler</value></data>
 </root>

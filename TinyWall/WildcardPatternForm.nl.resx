@@ -4,10 +4,11 @@
   <data name="$this.Text" xml:space="preserve"><value>Jokerpatroon instellen - TinyWall</value></data>
   <data name="lblOriginalPath.Text" xml:space="preserve"><value>Oorspronkelijk pad:</value></data>
   <data name="lblPattern.Text" xml:space="preserve"><value>Jokerpatroon:</value></data>
-  <data name="txtPattern.ToolTip" xml:space="preserve"><value>Gebruik * en ? voor veranderlijke padsegmenten. Houd de rest van het pad specifiek voor betere beveiliging.</value></data>
-  <data name="lblSecurityBoundary.Text" xml:space="preserve"><value>Jokertekens zijn toegestaan in door UAC beveiligde Windows- en Program Files-paden of voor betrouwbaar ondertekende uitvoerbare bestanden in gebruikersprofielmappen. Gebruik elders een exact pad.</value></data>
+  <data name="lblHints.Text" xml:space="preserve"><value>Tips:
+- Toegestane jokertekens: ? (één teken) en * (meerdere tekens)
+- Jokertekens kunnen niet overeenkomen met mapscheidingstekens.
+- Bestanden buiten Program Files die overeenkomen met een jokertekenpatroon moeten digitaal ondertekend zijn.
+- Het patroon moet een absoluut lokaal bestandspad of een UNC-pad voorstellen.</value></data>
   <data name="btnClearPattern.Text" xml:space="preserve"><value>Patroon wissen</value></data>
-  <data name="btnClearPattern.ToolTip" xml:space="preserve"><value>Verwijdert het jokerpatroon en gebruikt het oorspronkelijke pad van het uitvoerbare bestand.</value></data>
-  <data name="btnApply.Text" xml:space="preserve"><value>Patroon toepassen</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Annuleren</value></data>
 </root>

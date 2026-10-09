@@ -367,9 +367,6 @@
   <data name="CouldNotApplySettingsInternalError" xml:space="preserve">
     <value>내부 오류로 인해 방화벽 설정을 적용할 수 없습니다.</value>
   </data>
-  <data name="WildcardPatternValidationTitle" xml:space="preserve">
-    <value>잘못된 와일드카드 패턴</value>
-  </data>
   <data name="WildcardPatternMissingWildcard" xml:space="preserve">
     <value>와일드카드 패턴은 비워 둘 수 없으며 하나 이상의 와일드카드 문자(* 또는 ?)를 포함해야 합니다.</value>
   </data>
