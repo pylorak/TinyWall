@@ -2,6 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Security;
+using System.Text;
 
 namespace pylorak.TinyWall
 {
@@ -21,8 +24,17 @@ namespace pylorak.TinyWall
 
     public static class WildcardPathMatcher
     {
+        [SuppressUnmanagedCodeSecurity]
+        private static class SafeNativeMethods
+        {
+            [DllImport("userenv", SetLastError = true, CharSet = CharSet.Unicode)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool GetProfilesDirectory(StringBuilder lpProfileDir, ref uint lpcchSize);
+        }
+
         private static readonly char[] WildcardCharacters = { '*', '?' };
         private static readonly IReadOnlyCollection<string> ProtectedPathRoots = BuildProtectedPathRoots();
+        private static readonly string? UserProfileDirectoryRoot = GetUserProfileDirectoryRoot();
 
         public static WildcardValidation IsPatternSyntaxValid(string pattern)
         {
@@ -51,6 +63,10 @@ namespace pylorak.TinyWall
             else if (pattern.IndexOfAny(WildcardCharacters) == -1)
             {
                 return WildcardValidation.ErrorMissingWildcards;
+            }
+            else if (HasWildcardInUserProfileNameComponent(pattern))
+            {
+                return WildcardValidation.ErrorDisallowedFolder;
             }
 
             return WildcardValidation.Success;
@@ -287,6 +303,77 @@ namespace pylorak.TinyWall
             }
 
             return patternIndex == wildcardPattern.Length;
+        }
+
+        // Returns true if the pattern would wildcard a user's profile directory (such as C:\Users\<name>)
+        private static bool HasWildcardInUserProfileNameComponent(string pattern)
+        {
+            static bool TryGetNextSegment(string path, ref int index, out string segment)
+            {
+                while ((index < path.Length) && IsDirectorySeparator(path[index]))
+                    index++;
+
+                int start = index;
+                while ((index < path.Length) && !IsDirectorySeparator(path[index]))
+                    index++;
+
+                if (start == index)
+                {
+                    segment = string.Empty;
+                    return false;
+                }
+
+                segment = path.Substring(start, index - start);
+                return true;
+            }
+
+            string? profileRoot = UserProfileDirectoryRoot;
+            if (Utils.IsNullOrEmpty(profileRoot))
+                return false;
+
+            // Walk the profiles root and the pattern segment-by-segment
+            int rootIndex = 0;
+            int patternIndex = 0;
+            while (TryGetNextSegment(profileRoot, ref rootIndex, out string rootSegment))
+            {
+                if (!TryGetNextSegment(pattern, ref patternIndex, out string patternSegment))
+                {
+                    // The pattern does not reach below the profiles root
+                    return false;
+                }
+
+                if (patternSegment.IndexOfAny(WildcardCharacters) >= 0)
+                {
+                    if (!Matches(patternSegment, rootSegment))
+                        return false;
+                }
+                else if (!string.Equals(patternSegment, rootSegment, StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+
+            // The next pattern segment is at the position of the user profile name
+            if (!TryGetNextSegment(pattern, ref patternIndex, out string nameSegment))
+                return false;
+
+            return nameSegment.IndexOfAny(WildcardCharacters) >= 0;
+        }
+
+        // The directory that contains the user profile directories of all local users
+        // (e.g. C:\Users), or null if it could not be determined.
+        private static string? GetUserProfileDirectoryRoot()
+        {
+            var profileDir = new StringBuilder(260);
+            uint size = (uint)profileDir.Capacity;
+            if (!SafeNativeMethods.GetProfilesDirectory(profileDir, ref size))
+                return null;
+
+            string path = profileDir.ToString();
+            if (Utils.IsNullOrEmpty(path) || !Utils.IsPathFullyQualified(path))
+                return null;
+
+            return path;
         }
 
         private static IReadOnlyCollection<string> BuildProtectedPathRoots()
