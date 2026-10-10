@@ -191,5 +191,6 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Choisir fichier...</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Motif avec jokers...</value></data>
+  <data name="chkEnableWildcard.Text" xml:space="preserve"><value>Ajuster automatiquement le chemin lors des mises à jour</value></data>
+  <data name="linkEditWildcard.Text" xml:space="preserve"><value>Motif avec jokers...</value></data>
 </root>

@@ -198,5 +198,6 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Eine Datei auswählen...</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Platzhaltermuster...</value></data>
+  <data name="chkEnableWildcard.Text" xml:space="preserve"><value>Pfad bei App-Updates automatisch anpassen</value></data>
+  <data name="linkEditWildcard.Text" xml:space="preserve"><value>Platzhaltermuster...</value></data>
 </root>

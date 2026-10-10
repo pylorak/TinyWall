@@ -9,6 +9,8 @@ namespace pylorak.TinyWall
     {
         private readonly DarkModeCS? DarkMode;
 
+        private bool? SignatureCheckCache;
+
         internal string? ResultPattern { get; private set; }
 
         internal WildcardPatternForm(string executablePath, string? currentPattern)
@@ -23,17 +25,7 @@ namespace pylorak.TinyWall
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
 
             txtOriginalPath.Text = executablePath;
-
-            if (Utils.IsNullOrEmpty(currentPattern))
-            {
-                txtPattern.Text = VersionDetector.TryFindVersionSpan(executablePath, out var start, out var len)
-                    ? executablePath.Remove(start, len).Insert(start, "*")
-                    : executablePath;
-            }
-            else
-            {
-                txtPattern.Text = executablePath;
-            }
+            txtPattern.Text = currentPattern ?? executablePath;
         }
 
         private void DisplayValidationMsgBox(WildcardValidation result)
@@ -65,8 +57,6 @@ namespace pylorak.TinyWall
 
         private bool ValidateInputs(string pattern)
         {
-            bool? sigVerifyCache = null;
-
             var validationResult = WildcardPathMatcher.IsPatternSyntaxValid(pattern);
             if (WildcardValidation.Success != validationResult)
             {
@@ -74,7 +64,7 @@ namespace pylorak.TinyWall
                 return false;
             }
 
-            validationResult = WildcardPathMatcher.MatchPatternToPath(pattern, txtOriginalPath.Text, ref sigVerifyCache);
+            validationResult = WildcardPathMatcher.CheckPatternWithFile(pattern, txtOriginalPath.Text, ref SignatureCheckCache);
             if (WildcardValidation.Success != validationResult)
             {
                 DisplayValidationMsgBox(validationResult);
@@ -97,12 +87,6 @@ namespace pylorak.TinyWall
             }
 
             ResultPattern = pattern;
-            DialogResult = DialogResult.OK;
-        }
-
-        private void btnClearPattern_Click(object sender, EventArgs e)
-        {
-            ResultPattern = null;
             DialogResult = DialogResult.OK;
         }
 

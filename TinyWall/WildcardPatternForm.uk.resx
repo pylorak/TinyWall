@@ -9,6 +9,5 @@
 - Символи підстановки не можуть відповідати розділювачам каталогів.
 - Файли за межами Program Files, що відповідають шаблонам із символами підстановки, повинні мати цифровий підпис.
 - Шаблон повинен бути абсолютним локальним шляхом до файлу або шляхом UNC.</value></data>
-  <data name="btnClearPattern.Text" xml:space="preserve"><value>Очистити шаблон</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Скасувати</value></data>
 </root>

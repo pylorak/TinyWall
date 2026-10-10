@@ -9,6 +9,5 @@
 - A helyettesítő karakterek nem felelhetnek meg könyvtárelválasztó jeleknek.
 - A Programfájlok (Program Files) mappán kívül megfeleltett fájloknak digitális aláírással kell rendelkezniük.
 - A mintázatnak abszolút helyi fájlútvonalat vagy UNC-útvonalat kell megadnia.</value></data>
-  <data name="btnClearPattern.Text" xml:space="preserve"><value>Mintázat törlése</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Mégse</value></data>
 </root>

@@ -9,6 +9,5 @@
 - Заместващите знаци не могат да съответстват на разделителите на директории.
 - Файловете извън Program Files, които съответстват на шаблон с заместващи знаци, трябва да бъдат цифрово подписани.
 - Шаблонът трябва да представлява абсолютен локален път до файл или UNC път.</value></data>
-  <data name="btnClearPattern.Text" xml:space="preserve"><value>Изчисти шаблона</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Отказ</value></data>
 </root>

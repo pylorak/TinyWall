@@ -9,6 +9,5 @@
 - Symbole wieloznaczne nie mogą pasować do separatorów katalogów.
 - Pliki poza folderem Program Files, które pasują do wzorca z symbolami wieloznacznymi, muszą mieć podpis cyfrowy.
 - Wzorzec musi przedstawiać bezwzględną lokalną ścieżkę pliku albo ścieżkę UNC.</value></data>
-  <data name="btnClearPattern.Text" xml:space="preserve"><value>Wyczyść wzorzec</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Anuluj</value></data>
 </root>

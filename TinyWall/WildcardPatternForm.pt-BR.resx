@@ -9,6 +9,5 @@
 - Os caracteres curinga não podem corresponder a separadores de diretório.
 - Arquivos fora de Program Files que correspondam a um padrão com curingas precisam estar assinados digitalmente.
 - O padrão deve representar um caminho de arquivo local absoluto ou um caminho UNC.</value></data>
-  <data name="btnClearPattern.Text" xml:space="preserve"><value>Limpar padrão</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Cancelar</value></data>
 </root>

@@ -25,7 +25,6 @@
             this.tableButtons = new System.Windows.Forms.TableLayoutPanel();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.btnClearPattern = new System.Windows.Forms.Button();
             this.lblHints = new System.Windows.Forms.Label();
             this.tableForm.SuspendLayout();
             this.tableButtons.SuspendLayout();
@@ -70,9 +69,8 @@
             // 
             resources.ApplyResources(this.tableButtons, "tableButtons");
             this.tableForm.SetColumnSpan(this.tableButtons, 2);
-            this.tableButtons.Controls.Add(this.btnOK, 2, 0);
-            this.tableButtons.Controls.Add(this.btnCancel, 3, 0);
-            this.tableButtons.Controls.Add(this.btnClearPattern, 0, 0);
+            this.tableButtons.Controls.Add(this.btnOK, 1, 0);
+            this.tableButtons.Controls.Add(this.btnCancel, 2, 0);
             this.tableButtons.Name = "tableButtons";
             // 
             // btnOK
@@ -88,13 +86,6 @@
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            // 
-            // btnClearPattern
-            // 
-            resources.ApplyResources(this.btnClearPattern, "btnClearPattern");
-            this.btnClearPattern.Name = "btnClearPattern";
-            this.btnClearPattern.UseVisualStyleBackColor = true;
-            this.btnClearPattern.Click += new System.EventHandler(this.btnClearPattern_Click);
             // 
             // lblHints
             // 
@@ -132,6 +123,5 @@
         private System.Windows.Forms.TableLayoutPanel tableButtons;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnClearPattern;
     }
 }

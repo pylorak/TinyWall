@@ -1822,7 +1822,7 @@ namespace pylorak.TinyWall
                 if (template.Subject is not ExecutableSubject)
                     continue;
 
-                if (WildcardValidation.Success != WildcardPathMatcher.MatchPatternToPath(template.WildcardPattern, executablePath, ref sigVerifyCache))
+                if (WildcardValidation.Success != WildcardPathMatcher.CheckPatternWithFile(template.WildcardPattern, executablePath, ref sigVerifyCache))
                     continue;
 
                 if (bestMatch == null)

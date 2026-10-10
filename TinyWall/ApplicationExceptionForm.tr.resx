@@ -189,5 +189,6 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Dosyaya gözat...</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Joker karakter deseni...</value></data>
+  <data name="chkEnableWildcard.Text" xml:space="preserve"><value>Uygulama güncellemelerinde yolu otomatik ayarla</value></data>
+  <data name="linkEditWildcard.Text" xml:space="preserve"><value>Joker karakter deseni...</value></data>
 </root>

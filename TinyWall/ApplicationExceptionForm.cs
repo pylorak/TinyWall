@@ -3,6 +3,7 @@ using Microsoft.Samples.TaskDialog;
 using pylorak.Windows;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Windows.Forms;
@@ -171,31 +172,35 @@ namespace pylorak.TinyWall
                 case SubjectType.Invalid:
                     txtAppPath.Text = string.Empty;
                     txtSrvName.Text = string.Empty;
-                    btnWildcardPattern.Enabled = false;
+                    flowWildcardCheckbox.Enabled = false;
                     break;
                 case SubjectType.Global:
                     txtAppPath.Text = Resources.Messages.AllApplications;
                     txtSrvName.Text = Resources.Messages.SubjectTypeGlobal;
-                    btnWildcardPattern.Enabled = false;
+                    flowWildcardCheckbox.Enabled = false;
                     break;
                 case SubjectType.Executable:
                     txtAppPath.Text = exeSubj!.ExecutablePath;
                     txtSrvName.Text = Resources.Messages.SubjectTypeExecutable;
-                    btnWildcardPattern.Enabled = true;
+                    flowWildcardCheckbox.Enabled = true;
                     break;
                 case SubjectType.Service:
                     txtAppPath.Text = srvSubj!.ServiceName + " (" + srvSubj.ExecutablePath + ")";
                     txtSrvName.Text = Resources.Messages.SubjectTypeService;
-                    btnWildcardPattern.Enabled = false;
+                    flowWildcardCheckbox.Enabled = false;
                     break;
                 case SubjectType.AppContainer:
                     txtAppPath.Text = uwpSubj!.DisplayName;
                     txtSrvName.Text = Resources.Messages.SubjectTypeUwpApp;
-                    btnWildcardPattern.Enabled = false;
+                    flowWildcardCheckbox.Enabled = false;
                     break;
                 default:
                     throw new NotImplementedException();
             }
+            chkEnableWildcard.Checked = flowWildcardCheckbox.Enabled
+                ? !Utils.IsNullOrEmpty(TmpExceptionSettings[0].WildcardPattern)
+                : false;
+            linkEditWildcard.Enabled = chkEnableWildcard.Checked;
 
             // Update rule/policy fields
 
@@ -416,32 +421,14 @@ namespace pylorak.TinyWall
                 TmpExceptionSettings = exceptions;
             }
 
+            foreach (var ex in TmpExceptionSettings)
+                ex.WildcardPattern = null;
+
             UpdateUI();
 
             if (TmpExceptionSettings.Count > 1)
                 // Multiple known files, just accept them as is
                 this.DialogResult = DialogResult.OK;
-        }
-
-        private void txtAppPath_TextChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void txtSrvName_TextChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void btnWildcardPattern_Click(object sender, EventArgs e)
-        {
-            if (!(TmpExceptionSettings[0].Subject is ExecutableSubject executable))
-                return;
-
-            using var dialog = new WildcardPatternForm(executable.ExecutablePath, TmpExceptionSettings[0].WildcardPattern);
-            if (dialog.ShowDialog(this) == DialogResult.OK)
-            {
-                TmpExceptionSettings[0].WildcardPattern = dialog.ResultPattern;
-                TmpExceptionSettings[0].RegenerateId();
-            }
         }
 
         private void cmbTimer_SelectedIndexChanged(object sender, EventArgs e)
@@ -509,6 +496,61 @@ namespace pylorak.TinyWall
             {
                 throw new InvalidOperationException();
             }
+        }
+
+        private void chkEnableWildcard_CheckedChanged(object sender, EventArgs e)
+        {
+            var exception = TmpExceptionSettings[0];
+            linkEditWildcard.Enabled = chkEnableWildcard.Checked;
+
+            if (chkEnableWildcard.Checked)
+            {
+                if (exception.Subject is not ExecutableSubject exeSubj)
+                {
+                    Debug.Assert(false);
+                    return;
+                }
+                var exePath = exeSubj.ExecutablePath;
+
+                if (Utils.IsNullOrEmpty(exception.WildcardPattern))
+                {
+                    if (VersionDetector.TryFindVersionSpan(exePath, out var versionStart, out var versionLen))
+                    {
+                        bool? sigVerifyCache = null;
+                        var patternCandidate = exePath.Remove(versionStart, versionLen).Insert(versionStart, "*");
+                        if ((WildcardPathMatcher.IsPatternSyntaxValid(patternCandidate) == WildcardValidation.Success)
+                          && (WildcardPathMatcher.CheckPatternWithFile(patternCandidate, exePath, ref sigVerifyCache) == WildcardValidation.Success))
+                            exception.WildcardPattern = patternCandidate;
+                    }
+
+                    if (Utils.IsNullOrEmpty(exception.WildcardPattern))
+                        linkEditWildcard_LinkClicked(this, null);
+                }
+            }
+            else
+            {
+                exception.WildcardPattern = null;
+            }
+        }
+
+        private void linkEditWildcard_LinkClicked(object sender, LinkLabelLinkClickedEventArgs? e)
+        {
+            var exception = TmpExceptionSettings[0];
+            if (exception.Subject is not ExecutableSubject exeSubj)
+            {
+                Debug.Assert(false);
+                return;
+            }
+            var exePath = exeSubj.ExecutablePath;
+
+            using var dialog = new WildcardPatternForm(exePath, exception.WildcardPattern);
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+            {
+                exception.WildcardPattern = dialog.ResultPattern;
+            }
+
+            if (Utils.IsNullOrEmpty(exception.WildcardPattern))
+                chkEnableWildcard.Checked = false;
         }
     }
 }

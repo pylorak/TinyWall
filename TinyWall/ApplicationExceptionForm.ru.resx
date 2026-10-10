@@ -198,5 +198,6 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Выбрать файл...</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Шаблон с подстановочными знаками...</value></data>
+  <data name="chkEnableWildcard.Text" xml:space="preserve"><value>Автоподстройка пути при обновлениях</value></data>
+  <data name="linkEditWildcard.Text" xml:space="preserve"><value>Шаблон с подстановочными знаками...</value></data>
 </root>

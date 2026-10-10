@@ -9,6 +9,5 @@
 - Les caractères génériques ne peuvent pas correspondre aux séparateurs de répertoires.
 - Les fichiers en dehors de Program Files qui correspondent à un modèle avec caractères génériques doivent être signés numériquement.
 - Le modèle doit représenter un chemin de fichier local absolu ou un chemin UNC.</value></data>
-  <data name="btnClearPattern.Text" xml:space="preserve"><value>Effacer le motif</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Annuler</value></data>
 </root>

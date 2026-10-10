@@ -9,6 +9,5 @@
 - Подстановочные знаки не могут соответствовать разделителям каталогов.
 - Файлы за пределами Program Files, соответствующие шаблонам с подстановочными знаками, должны иметь цифровую подпись.
 - Шаблон должен представлять собой абсолютный локальный путь к файлу или UNC-путь.</value></data>
-  <data name="btnClearPattern.Text" xml:space="preserve"><value>Очистить шаблон</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Отмена</value></data>
 </root>

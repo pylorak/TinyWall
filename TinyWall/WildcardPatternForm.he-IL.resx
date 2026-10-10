@@ -9,6 +9,5 @@
 - תווים כלליים אינם יכולים להתאים למפרידי ספריות.
 - קבצים מחוץ ל-Program Files שתואמים לתבנית עם תווים כלליים חייבים להיות חתומים דיגיטלית.
 - התבנית חייבת לייצג נתיב קובץ מקומי מוחלט או נתיב UNC.</value></data>
-  <data name="btnClearPattern.Text" xml:space="preserve"><value>נקה את התבנית</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>ביטול</value></data>
 </root>

@@ -9,6 +9,5 @@
 - 와일드카드는 디렉터리 구분 기호와 일치할 수 없습니다.
 - Program Files 외부의 파일이 와일드카드 패턴과 일치하려면 디지털 서명이 필요합니다.
 - 패턴은 절대 로컬 파일 경로 또는 UNC 경로를 나타내야 합니다.</value></data>
-  <data name="btnClearPattern.Text" xml:space="preserve"><value>패턴 지우기</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>취소</value></data>
 </root>

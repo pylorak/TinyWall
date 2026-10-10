@@ -201,5 +201,6 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>עיון עבור קובץ...</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>תבנית תווים כלליים...</value></data>
+  <data name="chkEnableWildcard.Text" xml:space="preserve"><value>התאמת הנתיב אוטומטית בעת עדכוני היישום</value></data>
+  <data name="linkEditWildcard.Text" xml:space="preserve"><value>תבנית תווים כלליים...</value></data>
 </root>

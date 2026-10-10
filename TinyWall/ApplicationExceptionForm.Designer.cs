@@ -45,7 +45,6 @@
             this.transparentLabel1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.btnSelectUwpApp = new System.Windows.Forms.Button();
-            this.btnWildcardPattern = new System.Windows.Forms.Button();
             this.chkRestrictToLocalNetwork = new System.Windows.Forms.CheckBox();
             this.radBlock = new System.Windows.Forms.RadioButton();
             this.radTcpUdpOut = new System.Windows.Forms.RadioButton();
@@ -65,9 +64,13 @@
             this.radOnlySpecifiedPorts = new System.Windows.Forms.RadioButton();
             this.panel3 = new System.Windows.Forms.Panel();
             this.chkInheritToChildren = new System.Windows.Forms.CheckBox();
+            this.chkEnableWildcard = new System.Windows.Forms.CheckBox();
+            this.linkEditWildcard = new System.Windows.Forms.LinkLabel();
+            this.flowWildcardCheckbox = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
+            this.flowWildcardCheckbox.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -105,7 +108,6 @@
             this.txtSrvName.BackColor = System.Drawing.SystemColors.Window;
             this.txtSrvName.Name = "txtSrvName";
             this.txtSrvName.ReadOnly = true;
-            this.txtSrvName.TextChanged += new System.EventHandler(this.txtSrvName_TextChanged);
             // 
             // txtAppPath
             // 
@@ -113,7 +115,6 @@
             this.txtAppPath.BackColor = System.Drawing.SystemColors.Window;
             this.txtAppPath.Name = "txtAppPath";
             this.txtAppPath.ReadOnly = true;
-            this.txtAppPath.TextChanged += new System.EventHandler(this.txtAppPath_TextChanged);
             // 
             // btnBrowse
             // 
@@ -177,7 +178,6 @@
             resources.ApplyResources(this.panel2, "panel2");
             this.panel2.BackColor = System.Drawing.SystemColors.Window;
             this.panel2.Controls.Add(this.btnSelectUwpApp);
-            this.panel2.Controls.Add(this.btnWildcardPattern);
             this.panel2.Controls.Add(this.cmbTimer);
             this.panel2.Controls.Add(this.label6);
             this.panel2.Controls.Add(this.lblApplication);
@@ -196,13 +196,6 @@
             this.btnSelectUwpApp.Name = "btnSelectUwpApp";
             this.btnSelectUwpApp.UseVisualStyleBackColor = false;
             this.btnSelectUwpApp.Click += new System.EventHandler(this.btnSelectUwpApp_Click);
-            // 
-            // btnWildcardPattern
-            // 
-            resources.ApplyResources(this.btnWildcardPattern, "btnWildcardPattern");
-            this.btnWildcardPattern.Name = "btnWildcardPattern";
-            this.btnWildcardPattern.UseVisualStyleBackColor = true;
-            this.btnWildcardPattern.Click += new System.EventHandler(this.btnWildcardPattern_Click);
             // 
             // chkRestrictToLocalNetwork
             // 
@@ -330,6 +323,27 @@
             this.chkInheritToChildren.Name = "chkInheritToChildren";
             this.chkInheritToChildren.UseVisualStyleBackColor = true;
             // 
+            // chkEnableWildcard
+            // 
+            resources.ApplyResources(this.chkEnableWildcard, "chkEnableWildcard");
+            this.chkEnableWildcard.Name = "chkEnableWildcard";
+            this.chkEnableWildcard.UseVisualStyleBackColor = true;
+            this.chkEnableWildcard.CheckedChanged += new System.EventHandler(this.chkEnableWildcard_CheckedChanged);
+            // 
+            // linkEditWildcard
+            // 
+            resources.ApplyResources(this.linkEditWildcard, "linkEditWildcard");
+            this.linkEditWildcard.Name = "linkEditWildcard";
+            this.linkEditWildcard.TabStop = true;
+            this.linkEditWildcard.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkEditWildcard_LinkClicked);
+            // 
+            // flowWildcardCheckbox
+            // 
+            resources.ApplyResources(this.flowWildcardCheckbox, "flowWildcardCheckbox");
+            this.flowWildcardCheckbox.Controls.Add(this.chkEnableWildcard);
+            this.flowWildcardCheckbox.Controls.Add(this.linkEditWildcard);
+            this.flowWildcardCheckbox.Name = "flowWildcardCheckbox";
+            // 
             // ApplicationExceptionForm
             // 
             this.AcceptButton = this.btnOK;
@@ -337,6 +351,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ControlBox = false;
+            this.Controls.Add(this.flowWildcardCheckbox);
             this.Controls.Add(this.chkInheritToChildren);
             this.Controls.Add(this.radOnlySpecifiedPorts);
             this.Controls.Add(this.radUnrestricted);
@@ -361,6 +376,8 @@
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            this.flowWildcardCheckbox.ResumeLayout(false);
+            this.flowWildcardCheckbox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -403,6 +420,8 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.CheckBox chkInheritToChildren;
         private System.Windows.Forms.Button btnSelectUwpApp;
-        private System.Windows.Forms.Button btnWildcardPattern;
+        private System.Windows.Forms.CheckBox chkEnableWildcard;
+        private System.Windows.Forms.LinkLabel linkEditWildcard;
+        private System.Windows.Forms.FlowLayoutPanel flowWildcardCheckbox;
     }
 }

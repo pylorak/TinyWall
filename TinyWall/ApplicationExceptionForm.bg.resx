@@ -201,5 +201,6 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Отваряне на файл...</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Шаблон със заместващи знаци...</value></data>
+  <data name="chkEnableWildcard.Text" xml:space="preserve"><value>Автоматично коригиране на пътя при обновяване</value></data>
+  <data name="linkEditWildcard.Text" xml:space="preserve"><value>Шаблон със заместващи знаци...</value></data>
 </root>

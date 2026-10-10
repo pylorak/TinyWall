@@ -78,7 +78,7 @@ namespace pylorak.TinyWall
         }
 
         // Returns true if the filename component (the last path segment) of a pattern contains a wildcard character.
-        public static bool HasWildcardInFilenameComponent(string? pattern)
+        private static bool HasWildcardInFilenameComponent(string? pattern)
         {
             if (Utils.IsNullOrEmpty(pattern))
                 return false;
@@ -191,7 +191,7 @@ namespace pylorak.TinyWall
             return false;
         }
 
-        public static WildcardValidation MatchPatternToPath(string? pattern, string filePath, ref bool? sigVerifyPass)
+        public static WildcardValidation CheckPatternWithFile(string? pattern, string filePath, ref bool? sigVerifyPass)
         {
             try
             {

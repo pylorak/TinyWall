@@ -139,7 +139,7 @@
     <value>88, 26</value>
   </data>
   <data name="lblOriginalPath.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
+    <value>100</value>
   </data>
   <data name="lblOriginalPath.Text" xml:space="preserve">
     <value>Original path:</value>
@@ -169,7 +169,7 @@
     <value>546, 20</value>
   </data>
   <data name="txtOriginalPath.TabIndex" type="System.Int32, mscorlib">
-    <value>100</value>
+    <value>200</value>
   </data>
   <data name="&gt;&gt;txtOriginalPath.Name" xml:space="preserve">
     <value>txtOriginalPath</value>
@@ -196,7 +196,7 @@
     <value>88, 26</value>
   </data>
   <data name="lblPattern.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+    <value>300</value>
   </data>
   <data name="lblPattern.Text" xml:space="preserve">
     <value>Wildcard pattern:</value>
@@ -226,7 +226,7 @@
     <value>546, 20</value>
   </data>
   <data name="txtPattern.TabIndex" type="System.Int32, mscorlib">
-    <value>200</value>
+    <value>400</value>
   </data>
   <data name="&gt;&gt;txtPattern.Name" xml:space="preserve">
     <value>txtPattern</value>
@@ -244,7 +244,7 @@
     <value>True</value>
   </data>
   <data name="tableButtons.ColumnCount" type="System.Int32, mscorlib">
-    <value>4</value>
+    <value>3</value>
   </data>
   <data name="btnOK.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
@@ -312,36 +312,6 @@
   <data name="&gt;&gt;btnCancel.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="btnClearPattern.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleLeft</value>
-  </data>
-  <data name="btnClearPattern.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="btnClearPattern.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
-  </data>
-  <data name="btnClearPattern.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 33</value>
-  </data>
-  <data name="btnClearPattern.TabIndex" type="System.Int32, mscorlib">
-    <value>300</value>
-  </data>
-  <data name="btnClearPattern.Text" xml:space="preserve">
-    <value>Clear pattern</value>
-  </data>
-  <data name="&gt;&gt;btnClearPattern.Name" xml:space="preserve">
-    <value>btnClearPattern</value>
-  </data>
-  <data name="&gt;&gt;btnClearPattern.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btnClearPattern.Parent" xml:space="preserve">
-    <value>tableButtons</value>
-  </data>
-  <data name="&gt;&gt;btnClearPattern.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
   <data name="tableButtons.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Fill</value>
   </data>
@@ -370,7 +340,7 @@
     <value>4</value>
   </data>
   <data name="tableButtons.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
-    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="btnOK" Row="0" RowSpan="1" Column="2" ColumnSpan="1" /&gt;&lt;Control Name="btnCancel" Row="0" RowSpan="1" Column="3" ColumnSpan="1" /&gt;&lt;Control Name="btnClearPattern" Row="0" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;/Controls&gt;&lt;Columns Styles="AutoSize,0,Percent,100,AutoSize,0,AutoSize,0" /&gt;&lt;Rows Styles="AutoSize,0,Absolute,39" /&gt;&lt;/TableLayoutSettings&gt;</value>
+    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="btnOK" Row="0" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="btnCancel" Row="0" RowSpan="1" Column="2" ColumnSpan="1" /&gt;&lt;/Controls&gt;&lt;Columns Styles="Percent,100,AutoSize,0,AutoSize,0,Absolute,20" /&gt;&lt;Rows Styles="AutoSize,0" /&gt;&lt;/TableLayoutSettings&gt;</value>
   </data>
   <data name="lblHints.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -382,7 +352,7 @@
     <value>402, 65</value>
   </data>
   <data name="lblHints.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
+    <value>500</value>
   </data>
   <data name="lblHints.Text" xml:space="preserve">
     <value>Hints:

@@ -9,6 +9,5 @@
 - Joker karakterler dizin ayırıcılarıyla eşleşemez.
 - Program Files dışında olup joker karakterli desenlerle eşleşen dosyaların dijital olarak imzalı olması gerekir.
 - Desen, mutlak bir yerel dosya yolu veya bir UNC yolu temsil etmelidir.</value></data>
-  <data name="btnClearPattern.Text" xml:space="preserve"><value>Deseni temizle</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>İptal</value></data>
 </root>

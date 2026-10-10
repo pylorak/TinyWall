@@ -9,6 +9,5 @@
 - Platzhalterzeichen dürfen nicht mit Verzeichnistrennzeichen übereinstimmen.
 - Von Platzhaltermustern erfasste Dateien, die außerhalb der "Programme" Mappe (Program Files) liegen, müssen digital signiert sein.
 - Das Muster muss entweder einen absoluten lokalen Dateipfad oder einen UNC-Pfad darstellen.</value></data>
-  <data name="btnClearPattern.Text" xml:space="preserve"><value>Muster löschen</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Abbrechen</value></data>
 </root>

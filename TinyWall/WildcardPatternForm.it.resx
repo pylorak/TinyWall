@@ -9,6 +9,5 @@
 - I caratteri jolly non possono corrispondere ai separatori di directory.
 - I file all’esterno di Program Files che corrispondono a un modello con caratteri jolly devono essere firmati digitalmente.
 - Il modello deve rappresentare un percorso file locale assoluto oppure un percorso UNC.</value></data>
-  <data name="btnClearPattern.Text" xml:space="preserve"><value>Cancella modello</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Annulla</value></data>
 </root>

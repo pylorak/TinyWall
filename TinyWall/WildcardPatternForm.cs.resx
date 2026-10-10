@@ -9,6 +9,5 @@
 - Zástupné znaky nemohou odpovídat oddělovačům adresářů.
 - Soubory mimo složku Program Files, které odpovídají vzoru se zástupnými znaky, musí být digitálně podepsané.
 - Vzor musí představovat buď absolutní místní cestu k souboru, nebo cestu UNC.</value></data>
-  <data name="btnClearPattern.Text" xml:space="preserve"><value>Vymazat vzor</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Zrušit</value></data>
 </root>

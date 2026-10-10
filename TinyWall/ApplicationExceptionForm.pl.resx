@@ -198,5 +198,6 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Przeglądaj pliki…</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Wzorzec wieloznaczny...</value></data>
+  <data name="chkEnableWildcard.Text" xml:space="preserve"><value>Automatycznie dostosuj ścieżkę przy aktualizacji</value></data>
+  <data name="linkEditWildcard.Text" xml:space="preserve"><value>Wzorzec wieloznaczny...</value></data>
 </root>

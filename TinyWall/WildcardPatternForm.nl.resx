@@ -9,6 +9,5 @@
 - Jokertekens kunnen niet overeenkomen met mapscheidingstekens.
 - Bestanden buiten Program Files die overeenkomen met een jokertekenpatroon moeten digitaal ondertekend zijn.
 - Het patroon moet een absoluut lokaal bestandspad of een UNC-pad voorstellen.</value></data>
-  <data name="btnClearPattern.Text" xml:space="preserve"><value>Patroon wissen</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Annuleren</value></data>
 </root>

@@ -198,5 +198,6 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>ファイルを参照...</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>ワイルドカード パターン...</value></data>
+  <data name="chkEnableWildcard.Text" xml:space="preserve"><value>アプリ更新時にパスを自動調整</value></data>
+  <data name="linkEditWildcard.Text" xml:space="preserve"><value>ワイルドカード パターン...</value></data>
 </root>

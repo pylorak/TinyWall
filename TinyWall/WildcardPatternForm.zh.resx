@@ -9,6 +9,5 @@
 - 通配符不能匹配目录分隔符。
 - 位于 Program Files 之外的文件必须经过数字签名，才能与通配符模式匹配。
 - 模式必须是绝对本地文件路径或 UNC 路径。</value></data>
-  <data name="btnClearPattern.Text" xml:space="preserve"><value>清除模式</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>取消</value></data>
 </root>

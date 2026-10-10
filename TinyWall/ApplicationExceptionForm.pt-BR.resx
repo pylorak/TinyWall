@@ -198,5 +198,6 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Procurar arquivo...</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Padrão curinga...</value></data>
+  <data name="chkEnableWildcard.Text" xml:space="preserve"><value>Ajustar o caminho automaticamente nas atualizações</value></data>
+  <data name="linkEditWildcard.Text" xml:space="preserve"><value>Padrão curinga...</value></data>
 </root>

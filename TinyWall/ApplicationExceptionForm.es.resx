@@ -201,5 +201,6 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Buscar archivo...</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Patrón con comodines...</value></data>
+  <data name="chkEnableWildcard.Text" xml:space="preserve"><value>Ajustar la ruta automáticamente al actualizar</value></data>
+  <data name="linkEditWildcard.Text" xml:space="preserve"><value>Patrón con comodines...</value></data>
 </root>

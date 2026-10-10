@@ -189,5 +189,6 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>파일 찾아보기...</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>와일드카드 패턴...</value></data>
+  <data name="chkEnableWildcard.Text" xml:space="preserve"><value>앱 업데이트 시 경로 자동 조정</value></data>
+  <data name="linkEditWildcard.Text" xml:space="preserve"><value>와일드카드 패턴...</value></data>
 </root>

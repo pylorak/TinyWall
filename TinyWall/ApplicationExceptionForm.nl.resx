@@ -177,5 +177,6 @@
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>Open een bestand...</value>
   </data>
-  <data name="btnWildcardPattern.Text" xml:space="preserve"><value>Jokerpatroon...</value></data>
+  <data name="chkEnableWildcard.Text" xml:space="preserve"><value>Pad automatisch aanpassen bij app-updates</value></data>
+  <data name="linkEditWildcard.Text" xml:space="preserve"><value>Jokerpatroon...</value></data>
 </root>

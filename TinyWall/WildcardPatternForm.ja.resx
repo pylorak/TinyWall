@@ -9,6 +9,5 @@
 - ワイルドカードはディレクトリ区切り文字と一致できません。
 - Program Files の外にあるファイルがワイルドカード パターンに一致するには、デジタル署名が必要です。
 - パターンは、絶対ローカル ファイル パスまたは UNC パスのどちらかを表す必要があります。</value></data>
-  <data name="btnClearPattern.Text" xml:space="preserve"><value>パターンをクリア</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>キャンセル</value></data>
 </root>
