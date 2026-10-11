@@ -51,7 +51,7 @@ namespace pylorak.TinyWall
         private readonly HashSet<string> UserSubjectExes = new(StringComparer.OrdinalIgnoreCase);        // All executables with pre-configured rules.
         private readonly Dictionary<string, List<FirewallExceptionV3>> ChildInheritance = new(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, HashSet<string>> ChildInheritedSubjectExes = new(StringComparer.OrdinalIgnoreCase);   // Executables that have been already auto-whitelisted due to inheritance
-        private readonly List<FirewallExceptionV3> WildcardExceptions = new();
+        private readonly Dictionary<string, List<FirewallExceptionV3>> WildcardTemplates = new(StringComparer.OrdinalIgnoreCase);
         private readonly HashSet<string> WildcardMatchedSubjects = new(StringComparer.OrdinalIgnoreCase);
         private readonly ThreadThrottler FirewallThreadThrottler = new(Thread.CurrentThread, ThreadPriority.Highest, false);
         private StringBuilder? ProcessStartWatcher_Sbuilder;
@@ -1815,22 +1815,28 @@ namespace pylorak.TinyWall
             bool? sigVerifyCache = null;
             FirewallExceptionV3? bestMatch = null;
 
-            foreach (FirewallExceptionV3 template in WildcardExceptions)
+            // Get list of all templates that might not match the executable, but at least apply to the same filename
+            if (!WildcardTemplates.TryGetValue(Path.GetFileName(executablePath), out var possibleTemplates))
+                return null;
+
+            // Find the templates that actually match the executable
+            foreach (var template in possibleTemplates)
             {
                 Debug.Assert(template.WildcardPattern != null);
-
-                if (template.Subject is not ExecutableSubject)
-                    continue;
+                Debug.Assert(template.Subject is ExecutableSubject);
 
                 if (WildcardValidation.Success != WildcardPathMatcher.CheckPatternWithFile(template.WildcardPattern, executablePath, ref sigVerifyCache))
                     continue;
 
                 if (bestMatch == null)
                 {
+                    // First match
                     bestMatch = template;
                 }
                 else
                 {
+                    // We have multiple matches, reduce back to one
+
                     var patternComparison = WildcardPathMatcher.ComparePatterns(bestMatch.WildcardPattern!, template.WildcardPattern!);
                     if (patternComparison > 0)
                         bestMatch = template;
@@ -1881,7 +1887,15 @@ namespace pylorak.TinyWall
                             if ((ex.WildcardPattern is not null)
                                 && (WildcardValidation.Success == WildcardPathMatcher.IsPatternSyntaxValid(ex.WildcardPattern)))
                             {
-                                WildcardExceptions.Add(ex);
+                                string exeName = Path.GetFileName(exePath);
+                                Debug.Assert(!Utils.IsNullOrEmpty(exeName));
+
+                                if (!WildcardTemplates.TryGetValue(exeName, out var exeWildcardTemplates))
+                                {
+                                    exeWildcardTemplates = new List<FirewallExceptionV3>();
+                                    WildcardTemplates.Add(exeName, exeWildcardTemplates);
+                                }
+                                exeWildcardTemplates.Add(ex);
                             }
                         } // if ExecutableSubject
                     } // foreach exception
