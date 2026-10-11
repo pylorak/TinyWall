@@ -21,6 +21,7 @@ namespace pylorak.TinyWall
         ErrorDisallowedFolder,
         ErrorWildcardedFilename,
         ErrorFileSignatureFail,
+        ErrorNetworkPath,
     }
 
     public static class WildcardPathMatcher
@@ -52,6 +53,12 @@ namespace pylorak.TinyWall
             else if (!Utils.IsPathFullyQualified(pattern))
             {
                 return WildcardValidation.ErrorNotFullyQualified;
+            }
+            else if (NetworkPath.IsUncPath(pattern) || NetworkPath.IsNetworkPath(pattern))
+            {
+                // Signature verification fails on network paths (UNC paths, mapped network drives),
+                // so we disallowed such locations.
+                return WildcardValidation.ErrorNetworkPath;
             }
             else if (pattern.Contains("\\.\\") || pattern.Contains("\\..\\")
                   || pattern.EndsWith("\\.") || pattern.EndsWith("\\.."))

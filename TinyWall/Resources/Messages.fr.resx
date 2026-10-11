@@ -383,12 +383,15 @@ L'exécutable trouvé est une partie de {0}. Afin d'être sûr que cette applica
     <value>Cet emplacement ou composant du chemin n'autorise pas les caractères joker.</value>
   </data>
   <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
-    <value>À l'exception des caractères joker, le motif doit être un chemin de fichier absolu valide ou un chemin réseau (UNC).</value>
+    <value>À l'exception des caractères joker, le motif doit être un chemin de fichier local absolu valide.</value>
   </data>
   <data name="WildcardPatternSignatureRequired" xml:space="preserve">
     <value>L'exécutable doit être doté d'une signature numérique valide pour pouvoir être autorisé via un motif avec jokers.</value>
   </data>
   <data name="WildcardPatternValidationFailed" xml:space="preserve">
     <value>Le motif avec jokers n'a pas pu être validé. Veuillez le vérifier et réessayer.</value>
+  </data>
+  <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
+    <value>Les motifs avec jokers ne sont pas autorisés pour les emplacements réseau, tels que les chemins UNC et les lecteurs réseau.</value>
   </data>
 </root>

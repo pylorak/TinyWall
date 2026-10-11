@@ -358,12 +358,15 @@
     <value>此位置或路径的组成部分不允许使用通配符。</value>
   </data>
   <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
-    <value>除通配符外，模式必须是有效的绝对文件路径或网络 (UNC) 路径。</value>
+    <value>除通配符外，模式必须是有效的本地绝对文件路径。</value>
   </data>
   <data name="WildcardPatternSignatureRequired" xml:space="preserve">
     <value>若要通过通配符模式允许该可执行文件，它必须具有有效的数字签名。</value>
   </data>
   <data name="WildcardPatternValidationFailed" xml:space="preserve">
     <value>无法验证通配符模式。请检查后重试。</value>
+  </data>
+  <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
+    <value>网络位置（例如 UNC 路径和网络驱动器）不允许使用通配符模式。</value>
   </data>
 </root>

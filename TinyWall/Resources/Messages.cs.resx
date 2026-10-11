@@ -355,12 +355,15 @@ Zvolený spustitelný soubor by mohl být součástí {0}. Pro zajištění bezc
     <value>Toto umístění nebo součást cesty neumožňuje zástupné znaky.</value>
   </data>
   <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
-    <value>S výjimkou zástupných znaků musí být vzor platná absolutní cesta k souboru nebo síťová cesta (UNC).</value>
+    <value>S výjimkou zástupných znaků musí být vzor platná absolutní cesta k místnímu souboru.</value>
   </data>
   <data name="WildcardPatternSignatureRequired" xml:space="preserve">
     <value>Pro povolení spustitelného souboru pomocí vzoru se zástupnými znaky je vyžadován platný digitální podpis.</value>
   </data>
   <data name="WildcardPatternValidationFailed" xml:space="preserve">
     <value>Vzor se zástupnými znaky se nepodařilo ověřit. Zkontrolujte jej a zkuste to znovu.</value>
+  </data>
+  <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
+    <value>Vzory se zástupnými znaky nejsou pro síťová umístění, například cesty UNC a síťové jednotky, povoleny.</value>
   </data>
 </root>

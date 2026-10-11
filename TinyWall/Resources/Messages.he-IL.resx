@@ -393,12 +393,15 @@
     <value>מיקום זה או רכיב נתיב זה אינו מתיר תווים כלליים.</value>
   </data>
   <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
-    <value>למעט תווים כלליים, התבנית חייבת להיות נתיב קובץ מוחלט חוקי או נתיב רשת (UNC).</value>
+    <value>למעט תווים כלליים, התבנית חייבת להיות נתיב קובץ מקומי מוחלט חוקי.</value>
   </data>
   <data name="WildcardPatternSignatureRequired" xml:space="preserve">
     <value>נדרשת חתימה דיגיטלית תקפה על קובץ ההרצה כדי לאפשר אותו באמצעות תבנית תווים כלליים.</value>
   </data>
   <data name="WildcardPatternValidationFailed" xml:space="preserve">
     <value>לא ניתן לאמת את תבנית התווים הכלליים. נא לבדוק ולנסות שוב.</value>
+  </data>
+  <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
+    <value>תבניות תווים כלליים אינן מותרות עבור מיקומי רשת, כגון נתיבי UNC וכונני רשת.</value>
   </data>
 </root>

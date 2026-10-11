@@ -361,12 +361,15 @@ Wybrany plik wykonywalny może być częścią {0}. Aby upewnić się, że ten p
     <value>Ta lokalizacja lub składnik ścieżki nie pozwala na użycie symboli wieloznacznych.</value>
   </data>
   <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
-    <value>Z wyjątkiem symboli wieloznacznych wzorzec musi być prawidłową bezwzględną ścieżką pliku lub ścieżką sieciową (UNC).</value>
+    <value>Z wyjątkiem symboli wieloznacznych wzorzec musi być prawidłową bezwzględną ścieżką do lokalnego pliku.</value>
   </data>
   <data name="WildcardPatternSignatureRequired" xml:space="preserve">
     <value>Aby zezwolić na plik wykonywalny za pomocą wzorca wieloznacznego, musi on posiadać prawidłowy podpis cyfrowy.</value>
   </data>
   <data name="WildcardPatternValidationFailed" xml:space="preserve">
     <value>Nie można zweryfikować wzorca wieloznacznego. Sprawdź go i spróbuj ponownie.</value>
+  </data>
+  <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
+    <value>Wzorce wieloznaczne nie są dozwolone dla lokalizacji sieciowych, takich jak ścieżki UNC i dyski sieciowe.</value>
   </data>
 </root>

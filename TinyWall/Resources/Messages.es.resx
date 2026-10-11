@@ -372,12 +372,15 @@ El ejecutable seleccionado podría ser parte de {0}. Para asegurarse que esta ap
     <value>Esta ubicación o componente de la ruta no admite comodines.</value>
   </data>
   <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
-    <value>Salvo los caracteres comodín, el patrón debe ser una ruta de archivo absoluta válida o una ruta de red (UNC).</value>
+    <value>Salvo los caracteres comodín, el patrón debe ser una ruta de archivo local absoluta válida.</value>
   </data>
   <data name="WildcardPatternSignatureRequired" xml:space="preserve">
     <value>Se requiere una firma digital válida en el ejecutable para permitirlo mediante un patrón con comodines.</value>
   </data>
   <data name="WildcardPatternValidationFailed" xml:space="preserve">
     <value>No se pudo validar el patrón con comodines. Compruébelo e inténtelo de nuevo.</value>
+  </data>
+  <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
+    <value>Los patrones con comodines no están permitidos en ubicaciones de red, como rutas UNC y unidades de red.</value>
   </data>
 </root>

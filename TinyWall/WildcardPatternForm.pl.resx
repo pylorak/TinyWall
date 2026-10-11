@@ -8,6 +8,6 @@
 - Dozwolone symbole wieloznaczne: ? (pojedynczy znak) i * (wiele znaków)
 - Symbole wieloznaczne nie mogą pasować do separatorów katalogów.
 - Pliki poza folderem Program Files, które pasują do wzorca z symbolami wieloznacznymi, muszą mieć podpis cyfrowy.
-- Wzorzec musi przedstawiać bezwzględną lokalną ścieżkę pliku albo ścieżkę UNC.</value></data>
+- Wzorzec musi przedstawiać bezwzględną ścieżkę pliku na komputerze lokalnym.</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Anuluj</value></data>
 </root>

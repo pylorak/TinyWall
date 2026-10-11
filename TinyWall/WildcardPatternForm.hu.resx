@@ -8,6 +8,6 @@
 - Megengedett helyettesítő karakterek: ? (egyetlen karakterhez), * (több karakterhez)
 - A helyettesítő karakterek nem felelhetnek meg könyvtárelválasztó jeleknek.
 - A Programfájlok (Program Files) mappán kívül megfeleltett fájloknak digitális aláírással kell rendelkezniük.
-- A mintázatnak abszolút helyi fájlútvonalat vagy UNC-útvonalat kell megadnia.</value></data>
+- A mintázatnak egy a helyi számítógépen lévő abszolút fájlútvonalat kell megadnia.</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Mégse</value></data>
 </root>

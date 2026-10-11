@@ -8,6 +8,6 @@
 - Caractères génériques autorisés : ? (pour un seul caractère) et * (pour plusieurs caractères)
 - Les caractères génériques ne peuvent pas correspondre aux séparateurs de répertoires.
 - Les fichiers en dehors de Program Files qui correspondent à un modèle avec caractères génériques doivent être signés numériquement.
-- Le modèle doit représenter un chemin de fichier local absolu ou un chemin UNC.</value></data>
+- Le modèle doit représenter un chemin de fichier absolu sur l'ordinateur local.</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Annuler</value></data>
 </root>

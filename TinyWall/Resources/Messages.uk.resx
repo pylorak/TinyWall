@@ -398,12 +398,15 @@
     <value>Це розташування або компонент шляху не допускає символів підстановки.</value>
   </data>
   <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
-    <value>За винятком символів підстановки, шаблон має бути дійсним абсолютним шляхом до файла або мережевим шляхом (UNC).</value>
+    <value>За винятком символів підстановки, шаблон має бути дійсним абсолютним шляхом до локального файла.</value>
   </data>
   <data name="WildcardPatternSignatureRequired" xml:space="preserve">
     <value>Щоб дозволити виконуваний файл за допомогою шаблону із символами підстановки, він повинен мати дійсний цифровий підпис.</value>
   </data>
   <data name="WildcardPatternValidationFailed" xml:space="preserve">
     <value>Не вдалося перевірити шаблон із символами підстановки. Виправте його та спробуйте ще раз.</value>
+  </data>
+  <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
+    <value>Шаблони із символами підстановки не дозволяються для мережевих розташувань, таких як шляхи UNC та мережеві диски.</value>
   </data>
 </root>

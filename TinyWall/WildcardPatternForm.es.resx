@@ -8,6 +8,6 @@
 - Caracteres comodín permitidos: ? (un solo carácter) y * (varios caracteres)
 - Los caracteres comodín no pueden coincidir con separadores de directorio.
 - Los archivos fuera de Archivos de programa (Program Files) que coinciden con un patrón de comodines deben estar firmados digitalmente.
-- El patrón debe representar una ruta de archivo local absoluta o una ruta UNC.</value></data>
+- El patrón debe representar una ruta de archivo absoluta en el equipo local.</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Cancelar</value></data>
 </root>

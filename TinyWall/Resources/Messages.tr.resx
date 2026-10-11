@@ -358,12 +358,15 @@ Seçili uygulama dosyası {0} nın parçası olabilir. İşi sağlama almak içi
     <value>Bu konum veya yol bileşeni joker karakterlere izin vermez.</value>
   </data>
   <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
-    <value>Joker karakterler hariç, desen geçerli bir mutlak dosya yolu veya ağ (UNC) yolu olmalıdır.</value>
+    <value>Joker karakterler hariç, desen geçerli bir mutlak yerel dosya yolu olmalıdır.</value>
   </data>
   <data name="WildcardPatternSignatureRequired" xml:space="preserve">
     <value>Joker karakter deseniyle izin verilebilmesi için yürütülebilir dosyanın geçerli bir dijital imzaya sahip olması gerekir.</value>
   </data>
   <data name="WildcardPatternValidationFailed" xml:space="preserve">
     <value>Joker karakter deseni doğrulanamadı. Lütfen kontrol edip tekrar deneyin.</value>
+  </data>
+  <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
+    <value>UNC yolları ve ağ sürücüleri gibi ağ konumlarında joker karakter desenlerine izin verilmez.</value>
   </data>
 </root>

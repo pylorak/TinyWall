@@ -380,12 +380,15 @@
     <value>이 위치 또는 경로 구성 요소에는 와일드카드를 사용할 수 없습니다.</value>
   </data>
   <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
-    <value>와일드카드 문자를 제외한 부분은 유효한 절대 파일 경로 또는 네트워크(UNC) 경로여야 합니다.</value>
+    <value>와일드카드 문자를 제외한 부분은 유효한 절대 로컬 파일 경로여야 합니다.</value>
   </data>
   <data name="WildcardPatternSignatureRequired" xml:space="preserve">
     <value>와일드카드 패턴으로 허용하려면 실행 파일에 유효한 디지털 서명이 있어야 합니다.</value>
   </data>
   <data name="WildcardPatternValidationFailed" xml:space="preserve">
     <value>와일드카드 패턴의 유효성을 검사하지 못했습니다. 확인한 후 다시 시도하십시오.</value>
+  </data>
+  <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
+    <value>네트워크 위치(예: UNC 경로 및 네트워크 드라이브)에는 와일드카드 패턴을 사용할 수 없습니다.</value>
   </data>
 </root>

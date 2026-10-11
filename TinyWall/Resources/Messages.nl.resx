@@ -337,12 +337,15 @@ Het gekozen programma is deel van {0}. Om zeker te zijn dat dit programma zonder
     <value>Deze locatie of padcomponent staat geen jokertekens toe.</value>
   </data>
   <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
-    <value>Op de jokertekens na moet het patroon een geldig absoluut bestandspad of een netwerkpad (UNC) zijn.</value>
+    <value>Op de jokertekens na moet het patroon een geldig absoluut lokaal bestandspad zijn.</value>
   </data>
   <data name="WildcardPatternSignatureRequired" xml:space="preserve">
     <value>Om het via een jokerpatroon toe te staan, is een geldige digitale handtekening op het uitvoerbare bestand vereist.</value>
   </data>
   <data name="WildcardPatternValidationFailed" xml:space="preserve">
     <value>Het jokerpatroon kon niet worden gevalideerd. Controleer het en probeer het opnieuw.</value>
+  </data>
+  <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
+    <value>Jokerpatronen zijn niet toegestaan voor netwerklocaties, zoals UNC-paden en netwerkstations.</value>
   </data>
 </root>

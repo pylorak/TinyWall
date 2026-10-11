@@ -8,6 +8,6 @@
 - 허용되는 와일드카드: ? (단일 문자), * (여러 문자)
 - 와일드카드는 디렉터리 구분 기호와 일치할 수 없습니다.
 - Program Files 외부의 파일이 와일드카드 패턴과 일치하려면 디지털 서명이 필요합니다.
-- 패턴은 절대 로컬 파일 경로 또는 UNC 경로를 나타내야 합니다.</value></data>
+- 패턴은 로컬 컴퓨터의 절대 파일 경로를 나타내야 합니다.</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>취소</value></data>
 </root>

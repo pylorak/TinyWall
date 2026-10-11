@@ -8,6 +8,6 @@
 - Povolené zástupné znaky: ? (jeden znak) a * (více znaků)
 - Zástupné znaky nemohou odpovídat oddělovačům adresářů.
 - Soubory mimo složku Program Files, které odpovídají vzoru se zástupnými znaky, musí být digitálně podepsané.
-- Vzor musí představovat buď absolutní místní cestu k souboru, nebo cestu UNC.</value></data>
+- Vzor musí představovat absolutní cestu k souboru na místním počítači.</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Zrušit</value></data>
 </root>

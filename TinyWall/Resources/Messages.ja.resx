@@ -394,12 +394,15 @@ TinyWall の自動学習モードでは、すべての許可されたトラフ�
     <value>この場所またはパスの構成要素ではワイルドカードを使用できません。</value>
   </data>
   <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
-    <value>ワイルドカード文字を除き、パターンは有効な絶対ファイル パスまたはネットワーク (UNC) パスである必要があります。</value>
+    <value>ワイルドカード文字を除き、パターンは有効なローカル ファイルの絶対パスである必要があります。</value>
   </data>
   <data name="WildcardPatternSignatureRequired" xml:space="preserve">
     <value>ワイルドカード パターンで許可するには、実行可能ファイルに有効なデジタル署名が必要です。</value>
   </data>
   <data name="WildcardPatternValidationFailed" xml:space="preserve">
     <value>ワイルドカード パターンを検証できませんでした。確認してもう一度お試しください。</value>
+  </data>
+  <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
+    <value>ワイルドカード パターンは、UNC パスやネットワーク ドライブなどのネットワーク上の場所には使用できません。</value>
   </data>
 </root>

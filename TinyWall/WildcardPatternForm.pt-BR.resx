@@ -8,6 +8,6 @@
 - Caracteres curinga permitidos: ? (um único caractere) e * (vários caracteres)
 - Os caracteres curinga não podem corresponder a separadores de diretório.
 - Arquivos fora de Program Files que correspondam a um padrão com curingas precisam estar assinados digitalmente.
-- O padrão deve representar um caminho de arquivo local absoluto ou um caminho UNC.</value></data>
+- O padrão deve representar um caminho de arquivo absoluto no computador local.</value></data>
   <data name="btnCancel.Text" xml:space="preserve"><value>Cancelar</value></data>
 </root>

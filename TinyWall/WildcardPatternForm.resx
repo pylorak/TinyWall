@@ -359,7 +359,7 @@
 - Allowed wildcard symbols: ? (for single character), * (for multiple characters)
 - Wildcard symbols cannot match directory separators.
 - Wildcarded files outside of Program Files need to be digitally signed to be matched.
-- The patterns must represent either an absolute local file path or a UNC path.</value>
+- The patterns must represent an absolute file path on the local computer.</value>
   </data>
   <data name="&gt;&gt;lblHints.Name" xml:space="preserve">
     <value>lblHints</value>

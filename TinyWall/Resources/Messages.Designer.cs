@@ -865,7 +865,7 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to With the exception of the wildcard characters, the pattern must be a valid absolute file path or a network (UNC) path..
+        ///   Looks up a localized string similar to With the exception of the wildcard characters, the pattern must be a valid absolute local file path..
         /// </summary>
         internal static string WildcardPatternMustBeAbsolutePath {
             get {
@@ -906,6 +906,15 @@ namespace pylorak.TinyWall.Resources {
         internal static string WildcardPatternValidationFailed {
             get {
                 return ResourceManager.GetString("WildcardPatternValidationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wildcard patterns are not allowed for network locations, such as UNC paths and network drives..
+        /// </summary>
+        internal static string WildcardPatternNetworkPathNotAllowed {
+            get {
+                return ResourceManager.GetString("WildcardPatternNetworkPathNotAllowed", resourceCulture);
             }
         }
         

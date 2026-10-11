@@ -38,6 +38,7 @@ namespace pylorak.TinyWall
                 WildcardValidation.ErrorEmptyParameter
                 or WildcardValidation.ErrorMissingWildcards => Resources.Messages.WildcardPatternMissingWildcard,
                 WildcardValidation.ErrorFileSignatureFail => Resources.Messages.WildcardPatternSignatureRequired,
+                WildcardValidation.ErrorNetworkPath => Resources.Messages.WildcardPatternNetworkPathNotAllowed,
                 WildcardValidation.ErrorGeneric => Resources.Messages.WildcardPatternValidationFailed,
                 WildcardValidation.ErrorPathNotMatched => Resources.Messages.WildcardPatternMustMatchOriginalPath,
                 WildcardValidation.ErrorHasRelativeComponents

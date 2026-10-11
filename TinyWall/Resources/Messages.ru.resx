@@ -356,12 +356,15 @@
     <value>Это расположение или компонент пути не допускает использования подстановочных знаков.</value>
   </data>
   <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
-    <value>За исключением подстановочных знаков, шаблон должен представлять собой допустимый абсолютный путь к файлу или сетевой путь (UNC).</value>
+    <value>За исключением подстановочных знаков, шаблон должен представлять собой допустимый абсолютный путь к локальному файлу.</value>
   </data>
   <data name="WildcardPatternSignatureRequired" xml:space="preserve">
     <value>Чтобы разрешить исполняемый файл с помощью шаблона с подстановочными знаками, требуется действительная цифровая подпись.</value>
   </data>
   <data name="WildcardPatternValidationFailed" xml:space="preserve">
     <value>Не удалось проверить шаблон с подстановочными знаками. Исправьте его и повторите попытку.</value>
+  </data>
+  <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
+    <value>Шаблоны с подстановочными знаками не допускаются для сетевых расположений, таких как сетевые пути (UNC) и сетевые диски.</value>
   </data>
 </root>

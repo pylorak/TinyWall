@@ -368,12 +368,15 @@
     <value>Това местоположение или компонент от пътя не позволява заместващи знаци.</value>
   </data>
   <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
-    <value>С изключение на заместващите знаци, шаблонът трябва да е валиден абсолютен път до файл или мрежов път (UNC).</value>
+    <value>С изключение на заместващите знаци, шаблонът трябва да е валиден абсолютен път до локален файл.</value>
   </data>
   <data name="WildcardPatternSignatureRequired" xml:space="preserve">
     <value>За да разрешите изпълнимия файл чрез шаблон със заместващи знаци, той трябва да има валиден цифров подпис.</value>
   </data>
   <data name="WildcardPatternValidationFailed" xml:space="preserve">
     <value>Шаблонът със заместващи знаци не можа да бъде валидиран. Проверете го и опитайте отново.</value>
+  </data>
+  <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
+    <value>Шаблоните със заместващи знаци не са разрешени за мрежови местоположения, като мрежови пътища (UNC) и мрежови устройства.</value>
   </data>
 </root>

@@ -391,12 +391,15 @@ Die ausgewählte Datei kann zu {0} gehören. Um sicherzustellen, dass die Anwend
     <value>Dieser Speicherort oder Pfadbestandteil lässt keine Platzhalter zu.</value>
   </data>
   <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
-    <value>Abgesehen von den Platzhalterzeichen muss das Muster ein gültiger absoluter Dateipfad oder ein Netzwerkpfad (UNC) sein.</value>
+    <value>Abgesehen von den Platzhalterzeichen muss das Muster ein gültiger absoluter lokaler Dateipfad sein.</value>
   </data>
   <data name="WildcardPatternSignatureRequired" xml:space="preserve">
     <value>Eine gültige digitale Signatur auf der ausführbaren Datei ist erforderlich, um sie über ein Platzhaltermuster zuzulassen.</value>
   </data>
   <data name="WildcardPatternValidationFailed" xml:space="preserve">
     <value>Das Platzhaltermuster konnte nicht validiert werden. Bitte überprüfen Sie es und versuchen Sie es erneut.</value>
+  </data>
+  <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
+    <value>Platzhaltermuster sind für Netzwerkspeicherorte nicht zulässig, z. B. UNC-Pfade und Netzlaufwerke.</value>
   </data>
 </root>

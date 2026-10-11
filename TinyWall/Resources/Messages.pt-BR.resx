@@ -389,12 +389,15 @@ O executável selecionado é parte de {0}. Para que este aplicativo possa ser us
     <value>Este local ou componente do caminho não permite curingas.</value>
   </data>
   <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
-    <value>Com exceção dos caracteres curinga, o padrão deve ser um caminho de arquivo absoluto válido ou um caminho de rede (UNC).</value>
+    <value>Com exceção dos caracteres curinga, o padrão deve ser um caminho de arquivo local absoluto válido.</value>
   </data>
   <data name="WildcardPatternSignatureRequired" xml:space="preserve">
     <value>Uma assinatura digital válida é necessária no executável para permiti-lo por meio de um padrão curinga.</value>
   </data>
   <data name="WildcardPatternValidationFailed" xml:space="preserve">
     <value>Não foi possível validar o padrão curinga. Verifique-o e tente novamente.</value>
+  </data>
+  <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
+    <value>Padrões curinga não são permitidos para locais de rede, como caminhos UNC e unidades de rede.</value>
   </data>
 </root>

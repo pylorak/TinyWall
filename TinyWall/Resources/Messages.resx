@@ -438,12 +438,15 @@ The selected executable could be part of {0}. To ensure that this application ca
     <value>This location or path component does not permit wildcards.</value>
   </data>
   <data name="WildcardPatternMustBeAbsolutePath" xml:space="preserve">
-    <value>With the exception of the wildcard characters, the pattern must be a valid absolute file path or a network (UNC) path.</value>
+    <value>With the exception of the wildcard characters, the pattern must be a valid absolute local file path.</value>
   </data>
   <data name="WildcardPatternSignatureRequired" xml:space="preserve">
     <value>A valid digital signature is required on the executable to allow it via a wildcard pattern.</value>
   </data>
   <data name="WildcardPatternValidationFailed" xml:space="preserve">
     <value>The wildcard pattern could not be validated. Please check and try again.</value>
+  </data>
+  <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
+    <value>Wildcard patterns are not allowed for network locations, such as UNC paths and network drives.</value>
   </data>
 </root>
