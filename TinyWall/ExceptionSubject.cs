@@ -285,8 +285,11 @@ namespace pylorak.TinyWall
             if (other is null)
                 return false;
 
-            if (other is ExecutableSubject o)
+            if (SubjectType == other.SubjectType)
+            {
+                var o = (ExecutableSubject)other;
                 return string.Equals(ExecutablePath, o.ExecutablePath, StringComparison.OrdinalIgnoreCase);
+            }
             else
                 return false;
         }
@@ -348,11 +351,12 @@ namespace pylorak.TinyWall
             if (other is null)
                 return false;
 
-            if (!base.Equals(other))
-                return false;
-
-            if (other is ServiceSubject o)
-                return string.Equals(ServiceName, o.ServiceName, StringComparison.OrdinalIgnoreCase);
+            if (SubjectType == other.SubjectType)
+            {
+                var o = (ServiceSubject)other;
+                return string.Equals(ExecutablePath, o.ExecutablePath, StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(ServiceName, o.ServiceName, StringComparison.OrdinalIgnoreCase);
+            }
             else
                 return false;
         }
@@ -366,9 +370,9 @@ namespace pylorak.TinyWall
 
                 int hash = OFFSET_BASIS;
                 if (null != ExecutablePath)
-                    hash = (hash ^ ExecutablePath.GetHashCode()) * FNV_PRIME;
+                    hash = (hash ^ StringComparer.OrdinalIgnoreCase.GetHashCode(ExecutablePath)) * FNV_PRIME;
                 if (null != ServiceName)
-                    hash = (hash ^ ServiceName.GetHashCode()) * FNV_PRIME;
+                    hash = (hash ^ StringComparer.OrdinalIgnoreCase.GetHashCode(ServiceName)) * FNV_PRIME;
 
                 return hash;
             }
@@ -438,7 +442,7 @@ namespace pylorak.TinyWall
 
                 int hash = OFFSET_BASIS;
                 if (null != Sid)
-                    hash = (hash ^ Sid.GetHashCode()) * FNV_PRIME;
+                    hash = (hash ^ StringComparer.OrdinalIgnoreCase.GetHashCode(Sid)) * FNV_PRIME;
 
                 return hash;
             }
