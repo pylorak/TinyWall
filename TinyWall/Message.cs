@@ -29,7 +29,7 @@ namespace pylorak.TinyWall
                 MessageType.STOP_SERVICE => (TwMessage?)JsonSerializer.Deserialize<TwMessageSimple>(ref reader, SourceGenerationContext.Default.TwMessageSimple),
                 MessageType.MINUTE_TIMER => (TwMessage?)JsonSerializer.Deserialize<TwMessageSimple>(ref reader, SourceGenerationContext.Default.TwMessageSimple),
                 MessageType.ADD_TEMPORARY_EXCEPTION => (TwMessage?)JsonSerializer.Deserialize<TwMessageAddTempException>(ref reader, SourceGenerationContext.Default.TwMessageAddTempException),
-                MessageType.ADD_PERSISTENT_EXCEPTION => (TwMessage?)JsonSerializer.Deserialize<TwMessageAddPersistentException>(ref reader, SourceGenerationContext.Default.TwMessageAddPersistentException),
+                MessageType.QUEUE_WILDCARD_SCAN => (TwMessage?)JsonSerializer.Deserialize<TwMessageQueueWildcardScan>(ref reader, SourceGenerationContext.Default.TwMessageQueueWildcardScan),
                 _ => throw new JsonException($"Tried to deserialize unsupported type with discriminator {(MessageType)discriminator}."),
             };
             return ret;
@@ -65,12 +65,11 @@ namespace pylorak.TinyWall
                     JsonSerializer.Serialize<TwMessageSimple>(writer, typedVal, SourceGenerationContext.Default.TwMessageSimple); break;
                 case TwMessageAddTempException typedVal:
                     JsonSerializer.Serialize<TwMessageAddTempException>(writer, typedVal, SourceGenerationContext.Default.TwMessageAddTempException); break;
-                case TwMessageAddPersistentException typedVal:
-                    JsonSerializer.Serialize<TwMessageAddPersistentException>(writer, typedVal, SourceGenerationContext.Default.TwMessageAddPersistentException); break;
+                case TwMessageQueueWildcardScan typedVal:
+                    JsonSerializer.Serialize<TwMessageQueueWildcardScan>(writer, typedVal, SourceGenerationContext.Default.TwMessageQueueWildcardScan); break;
                 default:
                     throw new JsonException($"Tried to serialize unsupported type {value.GetType()}.");
             }
-            ;
         }
     }
 
@@ -389,28 +388,25 @@ namespace pylorak.TinyWall
     }
 
     // A dropped-traffic notification carrying the Win32 file system path for wildcard evaluation.
-    public record TwMessageAddPersistentException : TwMessage
+    public record TwMessageQueueWildcardScan : TwMessage
     {
         public string AppPath { get; }
 
         [JsonConstructor]
-        public TwMessageAddPersistentException(string appPath) :
-            base(MessageType.ADD_PERSISTENT_EXCEPTION)
+        public TwMessageQueueWildcardScan(string appPath) :
+            base(MessageType.QUEUE_WILDCARD_SCAN)
         {
             AppPath = appPath;
         }
 
-        public static TwMessageAddPersistentException CreateRequest(string appPath)
+        public static TwMessageQueueWildcardScan CreateRequest(string appPath)
         {
-            return new TwMessageAddPersistentException(appPath);
+            return new TwMessageQueueWildcardScan(appPath);
         }
 
-#pragma warning disable IDE0079 // Remove unnecessary suppression
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static")]
-#pragma warning restore IDE0079 // Remove unnecessary suppression
-        public TwMessageAddPersistentException CreateResponse()
+        public TwMessageQueueWildcardScan CreateResponse()
         {
-            return new TwMessageAddPersistentException(AppPath);
+            return new TwMessageQueueWildcardScan(AppPath);
         }
     }
 

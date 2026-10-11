@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 
 namespace pylorak.Utilities
 {
@@ -8,8 +7,8 @@ namespace pylorak.Utilities
         private readonly Thread ThreadRef;
         private readonly ThreadPriority OriginalPriority;
         private readonly ThreadPriority RequestedPriority;
+        private readonly object LockGuard = new();
         private int NumRequests = 0;
-        public object SynchRoot { get; } = new();
 
         public ThreadThrottler(Thread thread, ThreadPriority newPriority, bool autoRequest = false)
         {
@@ -23,18 +22,24 @@ namespace pylorak.Utilities
 
         public void Request()
         {
-            if (NumRequests == 0)
-                ThreadRef.Priority = RequestedPriority;
+            lock (LockGuard)
+            {
+                if (NumRequests == 0)
+                    ThreadRef.Priority = RequestedPriority;
 
-            ++NumRequests;
+                ++NumRequests;
+            }
         }
 
         public void Release()
         {
-            --NumRequests;
+            lock (LockGuard)
+            {
+                --NumRequests;
 
-            if (NumRequests == 0)
-                ThreadRef.Priority = OriginalPriority;
+                if (NumRequests == 0)
+                    ThreadRef.Priority = OriginalPriority;
+            }
         }
 
         protected override void Dispose(bool disposing)

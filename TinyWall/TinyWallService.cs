@@ -46,13 +46,24 @@ namespace pylorak.TinyWall
         private readonly FirewallLogWatcher LogWatcher = new();
         private readonly List<FirewallExceptionV3> LearningNewExceptions = new();
 
-        // Context for auto rule inheritance
+        // Lock object to synchronize child inheritance processing from multiple threads
         private readonly object InheritanceGuard = new();
-        private readonly HashSet<string> UserSubjectExes = new(StringComparer.OrdinalIgnoreCase);        // All executables with pre-configured rules.
-        private readonly Dictionary<string, List<FirewallExceptionV3>> ChildInheritance = new(StringComparer.OrdinalIgnoreCase);
-        private readonly Dictionary<string, HashSet<string>> ChildInheritedSubjectExes = new(StringComparer.OrdinalIgnoreCase);   // Executables that have been already auto-whitelisted due to inheritance
+
+        // Contains all executables with an active user-configurable exception.
+        // Used to avoid auto-creating firewall rules for executables that already have a user-defined rule.
+        private readonly HashSet<string> UserSubjectExes = new(StringComparer.OrdinalIgnoreCase);
+
+        // A list of all exceptions with enabled child inheritance, indexed by their executable.
+        // Used for fast lookup of "If processes of this executable have child inheritance, give me all its templates".
+        private readonly Dictionary<string, List<FirewallExceptionV3>> ChildInheritanceTemplates = new(StringComparer.OrdinalIgnoreCase);
+
+        // A map of child->parent executables that have been temporarily auto-whitelisted due to inheritance.
+        // Used to avoid creating duplicate firewall rules for processes we have already handled.
+        private readonly Dictionary<string, HashSet<string>> ChildInheritanceTriggeredRelations = new(StringComparer.OrdinalIgnoreCase);
+
+        // A list of all exceptions with an enabled wildcard pattern, indexed by the filename (without path).
+        // Used for fast lookup of all active wildcards that might apply to a specific filename.
         private readonly Dictionary<string, List<FirewallExceptionV3>> WildcardTemplates = new(StringComparer.OrdinalIgnoreCase);
-        private readonly HashSet<string> WildcardMatchedSubjects = new(StringComparer.OrdinalIgnoreCase);
         private readonly ThreadThrottler FirewallThreadThrottler = new(Thread.CurrentThread, ThreadPriority.Highest, false);
         private StringBuilder? ProcessStartWatcher_Sbuilder;
 
@@ -180,7 +191,7 @@ namespace pylorak.TinyWall
         {
             using var timer = new HierarchicalStopwatch("Create inherited rules for running processes");
 
-            if (ChildInheritance.Count != 0)
+            if (ChildInheritanceTemplates.Count != 0)
             {
                 var procTree = new Dictionary<uint, ProcessSnapshotEntry>();
                 foreach (var p in ProcessManager.CreateToolhelp32SnapshotExtended())
@@ -233,25 +244,25 @@ namespace pylorak.TinyWall
                             // We cannot get the path, so let's skip this parent
                             continue;
 
-                        if (ChildInheritedSubjectExes.TryGetValue(procPath, out var childVal))
+                        if (ChildInheritanceTriggeredRelations.TryGetValue(procPath, out var parentList))
                         {
-                            if (childVal.Contains(parentEntry.ImagePath))
+                            if (parentList.Contains(parentEntry.ImagePath))
                                 // We have already processed this parent-child combination
                                 break;
                         }
 
-                        if (ChildInheritance.TryGetValue(parentEntry.ImagePath, out List<FirewallExceptionV3> exList))
+                        if (ChildInheritanceTemplates.TryGetValue(parentEntry.ImagePath, out List<FirewallExceptionV3> exList))
                         {
                             var subj = new ExecutableSubject(procPath);
                             foreach (var userEx in exList)
                                 GetRulesForException(FilterGroup.User, new FirewallExceptionV3(subj, userEx.Policy), rules, (ulong)FilterWeights.UserPermit, (ulong)FilterWeights.UserBlock);
 
-                            if (childVal == null)
+                            if (parentList == null)
                             {
-                                childVal = new HashSet<string>();
-                                ChildInheritedSubjectExes.Add(procPath, childVal);
+                                parentList = new HashSet<string>();
+                                ChildInheritanceTriggeredRelations.Add(procPath, parentList);
                             }
-                            childVal.Add(parentEntry.ImagePath);
+                            parentList.Add(parentEntry.ImagePath);
                             break;
                         }
                     }
@@ -310,10 +321,9 @@ namespace pylorak.TinyWall
             lock (InheritanceGuard)
             {
                 UserSubjectExes.Clear();
-                WildcardExceptions.Clear();
-                WildcardMatchedSubjects.Clear();
-                ChildInheritance.Clear();
-                ChildInheritedSubjectExes.Clear();
+                WildcardTemplates.Clear();
+                ChildInheritanceTemplates.Clear();
+                ChildInheritanceTriggeredRelations.Clear();
                 CreateDefaultRules(rules);
             }
 
@@ -370,11 +380,11 @@ namespace pylorak.TinyWall
             // This avoids incorrect filter category association in netevents by making sure
             // FilterCategories is set up correctly according to the firewall settings.
             try { WfpNetEventSubscription ??= WfpEngine.SubscribeNetEvent(WfpNetEventCallback); }
-            catch(Exception e) { Utils.LogException(e, Utils.LOG_ID_SERVICE); }
+            catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_SERVICE); }
 
             // Start/stop process monitoring
             bool processMonitoringRequired;
-            lock (InheritanceGuard) { processMonitoringRequired = ChildInheritance.Count > 0; }
+            lock (InheritanceGuard) { processMonitoringRequired = ChildInheritanceTemplates.Count > 0; }
             try
             {
                 if (processMonitoringRequired && !FirewallModeBlockAllOrDisabled)
@@ -1360,9 +1370,9 @@ namespace pylorak.TinyWall
                     }
                 case MessageType.ADD_TEMPORARY_EXCEPTION:
                     {
-                        var args = (TwMessageAddTempException)req;
                         try
                         {
+                            var args = (TwMessageAddTempException)req;
                             if (FirewallModeBlockAllOrDisabled)
                                 return args.CreateResponse();
 
@@ -1375,28 +1385,24 @@ namespace pylorak.TinyWall
                         }
                         finally
                         {
-                            lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Release(); }
+                            FirewallThreadThrottler.Release();
                         }
                     }
-                case MessageType.ADD_PERSISTENT_EXCEPTION:
+                case MessageType.QUEUE_WILDCARD_SCAN:
                     {
-                        var args = (TwMessageAddPersistentException)req;
+                        var args = (TwMessageQueueWildcardScan)req;
+                        var appPath = args.AppPath;
 
-                        if (FirewallModeBlockAllOrDisabled)
+                        if (FirewallModeBlockAllOrDisabled || UserSubjectExes.Contains(appPath))
                             return args.CreateResponse();
 
-                        string appPath = args.AppPath;
-
-                        // Skip if we have a user-defined rule for this path
-                        if (UserSubjectExes.Contains(appPath))
-                            return args.CreateResponse();
-
-                        var wildcardException = CreateWildcardExceptions(appPath);
+                        var wildcardException = CreateWildcardException(appPath);
                         if (wildcardException != null)
                         {
                             var wildcardExceptionColl = new[] { wildcardException };
-                            ActiveConfig.Service.ActiveProfile.AddExceptions(wildcardExceptionColl);
+
                             GlobalInstances.ServerChangeset = Guid.NewGuid();
+                            ActiveConfig.Service.ActiveProfile.AddExceptions(wildcardExceptionColl);
                             ActiveConfig.Service.Save(ConfigSavePath);
 
                             using var fltCatTrx = FilterGrouping.CreateTransaction(false);
@@ -1773,25 +1779,25 @@ namespace pylorak.TinyWall
                             continue;
 
                         // Skip if we have already processed this parent-child combination
-                        if (ChildInheritedSubjectExes.TryGetValue(path, out var childVal))
+                        if (ChildInheritanceTriggeredRelations.TryGetValue(path, out var parentList))
                         {
-                            if (childVal.Contains(parentPath))
+                            if (parentList.Contains(parentPath))
                                 break;
                         }
 
-                        if (ChildInheritance.TryGetValue(parentPath, out List<FirewallExceptionV3> exList))
+                        if (ChildInheritanceTemplates.TryGetValue(parentPath, out List<FirewallExceptionV3> exList))
                         {
                             newExceptions ??= new List<FirewallExceptionV3>();
 
                             foreach (var userEx in exList)
                                 newExceptions.Add(new FirewallExceptionV3(new ExecutableSubject(path), userEx.Policy));
 
-                            if (childVal == null)
+                            if (parentList == null)
                             {
-                                childVal = new HashSet<string>();
-                                ChildInheritedSubjectExes.Add(path, childVal);
+                                parentList = new HashSet<string>();
+                                ChildInheritanceTriggeredRelations.Add(path, parentList);
                             }
-                            childVal.Add(parentPath);
+                            parentList.Add(parentPath);
 
                             break;
                         }
@@ -1800,7 +1806,7 @@ namespace pylorak.TinyWall
 
                 if (newExceptions != null)
                 {
-                    lock (FirewallThreadThrottler.SynchRoot) { FirewallThreadThrottler.Request(); }
+                    FirewallThreadThrottler.Request();
                     Q.Add(new TwRequest(TwMessageAddTempException.CreateRequest(newExceptions.ToArray())));
                 }
             }
@@ -1810,7 +1816,7 @@ namespace pylorak.TinyWall
             }
         }
 
-        private FirewallExceptionV3? CreateWildcardExceptions(string executablePath)
+        private FirewallExceptionV3? CreateWildcardException(string executablePath)
         {
             bool? sigVerifyCache = null;
             FirewallExceptionV3? bestMatch = null;
@@ -1848,10 +1854,7 @@ namespace pylorak.TinyWall
             if (bestMatch == null)
                 return null;
 
-            string matchKey = $"{bestMatch.Id:N}|{executablePath}";
-            if (!WildcardMatchedSubjects.Add(matchKey))
-                return null;
-
+            // Clone exception with selected wildcard and point it to the new executable
             FirewallExceptionV3 concreteException = Utils.DeepClone(bestMatch);
             concreteException.Subject = new ExecutableSubject(executablePath);
             concreteException.CreationDate = DateTime.Now;
@@ -1876,10 +1879,10 @@ namespace pylorak.TinyWall
                             if (ex.ChildProcessesInherit)
                             {
                                 // We might have multiple rules with the same exePath, so we maintain a list of exceptions
-                                if (!ChildInheritance.TryGetValue(exePath, out List<FirewallExceptionV3>? inheritedRules))
+                                if (!ChildInheritanceTemplates.TryGetValue(exePath, out List<FirewallExceptionV3>? inheritedRules))
                                 {
                                     inheritedRules = new List<FirewallExceptionV3>();
-                                    ChildInheritance.Add(exePath, inheritedRules);
+                                    ChildInheritanceTemplates.Add(exePath, inheritedRules);
                                 }
                                 inheritedRules.Add(ex);
                             }
@@ -1963,7 +1966,7 @@ namespace pylorak.TinyWall
                 try
                 {
                     if (!Utils.IsNullOrEmpty(appPath))
-                        Q.TryAdd(new TwRequest(TwMessageAddPersistentException.CreateRequest(appPath)), 0);
+                        Q.TryAdd(new TwRequest(TwMessageQueueWildcardScan.CreateRequest(appPath)), 0);
                 }
                 catch
                 {
@@ -2078,7 +2081,7 @@ namespace pylorak.TinyWall
             HostsFileManager.Dispose();
             FileLocker.UnlockAll();
 
-            FirewallThreadThrottler?.Dispose();
+            FirewallThreadThrottler.Dispose();
             Q.Dispose();
             WfpEngine.Dispose();
 
