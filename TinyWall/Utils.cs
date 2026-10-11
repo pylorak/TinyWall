@@ -224,20 +224,18 @@ namespace pylorak.TinyWall
             ctrl.RightToLeft = rtl;
         }
 
-        private static bool IsPathFullyQualifiedLocal(string path)
+        public static bool IsPathFullyQualifiedLocal(string? path)
         {
-            return (path.Length >= 3)
+            return (path != null)
+                && (path.Length >= 3)
                 && (char.IsLetter(path[0]))
                 && (path[1] == Path.VolumeSeparatorChar)
                 && ( (path[2] == Path.DirectorySeparatorChar) || (path[2] == Path.AltDirectorySeparatorChar) );
         }
 
-        internal static bool IsPathFullyQualified(string path)
+        internal static bool IsPathFullyQualified(string? path)
         {
-            if (NetworkPath.IsUncPath(path))
-                return true;
-
-            return IsPathFullyQualifiedLocal(path);
+            return NetworkPath.IsUncPath(path) || IsPathFullyQualifiedLocal(path);
         }
 
         internal static bool IsSystemShuttingDown()

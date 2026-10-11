@@ -61,9 +61,17 @@ namespace pylorak.TinyWall
         // Used to avoid creating duplicate firewall rules for processes we have already handled.
         private readonly Dictionary<string, HashSet<string>> ChildInheritanceTriggeredRelations = new(StringComparer.OrdinalIgnoreCase);
 
+        // Lock object to synchronize wildcard processing from multiple threads
+        private readonly object WildcardGuard = new();
+
         // A list of all exceptions with an enabled wildcard pattern, indexed by the filename (without path).
         // Used for fast lookup of all active wildcards that might apply to a specific filename.
         private readonly Dictionary<string, List<FirewallExceptionV3>> WildcardTemplates = new(StringComparer.OrdinalIgnoreCase);
+
+        // A list of executable paths that don't need reevaluation against active wildcard patterns.
+        // Used to avoid expensive wildcard scanning on every drop event for paths we have already processed recently.
+        private readonly Dictionary<string, long> WildcardScanCache = new(StringComparer.OrdinalIgnoreCase);
+
         private readonly ThreadThrottler FirewallThreadThrottler = new(Thread.CurrentThread, ThreadPriority.Highest, false);
         private StringBuilder? ProcessStartWatcher_Sbuilder;
 
@@ -87,7 +95,7 @@ namespace pylorak.TinyWall
 
         private void CreateDefaultRules(List<RuleDef> rules)
         {
-            using var timer = new HierarchicalStopwatch("Creating default rules");
+            using var timer = new HierarchicalStopwatch("CreateDefaultRules()");
 
             var ModeId = Guid.NewGuid();
 
@@ -148,8 +156,6 @@ namespace pylorak.TinyWall
 
             if (!FirewallModeBlockAllOrDisabled)
             {
-                timer.NewSubTask("Creating user rules");
-
                 // Do we want to block known malware ports?
                 if (ActiveConfig.Service.Blocklists.EnableBlocklists && ActiveConfig.Service.Blocklists.EnablePortBlocklist)
                 {
@@ -183,15 +189,14 @@ namespace pylorak.TinyWall
                 userExceptions.AddRange(ActiveConfig.Service.ActiveProfile.AppExceptions);
 
                 TranslateExceptionsToRules(userExceptions, rules, false);
-                CreateInheritedRulesForRunningProcesses(rules);
             }
         }
 
         private void CreateInheritedRulesForRunningProcesses(List<RuleDef> rules)
         {
-            using var timer = new HierarchicalStopwatch("Create inherited rules for running processes");
+            using var timer = new HierarchicalStopwatch("CreateInheritedRulesForRunningProcesses()");
 
-            if (ChildInheritanceTemplates.Count != 0)
+            if (!FirewallModeBlockAllOrDisabled && (ChildInheritanceTemplates.Count != 0))
             {
                 var procTree = new Dictionary<uint, ProcessSnapshotEntry>();
                 foreach (var p in ProcessManager.CreateToolhelp32SnapshotExtended())
@@ -272,7 +277,7 @@ namespace pylorak.TinyWall
 
         private void InstallRules(List<RuleDef> rules, bool startNewWfpTransaction, Dictionary<ulong, FilterGroup> fltCatTrx)
         {
-            using var timer = new HierarchicalStopwatch("Installing rules");
+            using var timer = new HierarchicalStopwatch("InstallRules()");
 
             #region Block internet during display power-save
             bool displayBlockActive = ActiveConfig.Service.ActiveProfile.DisplayOffBlock && !DisplayCurrentlyOn;
@@ -313,26 +318,29 @@ namespace pylorak.TinyWall
 
         private void InstallFirewallRules()
         {
-            using var timer = new HierarchicalStopwatch("Reloading all firewall rules");
+            using var timer = new HierarchicalStopwatch("InstallFirewallRules()");
             LastRuleReloadTime = DateTime.Now;
             PathMapper.Instance.RebuildCache();
 
             var rules = new List<RuleDef>();
+            bool processMonitoringRequired = false;
             lock (InheritanceGuard)
+            lock (WildcardGuard)
             {
                 UserSubjectExes.Clear();
                 WildcardTemplates.Clear();
+                WildcardScanCache.Clear();
                 ChildInheritanceTemplates.Clear();
                 ChildInheritanceTriggeredRelations.Clear();
                 CreateDefaultRules(rules);
+                CreateInheritedRulesForRunningProcesses(rules);
+                processMonitoringRequired = ChildInheritanceTemplates.Count > 0;
             }
 
             timer.NewSubTask("WFP transaction acquire");
             using (var fltCatTrx = FilterGrouping.CreateTransaction(true))
             using (var wfpTrx = WfpEngine.BeginTransaction())
             {
-                timer.NewSubTask("WFP cleanup");
-
                 // Remove all existing WFP objects
                 DeleteWfpObjects(WfpEngine, true);
 
@@ -370,7 +378,7 @@ namespace pylorak.TinyWall
 
                 InstallRules(rules, false, fltCatTrx.Dictionary);
 
-                timer.NewSubTask("Committing WFP transaction");
+                timer.NewSubTask("WFP transaction commit");
                 wfpTrx.Commit();
                 fltCatTrx.Commit();
             }
@@ -383,8 +391,6 @@ namespace pylorak.TinyWall
             catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_SERVICE); }
 
             // Start/stop process monitoring
-            bool processMonitoringRequired;
-            lock (InheritanceGuard) { processMonitoringRequired = ChildInheritanceTemplates.Count > 0; }
             try
             {
                 if (processMonitoringRequired && !FirewallModeBlockAllOrDisabled)
@@ -1531,6 +1537,21 @@ namespace pylorak.TinyWall
                             InstallFirewallRules();
                         }
 
+                        // Prune old wildcard cache entries
+                        lock(WildcardGuard)
+                        {
+                            var now = Stopwatch.GetTimestamp();
+                            var ticksInMinute = Stopwatch.Frequency * 60;
+                            var keysToRemove = new List<string>(WildcardScanCache.Count);
+                            foreach (var entry in WildcardScanCache)
+                            {
+                                if ((now - entry.Value) >= ticksInMinute)
+                                    keysToRemove.Add(entry.Key);
+                            }
+                            foreach (var k in keysToRemove)
+                                WildcardScanCache.Remove(k);
+                        }
+
                         // Check for updates once every 2 days
                         if (ActiveConfig.Service.AutoUpdateCheck && (DateTime.Now - LastUpdateCheck >= TimeSpan.FromDays(2)))
                         {
@@ -1868,6 +1889,7 @@ namespace pylorak.TinyWall
             if (!areTemporaryException)
             {
                 lock (InheritanceGuard)
+                lock (WildcardGuard)
                 {
                     foreach (FirewallExceptionV3 ex in inExceptions)
                     {
@@ -1894,15 +1916,13 @@ namespace pylorak.TinyWall
                                 Debug.Assert(!Utils.IsNullOrEmpty(exeName));
 
                                 if (!WildcardTemplates.TryGetValue(exeName, out var exeWildcardTemplates))
-                                {
-                                    exeWildcardTemplates = new List<FirewallExceptionV3>();
-                                    WildcardTemplates.Add(exeName, exeWildcardTemplates);
-                                }
-                                exeWildcardTemplates.Add(ex);
+                                    WildcardTemplates.Add(exeName, new() { ex });
+                                else
+                                    exeWildcardTemplates.Add(ex);
                             }
                         } // if ExecutableSubject
                     } // foreach exception
-                } // lock InheritanceGuard
+                } // lock
             } // if not isTemporaryException
 
             // Convert exceptions to rules,
@@ -1937,7 +1957,9 @@ namespace pylorak.TinyWall
             string? appPath = Utils.IsNullOrEmpty(data.appId)
                 ? null
                 : PathMapper.Instance.ConvertPathIgnoreErrors(data.appId, PathFormat.Win32);
-            entry.AppPath = appPath ?? "System";
+            appPath ??= "System";
+
+            entry.AppPath = appPath;
             if (data.remotePort.HasValue)
                 entry.RemotePort = data.remotePort.Value;
             if (data.direction.HasValue)
@@ -1960,17 +1982,23 @@ namespace pylorak.TinyWall
                 FirewallLogEntries.Enqueue(entry);
             }
 
-            // Copy only the immutable path; wildcard evaluation runs on the service thread.
             if (eventType == FirewallLogEvent.ClassifyDrop)
             {
-                try
+                bool doWildcardScan = false;
+                lock (WildcardGuard)
                 {
-                    if (!Utils.IsNullOrEmpty(appPath))
-                        Q.TryAdd(new TwRequest(TwMessageQueueWildcardScan.CreateRequest(appPath)), 0);
+                    bool scanCandidate = Utils.IsPathFullyQualifiedLocal(appPath)
+                        && !UserSubjectExes.Contains(appPath)
+                        && WildcardTemplates.ContainsKey(Path.GetFileName(appPath));
+                    if (scanCandidate)
+                    {
+                        doWildcardScan = !WildcardScanCache.ContainsKey(appPath);
+                        WildcardScanCache[appPath] = Stopwatch.GetTimestamp();
+                    }
                 }
-                catch
+                if (doWildcardScan)
                 {
-                    // Enqueue failures must not escape the WFP callback, including during shutdown.
+                    Q.TryAdd(new TwRequest(TwMessageQueueWildcardScan.CreateRequest(appPath)), 0);
                 }
             }
         }

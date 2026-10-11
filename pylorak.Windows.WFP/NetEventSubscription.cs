@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Principal;
@@ -198,7 +199,8 @@ namespace pylorak.Windows.WFP
         private void NativeCallbackHandler0(IntPtr context, IntPtr netEvent1)
         {
             Interop.FWPM_NET_EVENT1 ev = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT1>(netEvent1);
-            _callback(new NetEventData(ev));
+            try { _callback(new NetEventData(ev)); }
+            catch { Debug.Assert(false); }
         }
 
         protected override void Dispose(bool disposing)
@@ -256,7 +258,8 @@ namespace pylorak.Windows.WFP
         private void NativeCallbackHandler1(IntPtr context, IntPtr netEvent1)
         {
             var ev = PInvokeHelper.PtrToStructure<Interop.FWPM_NET_EVENT2>(netEvent1);
-            _callback(new NetEventData(ev));
+            try { _callback(new NetEventData(ev)); }
+            catch { Debug.Assert(false); }
         }
 
         protected override void Dispose(bool disposing)

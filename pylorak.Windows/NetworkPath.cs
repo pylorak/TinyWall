@@ -29,9 +29,9 @@ namespace pylorak.Windows
             #endregion
         }
 
-        public static bool IsUncPath(string path)
+        public static bool IsUncPath(string? path)
         {
-            return IsUncPath(path.AsSpan());
+            return (path != null) && IsUncPath(path.AsSpan());
         }
 
         public static bool IsUncPath(ReadOnlySpan<char> path)
