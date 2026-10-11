@@ -199,7 +199,6 @@ namespace pylorak.TinyWall
                     return WildcardValidation.ErrorEmptyParameter;
 
                 if (filePath.IndexOfAny(WildcardCharacters) >= 0
-                    || !TryGetLiteralPrefix(pattern, out string normalizedPrefix)
                     || !Matches(pattern, filePath))
                 {
                     return WildcardValidation.ErrorPathNotMatched;
@@ -216,7 +215,7 @@ namespace pylorak.TinyWall
 
         private static WildcardValidation IsFileValidWildcardTarget(string filePath, ref bool? sigVerifyPass)
         {
-            bool inUacProtectedPaths = HasLiteralPrefixInRoots(filePath, ProtectedPathRoots);
+            bool inUacProtectedPaths = IsPathInRootAny(filePath, ProtectedPathRoots);
             if (inUacProtectedPaths)
                 // No signature verification required
                 return WildcardValidation.Success;
@@ -230,54 +229,6 @@ namespace pylorak.TinyWall
                 return WildcardValidation.ErrorFileSignatureFail;
 
             return WildcardValidation.Success;
-        }
-
-        private static bool TryGetLiteralPrefix(
-            string? pattern,
-            out string normalizedPrefix)
-        {
-            normalizedPrefix = string.Empty;
-
-            if (string.IsNullOrWhiteSpace(pattern)
-                || char.IsWhiteSpace(pattern![0])
-                || char.IsWhiteSpace(pattern[pattern.Length - 1]))
-            {
-                return false;
-            }
-
-            int wildcardIndex = pattern!.IndexOfAny(WildcardCharacters);
-            if (wildcardIndex <= 0)
-            {
-                return false;
-            }
-
-            try
-            {
-                string literalPrefix = pattern.Substring(0, wildcardIndex);
-                if (!Utils.IsPathFullyQualified(literalPrefix))
-                {
-                    return false;
-                }
-
-                string? pathRoot = Path.GetPathRoot(literalPrefix);
-                if (string.IsNullOrEmpty(pathRoot)
-                    || literalPrefix.IndexOf(':', pathRoot.Length) >= 0)
-                {
-                    return false;
-                }
-
-                // Keeping a separator char at the end of directory paths importantly allows us in later steps
-                // to differentiate between a child directory entry and a sibling entry with the same prefix,
-                // e.g. C:\Windows\ vs C:\WindowsXYZ
-                normalizedPrefix = literalPrefix;
-                return true;
-            }
-            catch (Exception exception) when (exception is ArgumentException
-                || exception is NotSupportedException
-                || exception is PathTooLongException)
-            {
-                return false;
-            }
         }
 
         private static bool Matches(string? pattern, string? path)
@@ -420,13 +371,13 @@ namespace pylorak.TinyWall
             return roots;
         }
 
-        private static bool HasLiteralPrefixInRoots(
-            string normalizedPrefix,
+        private static bool IsPathInRootAny(
+            string filePath,
             IEnumerable<string> allowedRoots)
         {
             foreach (string root in allowedRoots)
             {
-                if (IsPathBelowRoot(normalizedPrefix, root))
+                if (IsPathInRoot(filePath, root))
                 {
                     return true;
                 }
@@ -435,7 +386,7 @@ namespace pylorak.TinyWall
             return false;
         }
 
-        private static bool IsPathBelowRoot(string candidate, string root)
+        private static bool IsPathInRoot(string candidate, string root)
         {
             return candidate.Length > root.Length
                 && candidate.StartsWith(root, StringComparison.OrdinalIgnoreCase)
