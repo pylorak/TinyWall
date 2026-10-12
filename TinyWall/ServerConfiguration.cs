@@ -66,78 +66,138 @@ namespace pylorak.TinyWall
             return false;
         }
 
-        public void AddExceptions(IEnumerable<FirewallExceptionV3> newList)
+        private static void TryUnify(FirewallExceptionV3 olderEx, FirewallExceptionV3 newerEx, out bool removeOlder)
         {
-            var oldList = new List<FirewallExceptionV3>(AppExceptions);
+            removeOlder = false;
 
-            foreach (var oldEx in oldList)
+            if (olderEx.Id == newerEx.Id)
             {
-                foreach (var newEx in newList)
+                // Two exceptions can have the same IDs if the user just edited
+                // an exception, in which case the newer (edited) version
+                // is added using the same ID as the unedited one.
+                // The newer one then completely supersedes the older version.
+                removeOlder = true;
+            }
+            else if (olderEx.Subject.Equals(newerEx.Subject)
+                && (olderEx.Timer == AppExceptionTimer.Permanent)
+                && (newerEx.Timer == AppExceptionTimer.Permanent)
+            )
+            {
+                // Merge the older exception's rules into the newer one,
+                // then keep only the newer.
+                ExceptionPolicy targetPolicy = newerEx.Policy;
+                if (olderEx.Policy.MergeRulesTo(ref targetPolicy))
                 {
-                    if (oldEx.Id.Equals(newEx.Id))
-                    {
-                        // With equal exception IDs, keep only the newer one.
-                        // Two exceptions can have the same IDs if the user just edited one.
-                        AppExceptions.Remove(oldEx);
-                    }
-                    else if (oldEx.Subject.Equals(newEx.Subject)
-                        && (oldEx.Timer == AppExceptionTimer.Permanent)
-                        && (newEx.Timer == AppExceptionTimer.Permanent)
-                    )
-                    {
-                        // Merge rules
-                        var newPolicy = newEx.Policy;
-                        if (oldEx.Policy.MergeRulesTo(ref newPolicy))
-                        {
-                            AppExceptions.Remove(oldEx);
-                            newEx.Policy = newPolicy;
-                            newEx.RegenerateId();
-                        }
-                    }
+                    newerEx.Policy = targetPolicy;
+                    newerEx.RegenerateId();
+                    removeOlder = true;
                 }
-            } // for all exceptions
+            }
+        }
 
-            AppExceptions.AddRange(newList);
+        public void AddExceptions(IList<FirewallExceptionV3> newList)
+        {
+            var dstList = AppExceptions;
+            var srcList = new List<FirewallExceptionV3>(newList);
+
+            // Dedup the list of new exceptions within itself,
+            // before merging into the target list.
+            DedupExceptions(srcList);
+
+            var dstRemoved = new HashSet<int>();
+            var srcRemoved = new HashSet<int>();
+
+            for (int i = 0; i < dstList.Count; ++i)
+            {
+                if (dstRemoved.Contains(i))
+                    continue;
+
+                FirewallExceptionV3 app1 = dstList[i];
+
+                for (int j = 0; j < srcList.Count; ++j)
+                {
+                    // app1 may have been removed by an earlier iteration of this
+                    // inner loop. It must not take part in any further comparisons.
+                    if (dstRemoved.Contains(i))
+                        break;
+
+                    if (srcRemoved.Contains(j))
+                        continue;
+
+                    FirewallExceptionV3 app2 = srcList[j];
+                    var older = app1.CreationDate > app2.CreationDate ? app2 : app1;
+                    bool olderIsApp1 = ReferenceEquals(older, app1);
+                    var newer = olderIsApp1 ? app2 : app1;
+
+                    TryUnify(older, newer, out bool doRemoveOlder);
+                    if (doRemoveOlder)
+                    {
+                        if (olderIsApp1)
+                            dstRemoved.Add(i);
+                        else
+                            srcRemoved.Add(j);
+                    }
+                } // for j
+            } // for i
+
+            // Remove entries that were marked for deletion
+            for (int i = dstList.Count - 1; i >= 0; --i)
+            {
+                if (dstRemoved.Contains(i))
+                    dstList.RemoveAt(i);
+            }
+            for (int j = srcList.Count - 1; j >= 0; --j)
+            {
+                if (srcRemoved.Contains(j))
+                    srcList.RemoveAt(j);
+            }
+            dstList.AddRange(srcList);
         } // method
 
         public void Normalize()
         {
-            for (int i = 0; i < AppExceptions.Count; ++i)
+            DedupExceptions(AppExceptions);
+        } // method
+
+        private static void DedupExceptions(List<FirewallExceptionV3> exceptions)
+        {
+            // Set of indices we have removed thus we must not compare against
+            var removed = new HashSet<int>();
+
+            for (int i = 0; i < exceptions.Count; ++i)
             {
-                FirewallExceptionV3 app1 = AppExceptions[i];
+                if (removed.Contains(i))
+                    continue;
 
-                for (int j = AppExceptions.Count - 1; j > i; --j)
+                FirewallExceptionV3 app1 = exceptions[i];
+
+                for (int j = i + 1; j < exceptions.Count; ++j)
                 {
-                    FirewallExceptionV3 app2 = AppExceptions[j];
+                    if (removed.Contains(i))
+                        break;
+
+                    if (removed.Contains(j))
+                        continue;
+
+                    FirewallExceptionV3 app2 = exceptions[j];
                     var older = app1.CreationDate > app2.CreationDate ? app2 : app1;
+                    bool olderIsApp1 = ReferenceEquals(older, app1);
+                    var newer = olderIsApp1 ? app2 : app1;
 
-                    if (app1.Id.Equals(app2.Id))
+                    TryUnify(older, newer, out bool doRemoveOlder);
+                    if (doRemoveOlder)
                     {
-                        // With equal exception IDs, keep only the newer one
-                        // Two exceptions can have the same IDs if the user just edited
-                        // an exception, in which case the newer (edited) version
-                        // is added using the same ID as the unedited one.
-
-                        AppExceptions.Remove(older);
+                        removed.Add(olderIsApp1 ? i : j);
                     }
-                    else if (app1.Subject.Equals(app2.Subject)
-                        && (app1.Timer == AppExceptionTimer.Permanent)
-                        && (app2.Timer == AppExceptionTimer.Permanent)
-                    )
-                    {
-                        var newer = app1 == older ? app2 : app1;
+                } // for j
+            } // for i
 
-                        // Merge rules
-                        ExceptionPolicy targetPolicy = newer.Policy;
-                        if (older.Policy.MergeRulesTo(ref targetPolicy))
-                        {
-                            AppExceptions.Remove(older);
-                            newer.Policy = targetPolicy;
-                            newer.RegenerateId();
-                        }
-                    }
-                }
-            } // for all exceptions
+            // Remove entries that were marked for deletion
+            for (int i = exceptions.Count - 1; i >= 0; --i)
+            {
+                if (removed.Contains(i))
+                    exceptions.RemoveAt(i);
+            }
         } // method
     }
 

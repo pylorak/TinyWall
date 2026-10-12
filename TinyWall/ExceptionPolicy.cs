@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace pylorak.TinyWall
 {
@@ -57,12 +58,17 @@ namespace pylorak.TinyWall
 
     [JsonConverter(typeof(ExceptionPolicyConverter))]
     [DataContract(Namespace = "TinyWall")]
-    public abstract class ExceptionPolicy
+    public abstract class ExceptionPolicy : ISerializable<ExceptionPolicy>
     {
         [JsonPropertyOrder(-1)]
         public abstract PolicyType PolicyType { get; }
 
         public abstract bool MergeRulesTo(ref ExceptionPolicy other);
+
+        public JsonTypeInfo<ExceptionPolicy> GetJsonTypeInfo()
+        {
+            return SourceGenerationContext.Default.ExceptionPolicy;
+        }
     }
 
     // -----------------------------------------------------------------------
