@@ -30,8 +30,7 @@ namespace pylorak.TinyWall
 
         private static readonly Guid TINYWALL_PROVIDER_KEY = new("{66CA412C-4453-4F1E-A973-C16E433E34D0}");
 
-        // Unbounded so WFP notifications never wait for capacity or lose a wildcard check.
-        private readonly BlockingCollection<TwRequest> Q = new();
+        private readonly BlockingCollection<TwRequest> Q = new(50);
         private readonly PipeServerEndpoint ServerPipe;
         private readonly Timer MinuteTimer;
 
