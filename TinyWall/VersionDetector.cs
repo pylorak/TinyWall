@@ -47,7 +47,7 @@ namespace pylorak.TinyWall
 
             // Selection state of the single segment that is allowed to hold candidates.
             bool foundVersionSegment = false;
-            bool segmentHasCandidate = false;
+            bool segmentHasCandidate;
             int vPrefixCount = 0;
             int vPrefixStart = 0;
             int vPrefixLength = 0;
@@ -330,7 +330,7 @@ namespace pylorak.TinyWall
 #if DEBUG
         internal static void Test()
         {
-            void Check(string? input, string? expected)
+            static void Check(string? input, string? expected)
             {
                 bool found = VersionDetector.TryFindVersionSpan(input, out int start, out int length);
                 string? actual = found ? input!.Substring(start, length) : null;

@@ -197,9 +197,7 @@ namespace pylorak.TinyWall
                 default:
                     throw new NotImplementedException();
             }
-            chkEnableWildcard.Checked = flowWildcardCheckbox.Enabled
-                ? !Utils.IsNullOrEmpty(TmpExceptionSettings[0].WildcardPattern)
-                : false;
+            chkEnableWildcard.Checked = flowWildcardCheckbox.Enabled && !Utils.IsNullOrEmpty(TmpExceptionSettings[0].WildcardPattern);
             linkEditWildcard.Enabled = chkEnableWildcard.Checked;
 
             // Update rule/policy fields

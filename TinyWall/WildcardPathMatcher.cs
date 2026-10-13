@@ -35,7 +35,7 @@ namespace pylorak.TinyWall
         }
 
         private static readonly char[] WildcardCharacters = { '*', '?' };
-        private static readonly IReadOnlyCollection<string> ProtectedPathRoots = BuildProtectedPathRoots();
+        private static readonly HashSet<string> ProtectedPathRoots = BuildProtectedPathRoots();
         private static readonly string? UserProfileDirectoryRoot = GetUserProfileDirectoryRoot();
 
         public static WildcardValidation IsPatternSyntaxValid(string pattern)
@@ -85,11 +85,8 @@ namespace pylorak.TinyWall
         }
 
         // Returns true if the filename component (the last path segment) of a pattern contains a wildcard character.
-        private static bool HasWildcardInFilenameComponent(string? pattern)
+        private static bool HasWildcardInFilenameComponent(string pattern)
         {
-            if (Utils.IsNullOrEmpty(pattern))
-                return false;
-
             // Scan the final path segment backwards, up to the last directory separator.
             for (int i = pattern!.Length - 1; i >= 0; i--)
             {
@@ -106,9 +103,6 @@ namespace pylorak.TinyWall
         // Returns -1 (left arg deeper) / 0 (equal strings) / 1 (right arg deeper).
         public static int ComparePatterns(string p1, string p2)
         {
-            if ((p1 is null) || (p2 is null))
-                throw new ArgumentNullException("Arguments cannot be null.");
-
             MeasureLiteralDepth(p1, out int p1PrefixDepth, out int p1TotalDepth);
             MeasureLiteralDepth(p2, out int p2PrefixDepth, out int p2TotalDepth);
 
@@ -357,7 +351,7 @@ namespace pylorak.TinyWall
             return path;
         }
 
-        private static IReadOnlyCollection<string> BuildProtectedPathRoots()
+        private static HashSet<string> BuildProtectedPathRoots()
         {
             Environment.SpecialFolder[] folders =
             {

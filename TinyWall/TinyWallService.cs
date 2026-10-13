@@ -2134,12 +2134,10 @@ namespace pylorak.TinyWall
 #else
             try
             {
-                using (var wfp = new Engine("TinyWall Cleanup Session", "", FWPM_SESSION_FLAGS.None, 5000))
-                using (var trx = wfp.BeginTransaction())
-                {
-                    DeleteWfpObjects(wfp, true);
-                    trx.Commit();
-                }
+                using var wfp = new Engine("TinyWall Cleanup Session", "", FWPM_SESSION_FLAGS.None, 5000);
+                using var trx = wfp.BeginTransaction();
+                DeleteWfpObjects(wfp, true);
+                trx.Commit();
             }
             catch (Exception e) { Utils.LogException(e, Utils.LOG_ID_SERVICE); }
 #endif
