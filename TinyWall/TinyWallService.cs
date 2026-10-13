@@ -7,6 +7,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Management;
 using System.Net;
@@ -1401,18 +1402,11 @@ namespace pylorak.TinyWall
                         if (FirewallModeBlockAllOrDisabled || UserSubjectExes.Contains(appPath))
                             return args.CreateResponse();
 
-                        var wildcardException = CreateWildcardException(appPath);
-                        if (wildcardException != null)
+                        if (CreateWildcardException(appPath, out var wildcardExceptions))
                         {
-                            var wildcardExceptionColl = new[] { wildcardException };
-
-                            GlobalInstances.ServerChangeset = Guid.NewGuid();
-                            ActiveConfig.Service.ActiveProfile.AddExceptions(wildcardExceptionColl);
-                            ActiveConfig.Service.Save(ConfigSavePath);
-
                             using var fltCatTrx = FilterGrouping.CreateTransaction(false);
                             var rules = new List<RuleDef>();
-                            TranslateExceptionsToRules(wildcardExceptionColl, rules, false);
+                            TranslateExceptionsToRules(wildcardExceptions, rules, false);
                             InstallRules(rules, true, fltCatTrx.Dictionary);
                             fltCatTrx.Commit();
                         }
@@ -1836,14 +1830,16 @@ namespace pylorak.TinyWall
             }
         }
 
-        private FirewallExceptionV3? CreateWildcardException(string executablePath)
+        private bool CreateWildcardException(string executablePath, [NotNullWhen(true)] out List<FirewallExceptionV3>? createdExceptions)
         {
+            createdExceptions = null;
             bool? sigVerifyCache = null;
             FirewallExceptionV3? bestMatch = null;
 
             // Get list of all templates that might not match the executable, but at least apply to the same filename
-            if (!WildcardTemplates.TryGetValue(Path.GetFileName(executablePath), out var possibleTemplates))
-                return null;
+            string exeFileName = Path.GetFileName(executablePath);
+            if (!WildcardTemplates.TryGetValue(exeFileName, out var possibleTemplates))
+                return false;
 
             // Find the templates that actually match the executable
             foreach (var template in possibleTemplates)
@@ -1872,14 +1868,34 @@ namespace pylorak.TinyWall
             }
 
             if (bestMatch == null)
-                return null;
+                return false;
 
             // Clone exception with selected wildcard and point it to the new executable
             FirewallExceptionV3 concreteException = Utils.DeepClone(bestMatch);
             concreteException.Subject = new ExecutableSubject(executablePath);
             concreteException.CreationDate = DateTime.Now;
             concreteException.RegenerateId();
-            return concreteException;
+            createdExceptions = new List<FirewallExceptionV3> { concreteException };
+            ActiveConfig.Service.ActiveProfile.AddExceptions(createdExceptions);
+
+            // Remove the old exception if its app cannot be found anymore.
+            // The app likely received an update.
+            string originalFilePath = (bestMatch.Subject as ExecutableSubject)!.ExecutablePath;
+            if (!File.Exists(originalFilePath))
+            {
+                ActiveConfig.Service.ActiveProfile.AppExceptions.Remove(bestMatch);
+                lock (WildcardGuard)
+                {
+                    possibleTemplates.Remove(bestMatch);
+                    if (possibleTemplates.Count == 0)
+                        WildcardTemplates.Remove(exeFileName);
+                }
+            }
+
+            // Save modified config
+            GlobalInstances.ServerChangeset = Guid.NewGuid();
+            ActiveConfig.Service.Save(ConfigSavePath);
+            return true;
         }
 
         private void TranslateExceptionsToRules(IEnumerable<FirewallExceptionV3> inExceptions, List<RuleDef> outRules, bool areTemporaryException)
