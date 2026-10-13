@@ -24,6 +24,7 @@ TinyWall Changelog
 - Better sizing of external app icons in dark mode
 - Develtool UI replaced by CLI for automated builds
 - If Windows Defender rule is enabled in UI, allow its protection updates even if Windows Update is blocked (KloweSa)
+- Profile update for network printers and scanners
 
 ---------------------
 

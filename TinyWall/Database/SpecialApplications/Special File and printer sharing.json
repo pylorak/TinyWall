@@ -63,6 +63,32 @@
         "LocalNetworkOnly": true,
         "AllowedLocalTcpListenerPorts": "*"
       }
+    },
+    {
+      "Subject": {
+        "SubjectType": 3,
+        "ServiceName": "DeviceAssociationService",
+        "ExecutablePath": "{folder:sys32}\\svchost.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": true,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "*"
+      }
+    },
+    {
+      "Subject": {
+        "SubjectType": 3,
+        "ServiceName": "StiSvc",
+        "ExecutablePath": "{folder:sys32}\\svchost.exe"
+      },
+      "Policy": {
+        "PolicyType": 3,
+        "LocalNetworkOnly": true,
+        "AllowedRemoteTcpConnectPorts": "*",
+        "AllowedLocalTcpListenerPorts": "*"
+      }
     }
   ],
   "Flags": {
