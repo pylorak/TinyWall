@@ -1,4 +1,4 @@
-<br />
+﻿<br />
 <div align="center">
   <h3 align="center">TinyWall</h3>
 
@@ -51,6 +51,9 @@ To use the automated build-script:
 The build script is commented, and following through its numbered steps makes it easy to work out what it is doing. Only if you're interested though, because you don't need to know any of that. Generally speaking, you can just call build.ps1 and enjoy its fully built outputs.
 
 If you get the an error about one or more resx files being different, compare the differing resx files in the `staging\tmp` folder with their originals. If the change is expected, overwrite the originals, then execute the build script again.
+
+#### A note about the GitHub workflow
+There is also a CI build workflow in the repository, but only for external contributors who want to use it. It is _not_ used for official releases. It also might or might not be out of date, as it is only maintained by contributors. The `build.ps1` script remains the only ground-truth for official build and release steps.
 
 ## Contributing
 
