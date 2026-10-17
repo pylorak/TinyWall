@@ -722,7 +722,7 @@ namespace pylorak.TinyWall
 
                     var pid = Utils.GetPidUnderCursor(x, y);
                     var exePath = Utils.GetPathOfProcessUseTwService(pid, GlobalInstances.Controller);
-                    var packageList = new UwpPackageList();
+                    var packageList = new UwpPackageList(true);
                     var appContainer = packageList.FindPackageForProcess(pid);
 
                     ExceptionSubject subj;

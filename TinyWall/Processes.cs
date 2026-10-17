@@ -88,7 +88,7 @@ namespace pylorak.TinyWall
             }
 
             var itemColl = new List<ListViewItem>();
-            var packageList = new UwpPackageList();
+            var packageList = new UwpPackageList(true);
             var service_pids = new ServicePidMap();
             var procs = Process.GetProcesses();
 

@@ -2,7 +2,8 @@ TinyWall Changelog
 ---------------------
 
 3.x.x - not yet released
-- Wildcard support for application updates use-case
+- Fix UWP packages offered for picking that shouldn't be (ChrisRosser)
+- Wildcard support for application updates use-case (devprjgithub)
 - Fix WSL was allowed in Block All mode if corresponding special exception was enabled
 - Fix blocks during display power-save not applied to inherited rules
 - Fix WSL rules installed redundantly when adding inherited rules

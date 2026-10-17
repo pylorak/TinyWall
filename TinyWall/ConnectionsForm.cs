@@ -70,7 +70,7 @@ namespace pylorak.TinyWall
             IconScanner.CancelScan();
             var fwLogRequest = GlobalInstances.Controller.BeginReadFwLog();
 
-            var packageList = new UwpPackageList();
+            var packageList = new UwpPackageList(true);
             var itemColl = new List<ListViewItem>();
             var procCache = new Dictionary<uint, string>();
             var servicePids = new ServicePidMap();

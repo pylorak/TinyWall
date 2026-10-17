@@ -92,17 +92,12 @@ namespace pylorak.TinyWall
 
         private readonly bool SelectableOnly;
 
-        public UwpPackageList()
-            : this(false)
-        { }
-
         /// <param name="selectableOnly">
-        /// Leave out packages that no rule could ever match, for the package picker. The default
-        /// is the complete list, which the rest of the application needs: an exception stored
-        /// earlier has to keep resolving to its package through FindPackage, whether or not that
-        /// package would be offered for selection today.
+        /// Leave out packages that shouldn't be pickable by the user. The default
+        /// is the complete list to make sure that packages persisted previously keep resolving
+        /// through FindPackage, whether or not that package would be offered for selection today.
         /// </param>
-        public UwpPackageList(bool selectableOnly)
+        public UwpPackageList(bool selectableOnly = false)
         {
             SelectableOnly = selectableOnly;
         }
@@ -154,8 +149,9 @@ namespace pylorak.TinyWall
         }
 
         /// <summary>
-        /// Whether a rule for this package could ever match anything, and it is therefore worth
-        /// offering for selection.
+        /// Whether this package is eligible to be picked newly from a list of packages.
+        /// Pickable packages are those that are expected to run in an AppContainer,
+        /// that is, packages that are not full-trust and not a framework.
         /// </summary>
         private static bool IsSelectable(global::Windows.ApplicationModel.Package p)
         {
