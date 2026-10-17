@@ -82,7 +82,10 @@ namespace pylorak.TinyWall
             }
 
             var itemColl = new List<ListViewItem>();
-            var packageList = new UwpPackageList();
+
+            // Only packages a rule could actually match belong in the picker. The full list is
+            // still what every other caller gets, so an exception stored earlier keeps resolving.
+            var packageList = new UwpPackageList(true);
             foreach (var package in packageList)
             {
                 // Add list item
