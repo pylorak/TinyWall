@@ -85,9 +85,12 @@ namespace pylorak.TinyWall
 
             // Only packages a rule could actually match belong in the picker. The full list is
             // still what every other caller gets, so an exception stored earlier keeps resolving.
-            var packageList = new UwpPackageList(true);
+            var packageList = new UwpPackageList();
             foreach (var package in packageList)
             {
+                if (!packageList.IsAppContainerApp(package))
+                    continue;
+
                 // Add list item
                 var li = new ListViewItem(package.Name);
                 li.SubItems.Add(package.PublisherId + ", " + package.Publisher);

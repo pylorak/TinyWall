@@ -6,11 +6,10 @@ using System.Text.RegularExpressions;
 using Windows.Management.Deployment;
 using pylorak.Windows;
 using System.Collections;
-using System.Collections.ObjectModel;
 
 namespace pylorak.TinyWall
 {
-    public class UwpPackageList : IReadOnlyList<UwpPackageList.Package>
+    public class UwpPackageList : IReadOnlyCollection<UwpPackageList.Package>
     {
         public enum TamperedState
         {
@@ -28,10 +27,10 @@ namespace pylorak.TinyWall
                 public static extern int DeriveAppContainerSidFromAppContainerName(string pszAppContainerName, out SafeSidHandle ppsidAppContainerSid);
             }
 
+            public readonly string Sid;
             public readonly string Name;
             public readonly string Publisher;
             public readonly string PublisherId;
-            public readonly string Sid;
             public readonly TamperedState Tampered;
 
             public Package(global::Windows.ApplicationModel.Package p)
@@ -47,7 +46,7 @@ namespace pylorak.TinyWall
                     if (0 != NativeMethods.DeriveAppContainerSidFromAppContainerName(p.Id.FamilyName, out pSid))
                         throw new ArgumentException("Cannot determine package SID.");
 
-                    Sid = pSid.GetStringSid() ?? string.Empty;
+                    Sid = pSid.GetStringSid() ?? throw new ArgumentException("Cannot determine package SID.");
                 }
                 finally
                 {
@@ -57,11 +56,7 @@ namespace pylorak.TinyWall
 
             public override int GetHashCode()
             {
-                return Name.GetHashCode()
-                    ^ Publisher.GetHashCode()
-                    ^ PublisherId.GetHashCode()
-                    ^ Sid.GetHashCode()
-                    ^ Tampered.GetHashCode();
+                return Sid.GetHashCode();
             }
 
             public override bool Equals(object? obj)
@@ -71,12 +66,7 @@ namespace pylorak.TinyWall
 
             public bool Equals(Package other)
             {
-                return
-                    (Name == other.Name)
-                    && (Publisher == other.Publisher)
-                    && (PublisherId == other.PublisherId)
-                    && (Sid == other.Sid)
-                    && (Tampered == other.Tampered);
+                return Sid == other.Sid;
             }
 
             public static bool operator ==(Package o1, Package o2)
@@ -90,68 +80,84 @@ namespace pylorak.TinyWall
             }
         }
 
-        private readonly bool AppContainerAppsOnly;
-
-        /// <param name="appContainerAppsOnly">
-        /// When building the list for the Packages property, leave out entries that either
-        /// aren't apps or aren't running in an AppContainer. The default
-        /// is the complete list to make sure that packages persisted previously keep resolving
-        /// through FindPackage, whether or not that package would be offered for selection today.
-        /// </param>
-        public UwpPackageList(bool appContainerAppsOnly = false)
+        private class PackageCacheEntry
         {
-            AppContainerAppsOnly = appContainerAppsOnly;
+            public readonly Package Package;
+            public readonly global::Windows.ApplicationModel.Package NativePackage;
+            public bool? IsAppContainerApp;
+
+            public PackageCacheEntry(Package twp, global::Windows.ApplicationModel.Package winp)
+            {
+                Package = twp;
+                NativePackage = winp;
+            }
         }
 
-        private List<Package>? _Packages;
-        private List<Package> Packages
+        private Dictionary<string, PackageCacheEntry>? _PackageCache;
+
+        private Dictionary<string, PackageCacheEntry> PackageCache
         {
             get
             {
-                if (_Packages is null)
+                if (_PackageCache is null)
                 {
                     try
                     {
-                        _Packages = CreatePackageList(AppContainerAppsOnly);
+                        _PackageCache = CreatePackageList();
                     }
                     catch
                     {
                         // Return an empty list if we cannot enumerate the packages on the system.
                         // This happens for exmaple when the AppXSVC service is disabled.
-                        _Packages = new List<Package>();
+                        _PackageCache = new (StringComparer.OrdinalIgnoreCase);
                     }
                 }
-                return _Packages;
+                return _PackageCache;
             }
         }
 
-        public int Count => ((IReadOnlyCollection<Package>)Packages).Count;
+        public int Count => PackageCache.Count;
 
-        public Package this[int index] => ((IReadOnlyList<Package>)Packages)[index];
-
-        private static List<Package> CreatePackageList(bool appContainerAppsOnly)
+        private static Dictionary<string, PackageCacheEntry> CreatePackageList()
         {
             var pm = new PackageManager();
             var packageList = pm.FindPackagesForUser(string.Empty);
-            var resultList = new List<Package>();
+            var cache = new Dictionary<string, PackageCacheEntry>(StringComparer.OrdinalIgnoreCase);
             foreach (var p in packageList)
             {
                 try
                 {
-                    if (appContainerAppsOnly && !IsAppContainerApp(p))
-                        continue;
-
-                    resultList.Add(new Package(p));
+                    var entry = new Package(p);
+                    if (!cache.ContainsKey(entry.Sid))
+                        cache.Add(entry.Sid, new PackageCacheEntry(entry, p));
                 }
                 catch { }
             }
 
-            return resultList;
+            return cache;
         }
 
         /// <summary>
         /// Whether the package is an app (not a framework/library) and runs in an AppContainer.
         /// </summary>
+        public bool IsAppContainerApp(Package p)
+        {
+            try
+            {
+                if (PackageCache.TryGetValue(p.Sid, out var cacheEntry))
+                {
+                    if (!cacheEntry.IsAppContainerApp.HasValue)
+                        cacheEntry.IsAppContainerApp = IsAppContainerApp(cacheEntry.NativePackage);
+                    return cacheEntry.IsAppContainerApp.Value;
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         private static bool IsAppContainerApp(global::Windows.ApplicationModel.Package p)
         {
             // A framework package is a shared library other packages depend on, not an
@@ -217,14 +223,11 @@ namespace pylorak.TinyWall
 
         public Package? FindPackage(string? sid)
         {
-            if (string.IsNullOrEmpty(sid))
+            if (Utils.IsNullOrEmpty(sid))
                 return null;
 
-            foreach (var package in Packages)
-            {
-                if (package.Sid.Equals(sid))
-                    return package;
-            }
+            if (PackageCache.TryGetValue(sid, out var cacheEntry))
+                return cacheEntry.Package;
 
             return null;
         }
@@ -236,12 +239,10 @@ namespace pylorak.TinyWall
 
         public IEnumerator<Package> GetEnumerator()
         {
-            return ((IEnumerable<Package>)Packages).GetEnumerator();
+            foreach (var pair in PackageCache)
+                yield return pair.Value.Package;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)Packages).GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

@@ -88,7 +88,7 @@ namespace pylorak.TinyWall
             }
 
             var itemColl = new List<ListViewItem>();
-            var packageList = new UwpPackageList(true);
+            var packageList = new UwpPackageList();
             var service_pids = new ServicePidMap();
             var procs = Process.GetProcesses();
 
@@ -99,6 +99,8 @@ namespace pylorak.TinyWall
                     using var p = procs[i];
                     var pid = unchecked((uint)p.Id);
                     var e = ProcessInfo.Create(pid, packageList, service_pids);
+                    if (e.Package.HasValue && !packageList.IsAppContainerApp(e.Package.Value))
+                        e.Package = null;
 
                     if (string.IsNullOrEmpty(e.Path))
                         continue;
