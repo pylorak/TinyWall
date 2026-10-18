@@ -90,16 +90,17 @@ namespace pylorak.TinyWall
             }
         }
 
-        private readonly bool SelectableOnly;
+        private readonly bool AppContainerAppsOnly;
 
-        /// <param name="selectableOnly">
-        /// Leave out packages that shouldn't be pickable by the user. The default
+        /// <param name="appContainerAppsOnly">
+        /// When building the list for the Packages property, leave out entries that either
+        /// aren't apps or aren't running in an AppContainer. The default
         /// is the complete list to make sure that packages persisted previously keep resolving
         /// through FindPackage, whether or not that package would be offered for selection today.
         /// </param>
-        public UwpPackageList(bool selectableOnly = false)
+        public UwpPackageList(bool appContainerAppsOnly = false)
         {
-            SelectableOnly = selectableOnly;
+            AppContainerAppsOnly = appContainerAppsOnly;
         }
 
         private List<Package>? _Packages;
@@ -111,7 +112,7 @@ namespace pylorak.TinyWall
                 {
                     try
                     {
-                        _Packages = CreatePackageList(SelectableOnly);
+                        _Packages = CreatePackageList(AppContainerAppsOnly);
                     }
                     catch
                     {
@@ -128,7 +129,7 @@ namespace pylorak.TinyWall
 
         public Package this[int index] => ((IReadOnlyList<Package>)Packages)[index];
 
-        private static List<Package> CreatePackageList(bool selectableOnly)
+        private static List<Package> CreatePackageList(bool appContainerAppsOnly)
         {
             var pm = new PackageManager();
             var packageList = pm.FindPackagesForUser(string.Empty);
@@ -137,7 +138,7 @@ namespace pylorak.TinyWall
             {
                 try
                 {
-                    if (selectableOnly && !IsSelectable(p))
+                    if (appContainerAppsOnly && !IsAppContainerApp(p))
                         continue;
 
                     resultList.Add(new Package(p));
@@ -149,11 +150,9 @@ namespace pylorak.TinyWall
         }
 
         /// <summary>
-        /// Whether this package is eligible to be picked newly from a list of packages.
-        /// Pickable packages are those that are expected to run in an AppContainer,
-        /// that is, packages that are not full-trust and not a framework.
+        /// Whether the package is an app (not a framework/library) and runs in an AppContainer.
         /// </summary>
-        private static bool IsSelectable(global::Windows.ApplicationModel.Package p)
+        private static bool IsAppContainerApp(global::Windows.ApplicationModel.Package p)
         {
             // A framework package is a shared library other packages depend on, not an
             // application that runs. Checked first because the property is cheap.
