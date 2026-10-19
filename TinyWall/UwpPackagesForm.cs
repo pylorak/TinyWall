@@ -13,6 +13,7 @@ namespace pylorak.TinyWall
         private readonly Size IconSize = new((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
         private readonly DarkModeCS? DarkMode;
         private readonly WmPaintFilter? ListRepaintFilter;
+        private readonly AsyncIconScanner IconScanner;
 
         public UwpPackagesForm(bool multiSelect)
         {
@@ -28,8 +29,10 @@ namespace pylorak.TinyWall
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
 
+            const string TEMP_ICON_KEY = "store";
             IconList.ImageSize = IconSize;
-            IconList.Images.Add("store", Resources.Icons.store);
+            IconList.Images.Add(TEMP_ICON_KEY, Resources.Icons.store);
+            this.IconScanner = new AsyncIconScanner(lvi => { return ((UwpPackageList.Package)lvi.Tag).IconPath; }, IconList.Images.IndexOfKey(TEMP_ICON_KEY));
         }
 
         internal static List<UwpPackageList.Package> ChoosePackage(IWin32Window parent, bool multiSelect)
@@ -62,6 +65,9 @@ namespace pylorak.TinyWall
 
         private void UwpPackages_Load(object sender, EventArgs e)
         {
+            Utils.SetDoubleBuffering(listView, true);
+            listView.ListViewItemSorter = new ListViewItemComparer(0);
+
             this.Icon = Resources.Icons.firewall;
             if (ActiveConfig.Controller.UwpPackagesFormWindowSize.Width != 0)
                 this.Size = ActiveConfig.Controller.UwpPackagesFormWindowSize;
@@ -91,7 +97,7 @@ namespace pylorak.TinyWall
                 // Add list item
                 var li = new ListViewItem(package.DisplayName)
                 {
-                    ImageKey = "store",
+                    ImageIndex = IconScanner.TemporaryIconIdx[0],
                     ToolTipText = package.Name
                 };
                 li.SubItems.Add(package.PublisherId + ", " + package.Publisher);
@@ -99,11 +105,10 @@ namespace pylorak.TinyWall
                 itemColl.Add(li);
             }
 
-            Utils.SetDoubleBuffering(listView, true);
             listView.BeginUpdate();
-            listView.ListViewItemSorter = new ListViewItemComparer(0);
             listView.Items.AddRange(itemColl.ToArray());
             listView.EndUpdate();
+            IconScanner.Rescan(itemColl, listView, IconList);
         }
 
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)
@@ -118,6 +123,7 @@ namespace pylorak.TinyWall
 
         private void UwpPackages_FormClosing(object sender, FormClosingEventArgs e)
         {
+            IconScanner.Dispose();
             ActiveConfig.Controller.UwpPackagesFormWindowState = this.WindowState;
             if (this.WindowState == FormWindowState.Normal)
             {

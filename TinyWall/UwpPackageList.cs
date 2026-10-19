@@ -33,6 +33,7 @@ namespace pylorak.TinyWall
             public readonly string Publisher;
             public readonly string PublisherId;
             public readonly TamperedState Tampered;
+            public readonly string? IconPath;
 
             public Package(global::Windows.ApplicationModel.Package p)
             {
@@ -41,6 +42,8 @@ namespace pylorak.TinyWall
                 Publisher = p.Id.Publisher;
                 PublisherId = p.Id.PublisherId;
                 Tampered = p.Status.Tampered ? TamperedState.Yes : TamperedState.No;
+                if ((p.Logo != null) && p.Logo.IsFile)
+                    IconPath = p.Logo.LocalPath;
 
                 SafeSidHandle? pSid = null;
                 try
@@ -58,7 +61,7 @@ namespace pylorak.TinyWall
 
             public override int GetHashCode()
             {
-                return Sid.GetHashCode();
+                return StringComparer.OrdinalIgnoreCase.GetHashCode(Sid);
             }
 
             public override bool Equals(object? obj)
@@ -68,7 +71,7 @@ namespace pylorak.TinyWall
 
             public bool Equals(Package other)
             {
-                return Sid == other.Sid;
+                return Sid.Equals(other.Sid, StringComparison.OrdinalIgnoreCase);
             }
 
             public static bool operator ==(Package o1, Package o2)

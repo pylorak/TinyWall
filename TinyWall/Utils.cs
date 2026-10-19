@@ -488,83 +488,45 @@ namespace pylorak.TinyWall
 
         internal static Bitmap ScaleImage(Bitmap originalImage, float scaleX, float scaleY)
         {
-            int newWidth = (int)Math.Round(originalImage.Width * scaleX);
-            int newHeight = (int)Math.Round(originalImage.Height * scaleY);
+            int newWidth = Math.Max(1, (int)Math.Round(originalImage.Width * scaleX));
+            int newHeight = Math.Max(1, (int)Math.Round(originalImage.Height * scaleY));
+            return new Bitmap(originalImage, newWidth, newHeight);
+        }
 
-            var newImage = new Bitmap(originalImage, newWidth, newHeight);
+        internal static Bitmap? GetIconContained(string filePath, int targetWidth, int targetHeight)
+        {
+            static Bitmap ContainFit(Bitmap img, int tw, int th)
+            {
+                if ((img.Width == tw) && (img.Height == th))
+                    return (Bitmap)img.Clone();
+                float scale = Math.Min((float)tw / img.Width, (float)th / img.Height);
+                return Utils.ScaleImage(img, scale, scale);
+            }
+
             try
             {
-                using (Graphics g = Graphics.FromImage(newImage))
+                switch (Path.GetExtension(filePath).ToUpperInvariant())
                 {
-                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                    g.DrawImage(originalImage, 0, 0, newImage.Width, newImage.Height);
+                    case ".PNG":
+                    case ".BMP":
+                    case ".JPG":
+                    case ".JPEG":
+                    {
+                        using var img = (Bitmap)Bitmap.FromFile(filePath);
+                        return ContainFit(img, targetWidth, targetHeight);
+                    }
+                    default:
+                    {
+                        var icnSize = ((targetWidth == 16) && (targetHeight == 16)) ? IconTools.ShellIconSize.SmallIcon : IconTools.ShellIconSize.LargeIcon;
+                        using var icon = IconTools.GetIconForExtension(filePath, icnSize);
+                        using var img = icon.ToBitmap();
+                        return ContainFit(img, targetWidth, targetHeight);
+                    }
                 }
-
-                return newImage;
             }
             catch
             {
-                newImage.Dispose();
-                throw;
-            }
-        }
-
-        internal static Bitmap ResizeImage(Bitmap originalImage, int maxWidth, int maxHeight)
-        {
-            int newWidth = originalImage.Width;
-            int newHeight = originalImage.Height;
-            double aspectRatio = (double)originalImage.Width / (double)originalImage.Height;
-
-            if (aspectRatio <= 1 && originalImage.Width > maxWidth)
-            {
-                newWidth = maxWidth;
-                newHeight = (int)Math.Round(newWidth / aspectRatio);
-            }
-            else if (aspectRatio > 1 && originalImage.Height > maxHeight)
-            {
-                newHeight = maxHeight;
-                newWidth = (int)Math.Round(newHeight * aspectRatio);
-            }
-
-            var newImage = new Bitmap(originalImage, newWidth, newHeight);
-            try
-            {
-                using (Graphics g = Graphics.FromImage(newImage))
-                {
-                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                    g.DrawImage(originalImage, 0, 0, newImage.Width, newImage.Height);
-                }
-
-                return newImage;
-            }
-            catch
-            {
-                newImage.Dispose();
-                throw;
-            }
-        }
-
-        internal static Bitmap GetIconContained(string filePath, int targetWidth, int targetHeight)
-        {
-            IconTools.ShellIconSize icnSize = IconTools.ShellIconSize.LargeIcon;
-            if ((targetHeight == 16) && (targetWidth == 16))
-                icnSize = IconTools.ShellIconSize.SmallIcon;
-
-            using var icon = IconTools.GetIconForExtension(filePath, icnSize);
-            if ((icon.Width == targetWidth) && (icon.Height == targetHeight))
-            {
-                return icon.ToBitmap();
-            }
-            if ((icon.Height > targetHeight) || (icon.Width > targetWidth))
-            {
-                using var bmp = icon.ToBitmap();
-                return Utils.ResizeImage(bmp, targetWidth, targetHeight);
-            }
-            else
-            {
-                using var bmp = icon.ToBitmap();
-                float scale = Math.Min((float)targetWidth / icon.Width, (float)targetHeight / icon.Height);
-                return Utils.ScaleImage(bmp, (int)Math.Round(scale * icon.Width), (int)Math.Round(scale * icon.Height));
+                return null;
             }
         }
 

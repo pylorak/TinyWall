@@ -35,12 +35,23 @@ namespace pylorak.TinyWall
             this.Icon = Resources.Icons.firewall;
             this.Controller = ctrl;
 
-            const string TEMP_ICON_KEY = "generic-executable";
-            this.IconList.Images.Add(TEMP_ICON_KEY, Utils.GetIconContained(".exe", IconSize.Width, IconSize.Height));
-            this.IconList.Images.Add("store", Resources.Icons.store);
+            const string TEMP_EXE_ICON_KEY = "generic-executable";
+            const string TEMP_STORE_ICON_KEY = "store";
+            this.IconList.Images.Add(TEMP_EXE_ICON_KEY, Utils.GetIconContained(".exe", IconSize.Width, IconSize.Height) ?? Resources.Icons.executable);
+            this.IconList.Images.Add(TEMP_STORE_ICON_KEY, Resources.Icons.store);
             this.IconList.Images.Add("system", Resources.Icons.windows_small);
             this.IconList.Images.Add("network-drive", Resources.Icons.network_drive_small);
-            this.IconScanner = new AsyncIconScanner(lvi => { return (lvi.Tag as ProcessInfo)!.Path; }, IconList.Images.IndexOfKey(TEMP_ICON_KEY));
+            this.IconScanner = new AsyncIconScanner(
+                lvi =>
+                {
+                    var pi = (lvi.Tag as ProcessInfo)!;
+                    return pi.Package.HasValue
+                        ? pi.Package.Value.IconPath
+                        : pi.Path;
+                },
+                IconList.Images.IndexOfKey(TEMP_EXE_ICON_KEY),
+                IconList.Images.IndexOfKey(TEMP_STORE_ICON_KEY)
+            );
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -231,6 +242,16 @@ namespace pylorak.TinyWall
 
         private void ConstructListItem(List<ListViewItem> itemColl, ProcessInfo e, string protocol, IPEndPoint localEP, IPEndPoint remoteEP, string state, DateTime ts, RuleDirection dir, UwpPackageList uwpList)
         {
+            int GetCachedIconIndex(ListViewItem li, int fallbackIconIndex)
+            {
+                var iconKey = IconScanner.PathExtractor(li);
+                if (Utils.IsNullOrEmpty(iconKey))
+                    return fallbackIconIndex;
+
+                var idx = IconList.Images.IndexOfKey(iconKey);
+                return idx >= 0 ? idx : fallbackIconIndex;
+            }
+
             try
             {
                 // If the process isn't running in an appContainer, we don't want to treat it as UWP package
@@ -245,7 +266,7 @@ namespace pylorak.TinyWall
                 // Add icon
                 if (e.Package.HasValue)
                 {
-                    li.ImageIndex = IconList.Images.IndexOfKey("store");
+                    li.ImageIndex = GetCachedIconIndex(li, IconScanner.TemporaryIconIdx[1]);
                 }
                 else if (e.Path == "System")
                 {
@@ -257,7 +278,7 @@ namespace pylorak.TinyWall
                 }
                 else
                 {
-                    li.ImageIndex = IconList.Images.ContainsKey(e.Path) ? IconList.Images.IndexOfKey(e.Path) : IconScanner.TemporaryIconIdx;
+                    li.ImageIndex = GetCachedIconIndex(li, IconScanner.TemporaryIconIdx[0]);
                 }
 
                 if (e.Pid == 0)
@@ -354,6 +375,7 @@ namespace pylorak.TinyWall
         {
             Utils.SetDoubleBuffering(list, true);
             list.ListViewItemSorter = new ListViewItemComparer(9, null, false);
+
             if (ActiveConfig.Controller.ConnFormWindowSize.Width != 0)
                 this.Size = ActiveConfig.Controller.ConnFormWindowSize;
             if (ActiveConfig.Controller.ConnFormWindowLoc.X != 0)

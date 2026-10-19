@@ -4,26 +4,26 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Windows.Forms;
 using pylorak.Utilities;
-using Windows.ApplicationModel.Store.Preview.InstallControl;
+using System.Collections.ObjectModel;
 
 namespace pylorak.TinyWall
 {
     internal class AsyncIconScanner : Disposable
     {
-        public delegate string IconPathDelegate(ListViewItem li);
+        public delegate string? IconPathDelegate(ListViewItem li);
 
         private readonly BackgroundTask ScannerTask = new();
         private readonly ConcurrentDictionary<string, int> LoadedIcons = new();
-        private readonly IconPathDelegate PathExtractor;
-        public int TemporaryIconIdx { get; }
+        public readonly IconPathDelegate PathExtractor;
+        public ReadOnlyCollection<int> TemporaryIconIdx { get; }
 
         /// <summary>Constructor.</summary>
         /// <param name="pathExtractor">A delegate that returns the path to an icon file from an instance of ListViewItem.</param>
         /// <param name="tempIconIdx">An icon will only be loaded for ListViewItem instances that have this value for their ImageIndex property.</param>
-        internal AsyncIconScanner(IconPathDelegate pathExtractor, int tempIconIdx)
+        internal AsyncIconScanner(IconPathDelegate pathExtractor, params int[] tempIconIdx)
         {
             PathExtractor = pathExtractor;
-            TemporaryIconIdx = tempIconIdx;
+            TemporaryIconIdx = new(tempIconIdx);
         }
 
         internal void Rescan(List<ListViewItem> listItems, ListView listView, ImageList imageList)
@@ -37,12 +37,12 @@ namespace pylorak.TinyWall
                     ScannerTask.CancellationToken.ThrowIfCancellationRequested();
 
                     var icon_path = PathExtractor(li);
-                    if (!string.IsNullOrWhiteSpace(icon_path) && (li.ImageIndex == TemporaryIconIdx))
+                    if (!Utils.IsNullOrEmpty(icon_path) && TemporaryIconIdx.Contains(li.ImageIndex))
                     {
                         var is_icon_new = !LoadedIcons.TryGetValue(icon_path, out int icon_idx);
                         var icon = is_icon_new ? Utils.GetIconContained(icon_path, iconSize.Width, iconSize.Height) : null;
 
-                        if (!is_icon_new || (is_icon_new && (icon is not null)))
+                        if (!is_icon_new || (icon is not null))
                         {
                             listView.BeginInvoke((MethodInvoker)delegate
                             {
@@ -56,9 +56,12 @@ namespace pylorak.TinyWall
                                 {
                                     if (is_icon_new)
                                     {
-                                        imageList.Images.Add(icon_path, icon);
-                                        _ = imageList.Handle;  // Ensure native HIMAGELIST has independent copy
-                                        icon?.Dispose();  // Safe: managed HBITMAP freed, native copy unaffected
+                                        if (!imageList.Images.ContainsKey(icon_path))
+                                        {
+                                            imageList.Images.Add(icon_path, icon);
+                                            _ = imageList.Handle;  // Ensure native HIMAGELIST has independent copy
+                                        }
+                                        icon?.Dispose();  // Safe: managed HBITMAP freed, imageList already has copy
                                         icon_idx = imageList.Images.IndexOfKey(icon_path);
                                         LoadedIcons.TryAdd(icon_path, icon_idx);
                                     }

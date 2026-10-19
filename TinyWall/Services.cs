@@ -103,6 +103,9 @@ namespace pylorak.TinyWall
 
         private void ServicesForm_Load(object sender, EventArgs e)
         {
+            Utils.SetDoubleBuffering(listView, true);
+            listView.ListViewItemSorter = new ListViewItemComparer(0);
+
             this.Icon = Resources.Icons.firewall;
             if (ActiveConfig.Controller.ServicesFormWindowSize.Width != 0)
                 this.Size = ActiveConfig.Controller.ServicesFormWindowSize;
@@ -145,9 +148,7 @@ namespace pylorak.TinyWall
                     srv.Dispose();
             }
 
-            Utils.SetDoubleBuffering(listView, true);
             listView.BeginUpdate();
-            listView.ListViewItemSorter = new ListViewItemComparer(0);
             listView.Items.AddRange(itemColl.ToArray());
             listView.EndUpdate();
         }

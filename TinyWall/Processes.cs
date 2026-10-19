@@ -34,12 +34,23 @@ namespace pylorak.TinyWall
             this.btnOK.Image = GlobalInstances.ApplyBtnIcon;
             this.btnCancel.Image = GlobalInstances.CancelBtnIcon;
 
-            const string TEMP_ICON_KEY = "generic-executable";
-            this.IconList.Images.Add(TEMP_ICON_KEY, Utils.GetIconContained(".exe", IconSize.Width, IconSize.Height));
-            this.IconList.Images.Add("store", Resources.Icons.store);
+            const string TEMP_EXE_ICON_KEY = "generic-executable";
+            const string TEMP_STORE_ICON_KEY = "store";
+            this.IconList.Images.Add(TEMP_EXE_ICON_KEY, Utils.GetIconContained(".exe", IconSize.Width, IconSize.Height) ?? Resources.Icons.executable);
+            this.IconList.Images.Add(TEMP_STORE_ICON_KEY, Resources.Icons.store);
             this.IconList.Images.Add("system", Resources.Icons.windows_small);
             this.IconList.Images.Add("network-drive", Resources.Icons.network_drive_small);
-            this.IconScanner = new AsyncIconScanner(lvi => { return (lvi.Tag as ProcessInfo)!.Path; }, IconList.Images.IndexOfKey(TEMP_ICON_KEY));
+            this.IconScanner = new AsyncIconScanner(
+                lvi =>
+                {
+                    var pi = (lvi.Tag as ProcessInfo)!;
+                    return pi.Package.HasValue
+                        ? pi.Package.Value.IconPath
+                        : pi.Path;
+                },
+                IconList.Images.IndexOfKey(TEMP_EXE_ICON_KEY),
+                IconList.Images.IndexOfKey(TEMP_STORE_ICON_KEY)
+            );
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -69,23 +80,19 @@ namespace pylorak.TinyWall
             }
         }
 
-        private void ProcessesForm_Load(object sender, EventArgs ev)
+        private void UpdateList()
         {
-            this.Icon = Resources.Icons.firewall;
-            if (ActiveConfig.Controller.ProcessesFormWindowSize.Width != 0)
-                this.Size = ActiveConfig.Controller.ProcessesFormWindowSize;
-            if (ActiveConfig.Controller.ProcessesFormWindowLoc.X != 0)
+            int GetCachedIconIndex(ListViewItem li, int fallbackIconIndex)
             {
-                this.Location = ActiveConfig.Controller.ProcessesFormWindowLoc;
-                Utils.FixupFormPosition(this);
-            }
-            this.WindowState = ActiveConfig.Controller.ProcessesFormWindowState;
+                var iconKey = IconScanner.PathExtractor(li);
+                if (Utils.IsNullOrEmpty(iconKey))
+                    return fallbackIconIndex;
 
-            foreach (ColumnHeader col in listView.Columns)
-            {
-                if (ActiveConfig.Controller.ProcessesFormColumnWidths.TryGetValue((string)col.Tag, out int width))
-                    col.Width = width;
+                var idx = IconList.Images.IndexOfKey(iconKey);
+                return idx >= 0 ? idx : fallbackIconIndex;
             }
+
+            IconScanner.CancelScan();
 
             var itemColl = new List<ListViewItem>();
             var packageList = new UwpPackageList();
@@ -129,7 +136,7 @@ namespace pylorak.TinyWall
                     // Add icon
                     if (e.Package.HasValue)
                     {
-                        li.ImageIndex = IconList.Images.IndexOfKey("store");
+                        li.ImageIndex = GetCachedIconIndex(li, IconScanner.TemporaryIconIdx[1]);
                     }
                     else if (e.Path == "System")
                     {
@@ -141,8 +148,7 @@ namespace pylorak.TinyWall
                     }
                     else
                     {
-                        // Real icon will be loaded later asynchronously, for now just assign a generic icon
-                        li.ImageIndex = IconScanner.TemporaryIconIdx;
+                        li.ImageIndex = GetCachedIconIndex(li, IconScanner.TemporaryIconIdx[0]);
                     }
                 }
                 catch
@@ -150,14 +156,37 @@ namespace pylorak.TinyWall
                 }
             }
 
-            Utils.SetDoubleBuffering(listView, true);
             listView.BeginUpdate();
-            listView.ListViewItemSorter = new ListViewItemComparer(0);
+            listView.Items.Clear();
             listView.Items.AddRange(itemColl.ToArray());
             listView.EndUpdate();
 
             // Load process icons asynchronously
             IconScanner.Rescan(itemColl, listView, IconList);
+        }
+
+        private void ProcessesForm_Load(object sender, EventArgs ev)
+        {
+            Utils.SetDoubleBuffering(listView, true);
+            listView.ListViewItemSorter = new ListViewItemComparer(0);
+
+            this.Icon = Resources.Icons.firewall;
+            if (ActiveConfig.Controller.ProcessesFormWindowSize.Width != 0)
+                this.Size = ActiveConfig.Controller.ProcessesFormWindowSize;
+            if (ActiveConfig.Controller.ProcessesFormWindowLoc.X != 0)
+            {
+                this.Location = ActiveConfig.Controller.ProcessesFormWindowLoc;
+                Utils.FixupFormPosition(this);
+            }
+            this.WindowState = ActiveConfig.Controller.ProcessesFormWindowState;
+
+            foreach (ColumnHeader col in listView.Columns)
+            {
+                if (ActiveConfig.Controller.ProcessesFormColumnWidths.TryGetValue((string)col.Tag, out int width))
+                    col.Width = width;
+            }
+
+            UpdateList();
         }
 
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e)

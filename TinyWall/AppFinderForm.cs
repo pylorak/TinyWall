@@ -261,11 +261,7 @@ namespace pylorak.TinyWall
 
             if (!IconList.Images.ContainsKey(app.Name))
             {
-                string iconPath = path;
-                if (!File.Exists(iconPath))
-                    IconList.Images.Add(app.Name, Resources.Icons.window);
-                else
-                    IconList.Images.Add(app.Name, Utils.GetIconContained(iconPath, IconSize.Width, IconSize.Height));
+                IconList.Images.Add(app.Name, Utils.GetIconContained(path, IconSize.Width, IconSize.Height) ?? Resources.Icons.executable);
             }
 
             var li = new ListViewItem(app.Name)

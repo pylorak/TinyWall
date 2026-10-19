@@ -2,7 +2,6 @@
 using pylorak.Utilities;
 using pylorak.Windows;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -42,6 +41,7 @@ namespace pylorak.TinyWall
         private bool LoadingSettings;
         private string? m_NewPassword;
         private Size IconSize = new((int)Math.Round(16 * Utils.DpiScalingFactor), (int)Math.Round(16 * Utils.DpiScalingFactor));
+        private UwpPackageList AppPackageList = new();
 
         internal SettingsForm(ServerConfiguration service, ControllerSettings controller)
         {
@@ -68,14 +68,33 @@ namespace pylorak.TinyWall
             this.btnWeb.Image = GlobalInstances.WebBtnIcon;
             this.btnDonate.BackgroundImage = Resources.Icons.donate;
 
-            const string TEMP_ICON_KEY = "generic-executable";
-            IconList.Images.Add(TEMP_ICON_KEY, Utils.GetIconContained(".exe", IconSize.Width, IconSize.Height));
+            const string TEMP_EXE_ICON_KEY = "generic-executable";
+            const string TEMP_STORE_ICON_KEY = "store";
+            IconList.Images.Add(TEMP_EXE_ICON_KEY, Utils.GetIconContained(".exe", IconSize.Width, IconSize.Height) ?? Resources.Icons.executable);
+            IconList.Images.Add(TEMP_STORE_ICON_KEY, Resources.Icons.store);
             IconList.Images.Add("deleted", Resources.Icons.delete);
             IconList.Images.Add("network-drive", Resources.Icons.network_drive_small);
             IconList.Images.Add("window", Resources.Icons.window);
-            IconList.Images.Add("store", Resources.Icons.store);
             IconList.Images.Add("system", Resources.Icons.windows_small);
-            IconScanner = new AsyncIconScanner(lvi => { return ((lvi.Tag as FirewallExceptionV3)!.Subject as ExecutableSubject)?.ExecutablePath ?? string.Empty; }, IconList.Images.IndexOfKey(TEMP_ICON_KEY));
+            IconScanner = new AsyncIconScanner(
+                lvi =>
+                {
+                    var ex = (lvi.Tag as FirewallExceptionV3)!;
+                    if (ex.Subject is AppContainerSubject acSubj)
+                    {
+                        var package = AppPackageList.FindPackage(acSubj.Sid);
+                        if (package.HasValue)
+                            return package.Value.IconPath;
+                    }
+                    else if (ex.Subject is ExecutableSubject exeSubj)
+                    {
+                        return exeSubj.ExecutablePath;
+                    }
+                    return null;
+                },
+                IconList.Images.IndexOfKey(TEMP_EXE_ICON_KEY),
+                IconList.Images.IndexOfKey(TEMP_STORE_ICON_KEY)
+            );
 
             listApplications.AllowDrop = true;
             listApplications.DragEnter += ListApplications_DragEnter;
@@ -190,13 +209,13 @@ namespace pylorak.TinyWall
         private void RebuildExceptionsList()
         {
             IconScanner.CancelScan();
+            AppPackageList = new UwpPackageList();
 
-            var packageList = new UwpPackageList();
             ExceptionItems.Clear();
             for (int i = 0; i < TmpConfig.Service.ActiveProfile.AppExceptions.Count; ++i)
             {
                 FirewallExceptionV3 ex = TmpConfig.Service.ActiveProfile.AppExceptions[i];
-                ExceptionItems.Add(ListItemFromAppException(ex, packageList));
+                ExceptionItems.Add(ListItemFromAppException(ex, AppPackageList));
             }
 
             ExceptionItems.Sort(listApplications.ListViewItemSorter as ListViewItemComparer);
@@ -242,6 +261,16 @@ namespace pylorak.TinyWall
 
         private ListViewItem ListItemFromAppException(FirewallExceptionV3 ex, UwpPackageList packageList)
         {
+            int GetCachedIconIndex(ListViewItem li, int fallbackIconIndex)
+            {
+                var iconKey = IconScanner.PathExtractor(li);
+                if (Utils.IsNullOrEmpty(iconKey))
+                    return fallbackIconIndex;
+
+                var idx = IconList.Images.IndexOfKey(iconKey);
+                return idx >= 0 ? idx : fallbackIconIndex;
+            }
+
             Color deletedRowBackColor = (DarkMode != null) && DarkMode.IsDarkMode ? Color.Black : Color.LightGray;
             Color blockedRowBackColor = (DarkMode != null) && DarkMode.IsDarkMode ? Color.IndianRed : Color.LightPink;
 
@@ -273,7 +302,7 @@ namespace pylorak.TinyWall
                     li.Text = uwpSubj!.DisplayName;
                     li.SubItems.Add(Resources.Messages.SubjectTypeUwpApp);
                     li.SubItems.Add(uwpSubj.PublisherId + ", " + uwpSubj.Publisher);
-                    li.ImageIndex = IconList.Images.IndexOfKey("store");
+                    li.ImageIndex = GetCachedIconIndex(li, IconScanner.TemporaryIconIdx[1]);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -313,7 +342,7 @@ namespace pylorak.TinyWall
                 else if (File.Exists(exeSubj.ExecutablePath))
                 {
                     // Real icon will be loaded later asynchronously, for now just assign a generic icon
-                    li.ImageIndex = IconList.Images.ContainsKey(exeSubj.ExecutablePath) ? IconList.Images.IndexOfKey(exeSubj.ExecutablePath) : IconScanner.TemporaryIconIdx;
+                    li.ImageIndex = GetCachedIconIndex(li, IconScanner.TemporaryIconIdx[0]);
                 }
                 else
                 {
