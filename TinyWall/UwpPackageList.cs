@@ -121,7 +121,7 @@ namespace pylorak.TinyWall
         private static Dictionary<string, PackageCacheEntry> CreatePackageList()
         {
             var pm = new PackageManager();
-            var packageList = pm.FindPackagesForUser(string.Empty);
+            var packageList = pm.FindPackagesForUserWithPackageTypes(string.Empty, PackageTypes.Main);
             var cache = new Dictionary<string, PackageCacheEntry>(StringComparer.OrdinalIgnoreCase);
             foreach (var p in packageList)
             {
@@ -138,7 +138,7 @@ namespace pylorak.TinyWall
         }
 
         /// <summary>
-        /// Whether the package is an app (not a framework/library) and runs in an AppContainer.
+        /// Whether the package runs in an AppContainer, i.e. is not marked as FullTrust/mediumIL.
         /// </summary>
         public bool IsAppContainerApp(Package p)
         {
@@ -160,11 +160,6 @@ namespace pylorak.TinyWall
 
         private static bool IsAppContainerApp(global::Windows.ApplicationModel.Package p)
         {
-            // A framework package is a shared library other packages depend on, not an
-            // application that runs. Checked first because the property is cheap.
-            if (p.IsFramework)
-                return false;
-
             // A full trust package runs outside an AppContainer, so its processes carry no
             // package identity for FWPM_CONDITION_ALE_PACKAGE_ID to match and a rule for it
             // would never do anything. An undeterminable package is kept, so that a manifest
