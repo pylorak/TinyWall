@@ -65,6 +65,7 @@
             this.listView.HideSelection = false;
             this.listView.MultiSelect = false;
             this.listView.Name = "listView";
+            this.listView.ShowItemToolTips = true;
             this.listView.SmallImageList = this.IconList;
             this.listView.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listView.UseCompatibleStateImageBehavior = false;
@@ -102,6 +103,8 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "UwpPackagesForm";
             this.TopMost = true;
+            this.Activated += new System.EventHandler(this.UwpPackagesForm_Activated);
+            this.Deactivate += new System.EventHandler(this.UwpPackagesForm_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.UwpPackages_FormClosing);
             this.Load += new System.EventHandler(this.UwpPackages_Load);
             this.ResumeLayout(false);

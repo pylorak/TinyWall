@@ -2,6 +2,7 @@ TinyWall Changelog
 ---------------------
 
 3.x.x - not yet released
+- Show friendly app names in UWP picker
 - Fix UWP packages offered for picking that shouldn't be (ChrisRosser)
 - Wildcard support for application updates use-case (devprjgithub)
 - Fix WSL was allowed in Block All mode if corresponding special exception was enabled

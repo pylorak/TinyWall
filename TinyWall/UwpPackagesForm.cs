@@ -1,7 +1,6 @@
 ﻿using DarkModeForms;
 using pylorak.Windows;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -36,8 +35,6 @@ namespace pylorak.TinyWall
         internal static List<UwpPackageList.Package> ChoosePackage(IWin32Window parent, bool multiSelect)
         {
             using var pf = new UwpPackagesForm(multiSelect);
-            var pathList = new List<UwpPackageList.Package>();
-
             return (pf.ShowDialog(parent) == DialogResult.Cancel) ? new List<UwpPackageList.Package>() : pf.SelectedPackages;
         }
 
@@ -92,9 +89,12 @@ namespace pylorak.TinyWall
                     continue;
 
                 // Add list item
-                var li = new ListViewItem(package.Name);
+                var li = new ListViewItem(package.DisplayName)
+                {
+                    ImageKey = "store",
+                    ToolTipText = package.Name
+                };
                 li.SubItems.Add(package.PublisherId + ", " + package.Publisher);
-                li.ImageKey = "store";
                 li.Tag = package;
                 itemColl.Add(li);
             }
@@ -140,6 +140,16 @@ namespace pylorak.TinyWall
         private void listView_SelectedIndexChanged(object sender, EventArgs e)
         {
             btnOK.Enabled = listView.SelectedItems.Count > 0;
+        }
+
+        private void UwpPackagesForm_Activated(object sender, EventArgs e)
+        {
+            this.TopMost = false;
+        }
+
+        private void UwpPackagesForm_Deactivate(object sender, EventArgs e)
+        {
+            this.TopMost = true;
         }
     }
 }

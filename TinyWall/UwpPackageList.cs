@@ -28,6 +28,7 @@ namespace pylorak.TinyWall
             }
 
             public readonly string Sid;
+            public readonly string DisplayName;
             public readonly string Name;
             public readonly string Publisher;
             public readonly string PublisherId;
@@ -36,6 +37,7 @@ namespace pylorak.TinyWall
             public Package(global::Windows.ApplicationModel.Package p)
             {
                 Name = p.Id.Name;
+                DisplayName = Utils.IsNullOrEmpty(p.DisplayName) ? p.Id.Name : p.DisplayName;
                 Publisher = p.Id.Publisher;
                 PublisherId = p.Id.PublisherId;
                 Tampered = p.Status.Tampered ? TamperedState.Yes : TamperedState.No;
