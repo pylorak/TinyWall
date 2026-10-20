@@ -391,4 +391,7 @@
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>네트워크 위치(예: UNC 경로 및 네트워크 드라이브)에는 와일드카드 패턴을 사용할 수 없습니다.</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>새 패턴을 설정하려면 원래 파일이 있어야 합니다.</value>
+  </data>
 </root>

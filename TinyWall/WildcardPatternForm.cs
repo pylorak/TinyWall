@@ -33,6 +33,7 @@ namespace pylorak.TinyWall
 #pragma warning disable CS8524 // The switch expression does not handle unnamed enum values.
             string message = result switch
             {
+                WildcardValidation.ErrorFileMissing => Resources.Messages.WildcardPatternFileMissing,
                 WildcardValidation.ErrorDisallowedFolder => Resources.Messages.WildcardPatternDisallowedFolder,
                 WildcardValidation.ErrorWildcardedFilename => Resources.Messages.WildcardPatternMustUseExactFilename,
                 WildcardValidation.ErrorEmptyParameter

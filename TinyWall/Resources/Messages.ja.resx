@@ -405,4 +405,7 @@ TinyWall の自動学習モードでは、すべての許可されたトラフ�
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>ワイルドカード パターンは、UNC パスやネットワーク ドライブなどのネットワーク上の場所には使用できません。</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>新しいパターンを設定するには、元のファイルが存在している必要があります。</value>
+  </data>
 </root>

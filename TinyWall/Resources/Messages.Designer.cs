@@ -919,6 +919,15 @@ namespace pylorak.TinyWall.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Original file must exist to set a new pattern..
+        /// </summary>
+        internal static string WildcardPatternFileMissing {
+            get {
+                return ResourceManager.GetString("WildcardPatternFileMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} hour.
         /// </summary>
         internal static string XHour {

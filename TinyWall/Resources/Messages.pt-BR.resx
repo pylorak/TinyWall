@@ -400,4 +400,7 @@ O executável selecionado é parte de {0}. Para que este aplicativo possa ser us
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>Padrões curinga não são permitidos para locais de rede, como caminhos UNC e unidades de rede.</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>O arquivo original deve existir para definir um novo padrão.</value>
+  </data>
 </root>

@@ -348,4 +348,7 @@ Het gekozen programma is deel van {0}. Om zeker te zijn dat dit programma zonder
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>Jokerpatronen zijn niet toegestaan voor netwerklocaties, zoals UNC-paden en netwerkstations.</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>Het oorspronkelijke bestand moet bestaan om een nieuw patroon in te stellen.</value>
+  </data>
 </root>

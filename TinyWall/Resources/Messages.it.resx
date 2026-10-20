@@ -393,4 +393,7 @@ L'eseguibile selezionato potrebbe essere parte di {0}. Per garantire che questa 
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>I modelli con caratteri jolly non sono consentiti nelle posizioni di rete, ad esempio percorsi UNC e unità di rete.</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>Il file originale deve esistere per impostare un nuovo modello.</value>
+  </data>
 </root>

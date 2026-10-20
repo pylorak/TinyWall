@@ -369,4 +369,7 @@ Seçili uygulama dosyası {0} nın parçası olabilir. İşi sağlama almak içi
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>UNC yolları ve ağ sürücüleri gibi ağ konumlarında joker karakter desenlerine izin verilmez.</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>Yeni bir desen ayarlamak için özgün dosyanın var olması gerekir.</value>
+  </data>
 </root>

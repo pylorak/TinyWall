@@ -402,4 +402,7 @@ Die ausgewählte Datei kann zu {0} gehören. Um sicherzustellen, dass die Anwend
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>Platzhaltermuster sind für Netzwerkspeicherorte nicht zulässig, z. B. UNC-Pfade und Netzlaufwerke.</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>Die Originaldatei muss zum Setzen eines neuen Musters existieren.</value>
+  </data>
 </root>

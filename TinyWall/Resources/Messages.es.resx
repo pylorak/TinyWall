@@ -383,4 +383,7 @@ El ejecutable seleccionado podría ser parte de {0}. Para asegurarse que esta ap
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>Los patrones con comodines no están permitidos en ubicaciones de red, como rutas UNC y unidades de red.</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>El archivo original debe existir para establecer un nuevo patrón.</value>
+  </data>
 </root>

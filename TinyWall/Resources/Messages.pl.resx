@@ -372,4 +372,7 @@ Wybrany plik wykonywalny może być częścią {0}. Aby upewnić się, że ten p
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>Wzorce wieloznaczne nie są dozwolone dla lokalizacji sieciowych, takich jak ścieżki UNC i dyski sieciowe.</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>Aby ustawić nowy wzorzec, oryginalny plik musi istnieć.</value>
+  </data>
 </root>

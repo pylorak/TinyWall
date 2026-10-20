@@ -22,6 +22,7 @@ namespace pylorak.TinyWall
         ErrorWildcardedFilename,
         ErrorFileSignatureFail,
         ErrorNetworkPath,
+        ErrorFileMissing,
     }
 
     public static class WildcardPathMatcher
@@ -223,8 +224,10 @@ namespace pylorak.TinyWall
 
             if (!sigVerifyPass.HasValue)
             {
-                sigVerifyPass = File.Exists(filePath)
-                                && WinTrust.VerifyFileAuthenticode(filePath) == WinTrust.VerifyResult.SIGNATURE_VALID;
+                if (!File.Exists(filePath))
+                    return WildcardValidation.ErrorFileMissing;
+
+                sigVerifyPass = WinTrust.VerifyFileAuthenticode(filePath) == WinTrust.VerifyResult.SIGNATURE_VALID;
             }
             if (!sigVerifyPass.Value)
                 return WildcardValidation.ErrorFileSignatureFail;

@@ -366,4 +366,7 @@ Zvolený spustitelný soubor by mohl být součástí {0}. Pro zajištění bezc
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>Vzory se zástupnými znaky nejsou pro síťová umístění, například cesty UNC a síťové jednotky, povoleny.</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>Pro nastavení nového vzoru musí původní soubor existovat.</value>
+  </data>
 </root>

@@ -367,4 +367,7 @@
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>Шаблоны с подстановочными знаками не допускаются для сетевых расположений, таких как сетевые пути (UNC) и сетевые диски.</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>Исходный файл должен существовать, чтобы настроить новый шаблон.</value>
+  </data>
 </root>

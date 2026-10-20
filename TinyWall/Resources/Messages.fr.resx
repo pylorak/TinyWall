@@ -394,4 +394,7 @@ L'exécutable trouvé est une partie de {0}. Afin d'être sûr que cette applica
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>Les motifs avec jokers ne sont pas autorisés pour les emplacements réseau, tels que les chemins UNC et les lecteurs réseau.</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>Le fichier d'origine doit exister pour définir un nouveau motif.</value>
+  </data>
 </root>

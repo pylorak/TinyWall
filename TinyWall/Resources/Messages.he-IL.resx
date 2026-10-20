@@ -404,4 +404,7 @@
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>תבניות תווים כלליים אינן מותרות עבור מיקומי רשת, כגון נתיבי UNC וכונני רשת.</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>קובץ המקור חייב להתקיים כדי להגדיר תבנית חדשה.</value>
+  </data>
 </root>

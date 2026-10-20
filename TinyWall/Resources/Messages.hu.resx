@@ -437,4 +437,7 @@ A kiválasztott fájl a következő része lehet: {0}. Ahhoz hogy az alkalmazás
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>Helyettesítő mintázat nem engedélyezett hálózati helyek, például UNC-utak és hálózati meghajtók esetén.</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>Az eredeti fájlnak létezni kell egy új helyettesítő mintázat beállításához.</value>
+  </data>
 </root>

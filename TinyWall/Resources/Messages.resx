@@ -449,4 +449,7 @@ The selected executable could be part of {0}. To ensure that this application ca
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>Wildcard patterns are not allowed for network locations, such as UNC paths and network drives.</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>Original file must exist to set a new pattern.</value>
+  </data>
 </root>

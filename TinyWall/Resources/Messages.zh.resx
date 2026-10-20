@@ -369,4 +369,7 @@
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>网络位置（例如 UNC 路径和网络驱动器）不允许使用通配符模式。</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>原始文件必须存在才能设置新模式。</value>
+  </data>
 </root>

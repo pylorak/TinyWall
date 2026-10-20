@@ -379,4 +379,7 @@
   <data name="WildcardPatternNetworkPathNotAllowed" xml:space="preserve">
     <value>Шаблоните със заместващи знаци не са разрешени за мрежови местоположения, като мрежови пътища (UNC) и мрежови устройства.</value>
   </data>
+  <data name="WildcardPatternFileMissing" xml:space="preserve">
+    <value>Оригиналният файл трябва да съществува, за да се зададе нов шаблон.</value>
+  </data>
 </root>
