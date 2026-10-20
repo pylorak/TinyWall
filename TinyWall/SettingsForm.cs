@@ -287,7 +287,8 @@ namespace pylorak.TinyWall
 
             if (uwpSubj is not null)
             {
-                if (!packageList.FindPackage(uwpSubj.Sid).HasValue)
+                var package = packageList.FindPackage(uwpSubj.Sid);
+                if (!package.HasValue || !packageList.IsAppContainerApp(package.Value))
                 {
                     li.ImageIndex = IconList.Images.IndexOfKey("deleted");
                     li.BackColor = deletedRowBackColor;
