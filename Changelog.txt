@@ -1,30 +1,30 @@
 TinyWall Changelog
 ---------------------
 
-3.x.x - not yet released
-- Show real app icons for UWP packages
-- Show friendly app names in UWP picker
-- Fix UWP packages offered for picking that shouldn't be (ChrisRosser)
+3.6.1 - Important update (21.10.2026.)
 - Wildcard support for application updates use-case (devprjgithub)
-- Fix WSL was allowed in Block All mode if corresponding special exception was enabled
-- Fix blocks during display power-save not applied to inherited rules
-- Fix WSL rules installed redundantly when adding inherited rules
-- Rule merging now always uses inheritance setting of newer rule
 - Show block reason in Connections window
 - Security hardening of the built-in updater
 - Increase password hashing complexity
+- Show real app icons for UWP packages
+- Show friendly app names in UWP picker
+- Rule merging now always uses inheritance setting of newer rule
 - Rewrite of hosts-file related functions for more robustness
-- New mitigation for tray icon sometimes not showing up on boot
 - Try removing leftover service if one is found before installation (possible workaround for Revo users)
+- Fix UWP packages offered for picking that shouldn't be (ChrisRosser)
+- Fix WSL was allowed in Block All mode if corresponding special exception was enabled
+- Fix WSL rules installed redundantly when adding inherited rules
+- Fix blocks during display power-save not applied to inherited rules
+- Fix for tray icon sometimes not showing up on boot
 - Fix uninstall fails if TinyWall is locked instead of showing password entry
 - Fix misaligned drawing of focus highlight in dark mode lists
 - Fix discolored context menu icons in dark mode
+- Fix border transparency of external app icons in dark mode
+- Better sizing of external app icons in dark mode
 - Remove "Search on ProcessLibrary", site is practically dead
 - Make ESC key cancel Application Finder dialog too
 - Add copy icon to connections list context menu
 - Add "Copy path" and "Open folder" to connections list context menu
-- Correct border transparency of external app icons in dark mode
-- Better sizing of external app icons in dark mode
 - Develtool UI replaced by CLI for automated builds
 - If Windows Defender rule is enabled in UI, allow its protection updates even if Windows Update is blocked (KloweSa)
 - Profile update for network printers and scanners
