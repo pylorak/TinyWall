@@ -35,10 +35,19 @@ namespace pylorak.TinyWall
             this.IconScanner = new AsyncIconScanner(lvi => { return ((UwpPackageList.Package)lvi.Tag).IconPath; }, IconList.Images.IndexOfKey(TEMP_ICON_KEY));
         }
 
-        internal static List<UwpPackageList.Package> ChoosePackage(IWin32Window parent, bool multiSelect)
+        internal static List<UwpPackageList.Package> ChoosePackage(Form parent, bool multiSelect)
         {
-            using var pf = new UwpPackagesForm(multiSelect);
-            return (pf.ShowDialog(parent) == DialogResult.Cancel) ? new List<UwpPackageList.Package>() : pf.SelectedPackages;
+            var pareIsTopMost = parent.TopMost;
+            try
+            {
+                parent.TopMost = false;
+                using var pf = new UwpPackagesForm(multiSelect);
+                return (pf.ShowDialog(parent) == DialogResult.Cancel) ? new List<UwpPackageList.Package>() : pf.SelectedPackages;
+            }
+            finally
+            {
+                parent.TopMost = pareIsTopMost;
+            }
         }
 
         private void btnOK_Click(object sender, EventArgs e)
