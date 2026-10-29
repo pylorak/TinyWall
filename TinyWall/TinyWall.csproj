@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -15,7 +15,8 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
 
     <!-- Used for WinRT access in .Net 4.8, not needed with .NET 5+ -->
-    <TargetPlatformVersion>8.0</TargetPlatformVersion>
+        <TargetPlatformVersion>8.0</TargetPlatformVersion>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     
   </PropertyGroup>
   <PropertyGroup>
@@ -60,28 +61,44 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Memory" Version="4.5.4" />
-    <PackageReference Include="System.Text.Json" Version="6.0.11" />
+        <PackageReference Include="System.Text.Json" Version="6.0.11" />
+    <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
+  </ItemGroup>
 
-    <COMReference Include="NetFwTypeLib">
-      <WrapperTool>tlbimp</WrapperTool>
-      <VersionMinor>0</VersionMinor>
-      <VersionMajor>1</VersionMajor>
-      <Guid>58fbcf7c-e7a9-467c-80b3-fc65e8fcca08</Guid>
-      <Lcid>0</Lcid>
-      <Isolated>false</Isolated>
-      <EmbedInteropTypes>true</EmbedInteropTypes>
-    </COMReference>
+  <ItemGroup Condition="'$(MSBuildRuntimeType)' != 'Core'">
+      <COMReference Include="NetFwTypeLib">
+        <WrapperTool>tlbimp</WrapperTool>
+        <VersionMinor>0</VersionMinor>
+        <VersionMajor>1</VersionMajor>
+        <Guid>58fbcf7c-e7a9-467c-80b3-fc65e8fcca08</Guid>
+        <Lcid>0</Lcid>
+        <Isolated>false</Isolated>
+        <EmbedInteropTypes>true</EmbedInteropTypes>
+      </COMReference>
 
-    <COMReference Include="TaskScheduler">
-      <WrapperTool>tlbimp</WrapperTool>
-      <VersionMinor>0</VersionMinor>
-      <VersionMajor>1</VersionMajor>
-      <Guid>e34cb9f1-c7f7-424c-be29-027dcc09363a</Guid>
-      <Lcid>0</Lcid>
-      <Isolated>false</Isolated>
-      <EmbedInteropTypes>true</EmbedInteropTypes>
-    </COMReference>
+      <COMReference Include="TaskScheduler">
+        <WrapperTool>tlbimp</WrapperTool>
+        <VersionMinor>0</VersionMinor>
+        <VersionMajor>1</VersionMajor>
+        <Guid>e34cb9f1-c7f7-424c-be29-027dcc09363a</Guid>
+        <Lcid>0</Lcid>
+        <Isolated>false</Isolated>
+        <EmbedInteropTypes>true</EmbedInteropTypes>
+      </COMReference>
+    </ItemGroup>
 
+    <ItemGroup Condition="'$(MSBuildRuntimeType)' == 'Core' and Exists('..\lib\NetFwTypeLib.dll')">
+      <Reference Include="NetFwTypeLib">
+        <HintPath>..\lib\NetFwTypeLib.dll</HintPath>
+        <EmbedInteropTypes>true</EmbedInteropTypes>
+      </Reference>
+      <Reference Include="TaskScheduler">
+        <HintPath>..\lib\TaskScheduler.dll</HintPath>
+        <EmbedInteropTypes>true</EmbedInteropTypes>
+      </Reference>
+    </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Update="Resources\Exceptions.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Exceptions.Designer.cs</LastGenOutput>

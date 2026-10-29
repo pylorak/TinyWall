@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace pylorak.TinyWall
 {
@@ -267,6 +267,7 @@ namespace pylorak.TinyWall
         UpdateCreator,
         ResXOptimizer,
         BatchSigner,
+        Cli,
 
         // Only the following are meant for end-users:
         Update
@@ -282,6 +283,7 @@ namespace pylorak.TinyWall
         public UpdateCreatorCliArgs UpdateCreator { get; } = new();
         public ResXOptimizerCliArgs ResXOptimizer { get; } = new();
         public BatchSignerCliArgs BatchSigner { get; } = new();
+        public string[] CliArgs { get; set; } = Array.Empty<string>();
 
         public void ParseArgs(string[] args)
         {
@@ -305,6 +307,8 @@ namespace pylorak.TinyWall
                     "update-creator" => StartupCommand.UpdateCreator,
                     "resx-optimizer" => StartupCommand.ResXOptimizer,
                     "batch-signer" => StartupCommand.BatchSigner,
+                    "cli" => StartupCommand.Cli,
+                    "ai" => StartupCommand.Cli,
                     _ when args[0].StartsWith("/") => StartupCommand.Invalid,
                     _ => throw new InvalidCommandlineOptionException(args[0])
                 };
@@ -346,6 +350,10 @@ namespace pylorak.TinyWall
                     break;
                 case StartupCommand.BatchSigner:
                     BatchSigner.Parse(ref optsOnly);
+                    break;
+                case StartupCommand.Cli:
+                    CliArgs = optsOnly;
+                    optsOnly = Array.Empty<string>();
                     break;
             }
 

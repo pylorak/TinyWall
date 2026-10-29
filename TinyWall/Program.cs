@@ -1,4 +1,4 @@
-﻿using pylorak.Utilities;
+using pylorak.Utilities;
 using pylorak.Windows;
 using System;
 using System.IO;
@@ -91,6 +91,8 @@ namespace pylorak.TinyWall
                             ? ExitCode.Success
                             : ExitCode.ResxDiffers;
                     }
+                case StartupCommand.Cli:
+                    return (ExitCode)CommandLineInterface.Run(cliArgs.CliArgs);
                 case StartupCommand.BatchSigner:
                     {
                         var cmdArgs = cliArgs.BatchSigner;
@@ -237,6 +239,7 @@ namespace pylorak.TinyWall
                 case StartupCommand.UpdateCreator:
                 case StartupCommand.ResXOptimizer:
                 case StartupCommand.BatchSigner:
+                case StartupCommand.Cli:
                     AppDomain.CurrentDomain.UnhandledException += UnhandledException_Cli;
                     break;
                 default:
